@@ -1,10 +1,12 @@
-import EuclideanGeometry.Axioms.Lines
 import EuclideanGeometry.Axioms.Angles
 
 /- This file discuss the relative positions of points and lines on a plane. -/
 
+/- Positions of points on a line, ray, oriented segments. -/
 
-/- Positions of a point relative to a ray: 1. at the end point, 2. on the ray (not including the end point) 3. on the opposite direction of the ray.  4. on the "left" of the ray. 5. on the "right" of the ray. -/
+
+
+/- Positions of a point relative to a ray/line/segment: 1. at the end point, 2. on the ray (not including the end point) 3. on the opposite direction of the ray.  4. on the "left" of the ray. 5. on the "right" of the ray. -/
 
 /- Also inlclude functions such as Is_on_the_ray, and a type Left_of_the_ray.   -/
 
