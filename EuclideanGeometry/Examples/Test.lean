@@ -1,1 +1,1 @@
-import EuclideanGeometry.Axioms.Basics
+import EuclideanGeometry.Axioms.Basic
