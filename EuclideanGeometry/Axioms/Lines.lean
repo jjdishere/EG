@@ -1,7 +1,36 @@
-import EuclideanGeometry.Axioms.Basics
+import EuclideanGeometry.Axioms.Basic
+
+namespace EuclidGeom
+
+variable (P : Type _) [h : EuclideanPlane P]
+
+/- Rays -/
+
+class Ray where
+  source : P
+  direction: UniVec
+
+/- def lies on a ray -/
+
+variable (l : Ray P)
+#check l.direction.vec
+
+def LiesOnRay (a : P) (l : Ray P) : Prop :=
+  ∃ (t : ℝ) (ht : t ≥ 0), a = (t • (l.direction.vec)) +ᵥ (l.source)
 
 
-/- 1.1 Define points, and functions to get the x,y-coordinates -/
+/- Directed segment -/
+
+class DirSeg extends Ray P where
+  target : P
+
+
+
+class DirSeg_gen where
+  source : P
+  target : P
+
+
 
 /- 1.2 Segments, rays, and lines -/
 
@@ -23,3 +52,5 @@ import EuclideanGeometry.Axioms.Basics
 
 
 /- Archimedean properties: on a ray/line, one can always find a far away point, and on an oriented segment, one can always find a point in the interior. -/
+
+end EuclidGeom
