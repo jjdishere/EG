@@ -1,55 +1,71 @@
 import EuclideanGeometry.Axioms.Basic
 
+/-!
+# Segments, rays, and lines
+
+We define the class of (directed) segments, rays, and lines and their coersions. We also define the proposition of a point lying on such a structure. Finally, we discuss the nonemptyness of such structures.
+
+## Important definitions
+
+* `Ray` : the class of rays on an EuclideanPlane
+* 
+
+
+## Notation
+
+## Implementation Notes
+
+## Further Works
+
+-/
+
 namespace EuclidGeom
 
-variable (P : Type _) [h : EuclideanPlane P]
-
 /- Rays -/
-
-class Ray where
+@[ext]
+class Ray (P : Type _) [EuclideanPlane P] where
   source : P
   direction: UniVec
 
-/- def lies on a ray -/
+/- Def of point lies on a ray -/
+def IsOnRay {P : Type _} [EuclideanPlane P] (a : P) (l : Ray P) : Prop :=
+  ∃ (t : ℝ) (ht : t ≥ 0), (a : P) = t • l.direction.vec +ᵥ l.source
 
-variable (l : Ray P)
-#check l.direction.vec
+infixl : 50 "LiesOnRay" => IsOnRay
 
-def LiesOnRay (a : P) (l : Ray P) : Prop :=
-  ∃ (t : ℝ) (ht : t ≥ 0), a = (t • (l.direction.vec)) +ᵥ (l.source)
+-- theorem ... : unique t in IsOnRay
 
-
-/- Directed segment -/
-
-class DirSeg extends Ray P where
-  target : P
-
-
-
-class DirSeg_gen where
+/- Generalized Directed segment -/
+@[ext]
+class GDirSeg (P : Type _) [EuclideanPlane P]where
   source : P
   target : P
 
+/- Directed segment -/
+class DirSeg (P : Type _) [EuclideanPlane P] extends Ray P, GDirSeg P where
+  on_ray : target LiesOnRay toRay 
+  non_triv : source ≠ target
+  
+-- theorem xxx_ne_zero :(Classical.choose (p LiesOnRay l)) ≠ 0 := sorry
 
+class Line (P : Type _) [EuclideanPlane P] where
+-- What is a line??? to be affine subspaces of dimension 1, citing affine vector spaces?
+-- carrier : Set P
+-- linearity
 
-/- 1.2 Segments, rays, and lines -/
+instance {P : Type _} [EuclideanPlane P] : Coe (Ray P) (Line P) where
+  coe := sorry
 
-/- Define vectors in dimension 2 -/
+class GSeg (P : Type _) [EuclideanPlane P] where
+-- a multiset of 2 points?
 
-/- Define oriented segments, including "carrier" and endpoints, and directions (a unit vector).  Here we only allow nondegenerate oriented segements. Next, we define oriented segments_generalized (which only remebers the starting and end points), which allows the two points to be identified; and view oriented segments as an instance.  -/
+class Seg (P : Type _) [EuclideanPlane P] where
+-- a multiset of 2 diff points?
+-- carrier
 
-/- Define the interior of an oriented segment -/
+/- Define a point lies on an oriented segment, a line, a segment -/
 
-
-
-/- Define rays, including "carrier", endpoints, and directions. -/
-
-/- Define lines to be affine subspaces of dimension 1, citing affine vector spaces. -/
-
-/- Relations between these concepts -/
-
-
-
+/- Relations between these concepts as coersion-/
 
 /- Archimedean properties: on a ray/line, one can always find a far away point, and on an oriented segment, one can always find a point in the interior. -/
 

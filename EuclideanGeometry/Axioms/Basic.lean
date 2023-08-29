@@ -1,81 +1,94 @@
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import Mathlib.Analysis.Normed.Group.Basic
 
 /-!
 # Euclidean Plane
 
-This file defines the Euclidean Plane as an affine space, admits an action of an inner product real vector space of dimension two equipped with a basis.
+This file defines the Euclidean Plane as an affine space, admits an action of the standard inner product real vector space of dimension two.
 
 ## Important definitions
 
+* `UniVec` : the class of unit vectors in the 2d real vector space
 * `EuclideanPlane` : the class of Euclidean Plane
-* `x_coordinate` : the x coordiante of a point
-* `y_coordinate` : the y coordiante of a point
 
 ## Notation
 
-We introduce the notation `x(p)`, `y(p)` for the x,y coordinates of a point `p` on a Euclidean Plane.
-
 ## Implementation Notes
 
+For simplicity, we use the standard inner product real vector space of dimension two as the underlying `SeminormedAddCommGroup` of the `NormedAddTorsor` in the definition of `EuclideanPlane`. 
+
+In section `StdR2`, we define all of the sturctures on the standard 2d inner product real vector space `ℝ × ℝ`. We use defs and do NOT use instances here in order to avoid conflicts to existing instance of such stuctures on `ℝ × ℝ` which is based on `L^∞` norm of the product space.
+
+Then we define `EuclideanPlane P` as `NormedAddTorsor (ℝ × ℝ) P` and present instances involving `EuclideanPlane`.
+
 ## Further Works
+
+The current definition is far from being general enough. Roughly speaking, it suffices to define the Euclidean Plane to be a `NormedAddTorsor` over any 2 dimensional normed real inner product spaces `V` with a choice of an orientation on `V`.
 
 -/
 
 
-/- Define Euclidean plane as normed vector space over ℝ of dimension 2 -/
 namespace EuclidGeom
 
--- class Cartesian2dVectorSpace (V : Type _)  extends  NormedAddCommGroup V, InnerProductSpace ℝ V where
---   dim_two : FiniteDimensional.finrank ℝ V = 2
---   basis : Basis (Fin 2) ℝ V
---   orthonormal : Orthonormal ℝ basis
+/- structures on `ℝ × ℝ`-/
+namespace StdR2
 
--- variable {V : Type _} [h : Cartesian2dVectorSpace V]
+protected noncomputable def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
+  toFun := fun x => Real.sqrt (x.1 * x.1 + x.2 * x.2)
+  map_zero' := by simp
+  add_le' := fun x y => by 
+    simp
+    sorry
+  neg' := fun _ => by simp
+  eq_zero_of_map_eq_zero' := fun x => by 
+    simp
+    sorry
 
--- def x_coordinate (v : V) := (Basis.coord h.basis 0).toFun v
+protected def InnerProductSpace.Core : InnerProductSpace.Core ℝ (ℝ × ℝ) where
+  inner := fun r s => r.1 * s.1 + r.2 * s.2
+  conj_symm := fun _ _ => by
+    simp
+    ring
+  nonneg_re := fun _ => by 
+    simp
+    ring_nf
+    positivity
+  definite := fun x hx => by 
+    simp at hx
+    sorry
+  add_left := fun _ _ _ => by 
+    simp
+    ring
+  smul_left := fun _ _ _ => by
+    simp
+    ring
 
--- def y_coordinate (v : V) := (Basis.coord h.basis 1).toFun v
+/- shortcuts -/
+protected noncomputable def NormedAddCommGroup : NormedAddCommGroup (ℝ × ℝ) := AddGroupNorm.toNormedAddCommGroup StdR2.AddGroupNorm
 
--- notation "x("v")" => x_coordinate v
--- notation "y("v")" => y_coordinate v
+protected noncomputable def InnerProductSpace : @InnerProductSpace ℝ (ℝ × ℝ) _ StdR2.NormedAddCommGroup := InnerProductSpace.ofCore StdR2.InnerProductSpace.Core
 
--- theorem eq_of_coord_eq {v₁ : V} {v₂ : V} (hx : x(v₁) = x(v₂)) (hy : y(v₁) = y(v₂)) : v₁ = v₂ := by 
---   rw [Basis.ext_elem_iff h.basis, Fin.forall_iff]
---   intro i hi
---   cases i with 
---   | zero => exact hx  
---   | succ i' => 
---     cases i' with 
---     | zero => exact hy
---     | succ => linarith
+protected noncomputable def SeminormedAddCommGroup := @NormedAddCommGroup.toSeminormedAddCommGroup _ (StdR2.InnerProductSpace.Core.toNormedAddCommGroup)
 
--- /- theorem norm v = sqrt x(v)^2 + y(v)^2-/
--- noncomputable def vector_of_coord (x : ℝ) (y : ℝ) : V := x • (h.basis 0) + y • (h.basis 1)
+protected noncomputable def MetricSpace := @NormedAddCommGroup.toMetricSpace _ (StdR2.InnerProductSpace.Core.toNormedAddCommGroup)
 
--- notation "v("x"," y ")" => vector_of_coord x y
--- theorem eq (x : ℝ) (y : ℝ) : x(v(x, y)) = x := sorry
--- #check ℝ × ℝ 
--- variable (v : ℝ × ℝ)
+protected noncomputable def PseudoMetricSpace := @MetricSpace.toPseudoMetricSpace _ StdR2.MetricSpace
 
-instance : NormedAddCommGroup (ℝ × ℝ)  := by infer_instance
-
--- #check v.2
--- #check ((0 : ℝ), (1 : ℝ))
+end StdR2
 
 class UniVec where
   vec : ℝ × ℝ 
-  unit : NormedAddCommGroup.toNorm.norm vec = 1 
+  unit : StdR2.InnerProductSpace.Core.inner vec vec = 1 
 
+/- Define Euclidean plane as normed vector space over ℝ of dimension 2 -/
+class EuclideanPlane (H : Type _) extends MetricSpace H, @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _
 
+noncomputable instance : EuclideanPlane (ℝ × ℝ) where
+  toMetricSpace := StdR2.MetricSpace
+  toNormedAddTorsor := @SeminormedAddCommGroup.toNormedAddTorsor _ StdR2.SeminormedAddCommGroup
 
-class EuclideanPlane (H : Type _) extends MetricSpace H, NormedAddTorsor (ℝ × ℝ) H
+instance [EuclideanPlane H] : @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _ := EuclideanPlane.toNormedAddTorsor
 
--- instance EuclideanPlanetoVAdd {P : Type _} [h : EuclideanPlane P]: VAdd (ℝ × ℝ) P := by infer_instance
-
-
-instance : EuclideanPlane (ℝ × ℝ) where
-  toNormedAddTorsor := by infer_instance
+instance [EuclideanPlane H] : AddTorsor (ℝ × ℝ) H := by infer_instance
 
 end EuclidGeom
 
