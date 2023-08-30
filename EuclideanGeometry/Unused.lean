@@ -3,7 +3,7 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 
 import EuclideanGeometry.Axioms.Basic
 
-/- Another way of defining 2DVecSpace before define EuclideanPlane-/
+/- Another way of defining 2DVecSpace before define EuclideanPlane，-/
 section Cartesian2dVectorSpace
 
 class Cartesian2dVectorSpace (V : Type _)  extends  NormedAddCommGroup V, InnerProductSpace ℝ V where

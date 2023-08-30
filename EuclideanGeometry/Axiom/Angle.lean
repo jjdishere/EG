@@ -1,4 +1,5 @@
-import EuclideanGeometry.Axioms.Lines
+import EuclideanGeometry.Axiom.Ray
+
 
 
 

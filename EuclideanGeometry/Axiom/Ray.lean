@@ -1,4 +1,4 @@
-import EuclideanGeometry.Axioms.Basic
+import EuclideanGeometry.Axiom.Basic
 
 /-!
 # Segments, rays, and lines
@@ -59,7 +59,7 @@ class DirSeg (P : Type _) [EuclideanPlane P] extends Ray P, GDirSeg P where
   -- vsub_eq_len_smul_dir : target -ᵥ source = length • direction 
   -- nontriv : length > 0
     
--- theorem xxx_ne_zero :(Classical.choose (p LiesOnRay l)) ≠ 0 := sorry. Don't need this if add length into def of class DirSeg
+--  theorem xxx_ne_zero :(Classical.choose (p LiesOnRay l)) ≠ 0 := sorry. Don't need this if add length into def of class DirSeg
 
 -- def length of DirSeg, length of GDirSeg, length = 0 implies same point Don't need this if add length into def of class DirSeg
 
