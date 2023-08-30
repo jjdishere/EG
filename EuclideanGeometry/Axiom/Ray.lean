@@ -47,9 +47,6 @@ class GDirSeg (P : Type _) [EuclideanPlane P]where
 class DirSeg (P : Type _) [EuclideanPlane P] extends Ray P, GDirSeg P where
   on_ray : target LiesOnRay toRay 
   non_triv : source ≠ target
-  -- length : ℝ (Or NNReal ?)
-  -- vsub_eq_len_smul_dir : target -ᵥ source = length • direction 
-  -- nontriv : length > 0
 
 end defs
 
@@ -85,13 +82,15 @@ end coe
 
 section mk
 
-def DirSeg.mk' {P : Type _} [EuclideanPlane P] (A B : P) (h : A ≠ B) : DirSeg P := sorry  
 -- mk method of DirSeg giving 2 distinct point
+def DirSeg.mk' {P : Type _} [EuclideanPlane P] (A B : P) (h : A ≠ B) : DirSeg P := sorry  
 
 -- mk method of Ray giving 2 distinct point
 def Ray.mk' {P : Type _} [EuclideanPlane P] (A B : P) (h : A ≠ B) : Ray P := sorry 
--- ...
--- notation   
+
+-- notation 
+notation "Seg" => GDirSeg.mk
+
 end mk
 
 section length

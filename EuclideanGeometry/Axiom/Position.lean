@@ -2,6 +2,10 @@ import EuclideanGeometry.Axiom.Angle
 
 /- This file discuss the relative positions of points and lines on a plane. -/
 
+namespace EuclidGeom
+
+def colinear {P : Type _} [EuclideanPlane P] (A B C : P) : Prop := ∠ A B C = 0 ∨ ∠ A B C = Real.pi  
+
 /- Positions of points on a line, ray, oriented segments. -/
 
 
@@ -25,3 +29,5 @@ import EuclideanGeometry.Axiom.Angle
 
 /- A lot more theorems regarding positions -/
 /- e.g. 180 degree implies colinear -/
+
+end EuclidGeom
