@@ -1,9 +1,11 @@
 import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Algebra.GroupPower.Basic
+import Mathlib.Analysis.MeanInequalities
 
 /-!
 # Euclidean Plane
 
-This file defines the Euclidean Plane as an affine space, admits an action of the standard inner product real vector space of dimension two.
+This file defines the Euclidean Plane as an affine space, which admits an action of the standard inner product real vector space of dimension two.
 
 ## Important definitions
 
@@ -33,11 +35,36 @@ namespace EuclidGeom
 namespace StdR2
 
 protected noncomputable def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
-  toFun := fun x => Real.sqrt (x.1 * x.1 + x.2 * x.2)
+  toFun := fun x => Real.sqrt (x.1 * x.1  + x.2 * x.2)
   map_zero' := by simp
   add_le' := fun x y => by 
     simp
-    sorry
+    repeat rw [← pow_two]
+    apply le_of_pow_le_pow 2 (by positivity) (by positivity)
+    rw [Real.sq_sqrt (by positivity)]
+    nth_rw 1 [pow_two]
+    nth_rw 1 [pow_two]
+    nth_rw 1 [pow_two]
+    simp [mul_add, add_mul]
+    rw [Real.mul_self_sqrt (by positivity)]
+    rw [Real.mul_self_sqrt (by positivity)]
+    have P :  x.1 * y.1 + x.2 * y.2 ≤ Real.sqrt (x.1^2 + x.2^2) * Real.sqrt (y.1^2 + y.2^2) := by
+      let h := (x.1 * y.1 + x.2 * y.2 ≤  0)
+      by_cases h
+      · apply le_trans h
+        exact mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+      · apply le_of_pow_le_pow 2 (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)) (by positivity)
+        rw [mul_pow]
+        simp [Real.sq_sqrt (add_nonneg (sq_nonneg _) (sq_nonneg _))]
+        simp [pow_two, add_mul, mul_add]
+        let h1 := two_mul_le_add_pow_two (x.1 * y.2) (x.2 * y.1)
+        linarith
+    repeat rw [pow_two] at P
+    let Q := P
+    rw [mul_comm (Real.sqrt (x.fst ^ 2 + x.snd ^ 2)) _] at Q
+    simp [pow_two] at *    
+    linarith
+
   neg' := fun _ => by simp
   eq_zero_of_map_eq_zero' := fun x => by 
     simp
