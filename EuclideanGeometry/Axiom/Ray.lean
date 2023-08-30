@@ -48,9 +48,6 @@ class DirSeg (P : Type _) [EuclideanPlane P] extends Ray P, GDirSeg P where
   on_ray : target LiesOnRay toRay 
   non_triv : source ≠ target
 
-end defs
-
-section LiesOn
 /- Define a point lies on an oriented segment, a line, a segment, immediate consequences -/
 def IsOnDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DirSeg P) : Prop :=
   ∃ (t : ℝ) (ht : 0 ≤ t) (ht' : t ≤ 1 ), (a : P) = t • (l.target -ᵥ l.source) +ᵥ l.source
@@ -62,7 +59,7 @@ def IsOnGDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DirSeg P) : Prop :=
 
 infixl : 50 "LiesOnGDirSeg" => IsOnGDirSeg
 
-end LiesOn
+end defs
 
 /- Relations between these concepts as coersion, theorems-/
 section coe
@@ -70,12 +67,14 @@ section coe
 instance {P : Type _} [EuclideanPlane P] : Coe (DirSeg P) (Ray P) where
   coe := fun _ => DirSeg.toRay 
 
--- Coe from DirSeg to Ray, GDirSeg is by infer_instance
+instance {P : Type _} [EuclideanPlane P] : Coe (DirSeg P) (GDirSeg P) where
+  coe := fun _ => DirSeg.toGDirSeg
 
--- def of DirSeg from GDirSeg if length ≠ 0
+/- def of DirSeg from GDirSeg if length ≠ 0 -/
 def GDirSeg.toDirSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : GDirSeg P) (nontriv : l.source ≠ l.target): DirSeg P := sorry
 
--- coe from GDirSeg to Vector, should I name ℝ × ℝ as Vectors?
+-- coe from GDirSeg to Vector
+def GDirSeg.toVec {P : Type _} [h : EuclideanPlane P] (l : GDirSeg P) : (ℝ × ℝ) := l.target -ᵥ l.source 
 
 -- theorems of "if p LiesOnRay l, then p LiesOnLine l" each coe should equipped with a theorem here 
 end coe

@@ -28,6 +28,11 @@ section anglecheck
 variable {P : Type _} [h : EuclideanPlane P] (O : P) (A : P) (B : P)
 #check ∠ A O B
 
+variable (l : GDirSeg P)
+#check l.toVec
+
 end anglecheck
+
+
 
 end EuclidGeom
