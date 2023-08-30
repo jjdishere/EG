@@ -1,7 +1,7 @@
 import EuclideanGeometry.Axiom.Basic
 
 /-!
-# Segments, rays, and lines
+# Directed segments and rays
 
 We define the class of (directed) segments, rays, and lines and their coersions. We also define the proposition of a point lying on such a structure. Finally, we discuss the nonemptyness of such structures.
 
@@ -61,25 +61,18 @@ class DirSeg (P : Type _) [EuclideanPlane P] extends Ray P, GDirSeg P where
     
 --  theorem xxx_ne_zero :(Classical.choose (p LiesOnRay l)) ≠ 0 := sorry. Don't need this if add length into def of class DirSeg
 
--- def length of DirSeg, length of GDirSeg, length = 0 implies same point Don't need this if add length into def of class DirSeg
+-- def length of DirSeg, length of GDirSeg, length = 0 implies same point, length of DirSeg = length of GDirSeq (move length after coe)
 
-class Line (P : Type _) [EuclideanPlane P] where
--- What is a line??? to be affine subspaces of dimension 1, citing affine vector spaces?
--- carrier : Set P
--- linearity
-
-class GSeg (P : Type _) [EuclideanPlane P] where
--- a multiset of 2 points? or just never mention this?
-
-class Seg (P : Type _) [EuclideanPlane P] where
--- a multiset of 2 diff points? or just never mention this?
--- carrier
 end defs
 
--- mk method of GDirSeg giving 2 points
+section mk
+-- mk method of GDirSeg giving 2 points, this is auto generated as GDirSeg.mk
 -- mk method of DirSeg giving 2 distinct point
--- mk method of Line giving 2 distinct point
+
+-- mk method of Ray giving 2 distinct point
 -- ...
+-- notation   
+end mk
 
 section LiesOn
 /- Define a point lies on an oriented segment, a line, a segment, immediate consequences -/
@@ -93,20 +86,20 @@ def IsOnGDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DirSeg P) : Prop :=
 
 infixl : 50 "LiesOnGDirSeg" => IsOnGDirSeg
 
-def IsOnLine {P : Type _} [EuclideanPlane P] (a : P) (l : Line P) : Prop := sorry
-
-infixl : 50 "LiesOnLine" => IsOnLine
-
 end LiesOn
 
 /- Relations between these concepts as coersion, theorems-/
 section coe
 
-instance {P : Type _} [EuclideanPlane P] : Coe (Ray P) (Line P) where
-  coe := sorry
+instance {P : Type _} [EuclideanPlane P] : Coe (DirSeg P) (Ray P) where
+  coe := fun _ => by infer_instance
 
 -- Coe from DirSeg to Ray, GDirSeg is by infer_instance
+
 -- def of DirSeg from GDirSeg if length ≠ 0
+def GDirSeg.toDirSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : GDirSeg P) (nontriv : l.source ≠ l.target): DirSeg P := sorry
+
+-- coe from GDirSeg to Vector, should I name ℝ × ℝ as Vectors?
 
 -- theorems of "if p LiesOnRay l, then p LiesOnLine l" each coe should equipped with a theorem here 
 end coe

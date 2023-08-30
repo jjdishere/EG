@@ -1,8 +1,11 @@
 /- Here stores unused codes-/
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
-import EuclideanGeometry.Axioms.Basic
+import EuclideanGeometry.Axiom.Basic
+import EuclideanGeometry.Axiom.Ray
+import EuclideanGeometry.Axiom.Angle
 
+namespace EuclidGeom
 /- Another way of defining 2DVecSpace before define EuclideanPlane，-/
 section Cartesian2dVectorSpace
 
@@ -40,12 +43,33 @@ theorem x_coord_of_vector_of_coord (x : ℝ) (y : ℝ) : x(vector_of_coord (h :=
 
 end Cartesian2dVectorSpace
 
-/- check instance VAdd-/
-section VAddCheck
+/- unused sketch of undirected lines, segments-/
+section undirected
 
-variable (P : Type _) [EuclidGeom.EuclideanPlane P] (l : Ray P)
-#check l.direction.vec
-#check @AddAction.toVAdd _ _ _ (@AddTorsor.toAddAction _ _ _ (@NormedAddTorsor.toAddTorsor (ℝ × ℝ) P EuclidGeom.StdR2.SeminormedAddCommGroup _ _))
+class Line' (P : Type _) [EuclideanPlane P] where
+-- What is a line??? to be affine subspaces of dimension 1, citing affine vector spaces?
+-- carrier : Set P
+-- linearity
 
-end VAddCheck
+class GSeg' (P : Type _) [EuclideanPlane P] where
+-- a multiset of 2 points? or just never mention this?
 
+class Seg' (P : Type _) [EuclideanPlane P] where
+-- a multiset of 2 diff points? or just never mention this?
+-- carrier
+
+def IsOnLine' {P : Type _} [EuclideanPlane P] (a : P) (l : Line' P) : Prop := sorry
+
+infixl : 50 "LiesOnLine" => IsOnLine
+
+instance {P : Type _} [EuclideanPlane P] : Coe (Ray P) (Line' P) where
+  coe := sorry
+
+end undirected
+
+
+
+
+
+
+end EuclidGeom

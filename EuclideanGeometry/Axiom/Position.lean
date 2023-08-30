@@ -24,3 +24,4 @@ import EuclideanGeometry.Axiom.Angle
 
 
 /- A lot more theorems regarding positions -/
+/- e.g. 180 degree implies colinear -/

@@ -73,6 +73,8 @@ protected noncomputable def MetricSpace := @NormedAddCommGroup.toMetricSpace _ (
 
 protected noncomputable def PseudoMetricSpace := @MetricSpace.toPseudoMetricSpace _ StdR2.MetricSpace
 
+protected def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩ 
+
 end StdR2
 
 class UniVec where
