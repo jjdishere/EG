@@ -1,4 +1,4 @@
-import EuclideanGeometry.Axioms.Positions
+import EuclideanGeometry.Axiom.Position
 
 
 

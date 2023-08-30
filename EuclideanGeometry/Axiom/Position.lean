@@ -1,4 +1,4 @@
-import EuclideanGeometry.Axioms.Angles
+import EuclideanGeometry.Axiom.Angle
 
 /- This file discuss the relative positions of points and lines on a plane. -/
 
