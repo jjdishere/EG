@@ -50,7 +50,7 @@ class DirSeg (P : Type _) [EuclideanPlane P] extends Ray P, GDirSeg P where
 def IsOnDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DirSeg P) : Prop :=
   ∃ (t : ℝ) (ht : 0 ≤ t) (ht' : t ≤ 1 ), (a : P) = t • (l.target -ᵥ l.source) +ᵥ l.source
 
-def IsOnGDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DirSeg P) : Prop :=
+def IsOnGDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : GDirSeg P) : Prop :=
   ∃ (t : ℝ) (ht : 0 ≤ t) (ht' : t ≤ 1 ), (a : P) = t • (l.target -ᵥ l.source) +ᵥ l.source
 
 end definitions
