@@ -3,10 +3,23 @@ import EuclideanGeometry.Axiom.Ray
 
 namespace EuclidGeom
 
+variable {P: Type _} [EuclideanPlane P] (gseg : GDirSeg P) (seg : DirSeg P) (ray : Ray P)
+
+/- source and targets are on (generalized) directed segments -/
+
+theorem GDirSeg.source_lies_on_segments : gseg.source LiesOnGDirSeg gseg := by sorry
+
+theorem DirSeg.source_lies_on_segments : seg.source LiesOnDirSeg seg := by sorry
+
+theorem GDirSeg.target_lies_on_segments : gseg.source LiesOnGDirSeg gseg := by sorry
+
+theorem DirSeg.target_lies_on_segments : seg.source LiesOnDirSeg seg := by sorry
+
+
 /- reverse the direction of a (generalized) directed segment -/
 
 -- definition of reversion of the direction of a generalized directed segment
-variable {P: Type _} [EuclideanPlane P] (gseg : GDirSeg P)
+
 def GDirSeg.reverse  : GDirSeg P where
   source := gseg.target
   target := gseg.source
@@ -16,7 +29,6 @@ theorem GDirSeg.double_rev_eq_self  : gseg.reverse.reverse = gseg := rfl
 
 
 -- definition of the reversion of the direction of a directed segment
-variable (seg : DirSeg P)
 def DirSeg.reverse : DirSeg P where
   source := seg.target
   target := seg.source
@@ -46,7 +58,7 @@ theorem GDirSeg.neg_toVec_of_rev : gseg.reverse.toVec = - gseg.toVec := sorry
 
 /- reverse the direction of a ray -/
 
-variable (ray : Ray P)
+
 def Ray.reverse : Ray P where
   source := ray.source
   direction := -ray.direction
@@ -57,9 +69,6 @@ theorem Ray.double_rev_eq_self : ray.reverse.reverse = ray := sorry
 
 theorem Ray.eq_source_of_lies_on_and_lies_on_rev (a : P) (lieson : a LiesOnRay ray) (liesonrev : a LiesOnRay ray.reverse) : a = ray.source := by sorry
 
-
-
--- move a ray/GDirSeg
 
 
 end EuclidGeom
