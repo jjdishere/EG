@@ -102,6 +102,8 @@ protected noncomputable def PseudoMetricSpace := @MetricSpace.toPseudoMetricSpac
 
 protected def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩ 
 
+protected noncomputable def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((StdR2.toComplex x)/(StdR2.toComplex y))
+
 end StdR2
 
 class UniVec where

@@ -11,12 +11,13 @@ class OAngle (P : Type _) [h : EuclideanPlane P] where
 
 namespace OAngle
 
-def mk' {P : Type _} [h : EuclideanPlane P] (A O B : P) : OAngle P := sorry
+def mk' {P : Type _} [h : EuclideanPlane P] (A O B : P) (h₁ : A ≠ O) (h₂ : O ≠ B): OAngle P := sorry
 
-noncomputable def value {P : Type _} [h : EuclideanPlane P] (A : OAngle P): Real.Angle := Complex.arg ((StdR2.toComplex A.start_ray.direction.vec)/(StdR2.toComplex A.end_ray.direction.vec))
+noncomputable def value {P : Type _} [h : EuclideanPlane P] (A : OAngle P): ℝ := StdR2.angle (A.start_ray.direction.vec) (A.end_ray.direction.vec)
 
-open Classical
-noncomputable def angle_of_three_points {P : Type _} [h : EuclideanPlane P] (A O B : P) : ℝ := if ((A = O) ∨ (B = O)) then 0 else Real.Angle.toReal (value (mk' A O B))
+noncomputable def angle_of_three_points {P : Type _} [h : EuclideanPlane P] (A O B : P) : ℝ := StdR2.angle (A -ᵥ O) (B -ᵥ O)
+
+-- if ((A = O) ∨ (B = O)) then 0 else Real.Angle.toReal (value (mk' A O B _ _))
 
 end OAngle
 
