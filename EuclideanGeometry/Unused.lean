@@ -60,13 +60,20 @@ class Seg' (P : Type _) [EuclideanPlane P] where
 
 def IsOnLine' {P : Type _} [EuclideanPlane P] (a : P) (l : Line' P) : Prop := sorry
 
-infixl : 50 "LiesOnLine" => IsOnLine
+infixl : 50 "LiesOnLine" => IsOnLine'
 
 instance {P : Type _} [EuclideanPlane P] : Coe (Ray P) (Line' P) where
   coe := sorry
 
 end undirected
 
+section angle
+namespace OAngle
+open Classical
+
+noncomputable def angle_of_three_points' {P : Type _} [h : EuclideanPlane P] (A O B : P) : ℝ := if ((A = O) ∨ (B = O)) then 0 else Real.Angle.toReal (value (mk' A O B sorry sorry))
+end OAngle
+end angle
 
 
 
