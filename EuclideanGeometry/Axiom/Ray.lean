@@ -24,7 +24,7 @@ We define the class of (directed) segments, rays, and lines and their coersions.
 
 namespace EuclidGeom
 
-section defs
+section definitions
 /- Rays -/
 @[ext]
 class Ray (P : Type _) [EuclideanPlane P] where
@@ -59,10 +59,10 @@ def IsOnGDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DirSeg P) : Prop :=
 
 infixl : 50 "LiesOnGDirSeg" => IsOnGDirSeg
 
-end defs
+end definitions
 
 /- Relations between these concepts as coersion, theorems-/
-section coe
+section coersions
 
 instance {P : Type _} [EuclideanPlane P] : Coe (DirSeg P) (Ray P) where
   coe := fun _ => DirSeg.toRay 
@@ -77,7 +77,7 @@ def GDirSeg.toDirSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : GDirSeg P) 
 def GDirSeg.toVec {P : Type _} [h : EuclideanPlane P] (l : GDirSeg P) : (ℝ × ℝ) := l.target -ᵥ l.source 
 
 -- theorems of "if p LiesOnRay l, then p LiesOnLine l" each coe should equipped with a theorem here 
-end coe
+end coersions
 
 section mk
 
@@ -86,6 +86,8 @@ def DirSeg.mk' {P : Type _} [EuclideanPlane P] (A B : P) (h : A ≠ B) : DirSeg 
 
 -- mk method of Ray giving 2 distinct point
 def Ray.mk' {P : Type _} [EuclideanPlane P] (A B : P) (h : A ≠ B) : Ray P := sorry 
+
+
 
 -- notation 
 notation "Seg" => GDirSeg.mk
