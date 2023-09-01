@@ -1,4 +1,4 @@
-import EuclideanGeometry.Axiom.Basic
+import EuclideanGeometry.Axiom.Plane
 
 /-!
 # Directed segments and rays
@@ -21,7 +21,7 @@ We define the class of (directed) segments, rays, and lines and their coersions.
 ## Further Works
 
 -/
-
+noncomputable section
 namespace EuclidGeom
 
 section definitions
@@ -35,8 +35,6 @@ class Ray (P : Type _) [EuclideanPlane P] where
 def IsOnRay {P : Type _} [EuclideanPlane P] (a : P) (l : Ray P) : Prop :=
   ∃ (t : ℝ) (ht : 0 ≤ t ), (a : P) = t • l.direction.vec +ᵥ l.source
 
-infixl : 50 "LiesOnRay" => IsOnRay
-
 /- Generalized Directed segment -/
 @[ext]
 class GDirSeg (P : Type _) [EuclideanPlane P]where
@@ -45,22 +43,21 @@ class GDirSeg (P : Type _) [EuclideanPlane P]where
 
 /- Directed segment -/
 class DirSeg (P : Type _) [EuclideanPlane P] extends Ray P, GDirSeg P where
-  on_ray : target LiesOnRay toRay 
+  on_ray : IsOnRay target toRay 
   non_triv : source ≠ target
 
 /- Define a point lies on an oriented segment, a line, a segment, immediate consequences -/
 def IsOnDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DirSeg P) : Prop :=
   ∃ (t : ℝ) (ht : 0 ≤ t) (ht' : t ≤ 1 ), (a : P) = t • (l.target -ᵥ l.source) +ᵥ l.source
 
-infixl : 50 "LiesOnDirSeg" => IsOnDirSeg
-
-
 def IsOnGDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : GDirSeg P) : Prop :=
   ∃ (t : ℝ) (ht : 0 ≤ t) (ht' : t ≤ 1 ), (a : P) = t • (l.target -ᵥ l.source) +ᵥ l.source
 
-infixl : 50 "LiesOnGDirSeg" => IsOnGDirSeg
-
 end definitions
+
+scoped infix : 50 "LiesOnRay" => IsOnRay
+scoped infix : 50 "LiesOnDirSeg" => IsOnDirSeg
+scoped infix : 50 "LiesOnGDirSeg" => IsOnGDirSeg
 
 /- Relations between these concepts as coersion, theorems-/
 section coersions
@@ -86,20 +83,20 @@ section mk
 def DirSeg.mk' {P : Type _} [EuclideanPlane P] (A B : P) (h : A ≠ B) : DirSeg P := sorry  
 
 -- mk method of Ray giving 2 distinct point
-def Ray.mk' {P : Type _} [EuclideanPlane P] (A B : P) (h : A ≠ B) : Ray P := sorry 
-
-
+def Ray.mk' {P : Type _} [EuclideanPlane P] (A B : P) (h : A ≠ B) : Ray P where
+  source := A
+  direction := normalize (B -ᵥ A) (vsub_ne_zero.mpr (Ne.symm h))
 
 -- notation 
-notation "Seg" => GDirSeg.mk
-
 end mk
+
+scoped notation "Seg" => GDirSeg.mk
 
 section length
 
 namespace GDirSeg
 
-def length {P : Type _} [EuclideanPlane P] (l : GDirSeg P): ℝ := sorry 
+def length {P : Type _} [EuclideanPlane P] (l : GDirSeg P): ℝ := sorry
 
 end GDirSeg
 

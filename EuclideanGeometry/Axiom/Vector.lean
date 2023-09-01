@@ -1,40 +1,35 @@
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import EuclideanGeometry.Axiom.Inequality
-import Mathlib.Analysis.InnerProductSpace.Basic
 
 /-!
-# Euclidean Plane
+# Standard ℝ²
 
-This file defines the Euclidean Plane as an affine space, which admits an action of the standard inner product real vector space of dimension two.
+This file defines the standard inner product real vector space of dimension two.
 
 ## Important definitions
 
 * `UniVec` : the class of unit vectors in the 2d real vector space
-* `EuclideanPlane` : the class of Euclidean Plane
 
 ## Notation
 
 ## Implementation Notes
 
-For simplicity, we use the standard inner product real vector space of dimension two as the underlying `SeminormedAddCommGroup` of the `NormedAddTorsor` in the definition of `EuclideanPlane`. 
+In section `StdR2`, we define all of the sturctures on the standard 2d inner product real vector space `ℝ × ℝ`. We use defs and do NOT use instances here in order to avoid conflicts to existing instance of such stuctures on `ℝ × ℝ` which is based on `L^∞` norm of the product space. Then we define the angle of two vectors, which takes value in `(-π, π]`. Notice that if any one of the two vector is `0`, the angle is defined to be `0`.
 
-In section `StdR2`, we define all of the sturctures on the standard 2d inner product real vector space `ℝ × ℝ`. We use defs and do NOT use instances here in order to avoid conflicts to existing instance of such stuctures on `ℝ × ℝ` which is based on `L^∞` norm of the product space.
-
-Then we define `EuclideanPlane P` as `NormedAddTorsor (ℝ × ℝ) P` and present instances involving `EuclideanPlane`.
+Then we define the class `UniVec` of vectors of unit length. 
 
 ## Further Works
+Inequalities about `ℝ²` should be written at the beginning of this file.
 
-The current definition is far from being general enough. Roughly speaking, it suffices to define the Euclidean Plane to be a `NormedAddTorsor` over any 2 dimensional normed real inner product spaces `V` with a choice of an orientation on `V`.
-
+The current definition is far from being general enough. Roughly speaking, it suffices to define the Euclidean Plane to be a `NormedAddTorsor` over any 2 dimensional normed real inner product spaces `V` with a choice of an orientation on `V`, rather than over the special `ℝ × ℝ`.
 -/
 
-
+noncomputable section
 namespace EuclidGeom
 
 /- structures on `ℝ × ℝ`-/
 namespace StdR2
 
-protected noncomputable def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
+protected def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
   toFun := fun x => Real.sqrt (x.1 * x.1  + x.2 * x.2)
   map_zero' := by simp
   add_le' := fun x y => by 
@@ -105,28 +100,28 @@ protected def InnerProductSpace.Core : InnerProductSpace.Core ℝ (ℝ × ℝ) w
     ring
 
 /- shortcuts -/
-protected noncomputable def NormedAddCommGroup : NormedAddCommGroup (ℝ × ℝ) := AddGroupNorm.toNormedAddCommGroup StdR2.AddGroupNorm
+protected def NormedAddCommGroup : NormedAddCommGroup (ℝ × ℝ) := AddGroupNorm.toNormedAddCommGroup StdR2.AddGroupNorm
 
-protected noncomputable def InnerProductSpace : @InnerProductSpace ℝ (ℝ × ℝ) _ StdR2.NormedAddCommGroup := InnerProductSpace.ofCore StdR2.InnerProductSpace.Core
+protected def NormedAddGroup : NormedAddGroup (ℝ × ℝ) := @NormedAddCommGroup.toNormedAddGroup _ StdR2.NormedAddCommGroup
 
-protected noncomputable def SeminormedAddCommGroup := @NormedAddCommGroup.toSeminormedAddCommGroup _ (StdR2.InnerProductSpace.Core.toNormedAddCommGroup)
+protected def InnerProductSpace : @InnerProductSpace ℝ (ℝ × ℝ) _ StdR2.NormedAddCommGroup := InnerProductSpace.ofCore StdR2.InnerProductSpace.Core
 
-protected noncomputable def MetricSpace := @NormedAddCommGroup.toMetricSpace _ (StdR2.InnerProductSpace.Core.toNormedAddCommGroup)
+protected def SeminormedAddCommGroup := @NormedAddCommGroup.toSeminormedAddCommGroup _ (StdR2.InnerProductSpace.Core.toNormedAddCommGroup)
 
-protected noncomputable def PseudoMetricSpace := @MetricSpace.toPseudoMetricSpace _ StdR2.MetricSpace
+protected def MetricSpace := @NormedAddCommGroup.toMetricSpace _ (StdR2.InnerProductSpace.Core.toNormedAddCommGroup)
+
+protected def PseudoMetricSpace := @MetricSpace.toPseudoMetricSpace _ StdR2.MetricSpace
 
 protected def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩ 
 
-protected noncomputable def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((StdR2.toComplex x)/(StdR2.toComplex y))
+/- WARNING : the arg of `0 : ℂ` is `0`, the result of quotient by `0 : ℂ` is `0 : ℂ`-/
+protected def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((StdR2.toComplex x)/(StdR2.toComplex y))
 
 end StdR2
 
 class UniVec where
   vec : ℝ × ℝ 
   unit : StdR2.InnerProductSpace.Core.inner vec vec = 1 
-
-
-
 
 instance : Neg UniVec where
   neg := fun
@@ -137,21 +132,14 @@ instance : Neg UniVec where
         exact @inner_neg_neg _ _ _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace _ _
     }
 
-/- Define Euclidean plane as normed vector space over ℝ of dimension 2 -/
-class EuclideanPlane (H : Type _) extends MetricSpace H, @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _
-
-noncomputable instance : EuclideanPlane (ℝ × ℝ) where
-  toMetricSpace := StdR2.MetricSpace
-  toNormedAddTorsor := @SeminormedAddCommGroup.toNormedAddTorsor _ StdR2.SeminormedAddCommGroup
-
-instance [EuclideanPlane H] : @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _ := EuclideanPlane.toNormedAddTorsor
-
-instance [EuclideanPlane H] : AddTorsor (ℝ × ℝ) H := by infer_instance
-
+def normalize (x : ℝ × ℝ) (h : x ≠ 0) : UniVec where
+  vec := (StdR2.NormedAddCommGroup.norm x)⁻¹ • x 
+  unit := by 
+    rw [@real_inner_smul_left _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace _ _ _, @real_inner_smul_right _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace _ _ _, @inner_self_eq_norm_sq_to_K _ _ _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace]
+    dsimp
+    rw [pow_two]
+    rw [← mul_assoc _ _ (@norm (ℝ × ℝ) StdR2.NormedAddCommGroup.toNorm x)]
+    simp only [ne_eq, inv_mul_mul_self]
+    rw [inv_mul_cancel ((@norm_ne_zero_iff _ StdR2.NormedAddGroup).mpr h)]
 
 end EuclidGeom
-
-
-
-
-

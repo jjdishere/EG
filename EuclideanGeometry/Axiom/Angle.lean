@@ -1,8 +1,8 @@
 import EuclideanGeometry.Axiom.Ray
 
-#check Real.Angle.toReal
+noncomputable section
 namespace EuclidGeom
-/- Define values of oriented angles, in (-π, π ], modulo 2 π. -/
+/- Define values of oriented angles, in (-π, π], modulo 2 π. -/
 /- Define oriented angles, ONLY taking in two rays starting at one point!  And define ways to construct oriented angles, by given three points on the plane, and etc.  -/
 class OAngle (P : Type _) [h : EuclideanPlane P] where 
   start_ray : Ray P
@@ -11,13 +11,16 @@ class OAngle (P : Type _) [h : EuclideanPlane P] where
 
 namespace OAngle
 
-def mk' {P : Type _} [h : EuclideanPlane P] (A O B : P) (h₁ : A ≠ O) (h₂ : O ≠ B): OAngle P := sorry
+def mk' {P : Type _} [h : EuclideanPlane P] (A O B : P) (h₁ : A ≠ O) (h₂ : O ≠ B): OAngle P where
+  start_ray := Ray.mk' O A (Ne.symm h₁)
+  end_ray := Ray.mk' O B h₂
+  source_eq_source := rfl
 
-noncomputable def value {P : Type _} [h : EuclideanPlane P] (A : OAngle P): ℝ := StdR2.angle (A.start_ray.direction.vec) (A.end_ray.direction.vec)
+def value {P : Type _} [h : EuclideanPlane P] (A : OAngle P): ℝ := StdR2.angle (A.start_ray.direction.vec) (A.end_ray.direction.vec)
 
-noncomputable def angle_of_three_points {P : Type _} [h : EuclideanPlane P] (A O B : P) : ℝ := StdR2.angle (A -ᵥ O) (B -ᵥ O)
-
--- if ((A = O) ∨ (B = O)) then 0 else Real.Angle.toReal (value (mk' A O B _ _))
+/- If `A = O ∨ O = B`, then the angle is defined to be zero-/
+def angle_of_three_points {P : Type _} [h : EuclideanPlane P] (A O B : P) : ℝ := StdR2.angle (A -ᵥ O) (B -ᵥ O)
+-- still logic problem, do i really need the def of an angle? and show angle of 3 pts = value of OAngle they form?
 
 end OAngle
 
