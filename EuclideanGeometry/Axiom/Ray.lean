@@ -1,4 +1,4 @@
-import EuclideanGeometry.Axiom.Basic
+import EuclideanGeometry.Axiom.Plane
 
 /-!
 # Directed segments and rays

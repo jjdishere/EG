@@ -1,31 +1,26 @@
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import EuclideanGeometry.Axiom.Inequality
-import Mathlib.Analysis.InnerProductSpace.Basic
 
 /-!
-# Euclidean Plane
+# Standard ℝ²
 
-This file defines the Euclidean Plane as an affine space, which admits an action of the standard inner product real vector space of dimension two.
+This file defines the standard inner product real vector space of dimension two.
 
 ## Important definitions
 
 * `UniVec` : the class of unit vectors in the 2d real vector space
-* `EuclideanPlane` : the class of Euclidean Plane
 
 ## Notation
 
 ## Implementation Notes
 
-For simplicity, we use the standard inner product real vector space of dimension two as the underlying `SeminormedAddCommGroup` of the `NormedAddTorsor` in the definition of `EuclideanPlane`. 
+In section `StdR2`, we define all of the sturctures on the standard 2d inner product real vector space `ℝ × ℝ`. We use defs and do NOT use instances here in order to avoid conflicts to existing instance of such stuctures on `ℝ × ℝ` which is based on `L^∞` norm of the product space. Then we define the angle of two vectors, which takes value in `(-π, π]`. Notice that if any one of the two vector is `0`, the angle is defined to be `0`.
 
-In section `StdR2`, we define all of the sturctures on the standard 2d inner product real vector space `ℝ × ℝ`. We use defs and do NOT use instances here in order to avoid conflicts to existing instance of such stuctures on `ℝ × ℝ` which is based on `L^∞` norm of the product space.
-
-Then we define `EuclideanPlane P` as `NormedAddTorsor (ℝ × ℝ) P` and present instances involving `EuclideanPlane`.
+Then we define the class `UniVec` of vectors of unit length. 
 
 ## Further Works
+Inequalities about `ℝ²` should be written at the beginning of this file.
 
-The current definition is far from being general enough. Roughly speaking, it suffices to define the Euclidean Plane to be a `NormedAddTorsor` over any 2 dimensional normed real inner product spaces `V` with a choice of an orientation on `V`.
-
+The current definition is far from being general enough. Roughly speaking, it suffices to define the Euclidean Plane to be a `NormedAddTorsor` over any 2 dimensional normed real inner product spaces `V` with a choice of an orientation on `V`, rather than over the special `ℝ × ℝ`.
 -/
 
 noncomputable section
@@ -146,25 +141,5 @@ def normalize (x : ℝ × ℝ) (h : x ≠ 0) : UniVec where
     rw [← mul_assoc _ _ (@norm (ℝ × ℝ) StdR2.NormedAddCommGroup.toNorm x)]
     simp only [ne_eq, inv_mul_mul_self]
     rw [inv_mul_cancel ((@norm_ne_zero_iff _ StdR2.NormedAddGroup).mpr h)]
-    
-/- Define Euclidean plane as normed vector space over ℝ of dimension 2 -/
-class EuclideanPlane (H : Type _) extends MetricSpace H, @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _
-
-def Vec {H : Type _} [EuclideanPlane H] (A B : H) : (ℝ × ℝ) := (B -ᵥ A)
-
-instance : EuclideanPlane (ℝ × ℝ) where
-  toMetricSpace := StdR2.MetricSpace
-  toNormedAddTorsor := @SeminormedAddCommGroup.toNormedAddTorsor _ StdR2.SeminormedAddCommGroup
-
-instance [EuclideanPlane H] : @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _ := EuclideanPlane.toNormedAddTorsor
-
-instance [EuclideanPlane H] : AddTorsor (ℝ × ℝ) H := by infer_instance
-
-theorem start_vadd_vec_eq_end {H : Type _} [EuclideanPlane H] (A B : H) : (Vec A B) +ᵥ A = B := sorry
 
 end EuclidGeom
-
-
-
-
-
