@@ -54,7 +54,8 @@ def IsOnDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DirSeg P) : Prop :=
 
 infixl : 50 "LiesOnDirSeg" => IsOnDirSeg
 
-def IsOnGDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DirSeg P) : Prop :=
+
+def IsOnGDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : GDirSeg P) : Prop :=
   ∃ (t : ℝ) (ht : 0 ≤ t) (ht' : t ≤ 1 ), (a : P) = t • (l.target -ᵥ l.source) +ᵥ l.source
 
 infixl : 50 "LiesOnGDirSeg" => IsOnGDirSeg
