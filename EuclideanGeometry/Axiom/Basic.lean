@@ -1,6 +1,6 @@
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import Mathlib.Algebra.GroupPower.Basic
-import Mathlib.Analysis.MeanInequalities
+import EuclideanGeometry.Axiom.Inequality
+import Mathlib.Analysis.InnerProductSpace.Basic
 
 /-!
 # Euclidean Plane
@@ -66,9 +66,24 @@ protected noncomputable def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
     linarith
 
   neg' := fun _ => by simp
-  eq_zero_of_map_eq_zero' := fun x => by 
+  eq_zero_of_map_eq_zero' := fun x => by
     simp
-    sorry
+    intro h
+    rw [Real.sqrt_eq_zero'] at h
+    simp [← pow_two] at h
+    let hx1 := sq_nonneg x.1
+    let hx2 := sq_nonneg x.2
+    ext
+    · by_contra h₁
+      simp at h₁
+      rw [← Ne.def] at h₁
+      have h11 := sq_pos_of_ne_zero _ h₁
+      linarith
+    · by_contra h₁
+      simp at h₁
+      rw [← Ne.def] at h₁
+      have h21 := sq_pos_of_ne_zero _ h₁
+      linarith
 
 protected def InnerProductSpace.Core : InnerProductSpace.Core ℝ (ℝ × ℝ) where
   inner := fun r s => r.1 * s.1 + r.2 * s.2
@@ -108,6 +123,18 @@ class UniVec where
   vec : ℝ × ℝ 
   unit : StdR2.InnerProductSpace.Core.inner vec vec = 1 
 
+
+
+
+instance : Neg UniVec where
+  neg := fun
+    | .mk vec unit => {
+      vec := -vec
+      unit := by 
+        rw [← unit]
+        exact @inner_neg_neg _ _ _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace _ _
+    }
+
 /- Define Euclidean plane as normed vector space over ℝ of dimension 2 -/
 class EuclideanPlane (H : Type _) extends MetricSpace H, @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _
 
@@ -118,6 +145,7 @@ noncomputable instance : EuclideanPlane (ℝ × ℝ) where
 instance [EuclideanPlane H] : @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _ := EuclideanPlane.toNormedAddTorsor
 
 instance [EuclideanPlane H] : AddTorsor (ℝ × ℝ) H := by infer_instance
+
 
 end EuclidGeom
 
