@@ -20,7 +20,7 @@ Then we define the class `UniVec` of vectors of unit length.
 ## Further Works
 Inequalities about `ℝ²` should be written at the beginning of this file.
 
-The current definition is far from being general enough. Roughly speaking, it suffices to define the Euclidean Plane to be a `NormedAddTorsor` over any 2 dimensional normed real inner product spaces `V` with a choice of an orientation on `V`, rather than over the special `ℝ × ℝ`.
+The current definition is far from being general enough. Roughly speaking, it suffices to define the Euclidean Plane to be a `NormedAddTorsor` over any 2 dimensional normed real inner product spaces `V` with a choice of an orientation on `V`, rather than over the special `ℝ × ℝ`. All further generalizations in this file should be done together with Plane.lean.
 -/
 
 noncomputable section
@@ -129,6 +129,9 @@ class UniVec where
   vec : ℝ × ℝ 
   unit : StdR2.InnerProductSpace.Core.inner vec vec = 1 
 
+-- Should change UniVec into the following UniVec'to use all instances on UniVec'
+def UniVec' := @Metric.sphere _ StdR2.PseudoMetricSpace (0: ℝ × ℝ) 1
+
 instance : Neg UniVec where
   neg := fun
     | .mk vec unit => {
@@ -147,5 +150,18 @@ def normalize (x : ℝ × ℝ) (h : x ≠ 0) : UniVec where
     rw [← mul_assoc _ _ (@norm (ℝ × ℝ) StdR2.NormedAddCommGroup.toNorm x)]
     simp only [ne_eq, inv_mul_mul_self]
     rw [inv_mul_cancel ((@norm_ne_zero_iff _ StdR2.NormedAddGroup).mpr h)]
+
+def UniVec.mk_angle (θ : ℝ) : UniVec where
+  vec := (Real.cos θ, Real.sin θ)
+  unit := by 
+    rw [← Real.cos_sq_add_sin_sq θ]
+    rw [pow_two, pow_two]
+    rfl
+
+instance : Mul UniVec where
+  mul := fun z w => {
+    vec := (z.vec.1 * w.vec.1 - z.vec.2 * w.vec.2, z.vec.1 * w.vec.2 + z.vec.2 * w.vec.1)
+    unit := sorry
+  } 
 
 end EuclidGeom

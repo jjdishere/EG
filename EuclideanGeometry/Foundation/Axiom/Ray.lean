@@ -101,8 +101,6 @@ end mk
 
 scoped notation "GSEG" => GDSeg.mk
 
-
-
 section length
 
 namespace GDSeg
