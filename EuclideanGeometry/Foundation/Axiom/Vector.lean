@@ -108,9 +108,13 @@ protected def InnerProductSpace : @InnerProductSpace ℝ (ℝ × ℝ) _ StdR2.No
 
 protected def SeminormedAddCommGroup := @NormedAddCommGroup.toSeminormedAddCommGroup _ (StdR2.InnerProductSpace.Core.toNormedAddCommGroup)
 
+protected def SeminormedAddGroup := @SeminormedAddCommGroup.toSeminormedAddGroup _ (StdR2.SeminormedAddCommGroup)
+
 protected def MetricSpace := @NormedAddCommGroup.toMetricSpace _ (StdR2.InnerProductSpace.Core.toNormedAddCommGroup)
 
 protected def PseudoMetricSpace := @MetricSpace.toPseudoMetricSpace _ StdR2.MetricSpace
+
+protected def Norm := @NormedAddCommGroup.toNorm _ (StdR2.NormedAddCommGroup)
 
 protected def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩ 
 
