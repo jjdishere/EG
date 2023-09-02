@@ -17,9 +17,6 @@ def IsAcuteAngle {P : Type _} [EuclideanPlane P] (oang : OAngle P) : Prop := sor
 
 def IsObtuseAngle {P : Type _} [EuclideanPlane P] (oang : OAngle P) : Prop := sorry
 
--- scoped infix : 50 "IsRightAngle" => is_right_angle
--- scoped infix : 50 "IsAcuteAngle" => is_acute_angle
--- scoped infix : 50 "IsObtuseAngle" => is_obtuse_angle
 
 
 /- Supplementary angles -/

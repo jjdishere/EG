@@ -3,18 +3,18 @@ import EuclideanGeometry.Foundation.Axiom.Plane
 /-!
 # Directed segments and rays
 
-We define the class of (directed) segments, rays, and lines and their coersions. We also define the proposition of a point lying on such a structure. Finally, we discuss the nonemptyness of such structures.
+We define the class of (generalized) directed segments and rays, and their coersions. We also define the property of a point lying on such a structure. Finally, we discuss the nonemptyness/degeneracy of generalized directed segments.
 
 ## Important definitions
 
 * `Ray` : the class of rays on an EuclideanPlane
-* 
+* `GDSeg` : the class of generalized directed segments on an EuclideanPlane (meaning segments with specified source and target, but allowing it to reduce to a singleton.)
 
 
 ## Notation
 
 * notation for lieson
-* notation for DirSeg A B, Ray A B
+* notation for DSeg A B, GDSeg A B, Ray A B
 
 ## Implementation Notes
 
@@ -37,42 +37,45 @@ def IsOnRay {P : Type _} [EuclideanPlane P] (a : P) (l : Ray P) : Prop :=
 
 /- Generalized Directed segment -/
 @[ext]
-class GDirSeg (P : Type _) [EuclideanPlane P]where
+class GDSeg (P : Type _) [EuclideanPlane P] where
   source : P
   target : P
 
 /- Directed segment -/
-class DirSeg (P : Type _) [EuclideanPlane P] extends Ray P, GDirSeg P where
+class DSeg (P : Type _) [EuclideanPlane P] extends Ray P, GDSeg P where
   on_ray : IsOnRay target toRay 
   non_triv : source ≠ target
 
 /- Define a point lies on an oriented segment, a line, a segment, immediate consequences -/
-def IsOnDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DirSeg P) : Prop :=
+def IsOnDSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DSeg P) : Prop :=
   ∃ (t : ℝ) (ht : 0 ≤ t) (ht' : t ≤ 1 ), (a : P) = t • (l.target -ᵥ l.source) +ᵥ l.source
 
-def IsOnGDirSeg {P : Type _} [EuclideanPlane P] (a : P) (l : GDirSeg P) : Prop :=
+def IsOnGDSeg {P : Type _} [EuclideanPlane P] (a : P) (l : GDSeg P) : Prop :=
   ∃ (t : ℝ) (ht : 0 ≤ t) (ht' : t ≤ 1 ), (a : P) = t • (l.target -ᵥ l.source) +ᵥ l.source
 
 end definitions
 
 scoped infix : 50 "LiesOnRay" => IsOnRay
-scoped infix : 50 "LiesOnDirSeg" => IsOnDirSeg
-scoped infix : 50 "LiesOnGDirSeg" => IsOnGDirSeg
+scoped infix : 50 "LiesOnDSeg" => IsOnDSeg
+scoped infix : 50 "LiesOnGDSeg" => IsOnGDSeg
 
 /- Relations between these concepts as coersion, theorems-/
 section coersions
 
-instance {P : Type _} [EuclideanPlane P] : Coe (DirSeg P) (Ray P) where
-  coe := fun _ => DirSeg.toRay 
 
-instance {P : Type _} [EuclideanPlane P] : Coe (DirSeg P) (GDirSeg P) where
-  coe := fun _ => DirSeg.toGDirSeg
+instance {P : Type _} [EuclideanPlane P] : Coe (DSeg P) (GDSeg P) where
+  coe := fun _ => DSeg.toGDSeg
 
 /- def of DirSeg from GDirSeg if length ≠ 0 -/
-def GDirSeg.toDirSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : GDirSeg P) (nontriv : l.source ≠ l.target): DirSeg P := sorry
+def GDSeg.toDSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : GDSeg P) (nontriv : l.target ≠ l.source): DSeg P where
+  source := l.source
+  target := l.target
+  direction := normalize (l.target -ᵥ l.source) (vsub_ne_zero.mpr nontriv)
+  on_ray := sorry
+  non_triv := sorry
 
 -- coe from GDirSeg to Vector
-def GDirSeg.toVec {P : Type _} [h : EuclideanPlane P] (l : GDirSeg P) : (ℝ × ℝ) := l.target -ᵥ l.source 
+def GDSeg.toVec {P : Type _} [EuclideanPlane P] (l : GDSeg P) : (ℝ × ℝ) := l.target -ᵥ l.source 
 
 -- theorems of "if p LiesOnRay l, then p LiesOnLine l" each coe should equipped with a theorem here 
 end coersions
@@ -80,31 +83,31 @@ end coersions
 section mk
 
 -- mk method of DirSeg giving 2 distinct point
-def DirSeg.mk' {P : Type _} [EuclideanPlane P] (A B : P) (h : A ≠ B) : DirSeg P := sorry  
+def DSeg.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : A ≠ B) : DSeg P := sorry  
 
 -- mk method of Ray giving 2 distinct point
-def Ray.mk' {P : Type _} [EuclideanPlane P] (A B : P) (h : A ≠ B) : Ray P where
+def Ray.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : A ≠ B) : Ray P where
   source := A
   direction := normalize (B -ᵥ A) (vsub_ne_zero.mpr (Ne.symm h))
 
 -- notation 
 end mk
 
-scoped notation "Seg" => GDirSeg.mk
+scoped notation "GSEG" => GDSeg.mk
 
 section length
 
-namespace GDirSeg
+namespace GDSeg
 
-def length {P : Type _} [EuclideanPlane P] (l : GDirSeg P): ℝ := sorry
+def length {P : Type _} [EuclideanPlane P] (l : GDSeg P): ℝ := sorry
 
-end GDirSeg
+end GDSeg
 
-namespace DirSeg
+namespace DSeg
 
-def length {P : Type _} [EuclideanPlane P] (l : GDirSeg P): ℝ := (l : GDirSeg P).length
+def length {P : Type _} [EuclideanPlane P] (l : GDSeg P): ℝ := (l : GDSeg P).length
 
-end DirSeg 
+end DSeg 
 
 -- theorem length >0, ≥0 
 -- theorem xxx_ne_zero :(Classical.choose (p LiesOnRay l)) ≠ 0 := sorry. Don't need this if add length into def of class DirSeg
