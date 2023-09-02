@@ -23,7 +23,7 @@ theorem colinear_CBA_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear 
 
 theorem eq_mul_vec_iff_colinear (A B C : P) (g : A ≠ B) : colinear A B C ↔ ∃ r : ℝ , Vec A C = r • Vec A B:= sorry
 
-theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (B ≠ C) ∧ ( C ≠ A) ∧ (A ≠ B) := sorry   
+theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (A ≠ C) ∧ (B ≠ A) := sorry   
 
 end colinear
 /- Positions of points on a line, ray, oriented segments. -/
@@ -31,12 +31,12 @@ end colinear
 section point_to_ray
 
 def IsOnLeftSide (A : P) (ray : Ray P) : Prop := by
-  by_cases ray.source = A
+  by_cases A = ray.source
   · exact False
   · exact (0 < (OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value) ∧ ((OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value < π) 
 
 def IsOnRightSide (A : P) (ray : Ray P) : Prop := by
-  by_cases ray.source = A
+  by_cases A = ray.source
   · exact False
   · exact ((OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value < 0)
 
@@ -47,12 +47,12 @@ theorem left_iff_not_right_of_not_lies_on : sorry := sorry
 theorem not_lies_on_left_or_right : sorry := sorry
 
 def IsOnPosSide (A : P) (ray : Ray P) : Prop := by
-  by_cases ray.source = A
+  by_cases A = ray.source
   · exact False
   · exact (OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = 0 
 
 def IsOnNegSide (A : P) (ray : Ray P) : Prop := by
-  by_cases ray.source = A
+  by_cases A = ray.source
   · exact False
   · exact (OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = π 
 
@@ -81,7 +81,7 @@ scoped infix : 50 "LiesAtSource" => IsSource
 section ray_to_ray
 
 /- -/
-theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₁.source ≠ ray₂.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < OAngle.angle_of_two_ray ray₀ ray₁) ∧ (OAngle.angle_of_two_ray ray₀ ray₁ < OAngle.angle_of_two_ray ray₀ ray₂) ∧ (OAngle.angle_of_two_ray ray₀ ray₂ < π) ↔ (∃ A : P, (A LiesOnRay ray₁) ∧ (A LiesOnRay ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
+theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < OAngle.angle_of_two_ray ray₀ ray₁) ∧ (OAngle.angle_of_two_ray ray₀ ray₁ < OAngle.angle_of_two_ray ray₀ ray₂) ∧ (OAngle.angle_of_two_ray ray₀ ray₂ < π) ↔ (∃ A : P, (A LiesOnRay ray₁) ∧ (A LiesOnRay ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
 
 end ray_to_ray
 

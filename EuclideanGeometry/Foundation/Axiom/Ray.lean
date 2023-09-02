@@ -145,15 +145,15 @@ end length
 section existance
 -- Archimedean property : 
 
-theorem Ray.exist_pt_beyond_pt {P : Type _} [EuclideanPlane P] (ray : Ray P) (p : P) (h: p LiesOnRay ray) : (∃ q : P, p LiesOn 
+-- theorem Ray.exist_pt_beyond_pt {P : Type _} [EuclideanPlane P] (ray : Ray P) (p : P) (h: p LiesOnRay ray) : (∃ q : P, p LiesOn 
 
 
 -- Archimedean property II: Onn an oriented segment, one can always find a point in the interior.
 
-theorem 
+-- theorem 
 
 -- The generalized directed segment is nontrivial if and only if one can find a point in the interior of the generalized segment.
-theorem nontriv_iff_exist_inter_pt {P : Type _} [EuclideanPlane P] (l : GDSeg P) (interior : ∃ (p : P), (p LiesOnGDSeg l) ∧ (p ≠ l.source) ∧ (p ≠ l.target) ) : (l.target ≠ l.source) := by sorry
+-- theorem nontriv_iff_exist_inter_pt {P : Type _} [EuclideanPlane P] (l : GDSeg P) (interior : ∃ (p : P), (p LiesOnGDSeg l) ∧ (p ≠ l.source) ∧ (p ≠ l.target) ) : (l.target ≠ l.source) := by sorry
 
 -- In this proof, may need to use Classical.choose (p LiesOnRay l)....
 

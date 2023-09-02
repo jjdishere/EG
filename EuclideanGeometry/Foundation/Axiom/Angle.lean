@@ -4,19 +4,19 @@ noncomputable section
 namespace EuclidGeom
 /- Define values of oriented angles, in (-π, π], modulo 2 π. -/
 /- Define oriented angles, ONLY taking in two rays starting at one point!  And define ways to construct oriented angles, by given three points on the plane, and etc.  -/
-class OAngle (P : Type _) [h : EuclideanPlane P] where 
+class OAngle (P : Type _) [EuclideanPlane P] where 
   start_ray : Ray P
   end_ray : Ray P
   source_eq_source : start_ray.source = end_ray.source
 
 namespace OAngle
 
-def mk_pt_pt_pt {P : Type _} [h : EuclideanPlane P] (A O B : P) (h₁ : A ≠ O) (h₂ : O ≠ B): OAngle P where
-  start_ray := Ray.mk_pt_pt O A (Ne.symm h₁)
+def mk_pt_pt_pt {P : Type _} [EuclideanPlane P] (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): OAngle P where
+  start_ray := Ray.mk_pt_pt O A h₁
   end_ray := Ray.mk_pt_pt O B h₂
   source_eq_source := rfl
 
-def mk_ray_pt {P : Type _} [ EuclideanPlane P] (ray : Ray P) (A : P) (h : ray.source ≠ A ) : OAngle P where
+def mk_ray_pt {P : Type _} [EuclideanPlane P] (ray : Ray P) (A : P) (h : A ≠ ray.source ) : OAngle P where
   start_ray := ray
   end_ray := Ray.mk_pt_pt ray.source A h
   source_eq_source := rfl
