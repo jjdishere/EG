@@ -13,8 +13,6 @@ class Triangle (P : Type _) [EuclideanPlane P] where
   point₃ : P
   nontriv : ¬ colinear point₁ point₂ point₃
 
-
-
 namespace Triangle
 
 variable {P : Type _} [EuclideanPlane P]

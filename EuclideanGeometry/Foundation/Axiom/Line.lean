@@ -17,6 +17,8 @@ def mk_pt_pt (A B : P) (h : A ≠ B) : Line P := sorry
 
 end Line
 
+scoped notation "LIN" => Line.mk' 
+
 /- def coe from ray to line-/
 instance {P : Type _} [EuclideanPlane P] : Coe (Ray P) (Line P) where
   coe := sorry

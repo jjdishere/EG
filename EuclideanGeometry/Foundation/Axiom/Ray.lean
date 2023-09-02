@@ -33,7 +33,7 @@ class Ray (P : Type _) [EuclideanPlane P] where
 
 /- Def of point lies on a ray -/
 def IsOnRay {P : Type _} [EuclideanPlane P] (a : P) (l : Ray P) : Prop :=
-  ∃ (t : ℝ) (ht : 0 ≤ t ), (a : P) = t • l.direction.vec +ᵥ l.source
+  ∃ (t : ℝ), 0 ≤ t ∧ a = t • l.direction.vec +ᵥ l.source
 
 /- Generalized Directed segment -/
 @[ext]
@@ -48,10 +48,10 @@ class DSeg (P : Type _) [EuclideanPlane P] extends Ray P, GDSeg P where
 
 /- Define a point lies on an oriented segment, a line, a segment, immediate consequences -/
 def IsOnDSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DSeg P) : Prop :=
-  ∃ (t : ℝ) (ht : 0 ≤ t) (ht' : t ≤ 1 ), (a : P) = t • (l.target -ᵥ l.source) +ᵥ l.source
+  ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (l.target -ᵥ l.source) +ᵥ l.source
 
 def IsOnGDSeg {P : Type _} [EuclideanPlane P] (a : P) (l : GDSeg P) : Prop :=
-  ∃ (t : ℝ) (ht : 0 ≤ t) (ht' : t ≤ 1 ), (a : P) = t • (l.target -ᵥ l.source) +ᵥ l.source
+  ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (l.target -ᵥ l.source) +ᵥ l.source
 
 end definitions
 
@@ -82,8 +82,6 @@ theorem DSeg.pt_on_toRay_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (
 
 theorem DSeg.pt_on_toGDSeg_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOnGDSeg l.toGDSeg := sorry
 
-
-
 end coersions
 
 section mk
@@ -100,6 +98,8 @@ def Ray.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : Ray P
 end mk
 
 scoped notation "GSEG" => GDSeg.mk
+scoped notation "SEG" => DSeg.mk_pt_pt
+scoped notation "RAY" => Ray.mk_pt_pt
 
 section length
 
@@ -122,17 +122,11 @@ theorem nontriv_iff_length_pos : (l.target ≠ l.source) ↔ 0 < l.length := by 
 -- If P lies on a generalized directed segment AB, then length(AB) = length(AP) + length(PB)
 theorem length_eq_sum_of_length_two_part (l : GDSeg P) (p : P) (lieson : p LiesOnGDSeg l) : l.length = (GSEG l.source p).length + (GSEG p l.target).length := sorry
 
-
-
-
-
 end GDSeg
 
 namespace DSeg
 
 def length {P : Type _} [EuclideanPlane P] (l : DSeg P): ℝ := (l : GDSeg P).length
-
-
 
 end DSeg 
 

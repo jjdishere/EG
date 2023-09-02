@@ -31,6 +31,8 @@ def angle_of_two_ray {P : Type _} [EuclideanPlane P] (ray₁ ray₂ : Ray P) : �
 
 end OAngle
 
+scoped notation "ANG" => OAngle.mk_pt_pt_pt
+
 scoped notation "∠" => OAngle.angle_of_three_point
 
 /- Operations on oriented angles, such a additivity of the evaluation of oriented angles.  -/
