@@ -1,4 +1,4 @@
-import EuclideanGeometry.Axiom.Ray
+import EuclideanGeometry.Foundation.Axiom.Ray
 
 /- The purpose of of this file is to establish results about rotation about a point of a given angle. Presumably, all results are "invariant" under rotation. -/
 

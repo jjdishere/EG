@@ -1,5 +1,5 @@
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import EuclideanGeometry.Axiom.Vector
+import EuclideanGeometry.Foundation.Axiom.Vector
 
 /-!
 # Euclidean Plane

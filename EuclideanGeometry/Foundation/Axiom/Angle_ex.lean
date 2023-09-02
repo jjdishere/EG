@@ -1,5 +1,5 @@
-import EuclideanGeometry.Axiom.Angle
-import EuclideanGeometry.Axiom.Ray_ex1
+import EuclideanGeometry.Foundation.Axiom.Angle
+import EuclideanGeometry.Foundation.Axiom.Ray_ex1
 
 namespace EuclidGeom
 

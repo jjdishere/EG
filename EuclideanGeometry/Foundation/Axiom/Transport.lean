@@ -1,5 +1,5 @@
-import EuclideanGeometry.Axiom.Ray
-import EuclideanGeometry.Axiom.Ray_ex1
+import EuclideanGeometry.Foundation.Axiom.Ray
+import EuclideanGeometry.Foundation.Axiom.Ray_ex1
 
 /- The purpose of of this file is to establish results about parallel transport along a vector. Presumably, all results are "invariant" under parallel transport. -/
 

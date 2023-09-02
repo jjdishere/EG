@@ -1,4 +1,4 @@
-import EuclideanGeometry.Axiom.Ray
+import EuclideanGeometry.Foundation.Axiom.Ray
 
 noncomputable section
 namespace EuclidGeom
@@ -26,7 +26,7 @@ end OAngle
 
 scoped notation "∠" => OAngle.angle_of_three_points
 
-/- Operations on oriented angles, such as additivity of the evaluation of oriented angles.  -/
+/- Operations on oriented angles, such a additivity of the evaluation of oriented angles.  -/
 /- theorem l1 l2 l3 add angle; sub angle -/
 /- theorem O A B C add angle; sub angle-/
 

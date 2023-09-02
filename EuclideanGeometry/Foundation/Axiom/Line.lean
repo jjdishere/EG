@@ -1,4 +1,4 @@
-import EuclideanGeometry.Axiom.Position
+import EuclideanGeometry.Foundation.Axiom.Position
 
 noncomputable section
 namespace EuclidGeom

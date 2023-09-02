@@ -1,4 +1,4 @@
-import EuclideanGeometry.Axiom.Ray
+import EuclideanGeometry.Foundation.Axiom.Ray
 
 
 namespace EuclidGeom

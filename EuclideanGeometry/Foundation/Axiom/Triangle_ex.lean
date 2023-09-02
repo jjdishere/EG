@@ -1,4 +1,4 @@
-import EuclideanGeometry.Axiom.Triangle
+import EuclideanGeometry.Foundation.Axiom.Triangle
 
 noncomputable section
 namespace EuclidGeom
