@@ -26,6 +26,8 @@ The current definition is far from being general enough. Roughly speaking, it su
 noncomputable section
 namespace EuclidGeom
 
+scoped notation "π" => Real.pi
+
 /- structures on `ℝ × ℝ`-/
 namespace StdR2
 

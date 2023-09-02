@@ -16,15 +16,22 @@ def mk_pt_pt_pt {P : Type _} [h : EuclideanPlane P] (A O B : P) (h₁ : A ≠ O)
   end_ray := Ray.mk_pt_pt O B h₂
   source_eq_source := rfl
 
-def value {P : Type _} [h : EuclideanPlane P] (A : OAngle P): ℝ := StdR2.angle (A.start_ray.direction.vec) (A.end_ray.direction.vec)
+def mk_ray_pt {P : Type _} [ EuclideanPlane P] (ray : Ray P) (A : P) (h : ray.source ≠ A ) : OAngle P where
+  start_ray := ray
+  end_ray := Ray.mk_pt_pt ray.source A h
+  source_eq_source := rfl
+
+def value {P : Type _} [EuclideanPlane P] (A : OAngle P): ℝ := StdR2.angle (A.start_ray.direction.vec) (A.end_ray.direction.vec)
 
 /- If `A = O ∨ O = B`, then the angle is defined to be zero-/
-def angle_of_three_points {P : Type _} [h : EuclideanPlane P] (A O B : P) : ℝ := StdR2.angle (A -ᵥ O) (B -ᵥ O)
+def angle_of_three_point {P : Type _} [EuclideanPlane P] (A O B : P) : ℝ := StdR2.angle (A -ᵥ O) (B -ᵥ O)
 -- still logic problem, do i really need the def of an angle? and show angle of 3 pts = value of OAngle they form?
+
+def angle_of_two_ray {P : Type _} [EuclideanPlane P] (ray₁ ray₂ : Ray P) : ℝ := StdR2.angle ray₁.direction.vec ray₂.direction.vec
 
 end OAngle
 
-scoped notation "∠" => OAngle.angle_of_three_points
+scoped notation "∠" => OAngle.angle_of_three_point
 
 /- Operations on oriented angles, such a additivity of the evaluation of oriented angles.  -/
 /- theorem l1 l2 l3 add angle; sub angle -/
