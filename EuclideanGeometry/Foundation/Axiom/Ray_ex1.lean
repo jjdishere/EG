@@ -25,10 +25,13 @@ def reverse : GDSeg P where
 theorem double_rev_eq_self  : gseg.reverse.reverse = gseg := rfl
 
 -- reversing the direction does not change the property that a point lies on the generalized directed segments.
-theorem GDSeg.IsOnGDSeg_of_rev_of_IsOnGDSeg (a : P) (lieson : a LiesOnGDSeg gseg) : a LiesOnGDSeg gseg.reverse := sorry
+theorem IsOnGDSeg_of_rev_of_IsOnGDSeg (a : P) (lieson : a LiesOnGDSeg gseg) : a LiesOnGDSeg gseg.reverse := sorry
 
 -- reversing the direction does not change the nontriviality of a generalized directed segment.
-theorem nontriv_of_rev_of_nontriv (nontriv : gseg.source ≠ gseg.target) : gseg.reverse.source ≠ gseg.reverse.target := sorry
+theorem nontriv_of_rev_of_nontriv (nontriv : gseg.target ≠ gseg.source) : gseg.reverse.target ≠ gseg.reverse.source := sorry
+
+-- reversing the direction does not change the length
+theorem length_eq_length_of_rev : gseg.length = gseg.reverse.length := sorry
 
 end GDSeg
 
@@ -42,7 +45,7 @@ variable {P: Type _} [EuclideanPlane P] (seg : DSeg P)
 theorem source_lies_on_seg : seg.source LiesOnDSeg seg := by sorry
 
 
-theorem target_lies_on_seg : seg.source LiesOnDSeg seg := by sorry
+theorem target_lies_on_seg : seg.target LiesOnDSeg seg := by sorry
 
 -- definition of the reversion of the direction of a directed segment
 def reverse : DSeg P where
@@ -71,7 +74,7 @@ variable {P: Type _} [EuclideanPlane P] (gseg : GDSeg P) (seg : DSeg P)
 -- the operation of reversing the direction commutes with coersion between directed segments and generalized directed segments.
 theorem DSeg.rev_toGDSeg_eq_toGDSeg_rev : seg.reverse.toGDSeg = (seg.toGDSeg).reverse := sorry
 
-theorem GDSeg.rev_toDSeg_eq_toDSeg_rev (nontriv : gseg.source ≠ gseg.target) : (gseg.reverse).toDSeg_of_nontriv (GDSeg.nontriv_of_rev_of_nontriv gseg nontriv) = (gseg.toDSeg_of_nontriv nontriv).reverse := sorry
+theorem GDSeg.rev_toDSeg_eq_toDSeg_rev (nontriv : gseg.target ≠ gseg.source) : (gseg.reverse).toDSeg_of_nontriv (GDSeg.nontriv_of_rev_of_nontriv gseg nontriv) = (gseg.toDSeg_of_nontriv nontriv).reverse := sorry
 
 -- reversing the direction of a generalized directed segment will negate the coersion to vectors
 theorem GDSeg.neg_toVec_of_rev : gseg.reverse.toVec = - gseg.toVec := sorry
@@ -100,5 +103,9 @@ theorem double_rev_eq_self : ray.reverse.reverse = ray := sorry
 theorem eq_source_of_lies_on_and_lies_on_rev (a : P) (lieson : a LiesOnRay ray) (liesonrev : a LiesOnRay ray.reverse) : a = ray.source := by sorry
 
 end Ray
+
+
+
+
 
 end EuclidGeom
