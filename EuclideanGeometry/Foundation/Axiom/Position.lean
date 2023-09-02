@@ -1,34 +1,70 @@
 import EuclideanGeometry.Foundation.Axiom.Angle
 
-/- This file discuss the relative positions of points and lines on a plane. -/
+/- This file discuss the relative positions of points and rays on a plane. -/
 noncomputable section
 namespace EuclidGeom
 
+open Classical
+
+variable {P : Type _} [EuclideanPlane P] 
+
 section colinear
-def colinear {P : Type _} [EuclideanPlane P] (A B C : P) : Prop := ∠ A B C = 0 ∨ ∠ A B C = Real.pi  
+def colinear (A B C : P) : Prop := ∠ A B C = 0 ∨ ∠ A B C = π  
 
-theorem colinear_ACB_of_colinear_ABC {P : Type _} [EuclideanPlane P] (A B C : P) (h : colinear A B C): colinear A C B := sorry
+theorem colinear_ACB_of_colinear_ABC (A B C : P) (h : colinear A B C): colinear A C B := sorry
 
-theorem colinear_BAC_of_colinear_ABC {P : Type _} [EuclideanPlane P] (A B C : P) (h : colinear A B C): colinear B A C := sorry
+theorem colinear_BAC_of_colinear_ABC (A B C : P) (h : colinear A B C): colinear B A C := sorry
 
-theorem colinear_BCA_of_colinear_ABC {P : Type _} [EuclideanPlane P] (A B C : P) (h : colinear A B C): colinear B C A := sorry
+theorem colinear_BCA_of_colinear_ABC (A B C : P) (h : colinear A B C): colinear B C A := sorry
 
-theorem colinear_CAB_of_colinear_ABC {P : Type _} [EuclideanPlane P] (A B C : P) (h : colinear A B C): colinear C A B := sorry
+theorem colinear_CAB_of_colinear_ABC (A B C : P) (h : colinear A B C): colinear C A B := sorry
 
-theorem colinear_CBA_of_colinear_ABC {P : Type _} [EuclideanPlane P] (A B C : P) (h : colinear A B C): colinear C B A := sorry
+theorem colinear_CBA_of_colinear_ABC (A B C : P) (h : colinear A B C): colinear C B A := sorry
 
-theorem eq_mul_vec_iff_colinear {P : Type _} [EuclideanPlane P] (A B C : P) (g : A ≠ B) : colinear A B C ↔ ∃ r : ℝ , Vec A C = r • Vec A B:= sorry
+theorem eq_mul_vec_iff_colinear (A B C : P) (g : A ≠ B) : colinear A B C ↔ ∃ r : ℝ , Vec A C = r • Vec A B:= sorry
 
 end colinear
 /- Positions of points on a line, ray, oriented segments. -/
 
-section left
+section point_to_ray
 
-def IsOnLeftSide {P : Type _} [EuclideanPlane P] (A : P) (ray : Ray P) : Prop := sorry
+def IsOnLeftSide (A : P) (ray : Ray P) : Prop := by
+  by_cases ray.source = A
+  · exact False
+  · exact (0 < (OAngle.mk ray (Ray.mk' ray.source A h ) rfl).value) ∧ ((OAngle.mk ray (Ray.mk' ray.source A h ) rfl).value < π) 
 
-end left
+def IsOnRightSide (A : P) (ray : Ray P) : Prop := by
+  by_cases ray.source = A
+  · exact False
+  · exact ((OAngle.mk ray (Ray.mk' ray.source A h ) rfl).value < 0)
 
-scoped infix : 50 "IsOnLeftOf" => IsOnLeftSide 
+theorem left_or_right_or_lies_on : sorry := sorry
+
+theorem left_iff_not_right_of_not_lies_on : sorry := sorry
+
+theorem not_lies_on_left_or_right : sorry := sorry
+
+def IsOnPosSide (A : P) (ray : Ray P) : Prop := by
+  by_cases ray.source = A
+  · exact False
+  · exact (OAngle.mk ray (Ray.mk' ray.source A h ) rfl).value = 0 
+
+def IsOnNegSide (A : P) (ray : Ray P) : Prop := by
+  by_cases ray.source = A
+  · exact False
+  · exact (OAngle.mk ray (Ray.mk' ray.source A h ) rfl).value = π 
+
+def IsSource (A : P) (ray : Ray P) : Prop := ray.source = A
+
+-- theroems stating colinear iff (Pos ∨ Neg ∨ Source) and alternativity of 3 conditions
+
+end point_to_ray
+
+scoped infix : 50 "LiesOnLeft" => IsOnLeftSide 
+scoped infix : 50 "LiesOnRight" => IsOnRightSide 
+scoped infix : 50 "LiesOnPos" => IsOnPosSide 
+scoped infix : 50 "LiesOnNeg" => IsOnNegSide
+scoped infix : 50 "LiesAtSource" => IsSource
 
 /- Positions of a point relative to a ray/line/segment: 1. at the end point, 2. on the ray (not including the end point) 3. on the opposite direction of the ray.  4. on the "left" of the ray. 5. on the "right" of the ray. -/
 
@@ -40,7 +76,12 @@ scoped infix : 50 "IsOnLeftOf" => IsOnLeftSide
 
 
 /- Position of two rays -/
+section ray_to_ray
 
+/- -/
+theorem intersect_of_rays_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₁.source ≠ ray₂.source) : sorry := sorry
+
+end ray_to_ray
 
 
 

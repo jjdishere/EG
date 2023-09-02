@@ -1,9 +1,9 @@
 /- here checks things-/
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
-import EuclideanGeometry.Axiom.Basic
-import EuclideanGeometry.Axiom.Ray
-import EuclideanGeometry.Axiom.Angle
+import EuclideanGeometry.Foundation.Axiom.Basic
+import EuclideanGeometry.Foundation.Axiom.Ray
+import EuclideanGeometry.Foundation.Axiom.Angle
 
 namespace EuclidGeom
 /- check instance VAdd-/

@@ -11,12 +11,17 @@ class OAngle (P : Type _) [h : EuclideanPlane P] where
 
 namespace OAngle
 
-def mk' {P : Type _} [h : EuclideanPlane P] (A O B : P) (h₁ : A ≠ O) (h₂ : O ≠ B): OAngle P where
+def mk' {P : Type _} [ EuclideanPlane P] (A O B : P) (h₁ : A ≠ O) (h₂ : O ≠ B): OAngle P where
   start_ray := Ray.mk' O A (Ne.symm h₁)
   end_ray := Ray.mk' O B h₂
   source_eq_source := rfl
 
-def value {P : Type _} [h : EuclideanPlane P] (A : OAngle P): ℝ := StdR2.angle (A.start_ray.direction.vec) (A.end_ray.direction.vec)
+def mk'' {P : Type _} [ EuclideanPlane P] (ray : Ray P) (A : P) (h : ray.source ≠ A ) : OAngle P where
+  start_ray := ray
+  end_ray := Ray.mk' ray.source A h
+  source_eq_source := rfl
+
+def value {P : Type _} [EuclideanPlane P] (A : OAngle P): ℝ := StdR2.angle (A.start_ray.direction.vec) (A.end_ray.direction.vec)
 
 /- If `A = O ∨ O = B`, then the angle is defined to be zero-/
 def angle_of_three_points {P : Type _} [h : EuclideanPlane P] (A O B : P) : ℝ := StdR2.angle (A -ᵥ O) (B -ᵥ O)
