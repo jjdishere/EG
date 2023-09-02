@@ -11,9 +11,9 @@ class OAngle (P : Type _) [h : EuclideanPlane P] where
 
 namespace OAngle
 
-def mk' {P : Type _} [h : EuclideanPlane P] (A O B : P) (h₁ : A ≠ O) (h₂ : O ≠ B): OAngle P where
-  start_ray := Ray.mk' O A (Ne.symm h₁)
-  end_ray := Ray.mk' O B h₂
+def mk_pt_pt_pt {P : Type _} [h : EuclideanPlane P] (A O B : P) (h₁ : A ≠ O) (h₂ : O ≠ B): OAngle P where
+  start_ray := Ray.mk_pt_pt O A (Ne.symm h₁)
+  end_ray := Ray.mk_pt_pt O B h₂
   source_eq_source := rfl
 
 def value {P : Type _} [h : EuclideanPlane P] (A : OAngle P): ℝ := StdR2.angle (A.start_ray.direction.vec) (A.end_ray.direction.vec)
