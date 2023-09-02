@@ -7,12 +7,13 @@ class Line (P : Type _) [EuclideanPlane P] where
   carrier : Set P
   linear : ∀ (A B C : P), (A ∈ carrier) → (B ∈ carrier) → (C ∈ carrier) → colinear A B C  
   maximal : ∀ (A B : P), (A ∈ carrier) → (B ∈ carrier) → (A ≠ B) → (∀ (C : P), colinear A B C → (C ∈ carrier))
+  nontriv : ∃ (A B : P), (A ∈ carrier) ∧ (B ∈ carrier) ∧ (A ≠ B)
 
 namespace Line
 
 variable  {P : Type _} [EuclideanPlane P] 
 
-def mk'(A B : P) (h : A ≠ B) : Line P := sorry
+def mk_pt_pt (A B : P) (h : A ≠ B) : Line P := sorry
 
 end Line
 
