@@ -13,7 +13,7 @@ namespace Line
 
 variable  {P : Type _} [EuclideanPlane P] 
 
-def mk_pt_pt (A B : P) (h : A ≠ B) : Line P := sorry
+def mk_pt_pt (A B : P) (h : B ≠ A) : Line P := sorry --careful here! should I use B ≠ A or A ≠ B ?
 
 end Line
 
@@ -29,6 +29,6 @@ def IsOnLine {P : Type _} [EuclideanPlane P] (a : P) (l : Line P) : Prop :=
 
 scoped infix : 50 "LiesOnLine" => IsOnLine
 
-theorem line_eq_line_of_two_pt {P : Type _} [EuclideanPlane P] {p q : P} {l₁ l₂ : Line P} (h : p ≠ q) (hp₁ : p LiesOnLine l₁) (hp₂ : p LiesOnLine l₂) (hq₁ : q LiesOnLine l₁) (hq₂ : q LiesOnLine l₂) : l₁ = l₂ := sorry
+theorem line_eq_line_of_two_pt {P : Type _} [EuclideanPlane P] {p q : P} {l : Line P} (h : q ≠ p) (hp : p LiesOnLine l) (hq : q LiesOnLine l) : l = Line.mk_pt_pt p q h := sorry -- p ≠ q or q ≠ p  
 
 end EuclidGeom

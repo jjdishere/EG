@@ -132,6 +132,9 @@ class UniVec where
 -- Should change UniVec into the following UniVec'to use all instances on UniVec'
 def UniVec' := @Metric.sphere _ StdR2.PseudoMetricSpace (0: ℝ × ℝ) 1
 
+-- Or alternatively, define CommGroup instance on UniVec
+namespace UniVec
+
 instance : Neg UniVec where
   neg := fun
     | .mk vec unit => {
@@ -158,10 +161,20 @@ def UniVec.mk_angle (θ : ℝ) : UniVec where
     rw [pow_two, pow_two]
     rfl
 
-instance : Mul UniVec where
+instance : Mul UniVec where 
   mul := fun z w => {
     vec := (z.vec.1 * w.vec.1 - z.vec.2 * w.vec.2, z.vec.1 * w.vec.2 + z.vec.2 * w.vec.1)
     unit := sorry
   } 
+
+instance : CommGroup UniVec := sorry
+
+instance : HasDistribNeg UniVec where
+  neg := Neg.neg
+  neg_neg := sorry
+  neg_mul := sorry
+  mul_neg := sorry
+
+end UniVec
 
 end EuclidGeom
