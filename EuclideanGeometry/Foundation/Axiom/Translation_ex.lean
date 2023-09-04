@@ -5,37 +5,21 @@ import EuclideanGeometry.Foundation.Axiom.Ray_ex1
 
 namespace EuclidGeom
 
-namespace GDSeg
+namespace Seg
 
-variable {P: Type _} [EuclideanPlane P] (v : ℝ × ℝ) (gseg : GDSeg P)
+variable {P: Type _} [EuclideanPlane P] (v : ℝ × ℝ) (seg : Seg P)
 
 -- parallel translate a generalized directed segments
 
-def translate (gseg : GDSeg P) (v : ℝ × ℝ) : GDSeg P where
-  source := v +ᵥ gseg.source
-  target := v +ᵥ gseg.target
+def translate (seg : Seg P) (v : ℝ × ℝ) : Seg P where
+  source := v +ᵥ seg.source
+  target := v +ᵥ seg.target
 
 -- parallel translate a nontrivial generalized directed segment is nontrivial
 
-theorem GDSeg.non_triv_of_trans_non_triv (gseg : GDSeg P) (v : ℝ × ℝ) (nontriv : gseg.source ≠ gseg.target) : (GDSeg.translate gseg v).source ≠ (GDSeg.translate gseg v).target := by sorry
+theorem Seg.non_triv_of_trans_non_triv (seg : Seg P) (v : ℝ × ℝ) (nontriv : seg.source ≠ seg.target) : (Seg.translate seg v).source ≠ (Seg.translate seg v).target := by sorry
 
-
-end GDSeg
-
-namespace DSeg
-
-variable {P: Type _} [EuclideanPlane P] (v : ℝ × ℝ) (seg : DSeg P)
-
--- parallel translate a directed segments
-
-def translate (seg : DSeg P) (v : ℝ × ℝ) : DSeg P where
-  source := sorry
-  target := v +ᵥ seg.target
-  direction := sorry
-  on_ray := sorry
-  non_triv := sorry
-
-end DSeg
+end Seg
 
 namespace Ray
 
@@ -48,25 +32,5 @@ def translate (ray : Ray P) (v : ℝ × ℝ) : Ray P where
   direction := sorry
 
 end Ray
-
-section compatibility
-
-variable {P: Type _} [EuclideanPlane P] (v : ℝ × ℝ) (gseg : GDSeg P) (seg : DSeg P) (ray : Ray P)
-
--- check compatibility between coersion and prallel translation
-
-theorem DSeg.trans_of_toGDSeg_eq_toGDSeg_trans : (DSeg.translate seg v).toGDSeg = GDSeg.translate seg.toGDSeg v := by sorry
-
-theorem GDSeg.trans_of_toDSeg_eq_toDSeg_trans (nontriv : gseg.source ≠ gseg.target) : (GDSeg.translate gseg v).toDSeg_of_nontriv (GDSeg.non_triv_of_trans_non_triv gseg v nontriv) = DSeg.translate (gseg.toDSeg_of_nontriv nontriv) v := by sorry
-
-
-end compatibility
-
-
-
-
-
-
-
 
 end EuclidGeom

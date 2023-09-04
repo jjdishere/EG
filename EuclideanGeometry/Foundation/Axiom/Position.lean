@@ -11,6 +11,7 @@ variable {P : Type _} [EuclideanPlane P]
 section colinear
 def colinear (A B C : P) : Prop := ∠ A B C = 0 ∨ ∠ A B C = π  
 
+-- rerwrite this part, use minimal theroems, but create a tactic called `colinarity`  
 theorem colinear_ACB_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear A C B := sorry
 
 theorem colinear_BAC_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear B A C := sorry
@@ -33,7 +34,7 @@ section point_to_ray
 def IsOnLeftSide (A : P) (ray : Ray P) : Prop := by
   by_cases A = ray.source
   · exact False
-  · exact (0 < (OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value) ∧ ((OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value < π) 
+  · exact (0 < (OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value) ∧ ((OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value ≠ π) 
 
 def IsOnRightSide (A : P) (ray : Ray P) : Prop := by
   by_cases A = ray.source
@@ -46,27 +47,12 @@ theorem left_iff_not_right_of_not_lies_on : sorry := sorry
 
 theorem not_lies_on_left_or_right : sorry := sorry
 
-def IsOnPosSide (A : P) (ray : Ray P) : Prop := by
-  by_cases A = ray.source
-  · exact False
-  · exact (OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = 0 
-
-def IsOnNegSide (A : P) (ray : Ray P) : Prop := by
-  by_cases A = ray.source
-  · exact False
-  · exact (OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = π 
-
-def IsSource (A : P) (ray : Ray P) : Prop := ray.source = A
-
 -- theroems stating colinear iff (Pos ∨ Neg ∨ Source) and alternativity of 3 conditions
 
 end point_to_ray
 
 scoped infix : 50 "LiesOnLeft" => IsOnLeftSide 
 scoped infix : 50 "LiesOnRight" => IsOnRightSide 
-scoped infix : 50 "LiesOnPos" => IsOnPosSide 
-scoped infix : 50 "LiesOnNeg" => IsOnNegSide
-scoped infix : 50 "LiesAtSource" => IsSource
 
 /- Positions of a point relative to a ray/line/segment: 1. at the end point, 2. on the ray (not including the end point) 3. on the opposite direction of the ray.  4. on the "left" of the ray. 5. on the "right" of the ray. -/
 
