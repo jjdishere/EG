@@ -58,7 +58,7 @@ def IsInside  (A : P) (tr : Triangle P) : Prop := by
 
 end Triangle
 
-scoped infix : 50 "IsInsideLTriangle" => Triangle.IsInside
+scoped infix : 50 "IsInsideTriangle" => Triangle.IsInside
 
 /- Function to determine the orientation of a triangle. -/
 

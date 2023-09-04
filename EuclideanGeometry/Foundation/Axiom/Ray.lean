@@ -95,25 +95,21 @@ theorem nontriv_iff_length_pos : (l.target ≠ l.source) ↔ 0 < l.length := by 
 -- If P lies on a generalized directed segment AB, then length(AB) = length(AP) + length(PB)
 theorem length_eq_sum_of_length_two_part (l : Seg P) (p : P) (lieson : p LiesOnSeg l) : l.length = (SEG l.source p).length + (SEG p l.target).length := sorry
 
+-- If a generalized directed segment contains an interior point, then it is nontrivial
+theorem nontriv_iff_exist_inter_pt (l : Seg P) (p : P) (lieson : p LiesOnSeg l) (hs: p ≠ l.source) (ht : p ≠ l.target) : l.source ≠ l.target := sorry
+
 end Seg
 
 end length
 
-section existance
--- Archimedean property : 
+section Archimedean_property
 
--- theorem Ray.exist_pt_beyond_pt {P : Type _} [EuclideanPlane P] (ray : Ray P) (p : P) (h: p LiesOnRay ray) : (∃ q : P, p LiesOn 
+-- Archimedean property I : given a directed segment AB (with A ≠ B), then there exists a point P such that B lies on the directed segment AP and P ≠ B.
 
+theorem exist_pt_beyond_pt {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv : l.target ≠ l.source) : (∃ q : P, q ≠ l.target ∧ l.target LiesOnSeg (SEG l.source q)) := by sorry
 
--- Archimedean property II: Onn an oriented segment, one can always find a point in the interior.
+-- Archimedean property II: On an nontrivial directed segment, one can always find a point in its interior.  `This will be moved to later disccusion about midpoint of a segment, as the midpoint is a point in the interior of a nontrivial segment`
 
--- theorem 
-
--- The generalized directed segment is nontrivial if and only if one can find a point in the interior of the generalized segment.
--- theorem nontriv_iff_exist_inter_pt {P : Type _} [EuclideanPlane P] (l : Seg P) (interior : ∃ (p : P), (p LiesOnSeg l) ∧ (p ≠ l.source) ∧ (p ≠ l.target) ) : (l.target ≠ l.source) := by sorry
-
--- In this proof, may need to use Classical.choose (p LiesOnRay l)....
-
-end existance
+end Archimedean_property
 
 end EuclidGeom
