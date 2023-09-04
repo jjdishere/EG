@@ -1,23 +1,20 @@
 import EuclideanGeometry.Foundation.Axiom.Plane
 
 /-!
-# Segments and rays
+# Directed segments and rays
 
-We define the class of generalized directed segments and rays, and their coersions. We also define the property of a point lying on such a structure. Finally, we discuss the nonemptyness/degeneracy of generalized directed segments. 
-
-From now on, by "segment" we mean a generalized directed segment
+We define the class of (generalized) directed segments and rays, and their coersions. We also define the property of a point lying on such a structure. Finally, we discuss the nonemptyness/degeneracy of generalized directed segments.
 
 ## Important definitions
 
 * `Ray` : the class of rays on an EuclideanPlane
-* `Seg` : the class of generalized directed segments on an EuclideanPlane (meaning segments with specified source and target, but allowing it to reduce to a singleton.)
+* `GDSeg` : the class of generalized directed segments on an EuclideanPlane (meaning segments with specified source and target, but allowing it to reduce to a singleton.)
 
 
 ## Notation
 
-* `LiesOnRay` : notation for a point lies on a ray
-* `LiesOnSeg` : notation for a point lies on a generalized directed segment
-* notation for Seg A B
+* notation for lieson
+* notation for DSeg A B, GDSeg A B, Ray A B
 
 ## Implementation Notes
 
@@ -40,45 +37,75 @@ def IsOnRay {P : Type _} [EuclideanPlane P] (a : P) (l : Ray P) : Prop :=
 
 /- Generalized Directed segment -/
 @[ext]
-class Seg (P : Type _) [EuclideanPlane P] where
+class GDSeg (P : Type _) [EuclideanPlane P] where
   source : P
   target : P
 
-def IsOnSeg {P : Type _} [EuclideanPlane P] (a : P) (l : Seg P) : Prop :=
+/- Directed segment -/
+class DSeg (P : Type _) [EuclideanPlane P] extends Ray P, GDSeg P where
+  on_ray : IsOnRay target toRay 
+  non_triv : target ≠ source
+
+/- Define a point lies on an oriented segment, a line, a segment, immediate consequences -/
+def IsOnDSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DSeg P) : Prop :=
+  ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (l.target -ᵥ l.source) +ᵥ l.source
+
+def IsOnGDSeg {P : Type _} [EuclideanPlane P] (a : P) (l : GDSeg P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (l.target -ᵥ l.source) +ᵥ l.source
 
 end definitions
 
 scoped infix : 50 "LiesOnRay" => IsOnRay
-scoped infix : 50 "LiesOnSeg" => IsOnSeg
+scoped infix : 50 "LiesOnDSeg" => IsOnDSeg
+scoped infix : 50 "LiesOnGDSeg" => IsOnGDSeg
 
-/- Coe from Seg to Vector, Ray-/
-namespace Seg 
+/- Relations between these concepts as coersion, theorems-/
+section coersions
 
-def toVec {P : Type _} [EuclideanPlane P] (l : Seg P) : (ℝ × ℝ) := l.target -ᵥ l.source 
+instance {P : Type _} [EuclideanPlane P] : Coe (DSeg P) (GDSeg P) where
+  coe := fun _ => DSeg.toGDSeg
 
-def toRay_of_nontriv {P : Type _} [EuclideanPlane P] (l : Seg P) (h : l.target ≠ l.source) : Ray P := sorry
+/- def of DirSeg from GDirSeg if length ≠ 0 -/
+def GDSeg.toDSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : GDSeg P) (nontriv : l.target ≠ l.source): DSeg P where
+  source := l.source
+  target := l.target
+  direction := normalize (l.target -ᵥ l.source) (vsub_ne_zero.mpr nontriv)
+  on_ray := sorry
+  non_triv := sorry
 
-end Seg
+-- coe from GDirSeg to Vector
+def GDSeg.toVec {P : Type _} [EuclideanPlane P] (l : GDSeg P) : (ℝ × ℝ) := l.target -ᵥ l.source 
+
+-- theorems "if p LiesOnDSeg l, then p LiesOnRay l.toRay and p LiesOnGDSeg l.toGDSeg"
+
+theorem DSeg.pt_on_toRay_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOnRay l.toRay := sorry
+
+theorem DSeg.pt_on_toGDSeg_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOnGDSeg l.toGDSeg := sorry
+
+end coersions
 
 section mk
+
+-- mk method of DirSeg giving 2 distinct point
+def DSeg.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : DSeg P := sorry  
 
 -- mk method of Ray giving 2 distinct point
 def Ray.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : Ray P where
   source := A
-  direction := UniVec.normalize (B -ᵥ A) (vsub_ne_zero.mpr h)
+  direction := normalize (B -ᵥ A) (vsub_ne_zero.mpr h)
 
 -- notation 
 end mk
 
-scoped notation "SEG" => Seg.mk
+scoped notation "GSEG" => GDSeg.mk
+scoped notation "SEG" => DSeg.mk_pt_pt
 scoped notation "RAY" => Ray.mk_pt_pt
 
 section length
 
-namespace Seg
+namespace GDSeg
 
-variable {P : Type _} [EuclideanPlane P] (l : Seg P)
+variable {P : Type _} [EuclideanPlane P] (l : GDSeg P)
 
 -- define the length of a generalized directed segment.
 def length : ℝ := StdR2.Norm.norm (l.toVec)
@@ -93,11 +120,19 @@ theorem is_triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := b
 theorem nontriv_iff_length_pos : (l.target ≠ l.source) ↔ 0 < l.length := by sorry
 
 -- If P lies on a generalized directed segment AB, then length(AB) = length(AP) + length(PB)
-theorem length_eq_sum_of_length_two_part (l : Seg P) (p : P) (lieson : p LiesOnSeg l) : l.length = (SEG l.source p).length + (SEG p l.target).length := sorry
+theorem length_eq_sum_of_length_two_part (l : GDSeg P) (p : P) (lieson : p LiesOnGDSeg l) : l.length = (GSEG l.source p).length + (GSEG p l.target).length := sorry
 
-end Seg
+end GDSeg
+
+namespace DSeg
+
+def length {P : Type _} [EuclideanPlane P] (l : DSeg P): ℝ := (l : GDSeg P).length
+
+end DSeg 
 
 end length
+
+
 
 section existance
 -- Archimedean property : 
@@ -110,7 +145,7 @@ section existance
 -- theorem 
 
 -- The generalized directed segment is nontrivial if and only if one can find a point in the interior of the generalized segment.
--- theorem nontriv_iff_exist_inter_pt {P : Type _} [EuclideanPlane P] (l : Seg P) (interior : ∃ (p : P), (p LiesOnSeg l) ∧ (p ≠ l.source) ∧ (p ≠ l.target) ) : (l.target ≠ l.source) := by sorry
+-- theorem nontriv_iff_exist_inter_pt {P : Type _} [EuclideanPlane P] (l : GDSeg P) (interior : ∃ (p : P), (p LiesOnGDSeg l) ∧ (p ≠ l.source) ∧ (p ≠ l.target) ) : (l.target ≠ l.source) := by sorry
 
 -- In this proof, may need to use Classical.choose (p LiesOnRay l)....
 

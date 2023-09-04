@@ -3,19 +3,27 @@ import EuclideanGeometry.Foundation.Axiom.Triangle
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P] (tri : Triangle P)
+variable {P : Type _} [EuclideanPlane P] (tri : LTriangle P)
 
-namespace Triangle
+namespace LTriangle
 
-def perm_vertices : (Triangle P) where
-  point₁ := tri.point₂
-  point₂ := tri.point₃
-  point₃ := tri.point₁
+def perm_vertices : (LTriangle P) where
+  point1 := tri.point2
+  point2 := tri.point3
+  point3 := tri.point1
+  nontriv1 := sorry
+  nontriv2 := sorry
+  nontriv3 := sorry
+  left := sorry
 
-def revperm_vertices : (Triangle P) where
-  point₁ := tri.point₃
-  point₂ := tri.point₁
-  point₃ := tri.point₂
+def revperm_vertices : (LTriangle P) where
+  point1 := tri.point3
+  point2 := tri.point1
+  point3 := tri.point2
+  nontriv1 := sorry
+  nontriv2 := sorry
+  nontriv3 := sorry
+  left := sorry
 
 theorem perm_of_revperm_vertices : tri.perm_vertices.revperm_vertices = tri := by sorry
 
@@ -26,7 +34,7 @@ theorem revperm_of_revperm_eq_perm_vertices : tri.revperm_vertices.revperm_verti
 
 
 
-end Triangle
+end LTriangle
 
 
 end EuclidGeom

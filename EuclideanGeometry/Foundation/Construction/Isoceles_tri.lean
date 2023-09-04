@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Angle
+import EuclideanGeometry.Theorem.Isoceles_tri
 
 namespace EuclidGeom
 

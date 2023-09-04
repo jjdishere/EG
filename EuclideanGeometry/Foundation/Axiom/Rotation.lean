@@ -4,6 +4,6 @@ import EuclideanGeometry.Foundation.Axiom.Ray
 
 namespace EuclidGeom
 
-variable {P: Type _} [EuclideanPlane P] (o : P) (seg : Seg P) (ray : Ray P)
+variable {P: Type _} [EuclideanPlane P] (o : P) (gseg : GDirSeg P) (seg : DirSeg P) (ray : Ray P)
 
 end EuclidGeom
