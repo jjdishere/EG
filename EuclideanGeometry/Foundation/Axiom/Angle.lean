@@ -27,7 +27,7 @@ def value {P : Type _} [EuclideanPlane P] (A : OAngle P): ℝ := StdR2.angle (A.
 def angle_of_three_point {P : Type _} [EuclideanPlane P] (A O B : P) : ℝ := StdR2.angle (A -ᵥ O) (B -ᵥ O)
 -- still logic problem, do i really need the def of an angle? and show angle of 3 pts = value of OAngle they form?
 
-def angle_of_two_ray {P : Type _} [EuclideanPlane P] (start_ray end_ray : Ray P) : ℝ := StdR2.angle start_ray.direction.vec end_ray.direction.vec
+def angle_of_two_ray {P : Type _} [EuclideanPlane P] (ray₁ ray₂ : Ray P) : ℝ := StdR2.angle ray₁.direction.vec ray₂.direction.vec
 
 end OAngle
 
