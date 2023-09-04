@@ -12,6 +12,11 @@ section colinear
 def colinear (A B C : P) : Prop := ∠ A B C = 0 ∨ ∠ A B C = π  
 
 -- rerwrite this part, use minimal theroems, but create a tactic called `colinarity`  
+theorem perm_noncolinear {A B C : P} (h : ¬ colinear A B C) : (¬ colinear B C A) := by sorry
+
+theorem flip_noncolinear {A B C : P} (h : ¬ colinear A B C): (¬ colinear A C B) := sorry
+
+
 theorem colinear_ACB_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear A C B := sorry
 
 theorem colinear_BAC_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear B A C := sorry

@@ -161,7 +161,7 @@ def UniVec.mk_angle (θ : ℝ) : UniVec where
     rw [pow_two, pow_two]
     rfl
 
-instance : Mul UniVec where 
+instance : Mul UniVec where
   mul := fun z w => {
     vec := (z.vec.1 * w.vec.1 - z.vec.2 * w.vec.2, z.vec.1 * w.vec.2 + z.vec.2 * w.vec.1)
     unit := sorry
