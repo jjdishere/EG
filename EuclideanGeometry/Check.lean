@@ -1,10 +1,20 @@
-/- here checks things-/
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
-import EuclideanGeometry.Foundation.Axiom.Basic
+import EuclideanGeometry.Foundation.Axiom.Plane
 import EuclideanGeometry.Foundation.Axiom.Ray
 import EuclideanGeometry.Foundation.Axiom.Angle
+/- here checks things-/
 
+/- 
+## Part I: Geometric Playground. 
+Check whether geometric constructions, theorems are mathematically correct.
+-/
+
+
+/-
+## Part II: Type Reassurance
+Check the where a type is behaved as designed 
+-/
 namespace EuclidGeom
 /- check instance VAdd-/
 section VAddCheck
@@ -18,7 +28,6 @@ end VAddCheck
 section raymk
 
 #check Ray.mk
-#check GDirSeg.mk
 
 end raymk
 
