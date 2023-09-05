@@ -23,22 +23,24 @@ def mk_ray_pt {P : Type _} [EuclideanPlane P] (ray : Ray P) (A : P) (h : A ≠ r
 
 def value {P : Type _} [EuclideanPlane P] (A : OAngle P): ℝ := StdR2.angle (A.start_ray.direction.vec) (A.end_ray.direction.vec)
 
-/- If `A = O ∨ O = B`, then the angle is defined to be zero-/
-def angle_of_three_point {P : Type _} [EuclideanPlane P] (A O B : P) : ℝ := StdR2.angle (A -ᵥ O) (B -ᵥ O)
--- still logic problem, do i really need the def of an angle? and show angle of 3 pts = value of OAngle they form?
+def angle_of_three_point_nontriv {P : Type _} [EuclideanPlane P] (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): ℝ := 
+(OAngle.mk_pt_pt_pt _ _ _ h₁ h₂).value
 
-def angle_of_two_ray {P : Type _} [EuclideanPlane P] (start_ray end_ray : Ray P) : ℝ := StdR2.angle start_ray.direction.vec end_ray.direction.vec
+def angle_of_two_ray_of_eq_source {P : Type _} [EuclideanPlane P] (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : ℝ := (OAngle.mk start_ray end_ray h).value
 
 end OAngle
 
-scoped notation "ANG" => OAngle.mk_pt_pt_pt
+scoped notation "OANG" => OAngle.mk_pt_pt_pt
 
-scoped notation "∠" => OAngle.angle_of_three_point
+scoped notation "ANG" => OAngle.angle_of_three_point_nontriv
+
+scoped notation "∠" => OANG -- Is this really needed?
+
+/- theorem - π < angle.value, angle.value ≤ π,  -/
 
 /- Operations on oriented angles, such a additivity of the evaluation of oriented angles.  -/
 /- theorem l1 l2 l3 add angle; sub angle -/
 /- theorem O A B C add angle; sub angle-/
-
 
 /- 90 degree -/
 

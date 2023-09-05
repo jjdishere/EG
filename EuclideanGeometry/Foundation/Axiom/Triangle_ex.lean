@@ -36,9 +36,9 @@ theorem eq_flip_of_perm_twice_of_perm_flip_vertices : tr.flip_vertices.perm_vert
 
 -- compatibility of permutation/flip of vertices with orientation of the triangle
 
-theorem same_orient_of_perm_vertices (nontriv : ¬ colinear tr.1 tr.2 tr.3) : tr.is_cclock nontriv = (tr.perm_vertices.is_cclock (perm_noncolinear nontriv)) := by sorry
+theorem same_orient_of_perm_vertices (nontriv : ¬ colinear tr.1 tr.2 tr.3) : tr.is_cclock nontriv = (tr.perm_vertices.is_cclock (perm_colinear.mt (perm_colinear.mt nontriv))) := by sorry
 
-theorem reverse_orient_of_flip_vertices (nontriv : ¬ colinear tr.1 tr.2 tr.3) : tr.is_cclock nontriv = ¬ (tr.flip_vertices.is_cclock (flip_noncolinear nontriv)) := by sorry
+theorem reverse_orient_of_flip_vertices (nontriv : ¬ colinear tr.1 tr.2 tr.3) : tr.is_cclock nontriv = ¬ (tr.flip_vertices.is_cclock (flip_colinear.mt nontriv)) := by sorry
 
 -- compatiblility of permutation/flip of vertices with inside triangle
 

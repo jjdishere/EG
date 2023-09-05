@@ -11,9 +11,9 @@ class Triangle (P : Type _) [EuclideanPlane P] where
   point₂ : P
   point₃ : P
 
-namespace Triangle
-
 variable {P : Type _} [EuclideanPlane P]
+
+namespace Triangle
 
 --implies  1 left of 23, 2 left of 31
 
@@ -27,14 +27,14 @@ def edge₃ (tr : Triangle P) : Seg P := Seg.mk tr.1 tr.2
 
 def area (tr : Triangle P) : ℝ := sorry 
 
-def is_nondeg (tr : Triangle P) : Prop := ¬ colinear tr.1 tr.2 tr.3
+def is_nontriv (tr : Triangle P) : Prop := ¬ colinear tr.1 tr.2 tr.3
 
 end Triangle
 
 section nondeg
 
 namespace Triangle
-variable {P : Type _} [EuclideanPlane P] (tr : Triangle P) (nontriv : tr.is_nondeg)
+variable (tr : Triangle P) (nontriv : tr.is_nontriv)
 
 def nontriv₁ := (ne_of_not_colinear nontriv).1
 
@@ -45,17 +45,23 @@ def nontriv₃ := (ne_of_not_colinear nontriv).2.2
 /- Only nondegenerate triangles can talk about orientation -/
 def is_cclock : Prop := tr.3 LiesOnLeft (Ray.mk_pt_pt tr.1 tr.2 (tr.nontriv₃ nontriv))
 
-def angle₁ : OAngle P := sorry 
+def oangle₁ : OAngle P := OAngle.mk_pt_pt_pt _ _ _ (tr.nontriv₃ nontriv) (tr.nontriv₂ nontriv).symm
 
-def angle₂ : OAngle P := sorry
+def oangle₂ : OAngle P := OAngle.mk_pt_pt_pt _ _ _ (tr.nontriv₁ nontriv) (tr.nontriv₃ nontriv).symm
+
+def oangle₃ : OAngle P := OAngle.mk_pt_pt_pt _ _ _ (tr.nontriv₂ nontriv) (tr.nontriv₁ nontriv).symm
+
+def angle₁ : ℝ := (tr.oangle₁ nontriv).value
+
+def angle₂ : ℝ := (tr.oangle₂ nontriv).value
+
+def angle₃ : ℝ := (tr.oangle₃ nontriv).value
 
 end Triangle
 
 end nondeg
 
 namespace Triangle
-
-variable {P : Type _} [EuclideanPlane P]
 
 def IsInside  (A : P) (tr : Triangle P) : Prop := by 
   by_cases colinear tr.1 tr.2 tr.3
@@ -66,13 +72,20 @@ end Triangle
 
 scoped infix : 50 "IsInsideTriangle" => Triangle.IsInside
 
-/- Function to determine the orientation of a triangle. -/
+variable (tr : Triangle P)
 
-/- Define interior of an oriented triangle -/
+theorem angle_sum_eq_pi_of_cclock (nontriv : tr.is_nontriv) : tr.angle₁ nontriv + tr.angle₂ nontriv + tr.angle₃ nontriv = π := sorry 
 
+theorem angle_sum_eq_neg_pi_of_clock (nontriv : tr.is_nontriv) : tr.angle₁ nontriv + tr.angle₂ nontriv + tr.angle₃ nontriv = - π := sorry 
 
-/- congruences of triangles, separate definitions for reversing orientation or not, (requiring all sides and angles being the same)-/
+theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.length := sorry
 
-/- criteria of congruence of triangles. -/
+theorem triangle_ineq' (nontriv : tr.is_nontriv) : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length := sorry
+
+theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr.edge₃.length → ¬ tr.is_nontriv  := sorry
+
+theorem nontrivial_of_edge_sum_ne_edge : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length → tr.is_nontriv  := sorry -- should this theorem stated as ≠, or as > ???
+
+/- area ≥ 0, nontrivial → >0, =0 → trivial -/
 
 end EuclidGeom

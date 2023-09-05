@@ -225,4 +225,19 @@ scoped infix : 50 "IsInsideLTriangle" => Triangle.IsInside
 
 end nondeg_tri
 
+section colinear
+
+variable {P : Type _} [EuclideanPlane P]
+
+theorem colinear_ACB_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear A C B := sorry
+
+theorem colinear_BAC_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear B A C := sorry
+
+theorem colinear_BCA_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear B C A := sorry
+
+theorem colinear_CAB_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear C A B := sorry
+
+theorem colinear_CBA_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear C B A := sorry
+end colinear
+
 end EuclidGeom
