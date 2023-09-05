@@ -11,12 +11,12 @@ variable {P : Type _} [EuclideanPlane P]
 section colinear
 def colinear (A B C : P) : Prop := ∠ A B C = 0 ∨ ∠ A B C = π  
 
--- rerwrite this part, use minimal theroems, but create a tactic called `colinarity`  
-theorem perm_noncolinear {A B C : P} (h : ¬ colinear A B C) : (¬ colinear B C A) := by sorry
+-- rerwrite this part, use minimal theroems, but create a tactic called `colinarity`   
+theorem perm_colinear {A B C : P} (h : colinear A B C) : (colinear B C A) := by sorry
 
-theorem flip_noncolinear {A B C : P} (h : ¬ colinear A B C): (¬ colinear A C B) := sorry
+theorem flip_colinear {A B C : P} (h : colinear A B C): (colinear A C B) := sorry
 
-
+/- 
 theorem colinear_ACB_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear A C B := sorry
 
 theorem colinear_BAC_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear B A C := sorry
@@ -24,10 +24,11 @@ theorem colinear_BAC_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear 
 theorem colinear_BCA_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear B C A := sorry
 
 theorem colinear_CAB_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear C A B := sorry
+-/
 
 theorem colinear_CBA_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear C B A := sorry
 
-theorem eq_mul_vec_iff_colinear (A B C : P) (g : A ≠ B) : colinear A B C ↔ ∃ r : ℝ , Vec A C = r • Vec A B:= sorry
+theorem eq_mul_vec_iff_colinear_of_ne (A B C : P) (g : A ≠ B) : colinear A B C ↔ ∃ r : ℝ , Vec A C = r • Vec A B:= sorry
 
 theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (A ≠ C) ∧ (B ≠ A) := sorry   
 
@@ -60,10 +61,6 @@ scoped infix : 50 "LiesOnLeft" => IsOnLeftSide
 scoped infix : 50 "LiesOnRight" => IsOnRightSide 
 
 /- Positions of a point relative to a ray/line/segment: 1. at the end point, 2. on the ray (not including the end point) 3. on the opposite direction of the ray.  4. on the "left" of the ray. 5. on the "right" of the ray. -/
-
-/- Also inlclude functions such as Is_on_the_ray, and a type Left_of_the_ray.   -/
-
-
 
 /- Position of three (distinct) points.  Giving to colinear (futher classification) -/
 

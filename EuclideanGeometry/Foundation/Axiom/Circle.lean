@@ -12,7 +12,10 @@ class Circle (P : Type _) [EuclideanPlane P] where
 namespace Circle
 variable {P : Type _} [EuclideanPlane P]
 
-def mk_pt_pt (O A : P) : Circle P := sorry
+def mk_pt_pt (O A : P) : Circle P where
+  center := O
+  radius := (SEG O A).length
+  rad_pos := Seg.length_nonneg _
 
 def mk_pt_pt_pt (A B C: P) (h : ¬ colinear A B C) : Circle P := sorry
 

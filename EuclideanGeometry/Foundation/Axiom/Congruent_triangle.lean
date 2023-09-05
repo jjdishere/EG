@@ -4,6 +4,7 @@ namespace EuclidGeom
 
 /- definition of congruence of triangles-/
 
+/- should use translation and rotation as definition, eq of length and angle as result? -/
 variable {P : Type _} [EuclideanPlane P]
 
 /- def IsCongTo (tr₁ : Triangle P) (tr₂ : Triangle P) := by 

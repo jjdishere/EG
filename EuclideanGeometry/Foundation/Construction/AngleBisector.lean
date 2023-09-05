@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Angle
+import EuclideanGeometry.Foundation.Axiom.Rotation
 
 /-!
 
@@ -9,7 +10,8 @@ namespace EuclidGeom
 namespace OAngle
 variable {P : Type _} [EuclideanPlane P] 
 
-def bisector (ang : OAngle P) : Ray P := by sorry
+/- when the OAngle is flat, bisector is on the left side-/
+def bisector (ang : OAngle P) : Ray P := sorry
 
 end OAngle
 

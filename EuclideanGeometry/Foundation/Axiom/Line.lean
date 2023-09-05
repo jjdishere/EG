@@ -17,18 +17,28 @@ def mk_pt_pt (A B : P) (h : B ≠ A) : Line P := sorry --careful here! should I 
 
 end Line
 
-scoped notation "LIN" => Line.mk' 
+scoped notation "LIN" => Line.mk_pt_pt 
+
+variable {P : Type _} [EuclideanPlane P]
 
 /- def coe from ray to line-/
-instance {P : Type _} [EuclideanPlane P] : Coe (Ray P) (Line P) where
+instance : Coe (Ray P) (Line P) where
   coe := sorry
 
 /- Def of point lies on a line -/
-def IsOnLine {P : Type _} [EuclideanPlane P] (a : P) (l : Line P) : Prop :=
+def IsOnLine (a : P) (l : Line P) : Prop :=
   a ∈ l.carrier
 
 scoped infix : 50 "LiesOnLine" => IsOnLine
 
-theorem line_eq_line_of_two_pt {P : Type _} [EuclideanPlane P] {p q : P} {l : Line P} (h : q ≠ p) (hp : p LiesOnLine l) (hq : q LiesOnLine l) : l = Line.mk_pt_pt p q h := sorry -- p ≠ q or q ≠ p  
+theorem line_eq_line_of_pt_pt {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOnLine l) (hB : B LiesOnLine l) : l = Line.mk_pt_pt A B h := sorry -- p ≠ q or q ≠ p ?
+
+theorem lieson_of_colinear_ne {A B C : P} (c : colinear A B C) (h : B ≠ A) : C LiesOnLine LIN A B h := sorry
+
+section Archimedean_property
+-- there are two distinct points on a line
+
+-- Given distinct A B on a line, there exist C s.t. C LiesOn AB (a cor of Archimedean_property in Seg) and there exist D s.t. B LiesOn AD
+end Archimedean_property
 
 end EuclidGeom

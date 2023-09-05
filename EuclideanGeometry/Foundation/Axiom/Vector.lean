@@ -124,7 +124,7 @@ protected def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩
 protected def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((StdR2.toComplex x)/(StdR2.toComplex y))
 
 end StdR2
-
+@[ext]
 class UniVec where
   vec : ℝ × ℝ 
   unit : StdR2.InnerProductSpace.Core.inner vec vec = 1 
@@ -136,9 +136,8 @@ def UniVec' := @Metric.sphere _ StdR2.PseudoMetricSpace (0: ℝ × ℝ) 1
 namespace UniVec
 
 instance : Neg UniVec where
-  neg := fun
-    | .mk vec unit => {
-      vec := -vec
+  neg := fun x => {
+      vec := -x.vec
       unit := by 
         rw [← unit]
         exact @inner_neg_neg _ _ _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace _ _
@@ -164,10 +163,50 @@ def UniVec.mk_angle (θ : ℝ) : UniVec where
 instance : Mul UniVec where
   mul := fun z w => {
     vec := (z.vec.1 * w.vec.1 - z.vec.2 * w.vec.2, z.vec.1 * w.vec.2 + z.vec.2 * w.vec.1)
-    unit := sorry
+    unit := by
+      unfold Inner.inner StdR2.InnerProductSpace.Core
+      simp
+      ring_nf
+      calc 
+        _ = (z.vec.1 ^ 2 + z.vec.2 ^ 2) * (w.vec.1 ^ 2 + w.vec.2 ^ 2) := by
+          ring_nf
+          simp only [Real.rpow_two]
+          linarith
+        _ = 1 * 1 := by 
+          simp only [Real.rpow_two, pow_two]
+          congr 1
+          · exact z.unit
+          · exact w.unit
+        _ = 1 := one_mul 1
   } 
 
-instance : CommGroup UniVec := sorry
+instance : CommGroup UniVec where
+  mul := Mul.mul
+  mul_assoc := sorry
+  one := {
+    vec := (1,0)
+    unit := by 
+      unfold Inner.inner StdR2.InnerProductSpace.Core
+      simp
+  }
+  one_mul := fun a => by
+    ext : 1
+    unfold UniVec.vec HMul.hMul instHMul Mul.mul Semigroup.toMul instMulUniVec
+    simp only
+    sorry
+  mul_one := sorry
+  npow := sorry
+  npow_zero := sorry
+  npow_succ := sorry
+  inv := sorry
+  div := sorry
+  div_eq_mul_inv := sorry
+  zpow := sorry
+  zpow_zero' := sorry
+  zpow_succ' := sorry
+  zpow_neg' := sorry
+  mul_left_inv := sorry
+  mul_comm := sorry
 
 instance : HasDistribNeg UniVec where
   neg := Neg.neg
