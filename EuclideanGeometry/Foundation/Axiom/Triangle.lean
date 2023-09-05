@@ -19,20 +19,22 @@ variable {P : Type _} [EuclideanPlane P]
 
 -- not is_cclock implies 1 right of 23, ..., ...
 
-def edge₁ (tr : Triangle P) : Seg P:= Seg.mk tr.2 tr.3
+def edge₁ (tr : Triangle P) : Seg P := Seg.mk tr.2 tr.3
 
-def edge₂ (tr : Triangle P) : Seg P:= Seg.mk tr.3 tr.1
+def edge₂ (tr : Triangle P) : Seg P := Seg.mk tr.3 tr.1
 
-def edge₃ (tr : Triangle P) : Seg P:= Seg.mk tr.1 tr.2
+def edge₃ (tr : Triangle P) : Seg P := Seg.mk tr.1 tr.2
 
 def area (tr : Triangle P) : ℝ := sorry 
+
+def is_nondeg (tr : Triangle P) : Prop := ¬ colinear tr.1 tr.2 tr.3
 
 end Triangle
 
 section nondeg
 
 namespace Triangle
-variable {P : Type _} [EuclideanPlane P] (tr : Triangle P) (nontriv : ¬ colinear tr.1 tr.2 tr.3)
+variable {P : Type _} [EuclideanPlane P] (tr : Triangle P) (nontriv : tr.is_nondeg)
 
 def nontriv₁ := (ne_of_not_colinear nontriv).1
 
@@ -42,6 +44,10 @@ def nontriv₃ := (ne_of_not_colinear nontriv).2.2
 
 /- Only nondegenerate triangles can talk about orientation -/
 def is_cclock : Prop := tr.3 LiesOnLeft (Ray.mk_pt_pt tr.1 tr.2 (tr.nontriv₃ nontriv))
+
+def angle₁ : OAngle P := sorry 
+
+def angle₂ : OAngle P := sorry
 
 end Triangle
 
