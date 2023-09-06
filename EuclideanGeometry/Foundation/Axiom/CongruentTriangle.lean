@@ -51,10 +51,10 @@ protected theorem symm (h : tr₁ IsCongrTo tr₂) : tr₂ IsCongrTo tr₁ := so
 
 protected theorem trans (h₁ : tr₁ IsCongrTo tr₂) (h₂ : tr₂ IsCongrTo tr₃) : tr₁ IsCongrTo tr₃ := sorry
 
-instance : @Equivalence (Triangle P) IsCongr where
+instance : IsEquiv (Triangle P) IsCongr where
   refl := IsCongr.refl
-  symm := IsCongr.symm _ _
-  trans := IsCongr.trans _ _ _
+  symm := IsCongr.symm
+  trans := IsCongr.trans
 
 end IsCongr
 

@@ -10,20 +10,31 @@ inductive LinearObj (P : Type _) [EuclideanPlane P] where
   | seg (s : Seg P) (nontriv : s.is_nontriv)
   | line (l : Line P)
 
-namespace LinearObj
-
 variable {P : Type _} [EuclideanPlane P]
+
+namespace LinearObj
 
 def toProj (l : LinearObj P) : Proj :=
   match l with
-  | vec v h => (UniVec.normalize v h : Proj)
-  | uni_vec v => (v : Proj)
-  | ray r => (r.direction : Proj)
-  | seg s nontriv => ((Seg.toRay_of_nontriv s nontriv).direction : Proj)
-  | line l => sorry
-
-def parallel (l₁ l₂: LinearObj P) : Prop := sorry
+  | vec v h => StdR2.toProj_of_nonzero v h
+  | uni_vec v => v.toProj
+  | ray r => r.toProj
+  | seg s nontriv => s.toProj_of_nontriv nontriv
+  | line l => l.toProj
 
 end LinearObj
+
+def parallel (l₁ l₂: LinearObj P) : Prop := l₁.toProj = l₂.toProj
+
+instance : IsEquiv (LinearObj P) parallel where
+  refl _ := rfl
+  symm _ _ := Eq.symm
+  trans := sorry -- a big, messy theorem
+
+scoped infix : 50 "ParallelTo" => parallel
+
+scoped infix : 50 "∥" => parallel
+
+/- lots of trivial parallel relation of vec of 2 pt lies on Line, coersions, ... -/
 
 end EuclidGeom
