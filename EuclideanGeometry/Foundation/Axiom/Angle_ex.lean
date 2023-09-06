@@ -21,6 +21,8 @@ def IsObtuseAngle {P : Type _} [EuclideanPlane P] (oang : OAngle P) : Prop := so
 
 /- Supplementary angles -/
 
+-- Define the supplementary angle to be the oangle 
+
 def supplementary : (OAngle P) where
   start_ray := oang.end_ray
   end_ray := oang.start_ray.reverse
@@ -43,5 +45,14 @@ theorem opposite_eq_supp_of_supp : oang.supplementary.supplementary = oang := by
 
 
 end OAngle
+
+namespace OAngle
+
+variable {P : Type _} [EuclideanPlane P] (oang : OAngle P)
+
+theorem 
+
+end OAngle
+
 
 end EuclidGeom

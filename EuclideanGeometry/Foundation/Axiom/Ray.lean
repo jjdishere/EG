@@ -105,7 +105,7 @@ theorem nontriv_iff_length_pos : (l.is_nontriv) ↔ 0 < l.length := by sorry
 theorem length_eq_sum_of_length_two_part (l : Seg P) (p : P) (lieson : p LiesOnSeg l) : l.length = (SEG l.source p).length + (SEG p l.target).length := sorry
 
 -- If a generalized directed segment contains an interior point, then it is nontrivial
-theorem nontriv_iff_exist_inter_pt (l : Seg P) (p : P) (lieson : p LiesOnSeg l) (hs: p ≠ l.source) (ht : p ≠ l.target) : l.is_nontriv := sorry
+theorem nontriv_iff_exist_inter_pt (l : Seg P) (p : P) (lieson : p LiesOnIntSeg l) : l.is_nontriv := sorry
 
 end Seg
 
