@@ -291,9 +291,10 @@ namespace PM
 
 def equivalence : Equivalence PM where
   refl _ := by simp [PM]
-  symm := fun h => by 
-    simp [PM] at *
-    sorry
+  symm := fun h => 
+    match h with
+      | Or.inl h₁ => Or.inl (Eq.symm h₁)
+      | Or.inr h₂ => Or.inr (Iff.mp neg_eq_iff_eq_neg (id (Eq.symm h₂)))
   trans := sorry
 
 instance con : Con UniVec where
