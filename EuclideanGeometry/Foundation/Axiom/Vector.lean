@@ -216,4 +216,20 @@ instance : HasDistribNeg UniVec where
 
 end UniVec
 
+def PM : UniVec → UniVec → Prop :=
+fun x y => x = y ∨ x = -y
+
+def PM.equivalence : Equivalence PM where
+  refl _ := by simp [PM]
+  symm := fun h => by 
+    simp [PM] at *
+    sorry
+  trans := sorry
+
+def PM.setoid : Setoid UniVec where
+  r := PM
+  iseqv := PM.equivalence
+
+def PMUniVec := Quotient PM.setoid
+
 end EuclidGeom
