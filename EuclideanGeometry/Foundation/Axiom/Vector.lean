@@ -293,10 +293,20 @@ def PM.equivalence : Equivalence PM where
     sorry
   trans := sorry
 
-def PM.setoid : Setoid UniVec where
+def PM.con : Con UniVec where
   r := PM
   iseqv := PM.equivalence
+  mul' := sorry
 
-def PMUniVec := Quotient PM.setoid
+def PMUniVec := Con.Quotient PM.con
+
+instance : MulOneClass PMUniVec := Con.mulOneClass PM.con
+
+instance : Group PMUniVec := Con.group PM.con
+
+instance : CommMonoid PMUniVec := Con.commMonoid PM.con
+
+instance : CommGroup PMUniVec where
+  mul_comm := instCommMonoidPMUniVec.mul_comm
 
 end EuclidGeom
