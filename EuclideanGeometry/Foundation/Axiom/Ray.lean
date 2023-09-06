@@ -38,6 +38,8 @@ class Ray (P : Type _) [EuclideanPlane P] where
 def IsOnRay {P : Type _} [EuclideanPlane P] (a : P) (l : Ray P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ a = t • l.direction.vec +ᵥ l.source
 
+def IsOnIntRay {P : Type _} [EuclideanPlane P] (a : P) (l : Ray P) : Prop := IsOnRay a l ∧ a ≠ l.source
+
 /- Generalized Directed segment -/
 @[ext]
 class Seg (P : Type _) [EuclideanPlane P] where
@@ -49,10 +51,15 @@ def Seg.is_nontriv {P : Type _} [EuclideanPlane P] (seg : Seg P) : Prop := seg.t
 def IsOnSeg {P : Type _} [EuclideanPlane P] (a : P) (l : Seg P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (l.target -ᵥ l.source) +ᵥ l.source
 
+def IsOnIntSeg {P : Type _} [EuclideanPlane P] (a : P) (l : Seg P) : Prop := IsOnSeg a l ∧ a ≠ l.source ∧ a ≠ l.target 
+
+
 end definitions
 
 scoped infix : 50 "LiesOnRay" => IsOnRay
 scoped infix : 50 "LiesOnSeg" => IsOnSeg
+scoped infix : 50 "LiesOnIntRay" => IsOnIntRay
+scoped infix : 50 "LiesOnIntSeg" => IsOnIntSeg
 
 /- Coe from Seg to Vector, Ray-/
 namespace Seg 

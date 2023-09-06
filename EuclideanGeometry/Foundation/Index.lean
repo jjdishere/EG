@@ -7,6 +7,9 @@ import EuclideanGeometry.Foundation.Axiom.Position
 import EuclideanGeometry.Foundation.Axiom.Line
 import EuclideanGeometry.Foundation.Axiom.Triangle
 import EuclideanGeometry.Foundation.Axiom.Circle
+import EuclideanGeometry.Foundation.Construction.IsocelesTriangle
+import EuclideanGeometry.Foundation.Construction.AngleBisector
+import EuclideanGeometry.Foundation.Axiom.Ray_ex
 
 /- Constuction -/
 

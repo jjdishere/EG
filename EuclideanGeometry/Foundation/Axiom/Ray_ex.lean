@@ -70,7 +70,14 @@ theorem eq_source_of_lies_on_and_lies_on_rev (p : P) (lieson : p LiesOnRay l) (l
 
 end Ray
 
+namespace Seg
 
+variable {P: Type _} [EuclideanPlane P]
+
+def extension_ray (l : Seg P) (nontriv : l.is_nontriv) : Ray P := (l.reverse.toRay_of_nontriv (Ne.symm nontriv)).reverse
+
+
+end Seg
 
 
 
