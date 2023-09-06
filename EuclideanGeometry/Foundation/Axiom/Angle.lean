@@ -34,7 +34,7 @@ scoped notation "OANG" => OAngle.mk_pt_pt_pt
 
 scoped notation "ANG" => OAngle.angle_of_three_point_nontriv
 
-scoped notation "∠" => OANG -- Is this really needed?
+scoped notation "∠" => OANG -- Is this notation really needed?
 
 /- theorem - π < angle.value, angle.value ≤ π,  -/
 

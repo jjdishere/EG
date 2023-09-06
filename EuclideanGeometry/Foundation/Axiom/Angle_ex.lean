@@ -1,5 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Angle
-import EuclideanGeometry.Foundation.Axiom.Ray_ex1
+import EuclideanGeometry.Foundation.Axiom.Ray_ex
 
 namespace EuclidGeom
 
@@ -39,7 +39,7 @@ def opposite :(OAngle P) where
 
 theorem opposite_eq_supp_of_supp : oang.supplementary.supplementary = oang := by sorry
 
-
+/- complementary angles -/
 
 
 end OAngle

@@ -8,6 +8,7 @@ This file defines the standard inner product real vector space of dimension two.
 ## Important definitions
 
 * `UniVec` : the class of unit vectors in the 2d real vector space
+* `Proj` : the class of `UniVec` quotient by `±1`, in other words, `ℝP²` . 
 
 ## Notation
 
@@ -15,7 +16,7 @@ This file defines the standard inner product real vector space of dimension two.
 
 In section `StdR2`, we define all of the sturctures on the standard 2d inner product real vector space `ℝ × ℝ`. We use defs and do NOT use instances here in order to avoid conflicts to existing instance of such stuctures on `ℝ × ℝ` which is based on `L^∞` norm of the product space. Then we define the angle of two vectors, which takes value in `(-π, π]`. Notice that if any one of the two vector is `0`, the angle is defined to be `0`.
 
-Then we define the class `UniVec` of vectors of unit length. 
+Then we define the class `UniVec` of vectors of unit length. We equip it with the structure of commutative group. The quotient `Proj` of `UniVec` by `±1` is automatically a commutative group.
 
 ## Further Works
 Inequalities about `ℝ²` should be written at the beginning of this file.
@@ -286,27 +287,38 @@ end UniVec
 def PM : UniVec → UniVec → Prop :=
 fun x y => x = y ∨ x = -y
 
-def PM.equivalence : Equivalence PM where
+namespace PM
+
+def equivalence : Equivalence PM where
   refl _ := by simp [PM]
   symm := fun h => by 
     simp [PM] at *
     sorry
   trans := sorry
 
-def PM.con : Con UniVec where
+instance con : Con UniVec where
   r := PM
   iseqv := PM.equivalence
   mul' := sorry
 
-def PMUniVec := Con.Quotient PM.con
+end PM
 
-instance : MulOneClass PMUniVec := Con.mulOneClass PM.con
+def Proj := Con.Quotient PM.con
 
-instance : Group PMUniVec := Con.group PM.con
+namespace Proj
 
-instance : CommMonoid PMUniVec := Con.commMonoid PM.con
+instance : MulOneClass Proj := Con.mulOneClass PM.con
 
-instance : CommGroup PMUniVec where
-  mul_comm := instCommMonoidPMUniVec.mul_comm
+instance : Group Proj := Con.group PM.con
+
+instance : CommMonoid Proj := Con.commMonoid PM.con
+
+instance : CommGroup Proj where
+  mul_comm := instCommMonoidProj.mul_comm
+
+end Proj
+
+instance : Coe UniVec Proj where
+  coe v := ⟦v⟧
 
 end EuclidGeom

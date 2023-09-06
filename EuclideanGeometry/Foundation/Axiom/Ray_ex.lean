@@ -13,7 +13,7 @@ theorem target_lies_on_seg : l.source LiesOnSeg l := by sorry
 
 -- If a point lies on a directed segemnt, then it lies on the Ray associated to the directed segment
 
-theorem pt_on_toRay_of_pt_on_Seg (p : P) (l : Seg P) (lieson : p LiesOnSeg l) (nontriv : l.target ≠ l.source) : p LiesOnRay (l.toRay_of_nontriv nontriv) := sorry
+theorem pt_on_toRay_of_pt_on_Seg (p : P) (l : Seg P) (lieson : p LiesOnSeg l) (nontriv : l.is_nontriv) : p LiesOnRay (l.toRay_of_nontriv nontriv) := sorry
 
 
 -- definition of reversion of the direction of a generalized directed segment
@@ -29,7 +29,7 @@ theorem double_rev_eq_self  : l.reverse.reverse = l := rfl
 theorem IsOnSeg_of_rev_of_IsOnSeg (p : P) (lieson : p LiesOnSeg l) : p LiesOnSeg l.reverse := sorry
 
 -- reversing the direction does not change the nontriviality of a generalized directed segment.
-theorem nontriv_of_rev_of_nontriv (nontriv : l.target ≠ l.source) : l.reverse.target ≠ l.reverse.source := sorry
+theorem nontriv_of_rev_of_nontriv (nontriv : l.is_nontriv) : l.reverse.is_nontriv := sorry
 
 -- reversing the direction does not change the length
 theorem length_eq_length_of_rev : l.length = l.reverse.length := sorry

@@ -3,19 +3,19 @@ import EuclideanGeometry.Foundation.Axiom.Position
 noncomputable section
 namespace EuclidGeom
 
-/- Class of generalized circles-/
+/- Class of Circles-/
 class Circle (P : Type _) [EuclideanPlane P] where 
   center : P
   radius : ℝ
-  rad_pos : 0 ≤ radius
+  rad_pos : 0 < radius
 
 namespace Circle
 variable {P : Type _} [EuclideanPlane P]
 
-def mk_pt_pt (O A : P) : Circle P where
+def mk_pt_pt (O A : P) (h : A ≠ O) : Circle P where
   center := O
   radius := (SEG O A).length
-  rad_pos := Seg.length_nonneg _
+  rad_pos := (Seg.nontriv_iff_length_pos _).mp h
 
 def mk_pt_pt_pt (A B C: P) (h : ¬ colinear A B C) : Circle P := sorry
 

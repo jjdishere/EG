@@ -1,5 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Ray
-import EuclideanGeometry.Foundation.Axiom.Ray_ex1
+import EuclideanGeometry.Foundation.Axiom.Ray_ex
 
 /- The purpose of of this file is to establish results about parallel translate along a vector. Presumably, all results are "invariant" under parallel translation. -/
 
@@ -11,13 +11,13 @@ variable {P: Type _} [EuclideanPlane P] (v : ℝ × ℝ) (l : Seg P)
 
 -- parallel translate a generalized directed segments
 
-def translate (v : ℝ × ℝ) (l : Seg P) : Seg P where
+def translate (l : Seg P) (v : ℝ × ℝ)  : Seg P where
   source := v +ᵥ l.source
   target := v +ᵥ l.target
 
 -- parallel translate a nontrivial generalized directed segment is nontrivial
 
-theorem non_triv_of_trans_non_triv (v : ℝ × ℝ) (l : Seg P) (nontriv : l.source ≠ l.target) : (l.translate v).source ≠ (l.translate v).target := by sorry
+theorem non_triv_of_trans_non_triv (v : ℝ × ℝ) (l : Seg P) (nontriv : l.is_nontriv) : (l.translate v).is_nontriv := by sorry
 
 theorem reverse_of_trans_eq_trans_of_reverse (v : ℝ × ℝ) (l : Seg P) : (l.translate v).reverse = l.reverse.translate v := by sorry
 

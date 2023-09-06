@@ -46,11 +46,6 @@ end point_to_ray
 scoped infix : 50 "LiesOnLeft" => IsOnLeftSide 
 scoped infix : 50 "LiesOnRight" => IsOnRightSide 
 
-/- Positions of a point relative to a ray/line/segment: 1. at the end point, 2. on the ray (not including the end point) 3. on the opposite direction of the ray.  4. on the "left" of the ray. 5. on the "right" of the ray. -/
--- `all these are better stated with the notaiton of line, so I moved them to line_ex.lean`
-
-
-
 /- Position of two rays -/
 section ray_to_ray
 

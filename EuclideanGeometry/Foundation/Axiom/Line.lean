@@ -15,7 +15,7 @@ variable  {P : Type _} [EuclideanPlane P]
 
 -- define a line from two points 
 
-def mk_pt_pt (A B : P) (h : B ≠ A) : Line P := sorry --careful here! should I use B ≠ A or A ≠ B ? 
+def mk_pt_pt (A B : P) (h : B ≠ A) : Line P := sorry
 
 end Line
 
@@ -48,10 +48,11 @@ theorem pt_lies_on_line_of_pt_pt (A B : P) (h: B ≠ A) : A LiesOnLine LIN A B h
 
 -- The line defined from two distinct points is equal to the line defined from the ray associated to two distinct points
 
-theorem line_eq_line_of_ray_of_pt_pt {A B : P} (h : B ≠ A) : LIN A B h = ((RAY A B h) : Line P) := sorry
--- `not clear whether I should remove : Line P (it compiles)`
+theorem line_eq_line_of_ray_of_pt_pt {A B : P} (h : B ≠ A) : LIN A B h = (RAY A B h : Line P) := sorry
+-- `not clear whether I should remove : Line P (it compiles)` 
+-- `It do compile by auto coersion, but please leave it here for the sake of clarity`
 
-theorem line_eq_line_of_pt_pt {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOnLine l) (hB : B LiesOnLine l) : l = Line.mk_pt_pt A B h := sorry -- p ≠ q or q ≠ p ?
+theorem line_eq_line_of_pt_pt {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOnLine l) (hB : B LiesOnLine l) : l = Line.mk_pt_pt A B h := sorry
 
 theorem lieson_of_colinear_ne {A B C : P} (c : colinear A B C) (h : B ≠ A) : C LiesOnLine LIN A B h := sorry
 

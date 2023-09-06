@@ -12,7 +12,7 @@ This file defines the Euclidean Plane as an affine space, which admits an action
 
 ## Notation
 
-* `Vec A B` : the vector in `ℝ × ℝ` from `A` to `B`
+* `Vec A B` : the vector `B -ᵥ A` in `ℝ × ℝ`
 
 ## Implementation Notes
 
@@ -38,15 +38,11 @@ instance : EuclideanPlane (ℝ × ℝ) where
   toMetricSpace := StdR2.MetricSpace
   toNormedAddTorsor := @SeminormedAddCommGroup.toNormedAddTorsor _ StdR2.SeminormedAddCommGroup
 
-instance [EuclideanPlane H] : @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _ := EuclideanPlane.toNormedAddTorsor
+instance {H : Type _} [EuclideanPlane H] : @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _ := EuclideanPlane.toNormedAddTorsor
 
-instance [EuclideanPlane H] : AddTorsor (ℝ × ℝ) H := by infer_instance
+instance {H : Type _} [EuclideanPlane H] : AddTorsor (ℝ × ℝ) H := by infer_instance
 
+@[simp]
 theorem start_vadd_vec_eq_end {H : Type _} [EuclideanPlane H] (A B : H) : (Vec A B) +ᵥ A = B := sorry
 
 end EuclidGeom
-
-
-
-
-

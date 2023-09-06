@@ -21,7 +21,7 @@ namespace IsCongr
 
 variable (tr₁ tr₂: Triangle P) (h : tr₁ IsCongrTo tr₂)
 
-theorem nontriv: tr₁.is_nontriv = tr₂.is_nontriv := sorry
+theorem is_nontriv: tr₁.is_nontriv = tr₂.is_nontriv := sorry
 
 theorem edge₁ : tr₁.edge₁.length = tr₂.edge₁.length := sorry
 
@@ -37,7 +37,7 @@ theorem angle₂ : tr₁.angle₂ nontriv₁ = tr₂.angle₂ nontriv₂ := sorr
 
 theorem angle₃ : tr₁.angle₃ nontriv₁ = tr₂.angle₃ nontriv₂ := sorry
 
-theorem cclock : tr₁.is_cclock nontriv₁ = tr₂.is_cclock nontriv₂ := sorry
+theorem is_cclock : tr₁.is_cclock nontriv₁ = tr₂.is_cclock nontriv₂ := sorry
 
 end IsCongr
 
@@ -72,7 +72,7 @@ namespace IsACongr
 
 variable (tr₁ tr₂: Triangle P) (h : tr₁ IsACongrTo tr₂)
 
-theorem nontriv: tr₁.is_nontriv ↔ tr₂.is_nontriv := sorry
+theorem is_nontriv: tr₁.is_nontriv ↔ tr₂.is_nontriv := sorry
 
 theorem edge₁ : tr₁.edge₁.length = tr₂.edge₁.length := sorry
 
@@ -88,7 +88,7 @@ theorem angle₂ : tr₁.angle₂ nontriv₁ = - tr₂.angle₂ nontriv₂ := so
 
 theorem angle₃ : tr₁.angle₃ nontriv₁ = - tr₂.angle₃ nontriv₂ := sorry
 
-theorem cclock : tr₁.is_cclock nontriv₁ = ¬ tr₂.is_cclock nontriv₂ := sorry
+theorem is_cclock : tr₁.is_cclock nontriv₁ = ¬ tr₂.is_cclock nontriv₂ := sorry
 
 end IsACongr
 
