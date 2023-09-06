@@ -14,7 +14,7 @@ def colinear (A B C : P) : Prop := by
   · exact ANG B A C h.1 h.2 = 0 ∨ ANG B A C h.1 h.2 = π  
   · exact True  
 
--- rerwrite this part, use minimal theroems, but create a tactic called `colinarity`
+-- rerwrite this part, use minimal theorems, but create a tactic called `colinarity`
 theorem perm_colinear {A B C : P} (h : colinear A B C) : (colinear B C A) := by sorry
 
 theorem flip_colinear {A B C : P} (h : colinear A B C) : (colinear A C B) := sorry
@@ -40,13 +40,6 @@ def IsOnRightSide (A : P) (ray : Ray P) : Prop := by
   · exact False
   · exact ((OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value < 0)
 
-theorem left_or_right_or_lies_on : sorry := sorry
-
-theorem left_iff_not_right_of_not_lies_on : sorry := sorry
-
-theorem not_lies_on_left_or_right : sorry := sorry
-
--- theroems stating colinear iff (Pos ∨ Neg ∨ Source) and alternativity of 3 conditions
 
 end point_to_ray
 
@@ -54,8 +47,8 @@ scoped infix : 50 "LiesOnLeft" => IsOnLeftSide
 scoped infix : 50 "LiesOnRight" => IsOnRightSide 
 
 /- Positions of a point relative to a ray/line/segment: 1. at the end point, 2. on the ray (not including the end point) 3. on the opposite direction of the ray.  4. on the "left" of the ray. 5. on the "right" of the ray. -/
+-- `all these are better stated with the notaiton of line, so I moved them to line_ex.lean`
 
-/- Position of three (distinct) points.  Giving to colinear (futher classification) -/
 
 
 /- Position of two rays -/
