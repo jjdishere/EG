@@ -91,9 +91,20 @@ protected def InnerProductSpace.Core : InnerProductSpace.Core ℝ (ℝ × ℝ) w
     simp
     ring_nf
     positivity
-  definite := fun x hx => by 
+  definite := fun x hx => by
     simp at hx
-    sorry
+    rw [← pow_two, ← pow_two] at hx
+    have g₁ : 0 ≤ @HPow.hPow ℝ ℕ ℝ _ x.1 2  := by positivity
+    have g₂ : 0 ≤ @HPow.hPow ℝ ℕ ℝ _ x.2 2  := by positivity
+    ext
+    · dsimp
+      by_contra h
+      have h₁ : 0 < @HPow.hPow ℝ ℕ ℝ _ x.1 2  := by positivity
+      linarith
+    · dsimp
+      by_contra h
+      have h₂ : 0 < @HPow.hPow ℝ ℕ ℝ _ x.2 2  := by positivity
+      linarith  
   add_left := fun _ _ _ => by 
     simp
     ring
@@ -118,12 +129,15 @@ protected def PseudoMetricSpace := @MetricSpace.toPseudoMetricSpace _ StdR2.Metr
 
 protected def Norm := @NormedAddCommGroup.toNorm _ (StdR2.NormedAddCommGroup)
 
-protected def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩ 
+protected def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩
 
 /- WARNING : the arg of `0 : ℂ` is `0`, the result of quotient by `0 : ℂ` is `0 : ℂ`-/
 protected def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((StdR2.toComplex x)/(StdR2.toComplex y))
 
+def ComplextoVec (c : ℂ) : ℝ × ℝ := ⟨c.1, c.2⟩
+
 end StdR2
+
 @[ext]
 class UniVec where
   vec : ℝ × ℝ 
@@ -162,9 +176,10 @@ def UniVec.mk_angle (θ : ℝ) : UniVec where
 
 instance : Mul UniVec where
   mul := fun z w => {
-    vec := (z.vec.1 * w.vec.1 - z.vec.2 * w.vec.2, z.vec.1 * w.vec.2 + z.vec.2 * w.vec.1)
+    vec := StdR2.ComplextoVec (StdR2.toComplex z.vec * StdR2.toComplex w.vec)
+    -- vec := (z.vec.1 * w.vec.1 - z.vec.2 * w.vec.2, z.vec.1 * w.vec.2 + z.vec.2 * w.vec.1)
     unit := by
-      unfold Inner.inner StdR2.InnerProductSpace.Core
+      unfold Inner.inner StdR2.InnerProductSpace.Core StdR2.ComplextoVec StdR2.toComplex
       simp
       ring_nf
       calc 
@@ -180,39 +195,91 @@ instance : Mul UniVec where
         _ = 1 := one_mul 1
   } 
 
-instance : CommGroup UniVec where
-  mul := Mul.mul
-  mul_assoc := sorry
+instance : One UniVec where
   one := {
-    vec := (1,0)
+    vec := (1, 0)
     unit := by 
       unfold Inner.inner StdR2.InnerProductSpace.Core
       simp
   }
-  one_mul := fun a => by
+
+@[simp]
+theorem fst_of_one_eq_one : (1 : UniVec).vec.1 = 1 := rfl
+
+@[simp]
+theorem snd_of_one_eq_zero : (1 : UniVec).vec.2 = 0 := rfl
+
+@[simp]
+theorem one_eq_one_to_complex: StdR2.toComplex (1 : UniVec).vec = 1 := rfl
+
+@[simp]
+theorem one_eq_one_to_vec: StdR2.ComplextoVec (1 : ℂ) = (1, 0) := rfl
+
+@[simp]
+theorem eq_self_to_complex_to_vec (x : ℝ × ℝ): StdR2.ComplextoVec (StdR2.toComplex x) = x := rfl
+
+@[simp]
+theorem sq_sum_eq_one (x : UniVec): @HPow.hPow ℝ ℕ ℝ _ x.vec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.vec.2 2 = 1 := by
+  rw [pow_two, pow_two]
+  exact x.unit
+
+instance : Semigroup UniVec where
+  mul_assoc _ _ _ := by
     ext : 1
-    unfold UniVec.vec HMul.hMul instHMul Mul.mul Semigroup.toMul instMulUniVec
-    simp only
-    sorry
-  mul_one := sorry
-  npow := sorry
-  npow_zero := sorry
-  npow_succ := sorry
-  inv := sorry
-  div := sorry
-  div_eq_mul_inv := sorry
-  zpow := sorry
-  zpow_zero' := sorry
-  zpow_succ' := sorry
-  zpow_neg' := sorry
-  mul_left_inv := sorry
-  mul_comm := sorry
+    unfold vec HMul.hMul instHMul Mul.mul instMulUniVec StdR2.ComplextoVec StdR2.toComplex
+    simp
+    ring_nf
+
+instance : Monoid UniVec where
+  one_mul := fun _ => by
+    ext : 1
+    unfold vec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupUniVec instMulUniVec
+    simp
+    rfl
+  mul_one := fun _ => by
+    ext : 1
+    unfold vec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupUniVec instMulUniVec
+    simp
+    rfl
+
+instance : CommGroup UniVec where
+  inv := fun x => {
+    vec := (x.1.fst, -x.1.snd)
+    unit := by
+      unfold inner StdR2.InnerProductSpace.Core
+      simp
+      exact x.2
+  }
+  mul_left_inv _ := by
+    ext : 1
+    unfold HMul.hMul Inv.inv instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidUniVec instSemigroupUniVec instMulUniVec StdR2.toComplex StdR2.ComplextoVec
+    simp
+    ring_nf
+    ext
+    simp
+    simp
+    
+  mul_comm _ _ := by
+    ext : 1
+    unfold vec HMul.hMul instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidUniVec instSemigroupUniVec instMulUniVec
+    simp
+    ring_nf
 
 instance : HasDistribNeg UniVec where
   neg := Neg.neg
-  neg_neg := sorry
-  neg_mul := sorry
-  mul_neg := sorry
+  neg_neg _ := by
+    unfold Neg.neg instNegUniVec
+    simp
+  neg_mul _ _ := by
+    ext : 1
+    unfold Neg.neg instNegUniVec vec HMul.hMul instHMul Mul.mul instMulUniVec StdR2.toComplex StdR2.ComplextoVec vec
+    simp
+    ring_nf
+  mul_neg _ _ := by
+    ext : 1
+    unfold Neg.neg instNegUniVec vec HMul.hMul instHMul Mul.mul instMulUniVec StdR2.toComplex StdR2.ComplextoVec vec
+    simp
+    ring_nf
 
 end UniVec
 
