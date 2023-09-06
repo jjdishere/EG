@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Plane
+`import EuclideanGeometry.Foundation.Axiom.Plane
 
 /-!
 # Segments and rays
@@ -39,6 +39,13 @@ def IsOnRay {P : Type _} [EuclideanPlane P] (a : P) (l : Ray P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ a = t • l.direction.vec +ᵥ l.source
 
 def IsOnIntRay {P : Type _} [EuclideanPlane P] (a : P) (l : Ray P) : Prop := IsOnRay a l ∧ a ≠ l.source
+namespace Ray 
+
+variable {P : Type _} [EuclideanPlane P] (l : Ray P)
+
+def toProj : Proj := (l.direction : Proj)
+
+end Ray
 
 /- Generalized Directed segment -/
 @[ext]
@@ -49,7 +56,7 @@ class Seg (P : Type _) [EuclideanPlane P] where
 def Seg.is_nontriv {P : Type _} [EuclideanPlane P] (seg : Seg P) : Prop := seg.target ≠ seg.source 
 
 def IsOnSeg {P : Type _} [EuclideanPlane P] (a : P) (l : Seg P) : Prop :=
-  ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (l.target -ᵥ l.source) +ᵥ l.source
+  ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (VEC l.source l.target) +ᵥ l.source
 
 def IsOnIntSeg {P : Type _} [EuclideanPlane P] (a : P) (l : Seg P) : Prop := IsOnSeg a l ∧ a ≠ l.source ∧ a ≠ l.target 
 
@@ -64,9 +71,18 @@ scoped infix : 50 "LiesOnIntSeg" => IsOnIntSeg
 /- Coe from Seg to Vector, Ray-/
 namespace Seg 
 
-def toVec {P : Type _} [EuclideanPlane P] (l : Seg P) : (ℝ × ℝ) := l.target -ᵥ l.source 
+variable {P : Type _} [EuclideanPlane P] (seg : Seg P)
 
-def toRay_of_nontriv {P : Type _} [EuclideanPlane P] (seg : Seg P) (h : seg.is_nontriv) : Ray P := sorry
+def toVec : (ℝ × ℝ) := VEC seg.source seg.target
+
+variable (h : seg.is_nontriv)
+def direction_of_nontriv : UniVec := UniVec.normalize seg.toVec ((ne_iff_vec_nonzero _ _).mp h)
+
+def toRay_of_nontriv : Ray P where
+  source := seg.source
+  direction := seg.direction_of_nontriv h
+
+def toProj_of_nontriv : Proj := (seg.direction_of_nontriv h : Proj)
 
 end Seg
 
@@ -75,7 +91,7 @@ section mk
 -- mk method of Ray giving 2 distinct point
 def Ray.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : Ray P where
   source := A
-  direction := UniVec.normalize (B -ᵥ A) (vsub_ne_zero.mpr h)
+  direction := UniVec.normalize (VEC A B) (vsub_ne_zero.mpr h)
 
 -- notation 
 end mk

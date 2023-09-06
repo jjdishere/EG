@@ -6,8 +6,8 @@ namespace EuclidGeom
 class Line (P : Type _) [EuclideanPlane P] where 
   carrier : Set P
   linear : ∀ (A B C : P), (A ∈ carrier) → (B ∈ carrier) → (C ∈ carrier) → colinear A B C  
-  maximal : ∀ (A B : P), (A ∈ carrier) → (B ∈ carrier) → (A ≠ B) → (∀ (C : P), colinear A B C → (C ∈ carrier))
-  nontriv : ∃ (A B : P), (A ∈ carrier) ∧ (B ∈ carrier) ∧ (A ≠ B)
+  maximal : ∀ (A B : P), (A ∈ carrier) → (B ∈ carrier) → (B ≠ A) → (∀ (C : P), colinear A B C → (C ∈ carrier))
+  nontriv : ∃ (A B : P), (A ∈ carrier) ∧ (B ∈ carrier) ∧ (B ≠ A)
 
 namespace Line
 
@@ -15,7 +15,14 @@ variable  {P : Type _} [EuclideanPlane P]
 
 -- define a line from two points 
 
-def mk_pt_pt (A B : P) (h : B ≠ A) : Line P := sorry
+def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
+  carrier := {C : P | ∃ t : ℝ, VEC A C = t • VEC A B}
+  linear := sorry
+  maximal := sorry
+  nontriv := by 
+    use A 
+    use B
+    sorry
 
 end Line
 
@@ -24,8 +31,14 @@ scoped notation "LIN" => Line.mk_pt_pt
 variable {P : Type _} [EuclideanPlane P]
 
 /- def coe from ray to line-/
+def Ray.toLine (r : Ray P) : Line P where
+  carrier := {C : P | ∃ t : ℝ, VEC r.source C = t • r.direction.vec}
+  linear := sorry
+  maximal := sorry
+  nontriv := sorry
+
 instance : Coe (Ray P) (Line P) where
-  coe := sorry
+  coe := Ray.toLine
 
 /- Def of point lies on a line -/
 def IsOnLine (a : P) (l : Line P) : Prop :=
@@ -60,8 +73,18 @@ end Compaitiblity_of_coersions
 
 section Archimedean_property
 -- there are two distinct points on a line
+theorem exists_ne_pt_pt_lies_on_of_line (l : Line P) : ∃ A B : P, B ≠ A ∧ A LiesOnLine l ∧ B LiesOnLine l  := sorry
 
 -- Given distinct A B on a line, there exist C s.t. C LiesOn AB (a cor of Archimedean_property in Seg) and there exist D s.t. B LiesOn AD
 end Archimedean_property
+
+-- where should this theorem be placed?
+theorem vec_eq_mul_vec_of_pt_pt_on_line (l : Line P) (A B C D : P) (hA : A LiesOnLine l) (hB : B LiesOnLine l) (hC : C LiesOnLine l) (hD : D LiesOnLine l) (h : B ≠ A) : ∃ (t : ℝ), VEC C D = t • VEC A B := sorry
+
+def Line.toProj (l : Line P) : Proj := by
+  choose A B h _ _ using (exists_ne_pt_pt_lies_on_of_line l)
+  exact (SEG A B).toProj_of_nontriv h
+
+theorem eq_toProj_of_four_pt_on_line (l : Line P) (A B C D : P) (hA : A LiesOnLine l) (hB : B LiesOnLine l) (hC : C LiesOnLine l) (hD : D LiesOnLine l) (h₁ : B ≠ A) (h₂ : D ≠ C) : (SEG A B).toProj_of_nontriv h₁ = (SEG C D).toProj_of_nontriv h₂ := sorry
 
 end EuclidGeom

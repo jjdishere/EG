@@ -319,7 +319,13 @@ instance : CommGroup Proj where
 
 end Proj
 
+def UniVec.toProj (v : UniVec) : Proj := ⟦v⟧
+
 instance : Coe UniVec Proj where
-  coe v := ⟦v⟧
+  coe v := v.toProj
+
+def StdR2.toProj_of_nonzero (v : ℝ × ℝ) (h : v ≠ 0) : Proj := (UniVec.normalize v h : Proj) 
+
+theorem eq_toProj_of_smul (u v : ℝ × ℝ) (hu : u ≠ 0) (hv : v ≠ 0) (t : ℝ) : v = t • u → StdR2.toProj_of_nonzero v hv = StdR2.toProj_of_nonzero u hu := sorry 
 
 end EuclidGeom
