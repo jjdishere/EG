@@ -69,18 +69,18 @@ protected def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
     intro h
     rw [Real.sqrt_eq_zero'] at h
     simp [← pow_two] at h
-    let hx1 := sq_nonneg x.1
-    let hx2 := sq_nonneg x.2
+    let hx₁ := sq_nonneg x.1
+    let hx₂ := sq_nonneg x.2
     ext
     · by_contra h₁
       simp at h₁
       rw [← Ne.def] at h₁
-      have h11 := sq_pos_of_ne_zero _ h₁
+      have h₁₁ := sq_pos_of_ne_zero _ h₁
       linarith
     · by_contra h₁
       simp at h₁
       rw [← Ne.def] at h₁
-      have h21 := sq_pos_of_ne_zero _ h₁
+      have h₂₁ := sq_pos_of_ne_zero _ h₁
       linarith
 
 protected def InnerProductSpace.Core : InnerProductSpace.Core ℝ (ℝ × ℝ) where
@@ -307,7 +307,8 @@ def equivalence : Equivalence PM where
       | Or.inl h₁ => Or.inl (Eq.symm h₁)
       | Or.inr h₂ => Or.inr (Iff.mp neg_eq_iff_eq_neg (id (Eq.symm h₂)))
   trans := by
-    intro x y z g h
+    intro _ _ z g h
+    unfold PM
     match g with
       | Or.inl g₁ => 
           rw [← g₁] at h
@@ -316,7 +317,6 @@ def equivalence : Equivalence PM where
           match h with
             | Or.inl h₁ =>
               rw [h₁] at g₂
-              unfold PM
               right
               exact g₂
             | Or.inr h₂ =>
@@ -324,14 +324,36 @@ def equivalence : Equivalence PM where
               have g₃ : z = - - z := Iff.mp neg_eq_iff_eq_neg rfl
               rw [← g₃] at g₂
               rw [g₂]
-              unfold PM
               left
               rfl
 
 instance con : Con Dir where
   r := PM
   iseqv := PM.equivalence
-  mul' := sorry
+  mul' := by
+    unfold Setoid.r PM
+    simp
+    intro _ _ _ _ g h
+    match g with
+      | Or.inl g₁ => 
+        match h with
+          | Or.inl h₁ =>
+            left
+            rw [g₁, h₁]
+          | Or.inr h₂ =>
+            right
+            rw [g₁, h₂]
+            exact mul_neg _ _
+      | Or.inr g₂ => 
+        match h with
+          | Or.inl h₁ =>
+            right
+            rw [g₂, h₁]
+            exact neg_mul _ _
+          | Or.inr h₂ =>
+            left
+            rw[g₂, h₂]
+            exact neg_mul_neg _ _
 
 end PM
 
@@ -357,6 +379,7 @@ instance : Coe Dir Proj where
 
 def StdR2.toProj_of_nonzero (v : ℝ × ℝ) (h : v ≠ 0) : Proj := (Vec.normalize v h : Proj) 
 
-theorem eq_toProj_of_smul (u v : ℝ × ℝ) (hu : u ≠ 0) (hv : v ≠ 0) (t : ℝ) : v = t • u → StdR2.toProj_of_nonzero v hv = StdR2.toProj_of_nonzero u hu := sorry 
+theorem eq_toProj_of_smul (u v : ℝ × ℝ) (hu : u ≠ 0) (hv : v ≠ 0) (t : ℝ) : v = t • u → StdR2.toProj_of_nonzero v hv = StdR2.toProj_of_nonzero u hu := by
+  sorry 
 
 end EuclidGeom
