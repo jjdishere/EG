@@ -216,13 +216,13 @@ theorem fst_of_one_eq_one : (1 : Dir).vec.1 = 1 := rfl
 theorem snd_of_one_eq_zero : (1 : Dir).vec.2 = 0 := rfl
 
 @[simp]
-theorem one_eq_one_to_complex : StdR2.toComplex (1 : Dir).vec = 1 := rfl
+theorem one_eq_one_toComplex : StdR2.toComplex (1 : Dir).vec = 1 := rfl
 
 @[simp]
-theorem one_eq_one_to_vec : StdR2.ComplextoVec (1 : ℂ) = (1, 0) := rfl
+theorem one_ComplextoVec_eq_one : StdR2.ComplextoVec (1 : ℂ) = (1, 0) := rfl
 
 @[simp]
-theorem eq_self_to_complex_to_vec (x : ℝ × ℝ) : StdR2.ComplextoVec (StdR2.toComplex x) = x := rfl
+theorem eq_self_toComplex_ComplextoVec (x : ℝ × ℝ) : StdR2.ComplextoVec (StdR2.toComplex x) = x := rfl
 
 @[simp]
 theorem sq_sum_eq_one (x : Dir) : @HPow.hPow ℝ ℕ ℝ _ x.vec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.vec.2 2 = 1 := by
@@ -379,7 +379,10 @@ instance : Coe Dir Proj where
 
 def StdR2.toProj_of_nonzero (v : ℝ × ℝ) (h : v ≠ 0) : Proj := (Vec.normalize v h : Proj) 
 
-theorem eq_toProj_of_smul (u v : ℝ × ℝ) (hu : u ≠ 0) (hv : v ≠ 0) (t : ℝ) : v = t • u → StdR2.toProj_of_nonzero v hv = StdR2.toProj_of_nonzero u hu := by
+theorem normalize_eq_mul_pos_normalize {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) (ht : t > 0) : Vec.normalize u hu = Vec.normalize v hv := by
+  sorry
+
+theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) : StdR2.toProj_of_nonzero v hv = StdR2.toProj_of_nonzero u hu := by
   sorry 
 
 end EuclidGeom
