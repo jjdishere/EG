@@ -14,7 +14,7 @@ This file defines the standard inner product real vector space of dimension two.
 
 ## Implementation Notes
 
-In section `StdR2`, we define all of the sturctures on the standard 2d inner product real vector space `ℝ × ℝ`. We use defs and do NOT use instances here in order to avoid conflicts to existing instance of such stuctures on `ℝ × ℝ` which is based on `L^∞` norm of the product space. Then we define the angle of two vectors, which takes value in `(-π, π]`. Notice that if any one of the two vector is `0`, the angle is defined to be `0`.
+In section `Vec`, we define all of the sturctures on the standard 2d inner product real vector space `ℝ × ℝ`. We use defs and do NOT use instances here in order to avoid conflicts to existing instance of such stuctures on `ℝ × ℝ` which is based on `L^∞` norm of the product space. Then we define the angle of two vectors, which takes value in `(-π, π]`. Notice that if any one of the two vector is `0`, the angle is defined to be `0`.
 
 Then we define the class `Dir` of vectors of unit length. We equip it with the structure of commutative group. The quotient `Proj` of `Dir` by `±1` is automatically a commutative group.
 
@@ -30,7 +30,7 @@ namespace EuclidGeom
 scoped notation "π" => Real.pi
 
 /- structures on `ℝ × ℝ`-/
-namespace StdR2
+namespace Vec
 
 protected def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
   toFun := fun x => Real.sqrt (x.1 * x.1  + x.2 * x.2)
@@ -114,30 +114,30 @@ protected def InnerProductSpace.Core : InnerProductSpace.Core ℝ (ℝ × ℝ) w
     ring
 
 /- shortcuts -/
-protected def NormedAddCommGroup : NormedAddCommGroup (ℝ × ℝ) := AddGroupNorm.toNormedAddCommGroup StdR2.AddGroupNorm
+protected def NormedAddCommGroup : NormedAddCommGroup (ℝ × ℝ) := AddGroupNorm.toNormedAddCommGroup Vec.AddGroupNorm
 
-protected def NormedAddGroup : NormedAddGroup (ℝ × ℝ) := @NormedAddCommGroup.toNormedAddGroup _ StdR2.NormedAddCommGroup
+protected def NormedAddGroup : NormedAddGroup (ℝ × ℝ) := @NormedAddCommGroup.toNormedAddGroup _ Vec.NormedAddCommGroup
 
-protected def InnerProductSpace : @InnerProductSpace ℝ (ℝ × ℝ) _ StdR2.NormedAddCommGroup := InnerProductSpace.ofCore StdR2.InnerProductSpace.Core
+protected def InnerProductSpace : @InnerProductSpace ℝ (ℝ × ℝ) _ Vec.NormedAddCommGroup := InnerProductSpace.ofCore Vec.InnerProductSpace.Core
 
-protected def SeminormedAddCommGroup := @NormedAddCommGroup.toSeminormedAddCommGroup _ (StdR2.InnerProductSpace.Core.toNormedAddCommGroup)
+protected def SeminormedAddCommGroup := @NormedAddCommGroup.toSeminormedAddCommGroup _ (Vec.InnerProductSpace.Core.toNormedAddCommGroup)
 
-protected def SeminormedAddGroup := @SeminormedAddCommGroup.toSeminormedAddGroup _ (StdR2.SeminormedAddCommGroup)
+protected def SeminormedAddGroup := @SeminormedAddCommGroup.toSeminormedAddGroup _ (Vec.SeminormedAddCommGroup)
 
-protected def MetricSpace := @NormedAddCommGroup.toMetricSpace _ (StdR2.InnerProductSpace.Core.toNormedAddCommGroup)
+protected def MetricSpace := @NormedAddCommGroup.toMetricSpace _ (Vec.InnerProductSpace.Core.toNormedAddCommGroup)
 
-protected def PseudoMetricSpace := @MetricSpace.toPseudoMetricSpace _ StdR2.MetricSpace
+protected def PseudoMetricSpace := @MetricSpace.toPseudoMetricSpace _ Vec.MetricSpace
 
-protected def Norm := @NormedAddCommGroup.toNorm _ (StdR2.NormedAddCommGroup)
+protected def Norm := @NormedAddCommGroup.toNorm _ (Vec.NormedAddCommGroup)
 
-protected def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩
+def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩
 
 /- WARNING : the arg of `0 : ℂ` is `0`, the result of quotient by `0 : ℂ` is `0 : ℂ`-/
-protected def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((StdR2.toComplex x)/(StdR2.toComplex y))
+protected def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((Vec.toComplex x)/(Vec.toComplex y))
 
-def ComplextoVec (c : ℂ) : ℝ × ℝ := ⟨c.1, c.2⟩
+end Vec
 
-end StdR2
+def Complex.toVec (c : ℂ) : ℝ × ℝ := ⟨c.1, c.2⟩
 
 /- the notation for class of vectors-/
 scoped notation "Vec" => ℝ × ℝ
@@ -146,35 +146,35 @@ scoped notation "Vec" => ℝ × ℝ
 
 @[ext]
 class Dir where
-  vec : Vec
-  unit : StdR2.InnerProductSpace.Core.inner vec vec = 1 
+  toVec : Vec
+  unit : Vec.InnerProductSpace.Core.inner toVec toVec= 1 
 
 def Vec.normalize (x : ℝ × ℝ) (h : x ≠ 0) : Dir where
-  vec := (StdR2.NormedAddCommGroup.norm x)⁻¹ • x 
+  toVec := (Vec.NormedAddCommGroup.norm x)⁻¹ • x 
   unit := by 
-    rw [@real_inner_smul_left _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace _ _ _, @real_inner_smul_right _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace _ _ _, @inner_self_eq_norm_sq_to_K _ _ _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace]
+    rw [@real_inner_smul_left _ Vec.NormedAddCommGroup Vec.InnerProductSpace _ _ _, @real_inner_smul_right _ Vec.NormedAddCommGroup Vec.InnerProductSpace _ _ _, @inner_self_eq_norm_sq_to_K _ _ _ Vec.NormedAddCommGroup Vec.InnerProductSpace]
     dsimp
     rw [pow_two]
-    rw [← mul_assoc _ _ (@norm (ℝ × ℝ) StdR2.NormedAddCommGroup.toNorm x)]
+    rw [← mul_assoc _ _ (@norm (ℝ × ℝ) Vec.NormedAddCommGroup.toNorm x)]
     simp only [ne_eq, inv_mul_mul_self]
-    rw [inv_mul_cancel ((@norm_ne_zero_iff _ StdR2.NormedAddGroup).mpr h)]
+    rw [inv_mul_cancel ((@norm_ne_zero_iff _ Vec.NormedAddGroup).mpr h)]
 
 -- Should change Dir into the following Dir'to use all instances on Dir'
-def Dir' := @Metric.sphere _ StdR2.PseudoMetricSpace (0: ℝ × ℝ) 1
+def Dir' := @Metric.sphere _ Vec.PseudoMetricSpace (0: ℝ × ℝ) 1
 
 -- Or alternatively, define CommGroup instance on Dir
 namespace Dir
 
 instance : Neg Dir where
   neg := fun x => {
-      vec := -x.vec
+      toVec := -x.toVec
       unit := by 
         rw [← unit]
-        exact @inner_neg_neg _ _ _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace _ _
+        exact @inner_neg_neg _ _ _ Vec.NormedAddCommGroup Vec.InnerProductSpace _ _
     }
 
 def mk_angle (θ : ℝ) : Dir where
-  vec := (Real.cos θ, Real.sin θ)
+  toVec := (Real.cos θ, Real.sin θ)
   unit := by 
     rw [← Real.cos_sq_add_sin_sq θ]
     rw [pow_two, pow_two]
@@ -182,14 +182,13 @@ def mk_angle (θ : ℝ) : Dir where
 
 instance : Mul Dir where
   mul := fun z w => {
-    vec := StdR2.ComplextoVec (StdR2.toComplex z.vec * StdR2.toComplex w.vec)
-    -- vec := (z.vec.1 * w.vec.1 - z.vec.2 * w.vec.2, z.vec.1 * w.vec.2 + z.vec.2 * w.vec.1)
+    toVec := Complex.toVec (Vec.toComplex z.toVec * Vec.toComplex w.toVec)
     unit := by
-      unfold Inner.inner StdR2.InnerProductSpace.Core StdR2.ComplextoVec StdR2.toComplex
+      unfold Inner.inner Vec.InnerProductSpace.Core Complex.toVec Vec.toComplex
       simp
       ring_nf
       calc 
-        _ = (z.vec.1 ^ 2 + z.vec.2 ^ 2) * (w.vec.1 ^ 2 + w.vec.2 ^ 2) := by
+        _ = (z.toVec.1 ^ 2 + z.toVec.2 ^ 2) * (w.toVec.1 ^ 2 + w.toVec.2 ^ 2) := by
           ring_nf
           simp only [Real.rpow_two]
           linarith
@@ -203,62 +202,62 @@ instance : Mul Dir where
 
 instance : One Dir where
   one := {
-    vec := (1, 0)
+    toVec := (1, 0)
     unit := by 
-      unfold Inner.inner StdR2.InnerProductSpace.Core
+      unfold Inner.inner Vec.InnerProductSpace.Core
       simp
   }
 
 @[simp]
-theorem fst_of_one_eq_one : (1 : Dir).vec.1 = 1 := rfl
+theorem fst_of_one_eq_one : (1 : Dir).toVec.1 = 1 := rfl
 
 @[simp]
-theorem snd_of_one_eq_zero : (1 : Dir).vec.2 = 0 := rfl
+theorem snd_of_one_eq_zero : (1 : Dir).toVec.2 = 0 := rfl
 
 @[simp]
-theorem one_eq_one_toComplex : StdR2.toComplex (1 : Dir).vec = 1 := rfl
+theorem one_eq_one_toComplex : Vec.toComplex (1 : Dir).toVec = 1 := rfl
 
 @[simp]
-theorem one_ComplextoVec_eq_one : StdR2.ComplextoVec (1 : ℂ) = (1, 0) := rfl
+theorem one_ComplextoVec_eq_one : Complex.toVec (1 : ℂ) = (1, 0) := rfl
 
 @[simp]
-theorem eq_self_toComplex_ComplextoVec (x : ℝ × ℝ) : StdR2.ComplextoVec (StdR2.toComplex x) = x := rfl
+theorem eq_self_toComplex_ComplextoVec (x : ℝ × ℝ) : Complex.toVec (Vec.toComplex x) = x := rfl
 
 @[simp]
-theorem sq_sum_eq_one (x : Dir) : @HPow.hPow ℝ ℕ ℝ _ x.vec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.vec.2 2 = 1 := by
+theorem sq_sum_eq_one (x : Dir) : @HPow.hPow ℝ ℕ ℝ _ x.toVec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.toVec.2 2 = 1 := by
   rw [pow_two, pow_two]
   exact x.unit
 
 instance : Semigroup Dir where
   mul_assoc _ _ _ := by
     ext : 1
-    unfold vec HMul.hMul instHMul Mul.mul instMulDir StdR2.ComplextoVec StdR2.toComplex
+    unfold toVec HMul.hMul instHMul Mul.mul instMulDir Complex.toVec Vec.toComplex
     simp
     ring_nf
 
 instance : Monoid Dir where
   one_mul := fun _ => by
     ext : 1
-    unfold vec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
+    unfold toVec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
     simp
     rfl
   mul_one := fun _ => by
     ext : 1
-    unfold vec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
+    unfold toVec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
     simp
     rfl
 
 instance : CommGroup Dir where
   inv := fun x => {
-    vec := (x.1.fst, -x.1.snd)
+    toVec := (x.1.fst, -x.1.snd)
     unit := by
-      unfold inner StdR2.InnerProductSpace.Core
+      unfold inner Vec.InnerProductSpace.Core
       simp
       exact x.2
   }
   mul_left_inv _ := by
     ext : 1
-    unfold HMul.hMul Inv.inv instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidDir instSemigroupDir instMulDir StdR2.toComplex StdR2.ComplextoVec
+    unfold HMul.hMul Inv.inv instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidDir instSemigroupDir instMulDir Vec.toComplex Complex.toVec
     simp
     ring_nf
     ext
@@ -267,7 +266,7 @@ instance : CommGroup Dir where
     
   mul_comm _ _ := by
     ext : 1
-    unfold vec HMul.hMul instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidDir instSemigroupDir instMulDir
+    unfold toVec HMul.hMul instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidDir instSemigroupDir instMulDir
     simp
     ring_nf
 
@@ -278,12 +277,12 @@ instance : HasDistribNeg Dir where
     simp
   neg_mul _ _ := by
     ext : 1
-    unfold Neg.neg instNegDir vec HMul.hMul instHMul Mul.mul instMulDir StdR2.toComplex StdR2.ComplextoVec vec
+    unfold Neg.neg instNegDir toVec HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec toVec
     simp
     ring_nf
   mul_neg _ _ := by
     ext : 1
-    unfold Neg.neg instNegDir vec HMul.hMul instHMul Mul.mul instMulDir StdR2.toComplex StdR2.ComplextoVec vec
+    unfold Neg.neg instNegDir toVec HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec toVec
     simp
     ring_nf
 
@@ -294,7 +293,7 @@ fun x y => x = y ∨ x = -y
 
 /-
 @[simp]
-theorem neg_to_complex_eq_to_complex_neg (x : Dir) : StdR2.toComplex (-x).vec = -StdR2.toComplex x.vec := by
+theorem neg_to_complex_eq_to_complex_neg (x : Dir) : Vec.toComplex (-x).toVec = -Vec.toComplex x.toVec := by
   sorry
 -/
 
@@ -377,12 +376,12 @@ def Dir.toProj (v : Dir) : Proj := ⟦v⟧
 instance : Coe Dir Proj where
   coe v := v.toProj
 
-def StdR2.toProj_of_nonzero (v : ℝ × ℝ) (h : v ≠ 0) : Proj := (Vec.normalize v h : Proj) 
+def Vec.toProj_of_nonzero (v : ℝ × ℝ) (h : v ≠ 0) : Proj := (Vec.normalize v h : Proj) 
 
 theorem normalize_eq_mul_pos_normalize {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) (ht : t > 0) : Vec.normalize u hu = Vec.normalize v hv := by
   sorry
 
-theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) : StdR2.toProj_of_nonzero v hv = StdR2.toProj_of_nonzero u hu := by
+theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) : Vec.toProj_of_nonzero v hv = Vec.toProj_of_nonzero u hu := by
   sorry 
 
 end EuclidGeom

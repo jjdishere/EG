@@ -16,7 +16,7 @@ namespace LinearObj
 
 def toProj (l : LinearObj P) : Proj :=
   match l with
-  | vec v h => StdR2.toProj_of_nonzero v h
+  | vec v h => Vec.toProj_of_nonzero v h
   | dir v => v.toProj
   | ray r => r.toProj
   | seg s nontriv => s.toProj_of_nontriv nontriv
