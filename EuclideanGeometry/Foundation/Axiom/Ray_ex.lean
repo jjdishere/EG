@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Ray
 
+noncomputable section
 
 namespace EuclidGeom
 

@@ -132,6 +132,7 @@ end Seg
 
 end length
 
+
 section Archimedean_property
 
 -- Archimedean property I : given a directed segment AB (with A ≠ B), then there exists a point P such that B lies on the directed segment AP and P ≠ B.

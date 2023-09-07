@@ -1,6 +1,8 @@
 import EuclideanGeometry.Foundation.Axiom.Angle
 import EuclideanGeometry.Foundation.Axiom.Ray_ex
 
+noncomputable section
+
 namespace EuclidGeom
 
 namespace OAngle
@@ -28,13 +30,17 @@ def supplementary : (OAngle P) where
   end_ray := oang.start_ray.reverse
   source_eq_source := sorry
 
+-- If two oriented angles share a same side, then they are supplementary oriented angles if and only if the sum of two angles is π or -π   `Do I use {oang1} or (oang1)?
+
+theorem reverse_ray_iff_sum_of_oangle_eq_pi {oang1 : OAngle P} {oang2 : OAngle P} (h: oang1.end_ray = oang2.start_ray) : oang1.end_ray = oang2.start_ray.reverse ↔ oang1.value + oang2.value = π ∨ oang1.value + oang2.value = -π := by sorry
+
 theorem right_of_supp_of_right (rt : IsRightAngle oang) :  IsRightAngle oang.supplementary := by sorry
 
 theorem acute_of_supp_of_obtuse (rt : IsObtuseAngle oang) :  IsRightAngle oang.supplementary := by sorry
 
 theorem obtuse_of_supp_of_acute (rt : IsAcuteAngle oang) :  IsRightAngle oang.supplementary := by sorry
 
-theorem is_nontriv_of_supp_of_is_nontriv (nontriv : oang.is_nontriv) : oang.supp.is_nontriv := by sorry
+theorem is_nontriv_of_supp_of_is_nontriv (nontriv : oang.is_nontriv) : oang.supplementary.is_nontriv := by sorry
 
 def opposite :(OAngle P) where
   start_ray := oang.start_ray.reverse
@@ -45,7 +51,7 @@ theorem opposite_eq_supp_of_supp : oang.supplementary.supplementary = oang := by
 
 theorem  is_nontriv_of_oppo_of_is_nontriv (nontriv : oang.is_nontriv) : oang.opposite.is_nontriv := by sorry
 
-/- complementary angles -/
+
 
 
 end OAngle

@@ -1,5 +1,8 @@
 import EuclideanGeometry.Foundation.Index
 
+noncomputable section
+
+
 namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
@@ -15,8 +18,9 @@ Let F be a point in the extension line of tr.point₃ tr.point₂ (i.e. reverse 
 Then ∠ tr.point₁ A B + ∠ A B tr.point₂ + ∠ tr.point₃ C D + ∠ C D tr.point₃ + ∠ tr.point₂ E F + ∠ E F tr.point₂ = 2 * π.
 -/ 
 
-example (tr : Triangle P) (nontriv : tr.is_nontriv) (A B C D E F : P) 
-(let line1 := tr.edge₂.extension_ray_of_nontriv nontriv.2)
+example (tri : Triangle P) (nontriv : tri.is_nontriv) (A B C D E F : P) 
+let line1 := tri.edge₂.extension_ray_of_nontriv nontriv.2;
+let 
 (ha : A LiesOnIntRay line1) 
 (hb : B LiesOnIntRay (tr.edge₃.reverse.extension_ray_of_nontriv (Ne.symm nontriv.3))) 
 (hc : C LiesOnIntRay (tr.edge₁.extension_ray_of_nontriv nontriv.1)) 

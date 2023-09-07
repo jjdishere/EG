@@ -3,6 +3,9 @@ import EuclideanGeometry.Foundation.Axiom.Ray_ex
 
 /- The purpose of of this file is to establish results about parallel translate along a vector. Presumably, all results are "invariant" under parallel translation. -/
 
+noncomputable section
+
+
 namespace EuclidGeom
 
 namespace Seg

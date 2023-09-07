@@ -48,8 +48,6 @@ theorem is_inside_of_is_inside_flip_vertices (tr : Triangle P) (p : P) (inside :
 
 
 
-
-
 end Triangle
 
 
