@@ -4,7 +4,7 @@ noncomputable section
 namespace EuclidGeom
 
 inductive LinearObj (P : Type _) [EuclideanPlane P] where 
-  | vec (v : ℝ × ℝ) (h : v ≠ 0)
+  | vec (v : Vec) (h : v ≠ 0)
   | dir (v : Dir)
   | ray (r : Ray P)
   | seg (s : Seg P) (hs : s.is_nontriv)

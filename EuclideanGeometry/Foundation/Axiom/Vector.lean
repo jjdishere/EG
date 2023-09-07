@@ -8,7 +8,7 @@ This file defines the standard inner product real vector space of dimension two.
 ## Important definitions
 
 * `Dir` : the class of unit vectors in the 2d real vector space
-* `Proj` : the class of `Dir` quotient by `±1`, in other words, `ℝP²` . 
+* `Proj` : the class of `Dir` quotient by `±1`, in other words, `ℝP¹` . 
 
 ## Notation
 
