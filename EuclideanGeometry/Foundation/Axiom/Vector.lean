@@ -216,16 +216,16 @@ theorem fst_of_one_eq_one : (1 : Dir).vec.1 = 1 := rfl
 theorem snd_of_one_eq_zero : (1 : Dir).vec.2 = 0 := rfl
 
 @[simp]
-theorem one_eq_one_to_complex: StdR2.toComplex (1 : Dir).vec = 1 := rfl
+theorem one_eq_one_to_complex : StdR2.toComplex (1 : Dir).vec = 1 := rfl
 
 @[simp]
-theorem one_eq_one_to_vec: StdR2.ComplextoVec (1 : ℂ) = (1, 0) := rfl
+theorem one_eq_one_to_vec : StdR2.ComplextoVec (1 : ℂ) = (1, 0) := rfl
 
 @[simp]
-theorem eq_self_to_complex_to_vec (x : ℝ × ℝ): StdR2.ComplextoVec (StdR2.toComplex x) = x := rfl
+theorem eq_self_to_complex_to_vec (x : ℝ × ℝ) : StdR2.ComplextoVec (StdR2.toComplex x) = x := rfl
 
 @[simp]
-theorem sq_sum_eq_one (x : Dir): @HPow.hPow ℝ ℕ ℝ _ x.vec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.vec.2 2 = 1 := by
+theorem sq_sum_eq_one (x : Dir) : @HPow.hPow ℝ ℕ ℝ _ x.vec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.vec.2 2 = 1 := by
   rw [pow_two, pow_two]
   exact x.unit
 
@@ -292,17 +292,11 @@ end Dir
 def PM : Dir → Dir → Prop :=
 fun x y => x = y ∨ x = -y
 
-theorem pm_iff_eq_sq : (PM x y) ↔ @HPow.hPow ℂ ℕ ℂ _ (StdR2.toComplex x.vec) 2 = @HPow.hPow ℂ ℕ ℂ _ (StdR2.toComplex y.vec) 2 := by
- -- have h : (StdR2.toComplex x.vec = StdR2.toComplex y.vec) ∨ (StdR2.toComplex x.vec = -StdR2.toComplex y.vec) ↔ @HPow.hPow ℂ ℕ ℂ _ (StdR2.toComplex x.vec) 2 = @HPow.hPow ℂ ℕ ℂ _ (StdR2.toComplex y.vec) 2 := Iff.symm sq_eq_sq_iff_eq_or_eq_neg
-  constructor
-  intro h
-  unfold PM at h
-  match h with
-  | Or.inl h₁ => rw [h₁]
-  | Or.inr h₂ => 
-      rw [h₂]
-      unfold StdR2.toComplex Neg.neg
-
+/-
+@[simp]
+theorem neg_to_complex_eq_to_complex_neg (x : Dir) : StdR2.toComplex (-x).vec = -StdR2.toComplex x.vec := by
+  sorry
+-/
 
 namespace PM
 
@@ -312,7 +306,27 @@ def equivalence : Equivalence PM where
     match h with
       | Or.inl h₁ => Or.inl (Eq.symm h₁)
       | Or.inr h₂ => Or.inr (Iff.mp neg_eq_iff_eq_neg (id (Eq.symm h₂)))
-  trans := sorry
+  trans := by
+    intro x y z g h
+    match g with
+      | Or.inl g₁ => 
+          rw [← g₁] at h
+          exact h
+      | Or.inr g₂ => 
+          match h with
+            | Or.inl h₁ =>
+              rw [h₁] at g₂
+              unfold PM
+              right
+              exact g₂
+            | Or.inr h₂ =>
+              rw [h₂] at g₂
+              have g₃ : z = - - z := Iff.mp neg_eq_iff_eq_neg rfl
+              rw [← g₃] at g₂
+              rw [g₂]
+              unfold PM
+              left
+              rfl
 
 instance con : Con Dir where
   r := PM
