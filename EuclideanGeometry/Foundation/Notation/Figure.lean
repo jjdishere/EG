@@ -1,1 +1,0 @@
-/- define a class Figure of all geom figures, define LiesOn and IsIntersection -/
