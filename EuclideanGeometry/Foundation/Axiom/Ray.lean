@@ -36,7 +36,7 @@ class Ray (P : Type _) [EuclideanPlane P] where
 
 /- Def of point lies on a ray -/
 def IsOnRay {P : Type _} [EuclideanPlane P] (a : P) (l : Ray P) : Prop :=
-  ∃ (t : ℝ), 0 ≤ t ∧ a = t • l.toDir.vec +ᵥ l.source
+  ∃ (t : ℝ), 0 ≤ t ∧ a = t • l.toDir.toVec +ᵥ l.source
 
 namespace Ray 
 
@@ -100,10 +100,10 @@ namespace Seg
 variable {P : Type _} [EuclideanPlane P] (l : Seg P)
 
 -- define the length of a generalized directed segment.
-def length : ℝ := StdR2.Norm.norm (l.toVec)
+def length : ℝ := Vec.Norm.norm (l.toVec)
 
 -- length of a generalized directed segment is nonnegative.
-theorem length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ StdR2.SeminormedAddGroup _
+theorem length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ Vec.SeminormedAddGroup _
 
 -- A generalized directed segment is trivial if and only if length is zero.
 theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by sorry
