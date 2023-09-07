@@ -45,7 +45,7 @@ variable {P : Type _} [EuclideanPlane P] (l : Ray P)
 def toProj : Proj := (l.toDir : Proj)
 
 end Ray
-
+  
 /- Generalized Directed segment -/
 @[ext]
 class Seg (P : Type _) [EuclideanPlane P] where
@@ -67,7 +67,7 @@ namespace Seg
 
 variable {P : Type _} [EuclideanPlane P] (seg : Seg P)
 
-def toVec : (ℝ × ℝ) := VEC seg.source seg.target
+def toVec : Vec := VEC seg.source seg.target
 
 variable (h : seg.is_nontriv)
 def toDir_of_nontriv : Dir := Vec.normalize seg.toVec ((ne_iff_vec_nonzero _ _).mp h)

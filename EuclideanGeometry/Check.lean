@@ -20,7 +20,7 @@ namespace EuclidGeom
 section VAddCheck
 
 variable (P : Type _) [EuclidGeom.EuclideanPlane P] (l : Ray P)
-#check l.direction.vec
+#check l.toDir.vec
 #check @AddAction.toVAdd _ _ _ (@AddTorsor.toAddAction _ _ _ (@NormedAddTorsor.toAddTorsor (ℝ × ℝ) P EuclidGeom.StdR2.SeminormedAddCommGroup _ _))
 
 end VAddCheck
