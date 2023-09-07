@@ -4,10 +4,10 @@ noncomputable section
 namespace EuclidGeom
 
 inductive LinearObj (P : Type _) [EuclideanPlane P] where 
-  | vec (v : ℝ × ℝ) (h : v ≠ 0)
-  | uni_vec (v : UniVec)
+  | vec (v : Vec) (h : v ≠ 0)
+  | dir (v : Dir)
   | ray (r : Ray P)
-  | seg (s : Seg P) (nontriv : s.is_nontriv)
+  | seg (s : Seg P) (hs : s.is_nontriv)
   | line (l : Line P)
 
 variable {P : Type _} [EuclideanPlane P]
@@ -16,8 +16,8 @@ namespace LinearObj
 
 def toProj (l : LinearObj P) : Proj :=
   match l with
-  | vec v h => StdR2.toProj_of_nonzero v h
-  | uni_vec v => v.toProj
+  | vec v h => Vec.toProj_of_nonzero v h
+  | dir v => v.toProj
   | ray r => r.toProj
   | seg s nontriv => s.toProj_of_nontriv nontriv
   | line l => l.toProj
@@ -47,5 +47,8 @@ scoped infix : 50 "∥" => parallel
 
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coersions, ... -/
 
+section LiesOn
+
+end LiesOn
 
 end EuclidGeom

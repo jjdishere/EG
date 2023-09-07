@@ -31,14 +31,24 @@ scoped notation "LIN" => Line.mk_pt_pt
 variable {P : Type _} [EuclideanPlane P]
 
 /- def coe from ray to line-/
+
 def Ray.toLine (r : Ray P) : Line P where
-  carrier := {C : P | ∃ t : ℝ, VEC r.source C = t • r.direction.vec}
+  carrier := {C : P | ∃ t : ℝ, VEC r.source C = t • r.toDir.toVec}
   linear := sorry
   maximal := sorry
   nontriv := sorry
 
 instance : Coe (Ray P) (Line P) where
   coe := Ray.toLine
+
+/- def coe from non trivial segment to line-/
+
+def Seg.toLine_of_nontriv (s : Seg P) (hs : s.is_nontriv) : Line P where
+  -- carrier := {C : P | ∃ t : ℝ, VEC s.source C = t • ?}
+  carrier := sorry
+  linear := sorry
+  maximal := sorry
+  nontriv := sorry
 
 /- Def of point lies on a line -/
 def IsOnLine (a : P) (l : Line P) : Prop :=
@@ -51,23 +61,24 @@ section Compaitiblity_of_coersions
 
 
 -- If a point lies on a ray, then it lies on the line associated to the ray.
-theorem lies_on_line_of_ray_of_lies_on_ray (a : P) (l : Ray P) (h : a LiesOnRay l) : a LiesOnLine l := sorry
+theorem lies_on_line_of_ray_of_lies_on_ray {a : P} {l : Ray P} (h : a LiesOnRay l) : a LiesOnLine l := sorry
 
 -- If A and B are two distinct points, they lie on the line AB
 theorem source_or_ray_lies_on_line_of_ray (l : Ray P) : l.source LiesOnLine l := sorry
 
-theorem pt_lies_on_line_of_pt_pt (A B : P) (h: B ≠ A) : A LiesOnLine LIN A B h ∧ B LiesOnLine LIN A B h := sorry
-
+theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOnLine LIN A B h ∧ B LiesOnLine LIN A B h := sorry
 
 -- The line defined from two distinct points is equal to the line defined from the ray associated to two distinct points
 
-theorem line_eq_line_of_ray_of_pt_pt {A B : P} (h : B ≠ A) : LIN A B h = (RAY A B h : Line P) := sorry
+theorem line_eq_line_of_ray_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : LIN A B h = (RAY A B h : Line P) := sorry
 -- `not clear whether I should remove : Line P (it compiles)` 
 -- `It do compile by auto coersion, but please leave it here for the sake of clarity`
 
-theorem line_eq_line_of_pt_pt {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOnLine l) (hB : B LiesOnLine l) : l = Line.mk_pt_pt A B h := sorry
+theorem line_eq_line_of_seg_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : LIN A B h = Seg.toLine_of_nontriv (SEG A B) h := sorry
 
-theorem lieson_of_colinear_ne {A B C : P} (c : colinear A B C) (h : B ≠ A) : C LiesOnLine LIN A B h := sorry
+theorem line_eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOnLine l) (hB : B LiesOnLine l) : l = Line.mk_pt_pt A B h := sorry
+
+theorem lies_on_iff_colinear_of_ne {A B C : P}  (h : B ≠ A) : (C LiesOnLine LIN A B h) ↔ colinear A B C:= sorry
 
 end Compaitiblity_of_coersions
 

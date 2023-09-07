@@ -30,19 +30,19 @@ noncomputable section
 namespace EuclidGeom
     
 /- Define Euclidean plane as normed vector space over ℝ of dimension 2 -/
-class EuclideanPlane (H : Type _) extends MetricSpace H, @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _
+class EuclideanPlane (H : Type _) extends MetricSpace H, @NormedAddTorsor (Vec) H Vec.SeminormedAddCommGroup _
 
-def Vec {H : Type _} [EuclideanPlane H] (A B : H) : (ℝ × ℝ) := (B -ᵥ A)
+def Vec.mk_pt_pt {H : Type _} [EuclideanPlane H] (A B : H) : (Vec) := (B -ᵥ A)
 
-scoped notation "VEC" => Vec
+scoped notation "VEC" => Vec.mk_pt_pt
 
-instance : EuclideanPlane (ℝ × ℝ) where
-  toMetricSpace := StdR2.MetricSpace
-  toNormedAddTorsor := @SeminormedAddCommGroup.toNormedAddTorsor _ StdR2.SeminormedAddCommGroup
+instance : EuclideanPlane (Vec) where
+  toMetricSpace := Vec.MetricSpace
+  toNormedAddTorsor := @SeminormedAddCommGroup.toNormedAddTorsor _ Vec.SeminormedAddCommGroup
 
-instance {H : Type _} [EuclideanPlane H] : @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _ := EuclideanPlane.toNormedAddTorsor
+instance {H : Type _} [EuclideanPlane H] : @NormedAddTorsor (Vec) H Vec.SeminormedAddCommGroup _ := EuclideanPlane.toNormedAddTorsor
 
-instance {H : Type _} [EuclideanPlane H] : AddTorsor (ℝ × ℝ) H := by infer_instance
+instance {H : Type _} [EuclideanPlane H] : AddTorsor (Vec) H := by infer_instance
 
 @[simp]
 theorem start_vadd_vec_eq_end {H : Type _} [EuclideanPlane H] (A B : H) : (VEC A B) +ᵥ A = B := sorry
