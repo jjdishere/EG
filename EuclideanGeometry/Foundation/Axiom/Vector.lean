@@ -69,18 +69,18 @@ protected def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
     intro h
     rw [Real.sqrt_eq_zero'] at h
     simp [← pow_two] at h
-    let hx1 := sq_nonneg x.1
-    let hx2 := sq_nonneg x.2
+    let hx₁ := sq_nonneg x.1
+    let hx₂ := sq_nonneg x.2
     ext
     · by_contra h₁
       simp at h₁
       rw [← Ne.def] at h₁
-      have h11 := sq_pos_of_ne_zero _ h₁
+      have h₁₁ := sq_pos_of_ne_zero _ h₁
       linarith
     · by_contra h₁
       simp at h₁
       rw [← Ne.def] at h₁
-      have h21 := sq_pos_of_ne_zero _ h₁
+      have h₂₁ := sq_pos_of_ne_zero _ h₁
       linarith
 
 protected def InnerProductSpace.Core : InnerProductSpace.Core ℝ (ℝ × ℝ) where
@@ -216,16 +216,16 @@ theorem fst_of_one_eq_one : (1 : Dir).vec.1 = 1 := rfl
 theorem snd_of_one_eq_zero : (1 : Dir).vec.2 = 0 := rfl
 
 @[simp]
-theorem one_eq_one_to_complex: StdR2.toComplex (1 : Dir).vec = 1 := rfl
+theorem one_eq_one_toComplex : StdR2.toComplex (1 : Dir).vec = 1 := rfl
 
 @[simp]
-theorem one_eq_one_to_vec: StdR2.ComplextoVec (1 : ℂ) = (1, 0) := rfl
+theorem one_ComplextoVec_eq_one : StdR2.ComplextoVec (1 : ℂ) = (1, 0) := rfl
 
 @[simp]
-theorem eq_self_to_complex_to_vec (x : ℝ × ℝ): StdR2.ComplextoVec (StdR2.toComplex x) = x := rfl
+theorem eq_self_toComplex_ComplextoVec (x : ℝ × ℝ) : StdR2.ComplextoVec (StdR2.toComplex x) = x := rfl
 
 @[simp]
-theorem sq_sum_eq_one (x : Dir): @HPow.hPow ℝ ℕ ℝ _ x.vec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.vec.2 2 = 1 := by
+theorem sq_sum_eq_one (x : Dir) : @HPow.hPow ℝ ℕ ℝ _ x.vec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.vec.2 2 = 1 := by
   rw [pow_two, pow_two]
   exact x.unit
 
@@ -292,6 +292,12 @@ end Dir
 def PM : Dir → Dir → Prop :=
 fun x y => x = y ∨ x = -y
 
+/-
+@[simp]
+theorem neg_to_complex_eq_to_complex_neg (x : Dir) : StdR2.toComplex (-x).vec = -StdR2.toComplex x.vec := by
+  sorry
+-/
+
 namespace PM
 
 def equivalence : Equivalence PM where
@@ -300,12 +306,54 @@ def equivalence : Equivalence PM where
     match h with
       | Or.inl h₁ => Or.inl (Eq.symm h₁)
       | Or.inr h₂ => Or.inr (Iff.mp neg_eq_iff_eq_neg (id (Eq.symm h₂)))
-  trans := sorry
+  trans := by
+    intro _ _ z g h
+    unfold PM
+    match g with
+      | Or.inl g₁ => 
+          rw [← g₁] at h
+          exact h
+      | Or.inr g₂ => 
+          match h with
+            | Or.inl h₁ =>
+              rw [h₁] at g₂
+              right
+              exact g₂
+            | Or.inr h₂ =>
+              rw [h₂] at g₂
+              have g₃ : z = - - z := Iff.mp neg_eq_iff_eq_neg rfl
+              rw [← g₃] at g₂
+              rw [g₂]
+              left
+              rfl
 
 instance con : Con Dir where
   r := PM
   iseqv := PM.equivalence
-  mul' := sorry
+  mul' := by
+    unfold Setoid.r PM
+    simp
+    intro _ _ _ _ g h
+    match g with
+      | Or.inl g₁ => 
+        match h with
+          | Or.inl h₁ =>
+            left
+            rw [g₁, h₁]
+          | Or.inr h₂ =>
+            right
+            rw [g₁, h₂]
+            exact mul_neg _ _
+      | Or.inr g₂ => 
+        match h with
+          | Or.inl h₁ =>
+            right
+            rw [g₂, h₁]
+            exact neg_mul _ _
+          | Or.inr h₂ =>
+            left
+            rw[g₂, h₂]
+            exact neg_mul_neg _ _
 
 end PM
 
@@ -331,6 +379,10 @@ instance : Coe Dir Proj where
 
 def StdR2.toProj_of_nonzero (v : ℝ × ℝ) (h : v ≠ 0) : Proj := (Vec.normalize v h : Proj) 
 
-theorem eq_toProj_of_smul (u v : ℝ × ℝ) (hu : u ≠ 0) (hv : v ≠ 0) (t : ℝ) : v = t • u → StdR2.toProj_of_nonzero v hv = StdR2.toProj_of_nonzero u hu := sorry 
+theorem normalize_eq_mul_pos_normalize {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) (ht : t > 0) : Vec.normalize u hu = Vec.normalize v hv := by
+  sorry
+
+theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) : StdR2.toProj_of_nonzero v hv = StdR2.toProj_of_nonzero u hu := by
+  sorry 
 
 end EuclidGeom
