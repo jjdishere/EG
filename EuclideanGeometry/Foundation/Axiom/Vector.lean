@@ -378,8 +378,26 @@ instance : Coe Dir Proj where
 
 def Vec.toProj_of_nonzero (v : ℝ × ℝ) (h : v ≠ 0) : Proj := (Vec.normalize v h : Proj) 
 
-theorem normalize_eq_mul_pos_normalize {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) (ht : t > 0) : Vec.normalize u hu = Vec.normalize v hv := by
-  sorry
+theorem normalize_eq_smul_pos_normalize {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) (ht : 0 < t) : Vec.normalize u hu = Vec.normalize v hv := by
+  ext : 1
+  unfold Vec.normalize Dir.toVec
+  simp
+  have hu₁ : Vec.NormedAddCommGroup.norm u ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hu
+  have hv₁ : Vec.NormedAddCommGroup.norm v ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hv
+  have g : (Vec.NormedAddCommGroup.norm v) • u = (Vec.NormedAddCommGroup.norm u) • v := by
+    rw [h]
+    have w₁ : (Vec.NormedAddCommGroup.norm (t • u)) = ‖t‖ * (Vec.NormedAddCommGroup.norm u) := by
+      sorry
+      -- exact @norm_smul _ _ _ Vec.SeminormedAddGroup _ _ t u
+    have w₂ : ‖t‖ = t := abs_of_pos ht
+    rw [w₁, w₂, mul_comm]
+    exact mul_smul (Vec.NormedAddCommGroup.norm u) t u
+  have g₁ : (Vec.NormedAddCommGroup.norm u)⁻¹ • ((Vec.NormedAddCommGroup.norm v) • u) = v := Iff.mpr (inv_smul_eq_iff₀ hu₁) g
+  have g₂ : (Vec.NormedAddCommGroup.norm v) • ((Vec.NormedAddCommGroup.norm u)⁻¹ • u) = (Vec.NormedAddCommGroup.norm u)⁻¹ • ((Vec.NormedAddCommGroup.norm v) • u) := smul_algebra_smul_comm _ _ _
+  rw [← g₂] at g₁
+  have g₃ : v = (Vec.NormedAddCommGroup.norm v) • (Vec.NormedAddCommGroup.norm u)⁻¹ • u := Eq.symm g₁
+  have g₄ : (Vec.NormedAddCommGroup.norm v)⁻¹ • v = (Vec.NormedAddCommGroup.norm u)⁻¹ • u := Iff.mpr (inv_smul_eq_iff₀ hv₁) g₃
+  exact Eq.symm g₄
 
 theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) : Vec.toProj_of_nonzero v hv = Vec.toProj_of_nonzero u hu := by
   sorry 
