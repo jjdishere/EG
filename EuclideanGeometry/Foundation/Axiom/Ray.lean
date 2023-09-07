@@ -45,11 +45,11 @@ variable {P : Type _} [EuclideanPlane P] (ray : Ray P)
 
 /- Def of point lies on a ray -/
 def IsOnRay {P : Type _} [EuclideanPlane P] (a : P) (ray : Ray P) : Prop :=
-  ∃ (t : ℝ), 0 ≤ t ∧ a = t • ray.direction.vec +ᵥ ray.source
+  ∃ (t : ℝ), 0 ≤ t ∧ a = t • ray.toDir.toVec +ᵥ ray.source
 
 def IsOnIntRay {P : Type _} [EuclideanPlane P] (a : P) (ray : Ray P) : Prop := IsOnRay a ray ∧ a ≠ ray.source
 
-def toProj : Proj := (ray.direction : Proj)
+def toProj : Proj := (ray.toDir : Proj)
 
 end Ray
   

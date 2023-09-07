@@ -25,7 +25,7 @@ def toProj (l : LinearObj P) : Proj :=
 def IsOnLinearObj (a : P) (l : LinearObj P) : Prop :=
   match l with
   | vec v h => False
-  | uni_vec v => False
+  | dir v => False
   | ray r => a LiesOnRay r
   | seg s nontriv => a LiesOnSeg s
   | line l => a ∈ l.carrier
