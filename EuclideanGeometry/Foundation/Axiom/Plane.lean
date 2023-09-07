@@ -12,7 +12,7 @@ This file defines the Euclidean Plane as an affine space, which admits an action
 
 ## Notation
 
-* `Vec A B` : the vector `B -ᵥ A` in `ℝ × ℝ`
+* `VEC A B` : the vector `B -ᵥ A` in `ℝ × ℝ`
 
 ## Implementation Notes
 
@@ -32,7 +32,9 @@ namespace EuclidGeom
 /- Define Euclidean plane as normed vector space over ℝ of dimension 2 -/
 class EuclideanPlane (H : Type _) extends MetricSpace H, @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _
 
-def Vec {H : Type _} [EuclideanPlane H] (A B : H) : (ℝ × ℝ) := (B -ᵥ A)
+def Vec.mk_pt_pt {H : Type _} [EuclideanPlane H] (A B : H) : (ℝ × ℝ) := (B -ᵥ A)
+
+scoped notation "VEC" => Vec.mk_pt_pt
 
 instance : EuclideanPlane (ℝ × ℝ) where
   toMetricSpace := StdR2.MetricSpace
@@ -43,6 +45,8 @@ instance {H : Type _} [EuclideanPlane H] : @NormedAddTorsor (ℝ × ℝ) H StdR2
 instance {H : Type _} [EuclideanPlane H] : AddTorsor (ℝ × ℝ) H := by infer_instance
 
 @[simp]
-theorem start_vadd_vec_eq_end {H : Type _} [EuclideanPlane H] (A B : H) : (Vec A B) +ᵥ A = B := sorry
+theorem start_vadd_vec_eq_end {H : Type _} [EuclideanPlane H] (A B : H) : (VEC A B) +ᵥ A = B := sorry
+
+theorem ne_iff_vec_nonzero {H : Type _} [EuclideanPlane H] (A B : H) : B ≠ A ↔ VEC A B ≠ 0 := sorry
 
 end EuclidGeom

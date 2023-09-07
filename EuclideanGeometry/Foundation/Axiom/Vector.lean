@@ -7,8 +7,8 @@ This file defines the standard inner product real vector space of dimension two.
 
 ## Important definitions
 
-* `UniVec` : the class of unit vectors in the 2d real vector space
-* `Proj` : the class of `UniVec` quotient by `±1`, in other words, `ℝP²` . 
+* `Dir` : the class of unit vectors in the 2d real vector space
+* `Proj` : the class of `Dir` quotient by `±1`, in other words, `ℝP²` . 
 
 ## Notation
 
@@ -16,7 +16,7 @@ This file defines the standard inner product real vector space of dimension two.
 
 In section `StdR2`, we define all of the sturctures on the standard 2d inner product real vector space `ℝ × ℝ`. We use defs and do NOT use instances here in order to avoid conflicts to existing instance of such stuctures on `ℝ × ℝ` which is based on `L^∞` norm of the product space. Then we define the angle of two vectors, which takes value in `(-π, π]`. Notice that if any one of the two vector is `0`, the angle is defined to be `0`.
 
-Then we define the class `UniVec` of vectors of unit length. We equip it with the structure of commutative group. The quotient `Proj` of `UniVec` by `±1` is automatically a commutative group.
+Then we define the class `Dir` of vectors of unit length. We equip it with the structure of commutative group. The quotient `Proj` of `Dir` by `±1` is automatically a commutative group.
 
 ## Further Works
 Inequalities about `ℝ²` should be written at the beginning of this file.
@@ -139,26 +139,17 @@ def ComplextoVec (c : ℂ) : ℝ × ℝ := ⟨c.1, c.2⟩
 
 end StdR2
 
+/- the notation for class of vectors-/
+scoped notation "Vec" => ℝ × ℝ
+
+
+
 @[ext]
-class UniVec where
-  vec : ℝ × ℝ 
+class Dir where
+  vec : Vec
   unit : StdR2.InnerProductSpace.Core.inner vec vec = 1 
 
--- Should change UniVec into the following UniVec'to use all instances on UniVec'
-def UniVec' := @Metric.sphere _ StdR2.PseudoMetricSpace (0: ℝ × ℝ) 1
-
--- Or alternatively, define CommGroup instance on UniVec
-namespace UniVec
-
-instance : Neg UniVec where
-  neg := fun x => {
-      vec := -x.vec
-      unit := by 
-        rw [← unit]
-        exact @inner_neg_neg _ _ _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace _ _
-    }
-
-def normalize (x : ℝ × ℝ) (h : x ≠ 0) : UniVec where
+def Vec.normalize (x : ℝ × ℝ) (h : x ≠ 0) : Dir where
   vec := (StdR2.NormedAddCommGroup.norm x)⁻¹ • x 
   unit := by 
     rw [@real_inner_smul_left _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace _ _ _, @real_inner_smul_right _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace _ _ _, @inner_self_eq_norm_sq_to_K _ _ _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace]
@@ -168,14 +159,28 @@ def normalize (x : ℝ × ℝ) (h : x ≠ 0) : UniVec where
     simp only [ne_eq, inv_mul_mul_self]
     rw [inv_mul_cancel ((@norm_ne_zero_iff _ StdR2.NormedAddGroup).mpr h)]
 
-def UniVec.mk_angle (θ : ℝ) : UniVec where
+-- Should change Dir into the following Dir'to use all instances on Dir'
+def Dir' := @Metric.sphere _ StdR2.PseudoMetricSpace (0: ℝ × ℝ) 1
+
+-- Or alternatively, define CommGroup instance on Dir
+namespace Dir
+
+instance : Neg Dir where
+  neg := fun x => {
+      vec := -x.vec
+      unit := by 
+        rw [← unit]
+        exact @inner_neg_neg _ _ _ StdR2.NormedAddCommGroup StdR2.InnerProductSpace _ _
+    }
+
+def mk_angle (θ : ℝ) : Dir where
   vec := (Real.cos θ, Real.sin θ)
   unit := by 
     rw [← Real.cos_sq_add_sin_sq θ]
     rw [pow_two, pow_two]
     rfl
 
-instance : Mul UniVec where
+instance : Mul Dir where
   mul := fun z w => {
     vec := StdR2.ComplextoVec (StdR2.toComplex z.vec * StdR2.toComplex w.vec)
     -- vec := (z.vec.1 * w.vec.1 - z.vec.2 * w.vec.2, z.vec.1 * w.vec.2 + z.vec.2 * w.vec.1)
@@ -196,7 +201,7 @@ instance : Mul UniVec where
         _ = 1 := one_mul 1
   } 
 
-instance : One UniVec where
+instance : One Dir where
   one := {
     vec := (1, 0)
     unit := by 
@@ -205,13 +210,13 @@ instance : One UniVec where
   }
 
 @[simp]
-theorem fst_of_one_eq_one : (1 : UniVec).vec.1 = 1 := rfl
+theorem fst_of_one_eq_one : (1 : Dir).vec.1 = 1 := rfl
 
 @[simp]
-theorem snd_of_one_eq_zero : (1 : UniVec).vec.2 = 0 := rfl
+theorem snd_of_one_eq_zero : (1 : Dir).vec.2 = 0 := rfl
 
 @[simp]
-theorem one_eq_one_to_complex: StdR2.toComplex (1 : UniVec).vec = 1 := rfl
+theorem one_eq_one_to_complex: StdR2.toComplex (1 : Dir).vec = 1 := rfl
 
 @[simp]
 theorem one_eq_one_to_vec: StdR2.ComplextoVec (1 : ℂ) = (1, 0) := rfl
@@ -220,30 +225,30 @@ theorem one_eq_one_to_vec: StdR2.ComplextoVec (1 : ℂ) = (1, 0) := rfl
 theorem eq_self_to_complex_to_vec (x : ℝ × ℝ): StdR2.ComplextoVec (StdR2.toComplex x) = x := rfl
 
 @[simp]
-theorem sq_sum_eq_one (x : UniVec): @HPow.hPow ℝ ℕ ℝ _ x.vec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.vec.2 2 = 1 := by
+theorem sq_sum_eq_one (x : Dir): @HPow.hPow ℝ ℕ ℝ _ x.vec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.vec.2 2 = 1 := by
   rw [pow_two, pow_two]
   exact x.unit
 
-instance : Semigroup UniVec where
+instance : Semigroup Dir where
   mul_assoc _ _ _ := by
     ext : 1
-    unfold vec HMul.hMul instHMul Mul.mul instMulUniVec StdR2.ComplextoVec StdR2.toComplex
+    unfold vec HMul.hMul instHMul Mul.mul instMulDir StdR2.ComplextoVec StdR2.toComplex
     simp
     ring_nf
 
-instance : Monoid UniVec where
+instance : Monoid Dir where
   one_mul := fun _ => by
     ext : 1
-    unfold vec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupUniVec instMulUniVec
+    unfold vec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
     simp
     rfl
   mul_one := fun _ => by
     ext : 1
-    unfold vec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupUniVec instMulUniVec
+    unfold vec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
     simp
     rfl
 
-instance : CommGroup UniVec where
+instance : CommGroup Dir where
   inv := fun x => {
     vec := (x.1.fst, -x.1.snd)
     unit := by
@@ -253,7 +258,7 @@ instance : CommGroup UniVec where
   }
   mul_left_inv _ := by
     ext : 1
-    unfold HMul.hMul Inv.inv instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidUniVec instSemigroupUniVec instMulUniVec StdR2.toComplex StdR2.ComplextoVec
+    unfold HMul.hMul Inv.inv instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidDir instSemigroupDir instMulDir StdR2.toComplex StdR2.ComplextoVec
     simp
     ring_nf
     ext
@@ -262,29 +267,29 @@ instance : CommGroup UniVec where
     
   mul_comm _ _ := by
     ext : 1
-    unfold vec HMul.hMul instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidUniVec instSemigroupUniVec instMulUniVec
+    unfold vec HMul.hMul instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidDir instSemigroupDir instMulDir
     simp
     ring_nf
 
-instance : HasDistribNeg UniVec where
+instance : HasDistribNeg Dir where
   neg := Neg.neg
   neg_neg _ := by
-    unfold Neg.neg instNegUniVec
+    unfold Neg.neg instNegDir
     simp
   neg_mul _ _ := by
     ext : 1
-    unfold Neg.neg instNegUniVec vec HMul.hMul instHMul Mul.mul instMulUniVec StdR2.toComplex StdR2.ComplextoVec vec
+    unfold Neg.neg instNegDir vec HMul.hMul instHMul Mul.mul instMulDir StdR2.toComplex StdR2.ComplextoVec vec
     simp
     ring_nf
   mul_neg _ _ := by
     ext : 1
-    unfold Neg.neg instNegUniVec vec HMul.hMul instHMul Mul.mul instMulUniVec StdR2.toComplex StdR2.ComplextoVec vec
+    unfold Neg.neg instNegDir vec HMul.hMul instHMul Mul.mul instMulDir StdR2.toComplex StdR2.ComplextoVec vec
     simp
     ring_nf
 
-end UniVec
+end Dir
 
-def PM : UniVec → UniVec → Prop :=
+def PM : Dir → Dir → Prop :=
 fun x y => x = y ∨ x = -y
 
 theorem pm_iff_eq_sq : (PM x y) ↔ @HPow.hPow ℂ ℕ ℂ _ (StdR2.toComplex x.vec) 2 = @HPow.hPow ℂ ℕ ℂ _ (StdR2.toComplex y.vec) 2 := by
@@ -309,7 +314,7 @@ def equivalence : Equivalence PM where
       | Or.inr h₂ => Or.inr (Iff.mp neg_eq_iff_eq_neg (id (Eq.symm h₂)))
   trans := sorry
 
-instance con : Con UniVec where
+instance con : Con Dir where
   r := PM
   iseqv := PM.equivalence
   mul' := sorry
@@ -331,7 +336,13 @@ instance : CommGroup Proj where
 
 end Proj
 
-instance : Coe UniVec Proj where
-  coe v := ⟦v⟧
+def Dir.toProj (v : Dir) : Proj := ⟦v⟧
+
+instance : Coe Dir Proj where
+  coe v := v.toProj
+
+def StdR2.toProj_of_nonzero (v : ℝ × ℝ) (h : v ≠ 0) : Proj := (Vec.normalize v h : Proj) 
+
+theorem eq_toProj_of_smul (u v : ℝ × ℝ) (hu : u ≠ 0) (hv : v ≠ 0) (t : ℝ) : v = t • u → StdR2.toProj_of_nonzero v hv = StdR2.toProj_of_nonzero u hu := sorry 
 
 end EuclidGeom

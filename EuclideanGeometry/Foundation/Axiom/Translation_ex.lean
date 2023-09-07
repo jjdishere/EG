@@ -35,7 +35,7 @@ variable {P: Type _} [EuclideanPlane P] (v : ℝ × ℝ) (l : Ray P)
 
 def translate (l : Ray P) (v : ℝ × ℝ) : Ray P where
   source := sorry
-  direction := sorry
+  toDir := sorry
 
 end Ray
 

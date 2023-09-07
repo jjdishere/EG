@@ -21,7 +21,7 @@ theorem flip_colinear {A B C : P} (h : colinear A B C) : (colinear A C B) := sor
 
 theorem colinear_of_colinear_colinear {A B C D: P} (h₁ : colinear A B C) (h₂ : colinear A B D) : (colinear A C D) := sorry
 
-theorem eq_mul_vec_iff_colinear_of_ne (A B C : P) (g : A ≠ B) : colinear A B C ↔ ∃ r : ℝ , Vec A C = r • Vec A B:= sorry
+theorem eq_mul_vec_iff_colinear_of_ne (A B C : P) (g : B ≠ A) : colinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B:= sorry
 
 theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (A ≠ C) ∧ (B ≠ A) := sorry   
 
