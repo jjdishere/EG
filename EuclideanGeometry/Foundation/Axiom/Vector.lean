@@ -287,6 +287,18 @@ end UniVec
 def PM : UniVec → UniVec → Prop :=
 fun x y => x = y ∨ x = -y
 
+theorem pm_iff_eq_sq : (PM x y) ↔ @HPow.hPow ℂ ℕ ℂ _ (StdR2.toComplex x.vec) 2 = @HPow.hPow ℂ ℕ ℂ _ (StdR2.toComplex y.vec) 2 := by
+ -- have h : (StdR2.toComplex x.vec = StdR2.toComplex y.vec) ∨ (StdR2.toComplex x.vec = -StdR2.toComplex y.vec) ↔ @HPow.hPow ℂ ℕ ℂ _ (StdR2.toComplex x.vec) 2 = @HPow.hPow ℂ ℕ ℂ _ (StdR2.toComplex y.vec) 2 := Iff.symm sq_eq_sq_iff_eq_or_eq_neg
+  constructor
+  intro h
+  unfold PM at h
+  match h with
+  | Or.inl h₁ => rw [h₁]
+  | Or.inr h₂ => 
+      rw [h₂]
+      unfold StdR2.toComplex Neg.neg
+
+
 namespace PM
 
 def equivalence : Equivalence PM where
