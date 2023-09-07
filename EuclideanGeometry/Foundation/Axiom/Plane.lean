@@ -32,9 +32,9 @@ namespace EuclidGeom
 /- Define Euclidean plane as normed vector space over ℝ of dimension 2 -/
 class EuclideanPlane (H : Type _) extends MetricSpace H, @NormedAddTorsor (ℝ × ℝ) H StdR2.SeminormedAddCommGroup _
 
-def Vec {H : Type _} [EuclideanPlane H] (A B : H) : (ℝ × ℝ) := (B -ᵥ A)
+def Vec.mk_pt_pt {H : Type _} [EuclideanPlane H] (A B : H) : (ℝ × ℝ) := (B -ᵥ A)
 
-scoped notation "VEC" => Vec
+scoped notation "VEC" => Vec.mk_pt_pt
 
 instance : EuclideanPlane (ℝ × ℝ) where
   toMetricSpace := StdR2.MetricSpace

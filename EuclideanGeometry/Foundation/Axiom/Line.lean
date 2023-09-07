@@ -32,7 +32,7 @@ variable {P : Type _} [EuclideanPlane P]
 
 /- def coe from ray to line-/
 def Ray.toLine (r : Ray P) : Line P where
-  carrier := {C : P | ∃ t : ℝ, VEC r.source C = t • r.direction.vec}
+  carrier := {C : P | ∃ t : ℝ, VEC r.source C = t • r.toDir.vec}
   linear := sorry
   maximal := sorry
   nontriv := sorry

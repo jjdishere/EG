@@ -24,7 +24,8 @@ end Circle
 scoped notation "CIR" => Circle.mk_pt_pt
 
 scoped notation "⨀" => Circle.mk_pt_pt
--- point lieson, inside, outside a circle
+-- power of a point
+-- point lieson, inside, outside a circle by power
 -- ray with circle
 -- line with circle
 end EuclidGeom

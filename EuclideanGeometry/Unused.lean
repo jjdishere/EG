@@ -4,7 +4,7 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 import EuclideanGeometry.Foundation.Axiom.Plane
 import EuclideanGeometry.Foundation.Axiom.Ray
 import EuclideanGeometry.Foundation.Axiom.Angle
-import EuclideanGeometry.Foundation.Axiom.Ray_ex1
+import EuclideanGeometry.Foundation.Axiom.Ray_ex
 import EuclideanGeometry.Foundation.Axiom.Translation_ex
 import EuclideanGeometry.Foundation.Axiom.Position
 
@@ -103,7 +103,7 @@ instance {P : Type _} [EuclideanPlane P] : Coe (DSeg P) (Seg P) where
 def Seg.toDSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv : l.target ≠ l.source): DSeg P where
   source := l.source
   target := l.target
-  direction := UniVec.normalize (l.target -ᵥ l.source) (vsub_ne_zero.mpr nontriv)
+  toDir := Vec.normalize (l.target -ᵥ l.source) (vsub_ne_zero.mpr nontriv)
   on_ray := sorry
   non_triv := sorry
 
@@ -126,21 +126,21 @@ theorem source_lies_on_seg : seg.source LiesOnDSeg seg := by sorry
 
 theorem target_lies_on_seg : seg.target LiesOnDSeg seg := by sorry
 
--- definition of the reversion of the direction of a directed segment
+-- definition of the reversion of the toDir of a directed segment
 def reverse : DSeg P where
   source := seg.target
   target := seg.source
-  direction := -seg.direction
+  toDir := -seg.toDir
   on_ray := sorry
   non_triv := sorry
 
 -- double reverse a directed segment gets back to itself
 theorem double_rev_eq_self  : seg.reverse.reverse = seg := sorry
 
--- reversing the direction does not change the property that a point lies on the directed segments.
+-- reversing the toDir does not change the property that a point lies on the directed segments.
 theorem IsOnDSeg_of_rev_of_IsOnDSeg (a : P) (lieson : a LiesOnDSeg seg) : a LiesOnDSeg seg.reverse := sorry
 
--- the operation of reversing the direction commutes with coersion between directed segments and generalized directed segments.
+-- the operation of reversing the toDir commutes with coersion between directed segments and generalized directed segments.
 theorem DSeg.rev_toSeg_eq_toSeg_rev : seg.reverse.toSeg = (seg.toSeg).reverse := sorry
 
 theorem Seg.rev_toDSeg_eq_toDSeg_rev (nontriv : gseg.target ≠ gseg.source) : (gseg.reverse).toDSeg_of_nontriv (Seg.nontriv_of_rev_of_nontriv gseg nontriv) = (gseg.toDSeg_of_nontriv nontriv).reverse := sorry
@@ -152,7 +152,7 @@ variable {P: Type _} [EuclideanPlane P] (v : ℝ × ℝ) (seg : DSeg P)
 def translate (seg : DSeg P) (v : ℝ × ℝ) : DSeg P where
   source := sorry
   target := v +ᵥ seg.target
-  direction := sorry
+  toDir := sorry
   on_ray := sorry
   non_triv := sorry
 
