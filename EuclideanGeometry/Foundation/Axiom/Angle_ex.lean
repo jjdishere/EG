@@ -34,12 +34,16 @@ theorem acute_of_supp_of_obtuse (rt : IsObtuseAngle oang) :  IsRightAngle oang.s
 
 theorem obtuse_of_supp_of_acute (rt : IsAcuteAngle oang) :  IsRightAngle oang.supplementary := by sorry
 
+theorem is_nontriv_of_supp_of_is_nontriv (nontriv : oang.is_nontriv) : oang.supp.is_nontriv := by sorry
+
 def opposite :(OAngle P) where
   start_ray := oang.start_ray.reverse
   end_ray := oang.end_ray.reverse
   source_eq_source := sorry
 
 theorem opposite_eq_supp_of_supp : oang.supplementary.supplementary = oang := by sorry
+
+theorem  is_nontriv_of_oppo_of_is_nontriv (nontriv : oang.is_nontriv) : oang.opposite.is_nontriv := by sorry
 
 /- complementary angles -/
 
@@ -50,7 +54,6 @@ namespace OAngle
 
 variable {P : Type _} [EuclideanPlane P] (oang : OAngle P)
 
-theorem 
 
 end OAngle
 

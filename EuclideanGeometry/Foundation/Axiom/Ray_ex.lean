@@ -74,7 +74,7 @@ namespace Seg
 
 variable {P: Type _} [EuclideanPlane P]
 
-def extension_ray (l : Seg P) (nontriv : l.is_nontriv) : Ray P := (l.reverse.toRay_of_nontriv (Ne.symm nontriv)).reverse
+def extension_ray_of_nontriv (seg : Seg P) (nontriv : seg.is_nontriv) : Ray P := (seg.reverse.toRay_of_nontriv (Ne.symm nontriv)).reverse
 
 
 end Seg

@@ -22,7 +22,17 @@ def toProj (l : LinearObj P) : Proj :=
   | seg s nontriv => s.toProj_of_nontriv nontriv
   | line l => l.toProj
 
+def IsOnLinearObj (a : P) (l : LinearObj P) : Prop :=
+  match l with
+  | vec v h => False
+  | uni_vec v => False
+  | ray r => a LiesOnRay r
+  | seg s nontriv => a LiesOnSeg s
+  | line l => a ∈ l.carrier
+
 end LinearObj
+
+scoped infix : 50 "LiesOnLinearObj" => LinearObj.IsOnLinearObj
 
 def parallel (l₁ l₂: LinearObj P) : Prop := l₁.toProj = l₂.toProj
 
@@ -36,5 +46,6 @@ scoped infix : 50 "ParallelTo" => parallel
 scoped infix : 50 "∥" => parallel
 
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coersions, ... -/
+
 
 end EuclidGeom
