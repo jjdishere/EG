@@ -5,8 +5,21 @@ import EuclideanGeometry.Foundation.Axiom.Ray
 import EuclideanGeometry.Foundation.Axiom.Angle
 import EuclideanGeometry.Foundation.Axiom.Position
 import EuclideanGeometry.Foundation.Axiom.Line
+import EuclideanGeometry.Foundation.Axiom.Parallel
+import EuclideanGeometry.Foundation.Axiom.Rotation
 import EuclideanGeometry.Foundation.Axiom.Triangle
+import EuclideanGeometry.Foundation.Axiom.CongruentTriangle
 import EuclideanGeometry.Foundation.Axiom.Circle
+
+import EuclideanGeometry.Foundation.Axiom.Angle_ex
+import EuclideanGeometry.Foundation.Axiom.Line_ex
+import EuclideanGeometry.Foundation.Axiom.Position_ex
+import EuclideanGeometry.Foundation.Axiom.Ray_ex
+import EuclideanGeometry.Foundation.Axiom.Translation_ex
+import EuclideanGeometry.Foundation.Axiom.Triangle_ex
+
+-- import EuclideanGeometry.Check
+-- import EuclideanGeometry.Unused
 
 /- Constuction -/
 

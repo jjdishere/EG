@@ -7,7 +7,7 @@ inductive LinearObj (P : Type _) [EuclideanPlane P] where
   | vec (v : Vec) (h : v ≠ 0)
   | dir (v : Dir)
   | ray (r : Ray P)
-  | seg (s : Seg P) (nontriv : s.is_nontriv)
+  | seg (s : Seg P) (hs : s.is_nontriv)
   | line (l : Line P)
 
 variable {P : Type _} [EuclideanPlane P]
@@ -34,7 +34,11 @@ instance : IsEquiv (LinearObj P) parallel where
 scoped infix : 50 "ParallelTo" => parallel
 
 scoped infix : 50 "∥" => parallel
- 
+
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coersions, ... -/
+
+section LiesOn
+
+end LiesOn
 
 end EuclidGeom
