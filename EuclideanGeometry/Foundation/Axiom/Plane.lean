@@ -1,4 +1,3 @@
-import Mathlib.Analysis.InnerProductSpace.PiL2
 import EuclideanGeometry.Foundation.Axiom.Vector
 
 /-!

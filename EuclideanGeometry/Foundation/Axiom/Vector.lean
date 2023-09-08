@@ -1,5 +1,6 @@
-import Mathlib.Analysis.InnerProductSpace.PiL2
-
+import Mathlib.Analysis.InnerProductSpace.Basic
+import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 /-!
 # Standard ℝ²
 
@@ -57,8 +58,8 @@ protected def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
         simp [pow_two, add_mul, mul_add]
         let h1 := two_mul_le_add_pow_two (x.1 * y.2) (x.2 * y.1)
         linarith
-    repeat rw [pow_two] at P
     let Q := P
+    rw [pow_two] at P
     rw [mul_comm (Real.sqrt (x.fst ^ 2 + x.snd ^ 2)) _] at Q
     simp [pow_two] at *    
     linarith
@@ -189,11 +190,9 @@ instance : Mul Dir where
       ring_nf
       calc 
         _ = (z.toVec.1 ^ 2 + z.toVec.2 ^ 2) * (w.toVec.1 ^ 2 + w.toVec.2 ^ 2) := by
-          ring_nf
-          simp only [Real.rpow_two]
-          linarith
+          ring
         _ = 1 * 1 := by 
-          simp only [Real.rpow_two, pow_two]
+          simp only [pow_two]
           congr 1
           · exact z.unit
           · exact w.unit

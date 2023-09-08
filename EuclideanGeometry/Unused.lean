@@ -7,6 +7,7 @@ import EuclideanGeometry.Foundation.Axiom.Angle
 import EuclideanGeometry.Foundation.Axiom.Ray_ex
 import EuclideanGeometry.Foundation.Axiom.Translation_ex
 import EuclideanGeometry.Foundation.Axiom.Position
+import EuclideanGeometry.Foundation.Axiom.Class
 
 noncomputable section
 namespace EuclidGeom
@@ -239,5 +240,20 @@ theorem colinear_CAB_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear 
 
 theorem colinear_CBA_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear C B A := sorry
 end colinear
+
+section HasFallsOn
+
+class HasFallsOn (α β : Type _) [HasLiesOn P α] [HasLiesOn P β] where
+  falls_on : α → β → Prop
+  lies_on_falls_on : ∀ (p : P) (A : α) (B : β), HasLiesOn.lies_on p A → falls_on A B → HasLiesOn.lies_on p B
+
+class HasFallsIn (α β : Type _) [HasLiesIn P α] [HasLiesIn P β] where
+  falls_in : α → β → Prop
+  lies_in_falls_in : ∀ (p : P) (A : α) (B : β), HasLiesIn.lies_in p A → falls_in A B → HasLiesIn.lies_in p B
+
+scoped notation A "FallsOn" B => HasFallsOn.falls_on A B
+scoped notation A "FallsIn" B => HasFallsIn.falls_in A B
+
+end HasFallsOn
 
 end EuclidGeom
