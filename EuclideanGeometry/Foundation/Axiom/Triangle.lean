@@ -19,11 +19,11 @@ namespace Triangle
 
 -- not is_cclock implies 1 right of 23, ..., ...
 
-def edge₁ (tr : Triangle P) : DSeg P := DSeg.mk tr.2 tr.3
+def edge₁ (tr : Triangle P) : Seg P := Seg.mk tr.2 tr.3
 
-def edge₂ (tr : Triangle P) : DSeg P := DSeg.mk tr.3 tr.1
+def edge₂ (tr : Triangle P) : Seg P := Seg.mk tr.3 tr.1
 
-def edge₃ (tr : Triangle P) : DSeg P := DSeg.mk tr.1 tr.2
+def edge₃ (tr : Triangle P) : Seg P := Seg.mk tr.1 tr.2
 
 def area (tr : Triangle P) : ℝ := sorry 
 
