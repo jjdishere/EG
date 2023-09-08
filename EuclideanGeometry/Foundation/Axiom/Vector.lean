@@ -58,9 +58,7 @@ protected def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
         simp [pow_two, add_mul, mul_add]
         let h1 := two_mul_le_add_pow_two (x.1 * y.2) (x.2 * y.1)
         linarith
-    let Q := P
     rw [pow_two] at P
-    rw [mul_comm (Real.sqrt (x.fst ^ 2 + x.snd ^ 2)) _] at Q
     simp [pow_two] at *    
     linarith
 
@@ -408,7 +406,7 @@ theorem neg_normalize_eq_normalize_smul_neg {u v : ℝ × ℝ} (hu : u ≠ 0) (h
   rw [smul_algebra_smul_comm _ _ _] at g₁
   rw [neg_eq_iff_eq_neg, ← neg_smul _ _, ← inv_neg, ← Iff.mpr (inv_smul_eq_iff₀ (Iff.mpr neg_ne_zero (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hv))) (Eq.symm g₁)]
 
-theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) : Vec.toProj_of_nonzero v hv = Vec.toProj_of_nonzero u hu := by
+theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) : Vec.toProj_of_nonzero u hu = Vec.toProj_of_nonzero v hv := by
   have ht : t ≠ 0 := by
     by_contra ht'
     rw [ht', zero_smul ℝ u] at h
@@ -425,5 +423,45 @@ theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : 
     | Or.inr ht₃ =>
       right
       exact Eq.symm (neg_normalize_eq_normalize_smul_neg hu hv h ht₃)
+
+-- The main theorem of toProj
+
+theorem eq_toProj_iff {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) : (Vec.toProj_of_nonzero u hu = Vec.toProj_of_nonzero v hv) ↔ ∃ (t : ℝ), v = t • u := by
+  constructor
+  · intro h
+    exact smul_of_eq_toProj h
+  · intro h'
+    rcases h' with ⟨t, h⟩ 
+    exact eq_toProj_of_smul hu hv h
+
+-- Define two Proj is perpendicular by the mul structure of ℂ, using Complex.I
+
+
+namespace Proj
+
+def I : Dir where
+  toVec := (0, 1)
+  unit := by
+    unfold inner Vec.InnerProductSpace.Core
+    simp
+
+@[simp]
+theorem fst_of_I_eq_zero : I.toVec.1 = 0 := rfl
+
+@[simp]
+theorem snd_of_I_eq_one : I.toVec.2 = 1 := rfl
+
+@[simp]
+theorem I_toComplex_eq_I : Vec.toComplex (I.toVec) = Complex.I := by
+  unfold Vec.toComplex
+  ext
+  simp
+  simp
+
+def perp : Proj → Proj := by
+  intro x
+  exact x * (I : Proj)
+
+end Proj
 
 end EuclidGeom
