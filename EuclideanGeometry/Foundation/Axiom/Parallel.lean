@@ -7,7 +7,7 @@ inductive LinearObj (P : Type _) [EuclideanPlane P] where
   | vec (v : Vec) (h : v ≠ 0)
   | dir (v : Dir)
   | ray (r : Ray P)
-  | dseg (s : DSeg P) (hs : s.is_nontriv)
+  | seg (s : Seg P) (hs : s.is_nontriv)
   | line (l : Line P)
 
 variable {P : Type _} [EuclideanPlane P]
@@ -19,7 +19,7 @@ def toProj (l : LinearObj P) : Proj :=
   | vec v h => Vec.toProj_of_nonzero v h
   | dir v => v.toProj
   | ray r => r.toProj
-  | dseg s nontriv => s.toProj_of_nontriv nontriv
+  | seg s nontriv => s.toProj_of_nontriv nontriv
   | line l => l.toProj
 
 def IsOnLinearObj (a : P) (l : LinearObj P) : Prop :=
@@ -27,7 +27,7 @@ def IsOnLinearObj (a : P) (l : LinearObj P) : Prop :=
   | vec v h => False
   | dir v => False
   | ray r => a LiesOnRay r
-  | dseg s nontriv => a LiesOnDSeg s
+  | seg s nontriv => a LiesOnSeg s
   | line l => a ∈ l.carrier
 
 end LinearObj
@@ -39,7 +39,7 @@ def parallel (l₁ l₂: LinearObj P) : Prop := l₁.toProj = l₂.toProj
 instance : IsEquiv (LinearObj P) parallel where
   refl _ := rfl
   symm _ _ := Eq.symm
-  trans := sorry -- a big, messy theorem
+  trans _ _ _ := Eq.trans
 
 scoped infix : 50 "ParallelTo" => parallel
 

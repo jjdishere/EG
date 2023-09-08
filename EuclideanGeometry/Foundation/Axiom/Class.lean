@@ -14,7 +14,7 @@ class HasLiesIn (α : Type _) where
   lies_in : P → α → Prop
 
 -- class HasLiesInt (α : Type _) extends HasLiesIn α, HasLiesOn α where 
--- interior of dseg and circle is not the same concept
+-- interior of seg and circle is not the same concept
 
 
 scoped notation p "LiesOn" F => HasLiesOn.lies_on p F
@@ -47,6 +47,7 @@ def IsIntersectionPoint {α β : Type _} (p : P) (A : α) (B : β) [HasLiesOn P 
 
 scoped notation p "IsIntersectionOf" A B => IsIntersectionPoint p A B
 
+/- 
 class HasProj (α : Type _) where
   toProj : (α → Proj)
 
@@ -79,5 +80,5 @@ protected theorem symm {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj 
 end perpendicular
 
 theorem parallel_of_perp_perp {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ] : (A ⟂ B) → (B ⟂ C) → (A ∥ C)  := sorry
-
+-/
 end EuclidGeom
