@@ -72,11 +72,22 @@ end Triangle
 
 scoped infix : 50 "IsInsideTriangle" => Triangle.IsInside
 
+namespace Triangle
+
 variable (tr : Triangle P)
 
-theorem angle_sum_eq_pi_of_cclock (nontriv : tr.is_nontriv) : tr.angle₁ nontriv + tr.angle₂ nontriv + tr.angle₃ nontriv = π := sorry 
+theorem angle_sum_eq_pi_of_cclock (nontriv : tr.is_nontriv) (cclock : tr.is_cclock nontriv): tr.angle₁ nontriv + tr.angle₂ nontriv + tr.angle₃ nontriv = π := sorry 
 
-theorem angle_sum_eq_neg_pi_of_clock (nontriv : tr.is_nontriv) : tr.angle₁ nontriv + tr.angle₂ nontriv + tr.angle₃ nontriv = - π := sorry 
+theorem angle_sum_eq_neg_pi_of_clock (nontriv : tr.is_nontriv) (clock : ¬ tr.is_cclock nontriv): tr.angle₁ nontriv + tr.angle₂ nontriv + tr.angle₃ nontriv = - π := sorry 
+
+theorem angle_pos_of_cclock (nontriv : tr.is_nontriv) (cclock : tr.is_cclock nontriv) : 0 < tr.angle₁ nontriv ∧ 0 < tr.angle₂ nontriv ∧ 0 < tr.angle₃ nontriv := by sorry
+
+theorem angle_neg_of_clock (nontriv : tr.is_nontriv) (clock : ¬ tr.is_cclock nontriv) : tr.angle₁ nontriv < 0 ∧ tr.angle₂ nontriv < 0 ∧ tr.angle₃ nontriv < 0  := by sorry
+
+theorem cclock_of_pos_angle (nontriv : tr.is_nontriv) (h : 0 < tr.angle₁ nontriv ∨ 0 < tr.angle₂ nontriv ∨ 0 < tr.angle₃ nontriv) : tr.is_cclock nontriv := sorry
+
+theorem clock_of_neg_angle (nontriv : tr.is_nontriv) (h : tr.angle₁ nontriv < 0 ∨ tr.angle₂ nontriv < 0 ∨ tr.angle₃ nontriv < 0) : tr.is_cclock nontriv := sorry
+
 
 theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.length := sorry
 
@@ -87,5 +98,7 @@ theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr
 theorem nontrivial_of_edge_sum_ne_edge : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length → tr.is_nontriv  := sorry -- should this theorem stated as ≠, or as > ???
 
 /- area ≥ 0, nontrivial → >0, =0 → trivial -/
+
+end Triangle
 
 end EuclidGeom

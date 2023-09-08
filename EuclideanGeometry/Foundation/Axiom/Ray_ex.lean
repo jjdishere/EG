@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Ray
 
+noncomputable section
 
 namespace EuclidGeom
 
@@ -70,7 +71,19 @@ theorem eq_source_of_lies_on_and_lies_on_rev (p : P) (lieson : p LiesOnRay l) (l
 
 end Ray
 
+namespace Seg
 
+variable {P: Type _} [EuclideanPlane P]
+
+-- Define the extension ray from a nontrival segment
+
+def extension_ray_of_nontriv (seg : Seg P) (nontriv : seg.is_nontriv) : Ray P := (seg.reverse.toRay_of_nontriv (Ne.symm nontriv)).reverse
+
+-- A point lies on the directed segment if and only if it lies on the ray associated to the segment and the ray associated to the reverse of this segment.
+
+def lieson_iff_lieson_both_ray_of_nontriv_seg (p : P) (seg : Seg P) (nontriv : seg.is_nontriv) : p LiesOnSeg seg ↔ p LiesOnRay (seg.toRay_of_nontriv nontriv) ∧ p LiesOnRay (seg.reverse.toRay_of_nontriv (Ne.symm nontriv)) := by sorry
+
+end Seg
 
 
 

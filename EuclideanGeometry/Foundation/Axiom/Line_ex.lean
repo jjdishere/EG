@@ -2,6 +2,9 @@ import EuclideanGeometry.Foundation.Axiom.Line
 import EuclideanGeometry.Foundation.Axiom.Position_ex
 import EuclideanGeometry.Foundation.Axiom.Ray_ex
 
+noncomputable section
+
+
 namespace EuclidGeom
 
 

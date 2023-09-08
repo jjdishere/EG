@@ -10,6 +10,9 @@ import EuclideanGeometry.Foundation.Axiom.Rotation
 import EuclideanGeometry.Foundation.Axiom.Triangle
 import EuclideanGeometry.Foundation.Axiom.CongruentTriangle
 import EuclideanGeometry.Foundation.Axiom.Circle
+import EuclideanGeometry.Foundation.Construction.IsocelesTriangle
+import EuclideanGeometry.Foundation.Construction.AngleBisector
+import EuclideanGeometry.Foundation.Axiom.Ray_ex
 
 import EuclideanGeometry.Foundation.Axiom.Angle_ex
 import EuclideanGeometry.Foundation.Axiom.Line_ex
