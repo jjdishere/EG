@@ -120,15 +120,21 @@ protected def NormedAddGroup : NormedAddGroup (ℝ × ℝ) := @NormedAddCommGrou
 
 protected def InnerProductSpace : @InnerProductSpace ℝ (ℝ × ℝ) _ Vec.NormedAddCommGroup := InnerProductSpace.ofCore Vec.InnerProductSpace.Core
 
-protected def SeminormedAddCommGroup := @NormedAddCommGroup.toSeminormedAddCommGroup _ (Vec.InnerProductSpace.Core.toNormedAddCommGroup)
+protected def SeminormedAddCommGroup := @NormedAddCommGroup.toSeminormedAddCommGroup _ Vec.InnerProductSpace.Core.toNormedAddCommGroup
 
-protected def SeminormedAddGroup := @SeminormedAddCommGroup.toSeminormedAddGroup _ (Vec.SeminormedAddCommGroup)
+protected def SeminormedAddGroup := @SeminormedAddCommGroup.toSeminormedAddGroup _ Vec.SeminormedAddCommGroup
 
-protected def MetricSpace := @NormedAddCommGroup.toMetricSpace _ (Vec.InnerProductSpace.Core.toNormedAddCommGroup)
+protected def MetricSpace := @NormedAddCommGroup.toMetricSpace _ Vec.InnerProductSpace.Core.toNormedAddCommGroup
 
 protected def PseudoMetricSpace := @MetricSpace.toPseudoMetricSpace _ Vec.MetricSpace
 
-protected def Norm := @NormedAddCommGroup.toNorm _ (Vec.NormedAddCommGroup)
+protected def NormedSpace := @InnerProductSpace.Core.toNormedSpace _ _ _ _ _ Vec.InnerProductSpace.Core
+
+protected def BoundedSMul := @NormedSpace.boundedSMul _ _ _ Vec.SeminormedAddCommGroup Vec.NormedSpace
+
+protected def Norm := @NormedAddCommGroup.toNorm _ Vec.NormedAddCommGroup
+
+protected def norm := @Norm.norm _ Vec.Norm
 
 def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩
 
@@ -142,21 +148,19 @@ def Complex.toVec (c : ℂ) : ℝ × ℝ := ⟨c.1, c.2⟩
 /- the notation for class of vectors-/
 scoped notation "Vec" => ℝ × ℝ
 
-
-
 @[ext]
 class Dir where
   toVec : Vec
   unit : Vec.InnerProductSpace.Core.inner toVec toVec= 1 
 
 def Vec.normalize (x : ℝ × ℝ) (h : x ≠ 0) : Dir where
-  toVec := (Vec.NormedAddCommGroup.norm x)⁻¹ • x 
+  toVec := (Vec.norm x)⁻¹ • x 
   unit := by 
     rw [@real_inner_smul_left _ Vec.NormedAddCommGroup Vec.InnerProductSpace _ _ _, @real_inner_smul_right _ Vec.NormedAddCommGroup Vec.InnerProductSpace _ _ _, @inner_self_eq_norm_sq_to_K _ _ _ Vec.NormedAddCommGroup Vec.InnerProductSpace]
     dsimp
     rw [pow_two]
     rw [← mul_assoc _ _ (@norm (ℝ × ℝ) Vec.NormedAddCommGroup.toNorm x)]
-    simp only [ne_eq, inv_mul_mul_self]
+    simp only [Vec.norm, ne_eq, inv_mul_mul_self]
     rw [inv_mul_cancel ((@norm_ne_zero_iff _ Vec.NormedAddGroup).mpr h)]
 
 -- Should change Dir into the following Dir'to use all instances on Dir'
@@ -384,45 +388,43 @@ theorem normalize_eq_normalize_smul_pos {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : 
   ext : 1
   unfold Vec.normalize Dir.toVec
   simp
-  have hu₁ : Vec.NormedAddCommGroup.norm u ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hu
-  have hv₁ : Vec.NormedAddCommGroup.norm v ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hv
-  have g : (Vec.NormedAddCommGroup.norm v) • u = (Vec.NormedAddCommGroup.norm u) • v := by
+  have hu₁ : Vec.norm u ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hu
+  have hv₁ : Vec.norm v ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hv
+  have g : (Vec.norm v) • u = (Vec.norm u) • v := by
     rw [h]
-    have w₁ : (Vec.NormedAddCommGroup.norm (t • u)) = ‖t‖ * (Vec.NormedAddCommGroup.norm u) := by
-      sorry
-      -- exact @norm_smul _ _ _ Vec.SeminormedAddGroup _ _ t u
+    have w₁ : (Vec.norm (t • u)) = ‖t‖ * (Vec.norm u) := by
+      exact @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u
     have w₂ : ‖t‖ = t := abs_of_pos ht
     rw [w₁, w₂, mul_comm]
-    exact mul_smul (Vec.NormedAddCommGroup.norm u) t u
-  have g₁ : (Vec.NormedAddCommGroup.norm u)⁻¹ • (Vec.NormedAddCommGroup.norm v) • u = v := Iff.mpr (inv_smul_eq_iff₀ hu₁) g
-  have g₂ : (Vec.NormedAddCommGroup.norm v) • (Vec.NormedAddCommGroup.norm u)⁻¹ • u = (Vec.NormedAddCommGroup.norm u)⁻¹ • (Vec.NormedAddCommGroup.norm v) • u := smul_algebra_smul_comm _ _ _
+    exact mul_smul (Vec.norm u) t u
+  have g₁ : (Vec.norm u)⁻¹ • (Vec.norm v) • u = v := Iff.mpr (inv_smul_eq_iff₀ hu₁) g
+  have g₂ : (Vec.norm v) • (Vec.norm u)⁻¹ • u = (Vec.norm u)⁻¹ • (Vec.norm v) • u := smul_algebra_smul_comm _ _ _
   rw [← g₂] at g₁
-  have g₃ : v = (Vec.NormedAddCommGroup.norm v) • (Vec.NormedAddCommGroup.norm u)⁻¹ • u := Eq.symm g₁
-  have g₄ : (Vec.NormedAddCommGroup.norm v)⁻¹ • v = (Vec.NormedAddCommGroup.norm u)⁻¹ • u := Iff.mpr (inv_smul_eq_iff₀ hv₁) g₃
+  have g₃ : v = (Vec.norm v) • (Vec.norm u)⁻¹ • u := Eq.symm g₁
+  have g₄ : (Vec.norm v)⁻¹ • v = (Vec.norm u)⁻¹ • u := Iff.mpr (inv_smul_eq_iff₀ hv₁) g₃
   exact Eq.symm g₄
 
 theorem neg_normalize_eq_normalize_smul_neg {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) (ht : t < 0) : -Vec.normalize u hu = Vec.normalize v hv := by
   ext : 1
   unfold Vec.normalize
   simp
-  have hu₁ : Vec.NormedAddCommGroup.norm u ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hu
-  have hv₁ : Vec.NormedAddCommGroup.norm v ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hv
-  have hv₂ : -Vec.NormedAddCommGroup.norm v ≠ 0 := Iff.mpr neg_ne_zero hv₁
-  have g : (-Vec.NormedAddCommGroup.norm v) • u = (Vec.NormedAddCommGroup.norm u) • v := by
+  have hu₁ : Vec.norm u ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hu
+  have hv₁ : Vec.norm v ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hv
+  have hv₂ : -Vec.norm v ≠ 0 := Iff.mpr neg_ne_zero hv₁
+  have g : (-Vec.norm v) • u = (Vec.norm u) • v := by
     rw [h]
-    have w₁ : (Vec.NormedAddCommGroup.norm (t • u)) = ‖t‖ * (Vec.NormedAddCommGroup.norm u) := by
-      sorry
-      -- exact @norm_smul _ _ _ Vec.SeminormedAddGroup _ _ t u
+    have w₁ : (Vec.norm (t • u)) = ‖t‖ * (Vec.norm u) := by
+      exact @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u
     have w₂ : ‖t‖ = -t := abs_of_neg ht
     rw [w₁, w₂, neg_mul, neg_neg, mul_comm]
-    exact mul_smul (Vec.NormedAddCommGroup.norm u) t u
-  have g₁ : (Vec.NormedAddCommGroup.norm u)⁻¹ • (-Vec.NormedAddCommGroup.norm v) • u = v := Iff.mpr (inv_smul_eq_iff₀ hu₁) g
-  have g₂ : (-Vec.NormedAddCommGroup.norm v) •  (Vec.NormedAddCommGroup.norm u)⁻¹ • u = (Vec.NormedAddCommGroup.norm u)⁻¹ • (-Vec.NormedAddCommGroup.norm v) • u := smul_algebra_smul_comm _ _ _
+    exact mul_smul (Vec.norm u) t u
+  have g₁ : (Vec.norm u)⁻¹ • (-Vec.norm v) • u = v := Iff.mpr (inv_smul_eq_iff₀ hu₁) g
+  have g₂ : (-Vec.norm v) •  (Vec.norm u)⁻¹ • u = (Vec.norm u)⁻¹ • (-Vec.norm v) • u := smul_algebra_smul_comm _ _ _
   rw [← g₂] at g₁
-  have g₃ : v = (-Vec.NormedAddCommGroup.norm v) •  (Vec.NormedAddCommGroup.norm u)⁻¹ • u := Eq.symm g₁
-  have g₄ : (-Vec.NormedAddCommGroup.norm v)⁻¹ • v = (Vec.NormedAddCommGroup.norm u)⁻¹ • u := Iff.mpr (inv_smul_eq_iff₀ hv₂) g₃
-  have g₅ : (-Vec.NormedAddCommGroup.norm v)⁻¹ = -(Vec.NormedAddCommGroup.norm v)⁻¹ := inv_neg
-  have g₆ : (-(Vec.NormedAddCommGroup.norm v)⁻¹) • v = - ((Vec.NormedAddCommGroup.norm v)⁻¹ • v) := neg_smul _ _
+  have g₃ : v = (-Vec.norm v) •  (Vec.norm u)⁻¹ • u := Eq.symm g₁
+  have g₄ : (-Vec.norm v)⁻¹ • v = (Vec.norm u)⁻¹ • u := Iff.mpr (inv_smul_eq_iff₀ hv₂) g₃
+  have g₅ : (-Vec.norm v)⁻¹ = -(Vec.norm v)⁻¹ := inv_neg
+  have g₆ : (-(Vec.norm v)⁻¹) • v = - ((Vec.norm v)⁻¹ • v) := neg_smul _ _
   rw [g₅, g₆] at g₄
   exact Iff.mpr neg_eq_iff_eq_neg (id (Eq.symm g₄))
 
