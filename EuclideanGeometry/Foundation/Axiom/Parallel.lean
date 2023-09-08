@@ -39,7 +39,7 @@ def parallel (l₁ l₂: LinearObj P) : Prop := l₁.toProj = l₂.toProj
 instance : IsEquiv (LinearObj P) parallel where
   refl _ := rfl
   symm _ _ := Eq.symm
-  trans := sorry -- a big, messy theorem
+  trans _ _ _ := Eq.trans
 
 scoped infix : 50 "ParallelTo" => parallel
 
