@@ -388,51 +388,33 @@ theorem normalize_eq_normalize_smul_pos {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : 
   ext : 1
   unfold Vec.normalize Dir.toVec
   simp
-  have hu₁ : Vec.norm u ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hu
-  have hv₁ : Vec.norm v ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hv
+  have hv₁ : Vec.norm v ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v) hv
   have g : (Vec.norm v) • u = (Vec.norm u) • v := by
-    rw [h]
-    have w₁ : (Vec.norm (t • u)) = ‖t‖ * (Vec.norm u) := by
-      exact @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u
+    have w₁ : (Vec.norm (t • u)) = ‖t‖ * (Vec.norm u) := @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u
     have w₂ : ‖t‖ = t := abs_of_pos ht
-    rw [w₁, w₂, mul_comm]
+    rw [h, w₁, w₂, mul_comm]
     exact mul_smul (Vec.norm u) t u
-  have g₁ : (Vec.norm u)⁻¹ • (Vec.norm v) • u = v := Iff.mpr (inv_smul_eq_iff₀ hu₁) g
-  have g₂ : (Vec.norm v) • (Vec.norm u)⁻¹ • u = (Vec.norm u)⁻¹ • (Vec.norm v) • u := smul_algebra_smul_comm _ _ _
-  rw [← g₂] at g₁
-  have g₃ : v = (Vec.norm v) • (Vec.norm u)⁻¹ • u := Eq.symm g₁
-  have g₄ : (Vec.norm v)⁻¹ • v = (Vec.norm u)⁻¹ • u := Iff.mpr (inv_smul_eq_iff₀ hv₁) g₃
-  exact Eq.symm g₄
+  have g₁ : (Vec.norm u)⁻¹ • (Vec.norm v) • u = v := Iff.mpr (inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hu)) g
+  rw [smul_algebra_smul_comm _ _ _] at g₁
+  rw [← Iff.mpr (inv_smul_eq_iff₀ hv₁) (Eq.symm g₁)]
 
 theorem neg_normalize_eq_normalize_smul_neg {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) (ht : t < 0) : -Vec.normalize u hu = Vec.normalize v hv := by
   ext : 1
   unfold Vec.normalize
   simp
-  have hu₁ : Vec.norm u ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hu
-  have hv₁ : Vec.norm v ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hv
-  have hv₂ : -Vec.norm v ≠ 0 := Iff.mpr neg_ne_zero hv₁
   have g : (-Vec.norm v) • u = (Vec.norm u) • v := by
-    rw [h]
-    have w₁ : (Vec.norm (t • u)) = ‖t‖ * (Vec.norm u) := by
-      exact @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u
+    have w₁ : (Vec.norm (t • u)) = ‖t‖ * (Vec.norm u) := @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u
     have w₂ : ‖t‖ = -t := abs_of_neg ht
-    rw [w₁, w₂, neg_mul, neg_neg, mul_comm]
+    rw [h, w₁, w₂, neg_mul, neg_neg, mul_comm]
     exact mul_smul (Vec.norm u) t u
-  have g₁ : (Vec.norm u)⁻¹ • (-Vec.norm v) • u = v := Iff.mpr (inv_smul_eq_iff₀ hu₁) g
-  have g₂ : (-Vec.norm v) •  (Vec.norm u)⁻¹ • u = (Vec.norm u)⁻¹ • (-Vec.norm v) • u := smul_algebra_smul_comm _ _ _
-  rw [← g₂] at g₁
-  have g₃ : v = (-Vec.norm v) •  (Vec.norm u)⁻¹ • u := Eq.symm g₁
-  have g₄ : (-Vec.norm v)⁻¹ • v = (Vec.norm u)⁻¹ • u := Iff.mpr (inv_smul_eq_iff₀ hv₂) g₃
-  have g₅ : (-Vec.norm v)⁻¹ = -(Vec.norm v)⁻¹ := inv_neg
-  have g₆ : (-(Vec.norm v)⁻¹) • v = - ((Vec.norm v)⁻¹ • v) := neg_smul _ _
-  rw [g₅, g₆] at g₄
-  exact Iff.mpr neg_eq_iff_eq_neg (id (Eq.symm g₄))
+  have g₁ : (Vec.norm u)⁻¹ • (-Vec.norm v) • u = v := (Iff.mpr (inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hu)) g)
+  rw [smul_algebra_smul_comm _ _ _] at g₁
+  rw [neg_eq_iff_eq_neg, ← neg_smul _ _, ← inv_neg, ← Iff.mpr (inv_smul_eq_iff₀ (Iff.mpr neg_ne_zero (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hv))) (Eq.symm g₁)]
 
 theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) : Vec.toProj_of_nonzero v hv = Vec.toProj_of_nonzero u hu := by
   have ht : t ≠ 0 := by
     by_contra ht'
-    have h' : (0 : ℝ) • u = 0 := zero_smul ℝ u
-    rw [ht', h'] at h
+    rw [ht', zero_smul ℝ u] at h
     tauto
   have ht₁ : (0 < t) ∨ (t < 0) := Ne.lt_or_lt (Ne.symm ht)
   unfold Vec.toProj_of_nonzero Dir.toProj
