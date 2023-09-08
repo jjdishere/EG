@@ -419,10 +419,32 @@ theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : 
   match ht₁ with
     | Or.inl ht₂ =>
       left
-      exact Eq.symm (normalize_eq_normalize_smul_pos hu hv h ht₂)
+      exact normalize_eq_normalize_smul_pos hu hv h ht₂
     | Or.inr ht₃ =>
       right
-      exact Eq.symm (neg_normalize_eq_normalize_smul_neg hu hv h ht₃)
+      exact Iff.mp neg_eq_iff_eq_neg (neg_normalize_eq_normalize_smul_neg hu hv h ht₃)
+
+theorem smul_of_eq_toProj {u v : ℝ × ℝ} {hu : u ≠ 0} {hv : v ≠ 0} (h : Vec.toProj_of_nonzero u hu = Vec.toProj_of_nonzero v hv) : ∃ (t : ℝ), v = t • u := by
+  unfold Vec.toProj_of_nonzero Dir.toProj at h
+  let h' := Quotient.exact h
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
+  simp at h'
+  match h' with
+    | Or.inl h₁ =>
+      rw [Dir.ext_iff] at h₁
+      use (Vec.norm v) * (Vec.norm u)⁻¹
+      have w₁ : (Vec.norm v)⁻¹ • v = (Vec.norm u)⁻¹ • u ↔ v = (Vec.norm v) • (Vec.norm u)⁻¹ • u := inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v) hv)
+      rw [mul_smul]
+      refine (w₁.mp (Eq.symm ?_))
+      exact h₁
+    | Or.inr h₂ =>
+      rw [Dir.ext_iff] at h₂
+      use (-Vec.norm v) * (Vec.norm u)⁻¹
+      have w₂ : (-Vec.norm v)⁻¹ • v = (Vec.norm u)⁻¹ • u ↔ v = (-Vec.norm v) • (Vec.norm u)⁻¹ • u := inv_smul_eq_iff₀ (Iff.mpr neg_ne_zero (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v) hv))
+      rw [mul_smul]
+      refine (w₂.mp (Eq.symm ?_))
+      rw [← neg_inv, neg_smul]
+      exact h₂
 
 -- The main theorem of toProj
 
