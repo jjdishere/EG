@@ -286,16 +286,18 @@ instance : HasDistribNeg Dir where
     simp
     ring_nf
 
+@[simp]
+theorem toVec_neg_eq_neg_toVec (x : Dir) : (-x).toVec = -(x.toVec) := by
+  ext
+  unfold Neg.neg instNegDir toVec Prod.instNeg
+  simp
+  unfold Neg.neg instNegDir toVec Prod.instNeg
+  simp
+
 end Dir
 
 def PM : Dir → Dir → Prop :=
 fun x y => x = y ∨ x = -y
-
-/-
-@[simp]
-theorem neg_to_complex_eq_to_complex_neg (x : Dir) : Vec.toComplex (-x).toVec = -Vec.toComplex x.toVec := by
-  sorry
--/
 
 namespace PM
 
@@ -378,7 +380,7 @@ instance : Coe Dir Proj where
 
 def Vec.toProj_of_nonzero (v : ℝ × ℝ) (h : v ≠ 0) : Proj := (Vec.normalize v h : Proj) 
 
-theorem normalize_eq_smul_pos_normalize {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) (ht : 0 < t) : Vec.normalize u hu = Vec.normalize v hv := by
+theorem normalize_eq_normalize_smul_pos {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) (ht : 0 < t) : Vec.normalize u hu = Vec.normalize v hv := by
   ext : 1
   unfold Vec.normalize Dir.toVec
   simp
@@ -392,14 +394,55 @@ theorem normalize_eq_smul_pos_normalize {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : 
     have w₂ : ‖t‖ = t := abs_of_pos ht
     rw [w₁, w₂, mul_comm]
     exact mul_smul (Vec.NormedAddCommGroup.norm u) t u
-  have g₁ : (Vec.NormedAddCommGroup.norm u)⁻¹ • ((Vec.NormedAddCommGroup.norm v) • u) = v := Iff.mpr (inv_smul_eq_iff₀ hu₁) g
-  have g₂ : (Vec.NormedAddCommGroup.norm v) • ((Vec.NormedAddCommGroup.norm u)⁻¹ • u) = (Vec.NormedAddCommGroup.norm u)⁻¹ • ((Vec.NormedAddCommGroup.norm v) • u) := smul_algebra_smul_comm _ _ _
+  have g₁ : (Vec.NormedAddCommGroup.norm u)⁻¹ • (Vec.NormedAddCommGroup.norm v) • u = v := Iff.mpr (inv_smul_eq_iff₀ hu₁) g
+  have g₂ : (Vec.NormedAddCommGroup.norm v) • (Vec.NormedAddCommGroup.norm u)⁻¹ • u = (Vec.NormedAddCommGroup.norm u)⁻¹ • (Vec.NormedAddCommGroup.norm v) • u := smul_algebra_smul_comm _ _ _
   rw [← g₂] at g₁
   have g₃ : v = (Vec.NormedAddCommGroup.norm v) • (Vec.NormedAddCommGroup.norm u)⁻¹ • u := Eq.symm g₁
   have g₄ : (Vec.NormedAddCommGroup.norm v)⁻¹ • v = (Vec.NormedAddCommGroup.norm u)⁻¹ • u := Iff.mpr (inv_smul_eq_iff₀ hv₁) g₃
   exact Eq.symm g₄
 
+theorem neg_normalize_eq_normalize_smul_neg {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) (ht : t < 0) : -Vec.normalize u hu = Vec.normalize v hv := by
+  ext : 1
+  unfold Vec.normalize
+  simp
+  have hu₁ : Vec.NormedAddCommGroup.norm u ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hu
+  have hv₁ : Vec.NormedAddCommGroup.norm v ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hv
+  have hv₂ : -Vec.NormedAddCommGroup.norm v ≠ 0 := Iff.mpr neg_ne_zero hv₁
+  have g : (-Vec.NormedAddCommGroup.norm v) • u = (Vec.NormedAddCommGroup.norm u) • v := by
+    rw [h]
+    have w₁ : (Vec.NormedAddCommGroup.norm (t • u)) = ‖t‖ * (Vec.NormedAddCommGroup.norm u) := by
+      sorry
+      -- exact @norm_smul _ _ _ Vec.SeminormedAddGroup _ _ t u
+    have w₂ : ‖t‖ = -t := abs_of_neg ht
+    rw [w₁, w₂, neg_mul, neg_neg, mul_comm]
+    exact mul_smul (Vec.NormedAddCommGroup.norm u) t u
+  have g₁ : (Vec.NormedAddCommGroup.norm u)⁻¹ • (-Vec.NormedAddCommGroup.norm v) • u = v := Iff.mpr (inv_smul_eq_iff₀ hu₁) g
+  have g₂ : (-Vec.NormedAddCommGroup.norm v) •  (Vec.NormedAddCommGroup.norm u)⁻¹ • u = (Vec.NormedAddCommGroup.norm u)⁻¹ • (-Vec.NormedAddCommGroup.norm v) • u := smul_algebra_smul_comm _ _ _
+  rw [← g₂] at g₁
+  have g₃ : v = (-Vec.NormedAddCommGroup.norm v) •  (Vec.NormedAddCommGroup.norm u)⁻¹ • u := Eq.symm g₁
+  have g₄ : (-Vec.NormedAddCommGroup.norm v)⁻¹ • v = (Vec.NormedAddCommGroup.norm u)⁻¹ • u := Iff.mpr (inv_smul_eq_iff₀ hv₂) g₃
+  have g₅ : (-Vec.NormedAddCommGroup.norm v)⁻¹ = -(Vec.NormedAddCommGroup.norm v)⁻¹ := inv_neg
+  have g₆ : (-(Vec.NormedAddCommGroup.norm v)⁻¹) • v = - ((Vec.NormedAddCommGroup.norm v)⁻¹ • v) := neg_smul _ _
+  rw [g₅, g₆] at g₄
+  exact Iff.mpr neg_eq_iff_eq_neg (id (Eq.symm g₄))
+
 theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) : Vec.toProj_of_nonzero v hv = Vec.toProj_of_nonzero u hu := by
-  sorry 
+  have ht : t ≠ 0 := by
+    by_contra ht'
+    have h' : (0 : ℝ) • u = 0 := zero_smul ℝ u
+    rw [ht', h'] at h
+    tauto
+  have ht₁ : (0 < t) ∨ (t < 0) := Ne.lt_or_lt (Ne.symm ht)
+  unfold Vec.toProj_of_nonzero Dir.toProj
+  apply Quotient.sound
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM
+  simp
+  match ht₁ with
+    | Or.inl ht₂ =>
+      left
+      exact Eq.symm (normalize_eq_normalize_smul_pos hu hv h ht₂)
+    | Or.inr ht₃ =>
+      right
+      exact Eq.symm (neg_normalize_eq_normalize_smul_neg hu hv h ht₃)
 
 end EuclidGeom
