@@ -452,12 +452,40 @@ theorem smul_of_eq_toProj {u v : ℝ × ℝ} {hu : u ≠ 0} {hv : v ≠ 0} (h : 
 
 theorem eq_toProj_iff {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) : (Vec.toProj_of_nonzero u hu = Vec.toProj_of_nonzero v hv) ↔ ∃ (t : ℝ), v = t • u := by
   constructor
-  intro h
-  exact smul_of_eq_toProj h
-  intro h'
-  rcases h' with ⟨t, h⟩ 
-  exact eq_toProj_of_smul hu hv h
-end EuclidGeom
+  · intro h
+    exact smul_of_eq_toProj h
+  · intro h'
+    rcases h' with ⟨t, h⟩ 
+    exact eq_toProj_of_smul hu hv h
 
 -- Define two Proj is perpendicular by the mul structure of ℂ, using Complex.I
 
+
+namespace Proj
+
+def I : Dir where
+  toVec := (0, 1)
+  unit := by
+    unfold inner Vec.InnerProductSpace.Core
+    simp
+
+@[simp]
+theorem fst_of_I_eq_zero : I.toVec.1 = 0 := rfl
+
+@[simp]
+theorem snd_of_I_eq_one : I.toVec.2 = 1 := rfl
+
+@[simp]
+theorem I_toComplex_eq_I : Vec.toComplex (I.toVec) = Complex.I := by
+  unfold Vec.toComplex
+  ext
+  simp
+  simp
+
+def perp : Proj → Proj := by
+  intro x
+  exact x * (I : Proj)
+
+end Proj
+
+end EuclidGeom
