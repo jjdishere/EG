@@ -212,6 +212,8 @@ instance : One Dir where
       simp
   }
 
+-- Put tautological theorems into simp
+
 @[simp]
 theorem fst_of_one_eq_one : (1 : Dir).toVec.1 = 1 := rfl
 
@@ -231,6 +233,8 @@ theorem eq_self_toComplex_ComplextoVec (x : ℝ × ℝ) : Complex.toVec (Vec.toC
 theorem sq_sum_eq_one (x : Dir) : @HPow.hPow ℝ ℕ ℝ _ x.toVec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.toVec.2 2 = 1 := by
   rw [pow_two, pow_two]
   exact x.unit
+
+-- Give a CommGroup structure to Dir by the mul structure of ℂ
 
 instance : Semigroup Dir where
   mul_assoc _ _ _ := by
@@ -274,6 +278,8 @@ instance : CommGroup Dir where
     simp
     ring_nf
 
+-- Define a ± equivalence to build Proj
+
 instance : HasDistribNeg Dir where
   neg := Neg.neg
   neg_neg _ := by
@@ -312,7 +318,7 @@ def equivalence : Equivalence PM where
       | Or.inl h₁ => Or.inl (Eq.symm h₁)
       | Or.inr h₂ => Or.inr (Iff.mp neg_eq_iff_eq_neg (id (Eq.symm h₂)))
   trans := by
-    intro _ _ z g h
+    intro _ _ _ g h
     unfold PM
     match g with
       | Or.inl g₁ => 
@@ -321,16 +327,11 @@ def equivalence : Equivalence PM where
       | Or.inr g₂ => 
           match h with
             | Or.inl h₁ =>
-              rw [h₁] at g₂
               right
-              exact g₂
+              rw [← h₁, g₂]
             | Or.inr h₂ =>
-              rw [h₂] at g₂
-              have g₃ : z = - - z := Iff.mp neg_eq_iff_eq_neg rfl
-              rw [← g₃] at g₂
-              rw [g₂]
               left
-              rfl
+              rw [g₂, h₂, ← Iff.mp neg_eq_iff_eq_neg rfl]
 
 instance con : Con Dir where
   r := PM
@@ -338,7 +339,7 @@ instance con : Con Dir where
   mul' := by
     unfold Setoid.r PM
     simp
-    intro _ _ _ _ g h
+    intro _ x _ z g h
     match g with
       | Or.inl g₁ => 
         match h with
@@ -347,18 +348,15 @@ instance con : Con Dir where
             rw [g₁, h₁]
           | Or.inr h₂ =>
             right
-            rw [g₁, h₂]
-            exact mul_neg _ _
+            rw [g₁, h₂, ← mul_neg _ _]
       | Or.inr g₂ => 
         match h with
           | Or.inl h₁ =>
             right
-            rw [g₂, h₁]
-            exact neg_mul _ _
+            rw [g₂, h₁, ← neg_mul _ _]
           | Or.inr h₂ =>
             left
-            rw[g₂, h₂]
-            exact neg_mul_neg _ _
+            rw[g₂, h₂, ← neg_mul_neg x z]
 
 end PM
 
