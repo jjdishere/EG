@@ -14,7 +14,7 @@ class HasLiesIn (α : Type _) where
   lies_in : P → α → Prop
 
 -- class HasLiesInt (α : Type _) extends HasLiesIn α, HasLiesOn α where 
--- interior of dseg and circle is not the same concept
+-- interior of seg and circle is not the same concept
 
 
 scoped notation p "LiesOn" F => HasLiesOn.lies_on p F
