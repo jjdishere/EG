@@ -18,12 +18,13 @@ Let F be a point in the extension line of tr.point₃ tr.point₂ (i.e. reverse 
 Then ∠ tr.point₁ A B + ∠ A B tr.point₂ + ∠ tr.point₃ C D + ∠ C D tr.point₃ + ∠ tr.point₂ E F + ∠ E F tr.point₂ = 2 * π.
 -/ 
 
-example (tri : Triangle P) (nontriv : tri.is_nontriv) (A B C D E F : P) 
-let line1 := tri.edge₂.extension_ray_of_nontriv nontriv.2;
-let 
+example (tri : Triangle P) (nontriv : tri.is_nontriv) :
+let line1 := tri.edge₂.extension_ray_of_nontriv nontriv.2
+let line2 := tri.edge₃.reverse.extension_ray_of_nontriv (Ne.symm nontriv.3)
+let line3 := tr.edge₁.extension_ray_of_nontriv nontriv.1
 (ha : A LiesOnIntRay line1) 
-(hb : B LiesOnIntRay (tr.edge₃.reverse.extension_ray_of_nontriv (Ne.symm nontriv.3))) 
-(hc : C LiesOnIntRay (tr.edge₁.extension_ray_of_nontriv nontriv.1)) 
+(hb : B LiesOnIntRay () 
+(hc : C LiesOnIntRay ()) 
 (hd : D LiesOnIntRay (tr.edge₂.reverse.extension_ray_of_nontriv (Ne.symm nontriv.2)))
 (he : E LiesOnIntRay (tr.edge₃.extension_ray_of_nontriv nontriv.3)) 
 (hf : F LiesOnIntRay (tr.edge₁.reverse.extension_ray_of_nontriv (Ne.symm nontriv.1)))
