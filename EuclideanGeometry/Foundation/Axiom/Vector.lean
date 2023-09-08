@@ -301,6 +301,14 @@ theorem toVec_neg_eq_neg_toVec (x : Dir) : (-x).toVec = -(x.toVec) := by
   unfold Neg.neg instNegDir toVec Prod.instNeg
   simp
 
+@[simp]
+theorem fst_of_neg_one_eq_neg_one : (-1 : Dir).toVec.1 = -1 := rfl
+
+@[simp]
+theorem snd_of_neg_one_eq_zero : (-1 : Dir).toVec.2 = 0 := by
+  unfold toVec Neg.neg instNegDir
+  simp only [Prod.snd_neg, snd_of_one_eq_zero, neg_zero]
+
 end Dir
 
 def PM : Dir → Dir → Prop :=
@@ -419,10 +427,32 @@ theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : 
   match ht₁ with
     | Or.inl ht₂ =>
       left
-      exact Eq.symm (normalize_eq_normalize_smul_pos hu hv h ht₂)
+      exact normalize_eq_normalize_smul_pos hu hv h ht₂
     | Or.inr ht₃ =>
       right
-      exact Eq.symm (neg_normalize_eq_normalize_smul_neg hu hv h ht₃)
+      exact Iff.mp neg_eq_iff_eq_neg (neg_normalize_eq_normalize_smul_neg hu hv h ht₃)
+
+theorem smul_of_eq_toProj {u v : ℝ × ℝ} {hu : u ≠ 0} {hv : v ≠ 0} (h : Vec.toProj_of_nonzero u hu = Vec.toProj_of_nonzero v hv) : ∃ (t : ℝ), v = t • u := by
+  unfold Vec.toProj_of_nonzero Dir.toProj at h
+  let h' := Quotient.exact h
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
+  simp at h'
+  match h' with
+    | Or.inl h₁ =>
+      rw [Dir.ext_iff] at h₁
+      use (Vec.norm v) * (Vec.norm u)⁻¹
+      have w₁ : (Vec.norm v)⁻¹ • v = (Vec.norm u)⁻¹ • u ↔ v = (Vec.norm v) • (Vec.norm u)⁻¹ • u := inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v) hv)
+      rw [mul_smul]
+      refine (w₁.mp (Eq.symm ?_))
+      exact h₁
+    | Or.inr h₂ =>
+      rw [Dir.ext_iff] at h₂
+      use (-Vec.norm v) * (Vec.norm u)⁻¹
+      have w₂ : (-Vec.norm v)⁻¹ • v = (Vec.norm u)⁻¹ • u ↔ v = (-Vec.norm v) • (Vec.norm u)⁻¹ • u := inv_smul_eq_iff₀ (Iff.mpr neg_ne_zero (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v) hv))
+      rw [mul_smul]
+      refine (w₂.mp (Eq.symm ?_))
+      rw [← neg_inv, neg_smul]
+      exact h₂
 
 -- The main theorem of toProj
 
@@ -436,8 +466,7 @@ theorem eq_toProj_iff {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) : (Vec.to
 
 -- Define two Proj is perpendicular by the mul structure of ℂ, using Complex.I
 
-
-namespace Proj
+namespace Dir
 
 def I : Dir where
   toVec := (0, 1)
@@ -452,16 +481,45 @@ theorem fst_of_I_eq_zero : I.toVec.1 = 0 := rfl
 theorem snd_of_I_eq_one : I.toVec.2 = 1 := rfl
 
 @[simp]
-theorem I_toComplex_eq_I : Vec.toComplex (I.toVec) = Complex.I := by
+theorem I_toComplex_eq_I : Vec.toComplex I.1 = Complex.I := by
   unfold Vec.toComplex
   ext
   simp
   simp
 
-def perp : Proj → Proj := by
-  intro x
-  exact x * (I : Proj)
+/-
+@[simp]
+theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
+  ext
+  unfold HMul.hMul instHMul Mul.mul instMulDir toVec Complex.toVec Vec.toComplex
+  simp
+  have g : (-1 : Dir).1.fst = -1 := by rfl
+  calc
+    I.1.fst * I.1.fst - I.1.snd * I.1.snd = -1 := by sorry
+  sorry
+-/  
 
+end Dir
+
+namespace Proj
+
+def I : Proj := Dir.I
+
+@[simp]
+theorem I_mul_I_eq_one : I * I = 1 := by
+  have h (a b : Dir) : (a * b : Proj) = (a : Proj) * (b : Proj) := by
+    exact rfl
+  sorry
+  /-unfold HMul.hMul instHMul Mul.mul MulOneClass.toMul instMulOneClassProj Con.mulOneClass HMul.hMul instHMul Mul.mul Con.hasMul PM.con
+  simp-/
+
+
+def perp : Proj → Proj := fun x => x * I
+
+theorem eq_of_perp_perp (x : Proj) : x.perp.perp = x := by
+  unfold perp
+  rw [mul_assoc]
+  simp
 end Proj
 
 end EuclidGeom
