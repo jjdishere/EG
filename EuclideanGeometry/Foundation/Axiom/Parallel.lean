@@ -7,7 +7,7 @@ inductive LinearObj (P : Type _) [EuclideanPlane P] where
   | vec (v : Vec) (h : v ≠ 0)
   | dir (v : Dir)
   | ray (r : Ray P)
-  | seg (s : Seg P) (hs : s.is_nontriv)
+  | dseg (s : DSeg P) (hs : s.is_nontriv)
   | line (l : Line P)
 
 variable {P : Type _} [EuclideanPlane P]
@@ -19,7 +19,7 @@ def toProj (l : LinearObj P) : Proj :=
   | vec v h => Vec.toProj_of_nonzero v h
   | dir v => v.toProj
   | ray r => r.toProj
-  | seg s nontriv => s.toProj_of_nontriv nontriv
+  | dseg s nontriv => s.toProj_of_nontriv nontriv
   | line l => l.toProj
 
 def IsOnLinearObj (a : P) (l : LinearObj P) : Prop :=
@@ -27,7 +27,7 @@ def IsOnLinearObj (a : P) (l : LinearObj P) : Prop :=
   | vec v h => False
   | dir v => False
   | ray r => a LiesOnRay r
-  | seg s nontriv => a LiesOnSeg s
+  | dseg s nontriv => a LiesOnDSeg s
   | line l => a ∈ l.carrier
 
 end LinearObj

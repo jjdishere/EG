@@ -43,7 +43,7 @@ instance : Coe (Ray P) (Line P) where
 
 /- def coe from non trivial segment to line-/
 
-def Seg.toLine_of_nontriv (s : Seg P) (hs : s.is_nontriv) : Line P where
+def DSeg.toLine_of_nontriv (s : DSeg P) (hs : s.is_nontriv) : Line P where
   -- carrier := {C : P | ∃ t : ℝ, VEC s.source C = t • ?}
   carrier := sorry
   linear := sorry
@@ -74,7 +74,7 @@ theorem line_eq_line_of_ray_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : LIN A B h =
 -- `not clear whether I should remove : Line P (it compiles)` 
 -- `It do compile by auto coersion, but please leave it here for the sake of clarity`
 
-theorem line_eq_line_of_seg_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : LIN A B h = Seg.toLine_of_nontriv (SEG A B) h := sorry
+theorem line_eq_line_of_dseg_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : LIN A B h = DSeg.toLine_of_nontriv (DSEG A B) h := sorry
 
 theorem line_eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOnLine l) (hB : B LiesOnLine l) : l = Line.mk_pt_pt A B h := sorry
 
@@ -86,7 +86,7 @@ section Archimedean_property
 -- there are two distinct points on a line
 theorem exists_ne_pt_pt_lies_on_of_line (l : Line P) : ∃ A B : P, B ≠ A ∧ A LiesOnLine l ∧ B LiesOnLine l  := sorry
 
--- Given distinct A B on a line, there exist C s.t. C LiesOn AB (a cor of Archimedean_property in Seg) and there exist D s.t. B LiesOn AD
+-- Given distinct A B on a line, there exist C s.t. C LiesOn AB (a cor of Archimedean_property in DSeg) and there exist D s.t. B LiesOn AD
 end Archimedean_property
 
 -- where should this theorem be placed?
@@ -94,8 +94,8 @@ theorem vec_eq_mul_vec_of_pt_pt_on_line (l : Line P) (A B C D : P) (hA : A LiesO
 
 def Line.toProj (l : Line P) : Proj := by
   choose A B h _ _ using (exists_ne_pt_pt_lies_on_of_line l)
-  exact (SEG A B).toProj_of_nontriv h
+  exact (DSEG A B).toProj_of_nontriv h
 
-theorem eq_toProj_of_four_pt_on_line (l : Line P) (A B C D : P) (hA : A LiesOnLine l) (hB : B LiesOnLine l) (hC : C LiesOnLine l) (hD : D LiesOnLine l) (h₁ : B ≠ A) (h₂ : D ≠ C) : (SEG A B).toProj_of_nontriv h₁ = (SEG C D).toProj_of_nontriv h₂ := sorry
+theorem eq_toProj_of_four_pt_on_line (l : Line P) (A B C D : P) (hA : A LiesOnLine l) (hB : B LiesOnLine l) (hC : C LiesOnLine l) (hD : D LiesOnLine l) (h₁ : B ≠ A) (h₂ : D ≠ C) : (DSEG A B).toProj_of_nontriv h₁ = (DSEG C D).toProj_of_nontriv h₂ := sorry
 
 end EuclidGeom
