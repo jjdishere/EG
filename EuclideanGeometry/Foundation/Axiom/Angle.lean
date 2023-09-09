@@ -23,7 +23,7 @@ def mk_ray_pt (ray : Ray P) (A : P) (h : A ≠ ray.source ) : OAngle P where
   end_ray := Ray.mk_pt_pt ray.source A h
   source_eq_source := rfl
 
-def value {P : Type _} [EuclideanPlane P] (A : OAngle P): ℝ := Vec.angle (A.start_ray.toDir.toVec) (A.end_ray.toDir.toVec)
+def value {P : Type _} [EuclideanPlane P] (A : OAngle P): ℝ := Dir.angle (A.start_ray.toDir) (A.end_ray.toDir)
 
 def angle_of_three_point_nontriv (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): ℝ := 
 (OAngle.mk_pt_pt_pt _ _ _ h₁ h₂).value
