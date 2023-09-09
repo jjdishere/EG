@@ -37,7 +37,7 @@ protected def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
   toFun := fun x => Real.sqrt (x.1 * x.1  + x.2 * x.2)
   map_zero' := by simp
   add_le' := fun x y => by 
-    simp
+    simp only [Prod.fst_add, Prod.snd_add]
     repeat rw [← pow_two]
     apply le_of_pow_le_pow 2 (by positivity) (by positivity)
     rw [Real.sq_sqrt (by positivity)]
@@ -87,10 +87,10 @@ protected def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
 protected def InnerProductSpace.Core : InnerProductSpace.Core ℝ (ℝ × ℝ) where
   inner := fun r s => r.1 * s.1 + r.2 * s.2
   conj_symm := fun _ _ => by
-    simp
+    simp only [map_add, map_mul, IsROrC.conj_to_real]
     ring
   nonneg_re := fun _ => by 
-    simp
+    simp only [map_add, IsROrC.mul_re, IsROrC.re_to_real, IsROrC.im_to_real, mul_zero, sub_zero]
     ring_nf
     positivity
   definite := fun x hx => by
@@ -246,12 +246,12 @@ instance : Monoid Dir where
   one_mul := fun _ => by
     ext : 1
     unfold toVec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
-    simp
+    simp only [one_eq_one_toComplex, one_mul, eq_self_toComplex_ComplextoVec]
     rfl
   mul_one := fun _ => by
     ext : 1
     unfold toVec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
-    simp
+    simp only [one_eq_one_toComplex, mul_one, eq_self_toComplex_ComplextoVec]
     rfl
 
 instance : CommGroup Dir where
@@ -268,8 +268,8 @@ instance : CommGroup Dir where
     simp
     ring_nf
     ext
-    simp
-    simp
+    simp only [sq_sum_eq_one, fst_of_one_eq_one]
+    simp only [snd_of_one_eq_zero]
     
   mul_comm _ _ := by
     ext : 1
@@ -487,8 +487,8 @@ theorem snd_of_I_eq_one : I.1.2 = 1 := rfl
 theorem I_toComplex_eq_I : Vec.toComplex I.1 = Complex.I := by
   unfold Vec.toComplex
   ext
-  simp
-  simp
+  simp only [fst_of_I_eq_zero, Complex.I_re]
+  simp only [snd_of_I_eq_one, Complex.I_im]
 
 @[simp]
 theorem fst_of_neg_one_of_C_eq_neg_one : (Complex.ComplextoVec (-1 : ℂ)).1 = -1 := rfl
@@ -496,13 +496,13 @@ theorem fst_of_neg_one_of_C_eq_neg_one : (Complex.ComplextoVec (-1 : ℂ)).1 = -
 @[simp]
 theorem snd_of_neg_one_of_C_eq_zero : (Complex.ComplextoVec (-1 : ℂ)).2 = 0 := by
   unfold Complex.ComplextoVec Complex.im
-  simp
+  simp only [Complex.neg_im, Complex.one_im, neg_zero]
 
 @[simp]
 theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
   ext : 1
   unfold HMul.hMul instHMul Mul.mul instMulDir
-  simp
+  simp only [I_toComplex_eq_I, Complex.I_mul_I, toVec_neg_eq_neg_toVec]
   ext
   rfl
   rfl
@@ -512,50 +512,54 @@ theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
 theorem mk_angle_zero_eq_one : mk_angle 0 = 1 := by
   unfold mk_angle
   ext
-  simp
-  simp
+  simp only [Real.cos_zero, Real.sin_zero, fst_of_one_eq_one]
+  simp only [Real.cos_zero, Real.sin_zero, snd_of_one_eq_zero]
 
 @[simp]
 theorem mk_angle_pi_eq_neg_one : mk_angle π = -1 := by
   unfold mk_angle
   ext
-  simp
-  simp
+  simp only [Real.cos_pi, Real.sin_pi, toVec_neg_eq_neg_toVec, Prod.fst_neg, fst_of_one_eq_one]
+  simp only [Real.cos_pi, Real.sin_pi, toVec_neg_eq_neg_toVec, Prod.snd_neg, snd_of_one_eq_zero, neg_zero]
 
 @[simp]
 theorem mk_angle_neg_pi_eq_neg_one : mk_angle (-π) = -1 := by
   unfold mk_angle
   ext
-  simp
-  simp
+  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, toVec_neg_eq_neg_toVec, Prod.fst_neg,
+    fst_of_one_eq_one]
+  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, toVec_neg_eq_neg_toVec, Prod.snd_neg,
+    snd_of_one_eq_zero]
 
 @[simp]
 theorem mk_angle_pi_div_two_eq_I : mk_angle (π / 2) = I := by
   unfold mk_angle
   ext
-  simp
-  simp
+  simp only [Real.cos_pi_div_two, Real.sin_pi_div_two, fst_of_I_eq_zero]
+  simp only [Real.cos_pi_div_two, Real.sin_pi_div_two, snd_of_I_eq_one]
 
 @[simp]
 theorem mk_angle_neg_pi_div_two_eq_neg_I : mk_angle (-(π / 2)) = -I := by
   unfold mk_angle
   ext
-  simp
-  simp
+  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, toVec_neg_eq_neg_toVec, Prod.fst_neg,
+    fst_of_I_eq_zero, neg_zero]
+  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, toVec_neg_eq_neg_toVec, Prod.snd_neg,
+    snd_of_I_eq_one]
 
 @[simp]
 theorem mk_angle_neg_pi_div_two_eq_neg_I' : mk_angle ((-π) / 2) = -I := by
   rw [neg_div]
-  simp
+  simp only [mk_angle_neg_pi_div_two_eq_neg_I]
 
 theorem mk_angle_neg_mul_mk_angle_eq_one (x : ℝ) : mk_angle (-x) * mk_angle x = 1 := by
   ext
   unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.ComplextoVec
-  simp
+  simp only [Real.cos_neg, Real.sin_neg, Complex.mul_re, neg_mul, sub_neg_eq_add]
   rw [← pow_two, ← pow_two, Real.cos_sq_add_sin_sq x]
   rfl
   unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.ComplextoVec
-  simp
+  simp only [Real.cos_neg, Real.sin_neg, Complex.mul_im, neg_mul]
   rw [mul_comm, add_right_neg]
   rfl
 
@@ -588,7 +592,7 @@ def perp : Proj → Proj := fun x => I * x
 theorem perp_perp_eq_self (x : Proj) : x.perp.perp = x := by
   unfold perp
   rw [← mul_assoc]
-  simp
+  simp only [I_mul_I_eq_one_of_Proj, one_mul]
 end Proj
 
 end EuclidGeom
