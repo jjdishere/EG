@@ -82,6 +82,8 @@ protected def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
       have h₂₁ := sq_pos_of_ne_zero _ h₁
       linarith
 
+-- Due to a strange bug in our version of Lean4, we use @HPow.hPow to input a^n where n is a natural number, to avoid Lean4 recognize n : ℝ
+
 protected def InnerProductSpace.Core : InnerProductSpace.Core ℝ (ℝ × ℝ) where
   inner := fun r s => r.1 * s.1 + r.2 * s.2
   conj_symm := fun _ _ => by
@@ -142,7 +144,7 @@ protected def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((Vec.toComplex x)/(
 
 end Vec
 
-def Complex.toVec (c : ℂ) : ℝ × ℝ := ⟨c.1, c.2⟩
+def Complex.ComplextoVec (c : ℂ) : ℝ × ℝ := ⟨c.1, c.2⟩
 
 /- the notation for class of vectors-/
 scoped notation "Vec" => ℝ × ℝ
@@ -185,9 +187,9 @@ def mk_angle (θ : ℝ) : Dir where
 
 instance : Mul Dir where
   mul := fun z w => {
-    toVec := Complex.toVec (Vec.toComplex z.toVec * Vec.toComplex w.toVec)
+    toVec := Complex.ComplextoVec (Vec.toComplex z.toVec * Vec.toComplex w.toVec)
     unit := by
-      unfold Inner.inner Vec.InnerProductSpace.Core Complex.toVec Vec.toComplex
+      unfold Inner.inner Vec.InnerProductSpace.Core Complex.ComplextoVec Vec.toComplex
       simp
       ring_nf
       calc 
@@ -221,10 +223,10 @@ theorem snd_of_one_eq_zero : (1 : Dir).toVec.2 = 0 := rfl
 theorem one_eq_one_toComplex : Vec.toComplex (1 : Dir).toVec = 1 := rfl
 
 @[simp]
-theorem one_ComplextoVec_eq_one : Complex.toVec (1 : ℂ) = (1, 0) := rfl
+theorem one_ComplextoVec_eq_one : Complex.ComplextoVec (1 : ℂ) = (1, 0) := rfl
 
 @[simp]
-theorem eq_self_toComplex_ComplextoVec (x : ℝ × ℝ) : Complex.toVec (Vec.toComplex x) = x := rfl
+theorem eq_self_toComplex_ComplextoVec (x : ℝ × ℝ) : Complex.ComplextoVec (Vec.toComplex x) = x := rfl
 
 @[simp]
 theorem sq_sum_eq_one (x : Dir) : @HPow.hPow ℝ ℕ ℝ _ x.toVec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.toVec.2 2 = 1 := by
@@ -236,7 +238,7 @@ theorem sq_sum_eq_one (x : Dir) : @HPow.hPow ℝ ℕ ℝ _ x.toVec.1 2 + @HPow.h
 instance : Semigroup Dir where
   mul_assoc _ _ _ := by
     ext : 1
-    unfold toVec HMul.hMul instHMul Mul.mul instMulDir Complex.toVec Vec.toComplex
+    unfold toVec HMul.hMul instHMul Mul.mul instMulDir Complex.ComplextoVec Vec.toComplex
     simp
     ring_nf
 
@@ -262,7 +264,7 @@ instance : CommGroup Dir where
   }
   mul_left_inv _ := by
     ext : 1
-    unfold HMul.hMul Inv.inv instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidDir instSemigroupDir instMulDir Vec.toComplex Complex.toVec
+    unfold HMul.hMul Inv.inv instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidDir instSemigroupDir instMulDir Vec.toComplex Complex.ComplextoVec
     simp
     ring_nf
     ext
@@ -284,12 +286,12 @@ instance : HasDistribNeg Dir where
     simp
   neg_mul _ _ := by
     ext : 1
-    unfold Neg.neg instNegDir toVec HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec toVec
+    unfold Neg.neg instNegDir toVec HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.ComplextoVec toVec
     simp
     ring_nf
   mul_neg _ _ := by
     ext : 1
-    unfold Neg.neg instNegDir toVec HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec toVec
+    unfold Neg.neg instNegDir toVec HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.ComplextoVec toVec
     simp
     ring_nf
 
@@ -475,10 +477,10 @@ def I : Dir where
     simp
 
 @[simp]
-theorem fst_of_I_eq_zero : I.toVec.1 = 0 := rfl
+theorem fst_of_I_eq_zero : I.1.1 = 0 := rfl
 
 @[simp]
-theorem snd_of_I_eq_one : I.toVec.2 = 1 := rfl
+theorem snd_of_I_eq_one : I.1.2 = 1 := rfl
 
 @[simp]
 theorem I_toComplex_eq_I : Vec.toComplex I.1 = Complex.I := by
@@ -487,17 +489,34 @@ theorem I_toComplex_eq_I : Vec.toComplex I.1 = Complex.I := by
   simp
   simp
 
+@[simp]
+theorem fst_of_neg_one_of_C_eq_neg_one : (Complex.ComplextoVec (-1 : ℂ)).1 = -1 := rfl
+
+@[simp]
+theorem snd_of_neg_one_of_C_eq_zero : (Complex.ComplextoVec (-1 : ℂ)).2 = 0 := by
+  unfold Complex.ComplextoVec Complex.im
+  simp
+
 /-
 @[simp]
 theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
   ext
-  unfold HMul.hMul instHMul Mul.mul instMulDir toVec Complex.toVec Vec.toComplex
+  unfold HMul.hMul instHMul Mul.mul instMulDir toVec Complex.ComplextoVec Vec.toComplex
   simp
   have g : (-1 : Dir).1.fst = -1 := by rfl
   calc
     I.1.fst * I.1.fst - I.1.snd * I.1.snd = -1 := by sorry
   sorry
--/  
+-/
+
+@[simp]
+theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
+  ext : 1
+  unfold HMul.hMul instHMul Mul.mul instMulDir
+  simp
+  ext
+  simp
+  simp
 
 end Dir
 
