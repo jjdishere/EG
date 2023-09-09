@@ -37,17 +37,21 @@ def toProj (l : LinearObj P) : Proj :=
   | seg s nontriv => s.toProj_of_nontriv nontriv
   | line l => l.toProj
 
+/- No need to define this. Should never talk about a LinearObj directly in future. Only mention it for ∥ ⟂.  
 def IsOnLinearObj (a : P) (l : LinearObj P) : Prop :=
   match l with
   | vec v h => False
   | dir v => False
-  | ray r => a LiesOnRay r
-  | seg s nontriv => a LiesOnSeg s
+  | ray r => a LiesOn r
+  | seg s nontriv => a LiesOn s
   | line l => a ∈ l.carrier
+-/
 
 end LinearObj
 
-scoped infix : 50 "LiesOnLinearObj" => LinearObj.IsOnLinearObj
+/-
+scoped infix : 50 "LiesOnarObj" => LinearObj.IsOnLinearObj
+-/
 
 def parallel (l₁ l₂: LinearObj P) : Prop := l₁.toProj = l₂.toProj
 

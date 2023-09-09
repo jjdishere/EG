@@ -13,16 +13,20 @@ class HasLiesOn (α : Type _) where
 class HasLiesIn (α : Type _) where
   lies_in : P → α → Prop
 
--- class HasLiesInt (α : Type _) extends HasLiesIn α, HasLiesOn α where 
+-- class HasLiesInt (α : Type _) where 
+--  lies_int : P → α → Prop
 -- interior of seg and circle is not the same concept
+-- LiesOnInt LiesInt LiesInInt
 
-
-scoped notation p "LiesOn" F => HasLiesOn.lies_on p F
-scoped notation p "LiesIn" F => HasLiesIn.lies_in p F
+scoped infix : 50 "LiesOn" => HasLiesOn.lies_on
+scoped infix : 50 "LiesIn" => HasLiesIn.lies_in
+-- scoped notation p "LiesInt" F => HasLiesInt.lies_int p F
 
 def IsFallsOn {α β : Type _} (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] : Prop := ∀ (p : P), (p LiesOn A) → (p LiesOn B) 
 
 def IsFallsIn {α β : Type _} (A : α) (B : β) [HasLiesIn P α] [HasLiesIn P β] : Prop := ∀ (p : P), (p LiesIn A) → (p LiesIn B) 
+
+-- LiesOn → LiesInt is FallsInt ?
 
 scoped notation A "FallsOn" B "Over" P => IsFallsOn P A B
 scoped notation A "FallsIn" B "Over" P => IsFallsIn P A B
@@ -43,7 +47,7 @@ protected theorem trans {P : Type _} {α β γ : Type _} (A : α) (B : β) (C : 
 
 end IsFallsIn
 
-def IsIntersectionPoint {α β : Type _} (p : P) (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] := (p LiesOn A) ∧ (p LiesOn B)
+def IsIntersectionPoint {P : Type _} {α β : Type _} (p : P) (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] := (p LiesOn A) ∧ (p LiesOn B)
 
 scoped notation p "IsIntersectionOf" A B => IsIntersectionPoint p A B
 

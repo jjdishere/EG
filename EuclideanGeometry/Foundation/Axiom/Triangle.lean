@@ -72,6 +72,9 @@ end Triangle
 
 scoped infix : 50 "IsInsideTriangle" => Triangle.IsInside
 
+instance : HasLiesIn P (Triangle P) where
+  lies_in p tr := (Triangle.IsInside p tr) ∨ (p LiesOn tr.edge₁) ∨ (p LiesOn tr.edge₂) ∨ (p LiesOn tr.edge₃)
+
 namespace Triangle
 
 variable (tr : Triangle P)

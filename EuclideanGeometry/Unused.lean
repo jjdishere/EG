@@ -65,7 +65,7 @@ class Seg' (P : Type _) [EuclideanPlane P] where
 
 def IsOnLine' {P : Type _} [EuclideanPlane P] (a : P) (l : Line' P) : Prop := sorry
 
-infixl : 50 "LiesOnLine" => IsOnLine'
+infixl : 50 "LiesOn" => IsOnLine'
 
 instance {P : Type _} [EuclideanPlane P] : Coe (Ray P) (Line' P) where
   coe := sorry
@@ -108,11 +108,11 @@ def Seg.toDSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv :
   on_ray := sorry
   non_triv := sorry
 
--- theorems "if p LiesOnDSeg l, then p LiesOnRay l.toRay and p LiesOnSeg l.toSeg"
+-- theorems "if p LiesOnDSeg l, then p LiesOn l.toRay and p LiesOn l.toSeg"
 
-theorem DSeg.pt_on_toRay_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOnRay l.toRay := sorry
+theorem DSeg.pt_on_toRay_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toRay := sorry
 
-theorem DSeg.pt_on_toSeg_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOnSeg l.toSeg := sorry
+theorem DSeg.pt_on_toSeg_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toSeg := sorry
 
 -- mk method of DirSeg giving 2 distinct point
 def DSeg.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : DSeg P := sorry  
