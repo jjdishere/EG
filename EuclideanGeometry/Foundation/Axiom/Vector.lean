@@ -467,6 +467,7 @@ theorem eq_toProj_iff {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) : (Vec.to
     exact eq_toProj_of_smul hu hv h
 
 -- Define two Proj is perpendicular by the mul structure of ℂ, using Complex.I
+-- But first we need to define Dir.I
 
 namespace Dir
 
@@ -497,18 +498,6 @@ theorem snd_of_neg_one_of_C_eq_zero : (Complex.ComplextoVec (-1 : ℂ)).2 = 0 :=
   unfold Complex.ComplextoVec Complex.im
   simp
 
-/-
-@[simp]
-theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
-  ext
-  unfold HMul.hMul instHMul Mul.mul instMulDir toVec Complex.ComplextoVec Vec.toComplex
-  simp
-  have g : (-1 : Dir).1.fst = -1 := by rfl
-  calc
-    I.1.fst * I.1.fst - I.1.snd * I.1.snd = -1 := by sorry
-  sorry
--/
-
 @[simp]
 theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
   ext : 1
@@ -525,17 +514,21 @@ namespace Proj
 def I : Proj := Dir.I
 
 @[simp]
-theorem I_mul_I_eq_one : I * I = 1 := by
-  have h (a b : Dir) : (a * b : Proj) = (a : Proj) * (b : Proj) := by
-    exact rfl
-  sorry
-  /-unfold HMul.hMul instHMul Mul.mul MulOneClass.toMul instMulOneClassProj Con.mulOneClass HMul.hMul instHMul Mul.mul Con.hasMul PM.con
-  simp-/
+theorem neg_one_eq_one_of_Proj : ((-1 : Dir) : Proj) = (1 : Proj) := by
+  unfold Dir.toProj
+  apply Quotient.sound
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM
+  simp
 
+@[simp]
+theorem I_mul_I_eq_one_of_Proj : I * I = 1 := by
+  have h : Dir.toProj (Dir.I * Dir.I) = (Dir.toProj Dir.I) * (Dir.toProj Dir.I):= rfl
+  have h' : Dir.toProj Dir.I = (I : Proj) := rfl
+  rw [← neg_one_eq_one_of_Proj, ← Dir.I_mul_I_eq_neg_one, h, h']
 
 def perp : Proj → Proj := fun x => x * I
 
-theorem eq_of_perp_perp (x : Proj) : x.perp.perp = x := by
+theorem perp_perp_eq_self (x : Proj) : x.perp.perp = x := by
   unfold perp
   rw [mul_assoc]
   simp
