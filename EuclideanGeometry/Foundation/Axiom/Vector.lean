@@ -609,7 +609,42 @@ end Proj
 section LinearAlgebra
 
 theorem det_eq_zero_iff (u v : ℝ × ℝ) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.1 = 0 ↔ (∃ (t : ℝ), v = t • u) := by
-  sorry
+  have h : (u.fst ≠ 0) ∨ (u.snd ≠ 0) := by
+    by_contra _
+    have hfst : u.fst = 0 := by tauto
+    have hsnd : u.snd = 0 := by tauto
+    have hu' : u = (0, 0) := by exact Prod.ext hfst hsnd
+    tauto
+  constructor
+  · intro e
+    match h with 
+    | Or.inl h₁ =>
+      use v.fst * (u.fst⁻¹)
+      unfold HSMul.hSMul instHSMul SMul.smul Prod.smul
+      ext
+      simp
+      exact Iff.mp (div_eq_iff h₁) rfl
+      simp
+      rw [mul_comm v.fst u.fst⁻¹, mul_assoc, mul_comm v.fst u.snd]
+      rw [sub_eq_zero] at e
+      exact Iff.mpr (eq_inv_mul_iff_mul_eq₀ h₁) e
+    | Or.inr h₂ =>
+      use v.snd * (u.snd⁻¹)
+      unfold HSMul.hSMul instHSMul SMul.smul Prod.smul
+      ext
+      simp
+      rw [mul_comm v.snd u.snd⁻¹, mul_assoc]
+      rw [sub_eq_zero, mul_comm u.fst v.snd] at e
+      exact Iff.mpr (eq_inv_mul_iff_mul_eq₀ h₂) (id (Eq.symm e))
+      simp
+      exact Iff.mp (div_eq_iff h₂) rfl
+  · intro e'
+    rcases e' with ⟨t, e⟩
+    unfold HSMul.hSMul instHSMul SMul.smul Prod.smul at e
+    simp at e
+    rcases e
+    simp
+    ring
 
 end LinearAlgebra
 
