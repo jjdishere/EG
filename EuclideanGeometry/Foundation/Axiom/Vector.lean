@@ -142,7 +142,9 @@ def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩
 /- WARNING : the arg of `0 : ℂ` is `0`, the result of quotient by `0 : ℂ` is `0 : ℂ`-/
 protected def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((Vec.toComplex y)/(Vec.toComplex x))
 
-theorem vec_norm_eq_abs (x : ℝ × ℝ) : Vec.norm x = Complex.abs (toComplex x) := rfl
+end Vec
+
+theorem vec_norm_eq_abs (x : ℝ × ℝ) : Vec.norm x = Complex.abs (Vec.toComplex x) := rfl
 
 def Complex.ComplextoVec (c : ℂ) : ℝ × ℝ := ⟨c.1, c.2⟩
 
@@ -186,10 +188,10 @@ def mk_angle (θ : ℝ) : Dir where
     rfl
 
 @[simp]
-theorem re_of_toComplex_eq_fst (x : ℝ × ℝ): (toComplex x).re = x.fst := rfl
+theorem re_of_toComplex_eq_fst (x : ℝ × ℝ): (Vec.toComplex x).re = x.fst := rfl
 
 @[simp]
-theorem im_of_toComplex_eq_snd (x : ℝ × ℝ): (toComplex x).im = x.snd := rfl
+theorem im_of_toComplex_eq_snd (x : ℝ × ℝ): (Vec.toComplex x).im = x.snd := rfl
 
 @[simp]
 theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize {x : ℝ × ℝ} (hx : x ≠ 0) : mk_angle (Complex.arg (Vec.toComplex x)) = Vec.normalize x hx := by
@@ -201,7 +203,7 @@ theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize {x : ℝ × ℝ} (hx : x 
   · rw [Complex.cos_arg, mul_comm]
     simp
     rfl
-    unfold toComplex
+    unfold Vec.toComplex
     intro h
     rw [Complex.ext_iff] at h
     simp at h
