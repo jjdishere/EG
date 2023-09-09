@@ -146,7 +146,11 @@ end Vec
 
 theorem vec_norm_eq_abs (x : ℝ × ℝ) : Vec.norm x = Complex.abs (Vec.toComplex x) := rfl
 
-def Complex.ComplextoVec (c : ℂ) : ℝ × ℝ := ⟨c.1, c.2⟩
+namespace Complex
+
+protected def toVec (c : ℂ) : ℝ × ℝ := ⟨c.1, c.2⟩
+
+end Complex
 
 /- the notation for class of vectors-/
 scoped notation "Vec" => ℝ × ℝ
@@ -180,47 +184,11 @@ instance : Neg Dir where
         exact @inner_neg_neg _ _ _ Vec.NormedAddCommGroup Vec.InnerProductSpace _ _
     }
 
-def mk_angle (θ : ℝ) : Dir where
-  toVec := (Real.cos θ, Real.sin θ)
-  unit := by 
-    rw [← Real.cos_sq_add_sin_sq θ]
-    rw [pow_two, pow_two]
-    rfl
-
-@[simp]
-theorem re_of_toComplex_eq_fst (x : ℝ × ℝ): (Vec.toComplex x).re = x.fst := rfl
-
-@[simp]
-theorem im_of_toComplex_eq_snd (x : ℝ × ℝ): (Vec.toComplex x).im = x.snd := rfl
-
-@[simp]
-theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize {x : ℝ × ℝ} (hx : x ≠ 0) : mk_angle (Complex.arg (Vec.toComplex x)) = Vec.normalize x hx := by
-  ext : 1
-  unfold Vec.normalize toVec mk_angle HSMul.hSMul instHSMul SMul.smul Prod.smul
-  simp
-  rw [vec_norm_eq_abs]
-  constructor
-  · rw [Complex.cos_arg, mul_comm]
-    simp
-    rfl
-    unfold Vec.toComplex
-    intro h
-    rw [Complex.ext_iff] at h
-    simp at h
-    have g : x = 0 := by
-      ext : 1
-      tauto
-      tauto
-    tauto
-  · rw [Complex.sin_arg, mul_comm]
-    simp
-    rfl
-
 instance : Mul Dir where
   mul := fun z w => {
-    toVec := Complex.ComplextoVec (Vec.toComplex z.toVec * Vec.toComplex w.toVec)
+    toVec := Complex.toVec (Vec.toComplex z.toVec * Vec.toComplex w.toVec)
     unit := by
-      unfold Inner.inner Vec.InnerProductSpace.Core Complex.ComplextoVec Vec.toComplex
+      unfold Inner.inner Vec.InnerProductSpace.Core Complex.toVec Vec.toComplex
       simp
       ring_nf
       calc 
@@ -254,10 +222,10 @@ theorem snd_of_one_eq_zero : (1 : Dir).1.snd = 0 := rfl
 theorem one_eq_one_toComplex : Vec.toComplex (1 : Dir).toVec = 1 := rfl
 
 @[simp]
-theorem one_ComplextoVec_eq_one : Complex.ComplextoVec (1 : ℂ) = (1, 0) := rfl
+theorem one_toVec_eq_one : Complex.toVec (1 : ℂ) = (1, 0) := rfl
 
 @[simp]
-theorem eq_self_toComplex_ComplextoVec (x : ℝ × ℝ) : Complex.ComplextoVec (Vec.toComplex x) = x := rfl
+theorem eq_self_toComplex_toVec (x : ℝ × ℝ) : Complex.toVec (Vec.toComplex x) = x := rfl
 
 @[simp]
 theorem sq_sum_eq_one (x : Dir) : @HPow.hPow ℝ ℕ ℝ _ x.toVec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.toVec.2 2 = 1 := by
@@ -269,7 +237,7 @@ theorem sq_sum_eq_one (x : Dir) : @HPow.hPow ℝ ℕ ℝ _ x.toVec.1 2 + @HPow.h
 instance : Semigroup Dir where
   mul_assoc _ _ _ := by
     ext : 1
-    unfold toVec HMul.hMul instHMul Mul.mul instMulDir Complex.ComplextoVec Vec.toComplex
+    unfold toVec HMul.hMul instHMul Mul.mul instMulDir Complex.toVec Vec.toComplex
     simp
     ring_nf
 
@@ -277,12 +245,12 @@ instance : Monoid Dir where
   one_mul := fun _ => by
     ext : 1
     unfold toVec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
-    simp only [one_eq_one_toComplex, one_mul, eq_self_toComplex_ComplextoVec]
+    simp only [one_eq_one_toComplex, one_mul, eq_self_toComplex_toVec]
     rfl
   mul_one := fun _ => by
     ext : 1
     unfold toVec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
-    simp only [one_eq_one_toComplex, mul_one, eq_self_toComplex_ComplextoVec]
+    simp only [one_eq_one_toComplex, mul_one, eq_self_toComplex_toVec]
     rfl
 
 instance : CommGroup Dir where
@@ -295,7 +263,7 @@ instance : CommGroup Dir where
   }
   mul_left_inv _ := by
     ext : 1
-    unfold HMul.hMul Inv.inv instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidDir instSemigroupDir instMulDir Vec.toComplex Complex.ComplextoVec
+    unfold HMul.hMul Inv.inv instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidDir instSemigroupDir instMulDir Vec.toComplex Complex.toVec
     simp
     ring_nf
     ext
@@ -317,12 +285,12 @@ instance : HasDistribNeg Dir where
     simp
   neg_mul _ _ := by
     ext : 1
-    unfold Neg.neg instNegDir toVec HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.ComplextoVec toVec
+    unfold Neg.neg instNegDir toVec HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec toVec
     simp
     ring_nf
   mul_neg _ _ := by
     ext : 1
-    unfold Neg.neg instNegDir toVec HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.ComplextoVec toVec
+    unfold Neg.neg instNegDir toVec HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec toVec
     simp
     ring_nf
 
@@ -343,6 +311,66 @@ theorem snd_of_neg_one_eq_zero : (-1 : Dir).toVec.2 = 0 := by
   simp only [Prod.snd_neg, snd_of_one_eq_zero, neg_zero]
 
 def angle (x y : Dir) := Complex.arg (Vec.toComplex (y * (x⁻¹)).toVec)
+
+def mk_angle (θ : ℝ) : Dir where
+  toVec := (Real.cos θ, Real.sin θ)
+  unit := by 
+    rw [← Real.cos_sq_add_sin_sq θ]
+    rw [pow_two, pow_two]
+    rfl
+
+@[simp]
+theorem re_of_toComplex_eq_fst (x : ℝ × ℝ): (Vec.toComplex x).re = x.fst := rfl
+
+@[simp]
+theorem im_of_toComplex_eq_snd (x : ℝ × ℝ): (Vec.toComplex x).im = x.snd := rfl
+
+theorem eq_zero_of_toComplex_eq_zero {x : Vec} (hx : Vec.toComplex x = 0) : x = 0 := by
+  unfold Vec.toComplex at hx
+  rw [Complex.ext_iff] at hx
+  have g : x = 0 := by
+    ext : 1
+    tauto
+    tauto
+  exact g
+
+@[simp]
+theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize {x : ℝ × ℝ} (hx : x ≠ 0) : mk_angle (Complex.arg (Vec.toComplex x)) = Vec.normalize x hx := by
+  ext : 1
+  unfold Vec.normalize toVec mk_angle HSMul.hSMul instHSMul SMul.smul Prod.smul
+  simp
+  rw [vec_norm_eq_abs]
+  constructor
+  · rw [Complex.cos_arg, mul_comm]
+    simp
+    rfl
+    intro h
+    let _ := eq_zero_of_toComplex_eq_zero h
+    tauto
+  · rw [Complex.sin_arg, mul_comm]
+    simp
+    rfl
+
+@[simp]
+theorem toComplex_zero_eq_zero : Vec.toComplex 0 = 0 := rfl
+
+@[simp]
+theorem mk_angle_arg_toComplex_of_Dir_eq_self (x: Dir) : mk_angle (Complex.arg (Vec.toComplex x.toVec)) = x := by
+  have w : Complex.abs (Vec.toComplex x.1) = 1 := by
+    unfold toVec Vec.toComplex Complex.abs
+    simp
+    exact x.unit
+  ext : 1
+  unfold mk_angle
+  simp
+  rw [Complex.cos_arg, Complex.sin_arg, w]
+  unfold toVec
+  ext : 1
+  simp only [re_of_toComplex_eq_fst, div_one]
+  simp only [im_of_toComplex_eq_snd, div_one]
+  by_contra h
+  rw [eq_zero_of_toComplex_eq_zero h] at w
+  simp at w
 
 end Dir
 
@@ -524,11 +552,11 @@ theorem I_toComplex_eq_I : Vec.toComplex I.1 = Complex.I := by
   simp only [snd_of_I_eq_one, Complex.I_im]
 
 @[simp]
-theorem fst_of_neg_one_of_C_eq_neg_one : (Complex.ComplextoVec (-1 : ℂ)).1 = -1 := rfl
+theorem fst_of_neg_one_of_C_eq_neg_one : (Complex.toVec (-1 : ℂ)).1 = -1 := rfl
 
 @[simp]
-theorem snd_of_neg_one_of_C_eq_zero : (Complex.ComplextoVec (-1 : ℂ)).2 = 0 := by
-  unfold Complex.ComplextoVec Complex.im
+theorem snd_of_neg_one_of_C_eq_zero : (Complex.toVec (-1 : ℂ)).2 = 0 := by
+  unfold Complex.toVec Complex.im
   simp only [Complex.neg_im, Complex.one_im, neg_zero]
 
 @[simp]
@@ -587,11 +615,11 @@ theorem mk_angle_neg_pi_div_two_eq_neg_I' : mk_angle ((-π) / 2) = -I := by
 
 theorem mk_angle_neg_mul_mk_angle_eq_one (x : ℝ) : mk_angle (-x) * mk_angle x = 1 := by
   ext
-  unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.ComplextoVec
+  unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec
   simp only [Real.cos_neg, Real.sin_neg, Complex.mul_re, neg_mul, sub_neg_eq_add]
   rw [← pow_two, ← pow_two, Real.cos_sq_add_sin_sq x]
   rfl
-  unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.ComplextoVec
+  unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec
   simp only [Real.cos_neg, Real.sin_neg, Complex.mul_im, neg_mul]
   rw [mul_comm, add_right_neg]
   rfl
