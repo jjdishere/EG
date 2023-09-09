@@ -602,6 +602,7 @@ theorem perp_perp_eq_self (x : Proj) : x.perp.perp = x := by
   unfold perp
   rw [← mul_assoc]
   simp only [I_mul_I_eq_one_of_Proj, one_mul]
+
 end Proj
 
 -- Start proving theorems about intersecting two lines
@@ -650,7 +651,7 @@ theorem linear_combination_of_not_colinear {u v w : ℝ × ℝ} (hu : u ≠ 0) (
   have h₁ : (¬ (∃ (t : ℝ), v = t • u)) → (¬ (u.1 * v.2 - u.2 * v.1 = 0)) := by
     intro _
     by_contra h₂
-    let w₂ := (det_eq_zero_iff u v hu).1 h₂
+    let _ := (det_eq_zero_iff u v hu).1 h₂
     tauto
   let d := u.1 * v.2 - u.2 * v.1
   have h₃ : d ≠ 0 := h₁ h'
@@ -665,6 +666,14 @@ theorem linear_combination_of_not_colinear {u v w : ℝ × ℝ} (hu : u ≠ 0) (
   ring
   simp only [smul_eq_mul, Prod.mk_add_mk]
   ring
+
+theorem linear_combination_of_not_colinear' {u v w : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) (h' : Vec.toProj_of_nonzero u hu ≠ Vec.toProj_of_nonzero v hv) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
+  have h₁ : (Vec.toProj_of_nonzero u hu ≠ Vec.toProj_of_nonzero v hv) → ¬(∃ (t : ℝ), v = t • u) := by
+    intro _
+    by_contra h₂
+    let _ := (eq_toProj_iff hu hv).2 h₂
+    tauto
+  exact linear_combination_of_not_colinear hu (h₁ h')
 
 end LinearAlgebra
 
