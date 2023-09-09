@@ -622,9 +622,9 @@ theorem det_eq_zero_iff (u v : ℝ × ℝ) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.
       use v.fst * (u.fst⁻¹)
       unfold HSMul.hSMul instHSMul SMul.smul Prod.smul
       ext
-      simp
+      simp only [smul_eq_mul, ne_eq]
       exact Iff.mp (div_eq_iff h₁) rfl
-      simp
+      simp only [smul_eq_mul]
       rw [mul_comm v.fst u.fst⁻¹, mul_assoc, mul_comm v.fst u.snd]
       rw [sub_eq_zero] at e
       exact Iff.mpr (eq_inv_mul_iff_mul_eq₀ h₁) e
@@ -632,11 +632,11 @@ theorem det_eq_zero_iff (u v : ℝ × ℝ) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.
       use v.snd * (u.snd⁻¹)
       unfold HSMul.hSMul instHSMul SMul.smul Prod.smul
       ext
-      simp
+      simp only [smul_eq_mul]
       rw [mul_comm v.snd u.snd⁻¹, mul_assoc]
       rw [sub_eq_zero, mul_comm u.fst v.snd] at e
       exact Iff.mpr (eq_inv_mul_iff_mul_eq₀ h₂) (id (Eq.symm e))
-      simp
+      simp only [smul_eq_mul, ne_eq]
       exact Iff.mp (div_eq_iff h₂) rfl
   · intro e'
     rcases e' with ⟨t, e⟩
@@ -645,6 +645,9 @@ theorem det_eq_zero_iff (u v : ℝ × ℝ) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.
     rcases e
     simp
     ring
+
+theorem linear_combination_of_not_colinear {u v w : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) (h : ¬(∃ (t : ℝ), v = t • u)) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
+  sorry
 
 end LinearAlgebra
 
