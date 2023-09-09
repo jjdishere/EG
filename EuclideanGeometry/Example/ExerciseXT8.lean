@@ -19,16 +19,13 @@ Then ∠ tr.point₁ A B + ∠ A B tr.point₂ + ∠ tr.point₃ C D + ∠ C D t
 -/ 
 
 example (tri : Triangle P) (nontriv : tri.is_nontriv) :
-let line1 := tri.edge₂.extension_ray_of_nontriv nontriv.2
-let line2 := tri.edge₃.reverse.extension_ray_of_nontriv (Ne.symm nontriv.3)
-let line3 := tr.edge₁.extension_ray_of_nontriv nontriv.1
-(ha : A LiesOnIntRay line1) 
-(hb : B LiesOnIntRay () 
-(hc : C LiesOnIntRay ()) 
-(hd : D LiesOnIntRay (tr.edge₂.reverse.extension_ray_of_nontriv (Ne.symm nontriv.2)))
-(he : E LiesOnIntRay (tr.edge₃.extension_ray_of_nontriv nontriv.3)) 
-(hf : F LiesOnIntRay (tr.edge₁.reverse.extension_ray_of_nontriv (Ne.symm nontriv.1)))
-: ANG tr.point₁ A B ha.2 (pts_are_distinct_of_two_rays_of_oangle )+ ANG A B tr.point₂ + ANG tr.point₃ C D + ANG C D tr.point₃ + ANG tr.point₂ E F + ANG E F tr.point₂ = 2 * π := by sorry
+let line1 := tri.edge₂.extension_ray_of_nontriv (tri.nontriv₂ nontriv)
+let line2 := tri.edge₃.reverse.extension_ray_of_nontriv (Ne.symm (tri.nontriv₃ nontriv))
+let line3 := tri.edge₁.extension_ray_of_nontriv (tri.nontriv₁ nontriv)
+let line4 := tri.edge₂.reverse.extension_ray_of_nontriv (Ne.symm (tri.nontriv₂ nontriv))
+let line5 := tri.edge₃.extension_ray_of_nontriv (tri.nontriv₃ nontriv)
+let line6 := tri.edge₁.reverse.extension_ray_of_nontriv (Ne.symm (tri.nontriv₁ nontriv))
+∀ (A B C D E F : P) [ha : A LiesOnIntRay line1] [hb : B LiesOnIntRay line2] [hc : C LiesOnIntRay line3] [hd : D LiesOnIntRay line4] [he : E LiesOnIntRay line5] [hf : F LiesOnIntRay line6], ANG tr.point₁ A B ha.2 (pts_are_distinct_of_two_rays_of_oangle )+ ANG A B tr.point₂ + ANG tr.point₃ C D + ANG C D tr.point₃ + ANG tr.point₂ E F + ANG E F tr.point₂ = 2 * π := by sorry
 
 end EuclidGeom
 
