@@ -139,8 +139,8 @@ protected def norm := @Norm.norm _ Vec.Norm
 
 def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩
 
-/- WARNING : the arg of `0 : ℂ` is `0`, the result of quotient by `0 : ℂ` is `0 : ℂ`-/
-protected def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((Vec.toComplex y)/(Vec.toComplex x))
+/- WARNING : the arg of `0 : ℂ` is `0`, the result of quotient by `0 : ℂ` is `0 : ℂ`
+protected def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((Vec.toComplex y)/(Vec.toComplex x)) -/
 
 end Vec
 
@@ -342,9 +342,7 @@ theorem snd_of_neg_one_eq_zero : (-1 : Dir).toVec.2 = 0 := by
   unfold toVec Neg.neg instNegDir
   simp only [Prod.snd_neg, snd_of_one_eq_zero, neg_zero]
 
-@[simp]
-theorem mk_angle_vec_angle_of_nonzero_eq_normalize_div_normalize {x y : Vec} (hx : x ≠ 0) (hy : y ≠ 0) : (mk_angle (Vec.angle x y)) = (Vec.normalize y hy) / (Vec.normalize x hx) := by
-  sorry
+def angle (x y : Dir) := Complex.arg (Vec.toComplex (y * (x⁻¹)).toVec)
 
 end Dir
 
