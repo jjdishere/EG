@@ -584,6 +584,7 @@ theorem I_mul_I_eq_one_of_Proj : I * I = 1 := by
 
 def perp : Proj → Proj := fun x => I * x
 
+@[simp]
 theorem perp_perp_eq_self (x : Proj) : x.perp.perp = x := by
   unfold perp
   rw [← mul_assoc]
