@@ -19,10 +19,7 @@ def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
   carrier := {C : P | ∃ t : ℝ, VEC A C = t • VEC A B}
   linear := sorry
   maximal := sorry
-  nontriv := by 
-    use A 
-    use B
-    sorry
+  nontriv := by sorry
 
 end Line
 
