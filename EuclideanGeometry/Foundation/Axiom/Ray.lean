@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Plane
+import EuclideanGeometry.Foundation.Axiom.Class
 
 /-!
 # Segments and rays
@@ -15,8 +16,8 @@ From now on, by "segment" we mean a generalized directed segment.
 
 ## Notation
 
-* `LiesOnRay` : notation for a point lies on a ray
-* `LiesOnSeg` : notation for a point lies on a generalized directed segment
+*  : notation for a point lies on a ray
+*  : notation for a point lies on a generalized directed segment
 * notation for Seg A B
 
 ## Implementation Notes
@@ -26,6 +27,8 @@ From now on, by "segment" we mean a generalized directed segment.
 -/
 noncomputable section
 namespace EuclidGeom
+
+variable {P : Type _} [EuclideanPlane P] 
 
 section definitions
 /- Rays -/
@@ -61,19 +64,23 @@ class Seg (P : Type _) [EuclideanPlane P] where
 
 namespace Seg
 
-def is_nontriv {P : Type _} [EuclideanPlane P] (seg : Seg P) : Prop := seg.target ≠ seg.source 
+def is_nontriv (seg : Seg P) : Prop := seg.target ≠ seg.source 
 
-def IsOnSeg {P : Type _} [EuclideanPlane P] (a : P) (seg : Seg P) : Prop :=
+def IsOnSeg (a : P) (seg : Seg P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (VEC seg.source seg.target) +ᵥ seg.source
 
-def IsOnIntSeg {P : Type _} [EuclideanPlane P] (a : P) (seg : Seg P) : Prop := IsOnSeg a seg ∧ a ≠ seg.source ∧ a ≠ seg.target 
+def IsOnIntSeg (a : P) (seg : Seg P) : Prop := IsOnSeg a seg ∧ a ≠ seg.source ∧ a ≠ seg.target 
 
 end Seg
 
 end definitions
 
-scoped infix : 50 "LiesOnRay" => Ray.IsOnRay
-scoped infix : 50 "LiesOnSeg" => Seg.IsOnSeg
+instance : HasLiesOn P (Ray P) where
+  lies_on := Ray.IsOnRay
+
+instance : HasLiesOn P (Seg P) where
+  lies_on := Seg.IsOnSeg
+
 scoped infix : 50 "LiesOnIntRay" => Ray.IsOnIntRay
 scoped infix : 50 "LiesOnIntSeg" => Seg.IsOnIntSeg
 
@@ -127,7 +134,7 @@ theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by s
 theorem nontriv_iff_length_pos : (l.is_nontriv) ↔ 0 < l.length := by sorry
 
 -- If P lies on a generalized directed segment AB, then length(AB) = length(AP) + length(PB)
-theorem length_eq_sum_of_length_two_part (l : Seg P) (p : P) (lieson : p LiesOnSeg l) : l.length = (SEG l.source p).length + (SEG p l.target).length := sorry
+theorem length_eq_sum_of_length_two_part (l : Seg P) (p : P) (lieson : p LiesOn l) : l.length = (SEG l.source p).length + (SEG p l.target).length := sorry
 
 -- If a generalized directed segment contains an interior point, then it is nontrivial
 theorem nontriv_iff_exist_inter_pt (l : Seg P) (p : P) (lieson : p LiesOnIntSeg l) : l.is_nontriv := sorry

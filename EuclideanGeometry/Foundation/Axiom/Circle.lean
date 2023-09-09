@@ -53,27 +53,31 @@ def lies_outside_circle (p : P) (ω : Circle P) : Prop := ω.radius < (SEG ω.ce
 
 end Circle 
 
+instance : HasLiesOn P (Circle P) where
+  lies_on := Circle.lies_on_circle
+
+instance : HasLiesIn P (Circle P) where
+  lies_in := Circle.lies_inside_circle
+
 scoped infix : 50 "LiesIntCir" => Circle.lies_interior_circle
-scoped infix : 50 "LiesInCir" => Circle.lies_inside_circle
-scoped infix : 50 "LiesOnCir" => Circle.lies_on_circle
 scoped infix : 50 "LiesOutCir" => Circle.lies_outside_circle
 
 namespace Circle
 
 
-theorem inside_circle_iff_power_neg (p : P) (ω : Circle P) : p LiesInCir ω ↔ ω.power p ≤  0 := sorry
+theorem inside_circle_iff_power_neg (p : P) (ω : Circle P) : p LiesIn ω ↔ ω.power p ≤  0 := sorry
 
 theorem interior_of_circle_iff_power_neg (p : P) (ω : Circle P) : p LiesIntCir ω ↔ ω.power p < 0 := sorry
 
-theorem lies_on_circle_iff_power_zero (p : P) (ω : Circle P) : p LiesOnCir ω ↔ ω.power p = 0 := sorry
+theorem lies_on_circle_iff_power_zero (p : P) (ω : Circle P) : p LiesOn ω ↔ ω.power p = 0 := sorry
 
 theorem outside_circle_iff_power_pos (p : P) (ω : Circle P) : p LiesOutCir ω ↔ 0 < ω.power p  := sorry
 
-theorem interior_of_circle_iff_inside_not_on_circle (p : P) (ω : Circle P) : p LiesIntCir ω ↔ p LiesInCir ω ∧ (¬ p LiesOnCir ω) := sorry
+theorem interior_of_circle_iff_inside_not_on_circle (p : P) (ω : Circle P) : p LiesIntCir ω ↔ p LiesIn ω ∧ (¬ p LiesOn ω) := sorry
 
 -- Define a concept of segment to be entirely contained in a circle, to mean that the two endpoints of a segment to lie inside a circle.
 
-def seg_lies_inside_circle (l : Seg P) (ω : Circle P) : Prop := l.source LiesInCir ω ∧ l.target LiesInCir ω
+def seg_lies_inside_circle (l : Seg P) (ω : Circle P) : Prop := l.source LiesIn ω ∧ l.target LiesIn ω
 
 end Circle
 

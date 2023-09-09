@@ -38,7 +38,9 @@ scoped notation "OANG" => OAngle.mk_pt_pt_pt
 
 scoped notation "ANG" => OAngle.angle_of_three_point_nontriv
 
-scoped notation "∠" => OANG -- Is this notation really needed?
+scoped notation "∠" => OANG 
+
+/- `What does it mean to be LiesIn a oangle? when the angle < 0`-/
 
 /- theorem - π < angle.value, angle.value ≤ π,  -/
 

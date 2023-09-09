@@ -27,7 +27,7 @@ def midpoint (l : Seg P) : P := (l.target -ᵥ l.source) /2 +ᵥ l.source
 
 -- The midpoint of a segment lies on the segment 
 
-theorem midpt_lies_on (l : Seg P) : l.midpoint LiesOnSeg l := by sorry
+theorem midpt_lies_on (l : Seg P) : l.midpoint LiesOn l := by sorry
 
 theorem midpt_lies_on_int_of_nontriv (l : Seg P) (nontriv : l.is_nontriv) : l.midpoint LiesOnIntSeg l := by sorry
 
@@ -41,7 +41,7 @@ theorem same_distance_of_midpt_of_seg (l : Seg P) : (SEG l.source l.midpoint).le
 
 -- A point is the mid-point of a nontrivial segment if and only if it lines on the segment and 
 
-theorem is_midpoint_iff_lieson_and_same_distance_of_nontriv (p : P) (l : Seg P) (nontriv : l.is_nontriv) : p = l.midpoint ↔ p LiesOnSeg l ∧ (SEG l.source p).length = (SEG p l.target).length := by sorry
+theorem is_midpoint_iff_lieson_and_same_distance_of_nontriv (p : P) (l : Seg P) (nontriv : l.is_nontriv) : p = l.midpoint ↔ p LiesOn l ∧ (SEG l.source p).length = (SEG p l.target).length := by sorry
 
 end Seg
 
