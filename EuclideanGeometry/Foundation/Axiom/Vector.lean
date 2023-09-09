@@ -595,4 +595,13 @@ theorem perp_perp_eq_self (x : Proj) : x.perp.perp = x := by
   simp only [I_mul_I_eq_one_of_Proj, one_mul]
 end Proj
 
+-- Start proving theorems about intersecting two lines
+
+section LinearAlgebra
+
+theorem det_eq_zero_iff (u v : ℝ × ℝ) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.1 = 0 ↔ (∃ (t : ℝ), v = t • u) := by
+  sorry
+
+end LinearAlgebra
+
 end EuclidGeom
