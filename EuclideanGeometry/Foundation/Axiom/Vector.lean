@@ -214,10 +214,10 @@ instance : One Dir where
 -- Put tautological theorems into simp
 
 @[simp]
-theorem fst_of_one_eq_one : (1 : Dir).toVec.1 = 1 := rfl
+theorem fst_of_one_eq_one : (1 : Dir).1.fst = 1 := rfl
 
 @[simp]
-theorem snd_of_one_eq_zero : (1 : Dir).toVec.2 = 0 := rfl
+theorem snd_of_one_eq_zero : (1 : Dir).1.snd = 0 := rfl
 
 @[simp]
 theorem one_eq_one_toComplex : Vec.toComplex (1 : Dir).toVec = 1 := rfl
@@ -504,8 +504,59 @@ theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
   unfold HMul.hMul instHMul Mul.mul instMulDir
   simp
   ext
+  rfl
+  rfl
+
+-- Theorems for mk_angle
+@[simp]
+theorem mk_angle_zero_eq_one : mk_angle 0 = 1 := by
+  unfold mk_angle
+  ext
   simp
   simp
+
+@[simp]
+theorem mk_angle_pi_eq_neg_one : mk_angle π = -1 := by
+  unfold mk_angle
+  ext
+  simp
+  simp
+
+@[simp]
+theorem mk_angle_neg_pi_eq_neg_one : mk_angle (-π) = -1 := by
+  unfold mk_angle
+  ext
+  simp
+  simp
+
+@[simp]
+theorem mk_angle_pi_div_two_eq_I : mk_angle (π / 2) = I := by
+  unfold mk_angle
+  ext
+  simp
+  simp
+
+@[simp]
+theorem mk_angle_neg_pi_div_two_eq_neg_I : mk_angle (-(π / 2)) = -I := by
+  unfold mk_angle
+  ext
+  simp
+  simp
+
+theorem mk_angle_neg_mul_mk_angle_eq_one (x : ℝ) : mk_angle (-x) * mk_angle x = 1 := by
+  ext
+  unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.ComplextoVec
+  simp
+  rw [← pow_two, ← pow_two, Real.cos_sq_add_sin_sq x]
+  rfl
+  unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.ComplextoVec
+  simp
+  rw [mul_comm, add_right_neg]
+  rfl
+
+@[simp]
+theorem mk_angle_neg_eq_mk_angle_inv (x : ℝ) : mk_angle (-x) = (mk_angle x)⁻¹ := by
+  rw [← one_mul (mk_angle x)⁻¹, ← mk_angle_neg_mul_mk_angle_eq_one x, mul_assoc, mul_right_inv, mul_one]
 
 end Dir
 
@@ -526,11 +577,11 @@ theorem I_mul_I_eq_one_of_Proj : I * I = 1 := by
   have h' : Dir.toProj Dir.I = (I : Proj) := rfl
   rw [← neg_one_eq_one_of_Proj, ← Dir.I_mul_I_eq_neg_one, h, h']
 
-def perp : Proj → Proj := fun x => x * I
+def perp : Proj → Proj := fun x => I * x
 
 theorem perp_perp_eq_self (x : Proj) : x.perp.perp = x := by
   unfold perp
-  rw [mul_assoc]
+  rw [← mul_assoc]
   simp
 end Proj
 
