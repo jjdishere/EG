@@ -10,11 +10,14 @@ variable {P : Type _} [EuclideanPlane P]
 
 section colinear
 def colinear (A B C : P) : Prop := by
-  by_cases B ≠ A ∧ C ≠ A   
-  · exact ANG B A C h.1 h.2 = 0 ∨ ANG B A C h.1 h.2 = π  
-  · exact True  
+  by_cases B ≠ A ∧ C ≠ A ∧ B ≠ C 
+  · rcases h with ⟨h₁, h₂, _⟩
+    exact (Vec.normalize (VEC A B) ((ne_iff_vec_nonzero A B).1 h₁)).toProj = (Vec.normalize (VEC A C) ((ne_iff_vec_nonzero A C).1 h₂)).toProj
+  · exact True
 
--- rerwrite this part, use minimal theorems, but create a tactic called `colinarity`
+-- The definition of colinear now includes two cases: the degenerate case and the nondegenerate case. And we only use VEC to define colinear. 
+
+-- Please rewrite this part, use minimal theorems, but create a tactic called `colinarity`
 theorem perm_colinear {A B C : P} (h : colinear A B C) : (colinear B C A) := by sorry
 
 theorem flip_colinear {A B C : P} (h : colinear A B C) : (colinear A C B) := sorry
