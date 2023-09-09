@@ -12,8 +12,23 @@ section colinear
 def colinear (A B C : P) : Prop := by
   by_cases B ≠ A ∧ C ≠ A ∧ B ≠ C 
   · rcases h with ⟨h₁, h₂, _⟩
-    exact (Vec.normalize (VEC A B) ((ne_iff_vec_nonzero A B).1 h₁)).toProj = (Vec.normalize (VEC A C) ((ne_iff_vec_nonzero A C).1 h₂)).toProj
+    exact (Vec.normalize (VEC A B) ((ne_iff_vec_ne_zero A B).1 h₁)).toProj = (Vec.normalize (VEC A C) ((ne_iff_vec_ne_zero A C).1 h₂)).toProj
   · exact True
+
+theorem VEC_eq_toProj_of_smul {A B C : P} {t : ℝ} (hBA : B ≠ A) (hCA : C ≠ A) (h : VEC A C = t • VEC A B) : (Vec.normalize (VEC A B) ((ne_iff_vec_ne_zero A B).1 hBA)).toProj = (Vec.normalize (VEC A C) ((ne_iff_vec_ne_zero A C).1 hCA)).toProj := (eq_toProj_of_smul ((ne_iff_vec_ne_zero A B).1 hBA) ((ne_iff_vec_ne_zero A C).1 hCA) h)
+
+theorem colinear_of_ne_ne_smul {A B C : P} {t : ℝ} (hBA : B ≠ A) (hCA : C ≠ A) (h' : VEC A C = t • VEC A B) : colinear A B C := by
+  by_cases (B = C)
+  · rw [h]
+    unfold colinear
+    simp only [ne_eq, not_true, and_false, dite_false]
+  · have g : (B ≠ A) ∨ (C ≠ A) ∨ (B ≠ C) := by tauto
+    sorry
+
+theorem eq_mul_vec_iff_colinear_of_ne {A B C : P} (g : B ≠ A) : colinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B := by
+  constructor
+  · sorry
+  · sorry
 
 -- The definition of colinear now includes two cases: the degenerate case and the nondegenerate case. And we only use VEC to define colinear. 
 
@@ -26,12 +41,8 @@ theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h
 
 theorem colinear_of_vec_eq_smul_vec {A B C : P} {r : ℝ} (h : VEC A C = r • VEC A B) : colinear A B C := sorry
 
-theorem eq_mul_vec_iff_colinear_of_ne {A B C : P} (g : B ≠ A) : colinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B := by
-  constructor
-  · sorry
-  · sorry
-
-theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (A ≠ C) ∧ (B ≠ A) := sorry   
+theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (A ≠ C) ∧ (B ≠ A) := by
+  sorry
 
 end colinear
 /- Positions of points on a line, ray, oriented segments. -/
