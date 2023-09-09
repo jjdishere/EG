@@ -91,7 +91,7 @@ theorem vec_eq_mul_vec_of_pt_pt_on_line (l : Line P) (A B C D : P) (hA : A LiesO
 
 -- theorem eq_toProj_of_four_pt_on_line (l : Line P) (A B C D : P) (hA : A LiesOnLine l) (hB : B LiesOnLine l) (hC : C LiesOnLine l) (hD : D LiesOnLine l) (h₁ : B ≠ A) (h₂ : D ≠ C) : (SEG A B).toProj_of_nontriv h₁ = (SEG C D).toProj_of_nontriv h₂ := sorry
 
- theorem exist_unique_proj_of_line (l : Line P) : ∃! proj : Proj, ∀ (A B : P) (ha : A LiesOnLine l) (hb : B LiesOnLine l) (nontriv : B ≠ A), (SEG A B).toProj_of_nontriv nontriv = proj := by sorry
+ theorem exist_unique_proj_of_line (l : Line P) : ∃! proj : Proj, ∀ (A B : P) (ha : A LiesOn l) (hb : B LiesOn l) (nontriv : B ≠ A), (SEG A B).toProj_of_nontriv nontriv = proj := by sorry
 
 def Line.toProj (l : Line P) : Proj := by 
   choose proj _ using (exist_unique_proj_of_line l)
