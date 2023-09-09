@@ -92,7 +92,7 @@ variable {P : Type _} [EuclideanPlane P] (seg : Seg P)
 def toVec : Vec := VEC seg.source seg.target
 
 variable (h : seg.is_nontriv)
-def toDir_of_nontriv : Dir := Vec.normalize seg.toVec ((ne_iff_vec_nonzero _ _).mp h)
+def toDir_of_nontriv : Dir := Vec.normalize seg.toVec ((ne_iff_vec_ne_zero _ _).mp h)
 
 def toRay_of_nontriv : Ray P where
   source := seg.source

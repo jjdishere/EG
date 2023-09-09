@@ -15,11 +15,54 @@ variable  {P : Type _} [EuclideanPlane P]
 
 -- define a line from two points 
 
+theorem pt_ne_pt_of_ne_ne_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA ≠ tB) (hv : v ≠ 0) (hA : VEC O A = tA • v) (hB : VEC O B = tB • v) : A ≠ B := by
+  by_contra hAB
+  have hc : VEC A B = VEC O B - VEC O A := by
+    unfold Vec.mk_pt_pt
+    simp only [vsub_sub_vsub_cancel_right]
+  rw [hA, hB, ← sub_smul, (eq_iff_vec_eq_zero A B).1 (Eq.symm hAB)] at hc
+  have w₂ : (tB - tA) • v ≠ 0 := smul_ne_zero (Iff.mpr sub_ne_zero (Ne.symm h)) hv
+  rw [hc] at w₂
+  tauto
+
+theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = tB) (hA : VEC O A = tA • v) (hB : VEC O B = tB • v) : A = B := by
+  have hAB : tB - tA = 0 := Iff.mpr sub_eq_zero (Eq.symm h)
+  have hc : VEC A B = VEC O B - VEC O A := by
+    unfold Vec.mk_pt_pt
+    simp only [vsub_sub_vsub_cancel_right]
+  rw [hA, hB, ← sub_smul, hAB, zero_smul] at hc
+  symm
+  exact (eq_iff_vec_eq_zero A B).2 hc
+
 def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
   carrier := {C : P | ∃ t : ℝ, VEC A C = t • VEC A B}
-  linear := sorry
+  linear x y z:= by
+    have hv : VEC A B ≠ 0 := (ne_iff_vec_ne_zero A B).1 h
+    unfold Membership.mem Set.instMembershipSet Set.Mem setOf
+    simp only [forall_exists_index]
+    intro tx hx ty hy tz hz
+    by_cases ty ≠ tx ∧ tz ≠ tx ∧ ty ≠ tz
+    · rcases h with ⟨h₁, h₂, h₃⟩
+      have h₁' : y ≠ x := pt_ne_pt_of_ne_ne_smul_smul h₁ hv hy hx
+      have h₂' : z ≠ x := pt_ne_pt_of_ne_ne_smul_smul h₂ hv hz hx
+      have h₃' : y ≠ z := pt_ne_pt_of_ne_ne_smul_smul h₃ hv hy hz
+      have h' : y ≠ x ∧ z ≠ x ∧ y ≠ z := by tauto
+      sorry
+    sorry
   maximal := sorry
-  nontriv := by sorry
+  nontriv := by
+    use A
+    use B
+    unfold Membership.mem Set.instMembershipSet Set.Mem setOf
+    simp only [forall_exists_index]
+    constructor
+    use 0
+    simp only [vec_same_eq_zero, zero_smul]
+    constructor
+    use 1
+    simp only [one_smul]
+    exact h
+    
 
 end Line
 
@@ -60,6 +103,7 @@ theorem lies_on_line_of_ray_of_lies_on_ray {a : P} {l : Ray P} (h : a LiesOn l) 
 
 -- If A and B are two distinct points, they lie on the line AB
 theorem source_or_ray_lies_on_line_of_ray (l : Ray P) : l.source LiesOn l := sorry
+
 
 theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B h ∧ B LiesOn LIN A B h := sorry
 
