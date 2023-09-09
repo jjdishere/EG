@@ -23,7 +23,10 @@ theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h
 
 theorem colinear_of_vec_eq_smul_vec {A B C : P} {r : ℝ} (h : VEC A C = r • VEC A B) : colinear A B C := sorry
 
-theorem eq_mul_vec_iff_colinear_of_ne {A B C : P} (g : B ≠ A) : colinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B := sorry
+theorem eq_mul_vec_iff_colinear_of_ne {A B C : P} (g : B ≠ A) : colinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B := by
+  constructor
+  · sorry
+  · sorry
 
 theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (A ≠ C) ∧ (B ≠ A) := sorry   
 

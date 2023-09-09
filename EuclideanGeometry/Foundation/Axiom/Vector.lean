@@ -140,7 +140,7 @@ protected def norm := @Norm.norm _ Vec.Norm
 def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩
 
 /- WARNING : the arg of `0 : ℂ` is `0`, the result of quotient by `0 : ℂ` is `0 : ℂ`-/
-protected def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((Vec.toComplex x)/(Vec.toComplex y))
+protected def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((Vec.toComplex y)/(Vec.toComplex x))
 
 end Vec
 
@@ -154,7 +154,7 @@ class Dir where
   toVec : Vec
   unit : Vec.InnerProductSpace.Core.inner toVec toVec= 1 
 
-def Vec.normalize (x : ℝ × ℝ) (h : x ≠ 0) : Dir where
+def Vec.normalize (x : ℝ × ℝ) (hx : x ≠ 0) : Dir where
   toVec := (Vec.norm x)⁻¹ • x 
   unit := by 
     rw [@real_inner_smul_left _ Vec.NormedAddCommGroup Vec.InnerProductSpace _ _ _, @real_inner_smul_right _ Vec.NormedAddCommGroup Vec.InnerProductSpace _ _ _, @inner_self_eq_norm_sq_to_K _ _ _ Vec.NormedAddCommGroup Vec.InnerProductSpace]
@@ -162,7 +162,7 @@ def Vec.normalize (x : ℝ × ℝ) (h : x ≠ 0) : Dir where
     rw [pow_two]
     rw [← mul_assoc _ _ (@norm (ℝ × ℝ) Vec.NormedAddCommGroup.toNorm x)]
     simp only [Vec.norm, ne_eq, inv_mul_mul_self]
-    rw [inv_mul_cancel ((@norm_ne_zero_iff _ Vec.NormedAddGroup).mpr h)]
+    rw [inv_mul_cancel ((@norm_ne_zero_iff _ Vec.NormedAddGroup).mpr hx)]
 
 -- Should change Dir into the following Dir'to use all instances on Dir'
 def Dir' := @Metric.sphere _ Vec.PseudoMetricSpace (0: ℝ × ℝ) 1
@@ -184,6 +184,11 @@ def mk_angle (θ : ℝ) : Dir where
     rw [← Real.cos_sq_add_sin_sq θ]
     rw [pow_two, pow_two]
     rfl
+
+@[simp]
+theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize {x : ℝ × ℝ} (hx : x ≠ 0) : mk_angle (Complex.arg (Vec.toComplex x)) = Vec.normalize x hx := by
+  unfold Vec.normalize
+  sorry
 
 instance : Mul Dir where
   mul := fun z w => {
@@ -310,6 +315,10 @@ theorem fst_of_neg_one_eq_neg_one : (-1 : Dir).toVec.1 = -1 := rfl
 theorem snd_of_neg_one_eq_zero : (-1 : Dir).toVec.2 = 0 := by
   unfold toVec Neg.neg instNegDir
   simp only [Prod.snd_neg, snd_of_one_eq_zero, neg_zero]
+
+@[simp]
+theorem mk_angle_vec_angle_of_nonzero_eq_normalize_div_normalize {x y : Vec} (hx : x ≠ 0) (hy : y ≠ 0) : (mk_angle (Vec.angle x y)) = (Vec.normalize y hy) / (Vec.normalize x hx) := by
+  sorry
 
 end Dir
 
