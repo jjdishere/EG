@@ -4,10 +4,10 @@ noncomputable section
 namespace EuclidGeom
 
 inductive LinearObj (P : Type _) [EuclideanPlane P] where 
-  | vec (v : Vec) (h : v ≠ 0)
+  | vec_nd (v : Vec_nd)
   | dir (v : Dir)
   | ray (r : Ray P)
-  | seg (s : Seg P) (hs : s.is_nd)
+  | seg_nd (s : Seg_nd P)
   | line (l : Line P)
 
 variable {P : Type _} [EuclideanPlane P]
@@ -31,7 +31,7 @@ namespace LinearObj
 
 def toProj (l : LinearObj P) : Proj :=
   match l with
-  | vec v h => Vec.toProj_of_nonzero v h
+  | vec_nd v => Vec_nd.toProj v
   | dir v => v.toProj
   | ray r => r.toProj
   | seg s nontriv => s.toProj_of_nontriv nontriv
