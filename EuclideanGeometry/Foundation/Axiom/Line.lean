@@ -48,7 +48,8 @@ def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
       have h₃' : y ≠ z := pt_ne_pt_of_ne_ne_smul_smul h₃ hv hy hz
       have h' : y ≠ x ∧ z ≠ x ∧ y ≠ z := by tauto
       sorry
-    sorry
+    · have h' : (ty = tx) ∨ (tz = tx) ∨ (ty = tz) := by tauto
+      sorry
   maximal := sorry
   nontriv := by
     use A
