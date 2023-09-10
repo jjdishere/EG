@@ -50,6 +50,11 @@ theorem colinear_of_vec_eq_smul_vec {A B C : P} {t : ℝ} (e : VEC A C = t • V
   · have h' : (B = A) ∨ (C = A) ∨ (B = C) := by tauto
     tauto
 
+theorem colinear_of_vec_eq_smul_vec' {A B C : P} : (∃ t : ℝ, VEC A C = t • VEC A B) → colinear A B C := by
+  intro h
+  rcases h with ⟨t, e⟩
+  exact colinear_of_vec_eq_smul_vec e
+
 theorem eq_mul_vec_iff_colinear_of_ne {A B C : P} (g : B ≠ A) : colinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B := by
   constructor
   · intro c
@@ -77,10 +82,12 @@ theorem perm_colinear {A B C : P} (h : colinear A B C) : (colinear B C A) := by 
 
 theorem flip_colinear {A B C : P} (h : colinear A B C) : (colinear A C B) := sorry
 
+-- the proof of this theorem using def of line seems to be easier
 theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h₂ : colinear A B D) (h : A ≠ B) : (colinear A C D) := sorry
 
 theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (A ≠ C) ∧ (B ≠ A) := by
-  sorry
+  unfold colinear at h
+  tauto
 
 end colinear
 /- Positions of points on a line, ray, oriented segments. -/
