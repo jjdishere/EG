@@ -16,11 +16,17 @@ section coersion
 
 -- `Is this correct?`
 
-instance : Coe (Dir) (LinearObj P) where
-  coe := fun v => LinearObj.dir v
+instance : Coe Vec_nd (LinearObj P) where
+  coe := fun v => LinearObj.vec_nd v
+
+instance : Coe Dir (LinearObj P) where
+  coe := fun d => LinearObj.dir d
 
 instance : Coe (Ray P) (LinearObj P) where
   coe := fun r => LinearObj.ray r
+
+instance : Coe (Seg_nd P) (LinearObj P) where
+  coe := fun s => LinearObj.seg_nd s
 
 instance : Coe (Line P) (LinearObj P) where
   coe := fun l => LinearObj.line l
@@ -31,10 +37,10 @@ namespace LinearObj
 
 def toProj (l : LinearObj P) : Proj :=
   match l with
-  | vec_nd v => Vec_nd.toProj v
+  | vec_nd v => v.toProj
   | dir v => v.toProj
   | ray r => r.toProj
-  | seg s nontriv => s.toProj_of_nontriv nontriv
+  | seg_nd s => s.toProj
   | line l => l.toProj
 
 /- No need to define this. Should never talk about a LinearObj directly in future. Only mention it for ∥ ⟂.  
@@ -68,24 +74,23 @@ scoped infix : 50 "∥" => parallel
 
 section parallel_theorem
 
-theorem ray_parallel_to_line_assoc_ray (ray : Ray P) : LinearObj.ray ray ParallelTo ray.toLine := sorry
+theorem ray_parallel_to_line_assoc_ray (ray : Ray P) : LinearObj.ray ray ∥ ray.toLine := sorry
 
-theorem seg_parallel_to_ray_assoc_seg_of_nontriv {seg : Seg P} (nontriv : seg.is_nd) : LinearObj.seg seg nontriv ParallelTo seg.toRay_of_nontriv nontriv := sorry
-
+theorem seg_parallel_to_ray_assoc_seg_of_nontriv (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := sorry
 
 end parallel_theorem
 
 -- If ray₁ and ray₂ are two rays that are not parallel, then the following function returns the unique point of the intersection of the associated two lines. This function is a bit tricky, will come back to this.
+-- `Should we define this concept? Why don't we just use Intersection of Lines and use coersion (ray : Line)`
+def Intersection_of_Lines_of_Rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : P := sorry
 
-def Intersection_of_Rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : P := sorry
+scoped notation "RayIntx" => Intersection_of_Lines_of_Rays
 
-scoped notation "RayInt" => Intersection_of_Rays
-
-theorem ray_intersection_lies_on_lines_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : (RayInt h) LiesOnLine ray₁.toLine ∧ (RayInt h) LiesOnLine ray₂.toLine := by sorry
+theorem ray_intersection_lies_on_lines_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : (RayIntx h) LiesOn ray₁.toLine ∧ (RayIntx h) LiesOn ray₂.toLine := by sorry
 
 -- If two lines l₁ and l₂ are parallel, then there is a unique point on l₁ ∩ l₂.  The definition of the point uses the ray intersection by first picking a point
 
-theorem exists_unique_intersection_of_nonparallel_lines (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃! (p : P), p LiesOnLine l₁ ∧ p LiesOnLine l₂ := by sorry
+theorem exists_unique_intersection_of_nonparallel_lines (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃! (p : P), p LiesOn l₁ ∧ p LiesOn l₂ := by sorry
 
 def intersection_of_nonparallel_line (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) :  P := by
   choose p _ using (exists_unique_intersection_of_nonparallel_lines l₁ l₂ h)
