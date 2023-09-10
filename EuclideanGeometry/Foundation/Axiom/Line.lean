@@ -80,6 +80,17 @@ scoped notation "LIN" => Line.mk_pt_pt
 
 variable {P : Type _} [EuclideanPlane P]
 
+/- Def of point lies on a line -/
+def IsOnLine (a : P) (l : Line P) : Prop :=
+  a ∈ l.carrier
+
+instance : HasLiesOn P (Line P) where
+  lies_on := IsOnLine
+
+theorem vec_eq_smul_vec_of_lies_on {l : Line P} {A B X Y : P} (ha : A LiesOn l) (hb : B LiesOn l) (hx : X LiesOn l) (hy : Y LiesOn l) (hab : B ≠ A) : ∃ t : ℝ, VEC X Y = t • VEC A B := by
+  sorry
+
+
 /- def coe from ray to line-/
 
 def Ray.toLine (r : Ray P) := LIN r.source (r.toDir.toVec +ᵥ r.source) (by 
@@ -93,20 +104,12 @@ instance : Coe (Ray P) (Line P) where
 
 def Seg.toLine_of_nontriv (s : Seg P) (hs : s.is_nontriv) := (LIN s.source s.target hs)
 
-/- Def of point lies on a line -/
-def IsOnLine (a : P) (l : Line P) : Prop :=
-  a ∈ l.carrier
-
-instance : HasLiesOn P (Line P) where
-  lies_on := IsOnLine
-
 section Compaitiblity_of_coersions
 -- If a point lies on a ray, then it lies on the line associated to the ray.
 theorem lies_on_line_of_ray_of_lies_on_ray {a : P} {l : Ray P} (h : a LiesOn l) : a LiesOn l := sorry
 
 -- If A and B are two distinct points, they lie on the line AB
 theorem source_or_ray_lies_on_line_of_ray (l : Ray P) : l.source LiesOn l := sorry
-
 
 theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B h ∧ B LiesOn LIN A B h := sorry
 
