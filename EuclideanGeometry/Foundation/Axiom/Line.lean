@@ -15,16 +15,6 @@ variable  {P : Type _} [EuclideanPlane P]
 
 -- define a line from two points 
 
-theorem pt_ne_pt_of_ne_ne_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA ≠ tB) (hv : v ≠ 0) (hA : VEC O A = tA • v) (hB : VEC O B = tB • v) : A ≠ B := by
-  by_contra hAB
-  have hc : VEC A B = VEC O B - VEC O A := by
-    unfold Vec.mk_pt_pt
-    simp only [vsub_sub_vsub_cancel_right]
-  rw [hA, hB, ← sub_smul, (eq_iff_vec_eq_zero A B).1 (Eq.symm hAB)] at hc
-  have w₂ : (tB - tA) • v ≠ 0 := smul_ne_zero (Iff.mpr sub_ne_zero (Ne.symm h)) hv
-  rw [hc] at w₂
-  tauto
-
 theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = tB) (hA : VEC O A = tA • v) (hB : VEC O B = tB • v) : A = B := by
   have hAB : tB - tA = 0 := Iff.mpr sub_eq_zero (Eq.symm h)
   have hc : VEC A B = VEC O B - VEC O A := by
@@ -37,12 +27,11 @@ theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = t
 def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
   carrier := {C : P | ∃ t : ℝ, VEC A C = t • VEC A B}
   linear x y z:= by
-    have hv : VEC A B ≠ 0 := (ne_iff_vec_ne_zero A B).1 h
     unfold Membership.mem Set.instMembershipSet Set.Mem setOf
     simp only [forall_exists_index]
     intro tx hx ty hy tz hz
     by_cases ty ≠ tx ∧ tz ≠ tx ∧ ty ≠ tz
-    · rcases h with ⟨h₁, h₂, h₃⟩
+    · rcases h with ⟨h₁, _, _⟩
       have w₂ : ∃ t : ℝ, VEC x z = t • VEC x y := by
         use (ty - tx)⁻¹ * (tz - tx)
         rw [mul_smul]
@@ -64,11 +53,14 @@ def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
           rw [pt_eq_pt_of_eq_smul_smul h hy hz]
           tauto
   maximal x y := by
-    have hv : VEC A B ≠ 0 := (ne_iff_vec_ne_zero A B).1 h
     unfold Membership.mem Set.instMembershipSet Set.Mem setOf
     simp only [forall_exists_index]
     intro tx hx ty hy hne z c
-    sorry
+    have e : VEC x y = (ty - tx) • VEC A B := by
+      rw [← vec_sub_vec A x y, hx, hy, sub_smul]
+    rcases (eq_mul_vec_iff_colinear_of_ne hne).1 c with ⟨t, ht⟩
+    use tx + t * (ty - tx)
+    rw [← vec_add_vec A x z, ht, e, hx, ← mul_smul, ← add_smul]
   nontriv := by
     use A
     use B
@@ -81,7 +73,6 @@ def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
     use 1
     simp only [one_smul]
     exact h
-    
 
 end Line
 
