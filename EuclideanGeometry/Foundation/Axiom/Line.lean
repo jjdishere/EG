@@ -15,16 +15,6 @@ variable  {P : Type _} [EuclideanPlane P]
 
 -- define a line from two points 
 
-theorem pt_ne_pt_of_ne_ne_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA ≠ tB) (hv : v ≠ 0) (hA : VEC O A = tA • v) (hB : VEC O B = tB • v) : A ≠ B := by
-  by_contra hAB
-  have hc : VEC A B = VEC O B - VEC O A := by
-    unfold Vec.mk_pt_pt
-    simp only [vsub_sub_vsub_cancel_right]
-  rw [hA, hB, ← sub_smul, (eq_iff_vec_eq_zero A B).1 (Eq.symm hAB)] at hc
-  have w₂ : (tB - tA) • v ≠ 0 := smul_ne_zero (Iff.mpr sub_ne_zero (Ne.symm h)) hv
-  rw [hc] at w₂
-  tauto
-
 theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = tB) (hA : VEC O A = tA • v) (hB : VEC O B = tB • v) : A = B := by
   have hAB : tB - tA = 0 := Iff.mpr sub_eq_zero (Eq.symm h)
   have hc : VEC A B = VEC O B - VEC O A := by
@@ -37,19 +27,40 @@ theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = t
 def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
   carrier := {C : P | ∃ t : ℝ, VEC A C = t • VEC A B}
   linear x y z:= by
-    have hv : VEC A B ≠ 0 := (ne_iff_vec_ne_zero A B).1 h
     unfold Membership.mem Set.instMembershipSet Set.Mem setOf
     simp only [forall_exists_index]
     intro tx hx ty hy tz hz
     by_cases ty ≠ tx ∧ tz ≠ tx ∧ ty ≠ tz
-    · rcases h with ⟨h₁, h₂, h₃⟩
-      have h₁' : y ≠ x := pt_ne_pt_of_ne_ne_smul_smul h₁ hv hy hx
-      have h₂' : z ≠ x := pt_ne_pt_of_ne_ne_smul_smul h₂ hv hz hx
-      have h₃' : y ≠ z := pt_ne_pt_of_ne_ne_smul_smul h₃ hv hy hz
-      have h' : y ≠ x ∧ z ≠ x ∧ y ≠ z := by tauto
-      sorry
-    sorry
-  maximal := sorry
+    · rcases h with ⟨h₁, _, _⟩
+      have w₂ : ∃ t : ℝ, VEC x z = t • VEC x y := by
+        use (ty - tx)⁻¹ * (tz - tx)
+        rw [mul_smul]
+        symm
+        apply ((inv_smul_eq_iff₀ (Iff.mpr sub_ne_zero h₁)).2)
+        rw [← vec_sub_vec A x y, ← vec_sub_vec A x z, hx, hy, hz]
+        rw [← sub_smul, ← sub_smul, ← mul_smul, ← mul_smul, mul_comm]
+      apply colinear_of_vec_eq_smul_vec'
+      exact w₂
+    · unfold colinear
+      have h' : (ty = tx) ∨ (tz = tx) ∨ (ty = tz) := by tauto
+      by_cases ty = tx
+      · rw [pt_eq_pt_of_eq_smul_smul h hy hx]
+        tauto
+      · by_cases tz = tx
+        · rw [pt_eq_pt_of_eq_smul_smul h hz hx]
+          tauto
+        · have h : ty = tz := by tauto
+          rw [pt_eq_pt_of_eq_smul_smul h hy hz]
+          tauto
+  maximal x y := by
+    unfold Membership.mem Set.instMembershipSet Set.Mem setOf
+    simp only [forall_exists_index]
+    intro tx hx ty hy hne z c
+    have e : VEC x y = (ty - tx) • VEC A B := by
+      rw [← vec_sub_vec A x y, hx, hy, sub_smul]
+    rcases (eq_mul_vec_iff_colinear_of_ne hne).1 c with ⟨t, ht⟩
+    use tx + t * (ty - tx)
+    rw [← vec_add_vec A x z, ht, e, hx, ← mul_smul, ← add_smul]
   nontriv := by
     use A
     use B
@@ -62,33 +73,12 @@ def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
     use 1
     simp only [one_smul]
     exact h
-    
 
 end Line
 
 scoped notation "LIN" => Line.mk_pt_pt 
 
 variable {P : Type _} [EuclideanPlane P]
-
-/- def coe from ray to line-/
-
-def Ray.toLine (r : Ray P) : Line P where
-  carrier := {C : P | ∃ t : ℝ, VEC r.source C = t • r.toDir.toVec}
-  linear := sorry
-  maximal := sorry
-  nontriv := sorry
-
-instance : Coe (Ray P) (Line P) where
-  coe := Ray.toLine
-
-/- def coe from non trivial segment to line-/
-
-def Seg.toLine_of_nontriv (s : Seg P) (hs : s.is_nontriv) : Line P where
-  -- carrier := {C : P | ∃ t : ℝ, VEC s.source C = t • ?}
-  carrier := sorry
-  linear := sorry
-  maximal := sorry
-  nontriv := sorry
 
 /- Def of point lies on a line -/
 def IsOnLine (a : P) (l : Line P) : Prop :=
@@ -97,13 +87,33 @@ def IsOnLine (a : P) (l : Line P) : Prop :=
 instance : HasLiesOn P (Line P) where
   lies_on := IsOnLine
 
+theorem vec_eq_smul_vec_of_lies_on {l : Line P} {A B X Y : P} (ha : A LiesOn l) (hb : B LiesOn l) (hx : X LiesOn l) (hy : Y LiesOn l) (hab : B ≠ A) : ∃ t : ℝ, VEC X Y = t • VEC A B := by
+  rcases (eq_mul_vec_iff_colinear_of_ne hab).1 (Line.linear A B X ha hb hx) with ⟨t₁, e₁⟩
+  rcases (eq_mul_vec_iff_colinear_of_ne hab).1 (Line.linear A B Y ha hb hy) with ⟨t₂, e₂⟩
+  use t₂ - t₁
+  rw [← vec_sub_vec A, e₁, e₂, sub_smul]
+
+theorem line_has_toProj {l : Line P} {A B X Y : P} (ha : A LiesOn l) (hb : B LiesOn l) (hx : X LiesOn l) (hy : Y LiesOn l) (hab : B ≠ A) (hxy : Y ≠ X) : sorry := sorry
+
+/- def coe from ray to line-/
+
+def Ray.toLine (r : Ray P) := LIN r.source (r.toDir.toVec +ᵥ r.source) (by 
+  by_contra h
+  exact (Dir.dir_toVec_ne_zero r.toDir) (vec_eq_zero_of_vadd_eq_self h))
+
+instance : Coe (Ray P) (Line P) where
+  coe := Ray.toLine
+
+/- def coe from non trivial segment to line-/
+
+def Seg.toLine_of_nontriv (s : Seg P) (hs : s.is_nontriv) := (LIN s.source s.target hs)
+
 section Compaitiblity_of_coersions
 -- If a point lies on a ray, then it lies on the line associated to the ray.
 theorem lies_on_line_of_ray_of_lies_on_ray {a : P} {l : Ray P} (h : a LiesOn l) : a LiesOn l := sorry
 
 -- If A and B are two distinct points, they lie on the line AB
 theorem source_or_ray_lies_on_line_of_ray (l : Ray P) : l.source LiesOn l := sorry
-
 
 theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B h ∧ B LiesOn LIN A B h := sorry
 
