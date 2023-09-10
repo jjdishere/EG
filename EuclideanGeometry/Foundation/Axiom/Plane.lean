@@ -47,6 +47,9 @@ instance {H : Type _} [EuclideanPlane H] : AddTorsor (Vec) H := by infer_instanc
 theorem start_vadd_vec_eq_end {H : Type _} [EuclideanPlane H] (A B : H) : (VEC A B) +ᵥ A = B := sorry
 
 @[simp]
+theorem vec_eq_zero_of_vadd_eq_self {H : Type _} [EuclideanPlane H] {A : H} {v : Vec} (h : v +ᵥ A = A) : v = 0 := sorry
+
+@[simp]
 theorem vec_same_eq_zero {H : Type _} [EuclideanPlane H] (A : H) : VEC A A = 0 := sorry
 
 theorem neg_vec {H : Type _} [EuclideanPlane H] (A B : H) : - VEC A B = VEC B A := sorry

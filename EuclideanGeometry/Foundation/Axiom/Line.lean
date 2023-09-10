@@ -82,23 +82,16 @@ variable {P : Type _} [EuclideanPlane P]
 
 /- def coe from ray to line-/
 
-def Ray.toLine (r : Ray P) : Line P where
-  carrier := {C : P | ∃ t : ℝ, VEC r.source C = t • r.toDir.toVec}
-  linear := sorry
-  maximal := sorry
-  nontriv := sorry
+def Ray.toLine (r : Ray P) := LIN r.source (r.toDir.toVec +ᵥ r.source) (by 
+  by_contra h
+  exact (Dir.dir_toVec_ne_zero r.toDir) (vec_eq_zero_of_vadd_eq_self h))
 
 instance : Coe (Ray P) (Line P) where
   coe := Ray.toLine
 
 /- def coe from non trivial segment to line-/
 
-def Seg.toLine_of_nontriv (s : Seg P) (hs : s.is_nontriv) : Line P where
-  -- carrier := {C : P | ∃ t : ℝ, VEC s.source C = t • ?}
-  carrier := sorry
-  linear := sorry
-  maximal := sorry
-  nontriv := sorry
+def Seg.toLine_of_nontriv (s : Seg P) (hs : s.is_nontriv) := (LIN s.source s.target hs)
 
 /- Def of point lies on a line -/
 def IsOnLine (a : P) (l : Line P) : Prop :=

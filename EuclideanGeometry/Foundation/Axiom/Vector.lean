@@ -334,6 +334,16 @@ theorem eq_zero_of_toComplex_eq_zero {x : Vec} (hx : Vec.toComplex x = 0) : x = 
     tauto
   exact g
 
+theorem dir_toVec_ne_zero (x : Dir) : x.toVec ≠ 0 := by
+  by_contra h
+  have h' : Vec.InnerProductSpace.Core.inner x.toVec x.toVec = 0 := by
+    rw [h]
+    unfold Vec.InnerProductSpace.Core
+    simp only [Prod.fst_zero, mul_zero, Prod.snd_zero, add_zero]
+  let g := x.unit
+  rw [h'] at g
+  exact zero_ne_one g
+
 @[simp]
 theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize {x : ℝ × ℝ} (hx : x ≠ 0) : mk_angle (Complex.arg (Vec.toComplex x)) = Vec.normalize x hx := by
   ext : 1
