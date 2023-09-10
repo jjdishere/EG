@@ -82,10 +82,21 @@ theorem triv_colinear {A C : P} : (colinear A A C) := by
   unfold colinear
   tauto
 
-theorem perm_colinear {A B C : P} (c : colinear A B C) : (colinear B C A) := by 
-  sorry
+theorem flip_colinear_snd_trd {A B C : P} (c : colinear A B C) : (colinear A C B) := by 
+  by_cases (B ≠ A) ∧ (C ≠ A)
+  · have w₁ : B ≠ A := by tauto
+    have _ : C ≠ A := by tauto
+    rcases (eq_mul_vec_iff_colinear_of_ne w₁).1 c with ⟨t, e⟩
+    have ht : t ≠ 0 := by
+      by_contra ht'
+      rw [ht', zero_smul] at e
+      have _ : C = A := ((eq_iff_vec_eq_zero A C).2 e)
+      tauto
+    exact colinear_of_vec_eq_smul_vec (Eq.symm ((inv_smul_eq_iff₀ ht).2 e))
+  · unfold colinear
+    tauto
 
-theorem flip_colinear {A B C : P} (c : colinear A B C) : (colinear B A C) := by
+theorem flip_colinear_fst_snd {A B C : P} (c : colinear A B C) : (colinear B A C) := by
   by_cases B = A
   · rw [h]
     tauto
