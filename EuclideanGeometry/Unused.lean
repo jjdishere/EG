@@ -101,16 +101,17 @@ instance {P : Type _} [EuclideanPlane P] : Coe (DSeg P) (Seg P) where
   coe := fun _ => DSeg.toSeg
 
 /- def of DirSeg from GDirSeg if length ≠ 0 -/
-def Seg.toDSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv : l.target ≠ l.source): DSeg P where
-  source := l.source
-  target := l.target
-  toDir := Vec.normalize (l.target -ᵥ l.source) (vsub_ne_zero.mpr nontriv)
-  on_ray := sorry
-  non_triv := sorry
+
+-- def Seg.toDSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv : l.target ≠ l.source): DSeg P where
+--   source := l.source
+--   target := l.target
+--   toDir := Vec.normalize (l.target -ᵥ l.source) (vsub_ne_zero.mpr nontriv)
+--   on_ray := sorry
+--   non_triv := sorry
 
 -- theorems "if p LiesOnDSeg l, then p LiesOn l.toRay and p LiesOn l.toSeg"
 
-theorem DSeg.pt_on_toRay_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toRay := sorry
+-- theorem DSeg.pt_on_toRay_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toRay := sorry
 
 theorem DSeg.pt_on_toSeg_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toSeg := sorry
 
@@ -144,7 +145,7 @@ theorem IsOnDSeg_of_rev_of_IsOnDSeg (a : P) (lieson : a LiesOnDSeg seg) : a Lies
 -- the operation of reversing the toDir commutes with coersion between directed segments and generalized directed segments.
 theorem DSeg.rev_toSeg_eq_toSeg_rev : seg.reverse.toSeg = (seg.toSeg).reverse := sorry
 
-theorem Seg.rev_toDSeg_eq_toDSeg_rev (nontriv : gseg.target ≠ gseg.source) : (gseg.reverse).toDSeg_of_nontriv (Seg.nontriv_of_rev_of_nontriv gseg nontriv) = (gseg.toDSeg_of_nontriv nontriv).reverse := sorry
+-- theorem Seg.rev_toDSeg_eq_toDSeg_rev (nontriv : gseg.target ≠ gseg.source) : (gseg.reverse).toDSeg_of_nontriv (Seg.nontriv_of_rev_of_nontriv gseg nontriv) = (gseg.toDSeg_of_nontriv nontriv).reverse := sorry
 
 variable {P: Type _} [EuclideanPlane P] (v : ℝ × ℝ) (seg : DSeg P)
 
