@@ -9,40 +9,109 @@ open Classical
 variable {P : Type _} [EuclideanPlane P] 
 
 section colinear
+
+-- Define a special normalize' that maps (0 : Vec) to (1 : Proj)
+
+def normalize' (v : Vec) : Dir := by
+  let v' := if v = 0 then (1, 0) else v
+  have nz : v' ≠ 0 := by
+    by_cases v = 0
+    · have pos : v' = (1, 0) := by
+        apply if_pos
+        exact h
+      by_contra hv
+      rw [pos] at hv
+      simp only [Prod.mk_eq_zero, one_ne_zero, and_true] at hv 
+    · have neg : v' = v := by
+        apply if_neg
+        exact h
+      rw [neg]
+      exact h
+  exact Vec.normalize v' nz
+
+theorem normalize'_eq_normalize_of_ne_zero {v : Vec} (nz : v ≠ 0) : (Vec.normalize v nz = normalize' v) := by
+  unfold normalize'
+  simp only [nz, ite_false]
+
 def colinear (A B C : P) : Prop := by
-  by_cases B ≠ A ∧ C ≠ A ∧ B ≠ C 
-  · rcases h with ⟨h₁, h₂, _⟩
-    exact (Vec.normalize (VEC A B) ((ne_iff_vec_ne_zero A B).1 h₁)).toProj = (Vec.normalize (VEC A C) ((ne_iff_vec_ne_zero A C).1 h₂)).toProj
-  · exact True
+  exact (B = A) ∨ (C = A) ∨ (B = C) ∨ (normalize' (VEC A B)).toProj = (normalize' (VEC A C)).toProj
 
-theorem VEC_eq_toProj_of_smul {A B C : P} {t : ℝ} (hBA : B ≠ A) (hCA : C ≠ A) (h : VEC A C = t • VEC A B) : (Vec.normalize (VEC A B) ((ne_iff_vec_ne_zero A B).1 hBA)).toProj = (Vec.normalize (VEC A C) ((ne_iff_vec_ne_zero A C).1 hCA)).toProj := (eq_toProj_of_smul ((ne_iff_vec_ne_zero A B).1 hBA) ((ne_iff_vec_ne_zero A C).1 hCA) h)
+-- The definition of colinear now includes two cases: the degenerate case and the nondegenerate case. We use normalize' to avoid problems involving using conditions of an "if" in its "then" and "else". And we only use VEC to define colinear. 
 
-theorem colinear_of_ne_ne_smul {A B C : P} {t : ℝ} (hBA : B ≠ A) (hCA : C ≠ A) (h' : VEC A C = t • VEC A B) : colinear A B C := by
-  by_cases (B = C)
-  · rw [h]
-    unfold colinear
-    simp only [ne_eq, not_true, and_false, dite_false]
-  · have g : (B ≠ A) ∨ (C ≠ A) ∨ (B ≠ C) := by tauto
-    sorry
+theorem colinear_of_vec_eq_smul_vec {A B C : P} {t : ℝ} (e : VEC A C = t • VEC A B) : colinear A B C := by
+  unfold colinear
+  by_cases (B ≠ A) ∧ (C ≠ A) ∧ (B ≠ C)
+  · have hBA : B ≠ A := by tauto
+    have hCA : C ≠ A := by tauto
+    have hVEC : (Vec.normalize (VEC A B) ((ne_iff_vec_ne_zero A B).1 hBA)).toProj = (Vec.normalize (VEC A C) ((ne_iff_vec_ne_zero A C).1 hCA)).toProj := (eq_toProj_of_smul ((ne_iff_vec_ne_zero A B).1 hBA) ((ne_iff_vec_ne_zero A C).1 hCA) e)
+    rw [normalize'_eq_normalize_of_ne_zero, normalize'_eq_normalize_of_ne_zero] at hVEC
+    simp only [h, false_or]
+    exact hVEC
+  · have h' : (B = A) ∨ (C = A) ∨ (B = C) := by tauto
+    tauto
+
+theorem colinear_of_vec_eq_smul_vec' {A B C : P} : (∃ t : ℝ, VEC A C = t • VEC A B) → colinear A B C := by
+  intro h
+  rcases h with ⟨t, e⟩
+  exact colinear_of_vec_eq_smul_vec e
 
 theorem eq_mul_vec_iff_colinear_of_ne {A B C : P} (g : B ≠ A) : colinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B := by
   constructor
-  · sorry
-  · sorry
+  · intro c
+    unfold colinear at c
+    by_cases (C ≠ A) ∧ (B ≠ C) 
+    · have h₁ : C ≠ A := by tauto
+      have h₂ : B ≠ C := by tauto
+      simp [g, h₁, h₂] at c
+      rw [← normalize'_eq_normalize_of_ne_zero ((ne_iff_vec_ne_zero A B).1 g), ← normalize'_eq_normalize_of_ne_zero ((ne_iff_vec_ne_zero A C).1 h₁)] at c
+      exact smul_of_eq_toProj c
+    · by_cases C = A
+      · use 0
+        rw [h]
+        simp only [vec_same_eq_zero, zero_smul]
+      · have h : B = C := by tauto
+        use 1
+        rw [h]
+        simp only [one_smul]
+  · intro he
+    rcases he with ⟨t, e⟩
+    exact colinear_of_vec_eq_smul_vec e
 
--- The definition of colinear now includes two cases: the degenerate case and the nondegenerate case. And we only use VEC to define colinear. 
+-- Please rewrite this part, use minimal theorems, but create a tactic called `colinearity`
+theorem triv_colinear {A C : P} : (colinear A A C) := by
+  unfold colinear
+  tauto
 
--- Please rewrite this part, use minimal theorems, but create a tactic called `colinarity`
-theorem perm_colinear {A B C : P} (h : colinear A B C) : (colinear B C A) := by sorry
+theorem flip_colinear_snd_trd {A B C : P} (c : colinear A B C) : (colinear A C B) := by 
+  by_cases (B ≠ A) ∧ (C ≠ A)
+  · have w₁ : B ≠ A := by tauto
+    have _ : C ≠ A := by tauto
+    rcases (eq_mul_vec_iff_colinear_of_ne w₁).1 c with ⟨t, e⟩
+    have ht : t ≠ 0 := by
+      by_contra ht'
+      rw [ht', zero_smul] at e
+      have _ : C = A := ((eq_iff_vec_eq_zero A C).2 e)
+      tauto
+    exact colinear_of_vec_eq_smul_vec (Eq.symm ((inv_smul_eq_iff₀ ht).2 e))
+  · unfold colinear
+    tauto
 
-theorem flip_colinear {A B C : P} (h : colinear A B C) : (colinear A C B) := sorry
+theorem flip_colinear_fst_snd {A B C : P} (c : colinear A B C) : (colinear B A C) := by
+  by_cases B = A
+  · rw [h]
+    tauto
+  · rw [eq_mul_vec_iff_colinear_of_ne h] at c
+    rcases c with ⟨r, e⟩
+    have e' : VEC B C = (1 - r) • VEC B A := by
+      rw [← vec_sub_vec A B C, e, ← neg_vec A B, smul_neg, sub_smul, neg_sub, one_smul]
+    exact colinear_of_vec_eq_smul_vec e'
 
-theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h₂ : colinear A B D) (h : A ≠ B) : (colinear A C D) := sorry
-
-theorem colinear_of_vec_eq_smul_vec {A B C : P} {r : ℝ} (h : VEC A C = r • VEC A B) : colinear A B C := sorry
+-- the proof of this theorem using def of line seems to be easier
+theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h₂ : colinear A B D) (h : B ≠ A) : (colinear A C D) := sorry
 
 theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (A ≠ C) ∧ (B ≠ A) := by
-  sorry
+  unfold colinear at h
+  tauto
 
 end colinear
 /- Positions of points on a line, ray, oriented segments. -/
