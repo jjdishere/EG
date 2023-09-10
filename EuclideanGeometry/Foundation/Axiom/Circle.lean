@@ -30,7 +30,7 @@ scoped notation "⨀" => Circle.mk_pt_pt
 
 section coersion
 
-def Triangle.toCir_of_nontriv (tr : Triangle P) (nontriv : tr.is_nd) : Circle P := sorry
+def Triangle_nd.toCir (tr_nd : Triangle_nd P) : Circle P := sorry
 
 end coersion
 
