@@ -13,7 +13,7 @@ additional notation (infix or prefix)
 
 2. standard abbreviation and (objects)
 RAY (ray) -- ray
-LINE (line) -- line
+LIN (lin) -- line
 SEG (seg) -- seg
 nd -- nondegenerate (e.g. SEG_nd, or nd : B ≠ A)
 p -- point  (abbreviate to pt in the name of theorem)
@@ -21,7 +21,7 @@ CIR (cir) -- circle
 ANG (ang) -- values of angle
 OANG (oang) -- oriented angle
 TRI (tri) -- triangle
-QUAD (quad) -- quadrilatral
+QUAD (quad) -- quadrilateral
 ARC (arc) -- arc
 
 in -- ∈

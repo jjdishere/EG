@@ -14,7 +14,7 @@ section Isoceles_Triangles
 
 def IsIsoceles (tri : Triangle P) : Prop := tri.edge₂.length = tri.edge₃.length
 
-theorem isoceles_iff_two_angles_eq_of_nontriv_triangle (tri : Triangle P) (nontriv : tri.is_nontriv) : tri.IsIsoceles ↔ (tri.angle₂ nontriv = - tri.angle₃ nontriv) := sorry
+theorem isoceles_iff_two_angles_eq_of_nontriv_triangle {tri_nd : Triangle_nd P} : tri_nd.1.IsIsoceles ↔ (tri_nd.angle₂= - tri_nd.angle₃) := sorry
 -- To show angle equal => sides equal, use anti-congruent of the triangle with itself.
 
 
@@ -39,21 +39,21 @@ theorem equilateral_of_perm_vertices (tri : Triangle P) (h : tri.IsEquilateral) 
 
 -- A nontrivial triangle is an equilateral triangle if and only if all of its angles are equal.
 
-theorem equilateral_iff_eq_angle_of_nontriv (tri : Triangle P) (nontriv : tri.is_nontriv) : tri.IsEquilateral ↔ tri.angle₁ = tri.angle₂ ∧ tri.angle₁ = tri.angle₃ := by sorry
+theorem equilateral_iff_eq_angle_of_nontriv (tri_nd : Triangle_nd P) : tri_nd.1.IsEquilateral ↔ tri_nd.angle₁ = tri_nd.angle₂ ∧ tri_nd.angle₁ = tri_nd.angle₃ := by sorry
 
 -- An clockwise equilateral triangle has all angles being π/3
 
-theorem sixty_degree_of_cclock_equilateral_tri (tri : Triangle P) (nontriv : tri.is_nontriv) (cclock : tri.is_cclock nontriv) : tri.angle₁ nontriv = (π / 3) ∧ tri.angle₂ nontriv = π / 3 ∧ tri.angle₃ nontriv = π / 3 := by sorry
+theorem sixty_degree_of_cclock_equilateral_tri (tri_nd : Triangle_nd P) (cclock : tri_nd.is_cclock) : tri_nd.angle₁= (π / 3) ∧ tri_nd.angle₂ = π / 3 ∧ tri_nd.angle₃ = π / 3 := by sorry
 
 -- An anticlockwise equilateral triangle has all angles being - π/3
 
-theorem neg_sixty_degree_of_acclock_equilateral_tri (tri : Triangle P) (nontriv : tri.is_nontriv) (acclock : ¬ tri.is_cclock nontriv) : tri.angle₁ nontriv = - π / 3 ∧ tri.angle₂ nontriv = - π / 3 ∧ tri.angle₃ nontriv = - π / 3 := by sorry
+theorem neg_sixty_degree_of_acclock_equilateral_tri(tri_nd : Triangle_nd P) (acclock : ¬ tri_nd.is_cclock) : tri_nd.angle₁= - π / 3 ∧ tri_nd.angle₂ = - π / 3 ∧ tri_nd.angle₃ = - π / 3 := by sorry
 
 -- An isoceles triangle is an equilateral triangle if one of its angle is π/3 (or -π /3). Here there are two possibilities
 
-theorem equilateral_of_isoceles_of_sixty_degree_1 (tri : Triangle P) (nontriv : tri.is_nontriv) (h : tri.angle₁ nontriv = π /3 ∨ tri.angle₁ nontriv = - π / 3) : tri.IsEquilateral := by sorry
+theorem equilateral_of_isoceles_of_sixty_degree_1 (tri_nd : Triangle_nd P) (h : tri_nd.angle₁ = π /3 ∨ tri_nd.angle₁ = - π / 3) : tri_nd.1.IsEquilateral := by sorry
 
-theorem equilateral_of_isoceles_of_sixty_degree_2 (tri : Triangle P) (nontriv : tri.is_nontriv) (h : tri.angle₂ nontriv = π /3 ∨ tri.angle₂ nontriv = - π / 3) : tri.IsEquilateral := by sorry
+theorem equilateral_of_isoceles_of_sixty_degree_2 (tri_nd : Triangle_nd P) (h : tri_nd.angle₂ = π /3 ∨ tri_nd.angle₂ = - π / 3) : tri_nd.1.IsEquilateral := by sorry
 
 end Triangle
 

@@ -1,90 +1,84 @@
 import EuclideanGeometry.Foundation.Axiom.Ray
 
 noncomputable section
-
 namespace EuclidGeom
 
-namespace Seg 
-variable {P: Type _} [EuclideanPlane P] (l : Seg P) 
+variable {P: Type _} [EuclideanPlane P] (seg : Seg P) (seg_nd : Seg_nd P) (ray : Ray P)
 
 -- source and targets are on generalized directed segments
-theorem source_lies_on_seg : l.source LiesOn l := by sorry
+theorem source_lies_on_seg : seg.source LiesOn seg := by sorry
 
-theorem target_lies_on_seg : l.source LiesOn l := by sorry
+theorem target_lies_on_seg : seg.source LiesOn seg := by sorry
 
 -- If a point lies on a directed segemnt, then it lies on the Ray associated to the directed segment
 
-theorem pt_on_toRay_of_pt_on_Seg (p : P) (l : Seg P) (lieson : p LiesOn l) (nontriv : l.is_nontriv) : p LiesOn (l.toRay_of_nontriv nontriv) := sorry
+theorem pt_on_toRay_of_pt_on_Seg {p : P} {seg_nd : Seg_nd P} (lieson : p LiesOn seg_nd) : p LiesOn (seg_nd.toRay) := sorry
 
+section reverse
+
+section seg
 
 -- definition of reversion of the toDir of a generalized directed segment
-def reverse : Seg P where
-  source := l.target
-  target := l.source
-
-
--- double reverse a generalized directed segment gets back to itself
-theorem double_rev_eq_self  : l.reverse.reverse = l := rfl
-
--- reversing the toDir does not change the property that a point lies on the generalized directed segments.
-theorem IsOnSeg_of_rev_of_IsOnSeg (p : P) (lieson : p LiesOn l) : p LiesOn l.reverse := sorry
+def Seg.reverse : Seg P where
+  source := seg.target
+  target := seg.source
 
 -- reversing the toDir does not change the nontriviality of a generalized directed segment.
-theorem nontriv_of_rev_of_nontriv (nontriv : l.is_nontriv) : l.reverse.is_nontriv := sorry
+theorem nd_of_rev_of_nd {seg : Seg P} (nd : seg.is_nd) : seg.reverse.is_nd := sorry
+
+def Seg_nd.reverse : Seg_nd P := ⟨seg_nd.1.reverse, nd_of_rev_of_nd seg_nd.2⟩ 
+
+-- double reverse a generalized directed segment gets back to itself
+theorem Seg.double_rev_eq_self  : seg.reverse.reverse = seg := rfl
+
+theorem Seg_nd.double_rev_eq_self  : seg_nd.reverse.reverse = seg_nd := rfl
+
+-- reversing the toDir does not change the property that a point lies on the generalized directed segments.
+theorem IsOnSeg_of_rev_of_IsOnSeg {p : P} (lieson : p LiesOn seg) : p LiesOn seg.reverse := sorry
 
 -- reversing the toDir does not change the length
-theorem length_eq_length_of_rev : l.length = l.reverse.length := sorry
-
-end Seg
-
+theorem length_eq_length_of_rev : seg.length = seg.reverse.length := sorry
 
 section compatibility_with_coersion
 
-
-variable {P: Type _} [EuclideanPlane P] (l : Seg P)
-
 -- reversing the toDir of a generalized directed segment will negate the coersion to vectors
-theorem Seg.neg_toVec_of_rev : l.reverse.toVec = - l.toVec := sorry
+theorem neg_toVec_of_rev : seg.reverse.toVec = - seg.toVec := sorry
 
+theorem rev_of_toseg_eq_toseg_rev : seg_nd.reverse.1 = seg_nd.1.reverse := rfl 
 
 end compatibility_with_coersion
 
+end seg
 
-
-
-namespace Ray
-
-variable {P: Type _} [EuclideanPlane P]  (l : Ray P)
-
-
+section ray
 -- reverse the toDir of a ray
-def reverse : Ray P where
-  source := l.source
-  toDir := - l.toDir
+def Ray.reverse : Ray P where
+  source := ray.source
+  toDir := - ray.toDir
 
 
-theorem double_rev_eq_self : l.reverse.reverse = l := sorry
+theorem double_rev_eq_self : ray.reverse.reverse = ray := sorry
 
 -- If a point lies on ray and its reversion, then it is the source
 
-theorem eq_source_of_lies_on_and_lies_on_rev (p : P) (lieson : p LiesOn l) (liesonrev : p LiesOn l.reverse) : p = l.source := by sorry
+theorem eq_source_of_lies_on_and_lies_on_rev {p : P} (lieson : p LiesOn ray) (liesonrev : p LiesOn ray.reverse) : p = ray.source := by sorry
 
-end Ray
+end ray
 
-namespace Seg
+section seg
 
 variable {P: Type _} [EuclideanPlane P]
 
 -- Define the extension ray from a nontrival segment
 
-def extension_ray_of_nontriv (seg : Seg P) (nontriv : seg.is_nontriv) : Ray P := (seg.reverse.toRay_of_nontriv (Ne.symm nontriv)).reverse
+def extension_ray_of_seg_nd (seg_nd : Seg_nd P) : Ray P := (seg_nd.reverse.toRay).reverse
 
 -- A point lies on the directed segment if and only if it lies on the ray associated to the segment and the ray associated to the reverse of this segment.
 
-def lieson_iff_lieson_both_ray_of_nontriv_seg (p : P) (seg : Seg P) (nontriv : seg.is_nontriv) : (p LiesOn seg) ↔ (p LiesOn (seg.toRay_of_nontriv nontriv)) ∧ (p LiesOn (seg.reverse.toRay_of_nontriv (Ne.symm nontriv))) := by sorry
+def lieson_iff_lieson_both_ray_of_nontriv_seg {p : P} (seg_nd : Seg_nd P) : (p LiesOn seg_nd) ↔ (p LiesOn seg_nd.toRay) ∧ (p LiesOn seg_nd.reverse.toRay) := by sorry
 
-end Seg
+end seg
 
-
+end reverse
 
 end EuclidGeom

@@ -40,7 +40,7 @@ theorem acute_of_supp_of_obtuse (rt : IsObtuseAngle oang) :  IsRightAngle oang.s
 
 theorem obtuse_of_supp_of_acute (rt : IsAcuteAngle oang) :  IsRightAngle oang.supplementary := by sorry
 
-theorem is_nontriv_of_supp_of_is_nontriv (nontriv : oang.is_nontriv) : oang.supplementary.is_nontriv := by sorry
+theorem is_nd_of_supp_of_is_nd (nontriv : oang.is_nd) : oang.supplementary.is_nd := by sorry
 
 def opposite :(OAngle P) where
   start_ray := oang.start_ray.reverse
@@ -49,7 +49,7 @@ def opposite :(OAngle P) where
 
 theorem opposite_eq_supp_of_supp : oang.supplementary.supplementary = oang := by sorry
 
-theorem  is_nontriv_of_oppo_of_is_nontriv (nontriv : oang.is_nontriv) : oang.opposite.is_nontriv := by sorry
+theorem  is_nd_of_oppo_of_is_nd (nontriv : oang.is_nd) : oang.opposite.is_nd := by sorry
 
 
 

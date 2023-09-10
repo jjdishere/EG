@@ -20,7 +20,9 @@ def Seg.translate (l : Seg P) (v : Vec)  : Seg P where
 
 -- parallel translate a nontrivial generalized directed segment is nontrivial
 
-theorem non_triv_of_trans_seg_non_triv (l : Seg P) (nontriv : l.is_nontriv) : (l.translate v).is_nontriv := by sorry
+theorem non_triv_of_trans_seg_non_triv {l : Seg P}(nontriv : l.is_nd) : (l.translate v).is_nd := by sorry
+
+def Seg_nd.translate (seg_nd : Seg_nd P) (v : Vec) : Seg_nd P := ⟨seg_nd.1.translate v, non_triv_of_trans_seg_non_triv v seg_nd.2⟩
 
 theorem reverse_of_trans_eq_trans_of_reverse_of_seg (l : Seg P) : (l.translate v).reverse = l.reverse.translate v := by sorry
 
@@ -38,6 +40,6 @@ def Ray.translate (l : Ray P) : Ray P where
 
 theorem reverse_of_trans_eq_trans_of_reverse_of_ray (l : Ray P) : (l.translate v).reverse = l.reverse.translate v := by sorry
 
-theorem trans_of_seg_of_nontriv_toRay (seg : Seg P) (nontriv : seg.is_nontriv) : (seg.toRay_of_nontriv nontriv).translate v = (seg.translate v).toRay_of_nontriv (non_triv_of_trans_seg_non_triv v seg nontriv) := sorry
+theorem trans_of_seg_of_nontriv_toRay (seg_nd : Seg_nd P) : (seg_nd.toRay).translate v = (seg_nd.translate v).toRay := sorry
 
 end EuclidGeom

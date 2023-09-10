@@ -11,7 +11,7 @@ This file defines the Euclidean Plane as an affine space, which admits an action
 
 ## Notation
 
-* `VEC A B` : the vector `B -ᵥ A` in `ℝ × ℝ`
+* `VEC A B` : the vector `B -ᵥ A` in `Vec`
 
 ## Implementation Notes
 
@@ -56,7 +56,7 @@ theorem neg_vec {H : Type _} [EuclideanPlane H] (A B : H) : - VEC A B = VEC B A 
 
 theorem eq_iff_vec_eq_zero {H : Type _} [EuclideanPlane H] (A B : H) : B = A ↔ VEC A B = 0 := sorry
 
-theorem ne_iff_vec_ne_zero {H : Type _} [EuclideanPlane H] (A B : H) : B ≠ A ↔ VEC A B ≠ 0 := sorry
+theorem ne_iff_vec_ne_zero {H : Type _} [EuclideanPlane H] (A B : H) : B ≠ A ↔ (VEC A B) ≠ 0 := sorry
 
 @[simp]
 theorem vec_add_vec {H : Type _} [EuclideanPlane H] (A B C : H) : VEC A B + VEC B C = VEC A C := sorry

@@ -30,7 +30,7 @@ def angle_of_three_point_nontriv (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): 
 
 def angle_of_two_ray_of_eq_source (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : ℝ := (OAngle.mk start_ray end_ray h).value
 
-def is_nontriv (oang : OAngle P) : Prop := oang.value ≠ 0 ∧ oang.value ≠ π 
+def is_nd (oang : OAngle P) : Prop := oang.value ≠ 0 ∧ oang.value ≠ π 
 
 end OAngle
 
