@@ -45,7 +45,6 @@ namespace Ray
 
 variable {P : Type _} [EuclideanPlane P] (ray : Ray P)
 
-
 /- Def of point lies on a ray -/
 def IsOnRay {P : Type _} [EuclideanPlane P] (a : P) (ray : Ray P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ a = t • ray.toDir.toVec +ᵥ ray.source
@@ -65,6 +64,8 @@ class Seg (P : Type _) [EuclideanPlane P] where
 namespace Seg
 
 def is_nontriv (seg : Seg P) : Prop := seg.target ≠ seg.source 
+
+def Seg_nd (P : Type _) [EuclideanPlane P] := {seg : Seg P // seg.is_nontriv}
 
 def IsOnSeg (a : P) (seg : Seg P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (VEC seg.source seg.target) +ᵥ seg.source
@@ -87,12 +88,14 @@ scoped infix : 50 "LiesOnIntSeg" => Seg.IsOnIntSeg
 /- Coe from Seg to Vector, Ray-/
 namespace Seg 
 
-variable {P : Type _} [EuclideanPlane P] (seg : Seg P)
+variable {P : Type _} [EuclideanPlane P] (seg : Seg P) (seg_nd : Seg_nd P)
 
 def toVec : Vec := VEC seg.source seg.target
+def toVec_nd : Vec_nd := ⟨VEC seg_nd.1.source seg_nd.1.target, (ne_iff_vec_nonzero _ _).mp seg_nd.2⟩ 
 
-variable (h : seg.is_nontriv)
-def toDir_of_nontriv : Dir := Vec.normalize seg.toVec ((ne_iff_vec_nonzero _ _).mp h)
+variable (seg_nd : Seg_nd P)
+
+def toDir_of_nontriv : Dir := Vec_nd.normalize seg_nd.1.toVec ((ne_iff_vec_nonzero _ _).mp h)
 
 def toRay_of_nontriv : Ray P where
   source := seg.source

@@ -11,7 +11,7 @@ This file defines the Euclidean Plane as an affine space, which admits an action
 
 ## Notation
 
-* `VEC A B` : the vector `B -ᵥ A` in `ℝ × ℝ`
+* `VEC A B` : the vector `B -ᵥ A` in `Vec`
 
 ## Implementation Notes
 

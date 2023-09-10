@@ -23,6 +23,8 @@ Then we define the class `Dir` of vectors of unit length. We equip it with the s
 Inequalities about `ℝ²` should be written at the beginning of this file.
 
 The current definition is far from being general enough. Roughly speaking, it suffices to define the Euclidean Plane to be a `NormedAddTorsor` over any 2 dimensional normed real inner product spaces `V` with a choice of an orientation on `V`, rather than over the special `ℝ × ℝ`. All further generalizations in this file should be done together with Plane.lean.
+
+A possible change is to redefine `Vec` as a brand new class contains 2 copies of `ℝ`. This "wrapper" will enable us to use instance. 
 -/
 
 noncomputable section
@@ -139,41 +141,40 @@ protected def norm := @Norm.norm _ Vec.Norm
 
 def toComplex (x : ℝ × ℝ) : ℂ := ⟨x.1, x.2⟩
 
-/- WARNING : the arg of `0 : ℂ` is `0`, the result of quotient by `0 : ℂ` is `0 : ℂ`
-protected def angle (x y : ℝ × ℝ) : ℝ := Complex.arg ((Vec.toComplex y)/(Vec.toComplex x)) -/
-
 end Vec
 
-theorem vec_norm_eq_abs (x : ℝ × ℝ) : Vec.norm x = Complex.abs (Vec.toComplex x) := rfl
+/- the notation for the class of vectors -/
+scoped notation "Vec" => ℝ × ℝ
+/- the class of non-degenerate vectors -/
+def Vec_nd := {v : Vec // v ≠ 0}
+
+theorem vec_norm_eq_abs (x : Vec) : Vec.norm x = Complex.abs (Vec.toComplex x) := rfl
+
+theorem ne_zero_of_ne_zero_mul_Vec_nd (x : Vec_nd) {t : ℝ} (h : t ≠ 0) : t • x.1 ≠ 0 := by 
+  simp only [ne_eq, smul_eq_zero, h, x.2, or_self, not_false_eq_true]
 
 namespace Complex
 
-protected def toVec (c : ℂ) : ℝ × ℝ := ⟨c.1, c.2⟩
+protected def toVec (c : ℂ) : Vec := ⟨c.1, c.2⟩
 
 end Complex
-
-/- the notation for class of vectors-/
-scoped notation "Vec" => ℝ × ℝ
 
 @[ext]
 class Dir where
   toVec : Vec
   unit : Vec.InnerProductSpace.Core.inner toVec toVec= 1 
 
-def Vec.normalize (x : ℝ × ℝ) (hx : x ≠ 0) : Dir where
-  toVec := (Vec.norm x)⁻¹ • x 
+def Vec_nd.normalize (x : Vec_nd) : Dir where
+  toVec := (Vec.norm x.1)⁻¹ • x.1
   unit := by 
     rw [@real_inner_smul_left _ Vec.NormedAddCommGroup Vec.InnerProductSpace _ _ _, @real_inner_smul_right _ Vec.NormedAddCommGroup Vec.InnerProductSpace _ _ _, @inner_self_eq_norm_sq_to_K _ _ _ Vec.NormedAddCommGroup Vec.InnerProductSpace]
     dsimp
     rw [pow_two]
-    rw [← mul_assoc _ _ (@norm (ℝ × ℝ) Vec.NormedAddCommGroup.toNorm x)]
+    rw [← mul_assoc _ _ (@norm (ℝ × ℝ) Vec.NormedAddCommGroup.toNorm x.1)]
     simp only [Vec.norm, ne_eq, inv_mul_mul_self]
-    rw [inv_mul_cancel ((@norm_ne_zero_iff _ Vec.NormedAddGroup).mpr hx)]
+    rw [inv_mul_cancel ((@norm_ne_zero_iff _ Vec.NormedAddGroup).mpr x.2)]
 
--- Should change Dir into the following Dir'to use all instances on Dir'
-def Dir' := @Metric.sphere _ Vec.PseudoMetricSpace (0: ℝ × ℝ) 1
-
--- Or alternatively, define CommGroup instance on Dir
+/- the CommGroup instance on `Dir` -/
 namespace Dir
 
 instance : Neg Dir where
@@ -225,7 +226,7 @@ theorem one_eq_one_toComplex : Vec.toComplex (1 : Dir).toVec = 1 := rfl
 theorem one_toVec_eq_one : Complex.toVec (1 : ℂ) = (1, 0) := rfl
 
 @[simp]
-theorem eq_self_toComplex_toVec (x : ℝ × ℝ) : Complex.toVec (Vec.toComplex x) = x := rfl
+theorem eq_self_toComplex_toVec (x : Vec) : Complex.toVec (Vec.toComplex x) = x := rfl
 
 @[simp]
 theorem sq_sum_eq_one (x : Dir) : @HPow.hPow ℝ ℕ ℝ _ x.toVec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.toVec.2 2 = 1 := by
@@ -276,8 +277,6 @@ instance : CommGroup Dir where
     simp
     ring_nf
 
--- Define a ± equivalence to build Proj
-
 instance : HasDistribNeg Dir where
   neg := Neg.neg
   neg_neg _ := by
@@ -320,10 +319,10 @@ def mk_angle (θ : ℝ) : Dir where
     rfl
 
 @[simp]
-theorem re_of_toComplex_eq_fst (x : ℝ × ℝ): (Vec.toComplex x).re = x.fst := rfl
+theorem re_of_toComplex_eq_fst (x : Vec): (Vec.toComplex x).re = x.fst := rfl
 
 @[simp]
-theorem im_of_toComplex_eq_snd (x : ℝ × ℝ): (Vec.toComplex x).im = x.snd := rfl
+theorem im_of_toComplex_eq_snd (x : Vec): (Vec.toComplex x).im = x.snd := rfl
 
 theorem eq_zero_of_toComplex_eq_zero {x : Vec} (hx : Vec.toComplex x = 0) : x = 0 := by
   unfold Vec.toComplex at hx
@@ -334,10 +333,15 @@ theorem eq_zero_of_toComplex_eq_zero {x : Vec} (hx : Vec.toComplex x = 0) : x = 
     tauto
   exact g
 
+theorem ne_zero_of_Vec_nd_toComplex (x : Vec_nd) : Vec.toComplex x.1 ≠ 0 := by
+  by_contra h
+  have this : x.1 = 0 := eq_zero_of_toComplex_eq_zero h
+  exact x.2 this
+
 @[simp]
-theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize {x : ℝ × ℝ} (hx : x ≠ 0) : mk_angle (Complex.arg (Vec.toComplex x)) = Vec.normalize x hx := by
+theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize (x : Vec_nd) : mk_angle (Complex.arg (Vec.toComplex x.1)) = Vec_nd.normalize x := by
   ext : 1
-  unfold Vec.normalize toVec mk_angle HSMul.hSMul instHSMul SMul.smul Prod.smul
+  unfold Vec_nd.normalize toVec mk_angle HSMul.hSMul instHSMul SMul.smul Prod.smul
   simp
   rw [vec_norm_eq_abs]
   constructor
@@ -345,8 +349,7 @@ theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize {x : ℝ × ℝ} (hx : x 
     simp
     rfl
     intro h
-    let _ := eq_zero_of_toComplex_eq_zero h
-    tauto
+    exact ne_zero_of_Vec_nd_toComplex _ h
   · rw [Complex.sin_arg, mul_comm]
     simp
     rfl
@@ -448,70 +451,69 @@ def Dir.toProj (v : Dir) : Proj := ⟦v⟧
 instance : Coe Dir Proj where
   coe v := v.toProj
 
-def Vec.toProj_of_nonzero (v : ℝ × ℝ) (h : v ≠ 0) : Proj := (Vec.normalize v h : Proj) 
+def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.normalize v : Proj) 
 
-theorem normalize_eq_normalize_smul_pos {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) (ht : 0 < t) : Vec.normalize u hu = Vec.normalize v hv := by
+theorem normalize_eq_normalize_smul_pos (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : 0 < t) : Vec_nd.normalize u = Vec_nd.normalize v := by
   ext : 1
-  unfold Vec.normalize Dir.toVec
+  unfold Vec_nd.normalize Dir.toVec
   simp
-  have hv₁ : Vec.norm v ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v) hv
-  have g : (Vec.norm v) • u = (Vec.norm u) • v := by
-    have w₁ : (Vec.norm (t • u)) = ‖t‖ * (Vec.norm u) := @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u
+  have hv₁ : Vec.norm v.1 ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v.1) v.2
+  have g : (Vec.norm v.1) • u.1 = (Vec.norm u.1) • v.1 := by
+    have w₁ : (Vec.norm (t • u.1)) = ‖t‖ * (Vec.norm u.1) := @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u.1
     have w₂ : ‖t‖ = t := abs_of_pos ht
     rw [h, w₁, w₂, mul_comm]
-    exact mul_smul (Vec.norm u) t u
-  have g₁ : (Vec.norm u)⁻¹ • (Vec.norm v) • u = v := Iff.mpr (inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hu)) g
+    exact mul_smul (Vec.norm u.1) t u.1
+  have g₁ : (Vec.norm u.1)⁻¹ • (Vec.norm v.1) • u.1 = v.1 := Iff.mpr (inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) u.2)) g
   rw [smul_algebra_smul_comm _ _ _] at g₁
   rw [← Iff.mpr (inv_smul_eq_iff₀ hv₁) (Eq.symm g₁)]
 
-theorem neg_normalize_eq_normalize_smul_neg {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) (ht : t < 0) : -Vec.normalize u hu = Vec.normalize v hv := by
+theorem neg_normalize_eq_normalize_smul_neg (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : t < 0) : -Vec_nd.normalize u = Vec_nd.normalize v := by
   ext : 1
-  unfold Vec.normalize
+  unfold Vec_nd.normalize
   simp
-  have g : (-Vec.norm v) • u = (Vec.norm u) • v := by
-    have w₁ : (Vec.norm (t • u)) = ‖t‖ * (Vec.norm u) := @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u
+  have g : (-Vec.norm v.1) • u.1 = (Vec.norm u.1) • v.1 := by
+    have w₁ : (Vec.norm (t • u.1)) = ‖t‖ * (Vec.norm u.1) := @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u.1
     have w₂ : ‖t‖ = -t := abs_of_neg ht
     rw [h, w₁, w₂, neg_mul, neg_neg, mul_comm]
-    exact mul_smul (Vec.norm u) t u
-  have g₁ : (Vec.norm u)⁻¹ • (-Vec.norm v) • u = v := (Iff.mpr (inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hu)) g)
+    exact mul_smul (Vec.norm u.1) t u.1
+  have g₁ : (Vec.norm u.1)⁻¹ • (-Vec.norm v.1) • u.1 = v.1 := (Iff.mpr (inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) u.2)) g)
   rw [smul_algebra_smul_comm _ _ _] at g₁
-  rw [neg_eq_iff_eq_neg, ← neg_smul _ _, ← inv_neg, ← Iff.mpr (inv_smul_eq_iff₀ (Iff.mpr neg_ne_zero (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) hv))) (Eq.symm g₁)]
+  rw [neg_eq_iff_eq_neg, ← neg_smul _ _, ← inv_neg, ← Iff.mpr (inv_smul_eq_iff₀ (Iff.mpr neg_ne_zero (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup _) v.2))) (Eq.symm g₁)]
 
-theorem eq_toProj_of_smul {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) {t : ℝ} (h : v = t • u) : Vec.toProj_of_nonzero u hu = Vec.toProj_of_nonzero v hv := by
+theorem eq_toProj_of_smul (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) : Vec_nd.toProj u = Vec_nd.toProj v := by
   have ht : t ≠ 0 := by
     by_contra ht'
-    rw [ht', zero_smul ℝ u] at h
-    tauto
+    rw [ht', zero_smul ℝ u.1] at h
+    exact v.2 h
   have ht₁ : (0 < t) ∨ (t < 0) := Ne.lt_or_lt (Ne.symm ht)
-  unfold Vec.toProj_of_nonzero Dir.toProj
+  unfold Vec_nd.toProj Dir.toProj
   apply Quotient.sound
   unfold HasEquiv.Equiv instHasEquiv PM.con PM
   simp
   match ht₁ with
     | Or.inl ht₂ =>
       left
-      exact normalize_eq_normalize_smul_pos hu hv h ht₂
+      exact normalize_eq_normalize_smul_pos u v h ht₂
     | Or.inr ht₃ =>
       right
-      exact Iff.mp neg_eq_iff_eq_neg (neg_normalize_eq_normalize_smul_neg hu hv h ht₃)
+      exact Iff.mp neg_eq_iff_eq_neg (neg_normalize_eq_normalize_smul_neg u v h ht₃)
 
-theorem smul_of_eq_toProj {u v : ℝ × ℝ} {hu : u ≠ 0} {hv : v ≠ 0} (h : Vec.toProj_of_nonzero u hu = Vec.toProj_of_nonzero v hv) : ∃ (t : ℝ), v = t • u := by
-  unfold Vec.toProj_of_nonzero Dir.toProj at h
+theorem smul_of_eq_toProj (u v : Vec_nd) (h : Vec_nd.toProj u = Vec_nd.toProj v) : ∃ (t : ℝ), v.1 = t • u.1 := by
+  unfold Vec_nd.toProj Dir.toProj at h
   let h' := Quotient.exact h
   unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
   simp at h'
   match h' with
     | Or.inl h₁ =>
       rw [Dir.ext_iff] at h₁
-      use (Vec.norm v) * (Vec.norm u)⁻¹
-      have w₁ : (Vec.norm v)⁻¹ • v = (Vec.norm u)⁻¹ • u ↔ v = (Vec.norm v) • (Vec.norm u)⁻¹ • u := inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v) hv)
+      use (Vec.norm v.1) * (Vec.norm u.1)⁻¹
+      have w₁ : (Vec.norm v.1)⁻¹ • v.1 = (Vec.norm u.1)⁻¹ • u.1 ↔ v.1 = (Vec.norm v.1) • (Vec.norm u.1)⁻¹ • u.1 := inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v.1) v.2)
       rw [mul_smul]
-      refine (w₁.mp (Eq.symm ?_))
-      exact h₁
+      exact (w₁.mp (Eq.symm h₁))
     | Or.inr h₂ =>
       rw [Dir.ext_iff] at h₂
-      use (-Vec.norm v) * (Vec.norm u)⁻¹
-      have w₂ : (-Vec.norm v)⁻¹ • v = (Vec.norm u)⁻¹ • u ↔ v = (-Vec.norm v) • (Vec.norm u)⁻¹ • u := inv_smul_eq_iff₀ (Iff.mpr neg_ne_zero (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v) hv))
+      use (-Vec.norm v.1) * (Vec.norm u.1)⁻¹
+      have w₂ : (-Vec.norm v.1)⁻¹ • v.1 = (Vec.norm u.1)⁻¹ • u.1 ↔ v.1 = (-Vec.norm v.1) • (Vec.norm u.1)⁻¹ • u.1 := inv_smul_eq_iff₀ (Iff.mpr neg_ne_zero (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v.1) v.2))
       rw [mul_smul]
       refine (w₂.mp (Eq.symm ?_))
       rw [← neg_inv, neg_smul]
@@ -519,13 +521,13 @@ theorem smul_of_eq_toProj {u v : ℝ × ℝ} {hu : u ≠ 0} {hv : v ≠ 0} (h : 
 
 -- The main theorem of toProj
 
-theorem eq_toProj_iff {u v : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) : (Vec.toProj_of_nonzero u hu = Vec.toProj_of_nonzero v hv) ↔ ∃ (t : ℝ), v = t • u := by
+theorem eq_toProj_iff (u v : Vec_nd) : (Vec_nd.toProj u = Vec_nd.toProj v) ↔ ∃ (t : ℝ), v.1 = t • u.1 := by
   constructor
   · intro h
-    exact smul_of_eq_toProj h
+    exact smul_of_eq_toProj _ _ h
   · intro h'
     rcases h' with ⟨t, h⟩ 
-    exact eq_toProj_of_smul hu hv h
+    exact eq_toProj_of_smul _ _ h
 
 -- Define two Proj is perpendicular by the mul structure of ℂ, using Complex.I
 -- But first we need to define Dir.I
@@ -719,13 +721,13 @@ theorem linear_combination_of_not_colinear {u v w : ℝ × ℝ} (hu : u ≠ 0) (
   simp only [smul_eq_mul, Prod.mk_add_mk]
   ring
 
-theorem linear_combination_of_not_colinear' {u v w : ℝ × ℝ} (hu : u ≠ 0) (hv : v ≠ 0) (h' : Vec.toProj_of_nonzero u hu ≠ Vec.toProj_of_nonzero v hv) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
-  have h₁ : (Vec.toProj_of_nonzero u hu ≠ Vec.toProj_of_nonzero v hv) → ¬(∃ (t : ℝ), v = t • u) := by
+theorem linear_combination_of_not_colinear' (u v : Vec_nd) {w : ℝ × ℝ} (h' : Vec_nd.toProj u ≠ Vec_nd.toProj v) : ∃ (cᵤ cᵥ : ℝ), w = cᵤ • u.1 + cᵥ • v.1 := by
+  have h₁ : (Vec_nd.toProj u ≠ Vec_nd.toProj v) → ¬(∃ (t : ℝ), v.1 = t • u.1) := by
     intro _
     by_contra h₂
-    let _ := (eq_toProj_iff hu hv).2 h₂
+    let _ := (eq_toProj_iff u v).2 h₂
     tauto
-  exact linear_combination_of_not_colinear hu (h₁ h')
+  exact linear_combination_of_not_colinear u.2 (h₁ h')
 
 end LinearAlgebra
 
