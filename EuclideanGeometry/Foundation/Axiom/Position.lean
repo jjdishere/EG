@@ -107,7 +107,7 @@ theorem flip_colinear_fst_snd {A B C : P} (c : colinear A B C) : (colinear B A C
     exact colinear_of_vec_eq_smul_vec e'
 
 -- the proof of this theorem using def of line seems to be easier
-theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h₂ : colinear A B D) (h : A ≠ B) : (colinear A C D) := sorry
+theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h₂ : colinear A B D) (h : B ≠ A) : (colinear A C D) := sorry
 
 theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (A ≠ C) ∧ (B ≠ A) := by
   unfold colinear at h
