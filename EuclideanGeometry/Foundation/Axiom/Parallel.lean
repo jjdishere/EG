@@ -7,7 +7,7 @@ inductive LinearObj (P : Type _) [EuclideanPlane P] where
   | vec (v : Vec) (h : v ≠ 0)
   | dir (v : Dir)
   | ray (r : Ray P)
-  | seg (s : Seg P) (hs : s.is_nontriv)
+  | seg (s : Seg P) (hs : s.is_nd)
   | line (l : Line P)
 
 variable {P : Type _} [EuclideanPlane P]
@@ -70,7 +70,7 @@ section parallel_theorem
 
 theorem ray_parallel_to_line_assoc_ray (ray : Ray P) : LinearObj.ray ray ParallelTo ray.toLine := sorry
 
-theorem seg_parallel_to_ray_assoc_seg_of_nontriv {seg : Seg P} (nontriv : seg.is_nontriv) : LinearObj.seg seg nontriv ParallelTo seg.toRay_of_nontriv nontriv := sorry
+theorem seg_parallel_to_ray_assoc_seg_of_nontriv {seg : Seg P} (nontriv : seg.is_nd) : LinearObj.seg seg nontriv ParallelTo seg.toRay_of_nontriv nontriv := sorry
 
 
 end parallel_theorem

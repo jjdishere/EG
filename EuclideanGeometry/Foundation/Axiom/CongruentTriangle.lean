@@ -9,7 +9,7 @@ namespace EuclidGeom
 variable {P : Type _} [EuclideanPlane P]
 
 def IsCongr (tr₁ tr₂: Triangle P) : Prop := by
-  by_cases tr₁.is_nontriv ∧ tr₂.is_nontriv 
+  by_cases tr₁.is_nd ∧ tr₂.is_nd 
   · exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length ∧ tr₁.angle₁ h.1 = tr₂.angle₁ h.2 ∧ tr₁.angle₂ h.1 = tr₂.angle₂ h.2 ∧ tr₁.angle₃ h.1 = tr₂.angle₃ h.2
   · exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length
 
@@ -21,7 +21,7 @@ namespace IsCongr
 
 variable (tr₁ tr₂: Triangle P) (h : tr₁ IsCongrTo tr₂)
 
-theorem is_nontriv: tr₁.is_nontriv = tr₂.is_nontriv := sorry
+theorem is_nd: tr₁.is_nd = tr₂.is_nd := sorry
 
 theorem edge₁ : tr₁.edge₁.length = tr₂.edge₁.length := sorry
 
@@ -29,7 +29,7 @@ theorem edge₂ : tr₁.edge₂.length = tr₂.edge₂.length := sorry
 
 theorem edge₃ : tr₁.edge₃.length = tr₂.edge₃.length := sorry
 
-variable (nontriv₁ : tr₁.is_nontriv) (nontriv₂ : tr₂.is_nontriv)
+variable (nontriv₁ : tr₁.is_nd) (nontriv₂ : tr₂.is_nd)
 
 theorem angle₁ : tr₁.angle₁ nontriv₁ = tr₂.angle₁ nontriv₂ := sorry
 
@@ -60,7 +60,7 @@ end IsCongr
 
 /- Anti-congruence -/
 def IsACongr (tr₁ tr₂: Triangle P) : Prop := by
-  by_cases tr₁.is_nontriv ∧ tr₂.is_nontriv 
+  by_cases tr₁.is_nd ∧ tr₂.is_nd 
   · exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length ∧ tr₁.angle₁ h.1 = - tr₂.angle₁ h.2 ∧ tr₁.angle₂ h.1 = - tr₂.angle₂ h.2 ∧ tr₁.angle₃ h.1 = - tr₂.angle₃ h.2
   · exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length
 
@@ -72,7 +72,7 @@ namespace IsACongr
 
 variable (tr₁ tr₂: Triangle P) (h : tr₁ IsACongrTo tr₂)
 
-theorem is_nontriv: tr₁.is_nontriv ↔ tr₂.is_nontriv := sorry
+theorem is_nd: tr₁.is_nd ↔ tr₂.is_nd := sorry
 
 theorem edge₁ : tr₁.edge₁.length = tr₂.edge₁.length := sorry
 
@@ -80,7 +80,7 @@ theorem edge₂ : tr₁.edge₂.length = tr₂.edge₂.length := sorry
 
 theorem edge₃ : tr₁.edge₃.length = tr₂.edge₃.length := sorry
 
-variable (nontriv₁ : tr₁.is_nontriv) (nontriv₂ : tr₂.is_nontriv)
+variable (nontriv₁ : tr₁.is_nd) (nontriv₂ : tr₂.is_nd)
 
 theorem angle₁ : tr₁.angle₁ nontriv₁ = - tr₂.angle₁ nontriv₂ := sorry
 
@@ -96,7 +96,7 @@ namespace IsACongr
 
 variable (tr tr₁ tr₂ tr₃: Triangle P)
 
-theorem triv_of_acongr_self (h : tr IsACongrTo tr) : ¬ tr.is_nontriv := sorry
+theorem triv_of_acongr_self (h : tr IsACongrTo tr) : ¬ tr.is_nd := sorry
 
 protected theorem symm (h : tr₁ IsACongrTo tr₂) : tr₂ IsACongrTo tr₁ := sorry
 
@@ -116,27 +116,27 @@ Need a tactic `Congrence` to consider filp and permutation. -/
 variable {tr₁ tr₂ : Triangle P}
 
 /- SAS -/
-theorem congr_of_SAS {nontriv₁ : tr₁.is_nontriv} {nontriv₂ : tr₂.is_nontriv} (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (a₁ : tr₁.angle₁ nontriv₁ = tr₂.angle₁ nontriv₂) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length): tr₁ IsCongrTo tr₂ := sorry 
+theorem congr_of_SAS {nontriv₁ : tr₁.is_nd} {nontriv₂ : tr₂.is_nd} (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (a₁ : tr₁.angle₁ nontriv₁ = tr₂.angle₁ nontriv₂) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length): tr₁ IsCongrTo tr₂ := sorry 
 
-theorem acongr_of_SAS {nontriv₁ : tr₁.is_nontriv} {nontriv₂ : tr₂.is_nontriv} (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (a₁ : tr₁.angle₁ nontriv₁ = - tr₂.angle₁ nontriv₂) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length): tr₁ IsACongrTo tr₂ := sorry 
+theorem acongr_of_SAS {nontriv₁ : tr₁.is_nd} {nontriv₂ : tr₂.is_nd} (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (a₁ : tr₁.angle₁ nontriv₁ = - tr₂.angle₁ nontriv₂) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length): tr₁ IsACongrTo tr₂ := sorry 
 
 /- ASA -/
-theorem congr_of_ASA {nontriv₁ : tr₁.is_nontriv} {nontriv₂ : tr₂.is_nontriv} (a₂ : tr₁.angle₂ nontriv₁ = tr₂.angle₂ nontriv₂) (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (a₃ : tr₁.angle₃ nontriv₁ = tr₂.angle₃ nontriv₂): tr₁ IsCongrTo tr₂ := sorry
+theorem congr_of_ASA {nontriv₁ : tr₁.is_nd} {nontriv₂ : tr₂.is_nd} (a₂ : tr₁.angle₂ nontriv₁ = tr₂.angle₂ nontriv₂) (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (a₃ : tr₁.angle₃ nontriv₁ = tr₂.angle₃ nontriv₂): tr₁ IsCongrTo tr₂ := sorry
 
-theorem acongr_of_ASA {nontriv₁ : tr₁.is_nontriv} {nontriv₂ : tr₂.is_nontriv} (a₂ : tr₁.angle₂ nontriv₁ = - tr₂.angle₂ nontriv₂) (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (a₃ : tr₁.angle₃ nontriv₁ = - tr₂.angle₃ nontriv₂): tr₁ IsACongrTo tr₂ := sorry
+theorem acongr_of_ASA {nontriv₁ : tr₁.is_nd} {nontriv₂ : tr₂.is_nd} (a₂ : tr₁.angle₂ nontriv₁ = - tr₂.angle₂ nontriv₂) (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (a₃ : tr₁.angle₃ nontriv₁ = - tr₂.angle₃ nontriv₂): tr₁ IsACongrTo tr₂ := sorry
 
 /- AAS -/
-theorem congr_of_AAS {nontriv₁ : tr₁.is_nontriv} {nontriv₂ : tr₂.is_nontriv} (a₁ : tr₁.angle₁ nontriv₁ = tr₂.angle₁ nontriv₂) (a₂ : tr₁.angle₂ nontriv₁ = tr₂.angle₂ nontriv₂) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) : tr₁ IsCongrTo tr₂ := sorry
+theorem congr_of_AAS {nontriv₁ : tr₁.is_nd} {nontriv₂ : tr₂.is_nd} (a₁ : tr₁.angle₁ nontriv₁ = tr₂.angle₁ nontriv₂) (a₂ : tr₁.angle₂ nontriv₁ = tr₂.angle₂ nontriv₂) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) : tr₁ IsCongrTo tr₂ := sorry
 
-theorem acongr_of_AAS {nontriv₁ : tr₁.is_nontriv} {nontriv₂ : tr₂.is_nontriv} (a₁ : tr₁.angle₁ nontriv₁ = - tr₂.angle₁ nontriv₂) (a₂ : tr₁.angle₂ nontriv₁ = - tr₂.angle₂ nontriv₂) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) : tr₁ IsACongrTo tr₂ := sorry
+theorem acongr_of_AAS {nontriv₁ : tr₁.is_nd} {nontriv₂ : tr₂.is_nd} (a₁ : tr₁.angle₁ nontriv₁ = - tr₂.angle₁ nontriv₂) (a₂ : tr₁.angle₂ nontriv₁ = - tr₂.angle₂ nontriv₂) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) : tr₁ IsACongrTo tr₂ := sorry
 
 /- SSS -/ 
 /- cannot decide orientation -/
 theorem congr_or_acongr_of_SSS (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length): tr₁ IsCongrTo tr₂ ∨ tr₁ IsACongrTo tr₂  := sorry 
 
-theorem congr_of_SSS_of_eq_orientation {nontriv₁ : tr₁.is_nontriv} {nontriv₂ : tr₂.is_nontriv} (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) (c : tr₁.is_cclock nontriv₁ = tr₂.is_cclock nontriv₂): tr₁ IsCongrTo tr₂ := sorry 
+theorem congr_of_SSS_of_eq_orientation {nontriv₁ : tr₁.is_nd} {nontriv₂ : tr₂.is_nd} (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) (c : tr₁.is_cclock nontriv₁ = tr₂.is_cclock nontriv₂): tr₁ IsCongrTo tr₂ := sorry 
 
-theorem acongr_of_SSS_of_ne_orientation {nontriv₁ : tr₁.is_nontriv} {nontriv₂ : tr₂.is_nontriv} (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) (c : tr₁.is_cclock nontriv₁ ≠ tr₂.is_cclock nontriv₂): tr₁ IsACongrTo tr₂ := sorry 
+theorem acongr_of_SSS_of_ne_orientation {nontriv₁ : tr₁.is_nd} {nontriv₂ : tr₂.is_nd} (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) (c : tr₁.is_cclock nontriv₁ ≠ tr₂.is_cclock nontriv₂): tr₁ IsACongrTo tr₂ := sorry 
 
 end criteria
 

@@ -63,7 +63,7 @@ class Seg (P : Type _) [EuclideanPlane P] where
 
 namespace Seg
 
-def is_nontriv (seg : Seg P) : Prop := seg.target ≠ seg.source 
+def is_nd (seg : Seg P) : Prop := seg.target ≠ seg.source 
 
 def IsOnSeg (a : P) (seg : Seg P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (VEC seg.source seg.target) +ᵥ seg.source
@@ -72,7 +72,7 @@ def IsOnIntSeg (a : P) (seg : Seg P) : Prop := IsOnSeg a seg ∧ a ≠ seg.sourc
 
 end Seg
 
-def Seg_nd (P : Type _) [EuclideanPlane P] := {seg : Seg P // seg.is_nontriv}
+def Seg_nd (P : Type _) [EuclideanPlane P] := {seg : Seg P // seg.is_nd}
 
 end definitions
 
@@ -81,6 +81,9 @@ instance : HasLiesOn P (Ray P) where
 
 instance : HasLiesOn P (Seg P) where
   lies_on := Seg.IsOnSeg
+
+instance : HasLiesOn P (Seg_nd P) where
+  lies_on p seg_nd := Seg.IsOnSeg p seg_nd.1
 
 scoped infix : 50 "LiesOnIntRay" => Ray.IsOnIntRay
 scoped infix : 50 "LiesOnIntSeg" => Seg.IsOnIntSeg
@@ -96,9 +99,12 @@ end Seg
 
 namespace Seg_nd
 
+instance : Coe (Seg_nd P) (Seg P) where
+  coe := fun x => x.1
+
 variable {P : Type _} [EuclideanPlane P] (seg_nd : Seg_nd P)
 
-def toVec_nd : Vec_nd := ⟨VEC seg_nd.1.source seg_nd.1.target, (ne_iff_vec_nonzero _ _).mp seg_nd.2⟩ 
+def toVec_nd : Vec_nd := ⟨VEC seg_nd.1.source seg_nd.1.target, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩ 
 
 def toDir : Dir := Vec_nd.normalize seg_nd.toVec_nd
 
@@ -139,7 +145,7 @@ theorem length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ Vec.Seminormed
 theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by sorry
 
 -- A generalized directed segment is nontrivial if and only if its length is positive.
-theorem nontriv_iff_length_pos : (l.is_nontriv) ↔ 0 < l.length := by sorry
+theorem nontriv_iff_length_pos : (l.is_nd) ↔ 0 < l.length := by sorry
 
 theorem length_pos_of_seg_nd (l : Seg_nd P): 0 < l.1.length := by sorry
 
@@ -147,7 +153,7 @@ theorem length_pos_of_seg_nd (l : Seg_nd P): 0 < l.1.length := by sorry
 theorem length_eq_sum_of_length_two_part (l : Seg P) (p : P) (lieson : p LiesOn l) : l.length = (SEG l.source p).length + (SEG p l.target).length := sorry
 
 -- If a generalized directed segment contains an interior point, then it is nontrivial
-theorem nontriv_iff_exist_inter_pt (l : Seg P) (p : P) (lieson : p LiesOnIntSeg l) : l.is_nontriv := sorry
+theorem nontriv_iff_exist_inter_pt (l : Seg P) (p : P) (lieson : p LiesOnIntSeg l) : l.is_nd := sorry
 
 end Seg
 
@@ -158,7 +164,7 @@ section Archimedean_property
 
 -- Archimedean property I : given a directed segment AB (with A ≠ B), then there exists a point P such that B lies on the directed segment AP and P ≠ B.
 
-theorem exist_pt_beyond_pt {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv : l.is_nontriv) : (∃ q : P, l.target LiesOnIntSeg (SEG l.source q)) := by sorry
+theorem exist_pt_beyond_pt {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv : l.is_nd) : (∃ q : P, l.target LiesOnIntSeg (SEG l.source q)) := by sorry
 
 -- Archimedean property II: On an nontrivial directed segment, one can always find a point in its interior.  `This will be moved to later disccusion about midpoint of a segment, as the midpoint is a point in the interior of a nontrivial segment`
 

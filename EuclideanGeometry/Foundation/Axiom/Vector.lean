@@ -8,6 +8,7 @@ This file defines the standard inner product real vector space of dimension two.
 
 ## Important definitions
 
+* `Vec` : the class of 2d vectors, i.e. `ℝ × ℝ`, with standard inner product space structure which is NOT instancialized.
 * `Dir` : the class of unit vectors in the 2d real vector space
 * `Proj` : the class of `Dir` quotient by `±1`, in other words, `ℝP¹` . 
 
@@ -61,7 +62,7 @@ protected def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
         let h1 := two_mul_le_add_pow_two (x.1 * y.2) (x.2 * y.1)
         linarith
     rw [pow_two] at P
-    simp [pow_two] at *    
+    simp [pow_two] at *
     linarith
 
   neg' := fun _ => by simp
@@ -84,8 +85,6 @@ protected def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
       have h₂₁ := sq_pos_of_ne_zero _ h₁
       linarith
 
--- Due to a strange bug in our version of Lean4, we use @HPow.hPow to input a^n where n is a natural number, to avoid Lean4 recognize n : ℝ
-
 protected def InnerProductSpace.Core : InnerProductSpace.Core ℝ (ℝ × ℝ) where
   inner := fun r s => r.1 * s.1 + r.2 * s.2
   conj_symm := fun _ _ => by
@@ -98,16 +97,16 @@ protected def InnerProductSpace.Core : InnerProductSpace.Core ℝ (ℝ × ℝ) w
   definite := fun x hx => by
     simp at hx
     rw [← pow_two, ← pow_two] at hx
-    have g₁ : 0 ≤ @HPow.hPow ℝ ℕ ℝ _ x.1 2  := by positivity
-    have g₂ : 0 ≤ @HPow.hPow ℝ ℕ ℝ _ x.2 2  := by positivity
+    have g₁ : 0 ≤ x.1 ^ 2  := by positivity
+    have g₂ : 0 ≤ x.2 ^ 2  := by positivity
     ext
     · dsimp
       by_contra h
-      have h₁ : 0 < @HPow.hPow ℝ ℕ ℝ _ x.1 2  := by positivity
+      have h₁ : 0 < x.1 ^ 2  := by positivity
       linarith
     · dsimp
       by_contra h
-      have h₂ : 0 < @HPow.hPow ℝ ℕ ℝ _ x.2 2  := by positivity
+      have h₂ : 0 < x.2 ^ 2  := by positivity
       linarith  
   add_left := fun _ _ _ => by 
     simp
@@ -145,8 +144,12 @@ end Vec
 
 /- the notation for the class of vectors -/
 scoped notation "Vec" => ℝ × ℝ
+
 /- the class of non-degenerate vectors -/
 def Vec_nd := {v : Vec // v ≠ 0}
+
+instance : Coe Vec_nd Vec where
+  coe := fun x => x.1
 
 theorem vec_norm_eq_abs (x : Vec) : Vec.norm x = Complex.abs (Vec.toComplex x) := rfl
 
@@ -229,7 +232,7 @@ theorem one_toVec_eq_one : Complex.toVec (1 : ℂ) = (1, 0) := rfl
 theorem eq_self_toComplex_toVec (x : Vec) : Complex.toVec (Vec.toComplex x) = x := rfl
 
 @[simp]
-theorem sq_sum_eq_one (x : Dir) : @HPow.hPow ℝ ℕ ℝ _ x.toVec.1 2 + @HPow.hPow ℝ ℕ ℝ _ x.toVec.2 2 = 1 := by
+theorem sq_sum_eq_one (x : Dir) : x.toVec.1 ^ 2 + x.toVec.2 ^ 2 = 1 := by
   rw [pow_two, pow_two]
   exact x.unit
 
@@ -342,6 +345,8 @@ theorem dir_toVec_ne_zero (x : Dir) : x.toVec ≠ 0 := by
   let g := x.unit
   rw [h'] at g
   exact zero_ne_one g
+
+def Dir.toVec_nd (x : Dir) : Vec_nd := ⟨x.toVec, dir_toVec_ne_zero x⟩
 
 theorem ne_zero_of_Vec_nd_toComplex (x : Vec_nd) : Vec.toComplex x.1 ≠ 0 := by
   by_contra h

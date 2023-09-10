@@ -106,7 +106,7 @@ instance : Coe (Ray P) (Line P) where
 
 /- def coe from non trivial segment to line-/
 
-def Seg.toLine_of_nontriv (s : Seg P) (hs : s.is_nontriv) := (LIN s.source s.target hs)
+def Seg.toLine_of_nontriv (s : Seg P) (hs : s.is_nd) := (LIN s.source s.target hs)
 
 section Compaitiblity_of_coersions
 -- If a point lies on a ray, then it lies on the line associated to the ray.
@@ -119,7 +119,7 @@ theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B
 
 -- The line defined from a nontrivial segment is equal to the line defined from the ray associated this nontriial segment
 
-theorem line_of_nontriv_seg_eq_line_of_ray_of_nontriv_seg {seg : Seg P} (nontriv : seg.is_nontriv) : seg.toLine_of_nontriv nontriv = (seg.toRay_of_nontriv nontriv).toLine := sorry
+theorem line_of_nontriv_seg_eq_line_of_ray_of_nontriv_seg {seg : Seg P} (nontriv : seg.is_nd) : seg.toLine_of_nontriv nontriv = (seg.toRay_of_nontriv nontriv).toLine := sorry
 
 theorem line_eq_line_of_seg_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : LIN A B h = Seg.toLine_of_nontriv (SEG A B) h := sorry
 
