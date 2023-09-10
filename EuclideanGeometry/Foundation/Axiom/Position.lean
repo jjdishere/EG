@@ -77,10 +77,23 @@ theorem eq_mul_vec_iff_colinear_of_ne {A B C : P} (g : B ≠ A) : colinear A B C
     rcases he with ⟨t, e⟩
     exact colinear_of_vec_eq_smul_vec e
 
--- Please rewrite this part, use minimal theorems, but create a tactic called `colinarity`
-theorem perm_colinear {A B C : P} (h : colinear A B C) : (colinear B C A) := by sorry
+-- Please rewrite this part, use minimal theorems, but create a tactic called `colinearity`
+theorem triv_colinear {A C : P} : (colinear A A C) := by
+  unfold colinear
+  tauto
 
-theorem flip_colinear {A B C : P} (h : colinear A B C) : (colinear A C B) := sorry
+theorem perm_colinear {A B C : P} (c : colinear A B C) : (colinear B C A) := by 
+  sorry
+
+theorem flip_colinear {A B C : P} (c : colinear A B C) : (colinear B A C) := by
+  by_cases B = A
+  · rw [h]
+    tauto
+  · rw [eq_mul_vec_iff_colinear_of_ne h] at c
+    rcases c with ⟨r, e⟩
+    have e' : VEC B C = (1 - r) • VEC B A := by
+      rw [← vec_sub_vec A B C, e, ← neg_vec A B, smul_neg, sub_smul, neg_sub, one_smul]
+    exact colinear_of_vec_eq_smul_vec e'
 
 -- the proof of this theorem using def of line seems to be easier
 theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h₂ : colinear A B D) (h : A ≠ B) : (colinear A C D) := sorry

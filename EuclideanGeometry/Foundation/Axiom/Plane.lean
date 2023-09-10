@@ -49,6 +49,8 @@ theorem start_vadd_vec_eq_end {H : Type _} [EuclideanPlane H] (A B : H) : (VEC A
 @[simp]
 theorem vec_same_eq_zero {H : Type _} [EuclideanPlane H] (A : H) : VEC A A = 0 := sorry
 
+theorem neg_vec {H : Type _} [EuclideanPlane H] (A B : H) : - VEC A B = VEC B A := sorry
+
 theorem eq_iff_vec_eq_zero {H : Type _} [EuclideanPlane H] (A B : H) : B = A ↔ VEC A B = 0 := sorry
 
 theorem ne_iff_vec_ne_zero {H : Type _} [EuclideanPlane H] (A B : H) : B ≠ A ↔ VEC A B ≠ 0 := sorry
