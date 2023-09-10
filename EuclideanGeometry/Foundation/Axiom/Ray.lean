@@ -112,7 +112,7 @@ def toRay : Ray P where
   source := seg_nd.1.source
   toDir := seg_nd.toDir
 
-def toProj : Proj := (seg_nd.toDir : Proj)
+def toProj : Proj := (seg_nd.toVec_nd.toProj : Proj)
 
 end Seg_nd
 
