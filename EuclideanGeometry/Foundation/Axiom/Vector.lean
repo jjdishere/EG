@@ -681,9 +681,9 @@ section LinearAlgebra
 theorem det_eq_zero_iff (u v : ℝ × ℝ) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.1 = 0 ↔ (∃ (t : ℝ), v = t • u) := by
   have h : (u.fst ≠ 0) ∨ (u.snd ≠ 0) := by
     by_contra _
-    have hfst : u.fst = 0 := by tauto
-    have hsnd : u.snd = 0 := by tauto
-    have hu' : u = (0, 0) := by exact Prod.ext hfst hsnd
+    have h₁ : u.fst = 0 := by tauto
+    have h₂ : u.snd = 0 := by tauto
+    have hu' : u = (0, 0) := by exact Prod.ext h₁ h₂
     tauto
   constructor
   · intro e

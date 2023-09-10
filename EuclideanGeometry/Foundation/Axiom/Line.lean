@@ -15,12 +15,12 @@ variable  {P : Type _} [EuclideanPlane P]
 
 -- define a line from two points 
 
-theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = tB) (hA : VEC O A = tA • v) (hB : VEC O B = tB • v) : A = B := by
-  have hAB : tB - tA = 0 := Iff.mpr sub_eq_zero (Eq.symm h)
+theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = tB) (ha : VEC O A = tA • v) (hb : VEC O B = tB • v) : A = B := by
+  have hab : tB - tA = 0 := Iff.mpr sub_eq_zero (Eq.symm h)
   have hc : VEC A B = VEC O B - VEC O A := by
     unfold Vec.mk_pt_pt
     simp only [vsub_sub_vsub_cancel_right]
-  rw [hA, hB, ← sub_smul, hAB, zero_smul] at hc
+  rw [ha, hb, ← sub_smul, hab, zero_smul] at hc
   symm
   exact (eq_iff_vec_eq_zero A B).2 hc
 
@@ -86,13 +86,33 @@ def IsOnLine (a : P) (l : Line P) : Prop :=
 instance : HasLiesOn P (Line P) where
   lies_on := IsOnLine
 
+/- examine a line has uniquely defined toProj -/
 theorem vec_eq_smul_vec_of_lies_on {l : Line P} {A B X Y : P} (ha : A LiesOn l) (hb : B LiesOn l) (hx : X LiesOn l) (hy : Y LiesOn l) (hab : B ≠ A) : ∃ t : ℝ, VEC X Y = t • VEC A B := by
   rcases (eq_mul_vec_iff_colinear_of_ne hab).1 (Line.linear A B X ha hb hx) with ⟨t₁, e₁⟩
   rcases (eq_mul_vec_iff_colinear_of_ne hab).1 (Line.linear A B Y ha hb hy) with ⟨t₂, e₂⟩
   use t₂ - t₁
   rw [← vec_sub_vec A, e₁, e₂, sub_smul]
 
-theorem line_has_toProj {l : Line P} {A B X Y : P} (ha : A LiesOn l) (hb : B LiesOn l) (hx : X LiesOn l) (hy : Y LiesOn l) (hab : B ≠ A) (hxy : Y ≠ X) : Seg_nd.toProj ⟨SEG A B, hab⟩ = Seg_nd.toProj ⟨SEG X Y, hxy⟩ := sorry
+theorem toProj_eq_toProj_of_Seg_nd_lies_on {l : Line P} {A B X Y : P} (ha : A LiesOn l) (hb : B LiesOn l) (hx : X LiesOn l) (hy : Y LiesOn l) (hab : B ≠ A) (hxy : Y ≠ X) : Seg_nd.toProj ⟨SEG A B, hab⟩ = Seg_nd.toProj ⟨SEG X Y, hxy⟩ := by
+  rcases (vec_eq_smul_vec_of_lies_on ha hb hx hy hab) with ⟨t, e⟩
+  exact eq_toProj_of_smul _ _ e
+
+/- define Line.toProj -/
+ theorem exist_unique_proj_of_line (l : Line P) : ∃! proj : Proj, ∀ (A B : P) (ha : A LiesOn l) (hb : B LiesOn l) (nontriv : B ≠ A), Seg_nd.toProj ⟨SEG A B, nontriv⟩ = proj := by
+  rcases l.nontriv with ⟨x, ⟨y, c⟩⟩
+  use Seg_nd.toProj ⟨SEG x y, c.2.2⟩
+  simp
+  constructor
+  intro A B ha hb hab
+  exact toProj_eq_toProj_of_Seg_nd_lies_on ha hb c.1 c.2.1 hab c.2.2
+  intro pr w
+  rw [← w]
+  exact c.1
+  exact c.2.1
+
+  def Line.toProj (l : Line P) : Proj := by 
+  choose proj _ using (exist_unique_proj_of_line l)
+  use proj
 
 /- def coe from ray to line-/
 
@@ -122,32 +142,26 @@ theorem line_of_nontriv_seg_eq_line_of_ray_of_nontriv_seg (seg_nd : Seg_nd P) : 
 
 theorem line_eq_line_of_seg_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : LIN A B h = Seg_nd.toLine ⟨SEG A B, h⟩ := rfl
 
-theorem line_eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOn l) (hB : B LiesOn l) : l = Line.mk_pt_pt A B h := sorry
+theorem line_eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : l = Line.mk_pt_pt A B h := sorry
 
 theorem lies_on_iff_colinear_of_ne {A B C : P}  (h : B ≠ A) : (C LiesOn LIN A B h) ↔ colinear A B C:= sorry
 
 end Compaitiblity_of_coersions
 
 section Archimedean_property
+
 -- there are two distinct points on a line
-theorem exists_ne_pt_pt_lies_on_of_line (l : Line P) : ∃ A B : P, B ≠ A ∧ A LiesOn l ∧ B LiesOn l  := sorry
+
+theorem exists_ne_pt_pt_lies_on_of_line (l : Line P) : ∃ A B : P, A LiesOn l ∧ B LiesOn l ∧ B ≠ A := l.nontriv
 
 -- Given distinct A B on a line, there exist C s.t. C LiesOn AB (a cor of Archimedean_property in Seg) and there exist D s.t. B LiesOn AD
+
 end Archimedean_property
 
 -- where should this theorem be placed?
-theorem vec_eq_mul_vec_of_pt_pt_on_line (l : Line P) (A B C D : P) (hA : A LiesOn l) (hB : B LiesOn l) (hC : C LiesOn l) (hD : D LiesOn l) (h : B ≠ A) : ∃ (t : ℝ), VEC C D = t • VEC A B := sorry
-
--- def Line.toProj' (l : Line P) : Proj := by
---  choose A B h _ _ using (exists_ne_pt_pt_lies_on_of_line l)
---  exact (SEG A B).toProj_of_nontriv h
-
--- theorem eq_toProj_of_four_pt_on_line (l : Line P) (A B C D : P) (hA : A LiesOnLine l) (hB : B LiesOnLine l) (hC : C LiesOnLine l) (hD : D LiesOnLine l) (h₁ : B ≠ A) (h₂ : D ≠ C) : (SEG A B).toProj_of_nontriv h₁ = (SEG C D).toProj_of_nontriv h₂ := sorry
-
- theorem exist_unique_proj_of_line (l : Line P) : ∃! proj : Proj, ∀ (A B : P) (ha : A LiesOn l) (hb : B LiesOn l) (nontriv : B ≠ A), Seg_nd.toProj ⟨SEG A B, nontriv⟩= proj := by sorry
-
-def Line.toProj (l : Line P) : Proj := by 
-  choose proj _ using (exist_unique_proj_of_line l)
-  use proj
+/-
+theorem vec_eq_mul_vec_of_pt_pt_on_line (l : Line P) (A B C D : P) (ha : A LiesOn l) (hb : B LiesOn l) (hC : C LiesOn l) (hD : D LiesOn l) (h : B ≠ A) : ∃ (t : ℝ), VEC C D = t • VEC A B := by
+  sorry
+-/
 
 end EuclidGeom
