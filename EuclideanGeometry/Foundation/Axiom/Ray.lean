@@ -65,14 +65,14 @@ namespace Seg
 
 def is_nontriv (seg : Seg P) : Prop := seg.target ≠ seg.source 
 
-def Seg_nd (P : Type _) [EuclideanPlane P] := {seg : Seg P // seg.is_nontriv}
-
 def IsOnSeg (a : P) (seg : Seg P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (VEC seg.source seg.target) +ᵥ seg.source
 
 def IsOnIntSeg (a : P) (seg : Seg P) : Prop := IsOnSeg a seg ∧ a ≠ seg.source ∧ a ≠ seg.target 
 
 end Seg
+
+def Seg_nd (P : Type _) [EuclideanPlane P] := {seg : Seg P // seg.is_nontriv}
 
 end definitions
 
@@ -88,29 +88,34 @@ scoped infix : 50 "LiesOnIntSeg" => Seg.IsOnIntSeg
 /- Coe from Seg to Vector, Ray-/
 namespace Seg 
 
-variable {P : Type _} [EuclideanPlane P] (seg : Seg P) (seg_nd : Seg_nd P)
+variable {P : Type _} [EuclideanPlane P] (seg : Seg P) 
 
 def toVec : Vec := VEC seg.source seg.target
-def toVec_nd : Vec_nd := ⟨VEC seg_nd.1.source seg_nd.1.target, (ne_iff_vec_nonzero _ _).mp seg_nd.2⟩ 
-
-variable (seg_nd : Seg_nd P)
-
-def toDir_of_nontriv : Dir := Vec_nd.normalize seg_nd.1.toVec ((ne_iff_vec_nonzero _ _).mp h)
-
-def toRay_of_nontriv : Ray P where
-  source := seg.source
-  toDir := seg.toDir_of_nontriv h
-
-def toProj_of_nontriv : Proj := (seg.toDir_of_nontriv h : Proj)
 
 end Seg
+
+namespace Seg_nd
+
+variable {P : Type _} [EuclideanPlane P] (seg_nd : Seg_nd P)
+
+def toVec_nd : Vec_nd := ⟨VEC seg_nd.1.source seg_nd.1.target, (ne_iff_vec_nonzero _ _).mp seg_nd.2⟩ 
+
+def toDir : Dir := Vec_nd.normalize seg_nd.toVec_nd
+
+def toRay : Ray P where
+  source := seg_nd.1.source
+  toDir := seg_nd.toDir
+
+def toProj : Proj := (seg_nd.toDir : Proj)
+
+end Seg_nd
 
 section mk
 
 -- mk method of Ray giving 2 distinct point
 def Ray.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : Ray P where
   source := A
-  toDir := Vec.normalize (VEC A B) (vsub_ne_zero.mpr h)
+  toDir := Vec_nd.normalize ⟨VEC A B, (vsub_ne_zero.mpr h)⟩ 
 
 -- notation 
 end mk
@@ -135,6 +140,8 @@ theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by s
 
 -- A generalized directed segment is nontrivial if and only if its length is positive.
 theorem nontriv_iff_length_pos : (l.is_nontriv) ↔ 0 < l.length := by sorry
+
+theorem length_pos_of_seg_nd (l : Seg_nd P): 0 < l.1.length := by sorry
 
 -- If P lies on a generalized directed segment AB, then length(AB) = length(AP) + length(PB)
 theorem length_eq_sum_of_length_two_part (l : Seg P) (p : P) (lieson : p LiesOn l) : l.length = (SEG l.source p).length + (SEG p l.target).length := sorry
