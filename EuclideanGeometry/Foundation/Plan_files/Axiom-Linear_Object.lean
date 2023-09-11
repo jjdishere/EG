@@ -6,7 +6,7 @@ Ray.lean -- Define (directed) segments and rays
     class of Ray -- A ray consists of a pair of a point (source : P) and a direction (toDir : Dir).
     class of Seg -- A segment consists of a pair of points: (source : P) and (target : P). `Note that a segment is always directed` and `we allow the source and target points of a segment to be the same`.
     (defn) Seg.is_nd : Prop -- Given (seg : Seg P), seg.is_nd returns whether a (directed) segment (seg : Seg P) nondegenerate, i.e. seg.target ≠ seg.source. `Note that we will always use target ≠ source for consistency.`
-    class of Seg_nd -- A nondegenerate segment, subtype of Seg, is a segment (seg : Seg P) with the property (nd : seg.is_nd)  or equivalently, (seg.source ≠ seg.target)  `which one should we use? Seg.is_nd or seg.source ≠ seg.target?`
+    class of Segnd -- A segment of positive length, subtype of Seg, {seg : Seg P // seg.is_nd}
   
   Coersion :
     Ray.toProj -- Given a (ray : Ray P), ray.toProj returns the Proj of a ray (defined from Ray.toDir)
@@ -15,9 +15,10 @@ Ray.lean -- Define (directed) segments and rays
     Seg.toVec -- Given a directed segment (seg : Seg P), seg.toVec is the vector associated to a seg, returning seg.target -ᵥ seg.source
     Seg.carrier -- Given a directed segment (seg : Seg P), seg.carrier is the set of points on a segment.
     Seg.interior -- Given a direceted segment (seg : Seg P), seg.interior is the set of points on its interial, i.e. {p : P | p ∈ seg.carrier ∧ p ≠ seg.source ∧ p ≠ seg.target}.
-    Seg_nd.toRay -- Given a nondegenerate segment (seg_nd : Seg_nd P), seg_nd.toRay is the ray associated to seg, whose source is ray.source and whose toDir is the normalization of seg_nd.target -ᵥ seg_nd.source.
-    Seg_nd.toDir -- Given a nondegenerate segment (seg_nd : Seg_nd P), seg_nd.toDir is the direction associated to seg, defined as seg_nd.toRay.toDir.
-    Seg_nd.toProj -- Given a nondegenerate segment (seg_nd : Seg_nd P), seg_nd.toProj is the projective direction associated to seg, defined by seg_nd.toRay.toProj.
+    Seg_nd.toVec_nd -- Given a nondegenerate segment (seg_nd : Seg_nd P), seg_nd.toVEC_nd is the vector associated to Seg_nd.
+    Seg_nd.toRay -- Given a nondegenerate segment (seg_nd : Seg_nd P), seg_nd.toRay is the ray associated to seg, whose source is ray.source and whose toDir is the normalization of seg_nd.toVec_nd.
+    Seg_nd.toDir -- Given a nondegenerate segment (seg_nd : Seg_nd P), seg_nd.toDir is the direction associated to seg, defined by seg_nd.toVec_nd.toDir.
+    Seg_nd.toProj -- Given a nondegenerate segment (seg_nd : Seg_nd P), seg_nd.toProj is the projective direction associated to seg, defined by seg_nd.toVec_nd.toProj.
   
   Make :
     SEG = Seg.mk -- Rerwite the standard function of making a segment; i.e. for (A B : P), SEG A B gives the segment with source A and target B.
@@ -38,36 +39,42 @@ Ray.lean -- Define (directed) segments and rays
     Seg_nd.carrier_in_toRay_carrier -- Given a nondegenerate segment (seg_nd : Seg_nd P), its carrier is a subset of the carrier of the associated ray, i.e. seg_nd.1.carrier ⊂ seg_nd.toRay.carrier.  `Here we did not define the carrier/interior of a nondegenerate segment, use the carrier/interior of the associated segment.`
     Seg_nd.inter_in_toRay_inter -- Given a nondegenerate segment (seg_nd : Seg_nd P), its interior is a subset of the interior of the associated ray, i.e. seg_nd.interior ⊂ seg_nd.toRay.interior.
 
-    nd_of_seg_nd_tovec : Given a nondegenerate segment (seg : Seg_nd P), the associated vector is also nondegenerate, i.e. seg_nd_tovec.is_nd
-    seg_nd_todir_eq_seg_nd_tovec_toproj : Given a nondegenerate segment (seg_nd : Seg_nd P), we have seg_nd.toDir = (seg_nd.toVec nd_of_seg_nd_tovec).toProj
-    seg_nd_toproj_eq_seg_nd_toVec_toproj : Given a nondegenerate segment (seg_nd : Seg_nd P), we have seg_nd.toProj = (seg_nd.toVec nd_of_seg_nd_toVec).toDir
+    seg_nd_todir_eq_seg_nd_toray_todir : Given a nondegenerate segment (seg_nd : Seg_nd P), we have seg_nd.toDir = seg_nd.toRay.toDir
+    seg_nd_toproj_eq_seg_nd_toray_toproj : Given a nondegenerate segment (seg_nd : Seg_nd P), we have seg_nd.toProj = seg_nd.toRay.toProj
 
     Ray.is_in_inter_iff_add_pos_Dir -- Given a (ray : Ray P), a point (p : P) lies in the interior of ray iff ∃ t : ℝ, 0 < t ∧ p = t ⬝ ray.toDir +ᵥ ray.source.
 
   (reverse)
     (defn) Ray.reverse : Ray P -- Given a (ray : Ray P), ray.reverse is a ray obtained by reversing the direction of ray, i.e. its source is ray.source, and its toDir is - ray.toDir.
-    (defn) Seg.reverse :  -- Given a (seg : Seg P), seg.reverse is a segment whose source is seg.target and whose target is seg.source.
-    (defn) Seg.reverse -- Given a (seg : Seg P), seg.reverse is a segment whose source is seg.target and whose target is seg.source.
+    (defn) Seg.reverse : Seg P -- Given a (seg : Seg P), seg.reverse is a segment whose source is seg.target and whose target is seg.source.
+    (defn) Seg_nd.reverse : Seg_nd P -- Given a (seg_nd : Seg_nd P), seg_nd.reverse is a segment whose source is seg_nd.target and whose target is seg_nd.source.
+    Seg_nd.seg_of_seg_nd_rev -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.1 = seg_nd.1.reverse.
     Ray.rev_rev_eq_self -- Given a (ray : Ray P), reversing it twice gives back to itself, i.e. ray.rev.rev = ray.
     Seg.rev_rev_eq_self -- Given a (seg : Seg P), reversing it twice gives back to itself, i.e. seg.rev.rev = seg.
     Seg_nd.rev_rev_eq_self -- Given a (seg_nd : Seg_nd P), reversing it twice gives back to itself, i.e. seg_nd.rev.rev = seg_nd.
+    Seg.carrier_rev_eq_carrier -- Given a (seg : Seg P), the carrier of seg.reverse is the same as the carrier of seg.
+    Seg.tovec_of_reverse_eq_neg_tovec -- Given a (seg : Seg P), seg.reverse.toVec = - seg.toVec
+    Seg_nd.tovecnd_of_reverse_eq_neg_tovecnd -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toVec_nd = - seg_nd.toVec_nd
+    Seg_nd.todir_of_reverse_eq_neg_todir -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toDir = - seg_nd.toDir
+    Seg_nd.toproj_of_reverse_eq_neg_toproj -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toProj = - seg_nd.toProj
 
   (extension line)
-    (defn) Seg_nd.extension : Ray P -- extend a directed segment AB to the ray starting at B, in the direction of VEC A B
-    seg_extn_eq_rev_toray_rev -- extending a segment is the same as first reverse the segment, and to ray, and reverse the direction of ray
-    Seg.target_in_inter_seg_source_pt_of_pt_in_extn_inter -- Given a directed segment AB, for any point P in the interior extension line of AB, then B lies in the interior of AP
+    (defn) Seg_nd.extension : Ray P -- Given a (segnd : Seg_nd P), extend the directed segment AB to the ray starting at B, in the direction of VEC A B, defined as the ray with starting point segnd.2.target, and direction segnd.toDir.
+    seg_extn_eq_rev_toray_rev -- Given a (segnd : Seg_nd P), extending a segment is the same as first reverse the segment, and to ray, and then reverse the direction of ray, i.e. segnd.extension = segnd.reverse.toRay.reverse.
+    Seg_nd.target_eq_intx_segnd_and_extn -- Given a (segnd : Seg_nd P), the only point that lies on both segnd and segnd.extension is segnd.1.target, i.e. (A : P) : (A ∈ segnd.carrier) ∧ (A ∈ segnd.extension) ↔ A = segnd.target.
+    Seg.target_in_inter_seg_source_pt_of_pt_in_extn_inter -- Given a nondegenerate segment (segnd : Seg_nd P), for any point (A : P) in the interior of extension line of segnd, i.e. A ∈ segnd.extension.interior, segnd.target lies in the segment SEG segnd.source A.
 
   (length)
-    (defn) Seg.length : ℝ -- length of a segment (for Seg_nd, use Seg_nd.1.length)
-    seg_length_is_nonneg -- length of a segment is nonnegative
-    tovec_ne_zero_iff_seg_nd -- a segment has nonzero tovec iff it is non-degenerate
-    length_ne_zero_iff_seg_nd -- a segment has nonzero length iff it is nondegenerate
-    length_pos_iff_seg_nd -- a segment has positive length iff it is nondegenerate
-    length_eq_length_add_length -- length of segment is the sum of its two parts
-    length_rev_seg_eq_length_seg -- the length of the reversed segment is the length of the segment
+    (defn) Seg.length : ℝ -- The length of a segment (seg : Seg P).  (for segnd : Seg_nd P, use segnd.1.length)
+    seg_length_is_nonneg -- The length of a segment (seg : Seg P) is nonnegative
+    length_ne_zero_iff_seg_nd -- A segment (seg : Seg P) has nonzero length iff it is nondegenerate, i.e. seg.length ≠ 0 ↔ seg.is_nd.
+    length_pos_iff_seg_nd -- A segment (seg : Seg P) has positive length iff it is nondegenerate, i.e. seg.length ≠ 0 ↔ seg.is_nd.
+    Seg.length_eq_length_add_length -- The length of segment is the sum of its two parts, i.e. given a segment (seg : Seg P) and a point (A : P) on seg, then seg.length = (SEG seg.source A).length + (SEG A seg.target).length.
+    length_rev_seg_eq_length_seg -- `@simp` Given a segment (seg : Seg P), the length of the reversed segment is equal to the length of the segment, i.e. seg.reverse.length = seg.length
+    length_rev_segnd_eq_length_segnd -- `@simp` Given a nondegenerate segment (segnd : Seg P), the length of the reversed segment is equal to the length of the segment, i.e. segnd.reverse.length = segnd.length
 
   (midpoint)
-    (defn) Seg.midpiont : P -- return the midpoint of a segment (by (l.target -ᵥ l.source) /2 +ᵥ l.source)
+    (defn) Seg.midpiont : P -- For a segment (seg : Seg P), return the midpoint of a segment (by (seg.target -ᵥ seg.source) /2 +ᵥ seg.source)
     midpt_in_carrier -- midpoint of a segment lies in its carrier
     midpt_in_interior_of_seg_nd -- if a segment is nondegenerate, the midpoint lies in its interior
     midpt_iff_same_tovec_source_and_target -- a point is the midpoint of a segment iff (SEG l.source p).toVec = (SEG p l.target).toVec

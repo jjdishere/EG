@@ -18,13 +18,14 @@ Axiom Folder
 
   subfolder : Triangle
     Basic -- Basic definition of triangle, and its orientation when non-degenerate
+    Trigonometric -- Basics of trigonometics for right triangles, cosine and sine theorem
     Congruence -- Congruence between triangles
-    Similarity -- Define triangles being similar
+    Similarity -- Define similar triangles
 
   subfolder : Circle
     Basic -- Define circles, inside and outside, arc, chord, diameter, and etc
     incribed angle -- Discuss central angles and incribed angles
-    LCPosition -- Discuss relative position between a line and a circle, tangent
+    LCPosition -- Discuss relative position between a line and a circle, tangent; criteria for tangent lines
     CCPosition -- Discuss relative position of two circles
   
   subfolder : Isometry
