@@ -86,6 +86,30 @@ def IsOnLine (a : P) (l : Line P) : Prop :=
 instance : HasLiesOn P (Line P) where
   lies_on := IsOnLine
 
+-- Now we introduce useful theorems to avoid using more unfolds in further proofs. 
+
+-- The first point and the second point in Line.mk_pt_pt LiesOn the line it make. 
+
+theorem fst_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := by
+  unfold HasLiesOn.lies_on instHasLiesOnLine IsOnLine Line.carrier Line.mk_pt_pt
+  simp only [Set.mem_setOf_eq, vec_same_eq_zero]
+  use 0
+  simp only [zero_smul]
+
+theorem snd_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B h := by
+  unfold HasLiesOn.lies_on instHasLiesOnLine IsOnLine Line.carrier Line.mk_pt_pt
+  simp only [Set.mem_setOf_eq, vec_same_eq_zero]
+  use 1
+  simp only [one_smul]
+
+-- Compatibility of LiesOn and colinear for line
+
+theorem lies_on_iff_colinear_of_ne {A B C : P}  (h : B ≠ A) : (C LiesOn LIN A B h) ↔ colinear A B C := by
+  constructor
+  intro hl
+  sorry
+  sorry
+
 /- examine a line has uniquely defined toProj -/
 theorem vec_eq_smul_vec_of_lies_on {l : Line P} {A B X Y : P} (ha : A LiesOn l) (hb : B LiesOn l) (hx : X LiesOn l) (hy : Y LiesOn l) (hab : B ≠ A) : ∃ t : ℝ, VEC X Y = t • VEC A B := by
   rcases (eq_mul_vec_iff_colinear_of_ne hab).1 (Line.linear A B X ha hb hx) with ⟨t₁, e₁⟩
@@ -143,8 +167,6 @@ theorem line_of_nontriv_seg_eq_line_of_ray_of_nontriv_seg (seg_nd : Seg_nd P) : 
 theorem line_eq_line_of_seg_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : LIN A B h = Seg_nd.toLine ⟨SEG A B, h⟩ := rfl
 
 theorem line_eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : l = Line.mk_pt_pt A B h := sorry
-
-theorem lies_on_iff_colinear_of_ne {A B C : P}  (h : B ≠ A) : (C LiesOn LIN A B h) ↔ colinear A B C:= sorry
 
 end Compaitiblity_of_coersions
 
