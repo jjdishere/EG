@@ -88,7 +88,13 @@ section intersection_theorem
 -- Let us consider the intersection of lines first. 
 -- If two lines l₁ and l₂ are parallel, then there is a unique point on l₁ ∩ l₂.  The definition of the point uses the ray intersection by first picking a point
 
-theorem exists_unique_intersection_of_nonparallel_lines (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃! (p : P), p LiesOn l₁ ∧ p LiesOn l₂ := by sorry
+theorem exists_unique_intersection_of_nonparallel_lines (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃! (p : P), p LiesOn l₁ ∧ p LiesOn l₂ := by
+  rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
+  rcases l₂.nontriv with ⟨C, ⟨D, hcd⟩⟩
+  have e : Vec_nd.toProj ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp hab.2.2⟩ ≠ Vec_nd.toProj ⟨VEC C D, (ne_iff_vec_ne_zero _ _).mp hcd.2.2⟩ := by
+    by_contra e'
+    sorry
+  sorry
 
 def intersection_of_nonparallel_line (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) :  P := by
   choose p _ using (exists_unique_intersection_of_nonparallel_lines l₁ l₂ h)
