@@ -204,7 +204,7 @@ theorem exist_unique_proj_of_line (l : Line P) : ∃! pr : Proj, ∀ (A B : P) (
 
 def Line.toProj (l : Line P) : Proj :=
   Classical.choose (exist_unique_proj_of_line l)
-  -- (by) choose pr _ using (exist_unique_proj_of_line l)
+  -- by choose pr _ using (exist_unique_proj_of_line l)
   -- exact pr
 
 -- If you don't want to use Classical.choose, please use this theorem to simplify your Line.toProj. 
