@@ -62,6 +62,9 @@ theorem ne_iff_vec_ne_zero {H : Type _} [EuclideanPlane H] (A B : H) : B ≠ A �
 theorem vec_add_vec {H : Type _} [EuclideanPlane H] (A B C : H) : VEC A B + VEC B C = VEC A C := sorry
 
 @[simp]
+theorem vec_of_pt_vadd_pt_eq_vec {H : Type _} [EuclideanPlane H] (A : H) (v : Vec) : (VEC A (v +ᵥ A)) = v := sorry
+
+@[simp]
 theorem vec_sub_vec {H : Type _} [EuclideanPlane H] (O A B: H) : VEC O B - VEC O A = VEC A B := sorry
 
 end EuclidGeom
