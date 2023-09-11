@@ -115,13 +115,13 @@ theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) : ∀ X : P, 
   constructor
   intro hx
   apply (LIN A B h).linear
-  exact (pt_lies_on_line_of_pt_pt_of_ne h).1
-  exact (pt_lies_on_line_of_pt_pt_of_ne h).2
+  exact fst_pt_lies_on_line_of_pt_pt_of_ne h
+  exact snd_pt_lies_on_line_of_pt_pt_of_ne h
   exact hx
   intro c
   apply (LIN A B h).maximal A B
-  exact (pt_lies_on_line_of_pt_pt_of_ne h).1
-  exact (pt_lies_on_line_of_pt_pt_of_ne h).2
+  exact fst_pt_lies_on_line_of_pt_pt_of_ne h
+  exact snd_pt_lies_on_line_of_pt_pt_of_ne h
   exact h
   exact c
 
@@ -185,7 +185,12 @@ theorem toProj_eq_toProj_of_Seg_nd_lies_on {l : Line P} {A B X Y : P} (ha : A Li
   exact eq_toProj_of_smul _ _ e
 
 /- define Line.toProj -/
- theorem exist_unique_proj_of_line (l : Line P) : ∃! proj : Proj, ∀ (A B : P) (ha : A LiesOn l) (hb : B LiesOn l) (nontriv : B ≠ A), Seg_nd.toProj ⟨SEG A B, nontriv⟩ = proj := by
+
+theorem uniqueness_of_proj_of_line (l : Line P) : ∀ A B C D : P, (A LiesOn l) → (B LiesOn l) → (C LiesOn l) → (D LiesOn l) → (hab : B ≠ A) → (hcd : D ≠ C) → Seg_nd.toProj ⟨SEG A B, hab⟩ = Seg_nd.toProj ⟨SEG C D, hcd⟩ := by
+  intro A B C D ha hb hc hd hab hcd
+  exact toProj_eq_toProj_of_Seg_nd_lies_on ha hb hc hd hab hcd
+
+theorem exist_unique_proj_of_line (l : Line P) : ∃! pr : Proj, ∀ (A B : P) (ha : A LiesOn l) (hb : B LiesOn l) (h : B ≠ A), Seg_nd.toProj ⟨SEG A B, h⟩ = pr := by
   rcases l.nontriv with ⟨x, ⟨y, c⟩⟩
   use Seg_nd.toProj ⟨SEG x y, c.2.2⟩
   simp
@@ -197,9 +202,20 @@ theorem toProj_eq_toProj_of_Seg_nd_lies_on {l : Line P} {A B X Y : P} (ha : A Li
   exact c.1
   exact c.2.1
 
-  def Line.toProj (l : Line P) : Proj := by 
-  choose proj _ using (exist_unique_proj_of_line l)
-  use proj
+def Line.toProj (l : Line P) : Proj :=
+  Classical.choose (exist_unique_proj_of_line l)
+  -- by choose pr _ using (exist_unique_proj_of_line l)
+  -- exact pr
+
+-- If you don't want to use Classical.choose, please use this theorem to simplify your Line.toProj. 
+
+theorem line_toProj_eq_seg_nd_toProj_of_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hb : B LiesOn l) (hab : B ≠ A) : Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj := (Classical.choose_spec (exist_unique_proj_of_line l)).1 A B ha hb hab
+
+theorem line_of_pt_pt_toProj_eq_seg_nd_toProj {A B : P} (h : B ≠ A) : (LIN A B h).toProj = Seg_nd.toProj ⟨SEG A B, h⟩ := by
+  symm
+  apply line_toProj_eq_seg_nd_toProj_of_lies_on
+  exact fst_pt_lies_on_line_of_pt_pt_of_ne h
+  exact snd_pt_lies_on_line_of_pt_pt_of_ne h
 
 end Define_line_toProj
 
