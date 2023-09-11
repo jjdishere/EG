@@ -31,6 +31,7 @@ scoped notation "⨀" => Circle.mk_pt_pt
 
 section coersion
 
+-- this should not live here, this belongs to construction.
 def Triangle_nd.toCir (tr_nd : Triangle_nd P) : Circle P := sorry
 
 end coersion
