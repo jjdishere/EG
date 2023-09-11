@@ -88,19 +88,47 @@ section intersection_theorem
 -- Let us consider the intersection of lines first. 
 -- If two lines l₁ and l₂ are parallel, then there is a unique point on l₁ ∩ l₂.  The definition of the point uses the ray intersection by first picking a point
 
-theorem exists_unique_intersection_of_nonparallel_lines (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃! (p : P), p LiesOn l₁ ∧ p LiesOn l₂ := by
+theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃ p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
   rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
   rcases l₂.nontriv with ⟨C, ⟨D, hcd⟩⟩
-  have e : Vec_nd.toProj ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp hab.2.2⟩ ≠ Vec_nd.toProj ⟨VEC C D, (ne_iff_vec_ne_zero _ _).mp hcd.2.2⟩ := by
-    by_contra e'
-    sorry
-  sorry
+  have e' : Seg_nd.toProj ⟨SEG A B, hab.2.2⟩ ≠ Seg_nd.toProj ⟨SEG C D, hcd.2.2⟩ := by
+    rw [line_toProj_eq_seg_nd_toProj_of_lies_on hab.1 hab.2.1 hab.2.2, line_toProj_eq_seg_nd_toProj_of_lies_on hcd.1 hcd.2.1 hcd.2.2]
+    exact h
+  have w : ∃ x y, VEC A C = x • VEC A B + y • VEC C D := linear_combination_of_not_colinear' _ e'
+  rcases w with ⟨x, ⟨y, e⟩⟩
+  let X := x • VEC A B +ᵥ A
+  use X
+  constructor
+  exact (lies_on_iff_colinear_of_ne_lies_on_lies_on hab.2.2 hab.1 hab.2.1 _).2 (colinear_of_vec_eq_smul_vec (vec_of_pt_vadd_pt_eq_vec _ _))
+  apply (lies_on_iff_colinear_of_ne_lies_on_lies_on hcd.2.2 hcd.1 hcd.2.1 _).2
+  have e'' : VEC C X = (-y) • VEC C D := by
+    rw [← vec_sub_vec A _ _, vec_of_pt_vadd_pt_eq_vec _ _, e]
+    simp
+  exact colinear_of_vec_eq_smul_vec e''
 
-def intersection_of_nonparallel_line (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) :  P := by
-  choose p _ using (exists_unique_intersection_of_nonparallel_lines l₁ l₂ h)
-  use p
+theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃! p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
+  rcases (exists_intersection_of_nonparallel_lines h) with ⟨X, ⟨h₁, h₂⟩⟩
+  use X
+  simp [h₁, h₂]
+  intro X' h₁' h₂'
+  by_contra n
+  have e : l₁ = l₂ := by
+    rw [← line_eq_line_of_pt_pt_of_ne n h₁ h₁']
+    exact line_eq_line_of_pt_pt_of_ne n h₂ h₂'
+  tauto
+
+def intersection_of_nonparallel_line {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) :  P := 
+  Classical.choose (exists_unique_intersection_of_nonparallel_lines h)
+  -- by choose X _ using (exists_unique_intersection_of_nonparallel_lines h)
+  -- use X
 
 scoped notation "LineInt" => intersection_of_nonparallel_line
+
+theorem intersection_of_nonparallel_line_lies_on_fst_line {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : (LineInt h) LiesOn l₁ := by
+  exact (Classical.choose_spec (exists_unique_intersection_of_nonparallel_lines h)).1.1
+
+theorem intersection_of_nonparallel_line_lies_on_snd_line {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : (LineInt h) LiesOn l₂ := by
+  exact (Classical.choose_spec (exists_unique_intersection_of_nonparallel_lines h)).1.2
 
 -- Now let's come to rays. 
 -- If ray₁ and ray₂ are two rays that are not parallel, then the following function returns the unique point of the intersection of the associated two lines. This function is a bit tricky, will come back to this.

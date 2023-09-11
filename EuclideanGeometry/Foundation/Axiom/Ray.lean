@@ -141,8 +141,12 @@ def length : ℝ := Vec.Norm.norm (l.toVec)
 -- length of a generalized directed segment is nonnegative.
 theorem length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ Vec.SeminormedAddGroup _
 
+theorem toVec_eq_zero_of_deg : (l.target = l.source) ↔ l.toVec = 0 := by unfold toVec Vec.mk_pt_pt; simp
+
 -- A generalized directed segment is trivial if and only if length is zero.
-theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by sorry
+theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by
+  unfold Seg.length
+  exact Iff.trans (toVec_eq_zero_of_deg _)  (@norm_eq_zero _ Vec.NormedAddGroup).symm
 
 -- A generalized directed segment is nontrivial if and only if its length is positive.
 theorem nontriv_iff_length_pos : (l.is_nd) ↔ 0 < l.length := by sorry

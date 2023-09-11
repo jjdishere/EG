@@ -735,7 +735,7 @@ theorem linear_combination_of_not_colinear {u v w : ℝ × ℝ} (hu : u ≠ 0) (
   simp only [smul_eq_mul, Prod.mk_add_mk]
   ring
 
-theorem linear_combination_of_not_colinear' (u v : Vec_nd) {w : ℝ × ℝ} (h' : Vec_nd.toProj u ≠ Vec_nd.toProj v) : ∃ (cᵤ cᵥ : ℝ), w = cᵤ • u.1 + cᵥ • v.1 := by
+theorem linear_combination_of_not_colinear' {u v : Vec_nd} (w : ℝ × ℝ) (h' : Vec_nd.toProj u ≠ Vec_nd.toProj v) : ∃ (cᵤ cᵥ : ℝ), w = cᵤ • u.1 + cᵥ • v.1 := by
   have h₁ : (Vec_nd.toProj u ≠ Vec_nd.toProj v) → ¬(∃ (t : ℝ), v.1 = t • u.1) := by
     intro _
     by_contra h₂
