@@ -89,24 +89,50 @@ instance : HasLiesOn P (Line P) where
 
 -- Now we introduce useful theorems to avoid using more unfolds in further proofs. 
 
+section Compaitiblity_of_coersions_of_mk_pt_pt
+
 -- The first point and the second point in Line.mk_pt_pt LiesOn the line it make. 
 
-theorem fst_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := by
+theorem fst_pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := by
   unfold HasLiesOn.lies_on instHasLiesOnLine IsOnLine Line.carrier Line.mk_pt_pt
   simp only [Set.mem_setOf_eq, vec_same_eq_zero]
   use 0
   simp only [zero_smul]
 
-theorem snd_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B h := by
+theorem snd_pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : B LiesOn LIN A B h := by
   unfold HasLiesOn.lies_on instHasLiesOnLine IsOnLine Line.carrier Line.mk_pt_pt
   simp only [Set.mem_setOf_eq, vec_same_eq_zero]
   use 1
   simp only [one_smul]
 
-/- Compatibility of LiesOn and colinear for line -/
+theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B h ∧ B LiesOn LIN A B h := by
+  constructor
+  exact fst_pt_lies_on_line_of_pt_pt_of_ne h
+  exact snd_pt_lies_on_line_of_pt_pt_of_ne h
+
+theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) : ∀ X : P, (X LiesOn (LIN A B h)) ↔ colinear A B X := by
+  intro X
+  constructor
+  intro hx
+  apply (LIN A B h).linear
+  exact (pt_lies_on_line_of_pt_pt_of_ne h).1
+  exact (pt_lies_on_line_of_pt_pt_of_ne h).2
+  exact hx
+  intro c
+  apply (LIN A B h).maximal A B
+  exact (pt_lies_on_line_of_pt_pt_of_ne h).1
+  exact (pt_lies_on_line_of_pt_pt_of_ne h).2
+  exact h
+  exact c
+
+end Compaitiblity_of_coersions_of_mk_pt_pt
+
+section Compatibility_of_LiesOn
+
 -- This is also a typical proof that shows how to use the four conditions in the def of a line
 
-theorem lies_on_iff_colinear_of_ne_lies_on_lies_on (A B C : P) (l : Line P) (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : (C LiesOn l) ↔ colinear A B C := by
+theorem lies_on_iff_colinear_of_ne_lies_on_lies_on {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : ∀ C : P, (C LiesOn l) ↔ colinear A B C := by
+  intro C
   constructor
   intro hc
   apply l.linear
@@ -132,30 +158,19 @@ theorem lies_on_iff_lies_on_iff_line_eq_line (l₁ l₂ : Line P) : (∀ A : P, 
 
 /- tautological theorems of Line.mk_pt_pt -/
 
-theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) : ∀ X : P, (X LiesOn (LIN A B h)) ↔ colinear A B X := by
-  intro X
-  constructor
-  intro hx
-  apply (LIN A B h).linear
-  exact fst_pt_lies_on_line_of_pt_pt h
-  exact snd_pt_lies_on_line_of_pt_pt h
-  exact hx
-  intro c
-  apply (LIN A B h).maximal A B
-  exact fst_pt_lies_on_line_of_pt_pt h
-  exact snd_pt_lies_on_line_of_pt_pt h
-  exact h
-  exact c
-
 theorem line_eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : LIN A B h = l := by
   apply (lies_on_iff_lies_on_iff_line_eq_line (LIN A B h) l).1
   intro X
   constructor
   intro hx
-  apply (lies_on_iff_colinear_of_ne_lies_on_lies_on A B X l h ha hb).2
+  apply (lies_on_iff_colinear_of_ne_lies_on_lies_on h ha hb X).2
   exact (lies_on_line_of_pt_pt_iff_colinear h X).1 hx
   intro hx
-  exact (lies_on_line_of_pt_pt_iff_colinear h X).2 ((lies_on_iff_colinear_of_ne_lies_on_lies_on A B X l h ha hb).1 hx)
+  exact (lies_on_line_of_pt_pt_iff_colinear h X).2 ((lies_on_iff_colinear_of_ne_lies_on_lies_on h ha hb X).1 hx)
+
+end Compatibility_of_LiesOn
+
+section Define_line_toProj
 
 /- examine a line has uniquely defined toProj -/
 
@@ -186,6 +201,8 @@ theorem toProj_eq_toProj_of_Seg_nd_lies_on {l : Line P} {A B X Y : P} (ha : A Li
   choose proj _ using (exist_unique_proj_of_line l)
   use proj
 
+end Define_line_toProj
+
 /- def coe from ray to line-/
 
 def Ray.toLine (r : Ray P) := LIN r.source (r.toDir.toVec +ᵥ r.source) (by 
@@ -205,8 +222,6 @@ theorem lies_on_line_of_ray_of_lies_on_ray {A : P} {l : Ray P} (h : A LiesOn l) 
 
 -- If A and B are two distinct points, they lie on the line AB
 theorem source_or_ray_lies_on_line_of_ray (l : Ray P) : l.source LiesOn l := sorry
-
-theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B h ∧ B LiesOn LIN A B h := sorry
 
 -- The line defined from a nontrivial segment is equal to the line defined from the ray associated this nontriial segment
 
