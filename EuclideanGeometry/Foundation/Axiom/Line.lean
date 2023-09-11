@@ -3,6 +3,7 @@ import EuclideanGeometry.Foundation.Axiom.Position
 noncomputable section
 namespace EuclidGeom
 
+@[ext]
 class Line (P : Type _) [EuclideanPlane P] where 
   carrier : Set P
   linear : ∀ (A B C : P), (A ∈ carrier) → (B ∈ carrier) → (C ∈ carrier) → colinear A B C  

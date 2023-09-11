@@ -6,6 +6,7 @@ namespace EuclidGeom
 open Classical
 
 /- Class of generalized triangles -/
+@[ext]
 class Triangle (P : Type _) [EuclideanPlane P] where 
   point₁ : P
   point₂ : P
