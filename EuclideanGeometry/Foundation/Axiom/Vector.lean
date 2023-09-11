@@ -64,7 +64,6 @@ protected def AddGroupNorm : AddGroupNorm (ℝ × ℝ) where
     rw [pow_two] at P
     simp [pow_two] at *
     linarith
-
   neg' := fun _ => by simp
   eq_zero_of_map_eq_zero' := fun x => by
     simp
@@ -151,13 +150,14 @@ def Vec_nd := {v : Vec // v ≠ 0}
 instance : Coe Vec_nd Vec where
   coe := fun x => x.1
 
-theorem vec_norm_eq_abs (x : Vec) : Vec.norm x = Complex.abs (Vec.toComplex x) := rfl
+theorem vec_norm_eq_abs_tocomplex (x : Vec) : Vec.norm x = Complex.abs (Vec.toComplex x) := rfl
 
-theorem ne_zero_of_ne_zero_mul_Vec_nd (x : Vec_nd) {t : ℝ} (h : t ≠ 0) : t • x.1 ≠ 0 := by 
+theorem ne_zero_of_ne_zero_smul_vec_nd (x : Vec_nd) {t : ℝ} (h : t ≠ 0) : t • x.1 ≠ 0 := by 
   simp only [ne_eq, smul_eq_zero, h, x.2, or_self, not_false_eq_true]
 
 namespace Complex
 
+/- Use `Complex.toVec` in full name to avoid naming conflicts -/
 protected def toVec (c : ℂ) : Vec := ⟨c.1, c.2⟩
 
 end Complex
@@ -177,7 +177,7 @@ def Vec_nd.normalize (x : Vec_nd) : Dir where
     simp only [Vec.norm, ne_eq, inv_mul_mul_self]
     rw [inv_mul_cancel ((@norm_ne_zero_iff _ Vec.NormedAddGroup).mpr x.2)]
 
-/- the CommGroup instance on `Dir` -/
+/- the CommGroup instance of `Dir` -/
 namespace Dir
 
 instance : Neg Dir where
@@ -214,25 +214,24 @@ instance : One Dir where
       simp
   }
 
--- Put tautological theorems into simp
+/- Put tautological theorems into simp -/
+@[simp]
+theorem fst_of_one_dir_eq_one : (1 : Dir).1.fst = 1 := rfl
 
 @[simp]
-theorem fst_of_one_eq_one : (1 : Dir).1.fst = 1 := rfl
+theorem snd_of_one_dir_eq_zero : (1 : Dir).1.snd = 0 := rfl
 
 @[simp]
-theorem snd_of_one_eq_zero : (1 : Dir).1.snd = 0 := rfl
+theorem one_eq_one_dir_tocomplex : Vec.toComplex (1 : Dir).toVec = 1 := rfl
 
 @[simp]
-theorem one_eq_one_toComplex : Vec.toComplex (1 : Dir).toVec = 1 := rfl
+theorem one_complex_tovec_eq_one_vec : Complex.toVec (1 : ℂ) = (1, 0) := rfl
 
 @[simp]
-theorem one_toVec_eq_one : Complex.toVec (1 : ℂ) = (1, 0) := rfl
+theorem eq_self_tocomplex_tovec (x : Vec) : Complex.toVec (Vec.toComplex x) = x := rfl
 
 @[simp]
-theorem eq_self_toComplex_toVec (x : Vec) : Complex.toVec (Vec.toComplex x) = x := rfl
-
-@[simp]
-theorem sq_sum_eq_one (x : Dir) : x.toVec.1 ^ 2 + x.toVec.2 ^ 2 = 1 := by
+theorem tovec_sq_add_sq_eq_one (x : Dir) : x.toVec.1 ^ 2 + x.toVec.2 ^ 2 = 1 := by
   rw [pow_two, pow_two]
   exact x.unit
 
@@ -249,12 +248,12 @@ instance : Monoid Dir where
   one_mul := fun _ => by
     ext : 1
     unfold toVec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
-    simp only [one_eq_one_toComplex, one_mul, eq_self_toComplex_toVec]
+    simp only [one_eq_one_dir_tocomplex, one_mul, eq_self_tocomplex_tovec]
     rfl
   mul_one := fun _ => by
     ext : 1
     unfold toVec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
-    simp only [one_eq_one_toComplex, mul_one, eq_self_toComplex_toVec]
+    simp only [one_eq_one_dir_tocomplex, mul_one, eq_self_tocomplex_tovec]
     rfl
 
 instance : CommGroup Dir where
@@ -271,8 +270,8 @@ instance : CommGroup Dir where
     simp
     ring_nf
     ext
-    simp only [sq_sum_eq_one, fst_of_one_eq_one]
-    simp only [snd_of_one_eq_zero]
+    simp only [tovec_sq_add_sq_eq_one, fst_of_one_dir_eq_one]
+    simp only [snd_of_one_dir_eq_zero]
     
   mul_comm _ _ := by
     ext : 1
@@ -297,7 +296,7 @@ instance : HasDistribNeg Dir where
     ring_nf
 
 @[simp]
-theorem toVec_neg_eq_neg_toVec (x : Dir) : (-x).toVec = -(x.toVec) := by
+theorem tovec_neg_eq_neg_tovec (x : Dir) : (-x).toVec = -(x.toVec) := by
   ext
   unfold Neg.neg instNegDir toVec Prod.instNeg
   simp
@@ -305,12 +304,12 @@ theorem toVec_neg_eq_neg_toVec (x : Dir) : (-x).toVec = -(x.toVec) := by
   simp
 
 @[simp]
-theorem fst_of_neg_one_eq_neg_one : (-1 : Dir).toVec.1 = -1 := rfl
+theorem fst_of_neg_one_dir_eq_neg_one : (-1 : Dir).toVec.1 = -1 := rfl
 
 @[simp]
-theorem snd_of_neg_one_eq_zero : (-1 : Dir).toVec.2 = 0 := by
+theorem snd_of_neg_one_dir_eq_zero : (-1 : Dir).toVec.2 = 0 := by
   unfold toVec Neg.neg instNegDir
-  simp only [Prod.snd_neg, snd_of_one_eq_zero, neg_zero]
+  simp only [Prod.snd_neg, snd_of_one_dir_eq_zero, neg_zero]
 
 def angle (x y : Dir) := Complex.arg (Vec.toComplex (y * (x⁻¹)).toVec)
 
@@ -358,7 +357,7 @@ theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize (x : Vec_nd) : mk_angle (
   ext : 1
   unfold Vec_nd.normalize toVec mk_angle HSMul.hSMul instHSMul SMul.smul Prod.smul
   simp
-  rw [vec_norm_eq_abs]
+  rw [vec_norm_eq_abs_tocomplex]
   constructor
   · rw [Complex.cos_arg, mul_comm]
     simp
@@ -580,7 +579,7 @@ theorem snd_of_neg_one_of_C_eq_zero : (Complex.toVec (-1 : ℂ)).2 = 0 := by
 theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
   ext : 1
   unfold HMul.hMul instHMul Mul.mul instMulDir
-  simp only [I_toComplex_eq_I, Complex.I_mul_I, toVec_neg_eq_neg_toVec]
+  simp only [I_toComplex_eq_I, Complex.I_mul_I, tovec_neg_eq_neg_tovec]
   ext
   rfl
   rfl
@@ -590,24 +589,24 @@ theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
 theorem mk_angle_zero_eq_one : mk_angle 0 = 1 := by
   unfold mk_angle
   ext
-  simp only [Real.cos_zero, Real.sin_zero, fst_of_one_eq_one]
-  simp only [Real.cos_zero, Real.sin_zero, snd_of_one_eq_zero]
+  simp only [Real.cos_zero, Real.sin_zero, fst_of_one_dir_eq_one]
+  simp only [Real.cos_zero, Real.sin_zero, snd_of_one_dir_eq_zero]
 
 @[simp]
 theorem mk_angle_pi_eq_neg_one : mk_angle π = -1 := by
   unfold mk_angle
   ext
-  simp only [Real.cos_pi, Real.sin_pi, toVec_neg_eq_neg_toVec, Prod.fst_neg, fst_of_one_eq_one]
-  simp only [Real.cos_pi, Real.sin_pi, toVec_neg_eq_neg_toVec, Prod.snd_neg, snd_of_one_eq_zero, neg_zero]
+  simp only [Real.cos_pi, Real.sin_pi, tovec_neg_eq_neg_tovec, Prod.fst_neg, fst_of_one_dir_eq_one]
+  simp only [Real.cos_pi, Real.sin_pi, tovec_neg_eq_neg_tovec, Prod.snd_neg, snd_of_one_dir_eq_zero, neg_zero]
 
 @[simp]
 theorem mk_angle_neg_pi_eq_neg_one : mk_angle (-π) = -1 := by
   unfold mk_angle
   ext
-  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, toVec_neg_eq_neg_toVec, Prod.fst_neg,
-    fst_of_one_eq_one]
-  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, toVec_neg_eq_neg_toVec, Prod.snd_neg,
-    snd_of_one_eq_zero]
+  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, tovec_neg_eq_neg_tovec, Prod.fst_neg,
+    fst_of_one_dir_eq_one]
+  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, tovec_neg_eq_neg_tovec, Prod.snd_neg,
+    snd_of_one_dir_eq_zero]
 
 @[simp]
 theorem mk_angle_pi_div_two_eq_I : mk_angle (π / 2) = I := by
@@ -620,9 +619,9 @@ theorem mk_angle_pi_div_two_eq_I : mk_angle (π / 2) = I := by
 theorem mk_angle_neg_pi_div_two_eq_neg_I : mk_angle (-(π / 2)) = -I := by
   unfold mk_angle
   ext
-  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, toVec_neg_eq_neg_toVec, Prod.fst_neg,
+  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, tovec_neg_eq_neg_tovec, Prod.fst_neg,
     fst_of_I_eq_zero, neg_zero]
-  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, toVec_neg_eq_neg_toVec, Prod.snd_neg,
+  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, tovec_neg_eq_neg_tovec, Prod.snd_neg,
     snd_of_I_eq_one]
 
 @[simp]
