@@ -299,9 +299,9 @@ instance : HasDistribNeg Dir where
 theorem tovec_neg_eq_neg_tovec (x : Dir) : (-x).toVec = -(x.toVec) := by
   ext
   unfold Neg.neg instNegDir toVec Prod.instNeg
-  simp
+  simp only
   unfold Neg.neg instNegDir toVec Prod.instNeg
-  simp
+  simp only
 
 @[simp]
 theorem fst_of_neg_one_dir_eq_neg_one : (-1 : Dir).toVec.1 = -1 := rfl
