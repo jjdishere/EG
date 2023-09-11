@@ -103,12 +103,21 @@ theorem snd_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B 
   simp only [one_smul]
 
 -- Compatibility of LiesOn and colinear for line
+-- This is also a typical proof that shows how to use the four conditions in the def of a line
 
 theorem lies_on_iff_colinear_of_ne {A B C : P}  (h : B ≠ A) : (C LiesOn LIN A B h) ↔ colinear A B C := by
   constructor
   intro hl
-  sorry
-  sorry
+  apply (LIN A B h).linear
+  exact fst_pt_lies_on_line_of_pt_pt h
+  exact snd_pt_lies_on_line_of_pt_pt h
+  exact hl
+  intro hc
+  apply (LIN A B h).maximal A B
+  exact fst_pt_lies_on_line_of_pt_pt h
+  exact snd_pt_lies_on_line_of_pt_pt h
+  exact h
+  exact hc
 
 /- examine a line has uniquely defined toProj -/
 theorem vec_eq_smul_vec_of_lies_on {l : Line P} {A B X Y : P} (ha : A LiesOn l) (hb : B LiesOn l) (hx : X LiesOn l) (hy : Y LiesOn l) (hab : B ≠ A) : ∃ t : ℝ, VEC X Y = t • VEC A B := by
