@@ -88,7 +88,7 @@ section intersection_theorem
 -- Let us consider the intersection of lines first. 
 -- If two lines l₁ and l₂ are parallel, then there is a unique point on l₁ ∩ l₂.  The definition of the point uses the ray intersection by first picking a point
 
-theorem exists_intersection_of_nonparallel_lines (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃ p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
+theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃ p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
   rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
   rcases l₂.nontriv with ⟨C, ⟨D, hcd⟩⟩
   have e' : Seg_nd.toProj ⟨SEG A B, hab.2.2⟩ ≠ Seg_nd.toProj ⟨SEG C D, hcd.2.2⟩ := by
@@ -106,12 +106,20 @@ theorem exists_intersection_of_nonparallel_lines (l₁ l₂ : Line P) (h : ¬ (l
     simp
   exact colinear_of_vec_eq_smul_vec e''
 
-theorem exists_unique_intersection_of_nonparallel_lines (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃! p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
-  sorry
+theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃! p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
+  rcases (exists_intersection_of_nonparallel_lines h) with ⟨X, ⟨h₁, h₂⟩⟩
+  use X
+  simp [h₁, h₂]
+  intro X' h₁' h₂'
+  by_contra n
+  have e : l₁ = l₂ := by
+    rw [← line_eq_line_of_pt_pt_of_ne n h₁ h₁']
+    exact line_eq_line_of_pt_pt_of_ne n h₂ h₂'
+  tauto
 
 def intersection_of_nonparallel_line (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) :  P := by
-  choose p _ using (exists_unique_intersection_of_nonparallel_lines l₁ l₂ h)
-  use p
+  choose X _ using (exists_unique_intersection_of_nonparallel_lines h)
+  use X
 
 scoped notation "LineInt" => intersection_of_nonparallel_line
 
