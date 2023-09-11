@@ -6,7 +6,7 @@ namespace EuclidGeom
 @[ext]
 class Line (P : Type _) [EuclideanPlane P] where 
   carrier : Set P
-  linear : ∀ (A B C : P), (A ∈ carrier) → (B ∈ carrier) → (C ∈ carrier) → colinear A B C  
+  linear : ∀ (A B C : P), (A ∈ carrier) → (B ∈ carrier) → (C ∈ carrier) → colinear A B C
   maximal : ∀ (A B : P), (A ∈ carrier) → (B ∈ carrier) → (B ≠ A) → (∀ (C : P), colinear A B C → (C ∈ carrier))
   nontriv : ∃ (A B : P), (A ∈ carrier) ∧ (B ∈ carrier) ∧ (B ≠ A)
 
@@ -91,9 +91,6 @@ instance : HasLiesOn P (Line P) where
 
 -- The first point and the second point in Line.mk_pt_pt LiesOn the line it make. 
 
-theorem trv (p₁ p₂ : Prop) (h₁ : p₁) (h₂ : p₂) : p₁ = p₂ := by
-  exact Mathlib.Meta.NormNum.eq_of_true h₁ h₂
-
 theorem fst_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := by
   unfold HasLiesOn.lies_on instHasLiesOnLine IsOnLine Line.carrier Line.mk_pt_pt
   simp only [Set.mem_setOf_eq, vec_same_eq_zero]
@@ -109,37 +106,56 @@ theorem snd_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B 
 /- Compatibility of LiesOn and colinear for line -/
 -- This is also a typical proof that shows how to use the four conditions in the def of a line
 
-theorem lies_on_iff_colinear_of_ne {A B C : P}  (h : B ≠ A) : (C LiesOn LIN A B h) ↔ colinear A B C := by
+theorem lies_on_iff_colinear_of_ne_lies_on_lies_on (A B C : P) (l : Line P) (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : (C LiesOn l) ↔ colinear A B C := by
   constructor
-  intro hl
-  apply (LIN A B h).linear
-  exact fst_pt_lies_on_line_of_pt_pt h
-  exact snd_pt_lies_on_line_of_pt_pt h
-  exact hl
   intro hc
-  apply (LIN A B h).maximal A B
-  exact fst_pt_lies_on_line_of_pt_pt h
-  exact snd_pt_lies_on_line_of_pt_pt h
-  exact h
+  apply l.linear
+  exact ha
+  exact hb
   exact hc
+  intro c
+  apply l.maximal A B
+  exact ha
+  exact hb
+  exact h
+  exact c
 
 /- Two lines are equal iff they have the same carrier -/
 
 theorem lies_on_iff_lies_on_iff_line_eq_line (l₁ l₂ : Line P) : (∀ A : P, A LiesOn l₁ ↔ A LiesOn l₂) ↔ l₁ = l₂ := by
   constructor
   intro hiff
-  have hcar : l₁.carrier = l₂.carrier := Set.ext hiff
-  -- have hlin : l₁.linear = l₂.linear := by
-  --  sorry
-  sorry
+  exact Line.ext l₁ l₂ (Set.ext hiff)
   intro e
   rw [e]
   simp only [forall_const]
 
-/- tautological theorem of Line.mk_pt_pt -/
+/- tautological theorems of Line.mk_pt_pt -/
 
-theorem line_eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : l = Line.mk_pt_pt A B h := by
-  sorry
+theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) : ∀ X : P, (X LiesOn (LIN A B h)) ↔ colinear A B X := by
+  intro X
+  constructor
+  intro hx
+  apply (LIN A B h).linear
+  exact fst_pt_lies_on_line_of_pt_pt h
+  exact snd_pt_lies_on_line_of_pt_pt h
+  exact hx
+  intro c
+  apply (LIN A B h).maximal A B
+  exact fst_pt_lies_on_line_of_pt_pt h
+  exact snd_pt_lies_on_line_of_pt_pt h
+  exact h
+  exact c
+
+theorem line_eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : LIN A B h = l := by
+  apply (lies_on_iff_lies_on_iff_line_eq_line (LIN A B h) l).1
+  intro X
+  constructor
+  intro hx
+  apply (lies_on_iff_colinear_of_ne_lies_on_lies_on A B X l h ha hb).2
+  exact (lies_on_line_of_pt_pt_iff_colinear h X).1 hx
+  intro hx
+  exact (lies_on_line_of_pt_pt_iff_colinear h X).2 ((lies_on_iff_colinear_of_ne_lies_on_lies_on A B X l h ha hb).1 hx)
 
 /- examine a line has uniquely defined toProj -/
 
