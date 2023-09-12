@@ -680,6 +680,8 @@ theorem perp_perp_eq_self (x : Proj) : x.perp.perp = x := by
 
 end Proj
 
+-- Our aim is to prove Pythagoras theorem in the file Perpendicular, but in this section, we will only prove that the inner product of to Vec_nd having same toProj is zero, which is the only theorem about toProj we will use in the proof of Pythagoras theorem. 
+
 section Perpendicular_preparation
 
 theorem inner_eq_zero_of_dir_toProj_eq_dir_toProj_perp (d₁ d₂ : Dir) (h : d₁.toProj.perp = d₂.toProj) : Vec.InnerProductSpace.Core.inner d₁.toVec d₂.toVec = 0 := by
