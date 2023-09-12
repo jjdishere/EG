@@ -12,17 +12,22 @@ additional notation (infix or prefix)
   all capitalized or special characters
 
 2. standard abbreviation and (objects)
+VEC (vec) -- vector
 RAY (ray) -- ray
 LIN (lin) -- line
-SEG (seg) -- seg
-nd -- nondegenerate (e.g. SEG_nd, or nd : B ≠ A)
-p -- point  (abbreviate to pt in the name of theorem)
+SEG (seg) -- (directed) segment
+nd -- nondegenerate (e.g. SEG_nd, VEC.nd, or nd : B ≠ A)
+A (use capital letters) -- point  (abbreviate to pt in the name of theorem)
 CIR (cir) -- circle
-ANG (ang) -- values of angle
-OANG (oang) -- oriented angle
+ANG (ang) -- oriented angle
+∠ -- value of the oriented angle
 TRI (tri) -- triangle
-QUAD (quad) -- quadrilateral
+QDL (qdl) -- quadrilateral
 ARC (arc) -- arc
+INX -- this is an intersection
+SQR (sqr) -- square
+PRL (prl) -- parallellogram
+∥ -- parallel
 
 in -- ∈
 subset -- ⊆ 
@@ -30,7 +35,7 @@ para -- ∥  parallel
 perp -- ⟂ perpendicular
 cong -- ≅ congruent
 sim -- ∼ similar
-intx -- intersection
+inx -- intersection
 rev -- reverse
 perm -- permutation
 flip -- flip

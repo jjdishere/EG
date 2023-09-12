@@ -30,4 +30,14 @@ theorem perp_of_parallel_perp (l₁ l₂ l₃ : LinearObj P) : (l₁ ∥ l₂) �
 
 theorem perp_of_perp_parallel (l₁ l₂ l₃ : LinearObj P) : (l₁ ⟂ l₂) → (l₂ ∥ l₃) → (l₁ ⟂ l₃) := sorry 
 
+theorem toProj_ne_toProj_of_perp (l₁ l₂: LinearObj P) : (l₁ ⟂ l₂) → (l₁.toProj ≠ l₂.toProj) := sorry
+
+section Perpendicular_foot
+
+-- def perp_foot (p : P) (l : Line P)
+
+-- theorem length_sq_eq_length_sq_add_length_sq_of_perp 
+
+end Perpendicular_foot
+
 end EuclidGeom

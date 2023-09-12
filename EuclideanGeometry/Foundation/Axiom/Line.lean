@@ -222,22 +222,28 @@ end Define_line_toProj
 /- def coe from ray to line-/
 
 def Ray.toLine (r : Ray P) := LIN r.source (r.toDir.toVec +ᵥ r.source) (by 
-  by_contra h
-  exact (Dir.dir_toVec_ne_zero r.toDir) (vec_eq_zero_of_vadd_eq_self h))
+  simp only [ne_eq, vec_eq_zero_of_vadd_eq_self]
+  exact Dir.dir_toVec_ne_zero r.toDir)
 
 instance : Coe (Ray P) (Line P) where
   coe := Ray.toLine
+
+theorem ray_toLine_toProj_eq_ray_toProj (r : Ray P) : r.toLine.toProj = r.toProj := by
+  sorry
 
 /- def coe from non trivial segment to line-/
 
 def Seg_nd.toLine (seg_nd : Seg_nd P) := (LIN seg_nd.1.source seg_nd.1.target seg_nd.2)
 
+def Line.mk_pt_vec_nd (A : P) (vec_nd : Vec_nd) := (LIN A (vec_nd.1 +ᵥ A) (by
+  sorry))
+
 section Compaitiblity_of_coersions
 -- If a point lies on a ray, then it lies on the line associated to the ray.
-theorem lies_on_line_of_ray_of_lies_on_ray {A : P} {l : Ray P} (h : A LiesOn l) : A LiesOn l := sorry
+theorem lies_on_line_of_ray_of_lies_on_ray {A : P} {r : Ray P} (h : A LiesOn r) : A LiesOn (r.toLine) := sorry
 
 -- If A and B are two distinct points, they lie on the line AB
-theorem source_or_ray_lies_on_line_of_ray (l : Ray P) : l.source LiesOn l := sorry
+theorem source_of_ray_lies_on_line_of_ray (l : Ray P) : l.source LiesOn l := sorry
 
 -- The line defined from a nontrivial segment is equal to the line defined from the ray associated this nontriial segment
 
@@ -251,7 +257,34 @@ section Archimedean_property
 
 -- there are two distinct points on a line
 
-theorem exists_ne_pt_pt_lies_on_of_line (l : Line P) : ∃ A B : P, A LiesOn l ∧ B LiesOn l ∧ B ≠ A := l.nontriv
+theorem exists_ne_pt_pt_lies_on_of_line (A : P) (l : Line P) : ∃ B : P, B LiesOn l ∧ B ≠ A := by
+  rcases l.nontriv with ⟨X, ⟨Y, _⟩⟩
+  by_cases A = X
+  · use Y
+    rw [h]
+    tauto
+  · use X
+    tauto
+
+theorem lies_on_of_Seg_nd_of_toProj {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) (hp : Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) : B LiesOn l := by
+  rcases exists_ne_pt_pt_lies_on_of_line A l with ⟨X, h⟩
+  let g := line_toProj_eq_seg_nd_toProj_of_lies_on ha h.1 h.2
+  rw [← hp] at g
+  unfold Seg_nd.toProj Seg_nd.toVec_nd at g
+  simp only [ne_eq] at g 
+  have c : colinear A X B := by
+    rw [← iff_true (colinear A X B), ← eq_iff_iff]
+    unfold colinear colinear_of_nd
+    simp [g]
+    by_cases (B = X ∨ A = B ∨ X = A) 
+    · simp only [h, dite_eq_ite]
+    · simp only [h, dite_eq_ite]
+  exact (lies_on_iff_colinear_of_ne_lies_on_lies_on h.2 ha h.1 B).2 c
+
+theorem Seg_nd_toProj_eq_toProj_iff_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) : B LiesOn l ↔ (Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) := by
+  constructor
+  exact fun a => line_toProj_eq_seg_nd_toProj_of_lies_on ha a hab
+  exact fun a => lies_on_of_Seg_nd_of_toProj ha hab a
 
 -- Given distinct A B on a line, there exist C s.t. C LiesOn AB (a cor of Archimedean_property in Seg) and there exist D s.t. B LiesOn AD
 
@@ -262,5 +295,41 @@ end Archimedean_property
 theorem vec_eq_mul_vec_of_pt_pt_on_line (l : Line P) (A B C D : P) (ha : A LiesOn l) (hb : B LiesOn l) (hC : C LiesOn l) (hD : D LiesOn l) (h : B ≠ A) : ∃ (t : ℝ), VEC C D = t • VEC A B := by
   sorry
 -/
+-- I think this theorem is just a corollary of our theorems. We should put it in some _ex. 
+
+section Line_passing_point_with_given_Proj
+
+theorem exist_line_of_pt_proj (A : P) (pr : Proj) : ∃ l : Line P, A LiesOn l ∧ l.toProj = pr := by
+  rcases Quot.exists_rep pr with ⟨dir, hd⟩ 
+  let r : Ray P := ⟨A, dir⟩ 
+  use r.toLine
+  constructor
+  exact lies_on_line_of_ray_of_lies_on_ray (source_of_ray_lies_on_ray r)
+  rw [ray_toLine_toProj_eq_ray_toProj r]
+  exact hd
+
+theorem exist_unique_line_of_pt_proj (A : P) (pr : Proj) : ∃! l : Line P, A LiesOn l ∧ l.toProj = pr := by
+  rcases (exist_line_of_pt_proj A pr) with ⟨l₁, hl₁⟩
+  use l₁
+  constructor
+  exact hl₁
+  intro l₂ hl₂
+  rcases Quot.exists_rep pr with ⟨dir, _⟩
+  have _ : dir.toVec +ᵥ A ≠ A := by
+    simp only [ne_eq, vec_eq_zero_of_vadd_eq_self, Dir.dir_toVec_ne_zero dir, not_false_eq_true]
+  apply (lies_on_iff_lies_on_iff_line_eq_line l₂ l₁).1
+  intro X
+  by_cases X = A 
+  · rw [h]
+    tauto
+  · rw [Seg_nd_toProj_eq_toProj_iff_lies_on hl₁.1 h, hl₁.2, Seg_nd_toProj_eq_toProj_iff_lies_on hl₂.1 h, hl₂.2]
+
+def Line.mk_pt_proj (A : P) (pr : Proj) : Line P := 
+  Classical.choose (exist_unique_line_of_pt_proj A pr)
+
+theorem pt_lies_on_line_mk_pt_proj (A : P) (pr : Proj) : A LiesOn (Line.mk_pt_proj A pr) ∧ (Line.mk_pt_proj A pr).toProj = pr := by
+  exact (Classical.choose_spec (exist_unique_line_of_pt_proj A pr)).1
+
+end Line_passing_point_with_given_Proj
 
 end EuclidGeom
