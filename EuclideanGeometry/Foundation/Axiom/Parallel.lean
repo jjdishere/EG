@@ -117,17 +117,17 @@ theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h 
     exact line_eq_line_of_pt_pt_of_ne n h₂ h₂'
   tauto
 
-def intersection_of_nonparallel_line {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : P := 
+def intersection_of_nonparallel_line (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : P := 
   Classical.choose (exists_unique_intersection_of_nonparallel_lines h)
   -- by choose X _ using (exists_unique_intersection_of_nonparallel_lines h)
   -- use X
 
 scoped notation "LineInt" => intersection_of_nonparallel_line
 
-theorem intersection_of_nonparallel_line_lies_on_fst_line {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : (LineInt h) LiesOn l₁ := by
+theorem intersection_of_nonparallel_line_lies_on_fst_line {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : (LineInt l₁ l₂ h) LiesOn l₁ := by
   exact (Classical.choose_spec (exists_unique_intersection_of_nonparallel_lines h)).1.1
 
-theorem intersection_of_nonparallel_line_lies_on_snd_line {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : (LineInt h) LiesOn l₂ := by
+theorem intersection_of_nonparallel_line_lies_on_snd_line {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : (LineInt l₁ l₂ h) LiesOn l₂ := by
   exact (Classical.choose_spec (exists_unique_intersection_of_nonparallel_lines h)).1.2
 
 -- Now let's come to rays. 
