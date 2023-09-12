@@ -46,7 +46,10 @@ theorem perp_foot_preparation (A : P) (l : Line P) : l.toProj ≠ (perp_line A l
 
 def perp_foot (A : P) (l : Line P) : P := intersection_of_nonparallel_line l (perp_line A l) (perp_foot_preparation A l)
 
-theorem Pythagoras_of_perp_foot (A B : P) (l : Line P) (h : B LiesOn l) : (SEG A (perp_foot A l)).length ^ 2 + (SEG B (perp_foot A l)).length ^ 2 = (SEG A B).length ^ 2 := by
+theorem Pythagoras_of_triangle {A B C : P} (hab : B ≠ A) (hac : C ≠ A) (h : (Seg_nd.toProj ⟨SEG A B, hab⟩).perp = (Seg_nd.toProj ⟨SEG A C, hac⟩)) : (SEG A B).length ^ 2 + (SEG A C).length ^ 2 = (SEG B C).length ^ 2 := by
+  sorry
+
+theorem Pythagoras_of_perp_foot (A B : P) {l : Line P} (h : B LiesOn l) : (SEG A (perp_foot A l)).length ^ 2 + (SEG B (perp_foot A l)).length ^ 2 = (SEG A B).length ^ 2 := by
   sorry
 
 -- theorem length_sq_eq_length_sq_add_length_sq_of_perp 

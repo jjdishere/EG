@@ -521,7 +521,6 @@ theorem eq_toProj_of_smul (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) : Vec_n
       exact Iff.mp neg_eq_iff_eq_neg (neg_normalize_eq_normalize_smul_neg u v h ht₃)
 
 theorem smul_of_eq_toProj (u v : Vec_nd) (h : Vec_nd.toProj u = Vec_nd.toProj v) : ∃ (t : ℝ), v.1 = t • u.1 := by
-  unfold Vec_nd.toProj Dir.toProj at h
   let h' := Quotient.exact h
   unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
   simp only [Con.rel_eq_coe, Con.rel_mk] at h' 
@@ -680,6 +679,28 @@ theorem perp_perp_eq_self (x : Proj) : x.perp.perp = x := by
   simp only [I_mul_I_eq_one_of_Proj, one_mul]
 
 end Proj
+
+section Perpendicular_preparation
+
+theorem inner_eq_zero_of_dir_toProj_eq_dir_toProj_perp (d₁ d₂ : Dir) (h : d₁.toProj.perp = d₂.toProj) : Vec.InnerProductSpace.Core.inner d₁.toVec d₂.toVec = 0 := by
+  let h' := Quotient.exact h
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
+  simp only [Con.rel_eq_coe, Con.rel_mk] at h' 
+  by_cases Dir.I * d₁ = d₂
+  · rw [← h]
+    unfold Dir.I HMul.hMul instHMul Mul.mul Dir.instMulDir Vec.toComplex Complex.toVec Vec.InnerProductSpace.Core
+    simp only [Complex.mul_re, Complex.mul_im, zero_mul, one_mul, zero_sub, zero_add, mul_neg]
+    ring
+  · have h : Dir.I * d₁ = -d₂ := by tauto
+    have h' : - (Dir.I * d₁) = - - d₂ := by
+      rw [← h]
+    rw [← Iff.mp neg_eq_iff_eq_neg rfl] at h'
+    rw [← h']
+    unfold Neg.neg Dir.instNegDir Dir.I HMul.hMul instHMul Mul.mul Dir.instMulDir Vec.toComplex Complex.toVec Vec.InnerProductSpace.Core
+    simp only [Complex.mul_re, Complex.mul_im, zero_mul, one_mul, zero_sub, zero_add, Prod.neg_mk, neg_neg, mul_neg]
+    ring
+
+end Perpendicular_preparation
 
 -- Start proving theorems about intersecting two lines
 
