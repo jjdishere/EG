@@ -346,7 +346,7 @@ theorem dir_toVec_ne_zero (x : Dir) : x.toVec ≠ 0 := by
   rw [h'] at g
   exact zero_ne_one g
 
-def Dir.toVec_nd (x : Dir) : Vec_nd := ⟨x.toVec, dir_toVec_ne_zero x⟩
+def toVec_nd (x : Dir) : Vec_nd := ⟨x.toVec, dir_toVec_ne_zero x⟩
 
 theorem ne_zero_of_Vec_nd_toComplex (x : Vec_nd) : Vec.toComplex x.1 ≠ 0 := by
   by_contra h

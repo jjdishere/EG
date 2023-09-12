@@ -54,7 +54,7 @@ def IsOnIntRay {P : Type _} [EuclideanPlane P] (a : P) (ray : Ray P) : Prop := I
 def toProj : Proj := (ray.toDir : Proj)
 
 end Ray
-  
+
 /- Generalized Directed segment -/
 @[ext]
 class Seg (P : Type _) [EuclideanPlane P] where
@@ -87,6 +87,9 @@ instance : HasLiesOn P (Seg_nd P) where
 
 scoped infix : 50 "LiesOnIntRay" => Ray.IsOnIntRay
 scoped infix : 50 "LiesOnIntSeg" => Seg.IsOnIntSeg
+
+theorem source_of_ray_lies_on_ray (r : Ray P) : r.source LiesOn r := by
+  sorry
 
 /- Coe from Seg to Vector, Ray-/
 namespace Seg 
