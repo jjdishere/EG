@@ -385,6 +385,37 @@ theorem dir_toVec_nd_normalize_eq_self (x : Dir) : Vec_nd.normalize (⟨x.toVec,
   unfold Vec_nd.normalize
   simp only [norm_of_dir_toVec_eq_one, inv_one, one_smul]
 
+/- The direction `Dir.I`, defined as `(0, 1)`, the direction of y-axis. It will be used in section perpendicular. -/
+def I : Dir where
+  toVec := (0, 1)
+  unit := by
+    unfold inner Vec.InnerProductSpace.Core
+    simp only [mul_zero, mul_one, zero_add]
+
+@[simp]
+theorem fst_of_I_eq_zero : I.1.1 = 0 := rfl
+
+@[simp]
+theorem snd_of_I_eq_one : I.1.2 = 1 := rfl
+
+@[simp]
+theorem I_toComplex_eq_I : Vec.toComplex I.1 = Complex.I := by
+  unfold Vec.toComplex
+  ext
+  simp only [fst_of_I_eq_zero, Complex.I_re]
+  simp only [snd_of_I_eq_one, Complex.I_im]
+
+@[simp]
+theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
+  ext : 1
+  unfold HMul.hMul instHMul Mul.mul instMulDir
+  simp only [I_toComplex_eq_I, Complex.I_mul_I, toVec_neg_eq_neg_toVec]
+  ext
+  rfl
+  rfl
+
+section Make_angle_theorems
+
 @[simp]
 theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize (x : Vec_nd) : mk_angle (Complex.arg (Vec.toComplex x.1)) = Vec_nd.normalize x := by
   ext : 1
@@ -416,6 +447,67 @@ theorem mk_angle_arg_toComplex_of_Dir_eq_self (x: Dir) : mk_angle (Complex.arg (
   by_contra h
   rw [eq_zero_of_toComplex_eq_zero h] at w
   simp only [toComplex_zero_eq_zero, map_zero, zero_ne_one] at w 
+
+@[simp]
+theorem mk_angle_zero_eq_one : mk_angle 0 = 1 := by
+  unfold mk_angle
+  ext
+  simp only [Real.cos_zero, Real.sin_zero, Dir.fst_of_one_eq_one]
+  simp only [Real.cos_zero, Real.sin_zero, Dir.snd_of_one_eq_zero]
+
+@[simp]
+theorem mk_angle_pi_eq_neg_one : mk_angle π = -1 := by
+  unfold mk_angle
+  ext
+  simp only [Real.cos_pi, Real.sin_pi, toVec_neg_eq_neg_toVec, Prod.fst_neg, Dir.fst_of_one_eq_one]
+  simp only [Real.cos_pi, Real.sin_pi, toVec_neg_eq_neg_toVec, Prod.snd_neg, Dir.snd_of_one_eq_zero, neg_zero]
+
+@[simp]
+theorem mk_angle_neg_pi_eq_neg_one : mk_angle (-π) = -1 := by
+  unfold mk_angle
+  ext
+  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, toVec_neg_eq_neg_toVec, Prod.fst_neg,
+    Dir.fst_of_one_eq_one]
+  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, toVec_neg_eq_neg_toVec, Prod.snd_neg,
+    Dir.snd_of_one_eq_zero]
+
+theorem mk_angle_neg_mul_mk_angle_eq_one (x : ℝ) : mk_angle (-x) * mk_angle x = 1 := by
+  ext
+  unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec
+  simp only [Real.cos_neg, Real.sin_neg, Complex.mul_re, neg_mul, sub_neg_eq_add]
+  rw [← pow_two, ← pow_two, Real.cos_sq_add_sin_sq x]
+  rfl
+  unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec
+  simp only [Real.cos_neg, Real.sin_neg, Complex.mul_im, neg_mul]
+  rw [mul_comm, add_right_neg]
+  rfl
+
+@[simp]
+theorem mk_angle_neg_eq_mk_angle_inv (x : ℝ) : mk_angle (-x) = (mk_angle x)⁻¹ := by
+  rw [← one_mul (mk_angle x)⁻¹, ← mk_angle_neg_mul_mk_angle_eq_one x, mul_assoc, mul_right_inv, mul_one]
+
+@[simp]
+theorem mk_angle_pi_div_two_eq_I : mk_angle (π / 2) = I := by
+  unfold mk_angle
+  ext
+  simp only [Real.cos_pi_div_two, Real.sin_pi_div_two, fst_of_I_eq_zero]
+  simp only [Real.cos_pi_div_two, Real.sin_pi_div_two, snd_of_I_eq_one]
+
+@[simp]
+theorem mk_angle_neg_pi_div_two_eq_neg_I : mk_angle (-(π / 2)) = -I := by
+  unfold mk_angle
+  ext
+  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, toVec_neg_eq_neg_toVec, Prod.fst_neg,
+    fst_of_I_eq_zero, neg_zero]
+  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, toVec_neg_eq_neg_toVec, Prod.snd_neg,
+    snd_of_I_eq_one]
+
+@[simp]
+theorem mk_angle_neg_pi_div_two_eq_neg_I' : mk_angle ((-π) / 2) = -I := by
+  rw [neg_div]
+  simp only [mk_angle_neg_pi_div_two_eq_neg_I]
+
+end Make_angle_theorems
 
 end Dir
 
@@ -500,7 +592,7 @@ def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.normalize v : Proj)
 
 -- Coincidence of toProj gives rise to important results, especially that two Vec_nd-s have the same toProj iff they are equal by taking a real (nonzero) scaler. We will prove this statement in the following section. 
 
-section Main_theorem_of_toProj
+section Vec_nd_toProj
 
 theorem normalize_eq_normalize_smul_pos (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : 0 < t) : Vec_nd.normalize u = Vec_nd.normalize v := by
   ext : 1
@@ -567,8 +659,7 @@ theorem smul_of_eq_toProj (u v : Vec_nd) (h : Vec_nd.toProj u = Vec_nd.toProj v)
       rw [← neg_inv, neg_smul]
       exact h₂
 
--- The main theorem of toProj
-
+-- The main theorem of Vec_nd.toProj
 theorem Vec_nd.eq_toProj_iff (u v : Vec_nd) : (Vec_nd.toProj u = Vec_nd.toProj v) ↔ ∃ (t : ℝ), v.1 = t • u.1 := by
   constructor
   · intro h
@@ -577,155 +668,9 @@ theorem Vec_nd.eq_toProj_iff (u v : Vec_nd) : (Vec_nd.toProj u = Vec_nd.toProj v
     rcases h' with ⟨t, h⟩ 
     exact eq_toProj_of_smul _ _ h
 
-end Main_theorem_of_toProj
+end Vec_nd_toProj
 
--- Define two Proj is perpendicular by the mul structure of ℂ, using Complex.I. But first we need to define Dir.I, and then take it as Proj.I. These theorems are in the following section. 
-
-section Perpendicular_preparations
-
-namespace Dir
-
-def I : Dir where
-  toVec := (0, 1)
-  unit := by
-    unfold inner Vec.InnerProductSpace.Core
-    simp only [mul_zero, mul_one, zero_add]
-
-@[simp]
-theorem fst_of_I_eq_zero : I.1.1 = 0 := rfl
-
-@[simp]
-theorem snd_of_I_eq_one : I.1.2 = 1 := rfl
-
-@[simp]
-theorem I_toComplex_eq_I : Vec.toComplex I.1 = Complex.I := by
-  unfold Vec.toComplex
-  ext
-  simp only [fst_of_I_eq_zero, Complex.I_re]
-  simp only [snd_of_I_eq_one, Complex.I_im]
-
-@[simp]
-theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
-  ext : 1
-  unfold HMul.hMul instHMul Mul.mul instMulDir
-  simp only [I_toComplex_eq_I, Complex.I_mul_I, toVec_neg_eq_neg_toVec]
-  ext
-  rfl
-  rfl
-
--- Theorems for mk_angle. 
-
-section Make_angle_theorems
-
-@[simp]
-theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize (x : Vec_nd) : mk_angle (Complex.arg (Vec.toComplex x.1)) = Vec_nd.normalize x := by
-  ext : 1
-  unfold Vec_nd.normalize toVec mk_angle HSMul.hSMul instHSMul SMul.smul Prod.smul
-  simp
-  rw [vec_norm_eq_abs]
-  constructor
-  · rw [Complex.cos_arg, mul_comm]
-    rfl
-    intro h
-    exact ne_zero_of_Vec_nd_toComplex _ h
-  · rw [Complex.sin_arg, mul_comm]
-    rfl
-
-@[simp]
-theorem mk_angle_arg_toComplex_of_Dir_eq_self (x: Dir) : mk_angle (Complex.arg (Vec.toComplex x.toVec)) = x := by
-  have w : Complex.abs (Vec.toComplex x.1) = 1 := by
-    unfold toVec Vec.toComplex Complex.abs
-    simp only [AbsoluteValue.coe_mk, MulHom.coe_mk, Complex.normSq_mk, Real.sqrt_eq_one]
-    exact x.unit
-  ext : 1
-  unfold mk_angle
-  simp
-  rw [Complex.cos_arg, Complex.sin_arg, w]
-  unfold toVec
-  ext : 1
-  simp only [re_of_toComplex_eq_fst, div_one]
-  simp only [im_of_toComplex_eq_snd, div_one]
-  by_contra h
-  rw [eq_zero_of_toComplex_eq_zero h] at w
-  simp only [toComplex_zero_eq_zero, map_zero, zero_ne_one] at w 
-
-@[simp]
-theorem mk_angle_zero_eq_one : mk_angle 0 = 1 := by
-  unfold mk_angle
-  ext
-  simp only [Real.cos_zero, Real.sin_zero, Dir.fst_of_one_eq_one]
-  simp only [Real.cos_zero, Real.sin_zero, Dir.snd_of_one_eq_zero]
-
-@[simp]
-theorem mk_angle_pi_eq_neg_one : mk_angle π = -1 := by
-  unfold mk_angle
-  ext
-  simp only [Real.cos_pi, Real.sin_pi, toVec_neg_eq_neg_toVec, Prod.fst_neg, Dir.fst_of_one_eq_one]
-  simp only [Real.cos_pi, Real.sin_pi, toVec_neg_eq_neg_toVec, Prod.snd_neg, Dir.snd_of_one_eq_zero, neg_zero]
-
-@[simp]
-theorem mk_angle_neg_pi_eq_neg_one : mk_angle (-π) = -1 := by
-  unfold mk_angle
-  ext
-  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, toVec_neg_eq_neg_toVec, Prod.fst_neg,
-    Dir.fst_of_one_eq_one]
-  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, toVec_neg_eq_neg_toVec, Prod.snd_neg,
-    Dir.snd_of_one_eq_zero]
-
-theorem mk_angle_neg_mul_mk_angle_eq_one (x : ℝ) : mk_angle (-x) * mk_angle x = 1 := by
-  ext
-  unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec
-  simp only [Real.cos_neg, Real.sin_neg, Complex.mul_re, neg_mul, sub_neg_eq_add]
-  rw [← pow_two, ← pow_two, Real.cos_sq_add_sin_sq x]
-  rfl
-  unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec
-  simp only [Real.cos_neg, Real.sin_neg, Complex.mul_im, neg_mul]
-  rw [mul_comm, add_right_neg]
-  rfl
-
-@[simp]
-theorem mk_angle_neg_eq_mk_angle_inv (x : ℝ) : mk_angle (-x) = (mk_angle x)⁻¹ := by
-  rw [← one_mul (mk_angle x)⁻¹, ← mk_angle_neg_mul_mk_angle_eq_one x, mul_assoc, mul_right_inv, mul_one]
-
-theorem mk_angle_neg_mul_mk_angle_eq_one (x : ℝ) : mk_angle (-x) * mk_angle x = 1 := by
-  ext
-  unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec
-  simp only [Real.cos_neg, Real.sin_neg, Complex.mul_re, neg_mul, sub_neg_eq_add]
-  rw [← pow_two, ← pow_two, Real.cos_sq_add_sin_sq x]
-  rfl
-  unfold toVec mk_angle HMul.hMul instHMul Mul.mul instMulDir Vec.toComplex Complex.toVec
-  simp only [Real.cos_neg, Real.sin_neg, Complex.mul_im, neg_mul]
-  rw [mul_comm, add_right_neg]
-  rfl
-
-@[simp]
-theorem mk_angle_neg_eq_mk_angle_inv (x : ℝ) : mk_angle (-x) = (mk_angle x)⁻¹ := by
-  rw [← one_mul (mk_angle x)⁻¹, ← mk_angle_neg_mul_mk_angle_eq_one x, mul_assoc, mul_right_inv, mul_one]
-
-@[simp]
-theorem mk_angle_pi_div_two_eq_I : mk_angle (π / 2) = I := by
-  unfold mk_angle
-  ext
-  simp only [Real.cos_pi_div_two, Real.sin_pi_div_two, fst_of_I_eq_zero]
-  simp only [Real.cos_pi_div_two, Real.sin_pi_div_two, snd_of_I_eq_one]
-
-@[simp]
-theorem mk_angle_neg_pi_div_two_eq_neg_I : mk_angle (-(π / 2)) = -I := by
-  unfold mk_angle
-  ext
-  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, toVec_neg_eq_neg_toVec, Prod.fst_neg,
-    fst_of_I_eq_zero, neg_zero]
-  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, toVec_neg_eq_neg_toVec, Prod.snd_neg,
-    snd_of_I_eq_one]
-
-@[simp]
-theorem mk_angle_neg_pi_div_two_eq_neg_I' : mk_angle ((-π) / 2) = -I := by
-  rw [neg_div]
-  simp only [mk_angle_neg_pi_div_two_eq_neg_I]
-
-end Make_angle_theorems
-
-end Dir
+section Perpendicular
 
 namespace Proj
 
@@ -754,11 +699,11 @@ theorem perp_perp_eq_self (x : Proj) : x.perp.perp = x := by
 
 end Proj
 
-end Perpendicular_preparations
+end Perpendicular
 
 -- Our aim is to prove Pythagoras theorem in the file Perpendicular, but in this section, we will only prove that the inner product of to Vec_nd having same toProj is zero, which is the main theorem about toProj we will use in the proof of Pythagoras theorem. 
 
-section Pythagoras_preparation
+section Pythagoras
 
 theorem inner_eq_zero_of_dir_toProj_eq_dir_toProj_perp (d₁ d₂ : Dir) (h : d₁.toProj.perp = d₂.toProj) : Vec.InnerProductSpace.Core.inner d₁.toVec d₂.toVec = 0 := by
   let h' := Quotient.exact h
@@ -792,7 +737,7 @@ theorem inner_eq_zero_of_Vec_nd_toProj_eq_Vec_nd_toProj (v₁ v₂ : Vec_nd) (h 
   rw [← mul_zero (Vec.norm v₁.1 * Vec.norm v₂.1), ← g]
   ring
 
-end Pythagoras_preparation
+end Pythagoras
 
 -- Our aim is to prove nonparallel lines have common point, but in this section, we will only form the theorem in a Linear algebraic way by proving two Vec_nd-s could span the space with different toProj, which is the main theorem about toProj we will use in the proof of the intersection theorem. 
 
