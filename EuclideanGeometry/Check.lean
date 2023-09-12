@@ -1,8 +1,6 @@
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
-import EuclideanGeometry.Foundation.Axiom.Plane
-import EuclideanGeometry.Foundation.Axiom.Ray
-import EuclideanGeometry.Foundation.Axiom.Angle
+import EuclideanGeometry.Foundation.Index
 /- here checks things-/
 
 /- 

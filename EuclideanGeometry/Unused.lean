@@ -1,13 +1,7 @@
 /- Here stores unused codes-/
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
-import EuclideanGeometry.Foundation.Axiom.Plane
-import EuclideanGeometry.Foundation.Axiom.Ray
-import EuclideanGeometry.Foundation.Axiom.Angle
-import EuclideanGeometry.Foundation.Axiom.Ray_ex
-import EuclideanGeometry.Foundation.Axiom.Translation_ex
-import EuclideanGeometry.Foundation.Axiom.Position
-import EuclideanGeometry.Foundation.Axiom.Class
+import EuclideanGeometry.Foundation.Axiom.Index
 
 noncomputable section
 namespace EuclidGeom
