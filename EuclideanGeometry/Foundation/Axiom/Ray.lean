@@ -72,6 +72,8 @@ def IsOnIntSeg (a : P) (seg : Seg P) : Prop := IsOnSeg a seg ∧ a ≠ seg.sourc
 
 end Seg
 
+scoped notation "SEG" => Seg.mk
+
 def Seg_nd (P : Type _) [EuclideanPlane P] := {seg : Seg P // seg.is_nd}
 
 end definitions
@@ -97,6 +99,10 @@ namespace Seg
 variable {P : Type _} [EuclideanPlane P] (seg : Seg P) 
 
 def toVec : Vec := VEC seg.source seg.target
+
+@[simp]
+theorem seg_toVec_eq_vec (A B : P) : (SEG A B).toVec = VEC A B := by
+  sorry
 
 end Seg
 
@@ -129,7 +135,6 @@ def Ray.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : Ray P
 -- notation 
 end mk
 
-scoped notation "SEG" => Seg.mk
 scoped notation "RAY" => Ray.mk_pt_pt
 
 section length
