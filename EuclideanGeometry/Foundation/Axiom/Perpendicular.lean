@@ -20,6 +20,8 @@ protected theorem symm (l₁ l₂ : LinearObj P) : (l₁ ⟂ l₂) → (l₂ ⟂
 
 end perpendicular
 
+section Perpendicular_and_parallel
+
 theorem parallel_of_perp_perp (l₁ l₂ l₃ : LinearObj P) : (l₁ ⟂ l₂) → (l₂ ⟂ l₃) → (l₁ ∥ l₃) := by
   unfold perpendicular parallel
   intro h₁ h₂
@@ -32,6 +34,8 @@ theorem perp_of_parallel_perp (l₁ l₂ l₃ : LinearObj P) : (l₁ ∥ l₂) �
 theorem perp_of_perp_parallel (l₁ l₂ l₃ : LinearObj P) : (l₁ ⟂ l₂) → (l₂ ∥ l₃) → (l₁ ⟂ l₃) := sorry 
 
 theorem toProj_ne_toProj_of_perp (l₁ l₂: LinearObj P) : (l₁ ⟂ l₂) → (l₁.toProj ≠ l₂.toProj) := sorry
+
+end Perpendicular_and_parallel
 
 section Perpendicular_constructions
 
@@ -46,6 +50,10 @@ theorem perp_foot_preparation (A : P) (l : Line P) : l.toProj ≠ (perp_line A l
 
 def perp_foot (A : P) (l : Line P) : P := intersection_of_nonparallel_line l (perp_line A l) (perp_foot_preparation A l)
 
+end Perpendicular_constructions
+
+section Pythagoras
+
 theorem length_sq_eq_inner_toVec_toVec (seg : Seg P) : seg.length ^ 2 = Vec.InnerProductSpace.Core.inner seg.toVec seg.toVec := by
   have l : seg.length = Real.sqrt (Vec.InnerProductSpace.Core.inner seg.toVec seg.toVec) := by rfl
   rw [l]
@@ -54,8 +62,7 @@ theorem length_sq_eq_inner_toVec_toVec (seg : Seg P) : seg.length ^ 2 = Vec.Inne
   rw [Real.sq_sqrt n]
 
 theorem Pythagoras_of_triangle {A B C : P} (hab : B ≠ A) (hac : C ≠ A) (h : (Seg_nd.toProj ⟨SEG A B, hab⟩).perp = (Seg_nd.toProj ⟨SEG A C, hac⟩)) : (SEG A B).length ^ 2 + (SEG A C).length ^ 2 = (SEG B C).length ^ 2 := by
-  have i : Vec.InnerProductSpace.Core.inner (VEC A B) (VEC A C) = 0 := by
-    exact inner_eq_zero_of_Vec_nd_toProj_eq_Vec_nd_toProj (Seg_nd.toVec_nd ⟨SEG A B, hab⟩) (Seg_nd.toVec_nd ⟨SEG A C, hac⟩) h
+  have i : Vec.InnerProductSpace.Core.inner (VEC A B) (VEC A C) = 0 := inner_eq_zero_of_Vec_nd_toProj_eq_Vec_nd_toProj (Seg_nd.toVec_nd ⟨SEG A B, hab⟩) (Seg_nd.toVec_nd ⟨SEG A C, hac⟩) h
   rw [length_sq_eq_inner_toVec_toVec (SEG A B), length_sq_eq_inner_toVec_toVec (SEG A C), length_sq_eq_inner_toVec_toVec (SEG B C)]
   simp only [Seg.seg_toVec_eq_vec]
   rw [← vec_sub_vec A B C]
@@ -69,8 +76,6 @@ theorem Pythagoras_of_triangle {A B C : P} (hab : B ≠ A) (hac : C ≠ A) (h : 
 theorem Pythagoras_of_perp_foot (A B : P) {l : Line P} (h : B LiesOn l) : (SEG A (perp_foot A l)).length ^ 2 + (SEG B (perp_foot A l)).length ^ 2 = (SEG A B).length ^ 2 := by
   sorry
 
--- theorem length_sq_eq_length_sq_add_length_sq_of_perp 
-
-end Perpendicular_constructions
+end Pythagoras
 
 end EuclidGeom
