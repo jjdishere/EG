@@ -34,7 +34,11 @@ theorem toProj_ne_toProj_of_perp (l₁ l₂: LinearObj P) : (l₁ ⟂ l₂) → 
 
 section Perpendicular_foot
 
--- def perp_foot (p : P) (l : Line P)
+-- Now LinearObj is not finished. After we finished it, please rewrite the def of perp_foot by a better way
+theorem perp_foot_preparation (A : P) (l : Line P) : l.toProj ≠ (Line.mk_pt_proj A (l.toProj.perp)).toProj := by
+  sorry
+
+def perp_foot (A : P) (l : Line P) : P := intersection_of_nonparallel_line (trv A l)
 
 -- theorem length_sq_eq_length_sq_add_length_sq_of_perp 
 

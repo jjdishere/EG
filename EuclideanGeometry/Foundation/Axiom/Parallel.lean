@@ -117,7 +117,7 @@ theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h 
     exact line_eq_line_of_pt_pt_of_ne n h₂ h₂'
   tauto
 
-def intersection_of_nonparallel_line {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) :  P := 
+def intersection_of_nonparallel_line {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : P := 
   Classical.choose (exists_unique_intersection_of_nonparallel_lines h)
   -- by choose X _ using (exists_unique_intersection_of_nonparallel_lines h)
   -- use X
