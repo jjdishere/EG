@@ -700,6 +700,20 @@ theorem inner_eq_zero_of_dir_toProj_eq_dir_toProj_perp (d₁ d₂ : Dir) (h : d�
     simp only [Complex.mul_re, Complex.mul_im, zero_mul, one_mul, zero_sub, zero_add, Prod.neg_mk, neg_neg, mul_neg]
     ring
 
+theorem Vec_nd_eq_smul_Vec_nd_normalize_toVec (v : Vec_nd) : v = Vec.norm v.1 • (Vec_nd.normalize v).toVec := by
+  apply (inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v.1) v.2)).1
+  rfl
+
+theorem inner_eq_zero_of_Vec_nd_toProj_eq_Vec_nd_toProj (v₁ v₂ : Vec_nd) (h : v₁.toProj.perp = v₂.toProj) : Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 = 0 := by
+  rw [Vec_nd_eq_smul_Vec_nd_normalize_toVec v₁, Vec_nd_eq_smul_Vec_nd_normalize_toVec v₂]
+  let g := inner_eq_zero_of_dir_toProj_eq_dir_toProj_perp (Vec_nd.normalize v₁) (Vec_nd.normalize v₂) h
+  unfold Vec.InnerProductSpace.Core at g
+  simp at g
+  unfold Vec.InnerProductSpace.Core
+  simp
+  rw [← mul_zero (Vec.norm v₁.1 * Vec.norm v₂.1), ← g]
+  ring
+
 end Perpendicular_preparation
 
 -- Start proving theorems about intersecting two lines
