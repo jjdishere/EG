@@ -336,6 +336,9 @@ theorem eq_zero_of_toComplex_eq_zero {x : Vec} (hx : Vec.toComplex x = 0) : x = 
     tauto
   exact g
 
+@[simp]
+theorem toComplex_zero_eq_zero : Vec.toComplex 0 = 0 := rfl
+
 theorem dir_toVec_ne_zero (x : Dir) : x.toVec ≠ 0 := by
   by_contra h
   have h' : Vec.InnerProductSpace.Core.inner x.toVec x.toVec = 0 := by
@@ -354,6 +357,16 @@ theorem ne_zero_of_Vec_nd_toComplex (x : Vec_nd) : Vec.toComplex x.1 ≠ 0 := by
   exact x.2 this
 
 @[simp]
+theorem norm_of_dir_toVec_eq_one (x : Dir) : Vec.norm x.toVec = 1 := by
+  exact Iff.mpr Real.sqrt_eq_one x.unit
+
+@[simp]
+theorem dir_toVec_nd_normalize_eq_self (x : Dir) : Vec_nd.normalize (⟨x.toVec, dir_toVec_ne_zero x⟩ : Vec_nd) = x := by
+  ext : 1
+  unfold Vec_nd.normalize
+  simp only [norm_of_dir_toVec_eq_one, inv_one, one_smul]
+
+@[simp]
 theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize (x : Vec_nd) : mk_angle (Complex.arg (Vec.toComplex x.1)) = Vec_nd.normalize x := by
   ext : 1
   unfold Vec_nd.normalize toVec mk_angle HSMul.hSMul instHSMul SMul.smul Prod.smul
@@ -361,22 +374,17 @@ theorem mk_angle_arg_toComplex_of_nonzero_eq_normalize (x : Vec_nd) : mk_angle (
   rw [vec_norm_eq_abs]
   constructor
   · rw [Complex.cos_arg, mul_comm]
-    simp
     rfl
     intro h
     exact ne_zero_of_Vec_nd_toComplex _ h
   · rw [Complex.sin_arg, mul_comm]
-    simp
     rfl
-
-@[simp]
-theorem toComplex_zero_eq_zero : Vec.toComplex 0 = 0 := rfl
 
 @[simp]
 theorem mk_angle_arg_toComplex_of_Dir_eq_self (x: Dir) : mk_angle (Complex.arg (Vec.toComplex x.toVec)) = x := by
   have w : Complex.abs (Vec.toComplex x.1) = 1 := by
     unfold toVec Vec.toComplex Complex.abs
-    simp
+    simp only [AbsoluteValue.coe_mk, MulHom.coe_mk, Complex.normSq_mk, Real.sqrt_eq_one]
     exact x.unit
   ext : 1
   unfold mk_angle
@@ -388,7 +396,7 @@ theorem mk_angle_arg_toComplex_of_Dir_eq_self (x: Dir) : mk_angle (Complex.arg (
   simp only [im_of_toComplex_eq_snd, div_one]
   by_contra h
   rw [eq_zero_of_toComplex_eq_zero h] at w
-  simp at w
+  simp only [toComplex_zero_eq_zero, map_zero, zero_ne_one] at w 
 
 end Dir
 
@@ -424,7 +432,6 @@ instance con : Con Dir where
   iseqv := PM.equivalence
   mul' := by
     unfold Setoid.r PM
-    simp
     intro _ x _ z g h
     match g with
       | Or.inl g₁ => 
@@ -471,7 +478,7 @@ def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.normalize v : Proj)
 theorem normalize_eq_normalize_smul_pos (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : 0 < t) : Vec_nd.normalize u = Vec_nd.normalize v := by
   ext : 1
   unfold Vec_nd.normalize Dir.toVec
-  simp
+  simp only [ne_eq]
   have hv₁ : Vec.norm v.1 ≠ 0 := Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v.1) v.2
   have g : (Vec.norm v.1) • u.1 = (Vec.norm u.1) • v.1 := by
     have w₁ : (Vec.norm (t • u.1)) = ‖t‖ * (Vec.norm u.1) := @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u.1
@@ -485,7 +492,7 @@ theorem normalize_eq_normalize_smul_pos (u v : Vec_nd) {t : ℝ} (h : v.1 = t �
 theorem neg_normalize_eq_normalize_smul_neg (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : t < 0) : -Vec_nd.normalize u = Vec_nd.normalize v := by
   ext : 1
   unfold Vec_nd.normalize
-  simp
+  simp only [ne_eq, Dir.toVec_neg_eq_neg_toVec]
   have g : (-Vec.norm v.1) • u.1 = (Vec.norm u.1) • v.1 := by
     have w₁ : (Vec.norm (t • u.1)) = ‖t‖ * (Vec.norm u.1) := @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u.1
     have w₂ : ‖t‖ = -t := abs_of_neg ht
@@ -504,7 +511,7 @@ theorem eq_toProj_of_smul (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) : Vec_n
   unfold Vec_nd.toProj Dir.toProj
   apply Quotient.sound
   unfold HasEquiv.Equiv instHasEquiv PM.con PM
-  simp
+  simp only [Con.rel_eq_coe, Con.rel_mk]
   match ht₁ with
     | Or.inl ht₂ =>
       left
@@ -517,7 +524,7 @@ theorem smul_of_eq_toProj (u v : Vec_nd) (h : Vec_nd.toProj u = Vec_nd.toProj v)
   unfold Vec_nd.toProj Dir.toProj at h
   let h' := Quotient.exact h
   unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
-  simp at h'
+  simp only [Con.rel_eq_coe, Con.rel_mk] at h' 
   match h' with
     | Or.inl h₁ =>
       rw [Dir.ext_iff] at h₁
@@ -553,7 +560,7 @@ def I : Dir where
   toVec := (0, 1)
   unit := by
     unfold inner Vec.InnerProductSpace.Core
-    simp
+    simp only [mul_zero, mul_one, zero_add]
 
 @[simp]
 theorem fst_of_I_eq_zero : I.1.1 = 0 := rfl
@@ -656,7 +663,7 @@ theorem neg_one_eq_one_of_Proj : ((-1 : Dir) : Proj) = (1 : Proj) := by
   unfold Dir.toProj
   apply Quotient.sound
   unfold HasEquiv.Equiv instHasEquiv PM.con PM
-  simp
+  simp only [Con.rel_eq_coe, Con.rel_mk, or_true]
 
 @[simp]
 theorem I_mul_I_eq_one_of_Proj : I * I = 1 := by
@@ -713,7 +720,6 @@ theorem det_eq_zero_iff (u v : ℝ × ℝ) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.
     unfold HSMul.hSMul instHSMul SMul.smul Prod.smul at e
     simp at e
     rcases e
-    simp
     ring
 
 theorem linear_combination_of_not_colinear {u v w : ℝ × ℝ} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
