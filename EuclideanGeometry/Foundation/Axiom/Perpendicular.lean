@@ -38,7 +38,10 @@ section Perpendicular_foot
 theorem perp_foot_preparation (A : P) (l : Line P) : l.toProj ≠ (Line.mk_pt_proj A (l.toProj.perp)).toProj := by
   sorry
 
-def perp_foot (A : P) (l : Line P) : P := intersection_of_nonparallel_line (trv A l)
+def perp_foot (A : P) (l : Line P) : P := intersection_of_nonparallel_line (perp_foot_preparation A l)
+
+-- Thing goes wrong when a merged version is used
+-- def perp_foot' (A : P) (l : Line P) : P := intersection_of_nonparallel_line (l.toProj ≠ (Line.mk_pt_proj A (l.toProj.perp)).toProj)
 
 -- theorem length_sq_eq_length_sq_add_length_sq_of_perp 
 
