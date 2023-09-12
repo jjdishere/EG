@@ -491,7 +491,7 @@ theorem normalize_eq_normalize_smul_pos (u v : Vec_nd) {t : ℝ} (h : v.1 = t �
 theorem neg_normalize_eq_normalize_smul_neg (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : t < 0) : -Vec_nd.normalize u = Vec_nd.normalize v := by
   ext : 1
   unfold Vec_nd.normalize
-  simp only [ne_eq, Dir.toVec_neg_eq_neg_toVec]
+  simp only [ne_eq, Dir.tovec_neg_eq_neg_tovec]
   have g : (-Vec.norm v.1) • u.1 = (Vec.norm u.1) • v.1 := by
     have w₁ : (Vec.norm (t • u.1)) = ‖t‖ * (Vec.norm u.1) := @norm_smul _ _ _ Vec.SeminormedAddGroup _ Vec.BoundedSMul t u.1
     have w₂ : ‖t‖ = -t := abs_of_neg ht
