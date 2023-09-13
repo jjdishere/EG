@@ -17,15 +17,6 @@ variable  {P : Type _} [EuclideanPlane P]
 
 -- define a line from two points 
 
-theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = tB) (ha : VEC O A = tA • v) (hb : VEC O B = tB • v) : A = B := by
-  have hab : tB - tA = 0 := Iff.mpr sub_eq_zero (Eq.symm h)
-  have hc : VEC A B = VEC O B - VEC O A := by
-    unfold Vec.mk_pt_pt
-    simp only [vsub_sub_vsub_cancel_right]
-  rw [ha, hb, ← sub_smul, hab, zero_smul] at hc
-  symm
-  exact (eq_iff_vec_eq_zero A B).2 hc
-
 def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
   carrier := {C : P | ∃ t : ℝ, VEC A C = t • VEC A B}
   linear x y z:= by

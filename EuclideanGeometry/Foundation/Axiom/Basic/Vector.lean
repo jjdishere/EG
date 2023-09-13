@@ -729,7 +729,7 @@ theorem Vec_nd.norm_smul_normalize_eq_self (v : Vec_nd) : Vec.norm v.1 • (Vec_
   apply (inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v.1) v.2)).1
   rfl
 
-theorem inner_eq_zero_of_Vec_nd_toProj_eq_Vec_nd_toProj (v₁ v₂ : Vec_nd) (h : v₁.toProj.perp = v₂.toProj) : Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 = 0 := by
+theorem inner_eq_zero_of_toProj_perp_eq_toProj (v₁ v₂ : Vec_nd) (h : v₁.toProj.perp = v₂.toProj) : Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 = 0 := by
   rw [(Vec_nd.norm_smul_normalize_eq_self v₁).symm, (Vec_nd.norm_smul_normalize_eq_self v₂).symm]
   let g := Dir.inner_eq_zero_of_toProj_eq_toProj_perp (Vec_nd.normalize v₁) (Vec_nd.normalize v₂) h
   unfold Vec.InnerProductSpace.Core at g
@@ -743,6 +743,10 @@ theorem inner_eq_zero_of_Vec_nd_toProj_eq_Vec_nd_toProj (v₁ v₂ : Vec_nd) (h 
 end Pythagoras
 
 -- Our aim is to prove nonparallel lines have common point, but in this section, we will only form the theorem in a Linear algebraic way by proving two Vec_nd-s could span the space with different toProj, which is the main theorem about toProj we will use in the proof of the intersection theorem. 
+
+section Cosine_theorem_for_Vec_nd
+
+end Cosine_theorem_for_Vec_nd
 
 section Linear_Algebra
 
