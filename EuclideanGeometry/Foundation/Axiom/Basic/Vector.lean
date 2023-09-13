@@ -356,6 +356,11 @@ theorem snd_of_neg_one_eq_zero : (-1 : Dir).toVec.2 = 0 := by
 
 def angle (x y : Dir) := Complex.arg (Vec.toComplex (y * (x⁻¹)).toVec)
 
+theorem fst_of_angle_toVec (x y : Dir) : (y * (x⁻¹)).1.1 = x.1.1 * y.1.1 + x.1.2 * y.1.2 := by
+  have h : x.1.1 * y.1.1 + x.1.2 * y.1.2 = y.1.1 * x.1.1 - y.1.2 * (-x.1.2) := by ring
+  rw [h]
+  rfl
+
 def mk_angle (θ : ℝ) : Dir where
   toVec := (Real.cos θ, Real.sin θ)
   unit := by 
@@ -723,7 +728,6 @@ theorem Dir.inner_eq_zero_of_toProj_eq_toProj_perp (d₁ d₂ : Dir) (h : d₁.t
     simp only [Complex.mul_re, Complex.mul_im, zero_mul, one_mul, zero_sub, zero_add, Prod.neg_mk, neg_neg, mul_neg]
     ring
 
-@[simp]
 theorem Vec_nd.norm_smul_normalize_eq_self (v : Vec_nd) : Vec.norm v.1 • (Vec_nd.normalize v).toVec = v := by
   symm
   apply (inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v.1) v.2)).1
@@ -742,11 +746,33 @@ theorem inner_eq_zero_of_toProj_perp_eq_toProj (v₁ v₂ : Vec_nd) (h : v₁.to
 
 end Pythagoras
 
--- Our aim is to prove nonparallel lines have common point, but in this section, we will only form the theorem in a Linear algebraic way by proving two Vec_nd-s could span the space with different toProj, which is the main theorem about toProj we will use in the proof of the intersection theorem. 
+-- Some note here. 
 
 section Cosine_theorem_for_Vec_nd
 
+def Vec_nd.angle (v₁ v₂ : Vec_nd) := Dir.angle (Vec_nd.normalize v₁) (Vec_nd.normalize v₂)
+
+theorem cos_arg_of_dir_eq_fst (x : Dir) : Real.cos (Complex.arg (Vec.toComplex x.1)) = x.1.1 := by
+  have w₁ : (Dir.mk_angle (Complex.arg (Vec.toComplex x.1))).1.1 = Real.cos (Complex.arg (Vec.toComplex x.1)) := rfl
+  simp only [← w₁, Dir.mk_angle_arg_toComplex_of_Dir_eq_self]
+
+/-
+theorem sin_arg_of_dir_eq_fst (x : Dir) : Real.sin (Complex.arg (Vec.toComplex x.1)) = x.1.2 := by
+  have w₁ : (Dir.mk_angle (Complex.arg (Vec.toComplex x.1))).1.2 = Real.sin (Complex.arg (Vec.toComplex x.1)) := rfl
+  simp only [← w₁, Dir.mk_angle_arg_toComplex_of_Dir_eq_self]
+-/
+
+theorem cos_angle_of_dir_dir_eq_inner (d₁ d₂ : Dir) : Real.cos (Dir.angle d₁ d₂) = Vec.InnerProductSpace.Core.inner d₁.1 d₂.1 := by
+  unfold Dir.angle
+  rw [cos_arg_of_dir_eq_fst]
+  exact (Dir.fst_of_angle_toVec d₁ d₂)
+
+theorem cos_angle_mul_norm_mul_norm_eq_inner_of_Vec_nd (v₁ v₂ : Vec_nd) : Real.cos (Vec_nd.angle v₁ v₂) * (Vec.norm v₁) * (Vec.norm v₂) = Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 := by
+  sorry
+
 end Cosine_theorem_for_Vec_nd
+
+-- Our aim is to prove nonparallel lines have common point, but in this section, we will only form the theorem in a Linear algebraic way by proving two Vec_nd-s could span the space with different toProj, which is the main theorem about toProj we will use in the proof of the intersection theorem. 
 
 section Linear_Algebra
 
