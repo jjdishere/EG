@@ -5,6 +5,10 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Plane
 noncomputable section
 namespace EuclidGeom
 
+class PlaneFigure (α : Type _) where
+  plane : Type _
+  euclid : EuclideanPlane plane
+
 variable (P : Type _) [EuclideanPlane P]
 
 class HasLiesOn (α : Type _) where
