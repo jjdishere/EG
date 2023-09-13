@@ -49,6 +49,14 @@ theorem perp_foot_preparation (A : P) (l : Line P) : l.toProj ≠ (perp_line A l
 
 def perp_foot (A : P) (l : Line P) : P := intersection_of_nonparallel_line l (perp_line A l) (perp_foot_preparation A l)
 
+def dist_pt_line (A : P) (l : Line P) := Seg.length (SEG A (perp_foot A l))
+
+theorem perp_foot_eq_self_iff_lies_on (A : P) (l : Line P) : perp_foot A l = A ↔ A LiesOn l := by
+  sorry
+
+theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l := by
+  sorry
+
 end Perpendicular_constructions
 
 section Pythagoras
