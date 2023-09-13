@@ -54,6 +54,9 @@ def dist_pt_line (A : P) (l : Line P) := Seg.length (SEG A (perp_foot A l))
 theorem perp_foot_eq_self_iff_lies_on (A : P) (l : Line P) : perp_foot A l = A ↔ A LiesOn l := by
   sorry
 
+theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on (A : P) (l : Line P) (h : ¬ A LiesOn l) : LIN A (perp_foot A l) (by sorry) = perp_line A l := by
+  sorry
+
 theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l := by
   sorry
 
