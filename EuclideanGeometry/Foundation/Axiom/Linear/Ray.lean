@@ -139,17 +139,22 @@ scoped notation "RAY" => Ray.mk_pt_pt
 
 section length
 
-namespace Seg
-
 variable {P : Type _} [EuclideanPlane P] (l : Seg P)
 
 -- define the length of a generalized directed segment.
-def length : ℝ := Vec.Norm.norm (l.toVec)
+def Seg.length : ℝ := Vec.Norm.norm (l.toVec)
 
 -- length of a generalized directed segment is nonnegative.
-theorem length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ Vec.SeminormedAddGroup _
+theorem seg_length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ Vec.SeminormedAddGroup _
 
-theorem toVec_eq_zero_of_deg : (l.target = l.source) ↔ l.toVec = 0 := by unfold toVec Vec.mk_pt_pt; simp
+theorem seg_length_sq_eq_inner_toVec_toVec (seg : Seg P) : seg.length ^ 2 = Vec.InnerProductSpace.Core.inner seg.toVec seg.toVec := by
+  have l : seg.length = Real.sqrt (Vec.InnerProductSpace.Core.inner seg.toVec seg.toVec) := by rfl
+  rw [l]
+  have n : 0 ≤ Vec.InnerProductSpace.Core.inner seg.toVec seg.toVec := by 
+    exact Vec.InnerProductSpace.Core.nonneg_re seg.toVec
+  rw [Real.sq_sqrt n]
+
+theorem toVec_eq_zero_of_deg : (l.target = l.source) ↔ l.toVec = 0 := by unfold Seg.toVec Vec.mk_pt_pt; simp
 
 -- A generalized directed segment is trivial if and only if length is zero.
 theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by
@@ -166,8 +171,6 @@ theorem length_eq_sum_of_length_two_part (l : Seg P) (p : P) (lieson : p LiesOn 
 
 -- If a generalized directed segment contains an interior point, then it is nontrivial
 theorem nontriv_iff_exist_inter_pt (l : Seg P) (p : P) (lieson : p LiesOnIntSeg l) : l.is_nd := sorry
-
-end Seg
 
 end length
 

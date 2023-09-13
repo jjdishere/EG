@@ -53,16 +53,9 @@ end Perpendicular_constructions
 
 section Pythagoras
 
-theorem length_sq_eq_inner_toVec_toVec (seg : Seg P) : seg.length ^ 2 = Vec.InnerProductSpace.Core.inner seg.toVec seg.toVec := by
-  have l : seg.length = Real.sqrt (Vec.InnerProductSpace.Core.inner seg.toVec seg.toVec) := by rfl
-  rw [l]
-  have n : 0 ≤ Vec.InnerProductSpace.Core.inner seg.toVec seg.toVec := by 
-    exact Vec.InnerProductSpace.Core.nonneg_re seg.toVec
-  rw [Real.sq_sqrt n]
-
 theorem Pythagoras_of_ne_ne_perp {A B C : P} (hab : B ≠ A) (hac : C ≠ A) (h : (Seg_nd.toProj ⟨SEG A B, hab⟩).perp = (Seg_nd.toProj ⟨SEG A C, hac⟩)) : (SEG A B).length ^ 2 + (SEG A C).length ^ 2 = (SEG B C).length ^ 2 := by
   have i : Vec.InnerProductSpace.Core.inner (VEC A B) (VEC A C) = 0 := inner_eq_zero_of_Vec_nd_toProj_eq_Vec_nd_toProj (Seg_nd.toVec_nd ⟨SEG A B, hab⟩) (Seg_nd.toVec_nd ⟨SEG A C, hac⟩) h
-  rw [length_sq_eq_inner_toVec_toVec (SEG A B), length_sq_eq_inner_toVec_toVec (SEG A C), length_sq_eq_inner_toVec_toVec (SEG B C)]
+  rw [seg_length_sq_eq_inner_toVec_toVec (SEG A B), seg_length_sq_eq_inner_toVec_toVec (SEG A C), seg_length_sq_eq_inner_toVec_toVec (SEG B C)]
   simp only [Seg.seg_toVec_eq_vec]
   rw [← vec_sub_vec A B C]
   unfold Vec.InnerProductSpace.Core at i

@@ -229,7 +229,7 @@ end Define_line_toProj
 /- def coe from ray to line-/
 
 def Ray.toLine (r : Ray P) := LIN r.source (r.toDir.toVec +ᵥ r.source) (by 
-  simp only [ne_eq, vec_eq_zero_of_vadd_eq_self]
+  simp only [ne_eq, vadd_eq_self_iff_vec_eq_zero]
   exact Dir.toVec_ne_zero r.toDir)
 
 instance : Coe (Ray P) (Line P) where
@@ -323,7 +323,7 @@ theorem exist_unique_line_of_pt_proj (A : P) (pr : Proj) : ∃! l : Line P, A Li
   intro l₂ hl₂
   rcases Quot.exists_rep pr with ⟨dir, _⟩
   have _ : dir.toVec +ᵥ A ≠ A := by
-    simp only [ne_eq, vec_eq_zero_of_vadd_eq_self, Dir.toVec_ne_zero dir, not_false_eq_true]
+    simp only [ne_eq, vadd_eq_self_iff_vec_eq_zero, Dir.toVec_ne_zero dir, not_false_eq_true]
   apply (lies_on_iff_lies_on_iff_line_eq_line l₂ l₁).1
   intro X
   by_cases X = A 
