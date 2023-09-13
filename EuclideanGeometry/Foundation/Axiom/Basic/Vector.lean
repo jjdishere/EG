@@ -734,7 +734,7 @@ theorem Vec_nd.norm_smul_normalize_eq_self (v : Vec_nd) : Vec.norm v.1 • (Vec_
   rfl
 
 theorem inner_eq_zero_of_toProj_perp_eq_toProj (v₁ v₂ : Vec_nd) (h : v₁.toProj.perp = v₂.toProj) : Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 = 0 := by
-  rw [(Vec_nd.norm_smul_normalize_eq_self v₁).symm, (Vec_nd.norm_smul_normalize_eq_self v₂).symm]
+  rw [← Vec_nd.norm_smul_normalize_eq_self v₁, ← Vec_nd.norm_smul_normalize_eq_self v₂]
   let g := Dir.inner_eq_zero_of_toProj_eq_toProj_perp (Vec_nd.normalize v₁) (Vec_nd.normalize v₂) h
   unfold Vec.InnerProductSpace.Core at g
   simp only at g 
@@ -767,8 +767,10 @@ theorem cos_angle_of_dir_dir_eq_inner (d₁ d₂ : Dir) : Real.cos (Dir.angle d�
   rw [cos_arg_of_dir_eq_fst]
   exact (Dir.fst_of_angle_toVec d₁ d₂)
 
-theorem cos_angle_mul_norm_mul_norm_eq_inner_of_Vec_nd (v₁ v₂ : Vec_nd) : Real.cos (Vec_nd.angle v₁ v₂) * (Vec.norm v₁) * (Vec.norm v₂) = Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 := by
-  sorry
+theorem norm_mul_norm_mul_cos_angle_eq_inner_of_Vec_nd (v₁ v₂ : Vec_nd) : (Vec.norm v₁) * (Vec.norm v₂) * Real.cos (Vec_nd.angle v₁ v₂) = Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 := by
+  nth_rw 2 [← Vec_nd.norm_smul_normalize_eq_self v₁, ← Vec_nd.norm_smul_normalize_eq_self v₂]
+  rw [Vec.InnerProductSpace.Core.inner_smul_left, Vec.InnerProductSpace.Core.inner_smul_right, ← cos_angle_of_dir_dir_eq_inner, mul_assoc]
+  rfl
 
 end Cosine_theorem_for_Vec_nd
 
