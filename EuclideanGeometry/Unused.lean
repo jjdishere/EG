@@ -1,7 +1,7 @@
-/- Here stores unused codes-/
+/- Here stores unused codes -/
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
-import EuclideanGeometry.Foundation.Axiom.Index
+import EuclideanGeometry.Foundation.Index
 
 noncomputable section
 namespace EuclidGeom
@@ -41,6 +41,65 @@ notation "v("x"," y ")" => vector_of_coord x y
 theorem x_coord_of_vector_of_coord (x : ℝ) (y : ℝ) : x(vector_of_coord (h := h) x y) = x := sorry
 
 end Cartesian2dVectorSpace
+
+-- Unused section Pythagoras in Vector
+
+-- Our aim is to prove Pythagoras theorem in the file Perpendicular, but in this section, we will only prove that the inner product of to Vec_nd having same toProj is zero, which is the main theorem about toProj we will use in the proof of Pythagoras theorem. 
+
+section Pythagoras
+
+theorem Dir.inner_eq_zero_of_toProj_eq_toProj_perp (d₁ d₂ : Dir) (h : d₁.toProj.perp = d₂.toProj) : Vec.InnerProductSpace.Core.inner d₁.toVec d₂.toVec = 0 := by
+  let h' := Quotient.exact h
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
+  simp only [Con.rel_eq_coe, Con.rel_mk] at h' 
+  by_cases Dir.I * d₁ = d₂
+  · rw [← h]
+    unfold Dir.I HMul.hMul instHMul Mul.mul Dir.instMulDir Vec.toComplex Complex.toVec Vec.InnerProductSpace.Core
+    simp only [Complex.mul_re, Complex.mul_im, zero_mul, one_mul, zero_sub, zero_add, mul_neg]
+    ring
+  · have h : Dir.I * d₁ = -d₂ := by tauto
+    have h' : - (Dir.I * d₁) = - - d₂ := by
+      rw [← h]
+    rw [← Iff.mp neg_eq_iff_eq_neg rfl] at h'
+    rw [← h']
+    unfold Neg.neg Dir.instNegDir Dir.I HMul.hMul instHMul Mul.mul Dir.instMulDir Vec.toComplex Complex.toVec Vec.InnerProductSpace.Core
+    simp only [Complex.mul_re, Complex.mul_im, zero_mul, one_mul, zero_sub, zero_add, Prod.neg_mk, neg_neg, mul_neg]
+    ring
+
+theorem inner_eq_zero_of_toProj_perp_eq_toProj (v₁ v₂ : Vec_nd) (h : v₁.toProj.perp = v₂.toProj) : Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 = 0 := by
+  rw [← Vec_nd.norm_smul_normalize_eq_self v₁, ← Vec_nd.norm_smul_normalize_eq_self v₂]
+  let g := Dir.inner_eq_zero_of_toProj_eq_toProj_perp (Vec_nd.normalize v₁) (Vec_nd.normalize v₂) h
+  unfold Vec.InnerProductSpace.Core at g
+  simp only at g 
+  unfold Vec.InnerProductSpace.Core
+  simp only [ne_eq, Prod.smul_fst, smul_eq_mul, Prod.smul_snd]
+  rw [← mul_zero (Vec.norm v₁.1 * Vec.norm v₂.1), ← g]
+  simp only [ne_eq]
+  ring
+
+end Pythagoras
+
+/- Unused section Pythagoras in Perpendicular
+
+section Pythagoras
+
+theorem Pythagoras_of_ne_ne_perp' (P : Type _) [EuclideanPlane P] {A B C : P} (hab : B ≠ A) (hac : C ≠ A) (h : (Seg_nd.toProj ⟨SEG A B, hab⟩).perp = (Seg_nd.toProj ⟨SEG A C, hac⟩)) : (SEG A B).length ^ 2 + (SEG A C).length ^ 2 = (SEG B C).length ^ 2 := by
+  have i : Vec.InnerProductSpace.Core.inner (VEC A B) (VEC A C) = 0 := inner_eq_zero_of_toProj_perp_eq_toProj (Seg_nd.toVec_nd ⟨SEG A B, hab⟩) (Seg_nd.toVec_nd ⟨SEG A C, hac⟩) h
+  rw [seg_length_sq_eq_inner_toVec_toVec (SEG A B), seg_length_sq_eq_inner_toVec_toVec (SEG A C), seg_length_sq_eq_inner_toVec_toVec (SEG B C)]
+  simp only [Seg.seg_toVec_eq_vec]
+  rw [← vec_sub_vec A B C]
+  unfold Vec.InnerProductSpace.Core at i
+  simp only at i 
+  unfold Vec.InnerProductSpace.Core
+  simp only [HSub.hSub, Sub.sub]
+  rw [← zero_add ((VEC A B).fst * (VEC A B).fst), ← zero_add ((VEC A B).fst * (VEC A B).fst), ← neg_zero, ← i]
+  ring
+
+theorem Pythagoras_of_perp_foot' (P : Type _) [EuclideanPlane P] (A B : P) {l : Line P} (h : B LiesOn l) : (SEG A (perp_foot A l)).length ^ 2 + (SEG B (perp_foot A l)).length ^ 2 = (SEG A B).length ^ 2 := by
+  sorry
+
+end Pythagoras
+-/
 
 /- unused sketch of undirected lines, segments-/
 section undirected
@@ -183,7 +242,8 @@ section nondeg_tri
 open Classical
 
 /- Class of generalized triangles -/
-class Triangle (P : Type _) [EuclideanPlane P] where 
+/-
+class Triangle' (P : Type _) [EuclideanPlane P] where 
   point₁ : P
   point₂ : P
   point₃ : P
@@ -216,6 +276,8 @@ def IsInside  (A : P) (tr : Triangle P) : Prop := if tr.is_cclock then A LiesOnL
 def area (tr : Triangle P) : ℝ := sorry 
 
 end Triangle
+
+-/
 
 scoped infix : 50 "IsInsideLTriangle" => Triangle.IsInside
 

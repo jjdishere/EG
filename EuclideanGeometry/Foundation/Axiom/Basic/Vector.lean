@@ -706,49 +706,14 @@ end Proj
 
 end Perpendicular
 
--- Our aim is to prove Pythagoras theorem in the file Perpendicular, but in this section, we will only prove that the inner product of to Vec_nd having same toProj is zero, which is the main theorem about toProj we will use in the proof of Pythagoras theorem. 
+-- Our aim is to prove the Cosine value of the angle of two Vec_nd-s, their norm and inner product satisfy THE EQUALITY. We will use this to prove the Cosine theorem of Triangle, which is in the file Trigonometric
 
-section Pythagoras
-
-theorem Dir.inner_eq_zero_of_toProj_eq_toProj_perp (d₁ d₂ : Dir) (h : d₁.toProj.perp = d₂.toProj) : Vec.InnerProductSpace.Core.inner d₁.toVec d₂.toVec = 0 := by
-  let h' := Quotient.exact h
-  unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
-  simp only [Con.rel_eq_coe, Con.rel_mk] at h' 
-  by_cases Dir.I * d₁ = d₂
-  · rw [← h]
-    unfold Dir.I HMul.hMul instHMul Mul.mul Dir.instMulDir Vec.toComplex Complex.toVec Vec.InnerProductSpace.Core
-    simp only [Complex.mul_re, Complex.mul_im, zero_mul, one_mul, zero_sub, zero_add, mul_neg]
-    ring
-  · have h : Dir.I * d₁ = -d₂ := by tauto
-    have h' : - (Dir.I * d₁) = - - d₂ := by
-      rw [← h]
-    rw [← Iff.mp neg_eq_iff_eq_neg rfl] at h'
-    rw [← h']
-    unfold Neg.neg Dir.instNegDir Dir.I HMul.hMul instHMul Mul.mul Dir.instMulDir Vec.toComplex Complex.toVec Vec.InnerProductSpace.Core
-    simp only [Complex.mul_re, Complex.mul_im, zero_mul, one_mul, zero_sub, zero_add, Prod.neg_mk, neg_neg, mul_neg]
-    ring
+section Cosine_theorem_for_Vec_nd
 
 theorem Vec_nd.norm_smul_normalize_eq_self (v : Vec_nd) : Vec.norm v.1 • (Vec_nd.normalize v).toVec = v := by
   symm
   apply (inv_smul_eq_iff₀ (Iff.mpr (@norm_ne_zero_iff _ Vec.NormedAddGroup v.1) v.2)).1
   rfl
-
-theorem inner_eq_zero_of_toProj_perp_eq_toProj (v₁ v₂ : Vec_nd) (h : v₁.toProj.perp = v₂.toProj) : Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 = 0 := by
-  rw [← Vec_nd.norm_smul_normalize_eq_self v₁, ← Vec_nd.norm_smul_normalize_eq_self v₂]
-  let g := Dir.inner_eq_zero_of_toProj_eq_toProj_perp (Vec_nd.normalize v₁) (Vec_nd.normalize v₂) h
-  unfold Vec.InnerProductSpace.Core at g
-  simp only at g 
-  unfold Vec.InnerProductSpace.Core
-  simp only [ne_eq, Prod.smul_fst, smul_eq_mul, Prod.smul_snd]
-  rw [← mul_zero (Vec.norm v₁.1 * Vec.norm v₂.1), ← g]
-  simp only [ne_eq]
-  ring
-
-end Pythagoras
-
--- Some note here. 
-
-section Cosine_theorem_for_Vec_nd
 
 def Vec_nd.angle (v₁ v₂ : Vec_nd) := Dir.angle (Vec_nd.normalize v₁) (Vec_nd.normalize v₂)
 
@@ -771,6 +736,15 @@ theorem norm_mul_norm_mul_cos_angle_eq_inner_of_Vec_nd (v₁ v₂ : Vec_nd) : (V
   nth_rw 2 [← Vec_nd.norm_smul_normalize_eq_self v₁, ← Vec_nd.norm_smul_normalize_eq_self v₂]
   rw [Vec.InnerProductSpace.Core.inner_smul_left, Vec.InnerProductSpace.Core.inner_smul_right, ← cos_angle_of_dir_dir_eq_inner, mul_assoc]
   rfl
+
+theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec_nd) : v₁.toProj = v₂.toProj.perp ↔ (Vec_nd.angle v₁ v₂ = π / 2) ∨ (Vec_nd.angle v₁ v₂ = -π / 2) := by
+  constructor
+  intro h
+  let h' := Quotient.exact h
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
+  simp only [Con.rel_eq_coe, Con.rel_mk] at h'
+  sorry
+  sorry
 
 end Cosine_theorem_for_Vec_nd
 
