@@ -48,8 +48,8 @@ theorem reverse_orient_of_flip_vertices : tr_nd.is_cclock = ¬ tr_nd.flip_vertic
 
 -- compatiblility of permutation/flip of vertices with inside triangle
 
-theorem is_inside_of_is_inside_perm_vertices (tr : Triangle P) (p : P) (inside : p IsInsideTriangle tr) : p IsInsideTriangle tr.perm_vertices := by sorry
+theorem is_inside_of_is_inside_perm_vertices (tr : Triangle P) (p : P) (inside : p LiesInt tr) : p LiesInt tr.perm_vertices := by sorry
 
-theorem is_inside_of_is_inside_flip_vertices (tr : Triangle P) (p : P) (inside : p IsInsideTriangle tr) : p IsInsideTriangle tr.flip_vertices := by sorry
+theorem is_inside_of_is_inside_flip_vertices (tr : Triangle P) (p : P) (inside : p LiesInt tr) : p LiesInt tr.flip_vertices := by sorry
 
 end EuclidGeom

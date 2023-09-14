@@ -28,15 +28,13 @@ From now on, by "segment" we mean a generalized directed segment.
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P] 
-
 section definitions
 /- Rays -/
 @[ext]
 class Ray (P : Type _) [EuclideanPlane P] where
   source : P
   toDir: Dir
-
+  
 /- Def of point lies on a ray -/
 def IsOnRay {P : Type _} [EuclideanPlane P] (a : P) (l : Ray P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ a = t • l.toDir.toVec +ᵥ l.source
@@ -46,12 +44,20 @@ namespace Ray
 variable {P : Type _} [EuclideanPlane P] (ray : Ray P)
 
 /- Def of point lies on a ray -/
-def IsOnRay {P : Type _} [EuclideanPlane P] (a : P) (ray : Ray P) : Prop :=
-  ∃ (t : ℝ), 0 ≤ t ∧ a = t • ray.toDir.toVec +ᵥ ray.source
+protected def IsOn (a : P) (ray : Ray P) : Prop :=
+  ∃ (t : ℝ), 0 ≤ t ∧ VEC ray.source a = t • ray.toDir.toVec
 
-def IsOnIntRay {P : Type _} [EuclideanPlane P] (a : P) (ray : Ray P) : Prop := IsOnRay a ray ∧ a ≠ ray.source
+protected def IsInt (a : P) (ray : Ray P) : Prop := Ray.IsOn a ray ∧ a ≠ ray.source
 
 def toProj : Proj := (ray.toDir : Proj)
+
+-- instance : PlaneFigure P (Ray P) where
+
+instance : Carrier P (Ray P) where
+  carrier := fun l => { p : P | Ray.IsOn p l }
+
+instance : Interior P (Ray P) where
+  interior := fun l => { p : P | Ray.IsInt p l }
 
 end Ray
 
@@ -63,12 +69,22 @@ class Seg (P : Type _) [EuclideanPlane P] where
 
 namespace Seg
 
-def is_nd (seg : Seg P) : Prop := seg.target ≠ seg.source 
+variable {P : Type _} [EuclideanPlane P]
 
-def IsOnSeg (a : P) (seg : Seg P) : Prop :=
-  ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (VEC seg.source seg.target) +ᵥ seg.source
+def is_nd (seg : Seg P) : Prop := seg.target ≠ seg.source
 
-def IsOnIntSeg (a : P) (seg : Seg P) : Prop := IsOnSeg a seg ∧ a ≠ seg.source ∧ a ≠ seg.target 
+protected def IsOn (a : P) (seg : Seg P) : Prop :=
+  ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ VEC seg.source a  = t • (VEC seg.source seg.target)
+
+protected def IsInt (a : P) (seg : Seg P) : Prop := Seg.IsOn a seg ∧ a ≠ seg.source ∧ a ≠ seg.target 
+
+-- instance : PlaneFigure P (Seg P) where
+
+instance : Carrier P (Seg P) where
+  carrier := fun s => { p : P | Seg.IsOn p s }
+
+instance : Interior P (Seg P) where
+  interior := fun s => { p : P | Seg.IsInt p s }
 
 end Seg
 
@@ -76,19 +92,36 @@ scoped notation "SEG" => Seg.mk
 
 def Seg_nd (P : Type _) [EuclideanPlane P] := {seg : Seg P // seg.is_nd}
 
+namespace Seg_nd
+
+variable {P : Type _} [EuclideanPlane P]
+
+def mk (A B : P) (h : B ≠ A) : Seg_nd P where
+  val := SEG A B
+  property := h
+
+protected def IsOn (a : P) (seg_nd : Seg_nd P) : Prop := Seg.IsOn a seg_nd.1
+
+protected def IsInt (a : P) (seg_nd : Seg_nd P) : Prop := Seg.IsInt a seg_nd.1
+
+-- instance : PlaneFigure P (Seg_nd P) where
+
+instance : Carrier P (Seg_nd P) where
+  carrier := fun s => { p : P | Seg_nd.IsOn p s }
+
+instance : Interior P (Seg_nd P) where
+  interior := fun s => { p : P | Seg_nd.IsInt p s }
+
+end Seg_nd
+
+scoped notation "SEG_nd" => Seg_nd.mk
+variable  {P : Type _} [EuclideanPlane P] (A B : P) ( h : B ≠ A)
+
+#check SEG_nd A B h
+
 end definitions
 
-instance : HasLiesOn P (Ray P) where
-  lies_on := Ray.IsOnRay
-
-instance : HasLiesOn P (Seg P) where
-  lies_on := Seg.IsOnSeg
-
-instance : HasLiesOn P (Seg_nd P) where
-  lies_on p seg_nd := Seg.IsOnSeg p seg_nd.1
-
-scoped infix : 50 "LiesOnIntRay" => Ray.IsOnIntRay
-scoped infix : 50 "LiesOnIntSeg" => Seg.IsOnIntSeg
+variable {P : Type _} [EuclideanPlane P]
 
 theorem source_of_ray_lies_on_ray (r : Ray P) : r.source LiesOn r := by
   sorry
@@ -165,7 +198,7 @@ theorem length_pos_of_seg_nd (l : Seg_nd P): 0 < l.1.length := by sorry
 theorem length_eq_sum_of_length_two_part (l : Seg P) (p : P) (lieson : p LiesOn l) : l.length = (SEG l.source p).length + (SEG p l.target).length := sorry
 
 -- If a generalized directed segment contains an interior point, then it is nontrivial
-theorem nontriv_iff_exist_inter_pt (l : Seg P) (p : P) (lieson : p LiesOnIntSeg l) : l.is_nd := sorry
+theorem nontriv_iff_exist_inter_pt (l : Seg P) (p : P) (lieson : p LiesInt l) : l.is_nd := sorry
 
 end Seg
 
@@ -176,7 +209,7 @@ section Archimedean_property
 
 -- Archimedean property I : given a directed segment AB (with A ≠ B), then there exists a point P such that B lies on the directed segment AP and P ≠ B.
 
-theorem exist_pt_beyond_pt {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv : l.is_nd) : (∃ q : P, l.target LiesOnIntSeg (SEG l.source q)) := by sorry
+theorem exist_pt_beyond_pt {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv : l.is_nd) : (∃ q : P, l.target LiesInt (SEG l.source q)) := by sorry
 
 -- Archimedean property II: On an nontrivial directed segment, one can always find a point in its interior.  `This will be moved to later disccusion about midpoint of a segment, as the midpoint is a point in the interior of a nontrivial segment`
 

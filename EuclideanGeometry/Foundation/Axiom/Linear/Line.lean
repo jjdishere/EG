@@ -79,29 +79,40 @@ end Line
 
 scoped notation "LIN" => Line.mk_pt_pt 
 
+namespace Line
+
 variable {P : Type _} [EuclideanPlane P]
 
-/- Def of point lies on a line -/
-def IsOnLine (a : P) (l : Line P) : Prop :=
+/- Def of point lies on a line, LiesInt is not defined -/
+protected def IsOn (a : P) (l : Line P) : Prop :=
   a ∈ l.carrier
 
-instance : HasLiesOn P (Line P) where
-  lies_on := IsOnLine
+-- instance : PlaneFigure P (Line P) where
+
+instance : Carrier P (Line P) where
+  carrier := fun l => { p : P | Line.IsOn p l }
+
+end Line
 
 -- Now we introduce useful theorems to avoid using more unfolds in further proofs. 
+variable {P : Type _} [EuclideanPlane P]
 
 section Compaitiblity_of_coersions_of_mk_pt_pt
 
 -- The first point and the second point in Line.mk_pt_pt LiesOn the line it make. 
 
 theorem fst_pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := by
-  unfold HasLiesOn.lies_on instHasLiesOnLine IsOnLine Line.carrier Line.mk_pt_pt
+  unfold lies_on Carrier.carrier Line.instCarrierLine Line.IsOn
+  simp only [Set.setOf_mem_eq]
+  unfold Line.carrier Line.mk_pt_pt
   simp only [Set.mem_setOf_eq, vec_same_eq_zero]
   use 0
   simp only [zero_smul]
 
 theorem snd_pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : B LiesOn LIN A B h := by
-  unfold HasLiesOn.lies_on instHasLiesOnLine IsOnLine Line.carrier Line.mk_pt_pt
+  unfold lies_on Carrier.carrier Line.instCarrierLine Line.IsOn
+  simp only [Set.setOf_mem_eq]
+  unfold Line.carrier Line.mk_pt_pt
   simp only [Set.mem_setOf_eq, vec_same_eq_zero]
   use 1
   simp only [one_smul]
