@@ -1,3 +1,6 @@
+-- ######## IMPORTANT NOTE ######## --
+/- This file imports all files in Foundation. Please parse this file before any pull request modifying anything in folder Foundation. -/
+
 /- Axiom -/
 /- Axiom.Basic -/
 import EuclideanGeometry.Foundation.Axiom.Basic.Vector
@@ -43,5 +46,3 @@ import EuclideanGeometry.Foundation.Construction.Circle.CyclicPolygon
 /- Theorem -/
 /- Theorem.Circle-/
 import EuclideanGeometry.Foundation.Theorem.Circle.Power
-
-/- This file imports all files in Foundation. Please parse this file before any pull request modifying anything in folder Foundation. -/
