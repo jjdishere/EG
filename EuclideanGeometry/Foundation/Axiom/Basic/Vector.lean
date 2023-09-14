@@ -783,7 +783,7 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
       exact eq_mul_of_div_eq w
     have e'' : Dir.toProj (Dir.I * d₁) = Proj.I * d₁.toProj := rfl
     rw [e, e', e'', ← mul_assoc]
-    simp
+    simp only [Proj.I_mul_I_eq_one_of_Proj, one_mul]
   · have w : Dir.mk_angle (Dir.angle d₁ d₂) = Dir.mk_angle (-(π / 2)) := by
       have w' : Dir.angle d₁ d₂ = -(π / 2) := by tauto
       rw [w']
@@ -837,7 +837,7 @@ theorem det_eq_zero_iff_eq_smul (u v : ℝ × ℝ) (hu : u ≠ 0) : u.1 * v.2 - 
   · intro e'
     rcases e' with ⟨t, e⟩
     unfold HSMul.hSMul instHSMul SMul.smul Prod.smul at e
-    simp at e
+    simp only [smul_eq_mul] at e 
     rcases e
     ring
 
