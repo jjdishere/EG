@@ -15,7 +15,10 @@ theorem cosine_rule' (A B C : P) (hab : B ≠ A) (hac : C ≠ A) : 2 * (Vec.norm
   rw [norm_mul_norm_mul_cos_angle_eq_inner_of_Vec_nd, seg_length_sq_eq_inner_toVec_toVec (SEG A B), seg_length_sq_eq_inner_toVec_toVec (SEG A C), seg_length_sq_eq_inner_toVec_toVec (SEG B C), Seg.seg_toVec_eq_vec, Seg.seg_toVec_eq_vec, Seg.seg_toVec_eq_vec, ← vec_sub_vec A B C, Vec.InnerProductSpace.Core.inner_sub_sub_self, ← Vec.InnerProductSpace.Core.conj_symm (VEC A B) (VEC A C), IsROrC.conj_to_real]
   ring
 
-theorem cosine_rule (tr_nd : Triangle_nd P) : 2 * (tr_nd.1.edge₁.length * tr_nd.1.edge₂.length * Real.cos tr_nd.angle₁) = tr_nd.1.edge₁.length ^ 2 + tr_nd.1.edge₂.length ^ 2 - tr_nd.1.edge₃.length ^ 2 := by
+theorem cosine_rule (tr_nd : Triangle_nd P) : 2 * (tr_nd.1.edge₃.length * tr_nd.1.edge₂.length * Real.cos tr_nd.angle₁) = tr_nd.1.edge₃.length ^ 2 + tr_nd.1.edge₂.length ^ 2 - tr_nd.1.edge₁.length ^ 2 := by
+  let A := tr_nd.1.point₁
+  let B := tr_nd.1.point₂
+  let C := tr_nd.1.point₃
   sorry
 
 

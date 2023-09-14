@@ -411,6 +411,15 @@ theorem I_toComplex_eq_I : Vec.toComplex I.1 = Complex.I := by
   simp only [snd_of_I_eq_one, Complex.I_im]
 
 @[simp]
+theorem neg_I_toComplex_eq_neg_I : Vec.toComplex (-I).1 = -Complex.I := by
+  ext
+  rw [Complex.neg_re Complex.I]
+  unfold Vec.toComplex Neg.neg instNegDir
+  simp
+  exact Eq.symm neg_zero
+  simp
+
+@[simp]
 theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
   ext : 1
   unfold HMul.hMul instHMul Mul.mul instMulDir
@@ -418,6 +427,11 @@ theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
   ext
   rfl
   rfl
+
+@[simp]
+theorem inv_of_I_eq_neg_I : I⁻¹ = - I := by
+  apply @mul_right_cancel _ _ _ _ I _
+  simp only [mul_left_inv, neg_mul, I_mul_I_eq_neg_one, neg_neg]
 
 section Make_angle_theorems
 
@@ -738,13 +752,39 @@ theorem norm_mul_norm_mul_cos_angle_eq_inner_of_Vec_nd (v₁ v₂ : Vec_nd) : (V
   rfl
 
 theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec_nd) : v₁.toProj = v₂.toProj.perp ↔ (Vec_nd.angle v₁ v₂ = π / 2) ∨ (Vec_nd.angle v₁ v₂ = -π / 2) := by
+  let d₁ := Vec_nd.normalize v₁
+  let d₂ := Vec_nd.normalize v₂
   constructor
   intro h
-  let h' := Quotient.exact h
-  unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
-  simp only [Con.rel_eq_coe, Con.rel_mk] at h'
-  sorry
-  sorry
+  let h := Quotient.exact h
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM at h
+  simp only [Con.rel_eq_coe, Con.rel_mk] at h
+  unfold Vec_nd.angle Dir.angle
+  by_cases d₁ = Dir.I * d₂
+  · right
+    have e : d₂ * d₁⁻¹ = (Dir.I)⁻¹ := by
+      sorry
+    rw [e]
+    simp only [Dir.inv_of_I_eq_neg_I, Dir.neg_I_toComplex_eq_neg_I, Complex.arg_neg_I]
+    exact Eq.symm (neg_div 2 π)
+  · left
+    have e : d₂ * d₁⁻¹ = Dir.I := by
+      sorry
+    rw [e]
+    simp only [Dir.I_toComplex_eq_I, Complex.arg_I]
+  intro h
+  by_cases Dir.angle d₁ d₂ = π / 2
+  · have e' : Dir.mk_angle (Dir.angle d₁ d₂) = Dir.mk_angle (π / 2) := by
+      rw [h]
+    unfold Dir.angle at e'
+    simp only [Dir.mk_angle_arg_toComplex_of_Dir_eq_self, Dir.mk_angle_pi_div_two_eq_I] at e' 
+    have e : d₂ = Dir.I * d₁ := by
+      sorry
+    have e' : Vec_nd.normalize v₂ = d₂ := by rfl
+    unfold Vec_nd.toProj Proj.perp
+    rw [e', e]
+    sorry
+  · sorry
 
 end Cosine_theorem_for_Vec_nd
 
