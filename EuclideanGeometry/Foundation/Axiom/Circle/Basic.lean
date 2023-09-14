@@ -19,7 +19,7 @@ namespace Circle
 def mk_pt_pt (O A : P) (h : A ≠ O) : Circle P where
   center := O
   radius := (SEG O A).length
-  rad_pos := (seg_nontriv_iff_length_pos _).mp h
+  rad_pos := (Seg.nd_iff_length_pos _).mp h
 
 def mk_pt_pt_pt (A B C: P) (h : ¬ colinear A B C) : Circle P := sorry
 

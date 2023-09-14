@@ -174,36 +174,48 @@ section length
 
 variable {P : Type _} [EuclideanPlane P] (l : Seg P)
 
+namespace Seg
+
 -- define the length of a generalized directed segment.
-def Seg.length : ℝ := Vec.Norm.norm (l.toVec)
+def length : ℝ := Vec.Norm.norm (l.toVec)
 
 -- length of a generalized directed segment is nonnegative.
-theorem seg_length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ Vec.SeminormedAddGroup _
+theorem length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ Vec.SeminormedAddGroup _
 
-theorem seg_length_sq_eq_inner_toVec_toVec : l.length ^ 2 = Vec.InnerProductSpace.Core.inner l.toVec l.toVec := by
+theorem length_sq_eq_inner_toVec_toVec : l.length ^ 2 = Vec.InnerProductSpace.Core.inner l.toVec l.toVec := by
   have w : l.length = Real.sqrt (Vec.InnerProductSpace.Core.inner l.toVec l.toVec) := by rfl
   rw [w]
   have n : 0 ≤ Vec.InnerProductSpace.Core.inner l.toVec l.toVec := by 
     exact Vec.InnerProductSpace.Core.nonneg_re l.toVec
   rw [Real.sq_sqrt n]
 
-theorem seg_toVec_eq_zero_of_deg : (l.target = l.source) ↔ l.toVec = 0 := by unfold Seg.toVec Vec.mk_pt_pt; simp
+theorem toVec_eq_zero_of_deg : (l.target = l.source) ↔ l.toVec = 0 := by unfold Seg.toVec Vec.mk_pt_pt; simp
 
 -- A generalized directed segment is trivial if and only if length is zero.
-theorem seg_triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by
+theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by
   unfold Seg.length
-  exact Iff.trans (seg_toVec_eq_zero_of_deg _)  (@norm_eq_zero _ Vec.NormedAddGroup).symm
+  exact Iff.trans (Seg.toVec_eq_zero_of_deg _)  (@norm_eq_zero _ Vec.NormedAddGroup).symm
 
 -- A generalized directed segment is nontrivial if and only if its length is positive.
-theorem seg_nontriv_iff_length_pos : (l.is_nd) ↔ 0 < l.length := by sorry
-
-theorem seg_length_pos_of_seg_nd (l : Seg_nd P): 0 < l.1.length := by sorry
+theorem nd_iff_length_pos : (l.is_nd) ↔ 0 < l.length := by sorry
 
 -- If P lies on a generalized directed segment AB, then length(AB) = length(AP) + length(PB)
-theorem seg_length_eq_sum_of_length_two_part (l : Seg P) (p : P) (lieson : p LiesOn l) : l.length = (SEG l.source p).length + (SEG p l.target).length := sorry
+theorem length_eq_sum_of_length_two_part (l : Seg P) (p : P) (lieson : p LiesOn l) : l.length = (SEG l.source p).length + (SEG p l.target).length := sorry
+
+theorem nd_of_exist_inter_pt (l : Seg P) (p : P) (h : p LiesInt l) : l.is_nd := sorry
 
 -- If a generalized directed segment contains an interior point, then it is nontrivial
-theorem seg_nontriv_iff_exist_inter_pt (l : Seg P) (p : P) (lieson : p LiesInt l) : l.is_nd := sorry
+theorem nd_iff_exist_inter_pt (l : Seg P) : ∃ (p : P), p LiesInt l ↔ l.is_nd := sorry
+
+end Seg
+
+namespace Seg_nd
+
+theorem Seg_nd.length_pos (l : Seg_nd P): 0 < l.1.length := by sorry
+
+theorem exist_inter_pt (l : Seg_nd P) : ∃ (p : P), p LiesInt l := sorry
+
+end Seg_nd
 
 end length
 
