@@ -751,7 +751,7 @@ theorem norm_mul_norm_mul_cos_angle_eq_inner_of_Vec_nd (v₁ v₂ : Vec_nd) : (V
   rw [Vec.InnerProductSpace.Core.inner_smul_left, Vec.InnerProductSpace.Core.inner_smul_right, ← cos_angle_of_dir_dir_eq_inner, mul_assoc]
   rfl
 
-theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec_nd) : v₁.toProj = v₂.toProj.perp ↔ (Vec_nd.angle v₁ v₂ = π / 2) ∨ (Vec_nd.angle v₁ v₂ = -π / 2) := by
+theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec_nd) : v₁.toProj = v₂.toProj.perp ↔ (Vec_nd.angle v₁ v₂ = π / 2) ∨ (Vec_nd.angle v₁ v₂ = -(π / 2)) := by
   let d₁ := Vec_nd.normalize v₁
   let d₂ := Vec_nd.normalize v₂
   constructor
@@ -766,7 +766,6 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
       sorry
     rw [e]
     simp only [Dir.inv_of_I_eq_neg_I, Dir.neg_I_toComplex_eq_neg_I, Complex.arg_neg_I]
-    exact Eq.symm (neg_div 2 π)
   · left
     have e : d₂ * d₁⁻¹ = Dir.I := by
       sorry
@@ -780,11 +779,23 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
     simp only [Dir.mk_angle_arg_toComplex_of_Dir_eq_self, Dir.mk_angle_pi_div_two_eq_I] at e' 
     have e : d₂ = Dir.I * d₁ := by
       sorry
-    have e' : Vec_nd.normalize v₂ = d₂ := by rfl
     unfold Vec_nd.toProj Proj.perp
+    have e' : Vec_nd.normalize v₂ = d₂ := rfl
+    have e'' : Dir.toProj (Dir.I * d₁) = Proj.I * d₁.toProj := rfl
+    rw [e', e, e'', ← mul_assoc]
+    simp
+  · have e' : Dir.mk_angle (Dir.angle d₁ d₂) = Dir.mk_angle (-(π / 2)) := by
+      have e'' : Dir.angle d₁ d₂ = -(π / 2) := by tauto
+      rw [e'']
+    unfold Dir.angle at e'
+    simp only [Dir.mk_angle_arg_toComplex_of_Dir_eq_self, Dir.mk_angle_neg_eq_mk_angle_inv,
+      Dir.mk_angle_pi_div_two_eq_I, Dir.inv_of_I_eq_neg_I] at e'
+    have e : d₁ = Dir.I * d₂ := by
+      sorry
+    unfold Vec_nd.toProj Proj.perp
+    have e' : Vec_nd.normalize v₁ = d₁ := rfl
     rw [e', e]
-    sorry
-  · sorry
+    rfl
 
 end Cosine_theorem_for_Vec_nd
 
