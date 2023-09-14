@@ -762,39 +762,40 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
   unfold Vec_nd.angle Dir.angle
   by_cases d₁ = Dir.I * d₂
   · right
-    have e : d₂ * d₁⁻¹ = (Dir.I)⁻¹ := by
-      sorry
-    rw [e]
+    rw [mul_inv_eq_of_eq_mul (Eq.symm (inv_mul_eq_of_eq_mul h))]
     simp only [Dir.inv_of_I_eq_neg_I, Dir.neg_I_toComplex_eq_neg_I, Complex.arg_neg_I]
   · left
     have e : d₂ * d₁⁻¹ = Dir.I := by
-      sorry
+      have w : d₁ = - (Dir.I * d₂) := by tauto
+      rw [← neg_mul, ← Dir.inv_of_I_eq_neg_I] at w
+      exact Eq.symm (eq_mul_inv_of_mul_eq (mul_eq_of_eq_inv_mul w))
     rw [e]
     simp only [Dir.I_toComplex_eq_I, Complex.arg_I]
   intro h
   by_cases Dir.angle d₁ d₂ = π / 2
-  · have e' : Dir.mk_angle (Dir.angle d₁ d₂) = Dir.mk_angle (π / 2) := by
+  · have w : Dir.mk_angle (Dir.angle d₁ d₂) = Dir.mk_angle (π / 2) := by
       rw [h]
-    unfold Dir.angle at e'
-    simp only [Dir.mk_angle_arg_toComplex_of_Dir_eq_self, Dir.mk_angle_pi_div_two_eq_I] at e' 
-    have e : d₂ = Dir.I * d₁ := by
-      sorry
+    unfold Dir.angle at w
+    simp only [Dir.mk_angle_arg_toComplex_of_Dir_eq_self, Dir.mk_angle_pi_div_two_eq_I] at w
     unfold Vec_nd.toProj Proj.perp
-    have e' : Vec_nd.normalize v₂ = d₂ := rfl
+    have e : Vec_nd.normalize v₂ = d₂ := rfl
+    have e' : d₂ = Dir.I * d₁ := by
+      exact eq_mul_of_div_eq w
     have e'' : Dir.toProj (Dir.I * d₁) = Proj.I * d₁.toProj := rfl
-    rw [e', e, e'', ← mul_assoc]
+    rw [e, e', e'', ← mul_assoc]
     simp
-  · have e' : Dir.mk_angle (Dir.angle d₁ d₂) = Dir.mk_angle (-(π / 2)) := by
-      have e'' : Dir.angle d₁ d₂ = -(π / 2) := by tauto
-      rw [e'']
-    unfold Dir.angle at e'
+  · have w : Dir.mk_angle (Dir.angle d₁ d₂) = Dir.mk_angle (-(π / 2)) := by
+      have w' : Dir.angle d₁ d₂ = -(π / 2) := by tauto
+      rw [w']
+    unfold Dir.angle at w
     simp only [Dir.mk_angle_arg_toComplex_of_Dir_eq_self, Dir.mk_angle_neg_eq_mk_angle_inv,
-      Dir.mk_angle_pi_div_two_eq_I, Dir.inv_of_I_eq_neg_I] at e'
-    have e : d₁ = Dir.I * d₂ := by
-      sorry
+      Dir.mk_angle_pi_div_two_eq_I, Dir.inv_of_I_eq_neg_I] at w
     unfold Vec_nd.toProj Proj.perp
-    have e' : Vec_nd.normalize v₁ = d₁ := rfl
-    rw [e', e]
+    have e : Vec_nd.normalize v₁ = d₁ := rfl
+    have e' : d₁ = Dir.I * d₂ := by
+      rw [← Dir.inv_of_I_eq_neg_I] at w
+      exact eq_mul_of_inv_mul_eq (mul_eq_of_eq_div (Eq.symm w))
+    rw [e, e']
     rfl
 
 end Cosine_theorem_for_Vec_nd
