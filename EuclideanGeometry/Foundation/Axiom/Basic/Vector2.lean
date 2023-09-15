@@ -135,13 +135,26 @@ def Vec_nd.normalize : Vec_nd →* Vec_nd where
 
 def Dir := Con.Quotient PScaling.con
 
+namespace Dir
+
+instance : MulOneClass Dir := Con.mulOneClass PScaling.con
+
+instance : Group Dir := Con.group PScaling.con
+
+instance : CommMonoid Dir := Con.commMonoid PScaling.con
+
+instance : CommGroup Dir where
+  mul_comm := instCommMonoidDir.mul_comm
+
+end Dir
+
 def Vec_nd.toDir (z : Vec_nd) := (⟦z⟧ : Dir)
 
 #check Con.lift
 
-def Dir.toVec_nd : (Dir →* Vec_nd) := by
+def Dir.toVec_nd  : (Dir →* Vec_nd) := by
   let g := Con.lift PScaling.con Vec_nd.normalize
-  sorry
+  exact g sorry
 /-
 
 def Proj := Con.Quotient PM.con
