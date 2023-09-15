@@ -281,6 +281,17 @@ theorem linear_combination_of_not_colinear' {u v w : ℝ × ℝ} (hu : u ≠ 0) 
   ring
 
 theorem linear_combination_of_not_colinear {u v w : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
+  let u' := (⟨u.1, u.2⟩ : ℝ × ℝ)
+  let v' := (⟨v.1, v.2⟩ : ℝ × ℝ)
+  let w' := (⟨w.1, w.2⟩ : ℝ × ℝ)
+  have hu' : u' ≠ 0 := by
+    by_contra h
+    have h₁ : u.1 = 0 := sorry
+    have h₂ : u.2 = 0 := sorry
+    have hu' : u = 0 := by exact Complex.ext h₁ h₂
+    tauto
+  have h'' : ¬(∃ (t : ℝ), v' = t • u') := sorry
+  let th := @linear_combination_of_not_colinear' u' v' w' hu' h''
   sorry
 
 /-
