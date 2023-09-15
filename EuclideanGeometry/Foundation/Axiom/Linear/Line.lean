@@ -81,7 +81,7 @@ protected def IsOn (a : P) (l : Line P) : Prop :=
 -- instance : PlaneFigure P (Line P) where
 
 instance : Carrier P (Line P) where
-  carrier := fun l => { p : P | Line.IsOn p l }
+  carrier := fun l => l.carrier
 
 end Line
 
@@ -93,7 +93,7 @@ section Compaitiblity_of_coersions_of_mk_pt_pt
 -- The first point and the second point in Line.mk_pt_pt LiesOn the line it make. 
 
 theorem fst_pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := by
-  unfold lies_on Carrier.carrier Line.instCarrierLine Line.IsOn
+  unfold lies_on Carrier.carrier Line.instCarrierLine
   simp only [Set.setOf_mem_eq]
   unfold Line.carrier Line.mk_pt_pt
   simp only [Set.mem_setOf_eq, vec_same_eq_zero]
@@ -101,7 +101,7 @@ theorem fst_pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : A LiesOn LI
   simp only [zero_smul]
 
 theorem snd_pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h : B ≠ A) : B LiesOn LIN A B h := by
-  unfold lies_on Carrier.carrier Line.instCarrierLine Line.IsOn
+  unfold lies_on Carrier.carrier Line.instCarrierLine
   simp only [Set.setOf_mem_eq]
   unfold Line.carrier Line.mk_pt_pt
   simp only [Set.mem_setOf_eq, vec_same_eq_zero]

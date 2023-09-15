@@ -58,8 +58,10 @@ protected def IsInt (p : P) (oang : OAngle P) : Prop := by
     let o₂ := OAngle.mk ray oang.end_ray (oang.3)
     exact if oang.value > 0 then (o₁.value > 0 ∧ o₂.value > 0) else (o₁.value < 0 ∧ o₂.value < 0) 
 
+protected def interior (oang : OAngle P) : Set P := { p : P | OAngle.IsInt p oang }
+
 instance : Interior P (OAngle P) where
-  interior := fun o => { p : P | OAngle.IsInt p o}
+  interior := fun o => o.interior
 
 end OAngle
 

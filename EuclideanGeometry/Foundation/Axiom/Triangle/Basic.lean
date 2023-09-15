@@ -73,8 +73,10 @@ protected def IsInt (A : P) (tr : Triangle P) : Prop := by
   · let tr_nd : Triangle_nd P := ⟨tr, h⟩ 
     exact (if tr_nd.is_cclock then A LiesOnLeft Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩ else A LiesOnRight Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩)
 
+protected def interior (tr : Triangle P) : Set P := { p : P | Triangle.IsInt p tr }
+
 instance : Interior P (Triangle P) where
-  interior := fun t => {p : P | Triangle.IsInt p t}
+  interior := fun t => t.interior
 
 end Triangle
 

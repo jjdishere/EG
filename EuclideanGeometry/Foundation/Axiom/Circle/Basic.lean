@@ -54,11 +54,15 @@ protected def IsInt (p : P) (ω : Circle P) : Prop := (SEG ω.center p).length <
 
 def IsOutside (p : P) (ω : Circle P) : Prop := ω.radius < (SEG ω.center p).length
 
+protected def carrier (ω : Circle P) : Set P := { p : P | Circle.IsOn p ω }
+
+protected def interior (ω : Circle P) : Set P := { p : P | Circle.IsInt p ω }
+
 instance : Carrier P (Circle P) where
-  carrier := fun ω => {p : P | Circle.IsOn p ω}
+  carrier := fun ω => ω.carrier
 
 instance : Interior P (Circle P) where
-  interior := fun ω => {p : P | Circle.IsOn p ω}
+  interior := fun ω => ω.interior
 
 end Circle 
 
