@@ -55,21 +55,14 @@ instance : Monoid Vec_nd where
 
 instance : CommGroup Vec_nd where
   inv := fun z => ⟨z⁻¹, inv_ne_zero z.2⟩
-  mul_left_inv z := by
-    apply Subtype.ext
-    sorry
-  mul_comm _ _ := by
-    apply Subtype.ext
-    sorry
+  mul_left_inv := fun z => Subtype.ext (inv_mul_cancel z.2)
+  mul_comm := fun z w => Subtype.ext (mul_comm z.1 w.1)
 
 instance : HasDistribNeg Vec_nd where
   neg := fun z => ⟨-z, neg_ne_zero.2 z.2⟩
-  neg_neg _ := by
-    sorry
-  neg_mul _ _ := by
-    sorry
-  mul_neg _ _ := by
-    sorry
+  neg_neg := fun _ => Subtype.ext (neg_neg _)
+  neg_mul := fun _ _ => Subtype.ext (neg_mul _ _)
+  mul_neg := fun _ _ => Subtype.ext (mul_neg _ _)
 
 end Vec_nd
 
