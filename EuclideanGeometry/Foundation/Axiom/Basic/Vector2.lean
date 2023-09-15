@@ -95,6 +95,9 @@ theorem real_smul_Vec_eq_mul_of (z : Vec) (r : ℝ) : r • z = r * z := rfl
 @[simp]
 theorem fst_of_mul_eq_fst_mul_fst (z w : Vec_nd) : (z * w).1 = z.1 * w.1 := by rfl
 
+@[simp]
+theorem norm_of_Vec_nd_eq_norm_of_Vec_nd_fst (z : Vec_nd) : Vec_nd.norm z = Vec.norm z := rfl
+
 def PScaling : Vec_nd → Vec_nd → Prop :=
   fun z w => ∃ t : ℝ, (0 < t) ∧ (w.1 = t • z.1)
 
@@ -133,6 +136,28 @@ def Vec_nd.normalize : Vec_nd →* Vec_nd where
       Complex.ofReal_inv]
     ring
 
+theorem normalize_eq_normalize_smul_pos (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : 0 < t) : Vec_nd.normalize u = Vec_nd.normalize v := by
+  apply Subtype.ext
+  unfold Vec_nd.normalize
+  have g : (Vec.norm v) • u.1 = (Vec.norm u) • v.1 := by
+    have w₁ : (Vec.norm (t • u.1)) = ‖t‖ * (Vec.norm u.1) := norm_smul t u.1
+    have w₂ : ‖t‖ = t := abs_of_pos ht
+    rw [h, w₁, w₂, mul_comm]
+    exact mul_smul (Vec.norm u.1) t u.1
+  have g' : Vec.norm v * u.1 = Vec.norm u * v.1 := g
+  have hu : (Vec.norm u : ℂ) ≠ 0 := by
+    rw [← norm_of_Vec_nd_eq_norm_of_Vec_nd_fst u]
+    exact Iff.mpr Complex.ofReal_ne_zero (Vec_nd.norm_ne_zero u)
+  have hv : (Vec.norm v : ℂ) ≠ 0 := by
+    rw [← norm_of_Vec_nd_eq_norm_of_Vec_nd_fst v]
+    exact Iff.mpr Complex.ofReal_ne_zero (Vec_nd.norm_ne_zero v)
+  let w := (inv_mul_eq_iff_eq_mul₀ hu).2 g'
+  rw [mul_left_comm] at w
+  unfold Vec_nd.normalize'
+  simp only [ne_eq, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, Complex.real_smul, Complex.ofReal_inv, MonoidHom.coe_mk,
+    OneHom.coe_mk]
+  exact Eq.symm ((inv_mul_eq_iff_eq_mul₀ hv).2 (Eq.symm w))
+
 def Dir := Con.Quotient PScaling.con
 
 namespace Dir
@@ -146,15 +171,27 @@ instance : CommMonoid Dir := Con.commMonoid PScaling.con
 instance : CommGroup Dir where
   mul_comm := instCommMonoidDir.mul_comm
 
+instance : HasDistribNeg Dir where
+  neg := sorry
+  neg_neg _ := by
+    sorry
+  neg_mul _ _ := by
+    sorry
+  mul_neg _ _ := by
+    sorry
+
 end Dir
 
 def Vec_nd.toDir (z : Vec_nd) := (⟦z⟧ : Dir)
 
-#check Con.lift
-
 def Dir.toVec_nd  : (Dir →* Vec_nd) := by
-  let g := Con.lift PScaling.con Vec_nd.normalize
-  exact g sorry
+  have l : PScaling.con ≤ Con.ker Vec_nd.normalize := by
+    rw [Con.le_def]
+    intro z w ⟨t, ht, e⟩
+    exact normalize_eq_normalize_smul_pos z w e ht
+  exact (Con.lift PScaling.con Vec_nd.normalize) l
+
+
 /-
 
 def Proj := Con.Quotient PM.con
