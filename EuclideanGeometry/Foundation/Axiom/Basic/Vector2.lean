@@ -219,6 +219,82 @@ def Dir.toVec_nd  : (Dir →* Vec_nd) := by
   exact (Con.lift PScaling.con Vec_nd.normalize) l
 
 
+-- Our aim is to prove nonparallel lines have common point, but in this section, we will only form the theorem in a Linear algebraic way by proving two Vec_nd-s could span the space with different toProj, which is the main theorem about toProj we will use in the proof of the intersection theorem. 
+
+section Linear_Algebra
+
+theorem det_eq_zero_iff_eq_smul' (u v : ℝ × ℝ) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.1 = 0 ↔ (∃ (t : ℝ), v = t • u) := by
+  have h : (u.fst ≠ 0) ∨ (u.snd ≠ 0) := by
+    by_contra _
+    have h₁ : u.fst = 0 := by tauto
+    have h₂ : u.snd = 0 := by tauto
+    have hu' : u = (0, 0) := by exact Prod.ext h₁ h₂
+    tauto
+  constructor
+  · intro e
+    match h with 
+    | Or.inl h₁ =>
+      use v.fst * (u.fst⁻¹)
+      unfold HSMul.hSMul instHSMul SMul.smul Prod.smul
+      ext
+      simp only [smul_eq_mul, ne_eq]
+      exact Iff.mp (div_eq_iff h₁) rfl
+      simp only [smul_eq_mul]
+      rw [mul_comm v.fst u.fst⁻¹, mul_assoc, mul_comm v.fst u.snd]
+      rw [sub_eq_zero] at e
+      exact Iff.mpr (eq_inv_mul_iff_mul_eq₀ h₁) e
+    | Or.inr h₂ =>
+      use v.snd * (u.snd⁻¹)
+      unfold HSMul.hSMul instHSMul SMul.smul Prod.smul
+      ext
+      simp only [smul_eq_mul]
+      rw [mul_comm v.snd u.snd⁻¹, mul_assoc]
+      rw [sub_eq_zero, mul_comm u.fst v.snd] at e
+      exact Iff.mpr (eq_inv_mul_iff_mul_eq₀ h₂) (id (Eq.symm e))
+      simp only [smul_eq_mul, ne_eq]
+      exact Iff.mp (div_eq_iff h₂) rfl
+  · intro e'
+    rcases e' with ⟨t, e⟩
+    unfold HSMul.hSMul instHSMul SMul.smul Prod.smul at e
+    simp only [smul_eq_mul] at e 
+    rcases e
+    ring
+
+theorem linear_combination_of_not_colinear' {u v w : ℝ × ℝ} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
+  have h₁ : (¬ (∃ (t : ℝ), v = t • u)) → (¬ (u.1 * v.2 - u.2 * v.1 = 0)) := by
+    intro _
+    by_contra h₂
+    let _ := (det_eq_zero_iff_eq_smul' u v hu).1 h₂
+    tauto
+  let d := u.1 * v.2 - u.2 * v.1
+  have h₃ : d ≠ 0 := h₁ h'
+  use d⁻¹ * (w.1 * v.2 - v.1 * w.2) 
+  use d⁻¹ * (u.1 * w.2 - w.1 * u.2)
+  symm
+  rw [mul_smul, mul_smul, ← smul_add]
+  apply ((inv_smul_eq_iff₀ h₃).2)
+  unfold HSMul.hSMul instHSMul SMul.smul MulAction.toSMul Prod.mulAction Prod.smul
+  ext
+  simp only [smul_eq_mul, Prod.mk_add_mk]
+  ring
+  simp only [smul_eq_mul, Prod.mk_add_mk]
+  ring
+
+theorem linear_combination_of_not_colinear {u v w : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
+  sorry
+
+/-
+theorem linear_combination_of_not_colinear' {u v : Vec_nd} (w : ℝ × ℝ) (h' : Vec_nd.toProj u ≠ Vec_nd.toProj v) : ∃ (cᵤ cᵥ : ℝ), w = cᵤ • u.1 + cᵥ • v.1 := by
+  have h₁ : (Vec_nd.toProj u ≠ Vec_nd.toProj v) → ¬(∃ (t : ℝ), v.1 = t • u.1) := by
+    intro _
+    by_contra h₂
+    let _ := (Vec_nd.eq_toProj_iff u v).2 h₂
+    tauto
+  exact linear_combination_of_not_colinear u.2 (h₁ h')
+
+end Linear_Algebra
+-/
+
 /-
 
 def Proj := Con.Quotient PM.con
@@ -830,76 +906,6 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
 
 end Cosine_theorem_for_Vec_nd
 
--- Our aim is to prove nonparallel lines have common point, but in this section, we will only form the theorem in a Linear algebraic way by proving two Vec_nd-s could span the space with different toProj, which is the main theorem about toProj we will use in the proof of the intersection theorem. 
-
-section Linear_Algebra
-
-theorem det_eq_zero_iff_eq_smul (u v : ℝ × ℝ) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.1 = 0 ↔ (∃ (t : ℝ), v = t • u) := by
-  have h : (u.fst ≠ 0) ∨ (u.snd ≠ 0) := by
-    by_contra _
-    have h₁ : u.fst = 0 := by tauto
-    have h₂ : u.snd = 0 := by tauto
-    have hu' : u = (0, 0) := by exact Prod.ext h₁ h₂
-    tauto
-  constructor
-  · intro e
-    match h with 
-    | Or.inl h₁ =>
-      use v.fst * (u.fst⁻¹)
-      unfold HSMul.hSMul instHSMul SMul.smul Prod.smul
-      ext
-      simp only [smul_eq_mul, ne_eq]
-      exact Iff.mp (div_eq_iff h₁) rfl
-      simp only [smul_eq_mul]
-      rw [mul_comm v.fst u.fst⁻¹, mul_assoc, mul_comm v.fst u.snd]
-      rw [sub_eq_zero] at e
-      exact Iff.mpr (eq_inv_mul_iff_mul_eq₀ h₁) e
-    | Or.inr h₂ =>
-      use v.snd * (u.snd⁻¹)
-      unfold HSMul.hSMul instHSMul SMul.smul Prod.smul
-      ext
-      simp only [smul_eq_mul]
-      rw [mul_comm v.snd u.snd⁻¹, mul_assoc]
-      rw [sub_eq_zero, mul_comm u.fst v.snd] at e
-      exact Iff.mpr (eq_inv_mul_iff_mul_eq₀ h₂) (id (Eq.symm e))
-      simp only [smul_eq_mul, ne_eq]
-      exact Iff.mp (div_eq_iff h₂) rfl
-  · intro e'
-    rcases e' with ⟨t, e⟩
-    unfold HSMul.hSMul instHSMul SMul.smul Prod.smul at e
-    simp only [smul_eq_mul] at e 
-    rcases e
-    ring
-
-theorem linear_combination_of_not_colinear {u v w : ℝ × ℝ} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
-  have h₁ : (¬ (∃ (t : ℝ), v = t • u)) → (¬ (u.1 * v.2 - u.2 * v.1 = 0)) := by
-    intro _
-    by_contra h₂
-    let _ := (det_eq_zero_iff_eq_smul u v hu).1 h₂
-    tauto
-  let d := u.1 * v.2 - u.2 * v.1
-  have h₃ : d ≠ 0 := h₁ h'
-  use d⁻¹ * (w.1 * v.2 - v.1 * w.2) 
-  use d⁻¹ * (u.1 * w.2 - w.1 * u.2)
-  symm
-  rw [mul_smul, mul_smul, ← smul_add]
-  apply ((inv_smul_eq_iff₀ h₃).2)
-  unfold HSMul.hSMul instHSMul SMul.smul MulAction.toSMul Prod.mulAction Prod.smul
-  ext
-  simp only [smul_eq_mul, Prod.mk_add_mk]
-  ring
-  simp only [smul_eq_mul, Prod.mk_add_mk]
-  ring
-
-theorem linear_combination_of_not_colinear' {u v : Vec_nd} (w : ℝ × ℝ) (h' : Vec_nd.toProj u ≠ Vec_nd.toProj v) : ∃ (cᵤ cᵥ : ℝ), w = cᵤ • u.1 + cᵥ • v.1 := by
-  have h₁ : (Vec_nd.toProj u ≠ Vec_nd.toProj v) → ¬(∃ (t : ℝ), v.1 = t • u.1) := by
-    intro _
-    by_contra h₂
-    let _ := (Vec_nd.eq_toProj_iff u v).2 h₂
-    tauto
-  exact linear_combination_of_not_colinear u.2 (h₁ h')
-
-end Linear_Algebra
 -/
 
 end EuclidGeom
