@@ -77,15 +77,6 @@ theorem Vec_nd.ne_zero_of_ne_zero_smul (z : Vec_nd) {t : ℝ} (h : t ≠ 0) : t 
 
 def Vec_nd.normalize' (z : Vec_nd) : Vec_nd := ⟨(Vec_nd.norm z)⁻¹ • z.1, Vec_nd.ne_zero_of_ne_zero_smul z (inv_ne_zero (Vec_nd.norm_ne_zero z))⟩
 
-def Vec_nd.normalize : Vec_nd →* Vec_nd where
-  toFun := Vec_nd.normalize
-  map_one' := by
-    simp
-  map_mul' := by
-    intro z w
-    simp
-    sorry
-
 theorem Vec_nd.ne_zero_of_neg (z : Vec_nd) : - z.1 ≠ 0 := by 
   simp only [ne_eq, neg_eq_zero, z.2, not_false_eq_true]
 
@@ -129,13 +120,28 @@ instance PScaling.con : Con Vec_nd where
     simp only [ne_eq, fst_of_mul_eq_fst_mul_fst, e₁, Complex.real_smul, e₂, Complex.ofReal_mul]
     ring
 
+def Vec_nd.normalize : Vec_nd →* Vec_nd where
+  toFun := Vec_nd.normalize'
+  map_one' := by
+    apply Subtype.ext
+    unfold normalize' norm
+    simp only [ne_eq, fst_of_one_toVec_eq_one, map_one, inv_one, one_smul]
+  map_mul' x y := by
+    apply Subtype.ext
+    unfold normalize' norm
+    simp only [ne_eq, fst_of_mul_eq_fst_mul_fst, map_mul, mul_inv_rev, Complex.real_smul, Complex.ofReal_mul,
+      Complex.ofReal_inv]
+    ring
+
 def Dir := Con.Quotient PScaling.con
 
 def Vec_nd.toDir (z : Vec_nd) := (⟦z⟧ : Dir)
 
-def Dir.toVec_nd (z : Dir) : Vec_nd := by
-  apply Con.lift PScaling.con Vec_nd.normalize 
+#check Con.lift
 
+def Dir.toVec_nd : (Dir →* Vec_nd) := by
+  let g := Con.lift PScaling.con Vec_nd.normalize
+  sorry
 /-
 
 def Proj := Con.Quotient PM.con
