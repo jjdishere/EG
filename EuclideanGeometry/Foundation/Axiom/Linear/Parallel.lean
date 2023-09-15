@@ -121,8 +121,8 @@ theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h 
   intro X' h₁' h₂'
   by_contra n
   have e : l₁ = l₂ := by
-    rw [← line_eq_line_of_pt_pt_of_ne n h₁ h₁']
-    exact line_eq_line_of_pt_pt_of_ne n h₂ h₂'
+    rw [← eq_line_of_pt_pt_of_ne n h₁ h₁']
+    exact eq_line_of_pt_pt_of_ne n h₂ h₂'
   tauto
 
 def intersection_of_nonparallel_line (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : P := 

@@ -26,6 +26,8 @@ theorem cosine_rule (tr_nd : Triangle_nd P) : 2 * (tr_nd.1.edge₃.length * tr_n
 -- Should we reformulate it without circle?
 -- theorem side_eq_cradius_times_sine_angle (tr_nd : Triangle_nd P) (cclock : tr_nd.is_cclock) : tr_nd.1.edge₁.length = 2 * (tr_nd.toCir).radius * Real.sin (tr_nd.angle₁) ∧ tr_nd.1.edge₂.length = 2 * (tr_nd.toCir).radius * Real.sin (tr_nd.angle₂) ∧ tr_nd.1.edge₃.length = 2 * (tr_nd.toCir).radius * Real.sin (tr_nd.angle₃):= sorry
 
+theorem sine_rule (tr_nd : Triangle_nd P) : tr_nd.1.edge₂.length * Real.sin tr_nd.oangle₃.value = tr_nd.1.edge₃.length * Real.sin tr_nd.oangle₂.value := sorry
+
 end Triangle
 
 section Pythagoras
