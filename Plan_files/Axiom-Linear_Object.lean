@@ -63,18 +63,21 @@ Ray.lean -- Define (directed) segments and rays
     (defn) Ray.reverse : Ray P -- Given a (ray : Ray P), ray.reverse is a ray obtained by reversing the direction of ray, i.e. its source is ray.source, and its toDir is - ray.toDir.
     (defn) Seg.reverse : Seg P -- Given a (seg : Seg P), seg.reverse is a segment whose source is seg.target and whose target is seg.source.
     (defn) Seg_nd.reverse : Seg_nd P -- Given a (seg_nd : Seg_nd P), seg_nd.reverse is a segment whose source is seg_nd.target and whose target is seg_nd.source.
-    Seg_nd.rev_toseg_eq_toseg_rev -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.1 = seg_nd.1.reverse.
+    Seg_nd.rev_toSeg_eq_toSeg_rev -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.1 = seg_nd.1.reverse.
     Ray.rev_rev_eq_self -- Given a (ray : Ray P), reversing it twice gives back to itself, i.e. ray.rev.rev = ray.
     Seg.rev_rev_eq_self -- Given a (seg : Seg P), reversing it twice gives back to itself, i.e. seg.rev.rev = seg.
     Seg_nd.rev_rev_eq_self -- Given a (seg_nd : Seg_nd P), reversing it twice gives back to itself, i.e. seg_nd.rev.rev = seg_nd.
-    Seg.carrier_rev_eq_carrier -- Given a (seg : Seg P), the carrier of seg.reverse is the same as the carrier of seg.
-    intx_eq_source_of_ray_and_ray_rev -- Given a (ray : Ray P), the intersection of the carrier of ray and the carrier of the reverse of ray is exactly the source of ray, i.e. (A : P) : A = ray.source ↔ A ∈ ray.carrier ∧ A ∈ ray.reverse.carrier
-    intx_of_ray_interior_and_ray_rev_is_empty -- Given a (ray : Ray P), the intersection of the interior of ray and the carrier of the reverse of ray is empty.
-    lieson_segnd_iff_lieson_toray_and_rev_toray -- Given a nondegenerate segment (segnd : Seg_nd P), a point (A : P) lies on segnd if and only if A lies on the ray associated to the segment as well as the ray associated to the reverse of the segment, i.e. A ∈ segnd.toray ∧ A ∈ segnd.reverse.toray.
-    Seg.tovec_of_reverse_eq_neg_tovec -- Given a (seg : Seg P), seg.reverse.toVec = - seg.toVec
-    Seg_nd.tovecnd_of_reverse_eq_neg_tovecnd -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toVec_nd = - seg_nd.toVec_nd
-    Seg_nd.todir_of_reverse_eq_neg_todir -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toDir = - seg_nd.toDir
-    Seg_nd.toproj_of_reverse_eq_neg_toproj -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toProj = - seg_nd.toProj
+    Seg.lies_on_rev_iff_lie_son -- Given a (p : P) (seg : Seg P), p lies on seg if and only if p lies on seg.reverse.
+    eq_source_iff_lies_on_ray_lies_on_ray_rev -- Given a (ray : Ray P), the intersection of the carrier of ray and the carrier of the reverse of ray is exactly the source of ray, i.e. (A : P) : A = ray.source ↔ A ∈ ray.carrier ∧ A ∈ ray.reverse.carrier
+    not_lies_on_of_lies_int_rev -- Given a (ray : Ray P), the intersection of the carrier of ray and the interior of the reverse of ray is empty.
+    not_lies_int_of_lies_on_rev -- Given a (ray : Ray P), the intersection of the interior of ray and the carrier of the reverse of ray is empty.
+    lies_on_iff_lies_on_toRay_and_rev_toRay -- Given a nondegenerate segment (segnd : Seg_nd P), a point (A : P) lies on segnd if and only if A lies on the ray associated to the segment as well as the ray associated to the reverse of the segment, i.e. A ∈ segnd.toray ∧ A ∈ segnd.reverse.toray.
+    Ray.toDir_of_reverse_eq_neg_toDir --
+    Ray.toProj_of_reverse_eq_toProj --
+    Seg.toVec_of_reverse_eq_neg_toVec -- Given a (seg : Seg P), seg.reverse.toVec = - seg.toVec
+    Seg_nd.toVec_nd_of_reverse_eq_neg_toVec_nd -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toVec_nd = - seg_nd.toVec_nd
+    Seg_nd.toDir_of_reverse_eq_neg_toDir -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toDir = - seg_nd.toDir
+    Seg_nd.toproj_of_reverse_eq_neg_toproj -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toProj = seg_nd.toProj
 
   (extension line)
     (defn) Seg_nd.extension : Ray P -- Given a (segnd : Seg_nd P), extend the directed segment AB to the ray starting at B, in the direction of VEC A B, defined as the ray with starting point segnd.2.target, and direction segnd.toDir.
