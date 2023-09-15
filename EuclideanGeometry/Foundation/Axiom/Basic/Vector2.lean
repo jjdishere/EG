@@ -38,7 +38,7 @@ scoped notation "Vec" => ℂ
 def Vec_nd := {z : ℂ // z ≠ 0}
 
 instance : Coe Vec_nd Vec where
-  coe := fun x => x.1
+  coe := fun z => z.1
 
 namespace Vec_nd
 
@@ -66,64 +66,94 @@ instance : HasDistribNeg Vec_nd where
 
 end Vec_nd
 
+def Vec.norm (x : Vec) := Complex.abs x
+
+def Vec_nd.norm (x : Vec_nd) := Complex.abs x
+
+theorem Vec_nd.norm_ne_zero (z : Vec_nd) : Vec_nd.norm z ≠ 0 := norm_ne_zero_iff.2 z.2
+
+theorem Vec_nd.ne_zero_of_ne_zero_smul (z : Vec_nd) {t : ℝ} (h : t ≠ 0) : t • z.1 ≠ 0 := by
+  simp only [ne_eq, smul_eq_zero, h, z.2, or_self, not_false_eq_true]
+
+def Vec_nd.normalize' (z : Vec_nd) : Vec_nd := ⟨(Vec_nd.norm z)⁻¹ • z.1, Vec_nd.ne_zero_of_ne_zero_smul z (inv_ne_zero (Vec_nd.norm_ne_zero z))⟩
+
+def Vec_nd.normalize : Vec_nd →* Vec_nd where
+  toFun := Vec_nd.normalize
+  map_one' := by
+    simp
+  map_mul' := by
+    intro z w
+    simp
+    sorry
+
+theorem Vec_nd.ne_zero_of_neg (z : Vec_nd) : - z.1 ≠ 0 := by 
+  simp only [ne_eq, neg_eq_zero, z.2, not_false_eq_true]
+
+@[simp]
+theorem fst_of_one_toVec_eq_one : (1 : Vec_nd).1 = 1 := rfl
+
+@[simp]
+theorem fst_neg_Vec_nd_is_neg_fst_Vec_nd (z : Vec_nd) : (-z).1 = -(z.1) := rfl
+
+@[simp]
+theorem ne_zero_of_Vec_nd (z : Vec_nd) : z.1 ≠ 0 := z.2
+
+@[simp]
+theorem real_smul_Vec_eq_mul_of (z : Vec) (r : ℝ) : r • z = r * z := rfl
+
+@[simp]
+theorem fst_of_mul_eq_fst_mul_fst (z w : Vec_nd) : (z * w).1 = z.1 * w.1 := by rfl
+
+def PScaling : Vec_nd → Vec_nd → Prop :=
+  fun z w => ∃ t : ℝ, (0 < t) ∧ (w.1 = t • z.1)
+
+def PScaling.equivalence : Equivalence PScaling where
+  refl x := by
+    use 1
+    simp only [zero_lt_one, ne_eq, one_smul, and_self]
+  symm := fun ⟨t, ⟨ht, h⟩⟩ =>
+    Exists.intro t⁻¹ ⟨Iff.mpr inv_pos ht, Eq.symm (Iff.mpr (inv_smul_eq_iff₀ (ne_of_gt ht)) h)⟩
+  trans h := fun ⟨t, ⟨ht, h₂⟩⟩ => by
+    rcases h with ⟨s, ⟨hs, h₁⟩⟩
+    use t * s
+    simp only [gt_iff_lt, ht, zero_lt_mul_left, hs, ne_eq, h₂, h₁, Complex.real_smul, Complex.ofReal_mul, mul_assoc, and_self]
+
+instance PScaling.con : Con Vec_nd where
+  r := PScaling
+  iseqv := PScaling.equivalence
+  mul' := by
+    intro z₁ z₂ w₁ w₂ ⟨s, hs, e₁⟩ ⟨t, ht, e₂⟩
+    use s * t
+    constructor
+    exact (zero_lt_mul_left hs).2 ht
+    simp only [ne_eq, fst_of_mul_eq_fst_mul_fst, e₁, Complex.real_smul, e₂, Complex.ofReal_mul]
+    ring
+
+def Dir := Con.Quotient PScaling.con
+
+def Vec_nd.toDir (z : Vec_nd) := (⟦z⟧ : Dir)
+
+def Dir.toVec_nd (z : Dir) : Vec_nd := by
+  apply Con.lift PScaling.con Vec_nd.normalize 
+
 /-
-theorem Vec.norm_eq_abs_toComplex (x : Vec) : Vec.norm x = Complex.abs (Vec.toComplex x) := rfl
 
-theorem Vec_nd.ne_zero_of_ne_zero_smul (x : Vec_nd) {t : ℝ} (h : t ≠ 0) : t • x.1 ≠ 0 := by 
-  simp only [ne_eq, smul_eq_zero, h, x.2, or_self, not_false_eq_true]
+def Proj := Con.Quotient PM.con
 
-theorem Vec_nd.ne_zero_of_neg (x : Vec_nd) : - x.1 ≠ 0 := by 
-  simp only [ne_eq, neg_eq_zero, x.2, not_false_eq_true]
+-- We can take quotient from Dir to get Proj. 
 
-instance : InvolutiveNeg Vec_nd where
-  neg x := {
-    val := - x.1
-    property := Vec_nd.ne_zero_of_neg _
-  }
-  neg_neg _ := by simp only [ne_eq, neg_neg, Subtype.coe_eta]
+namespace Proj
 
-namespace Complex
+instance : MulOneClass Proj := Con.mulOneClass PM.con
 
-/- Use `Complex.toVec` in full name to avoid naming conflicts -/
-protected def toVec (c : ℂ) : Vec := ⟨c.1, c.2⟩
+instance : Group Proj := Con.group PM.con
 
-end Complex
+instance : CommMonoid Proj := Con.commMonoid PM.con
 
-@[simp]
-theorem one_toVec_eq_one_zero : Complex.toVec (1 : ℂ) = (1, 0) := rfl
-@[simp]
-theorem fst_of_neg_one_toVec_eq_neg_one : (Complex.toVec (-1 : ℂ)).1 = -1 := rfl
+instance : CommGroup Proj where
+  mul_comm := instCommMonoidProj.mul_comm
 
-@[simp]
-theorem snd_of_neg_one_toVec_eq_zero : (Complex.toVec (-1 : ℂ)).2 = 0 := by
-  unfold Complex.toVec Complex.im
-  simp only [Complex.neg_im, Complex.one_im, neg_zero]
 
-@[simp]
-theorem eq_self_toComplex_toVec (x : Vec) : Complex.toVec (Vec.toComplex x) = x := rfl
-
-@[simp]
-theorem re_of_toComplex_eq_fst (x : Vec): (Vec.toComplex x).re = x.fst := rfl
-
-@[simp]
-theorem im_of_toComplex_eq_snd (x : Vec): (Vec.toComplex x).im = x.snd := rfl
-
-theorem eq_zero_of_toComplex_eq_zero {x : Vec} (hx : Vec.toComplex x = 0) : x = 0 := by
-  unfold Vec.toComplex at hx
-  rw [Complex.ext_iff] at hx
-  have g : x = 0 := by
-    ext : 1
-    tauto
-    tauto
-  exact g
-
-@[simp]
-theorem toComplex_zero_eq_zero : Vec.toComplex 0 = 0 := rfl
-
-theorem ne_zero_of_Vec_nd_toComplex (x : Vec_nd) : Vec.toComplex x.1 ≠ 0 := by
-  by_contra h
-  have this : x.1 = 0 := eq_zero_of_toComplex_eq_zero h
-  exact x.2 this
 
 @[ext]
 class Dir where
@@ -788,4 +818,5 @@ theorem linear_combination_of_not_colinear' {u v : Vec_nd} (w : ℝ × ℝ) (h' 
 
 end Linear_Algebra
 -/
+
 end EuclidGeom
