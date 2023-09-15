@@ -158,6 +158,33 @@ theorem normalize_eq_normalize_smul_pos (u v : Vec_nd) {t : ℝ} (h : v.1 = t �
     OneHom.coe_mk]
   exact Eq.symm ((inv_mul_eq_iff_eq_mul₀ hv).2 (Eq.symm w))
 
+theorem neg_normalize_eq_normalize_smul_neg (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : t < 0) : -Vec_nd.normalize u = Vec_nd.normalize v := by
+  apply Subtype.ext
+  unfold Vec_nd.normalize
+  simp only [ne_eq, MonoidHom.coe_mk, OneHom.coe_mk, fst_neg_Vec_nd_is_neg_fst_Vec_nd]
+  have g : (-Vec.norm v) • u.1 = (Vec.norm u) • v.1 := by
+    have w₁ : (Vec.norm (t • u.1)) = ‖t‖ * (Vec.norm u.1) := norm_smul t u.1
+    have w₂ : ‖t‖ = -t := abs_of_neg ht
+    rw [h, w₁, w₂, neg_mul, neg_neg, mul_comm]
+    exact mul_smul (Vec.norm u.1) t u.1
+  have g' : (-(Vec.norm v : ℂ)) * u.1 = Vec.norm u * v.1 := by
+    rw [Eq.symm (Complex.ofReal_neg (Vec.norm v))]
+    exact g
+  have hu : (Vec.norm u : ℂ) ≠ 0 := by
+    rw [← norm_of_Vec_nd_eq_norm_of_Vec_nd_fst u]
+    exact Iff.mpr Complex.ofReal_ne_zero (Vec_nd.norm_ne_zero u)
+  have hv : -(Vec.norm v : ℂ) ≠ 0 := by
+    rw [← norm_of_Vec_nd_eq_norm_of_Vec_nd_fst v]
+    exact neg_ne_zero.2 (Iff.mpr Complex.ofReal_ne_zero (Vec_nd.norm_ne_zero v))
+  let w := (inv_mul_eq_iff_eq_mul₀ hu).2 g'
+  rw [mul_left_comm] at w
+  unfold Vec_nd.normalize'
+  simp only [ne_eq, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, Complex.real_smul, Complex.ofReal_inv, MonoidHom.coe_mk,
+    OneHom.coe_mk]
+  let w' := Eq.symm ((inv_mul_eq_iff_eq_mul₀ hv).2 (Eq.symm w))
+  rw [← neg_inv, neg_mul] at w'
+  exact Iff.mpr neg_eq_iff_eq_neg w'
+
 def Dir := Con.Quotient PScaling.con
 
 namespace Dir
