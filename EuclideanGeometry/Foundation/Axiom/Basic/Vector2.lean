@@ -198,8 +198,19 @@ instance : CommMonoid Dir := Con.commMonoid PScaling.con
 instance : CommGroup Dir where
   mul_comm := instCommMonoidDir.mul_comm
 
+instance : Neg Dir where
+  neg := by
+    apply Quotient.lift (fun z => ⟦-z⟧)
+    intro z w h
+    apply Quotient.sound
+    rcases h with ⟨t, ht, e⟩
+    exact ⟨t, ht, by
+      simp only [ne_eq, fst_neg_Vec_nd_is_neg_fst_Vec_nd, smul_neg, Complex.real_smul, neg_inj]
+      exact e⟩
+
+#print axioms neg_normalize_eq_normalize_smul_neg
+
 instance : HasDistribNeg Dir where
-  neg := sorry
   neg_neg _ := by
     sorry
   neg_mul _ _ := by
