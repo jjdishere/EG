@@ -51,6 +51,8 @@ angbis -- angle bisector
 perpbis -- perpendicular bisector
 tang -- tangent
 disj -- disjoint
+rev -- reverse
+extn -- extension ray
 
 
 -/

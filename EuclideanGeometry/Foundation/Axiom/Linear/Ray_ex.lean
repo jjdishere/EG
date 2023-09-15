@@ -41,6 +41,7 @@ theorem not_lies_on_of_lies_int_rev {A : P} (liesint : A LiesInt ray.reverse) : 
 
 theorem not_lies_int_of_lies_on_rev {A : P} (liesint : A LiesOn ray.reverse) : ¬ A LiesInt ray := sorry
 
+-- A point lies on the directed segment if and only if it lies on the ray associated to the segment and the ray associated to the reverse of this segment.
 theorem lies_on_iff_lies_on_toRay_and_rev_toRay {A : P} : A LiesOn seg_nd.1 ↔ (A LiesOn seg_nd.toRay) ∧ (A LiesOn seg_nd.reverse.toRay) := sorry
 
 theorem Ray.toDir_of_reverse_eq_neg_toDir : ray.reverse.toDir = - ray.toDir := rfl
@@ -60,25 +61,17 @@ theorem length_eq_length_of_rev : seg.length = seg.reverse.length := sorry
 
 end reverse
 
-section ray
--- If a point lies on ray and its reversion, then it is the source
-
-theorem eq_source_of_lies_on_and_lies_on_rev {p : P} (lieson : p LiesOn ray) (liesonrev : p LiesOn ray.reverse) : p = ray.source := by sorry
-
-end ray
-
-section seg
-
-variable {P: Type _} [EuclideanPlane P]
+section extension
 
 -- Define the extension ray from a nontrival segment
+def Seg_nd.extension : Ray P := (seg_nd.reverse.toRay).reverse
 
-def extension_ray_of_seg_nd (seg_nd : Seg_nd P) : Ray P := (seg_nd.reverse.toRay).reverse
+theorem extn_eq_rev_toray_rev : seg_nd.extension = seg_nd.reverse.toRay.reverse := sorry
 
--- A point lies on the directed segment if and only if it lies on the ray associated to the segment and the ray associated to the reverse of this segment.
+theorem eq_target_iff_lies_on_lies_on_extn {A : P} : (A LiesOn seg_nd.1) ∧ (A LiesOn seg_nd.extension) ↔ A = seg_nd.1.target := sorry
 
-def lieson_iff_lieson_both_ray_of_nontriv_seg {p : P} (seg_nd : Seg_nd P) : (p LiesOn seg_nd.1) ↔ (p LiesOn seg_nd.toRay) ∧ (p LiesOn seg_nd.reverse.toRay) := by sorry
+theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} (liesint : A LiesInt seg_nd.extension) : seg_nd.1.target LiesInt SEG seg_nd.1.source A := sorry
 
-end seg
+end extension
 
 end EuclidGeom

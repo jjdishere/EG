@@ -200,12 +200,8 @@ section length
 
 variable (l : Seg P)
 
-namespace Seg
-
 -- define the length of a generalized directed segment.
-def length : ℝ := Vec.Norm.norm (l.toVec)
-
-end Seg
+def Seg.length : ℝ := Vec.Norm.norm (l.toVec)
 
 -- length of a generalized directed segment is nonnegative.
 theorem length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ Vec.SeminormedAddGroup _
@@ -236,6 +232,21 @@ end length
 
 section midpoint
 
+variable (seg : Seg P) (seg_nd : Seg_nd P)
+
+def Seg.midpoint : P := (1 / 2 : ℝ) • (seg.toVec) +ᵥ seg.source
+
+theorem Seg.midpt_lies_on : seg.midpoint LiesOn seg := sorry
+
+theorem Seg_nd.midpt_lies_int : seg_nd.1.midpoint LiesInt seg_nd.1 := sorry
+
+-- A point is the mid opint of a segment if and only it defines the same vector to the source and the target of the segment
+theorem midpt_iff_same_vector_to_source_and_target (A : P) (l : Seg P) : A = l.midpoint ↔ (SEG l.source A).toVec = (SEG A l.target).toVec := by sorry
+
+theorem dist_target_eq_dist_source_of_midpt : (SEG seg.source seg.midpoint).length = (SEG seg.midpoint seg.target).length := sorry
+
+theorem eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source {A : P} : A = seg.midpoint ↔ (A LiesOn seg) ∧ (SEG seg.source A).length = (SEG A seg.target).length := sorry
+
 end midpoint
 
 section existence
@@ -246,12 +257,14 @@ theorem exist_pt_beyond_pt {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv 
 
 -- Archimedean property II: On an nontrivial directed segment, one can always find a point in its interior.  `This will be moved to later disccusion about midpoint of a segment, as the midpoint is a point in the interior of a nontrivial segment`
 
-theorem nd_of_exist_inter_pt (l : Seg P) (p : P) (h : p LiesInt l) : l.is_nd := sorry
+theorem nd_of_exist_int_pt (l : Seg P) (p : P) (h : p LiesInt l) : l.is_nd := sorry
 
 -- If a generalized directed segment contains an interior point, then it is nontrivial
-theorem nd_iff_exist_inter_pt (l : Seg P) : ∃ (p : P), p LiesInt l ↔ l.is_nd := sorry
+theorem nd_iff_exist_int_pt (l : Seg P) : ∃ (p : P), p LiesInt l ↔ l.is_nd := sorry
 
-theorem Seg_nd.exist_inter_pt (l : Seg_nd P) : ∃ (p : P), p LiesInt l.1 := sorry
+theorem Seg_nd.exist_int_pt (l : Seg_nd P) : ∃ (p : P), p LiesInt l.1 := sorry
+
+theorem length_pos_iff_exist_int_pt (l : Seg P) : 0 < l.length ↔  ∃ (p : P), p LiesInt l := sorry 
 
 end existence
 

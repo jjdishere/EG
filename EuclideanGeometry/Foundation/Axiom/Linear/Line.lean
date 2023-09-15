@@ -313,7 +313,7 @@ theorem exist_line_of_pt_proj (A : P) (pr : Proj) : ∃ l : Line P, A LiesOn l �
   let r : Ray P := ⟨A, dir⟩ 
   use r.toLine
   constructor
-  exact lies_on_line_of_ray_of_lies_on_ray (source_of_ray_lies_on_ray r)
+  exact lies_on_line_of_ray_of_lies_on_ray (Ray.source_lies_on r)
   rw [ray_toLine_toProj_eq_ray_toProj r]
   exact hd
 

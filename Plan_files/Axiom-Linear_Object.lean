@@ -79,11 +79,11 @@ Ray.lean -- Define (directed) segments and rays
     Seg_nd.toDir_of_reverse_eq_neg_toDir -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toDir = - seg_nd.toDir
     Seg_nd.toproj_of_reverse_eq_neg_toproj -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toProj = seg_nd.toProj
 
-  (extension line)
+  (extension)
     (defn) Seg_nd.extension : Ray P -- Given a (segnd : Seg_nd P), extend the directed segment AB to the ray starting at B, in the direction of VEC A B, defined as the ray with starting point segnd.2.target, and direction segnd.toDir.
-    seg_extn_eq_rev_toray_rev -- Given a (segnd : Seg_nd P), extending a segment is the same as first reverse the segment, and to ray, and then reverse the direction of ray, i.e. segnd.extension = segnd.reverse.toRay.reverse.
-    Seg_nd.target_eq_intx_segnd_and_extn -- Given a (segnd : Seg_nd P), the only point that lies on both segnd and segnd.extension is segnd.1.target, i.e. (A : P) : (A ∈ segnd.carrier) ∧ (A ∈ segnd.extension) ↔ A = segnd.target.
-    Seg.target_in_inter_seg_source_pt_of_pt_in_extn_inter -- Given a nondegenerate segment (segnd : Seg_nd P), for any point (A : P) in the interior of extension line of segnd, i.e. A ∈ segnd.extension.interior, segnd.target lies in the segment SEG segnd.source A.
+    extn_eq_rev_toRay_rev -- Given a (segnd : Seg_nd P), extending a segment is the same as first reverse the segment, and to ray, and then reverse the direction of ray, i.e. segnd.extension = segnd.reverse.toRay.reverse.
+    eq_target_of_lies_on_lies_on_extn -- Given a (segnd : Seg_nd P), the only point that lies on both segnd and segnd.extension is segnd.1.target, i.e. (A : P) : (A ∈ segnd.carrier) ∧ (A ∈ segnd.extension) ↔ A = segnd.target.
+    target_lies_int_seg_source_pt_of_pt_lies_int_extn -- Given a nondegenerate segment (segnd : Seg_nd P), for any point (A : P) in the interior of extension line of segnd, i.e. A ∈ segnd.extension.interior, segnd.target lies in the segment SEG segnd.source A.
 
   (length)
     (defn) Seg.length : ℝ -- The length of a segment (seg : Seg P).  (for segnd : Seg_nd P, use segnd.1.length)
@@ -95,11 +95,10 @@ Ray.lean -- Define (directed) segments and rays
 
   (midpoint)
     (defn) Seg.midpiont : P -- For a segment (seg : Seg P), return the midpoint of a segment (by (seg.target -ᵥ seg.source) /2 +ᵥ seg.source)
-    midpt_in_carrier -- midpoint of a segment lies in its carrier
-    midpt_in_interior_of_seg_nd -- if a segment is nondegenerate, the midpoint lies in its interior
+    Seg.midpt_lies_on -- midpoint of a segment lies in its carrier
+    Seg_nd.midpt_lies_int -- if a segment is nondegenerate, the midpoint lies in its interior
     midpt_iff_same_tovec_source_and_target -- a point is the midpoint of a segment iff (SEG l.source p).toVec = (SEG p l.target).toVec
     
-    length_pos_iff_exist_inter_pt -- length of a segment is positive iff there exists an interior point (the necessity condition uses the additivity of length function, and the existence is given by the midpoint)
 
     dist_target_eq_dist_source_of_midpt -- the midpoint of a segment has equal distance to the source and the target
     is_midpoint_iff_in_seg_and_dist_target_eq_dist_source -- a point is the midpoint of a segment if and only if it lies on the segment and it has same distance to the source and target
@@ -107,6 +106,7 @@ Ray.lean -- Define (directed) segments and rays
 
   (Archimedean property)`existence`
     Ray.exist_pt_in_interior -- for any ray, there exists a point in its interior
+    length_pos_iff_exist_inter_pt -- length of a segment is positive iff there exists an interior point (the necessity condition uses the additivity of length function, and the existence is given by the midpoint)
 
 -/
 
