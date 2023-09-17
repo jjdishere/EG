@@ -126,7 +126,6 @@ theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔
   rw[←perp_foot_eq_self_iff_lies_on A l]
   unfold dist_pt_line
   rw[←triv_iff_length_eq_zero]
-  
   simp
 
 end Perpendicular_constructions
