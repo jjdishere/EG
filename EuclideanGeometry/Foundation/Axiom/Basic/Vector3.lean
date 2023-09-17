@@ -279,7 +279,8 @@ def toVec_nd (x : Dir) : Vec_nd := ⟨x.toVec, toVec_ne_zero x⟩
 
 @[simp]
 theorem norm_of_dir_toVec_eq_one (x : Dir) : Vec.norm x.toVec = 1 := by
-  sorry
+  unfold Vec.norm Complex.abs Complex.normSq
+  simp only [MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, AbsoluteValue.coe_mk, MulHom.coe_mk, dir_toVec_fst_mul_fst_plus_snd_mul_snd_eq_one, Real.sqrt_one]
 
 @[simp]
 theorem dir_toVec_nd_normalize_eq_self (x : Dir) : Vec_nd.normalize (⟨x.toVec, toVec_ne_zero x⟩ : Vec_nd) = x := by
