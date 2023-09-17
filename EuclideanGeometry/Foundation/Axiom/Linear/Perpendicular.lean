@@ -15,7 +15,13 @@ namespace perpendicular
 @[simp]
 protected theorem irrefl (l : LinearObj P)  : ¬ (l ⟂ l) := by sorry
 
-protected theorem symm (l₁ l₂ : LinearObj P) : (l₁ ⟂ l₂) → (l₂ ⟂ l₁) := sorry
+protected theorem symm (l₁ l₂ : LinearObj P) : (l₁ ⟂ l₂) → (l₂ ⟂ l₁) := by
+  dsimp only [perpendicular] 
+  dsimp only [Proj.perp]
+  intro h
+  have h0 : (Proj.I)*(Proj.I) = 1 := by 
+    exact Proj.I_mul_I_eq_one_of_Proj
+  rw[h,←mul_assoc,h0,one_mul]
 
 end perpendicular
 
@@ -41,8 +47,9 @@ section Perpendicular_constructions
 def perp_line (A : P) (l : Line P) := Line.mk_pt_proj A (l.toProj.perp)
 
 @[simp]
-theorem toProj_of_perp_line_eq_toProj_perp (A : P) (l : Line P) : (perp_line A l).toProj = l.toProj.perp := by
-  sorry
+theorem toProj_of_perp_line_eq_toProj_perp (A : P) (l : Line P) : (perp_line A l).toProj = l.toProj.perp := (pt_lies_on_and_proj_eq_of_line_mk_pt_proj A _).2
+
+
 
 theorem perp_foot_preparation (A : P) (l : Line P) : l.toProj ≠ (perp_line A l).toProj := by
   sorry
