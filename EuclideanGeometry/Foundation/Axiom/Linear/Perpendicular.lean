@@ -71,7 +71,6 @@ def perp_line (A : P) (l : Line P) := Line.mk_pt_proj A (l.toProj.perp)
 
 @[simp]
 theorem toProj_of_perp_line_eq_toProj_perp (A : P) (l : Line P) : (perp_line A l).toProj = l.toProj.perp := (pt_lies_on_and_proj_eq_of_line_mk_pt_proj A _).2
-
 theorem perp_foot_preparation (A : P) (l : Line P) : l.toProj ≠ (perp_line A l).toProj := by
   rw[toProj_of_perp_line_eq_toProj_perp]
   unfold Proj.perp
