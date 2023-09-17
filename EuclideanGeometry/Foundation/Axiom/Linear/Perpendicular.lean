@@ -112,11 +112,14 @@ theorem perp_foot_eq_self_iff_lies_on (A : P) (l : Line P) : perp_foot A l = A �
     apply t
     nth_rw 1 [e]
 
-theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on (A : P) (l : Line P) (h : ¬ A LiesOn l) : LIN A (perp_foot A l) (by sorry) = perp_line A l := by
+theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on (A : P) (l : Line P) (h : ¬ A LiesOn l) : LIN A (perp_foot A l) (by rw[←perp_foot_eq_self_iff_lies_on A l] at h; simp; exact h) = perp_line A l := by
   sorry
 
 theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l := by
-  sorry
+  rw[←perp_foot_eq_self_iff_lies_on A l]
+  unfold dist_pt_line
+  rw[←triv_iff_length_eq_zero]
+  simp
 
 end Perpendicular_constructions
 
