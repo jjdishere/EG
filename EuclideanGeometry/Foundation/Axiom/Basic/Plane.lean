@@ -46,28 +46,74 @@ instance : @NormedAddTorsor (Vec) P Vec.SeminormedAddCommGroup _ := EuclideanPla
 instance : AddTorsor (Vec) P := by infer_instance
 
 @[simp]
-theorem start_vadd_vec_eq_end (A B : P) : (VEC A B) +ᵥ A = B := sorry
+theorem start_vadd_vec_eq_end (A B : P) : (VEC A B) +ᵥ A = B := by
+   rw[Vec.mk_pt_pt]
+   exact vsub_vadd B A
 
 @[simp]
-theorem vadd_eq_self_iff_vec_eq_zero {A : P} {v : Vec} : v +ᵥ A = A ↔ v = 0 := sorry
+theorem vadd_eq_self_iff_vec_eq_zero {A : P} {v : Vec} : v +ᵥ A = A ↔ v = 0 := by
+  constructor
+  intro h
+  have k:v +ᵥ A -ᵥ A = A-ᵥ A:= by
+    rw[h]
+  have u:v +ᵥ A -ᵥ A = v:= by
+    simp
+  rw[u] at k
+  simp at k
+  exact k
+  intro h
+  rw[h]
+  simp
 
 @[simp]
-theorem vec_same_eq_zero (A : P) : VEC A A = 0 := sorry
+theorem vec_same_eq_zero (A : P) : VEC A A = 0 := by
+  rw[Vec.mk_pt_pt]
+  simp
 
-theorem neg_vec (A B : P) : - VEC A B = VEC B A := sorry
+theorem neg_vec (A B : P) : - VEC A B = VEC B A := by
+  rw[Vec.mk_pt_pt]
+  rw[Vec.mk_pt_pt]
+  simp
 
-theorem eq_iff_vec_eq_zero (A B : P) : B = A ↔ VEC A B = 0 := sorry
+theorem eq_iff_vec_eq_zero (A B : P) : B = A ↔ VEC A B = 0 := by
+  constructor
+  intro h
+  rw[Vec.mk_pt_pt]
+  simp
+  exact h
+  intro h
+  rw[Vec.mk_pt_pt] at h
+  simp at h
+  exact h
 
-theorem ne_iff_vec_ne_zero (A B : P) : B ≠ A ↔ (VEC A B) ≠ 0 := sorry
+theorem ne_iff_vec_ne_zero (A B : P) : B ≠ A ↔ (VEC A B) ≠ 0 := by
+  constructor
+  intro h a
+  apply h
+  rw[Vec.mk_pt_pt] at a
+  simp at a
+  exact a
+  intro h a
+  apply h
+  rw[Vec.mk_pt_pt]
+  simp
+  exact a
 
 @[simp]
-theorem vec_add_vec (A B C : P) : VEC A B + VEC B C = VEC A C := sorry
+theorem vec_add_vec (A B C : P) : VEC A B + VEC B C = VEC A C := by
+  sorry
 
 @[simp]
-theorem vec_of_pt_vadd_pt_eq_vec (A : P) (v : Vec) : (VEC A (v +ᵥ A)) = v := sorry
+theorem vec_of_pt_vadd_pt_eq_vec (A : P) (v : Vec) : (VEC A (v +ᵥ A)) = v := by
+  rw[Vec.mk_pt_pt]
+  simp
 
 @[simp]
-theorem vec_sub_vec (O A B: P) : VEC O B - VEC O A = VEC A B := sorry
+theorem vec_sub_vec (O A B: P) : VEC O B - VEC O A = VEC A B := by
+  rw[Vec.mk_pt_pt]
+  rw[Vec.mk_pt_pt]
+  rw[Vec.mk_pt_pt]
+  simp
 
 theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = tB) (ha : VEC O A = tA • v) (hb : VEC O B = tB • v) : A = B := by
   have hc : VEC A B = VEC O B - VEC O A := Eq.symm (vec_sub_vec O A B)
@@ -75,6 +121,7 @@ theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = t
   exact Eq.symm ((eq_iff_vec_eq_zero A B).2 hc)
 
 theorem eq_of_smul_Vec_nd_eq_smul_Vec_nd {v : Vec_nd} {tA tB : ℝ} (e : tA • v.1 = tB • v.1) : tA = tB := by
+  
   sorry
 
 end EuclidGeom
