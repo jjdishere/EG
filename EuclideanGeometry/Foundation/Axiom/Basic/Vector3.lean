@@ -490,6 +490,8 @@ def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.normalize v : Proj)
 
 -- Coincidence of toProj gives rise to important results, especially that two Vec_nd-s have the same toProj iff they are equal by taking a real (nonzero) scaler. We will prove this statement in the following section. 
 
+section Vec_nd_toProj
+
 theorem normalize_eq_normalize_smul_pos (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : 0 < t) : Vec_nd.normalize u = Vec_nd.normalize v := by
   unfold Vec_nd.normalize
   ext : 1
@@ -544,8 +546,170 @@ theorem neg_normalize_eq_normalize_eq (z : Vec_nd) : Vec_nd.normalize (-z) = - V
   simp only [ne_eq, fst_neg_Vec_nd_is_neg_fst_Vec_nd, neg_smul, one_smul]
   linarith
 
+theorem eq_toProj_of_smul (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) : Vec_nd.toProj u = Vec_nd.toProj v := by
+  have ht : t ≠ 0 := by
+    by_contra ht'
+    rw [ht', zero_smul ℝ u.1] at h
+    exact v.2 h
+  have ht₁ : (0 < t) ∨ (t < 0) := Ne.lt_or_lt (Ne.symm ht)
+  unfold Vec_nd.toProj Dir.toProj
+  apply Quotient.sound
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM
+  simp only [Con.rel_eq_coe, Con.rel_mk]
+  match ht₁ with
+    | Or.inl ht₂ =>
+      left
+      exact normalize_eq_normalize_smul_pos u v h ht₂
+    | Or.inr ht₃ =>
+      right
+      exact Iff.mp neg_eq_iff_eq_neg (neg_normalize_eq_normalize_smul_neg u v h ht₃)
 
+theorem smul_of_eq_toProj (u v : Vec_nd) (h : Vec_nd.toProj u = Vec_nd.toProj v) : ∃ (t : ℝ), v.1 = t • u.1 := by
+  let h' := Quotient.exact h
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
+  simp only [Con.rel_eq_coe, Con.rel_mk] at h' 
+  match h' with
+    | Or.inl h₁ =>
+      rw [Dir.ext_iff] at h₁
+      use (Vec.norm v.1) * (Vec.norm u.1)⁻¹
+      have w₁ : (Vec.norm v.1)⁻¹ • v.1 = (Vec.norm u.1)⁻¹ • u.1 ↔ v.1 = (Vec.norm v.1) • (Vec.norm u.1)⁻¹ • u.1 := inv_smul_eq_iff₀ (Iff.mpr norm_ne_zero_iff v.2)
+      rw [mul_smul]
+      exact (w₁.mp (Eq.symm h₁))
+    | Or.inr h₂ =>
+      rw [Dir.ext_iff] at h₂
+      use (-Vec.norm v.1) * (Vec.norm u.1)⁻¹
+      have w₂ : (-Vec.norm v.1)⁻¹ • v.1 = (Vec.norm u.1)⁻¹ • u.1 ↔ v.1 = (-Vec.norm v.1) • (Vec.norm u.1)⁻¹ • u.1 := inv_smul_eq_iff₀ (Iff.mpr neg_ne_zero (Iff.mpr norm_ne_zero_iff v.2))
+      rw [mul_smul]
+      refine (w₂.mp (Eq.symm ?_))
+      rw [← neg_inv, neg_smul]
+      exact h₂
 
+-- The main theorem of Vec_nd.toProj
+theorem Vec_nd.eq_toProj_iff (u v : Vec_nd) : (Vec_nd.toProj u = Vec_nd.toProj v) ↔ ∃ (t : ℝ), v.1 = t • u.1 := by
+  constructor
+  · intro h
+    exact smul_of_eq_toProj _ _ h
+  · intro h'
+    rcases h' with ⟨t, h⟩ 
+    exact eq_toProj_of_smul _ _ h
+
+end Vec_nd_toProj
+
+section Perpendicular
+
+namespace Proj
+
+def I : Proj := Dir.I
+
+@[simp]
+theorem neg_one_eq_one_of_Proj : ((-1 : Dir) : Proj) = (1 : Proj) := by
+  unfold Dir.toProj
+  apply Quotient.sound
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM
+  simp only [Con.rel_eq_coe, Con.rel_mk, or_true]
+
+@[simp]
+theorem I_mul_I_eq_one_of_Proj : I * I = 1 := by
+  have h : Dir.toProj (Dir.I * Dir.I) = (Dir.toProj Dir.I) * (Dir.toProj Dir.I):= rfl
+  have h' : Dir.toProj Dir.I = (I : Proj) := rfl
+  rw [← neg_one_eq_one_of_Proj, ← Dir.I_mul_I_eq_neg_one, h, h']
+
+def perp : Proj → Proj := fun x => I * x
+
+@[simp]
+theorem perp_perp_eq_self (x : Proj) : x.perp.perp = x := by
+  unfold perp
+  rw [← mul_assoc]
+  simp only [I_mul_I_eq_one_of_Proj, one_mul]
+
+end Proj
+
+end Perpendicular
+
+-- Our aim is to prove the Cosine value of the angle of two Vec_nd-s, their norm and inner product satisfy THE EQUALITY. We will use this to prove the Cosine theorem of Triangle, which is in the file Trigonometric
+
+section Cosine_theorem_for_Vec_nd
+
+theorem Vec_nd.norm_smul_normalize_eq_self (v : Vec_nd) : Vec.norm v.1 • (Vec_nd.normalize v).toVec = v := by
+  symm
+  apply (inv_smul_eq_iff₀ (Iff.mpr norm_ne_zero_iff v.2)).1
+  rfl
+
+def Vec_nd.angle (v₁ v₂ : Vec_nd) := Dir.angle (Vec_nd.normalize v₁) (Vec_nd.normalize v₂)
+
+theorem cos_arg_of_dir_eq_fst (x : Dir) : Real.cos (Complex.arg x.1) = x.1.1 := by
+  have w₁ : (Dir.mk_angle (Complex.arg x.1)).1.1 = Real.cos (Complex.arg x.1) := rfl
+  simp only [← w₁, Dir.mk_angle_arg_toComplex_of_Dir_eq_self]
+
+/-
+theorem sin_arg_of_dir_eq_fst (x : Dir) : Real.sin (Complex.arg (Vec.toComplex x.1)) = x.1.2 := by
+  have w₁ : (Dir.mk_angle (Complex.arg (Vec.toComplex x.1))).1.2 = Real.sin (Complex.arg (Vec.toComplex x.1)) := rfl
+  simp only [← w₁, Dir.mk_angle_arg_toComplex_of_Dir_eq_self]
+-/
+
+theorem cos_angle_of_dir_dir_eq_inner (d₁ d₂ : Dir) : Real.cos (Dir.angle d₁ d₂) = inner d₁.1 d₂.1 := by
+  unfold Dir.angle inner InnerProductSpace.toInner InnerProductSpace.complexToReal InnerProductSpace.isROrCToReal
+  simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
+  rw [cos_arg_of_dir_eq_fst]
+  exact (Dir.fst_of_angle_toVec d₁ d₂)
+
+theorem norm_mul_norm_mul_cos_angle_eq_inner_of_Vec_nd (v₁ v₂ : Vec_nd) : (Vec.norm v₁) * (Vec.norm v₂) * Real.cos (Vec_nd.angle v₁ v₂) = inner v₁.1 v₂.1 := by
+  have h : @inner ℝ _ _ v₁.1 v₂.1 = inner (Vec.norm v₁ • (Vec_nd.normalize v₁).1) (Vec.norm v₂ • (Vec_nd.normalize v₂).1) := by
+    nth_rw 1 [← Vec_nd.norm_smul_normalize_eq_self v₁, ← Vec_nd.norm_smul_normalize_eq_self v₂]
+  rw [h]
+  rw [inner_smul_left, inner_smul_right, ← cos_angle_of_dir_dir_eq_inner, mul_assoc]
+  rfl
+
+theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec_nd) : v₁.toProj = v₂.toProj.perp ↔ (Vec_nd.angle v₁ v₂ = π / 2) ∨ (Vec_nd.angle v₁ v₂ = -(π / 2)) := by
+  let d₁ := Vec_nd.normalize v₁
+  let d₂ := Vec_nd.normalize v₂
+  constructor
+  intro h
+  let h := Quotient.exact h
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM at h
+  simp only [Con.rel_eq_coe, Con.rel_mk] at h
+  unfold Vec_nd.angle Dir.angle
+  by_cases d₁ = Dir.I * d₂
+  · right
+    rw [mul_inv_eq_of_eq_mul (Eq.symm (inv_mul_eq_of_eq_mul h))]
+    simp only [Dir.inv_of_I_eq_neg_I, Dir.neg_I_toComplex_eq_neg_I, Complex.arg_neg_I]
+  · left
+    have e : d₂ * d₁⁻¹ = Dir.I := by
+      have w : d₁ = - (Dir.I * d₂) := by tauto
+      rw [← neg_mul, ← Dir.inv_of_I_eq_neg_I] at w
+      exact Eq.symm (eq_mul_inv_of_mul_eq (mul_eq_of_eq_inv_mul w))
+    rw [e]
+    simp only [Dir.I_toComplex_eq_I, Complex.arg_I]
+  intro h
+  by_cases Dir.angle d₁ d₂ = π / 2
+  · have w : Dir.mk_angle (Dir.angle d₁ d₂) = Dir.mk_angle (π / 2) := by
+      rw [h]
+    unfold Dir.angle at w
+    simp only [Dir.mk_angle_arg_toComplex_of_Dir_eq_self, Dir.mk_angle_pi_div_two_eq_I] at w
+    unfold Vec_nd.toProj Proj.perp
+    have e : Vec_nd.normalize v₂ = d₂ := rfl
+    have e' : d₂ = Dir.I * d₁ := by
+      exact eq_mul_of_div_eq w
+    have e'' : Dir.toProj (Dir.I * d₁) = Proj.I * d₁.toProj := rfl
+    rw [e, e', e'', ← mul_assoc]
+    simp only [Proj.I_mul_I_eq_one_of_Proj, one_mul]
+  · have w : Dir.mk_angle (Dir.angle d₁ d₂) = Dir.mk_angle (-(π / 2)) := by
+      have w' : Dir.angle d₁ d₂ = -(π / 2) := by tauto
+      rw [w']
+    unfold Dir.angle at w
+    simp only [Dir.mk_angle_arg_toComplex_of_Dir_eq_self, Dir.mk_angle_neg_eq_mk_angle_inv,
+      Dir.mk_angle_pi_div_two_eq_I, Dir.inv_of_I_eq_neg_I] at w
+    unfold Vec_nd.toProj Proj.perp
+    have e : Vec_nd.normalize v₁ = d₁ := rfl
+    have e' : d₁ = Dir.I * d₂ := by
+      rw [← Dir.inv_of_I_eq_neg_I] at w
+      exact eq_mul_of_inv_mul_eq (mul_eq_of_eq_div (Eq.symm w))
+    rw [e, e']
+    rfl
+
+end Cosine_theorem_for_Vec_nd
+
+-- Our aim is to prove nonparallel lines have common point, but in this section, we will only form the theorem in a Linear algebraic way by proving two Vec_nd-s could span the space with different toProj, which is the main theorem about toProj we will use in the proof of the intersection theorem. 
 
 section Linear_Algebra
 
@@ -588,7 +752,7 @@ theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v
     rcases e
     ring
 
-theorem linear_combination_of_not_colinear {u v w : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
+theorem linear_combination_of_not_colinear' {u v w : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
   have h₁ : (¬ (∃ (t : ℝ), v = t • u)) → (¬ (u.1 * v.2 - u.2 * v.1 = 0)) := by
     intro _
     by_contra h₂
@@ -609,15 +773,13 @@ theorem linear_combination_of_not_colinear {u v w : Vec} (hu : u ≠ 0) (h' : ¬
   simp only [add_zero, Complex.add_im]
   ring
 
-/-
 theorem linear_combination_of_not_colinear {u v : Vec_nd} (w : Vec) (h' : Vec_nd.toProj u ≠ Vec_nd.toProj v) : ∃ (cᵤ cᵥ : ℝ), w = cᵤ • u.1 + cᵥ • v.1 := by
   have h₁ : (Vec_nd.toProj u ≠ Vec_nd.toProj v) → ¬(∃ (t : ℝ), v.1 = t • u.1) := by
     intro _
     by_contra h₂
     let _ := (Vec_nd.eq_toProj_iff u v).2 h₂
     tauto
-  exact linear_combination_of_not_colinear u.2 (h₁ h')
--/
+  exact linear_combination_of_not_colinear' u.2 (h₁ h')
 
 end Linear_Algebra
 
