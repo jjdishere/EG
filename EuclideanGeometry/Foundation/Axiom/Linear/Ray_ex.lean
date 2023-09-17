@@ -129,8 +129,6 @@ theorem lies_on_iff_lies_on_toRay_and_rev_toRay {A : P} : A LiesOn seg_nd.1 ↔ 
   rintro ⟨⟨a,anneg,h⟩,b,bnneg,h'⟩
   have: seg_nd.reverse.toRay.source=seg_nd.1.target:=by
     rfl
-  rw[this] at h'
-  have: seg_nd.toRay.source=seg_nd.1.source:=by
     rfl
   rw[this] at h
   use a*(Vec.norm (VEC seg_nd.1.source seg_nd.1.target))⁻¹
