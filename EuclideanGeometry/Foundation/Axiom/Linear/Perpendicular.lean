@@ -71,6 +71,7 @@ def perp_line (A : P) (l : Line P) := Line.mk_pt_proj A (l.toProj.perp)
 
 @[simp]
 theorem toProj_of_perp_line_eq_toProj_perp (A : P) (l : Line P) : (perp_line A l).toProj = l.toProj.perp := (pt_lies_on_and_proj_eq_of_line_mk_pt_proj A _).2
+
 theorem perp_foot_preparation (A : P) (l : Line P) : l.toProj ≠ (perp_line A l).toProj := by
   rw[toProj_of_perp_line_eq_toProj_perp]
   unfold Proj.perp
@@ -85,7 +86,31 @@ def perp_foot (A : P) (l : Line P) : P := intersection_of_nonparallel_line l (pe
 def dist_pt_line (A : P) (l : Line P) := Seg.length (SEG A (perp_foot A l))
 
 theorem perp_foot_eq_self_iff_lies_on (A : P) (l : Line P) : perp_foot A l = A ↔ A LiesOn l := by
-  sorry
+  constructor
+  .
+    intro h
+    unfold perp_foot at h
+    rw [← h]
+    apply intersection_of_nonparallel_line_lies_on_fst_line
+  .
+    intro A_on_l
+    have A_on_perp_line_A_l:(A LiesOn perp_line A l) := by
+      unfold perp_line
+      exact (pt_lies_on_and_proj_eq_of_line_mk_pt_proj A (Proj.perp (Line.toProj l))).1
+    have h:(perp_foot A l LiesOn l) := by
+      unfold perp_foot
+      apply intersection_of_nonparallel_line_lies_on_fst_line
+    have h':(perp_foot A l LiesOn perp_line A l) := by
+      unfold perp_foot
+      apply intersection_of_nonparallel_line_lies_on_snd_line
+    by_contra n
+    have e : l = perp_line A l := by
+      nth_rw 1 [← eq_line_of_pt_pt_of_ne n A_on_l h]
+      rw [← eq_line_of_pt_pt_of_ne n A_on_perp_line_A_l h']
+    have t : (l.toProj ≠ (perp_line A l).toProj) := by
+      apply perp_foot_preparation
+    apply t
+    nth_rw 1 [e]
 
 theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on (A : P) (l : Line P) (h : ¬ A LiesOn l) : LIN A (perp_foot A l) (by sorry) = perp_line A l := by
   sorry
