@@ -114,38 +114,6 @@ theorem not_lies_int_of_lies_on_rev {A : P} (liesint : A LiesOn ray.reverse) : �
     exact h
   trivial
 
--- A point lies on the directed segment if and only if it lies on the ray associated to the segment and the ray associated to the reverse of this segment.
-
-theorem lies_on_iff_lies_on_toRay_and_rev_toRay {A : P} : A LiesOn seg_nd.1 ↔ (A LiesOn seg_nd.toRay) ∧ (A LiesOn seg_nd.reverse.toRay) := by
--- sorry
-  constructor
-  intro liesonseg
-  constructor
-  apply Seg_nd.lies_on_toRay_of_lies_on
-  trivial
-  apply Seg_nd.lies_on_toRay_of_lies_on
-  apply Seg.lies_on_rev_iff_lie_son
-  trivial
-  rintro ⟨⟨a,anneg,h⟩,b,bnneg,h'⟩
-  have: seg_nd.reverse.toRay.source=seg_nd.1.target:=by
-    rfl
-    rfl
-  rw[this] at h
-  use a*(Vec.norm (VEC seg_nd.1.source seg_nd.1.target))⁻¹
-  constructor
-  apply mul_nonneg anneg
-  simp
-  rw[Vec.norm_eq_abs_toComplex (VEC seg_nd.1.source seg_nd.1.target)]
-  apply Real.sqrt_nonneg
-  rw[h]
-  constructor
-  sorry
-  rw[mul_smul]
-  have h1:seg_nd.toDir.toVec - (Vec.norm (VEC seg_nd.1.source seg_nd.1.target))⁻¹ • VEC seg_nd.1.source seg_nd.1.target=0:=by
-    sorry
-  trivial
-
-
 theorem Ray.toDir_of_reverse_eq_neg_toDir : ray.reverse.toDir = - ray.toDir := rfl
 
 theorem Ray.toProj_of_reverse_eq_toProj : ray.reverse.toProj = ray.toProj := sorry
@@ -161,6 +129,91 @@ theorem Seg_nd.toProj_of_reverse_eq_toProj : seg_nd.reverse.toProj = seg_nd.toPr
 -- reversing the toDir does not change the length
 theorem length_eq_length_of_rev : seg.length = seg.reverse.length := sorry
 
+-- A point lies on the directed segment if and only if it lies on the ray associated to the segment and the ray associated to the reverse of this segment.
+-- need to be refined
+theorem lies_on_iff_lies_on_toRay_and_rev_toRay {A : P} : A LiesOn seg_nd.1 ↔ (A LiesOn seg_nd.toRay) ∧ (A LiesOn seg_nd.reverse.toRay) := by
+-- sorry
+  constructor
+  intro liesonseg
+  constructor
+  apply Seg_nd.lies_on_toRay_of_lies_on
+  trivial
+  apply Seg_nd.lies_on_toRay_of_lies_on
+  apply Seg.lies_on_rev_iff_lie_son
+  trivial
+  rintro ⟨⟨a,anneg,h⟩,b,bnneg,h'⟩
+  unfold Dir.toVec Ray.toDir Seg_nd.toRay at h h'
+  simp at h h'
+  rw[Seg_nd.toDir_of_reverse_eq_neg_toDir] at h'
+  have tria:(-Seg_nd.toDir seg_nd).1=(-1)•(Seg_nd.toDir seg_nd).1:=by
+    rw[Dir.toVec_neg_eq_neg_toVec _]
+    rw[neg_one_smul]
+  unfold Dir.toVec at tria
+  rw[tria] at h'
+  simp only [Seg_nd.toDir] at h h'
+  have trib:b • -1 • (Vec_nd.normalize (Seg_nd.toVec_nd seg_nd)).1=(-b)• (Vec_nd.normalize (Seg_nd.toVec_nd seg_nd)).1:=by
+    simp
+  unfold Dir.toVec at trib
+  rw[trib] at h'
+  set v:=(Vec_nd.normalize (Seg_nd.toVec_nd seg_nd)).1 with v_def
+  unfold Dir.toVec at v_def
+  simp only [Seg_nd.reverse,Seg.reverse] at h'
+  rw[←v_def] at h h'
+  have asumbv:(a+b)•v=VEC seg_nd.1.source seg_nd.1.target:=by
+    rw[← vec_add_vec _ A _,←neg_vec seg_nd.1.target A,h,h',add_smul]
+    simp
+  have tri1:VEC seg_nd.1.source seg_nd.1.target=seg_nd.toVec_nd.1:=by
+    rfl
+  simp at asumbv
+  rw[tri1,←Vec_nd.norm_smul_normalize_eq_self seg_nd.toVec_nd] at asumbv
+  have tri2:(a+b-(Vec.norm seg_nd.toVec_nd))•(seg_nd.toDir).1=0:=by
+    rw[sub_smul,asumbv]
+    simp
+  have asumb:a+b=(Vec.norm seg_nd.toVec_nd):=by
+    have asumb:a+b-(Vec.norm seg_nd.toVec_nd)=0:=by
+      rcases smul_eq_zero.mp tri2 with hyp1|hyp2
+      exact hyp1
+      exfalso
+      apply Dir.toVec_ne_zero seg_nd.toDir
+      assumption
+    linarith
+  
+  have norm_pos_vec:0<Vec.norm seg_nd.toVec_nd:=by
+    rw[Vec.norm_eq_abs_toComplex]
+    unfold Complex.abs
+    simp
+    push_neg
+    apply ne_zero_of_Vec_nd_toComplex
+  have norm_nonzero:Vec.norm seg_nd.toVec_nd≠0:=by
+    linarith
+  have alenorm:a≤Vec.norm seg_nd.toVec_nd:=by
+    linarith
+  have tri3:1=Vec.norm seg_nd.toVec_nd*(Vec.norm seg_nd.toVec_nd)⁻¹:=by
+    rw[mul_inv_cancel norm_nonzero]
+  use a*(Vec.norm seg_nd.toVec_nd)⁻¹
+  constructor
+  apply mul_nonneg
+  exact anneg
+  simp
+  linarith
+  constructor
+  rw[tri3]
+  apply mul_le_mul
+  exact alenorm
+  trivial
+  simp
+  apply le_trans anneg
+  exact alenorm
+  apply le_trans anneg
+  exact alenorm
+  rw[h,mul_smul,tri1]
+  nth_rw 2[←Vec_nd.norm_smul_normalize_eq_self]
+  simp only [v_def]
+  rw[smul_smul,smul_smul,mul_assoc,←smul_smul]
+  rw[mul_comm] at tri3
+  rw[←tri3]
+  simp
+  
 end reverse
 
 section extension
