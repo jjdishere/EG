@@ -113,7 +113,14 @@ theorem perp_foot_eq_self_iff_lies_on (A : P) (l : Line P) : perp_foot A l = A �
     nth_rw 1 [e]
 
 theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on (A : P) (l : Line P) (h : ¬ A LiesOn l) : LIN A (perp_foot A l) (by rw[←perp_foot_eq_self_iff_lies_on A l] at h; simp; exact h) = perp_line A l := by
-  sorry
+  have h0 : A LiesOn perp_line A l := by 
+    dsimp only [perp_line]
+    apply (pt_lies_on_and_proj_eq_of_line_mk_pt_proj A l.toProj.perp).1
+  have h1 : perp_foot A l LiesOn perp_line A l := intersection_of_nonparallel_line_lies_on_snd_line (perp_foot_preparation A l)
+  have h2 : perp_foot A l≠A := by
+    rw[←perp_foot_eq_self_iff_lies_on A l] at h
+    exact h
+  apply eq_line_of_pt_pt_of_ne h2 h0 h1
 
 theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l := by
   rw[←perp_foot_eq_self_iff_lies_on A l]
