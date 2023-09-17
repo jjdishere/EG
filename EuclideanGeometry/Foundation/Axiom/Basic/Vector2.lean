@@ -112,9 +112,12 @@ def PScaling.equivalence : Equivalence PScaling where
     use t * s
     simp only [gt_iff_lt, ht, zero_lt_mul_left, hs, ne_eq, h₂, h₁, Complex.real_smul, Complex.ofReal_mul, mul_assoc, and_self]
 
-instance PScaling.con : Con Vec_nd where
+def PScaling.setoid : Setoid Vec_nd where
   r := PScaling
   iseqv := PScaling.equivalence
+  
+def PScaling.con : Con Vec_nd where
+  toSetoid := PScaling.setoid
   mul' := by
     intro z₁ z₂ w₁ w₂ ⟨s, hs, e₁⟩ ⟨t, ht, e₂⟩
     use s * t
@@ -198,25 +201,47 @@ instance : CommMonoid Dir := Con.commMonoid PScaling.con
 instance : CommGroup Dir where
   mul_comm := instCommMonoidDir.mul_comm
 
-instance : Neg Dir where
-  neg := by
-    apply Quotient.lift (fun z => ⟦-z⟧)
-    intro z w h
-    apply Quotient.sound
+theorem pscaling_neg_neg_of_pscaling (z w : Vec_nd) (h : PScaling z w) : PScaling (-z) (-w) := by 
+    -- apply Quotient.sound
     rcases h with ⟨t, ht, e⟩
     exact ⟨t, ht, by
       simp only [ne_eq, fst_neg_Vec_nd_is_neg_fst_Vec_nd, smul_neg, Complex.real_smul, neg_inj]
       exact e⟩
 
+instance : Neg Dir where
+  neg := Quotient.map (sa:= PScaling.con.toSetoid) (sb:= PScaling.con.toSetoid) (fun x : Vec_nd => -x) pscaling_neg_neg_of_pscaling
+
 #print axioms neg_normalize_eq_normalize_smul_neg
 
 instance : HasDistribNeg Dir where
-  neg_neg _ := by
-    sorry
-  neg_mul _ _ := by
-    sorry
-  mul_neg _ _ := by
-    sorry
+  neg_neg := by
+    unfold Dir Con.Quotient
+    rw [@forall_quotient_iff _ PScaling.con.toSetoid (fun _ : Dir => _)]
+    intro _
+    unfold Neg.neg instNegDir
+    simp only [Quotient.map_mk (sa:= PScaling.con.toSetoid) (sb:= PScaling.con.toSetoid), neg_neg]
+  neg_mul := by
+    unfold Dir Con.Quotient
+    rw [@forall_quotient_iff _ PScaling.con.toSetoid (fun _ : Dir => _)]
+    intro _
+    rw [@forall_quotient_iff _ PScaling.con.toSetoid (fun _ : Dir => _)] 
+    intro _
+    unfold Neg.neg instNegDir
+    simp only [Quotient.map_mk (sa:= PScaling.con.toSetoid) (sb:= PScaling.con.toSetoid)]
+    apply Quotient.sound
+    simp only [neg_mul]
+    exact Iff.mp (Quotient.eq (r := PScaling.setoid)) rfl
+  mul_neg := by
+    unfold Dir Con.Quotient
+    rw [@forall_quotient_iff _ PScaling.con.toSetoid (fun _ : Dir => _)]
+    intro _
+    rw [@forall_quotient_iff _ PScaling.con.toSetoid (fun _ : Dir => _)] 
+    intro _
+    unfold Neg.neg instNegDir
+    simp only [Quotient.map_mk]
+    apply Quotient.sound
+    simp only [mul_neg]
+    exact Iff.mp (Quotient.eq (r := PScaling.setoid)) rfl
 
 end Dir
 
@@ -313,9 +338,9 @@ theorem linear_combination_of_not_colinear' {u v : Vec_nd} (w : ℝ × ℝ) (h' 
     let _ := (Vec_nd.eq_toProj_iff u v).2 h₂
     tauto
   exact linear_combination_of_not_colinear u.2 (h₁ h')
-
-end Linear_Algebra
 -/
+end Linear_Algebra
+
 
 /-
 
