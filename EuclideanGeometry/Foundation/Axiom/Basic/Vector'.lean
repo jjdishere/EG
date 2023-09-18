@@ -107,7 +107,6 @@ def Vec_nd.normalize_toVec_nd' : Vec_nd →* Vec_nd where
       Complex.ofReal_inv]
     ring
 
-
 @[ext]
 class Dir where
   toVec : Vec
