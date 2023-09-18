@@ -13,6 +13,8 @@ class Triangle (P : Type _) [EuclideanPlane P] where
   point₂ : P
   point₃ : P
 
+scoped notation "▵" => Triangle.mk
+
 variable {P : Type _} [EuclideanPlane P]
 
 namespace Triangle
