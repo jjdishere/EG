@@ -710,6 +710,28 @@ theorem I_mul_I_eq_one_of_Proj : I * I = 1 := by
 
 def perp : Proj → Proj := fun x => I * x
 
+theorem one_ne_I : ¬1=(Proj.I) := by
+  intro h
+  have h0: Dir.I=1∨Dir.I=-1 := by
+    apply (Con.eq PM.con).mp 
+    exact id (Eq.symm h)
+  have h1: (Dir.I)^2=1 := by
+    rcases h0 with h2|h2
+    rw[h2]
+    exact one_pow 2
+    rw[h2]
+    exact neg_one_sq
+  have h3: (Dir.I)^2=-1 :=by
+    rw[←Dir.I_mul_I_eq_neg_one]
+    exact sq Dir.I
+  have h4: ¬(-1:Dir)=(1:Dir) := by
+   intro k 
+   rw [Dir.ext_iff, Prod.ext_iff] at k
+   simp at k
+   linarith
+  rw[h3] at h1
+  exact h4 h1
+
 @[simp]
 theorem perp_perp_eq_self (x : Proj) : x.perp.perp = x := by
   unfold perp
