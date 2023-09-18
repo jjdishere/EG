@@ -29,7 +29,7 @@ noncomputable section
 namespace EuclidGeom
     
 /- Define Euclidean plane as normed vector space over ℝ of dimension 2 -/
-class EuclideanPlane (P : Type _) extends MetricSpace P, @NormedAddTorsor (Vec) P Vec.SeminormedAddCommGroup _
+class EuclideanPlane (P : Type _) extends MetricSpace P, @NormedAddTorsor Vec P _ _
 
 variable  {P : Type _} [EuclideanPlane P] 
 
@@ -38,13 +38,14 @@ def Vec.mk_pt_pt (A B : P) : (Vec) := (B -ᵥ A)
 scoped notation "VEC" => Vec.mk_pt_pt
 
 instance : EuclideanPlane (Vec) where
-  toMetricSpace := Vec.MetricSpace
-  toNormedAddTorsor := @SeminormedAddCommGroup.toNormedAddTorsor _ Vec.SeminormedAddCommGroup
+  toMetricSpace := _
+  toNormedAddTorsor := @SeminormedAddCommGroup.toNormedAddTorsor _ _
 
-instance : @NormedAddTorsor (Vec) P Vec.SeminormedAddCommGroup _ := EuclideanPlane.toNormedAddTorsor
+instance : @NormedAddTorsor (Vec) P _ _ := EuclideanPlane.toNormedAddTorsor
 
 instance : AddTorsor (Vec) P := by infer_instance
 
+/- vector $AB +$ point $A =$ point $B$ -/
 @[simp]
 theorem start_vadd_vec_eq_end (A B : P) : (VEC A B) +ᵥ A = B := by
    rw[Vec.mk_pt_pt]

@@ -2,7 +2,7 @@
 
 Axiom Folder
 
-  Vector -- basics of vectors, Dir (vectors with norm 1), Proj = Dir / {± 1}
+  Vector -- basics of vectors, indentified with ℂ, Dir (vectors with norm 1), Proj = Dir / {± 1}
   Plane -- torsor structure of Euclidean plane over Vec
   Class -- define class of LiesOn LiesInt (using carrier, interior) and PlaneFigure
 
