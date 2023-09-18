@@ -732,6 +732,14 @@ end Cosine_theorem_for_Vec_nd
 
 section Linear_Algebra
 
+def det (u v : Vec) : ℝ := u.1 * v.2 - u.2 * v.1
+
+def det' (u v : Vec) : ℂ := u.1 * v.2 - u.2 * v.1
+
+def cu (u v w: Vec) : ℝ := (det u v)⁻¹ * (w.1 * v.2 - v.1 * w.2)
+
+def cv (u v w: Vec) : ℝ := (det u v)⁻¹ * (u.1 * w.2 - w.1 * u.2)
+
 theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.1 = 0 ↔ (∃ (t : ℝ), v = t • u) := by
   have h : (u.1 ≠ 0) ∨ (u.2 ≠ 0) := by
     by_contra _
