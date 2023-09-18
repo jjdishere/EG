@@ -245,7 +245,12 @@ section extension
 -- Define the extension ray from a nontrival segment
 def Seg_nd.extension : Ray P := (seg_nd.reverse.toRay).reverse
 
-theorem extn_eq_rev_toray_rev : seg_nd.extension = seg_nd.reverse.toRay.reverse := sorry
+theorem extn_eq_rev_toray_rev : seg_nd.extension = seg_nd.reverse.toRay.reverse := by
+--sorry
+--@HeRunming
+  unfold Seg_nd.extension
+  unfold Ray.reverse
+  rfl
 
 theorem eq_target_iff_lies_on_lies_on_extn {A : P} : (A LiesOn seg_nd.1) ∧ (A LiesOn seg_nd.extension) ↔ A = seg_nd.1.target := sorry
 
