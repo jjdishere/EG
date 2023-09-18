@@ -45,6 +45,7 @@ instance : @NormedAddTorsor (Vec) P Vec.SeminormedAddCommGroup _ := EuclideanPla
 
 instance : AddTorsor (Vec) P := by infer_instance
 
+/- vector $AB +$ point $A =$ point $B$ -/
 @[simp]
 theorem start_vadd_vec_eq_end (A B : P) : (VEC A B) +ᵥ A = B := sorry
 
