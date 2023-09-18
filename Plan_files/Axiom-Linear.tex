@@ -1,43 +1,73 @@
-/- Detailed content in the subfolder : Linear -/
+\documentclass[12pt,a4paper]{article}
 
-/-!
-Ray.lean -- Define (directed) segments and rays
+\usepackage{amssymb}
+\usepackage{amsmath}
 
-  Classes :
-    class of Ray -- A ray consists of a pair of a point (source : P) and a direction (toDir : Dir).
-    class of Seg -- A segment consists of a pair of points: (source : P) and (target : P). `Note that a segment is always directed` and `we allow the source and target points of a segment to be the same`.
-    (defn) Seg.is_nd : Prop -- Given (seg : Seg P), seg.is_nd returns whether a (directed) segment (seg : Seg P) nondegenerate, i.e. seg.target ≠ seg.source. `Note that we will always use target ≠ source for consistency.`
-    class of Seg_nd -- A segment of positive length, subtype of Seg, {seg : Seg P // seg.is_nd}
+\title{Document file for content in subfolder: Linear}
 
-  Make :
-    SEG = Seg.mk -- Rerwite the standard function of making a segment; i.e. for (A B : P), SEG A B gives the segment with source A and target B.
-    SEG_nd = Seg_nd.mk -- Rewrite the standard function of making a nondegenerate segment; i.e. for (A B : P) and (nd : B ≠ A), SEG_nd A B nd gives the nondegenerate segment with source A and target B.
-    Ray.mk_pt_pt -- Given two points (A B : P) and that they are not equal (nd : B ≠ A), Ray.mk_pt_pt A B nd returns the ray starting from A in the direction of B, i.e. (SEG_nd A B nd).toRay.
-    RAY = Ray.mk_pt_pt -- Rewrite the making function of a ray from points (A B : P) and (nd : B ≠ A).
-  
-  Coersion :
-    Ray.toProj -- Given a (ray : Ray P), ray.toProj returns the Proj of a ray (defined from Ray.toDir)
-    Ray.IsOn -- Given (a : P) (ray : Ray P), IsOn a ray is the property that point lies on a ray, namely, ∃ (t : ℝ), 0 ≤ t ∧ VEC ray.source a = t • ray.toDir.toVec.
-    Ray.IsInt -- Given (a : P) (ray : Ray P), IsInt a ray is the property that point a lies in the interior of a ray, namely Ray.IsOn a ray ∧ a ≠ ray.source.
-    Ray.carrier -- Given a (ray : Ray P), ray.carrier is the set of points on a ray.
-    Ray.interior -- Given a (ray : Ray P), ray.interior is the set of points in the interior of a ray.
-    Seg.toVec -- Given a directed segment (seg : Seg P), seg.toVec is the vector associated to a seg, returning seg.target -ᵥ seg.source
-    Seg.IsOn -- Given (a : P) (seg : Seg P), IsOn a seg is the property that point lies on a segment.
-    Seg.IsInt -- Given (a : P) (seg : Seg P), IsInt a seg is the property that point a lies in the interior of a segment, namely Seg.IsOn a seg ∧ a ≠ seg.source ∧ a ≠ seg.target.
-    Seg.carrier -- Given a (seg : Seg P), seg.carrier is the set of points on a segment.
-    Seg.interior -- Given a (seg : Seg P), seg.interior is the set of points in the interior of a segment.
-    Seg_nd.toVec_nd -- Given a nondegenerate segment (segnd : Seg_nd P), segnd.toVEC_nd is the vector associated to Seg_nd.
-    Seg_nd.toDir -- Given a nondegenerate segment (segnd : Seg_nd P), segnd.toDir is the direction associated to seg, defined by segnd.toVec_nd.toDir.
-    Seg_nd.toRay -- Given a nondegenerate segment (segnd : Seg_nd P), segnd.toRay is the ray associated to seg, whose source is segnd.source and whose toDir is seg_nd.toDir.
-    Seg_nd.toProj -- Given a nondegenerate segment (segnd : Seg_nd P), seg_nd.toProj is the projective direction associated to seg, defined by seg_nd.toVec_nd.toProj.
-    `The following definitions is written as comments in the file, they are not used currently`
-      Seg_nd.IsOn -- Given (a : P) (seg_nd : Seg_nd P), IsOn a seg is the property that point lies on a nondegenerate segment.
-      Seg_nd.IsInt -- Given (a : P) (seg_nd : Seg_nd P), IsInt a ray is the property that point a lies in the interior of a nondegenerate segment.
-      Seg_nd.carrier -- Given a (seg_nd : Seg_nd P), seg_nd.carrier is the set of points on a seg_nd.
-      Seg_nd.interior -- Given a (seg_nd : Seg_nd P), seg_nd.interior is the set of points in the interior of a seg_nd.
+\begin{document}
+
+\section{Content in file Ray.lean}
+
+In this file, we define the class of segments, rays and their coersions, as well as basic properties.  A more precise plan is the following:
+
+(1) We define the corresponding classes. 
+(2) We define the coersions among these concepts as well as coersions to directions, or projective directions.
+(3) we give different ways to make a segment or a ray.
+(4) We discuss compatibilty of the coersion functions.
+(5) We introduce the concept of reversing a segment, that is to switch the start and end point of a segment.
+(6) We define the length function of a segment.
+(7) We define the concept of extending a segment into a ray.
+(8) We define the funciton that gives the midpoint of a segment.
+(9) We dicuss the Archimedean property of a segment.
+
+\subsection{Definition of classes}
+
+Class of \verbatim{Ray}: A \emph{ray} consists of a pair of a point and a direction; it is the ray that starts at the point and extends in the given direction.
+
+Class of Seg: A \emph{Segment} consists of a pair of points: the source and the target; it is the segment from the source to the target. (We allow the source and the target to be the same.)
+
+Definition of Seg.is_nd: Given a segment, this function returns whether the segment is nondegenerate, i.e. whether its target is equal to its source.
+
+Class of Seg_nd: A \emph{Seg_nd} is a segment which is nondegenerate.
 
 
-  (coersion compatibility)`in Ray_ex.lean, need to rewrite comment`
+\subsection{Coersion}
+Ray.toProj -- Given a (ray : Ray P), ray.toProj returns the Proj of a ray (defined from Ray.toDir)
+Ray.IsOn -- Given (a : P) (ray : Ray P), IsOn a ray is the property that point lies on a ray, namely, ∃ (t : ℝ), 0 ≤ t ∧ VEC ray.source a = t • ray.toDir.toVec.
+Ray.IsInt -- Given (a : P) (ray : Ray P), IsInt a ray is the property that point a lies in the interior of a ray, namely Ray.IsOn a ray ∧ a ≠ ray.source.
+Ray.carrier -- Given a (ray : Ray P), ray.carrier is the set of points on a ray.
+Ray.interior -- Given a (ray : Ray P), ray.interior is the set of points in the interior of a ray.
+Seg.toVec -- Given a directed segment (seg : Seg P), seg.toVec is the vector associated to a seg, returning seg.target -ᵥ seg.source
+Seg.IsOn -- Given (a : P) (seg : Seg P), IsOn a seg is the property that point lies on a segment.
+Seg.IsInt -- Given (a : P) (seg : Seg P), IsInt a seg is the property that point a lies in the interior of a segment, namely Seg.IsOn a seg ∧ a ≠ seg.source ∧ a ≠ seg.target.
+Seg.carrier -- Given a (seg : Seg P), seg.carrier is the set of points on a segment.
+Seg.interior -- Given a (seg : Seg P), seg.interior is the set of points in the interior of a segment.
+Seg_nd.toVec_nd -- Given a nondegenerate segment (segnd : Seg_nd P), segnd.toVEC_nd is the vector associated to Seg_nd.
+Seg_nd.toDir -- Given a nondegenerate segment (segnd : Seg_nd P), segnd.toDir is the direction associated to seg, defined by segnd.toVec_nd.toDir.
+Seg_nd.toRay -- Given a nondegenerate segment (segnd : Seg_nd P), segnd.toRay is the ray associated to seg, whose source is segnd.source and whose toDir is seg_nd.toDir.
+Seg_nd.toProj -- Given a nondegenerate segment (segnd : Seg_nd P), seg_nd.toProj is the projective direction associated to seg, defined by seg_nd.toVec_nd.toProj.
+`The following definitions is written as comments in the file, they are not used currently`
+  Seg_nd.IsOn -- Given (a : P) (seg_nd : Seg_nd P), IsOn a seg is the property that point lies on a nondegenerate segment.
+  Seg_nd.IsInt -- Given (a : P) (seg_nd : Seg_nd P), IsInt a ray is the property that point a lies in the interior of a nondegenerate segment.
+  Seg_nd.carrier -- Given a (seg_nd : Seg_nd P), seg_nd.carrier is the set of points on a seg_nd.
+  Seg_nd.interior -- Given a (seg_nd : Seg_nd P), seg_nd.interior is the set of points in the interior of a seg_nd.
+
+
+\subsection{Make of concepts}
+
+SEG := Seg.mk: For points $A$ and $B$ on a plane, instead of writing Seg.mk $A$ $B$ for the segment with source $A$ and target $B$, we use SEG $A$ $B$ to denote such a segment.
+
+Definition of Seg_nd.mk: Given two points $A$ and $B$ and a proof of that $B \neq A$, this function returns a nondegenerate segement with source $A$ and target $B$.
+
+SEG_nd := Seg_nd.mk This to abbreviate the function Seg_nd.mk into SEG_nd.
+
+Definition of Ray.mk_pt_pt: Given two points $A$ and $B$ and a proof that $B \neq A$, this function returns the ray starting from $A$ in the direction of $B$. By definition, it is to first construct the nondegenerate segment from $A$ to $B$, and then convert the segment $AB$ to the associated ray using toRay function.
+
+RAY := Ray.mk_pt_pt : This is to abbreviate Ray.mk_pt_pt into RAY.
+
+\subsection{Coersion compatibility}
+
     Ray.source_lies_on -- Given a (ray : Ray P), the source ray.source ∈ ray.carrier.
     Seg.source_lies_on -- Given a (seg : Seg P), the source seg.source ∈ seg.carrier.
     Seg.target_lies_on -- Given a (seg : Seg P), the target seg.target ∈ seg.carrier.
@@ -59,7 +89,8 @@ Ray.lean -- Define (directed) segments and rays
 
     `More to add here, related to points and mk method e.g. relation A B (SEG A B).toVec = VEC A B`
 
-  (reverse)
+\subsection{Reversing segments and rays}
+
     (defn) Ray.reverse : Ray P -- Given a (ray : Ray P), ray.reverse is a ray obtained by reversing the direction of ray, i.e. its source is ray.source, and its toDir is - ray.toDir.
     (defn) Seg.reverse : Seg P -- Given a (seg : Seg P), seg.reverse is a segment whose source is seg.target and whose target is seg.source.
     (defn) Seg_nd.reverse : Seg_nd P -- Given a (seg_nd : Seg_nd P), seg_nd.reverse is a segment whose source is seg_nd.target and whose target is seg_nd.source.
@@ -79,13 +110,8 @@ Ray.lean -- Define (directed) segments and rays
     Seg_nd.toDir_of_reverse_eq_neg_toDir -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toDir = - seg_nd.toDir
     Seg_nd.toproj_of_reverse_eq_neg_toproj -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toProj = seg_nd.toProj
 
-  (extension)
-    (defn) Seg_nd.extension : Ray P -- Given a (segnd : Seg_nd P), extend the directed segment AB to the ray starting at B, in the direction of VEC A B, defined as the ray with starting point segnd.2.target, and direction segnd.toDir.
-    extn_eq_rev_toRay_rev -- Given a (segnd : Seg_nd P), extending a segment is the same as first reverse the segment, and to ray, and then reverse the direction of ray, i.e. segnd.extension = segnd.reverse.toRay.reverse.
-    eq_target_of_lies_on_lies_on_extn -- Given a (segnd : Seg_nd P), the only point that lies on both segnd and segnd.extension is segnd.1.target, i.e. (A : P) : (A ∈ segnd.carrier) ∧ (A ∈ segnd.extension) ↔ A = segnd.target.
-    target_lies_int_seg_source_pt_of_pt_lies_int_extn -- Given a nondegenerate segment (segnd : Seg_nd P), for any point (A : P) in the interior of extension line of segnd, i.e. A ∈ segnd.extension.interior, segnd.target lies in the segment SEG segnd.source A.
+\subsection{Length of Segments}
 
-  (length)
     (defn) Seg.length : ℝ -- The length of a segment (seg : Seg P).  (for segnd : Seg_nd P, use segnd.1.length)
     seg_length_nonneg -- The length of a segment (seg : Seg P) is nonnegative
     length_pos_iff_seg_nd -- A segment (seg : Seg P) has positive length iff it is nondegenerate, i.e. seg.length > 0 ↔ seg.is_nd.
@@ -93,7 +119,15 @@ Ray.lean -- Define (directed) segments and rays
     length_eq_length_add_length -- The length of segment is the sum of its two parts, i.e. given a segment (seg : Seg P) and a point (A : P) on seg, then seg.length = (SEG seg.source A).length + (SEG A seg.target).length.
     length_rev_seg_eq_length_seg -- `@simp` `Maybe not at simp` `currently in Ray_ex` Given a segment (seg : Seg P), the length of the reversed segment is equal to the length of the segment, i.e. seg.reverse.length = seg.length
 
-  (midpoint)
+\Subsection{Extension ray of a nondegenerate segment}
+    (defn) Seg_nd.extension : Ray P -- Given a (segnd : Seg_nd P), extend the directed segment AB to the ray starting at B, in the direction of VEC A B, defined as the ray with starting point segnd.2.target, and direction segnd.toDir.
+    extn_eq_rev_toRay_rev -- Given a (segnd : Seg_nd P), extending a segment is the same as first reverse the segment, and to ray, and then reverse the direction of ray, i.e. segnd.extension = segnd.reverse.toRay.reverse.
+    eq_target_of_lies_on_lies_on_extn -- Given a (segnd : Seg_nd P), the only point that lies on both segnd and segnd.extension is segnd.1.target, i.e. (A : P) : (A ∈ segnd.carrier) ∧ (A ∈ segnd.extension) ↔ A = segnd.target.
+    target_lies_int_seg_source_pt_of_pt_lies_int_extn -- Given a nondegenerate segment (segnd : Seg_nd P), for any point (A : P) in the interior of extension line of segnd, i.e. A ∈ segnd.extension.interior, segnd.target lies in the segment SEG segnd.source A.
+
+
+\subsection{Midpoint of a segment}
+
     (defn) Seg.midpiont : P -- For a segment (seg : Seg P), return the midpoint of a segment (by (seg.target -ᵥ seg.source) /2 +ᵥ seg.source)
     Seg.midpt_lies_on -- midpoint of a segment lies in its carrier
     Seg_nd.midpt_lies_int -- if a segment is nondegenerate, the midpoint lies in its interior
@@ -103,16 +137,15 @@ Ray.lean -- Define (directed) segments and rays
     dist_target_eq_dist_source_of_midpt -- the midpoint of a segment has equal distance to the source and the target
     is_midpoint_iff_in_seg_and_dist_target_eq_dist_source -- a point is the midpoint of a segment if and only if it lies on the segment and it has same distance to the source and target
 
-
+\subsection{Archimedean properties}
   (Archimedean property)`existence`
     Seg_nd.exist_pt_beyond_pt --
     Ray.exist_pt_in_interior -- for any ray, there exists a point in its interior
     length_pos_iff_exist_inter_pt -- length of a segment is positive iff there exists an interior point (the necessity condition uses the additivity of length function, and the existence is given by the midpoint)
 
--/
+\section{Content in Colinarity.lean}
 
-/-!
-Colinarity.lean -- Define the relative positions of points on rays
+In this file, we define the relative positions of points on rays
 
   Definitions :
     (defn) colinear_of_nd : Prop -- Given three distinct points (A B C : P), return whether the three points are colinear, i.e. whether (VEC A B).toProj = (VEC A C).toProj
@@ -124,11 +157,9 @@ Colinarity.lean -- Define the relative positions of points on rays
     colinear_iff_eq_smul_vec_of_ne -- Given three points (A B C : P) with (B ≠ A), then A B C are colinear if and only if VEC A C = r ⬝ VEC A B for some r ∈ ℝ
     
 
+\Section{Content in Line.lean}
 
--/
-
-/-!
-Line.lean -- Define lines
+In this file, we define the concept of lines.
 
   Classes : 
     class of Line -- A line is a subset of the plane P that satisfies three properties, namely colinarity - every 3 pts on line colinear; maximality - pt that colinear with 2 different pts on line falls on the line; nontriviality - a line contains at least 2 pts
@@ -184,7 +215,11 @@ Line.lean -- Define lines
     Line.exist_pt_beyond_pt --
     
 
+\section{Content in Parallel.lean}
 
 
-  
--/
+
+\section{Content in Perpendicular.lean}
+
+
+\end{document}

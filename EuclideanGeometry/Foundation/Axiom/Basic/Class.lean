@@ -5,22 +5,27 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Plane
 noncomputable section
 namespace EuclidGeom
 
-variable (P : Type _) [EuclideanPlane P]
+-- class PlaneFigure (P: Type _) [EuclideanPlane P] (α : Type _) where
 
-class HasLiesOn (α : Type _) where
-  lies_on : P → α → Prop
+class Carrier (P: Type _) [EuclideanPlane P] (α : Type _) where
+  carrier : α → Set P
 
-class HasLiesIn (α : Type _) where
-  lies_in : P → α → Prop
+class Interior (P: Type _) [EuclideanPlane P] (α : Type _) where
+  interior : α → Set P
 
--- class HasLiesInt (α : Type _) where 
---  lies_int : P → α → Prop
--- interior of seg and circle is not the same concept
--- LiesOnInt LiesInt LiesInInt
 
-scoped infix : 50 "LiesOn" => HasLiesOn.lies_on
-scoped infix : 50 "LiesIn" => HasLiesIn.lies_in
--- scoped notation p "LiesInt" F => HasLiesInt.lies_int p F
+def lies_on {P : Type _} [EuclideanPlane P] {α : Type _} [Carrier P α] (p : P) (F : α) := p ∈ (Carrier.carrier F)
+
+def lies_int {P : Type _} [EuclideanPlane P] {α : Type _} [Interior P α] (p : P) (F : α) := p ∈ (Interior.interior F)
+
+-- def lies_in {P : Type _} [EuclideanPlane P] {α : Type _} [Carrier P α] [Interior P α] (p : P) (F : α) : Prop := lies_int p F ∨ lies_on p F
+
+scoped infix : 50 "LiesOn" => lies_on
+scoped infix : 50 "LiesInt" => lies_int
+-- scoped infix : 50 "LiesIn" => lies_in
+
+
+/- -- scoped notation p "LiesInt" F => HasLiesInt.lies_int p F
 
 def IsFallsOn {α β : Type _} (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] : Prop := ∀ (p : P), (p LiesOn A) → (p LiesOn B) 
 
@@ -84,5 +89,5 @@ protected theorem symm {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj 
 end perpendicular
 
 theorem parallel_of_perp_perp {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ] : (A ⟂ B) → (B ⟂ C) → (A ∥ C)  := sorry
--/
+-/ -/
 end EuclidGeom

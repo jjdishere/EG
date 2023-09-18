@@ -24,7 +24,7 @@ def mk_ray_pt (ray : Ray P) (A : P) (h : A ≠ ray.source ) : OAngle P where
   end_ray := Ray.mk_pt_pt ray.source A h
   source_eq_source := rfl
 
-def value {P : Type _} [EuclideanPlane P] (A : OAngle P): ℝ := Dir.angle (A.start_ray.toDir) (A.end_ray.toDir)
+def value (A : OAngle P): ℝ := Dir.angle (A.start_ray.toDir) (A.end_ray.toDir)
 
 def angle_of_three_point_nontriv (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): ℝ := 
 (OAngle.mk_pt_pt_pt _ _ _ h₁ h₂).value
@@ -32,6 +32,8 @@ def angle_of_three_point_nontriv (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): 
 def angle_of_two_ray_of_eq_source (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : ℝ := (OAngle.mk start_ray end_ray h).value
 
 def is_nd (oang : OAngle P) : Prop := oang.value ≠ 0 ∧ oang.value ≠ π 
+
+protected def source (oang : OAngle P) : P := oang.start_ray.source
 
 end OAngle
 
@@ -41,9 +43,31 @@ scoped notation "ANG" => OAngle.angle_of_three_point_nontriv
 
 scoped notation "∠" => OANG 
 
-/- `What does it mean to be LiesIn a oangle? when the angle < 0`-/
+namespace OAngle
+
+variable {P : Type _} [EuclideanPlane P] 
+
+-- `should discuss this later, is there a better definition?` ite, dite is bitter to deal with
+/- `What does it mean to be LiesIn a oangle? when the angle < 0`, for now it is defined as the smaller side. and when angle = π, it is defined as the left side -/
+
+protected def IsInt (p : P) (oang : OAngle P) : Prop := by
+  by_cases p = oang.source
+  · exact False
+  · let ray := Ray.mk_pt_pt oang.source p h
+    let o₁ := OAngle.mk oang.start_ray ray rfl
+    let o₂ := OAngle.mk ray oang.end_ray (oang.3)
+    exact if oang.value > 0 then (o₁.value > 0 ∧ o₂.value > 0) else (o₁.value < 0 ∧ o₂.value < 0) 
+
+protected def interior (oang : OAngle P) : Set P := { p : P | OAngle.IsInt p oang }
+
+instance : Interior P (OAngle P) where
+  interior := fun o => o.interior
+
+end OAngle
 
 /- theorem - π < angle.value, angle.value ≤ π,  -/
+
+/- theorem when angle > 0, IsInt means lies left of start ray + right of end ray; when angle < 0, ...  -/
 
 /- Operations on oriented angles, such a additivity of the evaluation of oriented angles.  -/
 /- theorem l1 l2 l3 add angle; sub angle -/

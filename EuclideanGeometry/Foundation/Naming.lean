@@ -1,7 +1,7 @@
 /- Naming coventions:
 
 1. Name of theorems: 
-  (all non-special words are lower-cases, but special cases do not change capital letters)
+  (all non-special words are lower-cases, but special cases e.g. `toVec, toProj` do not change capital letters)
 theorem
   A_of_B means B → A
   A_of_B_of_C means C → B → A
@@ -51,6 +51,8 @@ angbis -- angle bisector
 perpbis -- perpendicular bisector
 tang -- tangent
 disj -- disjoint
+rev -- reverse
+extn -- extension ray
 
 
 -/

@@ -61,6 +61,14 @@ scoped infix : 50 "LiesOnarObj" => LinearObj.IsOnLinearObj
 
 -- Our definition of parallel for LinearObj is very general. Not only can it apply to different types of Objs, but also include degenerate cases, such as ⊆(inclusions), =(equal). 
 
+def parallel' {α β: Type _} (l₁ : α) (l₂ : β) [Coe α (LinearObj P)] [Coe β (LinearObj P)] : Prop :=  LinearObj.toProj (P := P) (Coe.coe l₁) = LinearObj.toProj (P := P) (Coe.coe l₂)
+
+-- class PlaneFigure' (P : Type _) [EuclideanPlane P] {α : Type _} where
+
+-- instance : PlaneFigure' P (LinearObj P) where
+
+
+
 def parallel (l₁ l₂: LinearObj P) : Prop := l₁.toProj = l₂.toProj
 
 instance : IsEquiv (LinearObj P) parallel where
@@ -76,7 +84,7 @@ scoped infix : 50 "∥" => parallel
 
 section parallel_theorem
 
-theorem ray_parallel_to_line_assoc_ray (ray : Ray P) : LinearObj.ray ray ∥ ray.toLine := sorry
+theorem ray_parallel_to_line_assoc_ray (ray : Ray P) :  parallel (LinearObj.ray ray) ray.toLine := sorry
 
 theorem seg_parallel_to_ray_assoc_seg_of_nontriv (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := sorry
 
@@ -94,7 +102,7 @@ theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l
   have e' : Seg_nd.toProj ⟨SEG A B, hab.2.2⟩ ≠ Seg_nd.toProj ⟨SEG C D, hcd.2.2⟩ := by
     rw [line_toProj_eq_seg_nd_toProj_of_lies_on hab.1 hab.2.1 hab.2.2, line_toProj_eq_seg_nd_toProj_of_lies_on hcd.1 hcd.2.1 hcd.2.2]
     exact h
-  have w : ∃ x y, VEC A C = x • VEC A B + y • VEC C D := linear_combination_of_not_colinear' _ e'
+  have w : ∃ x y, VEC A C = x • VEC A B + y • VEC C D := linear_combination_of_not_colinear _ e'
   rcases w with ⟨x, ⟨y, e⟩⟩
   let X := x • VEC A B +ᵥ A
   use X
@@ -113,8 +121,8 @@ theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h 
   intro X' h₁' h₂'
   by_contra n
   have e : l₁ = l₂ := by
-    rw [← line_eq_line_of_pt_pt_of_ne n h₁ h₁']
-    exact line_eq_line_of_pt_pt_of_ne n h₂ h₂'
+    rw [← eq_line_of_pt_pt_of_ne n h₁ h₁']
+    exact eq_line_of_pt_pt_of_ne n h₂ h₂'
   tauto
 
 def intersection_of_nonparallel_line (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : P := 

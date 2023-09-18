@@ -112,4 +112,7 @@ theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (
 
 end colinear
 
+theorem nontriv_of_plane {H : Type _} [EuclideanPlane H] : ∃ A B C : H, ¬(colinear A B C) := by
+  sorry
+
 end EuclidGeom

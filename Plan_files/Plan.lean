@@ -2,7 +2,7 @@
 
 Axiom Folder
 
-  Vector -- basics of vectors, Dir (vectors with norm 1), Proj = Dir / {± 1}
+  Vector -- basics of vectors, indentified with ℂ, Dir (vectors with norm 1), Proj = Dir / {± 1}
   Plane -- torsor structure of Euclidean plane over Vec
   Class -- define class of LiesOn LiesInt (using carrier, interior) and PlaneFigure
 
@@ -11,7 +11,7 @@ Axiom Folder
     Colinear -- Define colinarity
     Line -- Define lines, define the class LinObj and unify their toProj
     Parallel -- Define parallel lines and basic properties
-    Perpendicular -- Define the perpendicular lines and perpendicular foot, Pythagorean theorem
+    Perpendicular -- Define the perpendicular lines and perpendicular foot
   
   subfolder : Position
     Angle -- Define oriented angles
@@ -20,7 +20,7 @@ Axiom Folder
 
   subfolder : Triangle
     Basic -- Basic definition of triangle, and its orientation when non-degenerate
-    Trigonometric -- Basics of trigonometics for right triangles, cosine and sine theorem
+    Trigonometric -- Basics of trigonometics for right triangles, Pythagorean theorem, cosine and sine theorem
     Congruence -- Congruence between triangles
     Similarity -- Define similar triangles
 
@@ -40,10 +40,10 @@ Construction Folder
     (empty for present)
 
   subfolder : Triangle
-    Angle_bisector -- Define angle bisector and its properties
-    Perpendicular_bisector -- Define perpendicular bisector and its properties
+    AngleBisector -- Define angle bisector and its properties
+    PerpendicularBisector -- Define perpendicular bisector and its properties
     Centers -- Define the orthocenter, incenter and circumcenter of a nondegenerate triangle
-    Isoceles_triangle -- Define isoceles triangles and equilateral/regular triangles.
+    IsocelesTriangle -- Define isoceles triangles and equilateral/regular triangles.
 
   subfolder : Polygon
     Quadrilatral -- Define basics for quadrilatral; discuss its convexity 
@@ -52,7 +52,7 @@ Construction Folder
     general polygons -- Define general convex polygon, regular n-gon.
 
   subfolder : Circle
-    Circumcircles -- Define the circumcircles of a triangle `This should be done in Construction.Triangle, or even as early as Circle.mk_pt_pt_pt`
+    Circumcircles -- Define the circumcircles of a triangle `This should be done in Construction.Triangle, or even as early as Circle.mk_pt_pt_pt`-
     CyclicPolygon -- Define and discuss properties of cyclic polygons
 
 Theorem Folder

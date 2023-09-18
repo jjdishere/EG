@@ -13,6 +13,8 @@ class Triangle (P : Type _) [EuclideanPlane P] where
   point₂ : P
   point₃ : P
 
+scoped notation "▵" => Triangle.mk
+
 variable {P : Type _} [EuclideanPlane P]
 
 namespace Triangle
@@ -67,18 +69,18 @@ end nondeg
 
 namespace Triangle
 
-def IsInside (A : P) (tr : Triangle P) : Prop := by 
+protected def IsInt (A : P) (tr : Triangle P) : Prop := by 
   by_cases colinear tr.1 tr.2 tr.3
   · exact False
   · let tr_nd : Triangle_nd P := ⟨tr, h⟩ 
     exact (if tr_nd.is_cclock then A LiesOnLeft Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩ else A LiesOnRight Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩)
 
+protected def interior (tr : Triangle P) : Set P := { p : P | Triangle.IsInt p tr }
+
+instance : Interior P (Triangle P) where
+  interior := fun t => t.interior
+
 end Triangle
-
-scoped infix : 50 "IsInsideTriangle" => Triangle.IsInside
-
-instance : HasLiesIn P (Triangle P) where
-  lies_in p tr := (Triangle.IsInside p tr) ∨ (p LiesOn tr.edge₁) ∨ (p LiesOn tr.edge₂) ∨ (p LiesOn tr.edge₃)
 
 namespace Triangle
 
