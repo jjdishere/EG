@@ -201,10 +201,10 @@ section length
 variable (l : Seg P)
 
 -- define the length of a generalized directed segment.
-def Seg.length : ℝ := Vec.Norm.norm (l.toVec)
+def Seg.length : ℝ := norm (l.toVec)
 
 -- length of a generalized directed segment is nonnegative.
-theorem length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ Vec.SeminormedAddGroup _
+theorem length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ _ _
 
 -- A generalized directed segment is nontrivial if and only if its length is positive.
 theorem length_pos_iff_nd : 0 < l.length ↔ (l.is_nd) := by sorry
@@ -213,17 +213,21 @@ theorem length_ne_zero_iff_nd : 0 ≠ l.length ↔ (l.is_nd) := by sorry
 
 theorem length_pos (l : Seg_nd P): 0 < l.1.length := by sorry
 
-theorem length_sq_eq_inner_toVec_toVec : l.length ^ 2 = Vec.InnerProductSpace.Core.inner l.toVec l.toVec := by
-  have w : l.length = Real.sqrt (Vec.InnerProductSpace.Core.inner l.toVec l.toVec) := by rfl
+theorem length_sq_eq_inner_toVec_toVec : l.length ^ 2 = inner l.toVec l.toVec := by
+  have w : l.length = Real.sqrt (inner l.toVec l.toVec) := by 
+    unfold Seg.length inner InnerProductSpace.toInner InnerProductSpace.complexToReal InnerProductSpace.isROrCToReal
+    simp only [Complex.norm_eq_abs, Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul,
+      sub_neg_eq_add]
+    rfl
   rw [w]
-  have n : 0 ≤ Vec.InnerProductSpace.Core.inner l.toVec l.toVec := by 
-    exact Vec.InnerProductSpace.Core.nonneg_re l.toVec
+  have n : (0 : ℝ)  ≤ inner l.toVec l.toVec := by 
+    exact InnerProductSpace.Core.nonneg_re (@InnerProductSpace.toCore _ _ _ _ InnerProductSpace.complexToReal) l.toVec
   rw [Real.sq_sqrt n]
 
 -- A generalized directed segment is trivial if and only if length is zero.
 theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by
   unfold Seg.length
-  exact Iff.trans (toVec_eq_zero_of_deg _)  (@norm_eq_zero _ Vec.NormedAddGroup).symm
+  exact Iff.trans (toVec_eq_zero_of_deg _)  (@norm_eq_zero _ _).symm
 
 -- If P lies on a generalized directed segment AB, then length(AB) = length(AP) + length(PB)
 theorem length_eq_length_add_length (l : Seg P) (A : P) (lieson : A LiesOn l) : l.length = (SEG l.source A).length + (SEG A l.target).length := sorry
