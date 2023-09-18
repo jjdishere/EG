@@ -17,16 +17,8 @@ theorem cosine_rule (tr_nd : Triangle_nd P) : 2 * (tr_nd.1.edge₃.length * tr_n
   let A := tr_nd.1.point₁
   let B := tr_nd.1.point₂
   let C := tr_nd.1.point₃
-  dsimp only [Seg.length]
-  unfold edge₃;unfold edge₂;unfold edge₁
-  simp
-  have : ¬colinear A B C := by
-    sorry
-  have h0 : A≠B := by sorry
-  have h1 : A≠C := by sorry
-  have h2 : B≠C := by sorry
-  unfold Vec.mk_pt_pt
   sorry
+
 
 -- Sine rule (but only for counterclockwise triangle here, or we need some absolute values)
 -- Should we reformulate it without circle?
