@@ -130,66 +130,61 @@ Colinarity.lean -- Define the relative positions of points on rays
 /-!
 Line.lean -- Define lines
 
-  Setoid : 
-    same_extn_line -- the equivalent relation of admitting the same underlying line on rays
-
   Classes : 
-    class of Line -- define Line as the quotient of Ray with respect to relation same_extn_line
+    class of Line -- A line is a subset of the plane P that satisfies three properties, namely colinarity - every 3 pts on line colinear; maximality - pt that colinear with 2 different pts on line falls on the line; nontriviality - a line contains at least 2 pts
 
   Make :
     LIN = Line.mk_pt_pt -- 
-    Line.mk_pt_proj --
-    Line.mk_pt_dir --
     Line.mk_pt_vec_nd --
+    Line.mk_pt_proj --
 
   Coersion:
-
-    Line.toProj --
+    Line.IsOn --
+    Line.toProj
     Ray.toLine  --
     Seg_nd.toLine --
-    Carrier:
-      Line.carrier --
-      Line.IsOn -- `Don't really need this`
-      linear -- every 3 pts on line colinear;
-      maximal -- pt that colinear with 2 different pts on line falls on the line
-      nontriv -- a line contains at least 2 pts
-      Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev --
-      Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source
 
-  (compatibility) `Line_ex`
-    pt_pt : theorems directly related to Line.mk_pt_pt
-      line_of_pt_pt_eq_rev --
-      fst_pt_lies_on_line_of_pt_pt --
-      snd_pt_lies_on_line_of_pt_pt --
-      eq_line_of_pt_pt_of_ne --
-      eq_of_pt_pt_lies_on_of_ne -- 2 ne pts lies on 2 lines implies 2 lines are the same
-    coercion : theorems related to coercions 
-      Seg_nd.toLine_eq_toRay_toLine --
-      line_of_pt_pt_eq_ray_toLine --
-      line_of_pt_pt_eq_seg_nd_toLine --
-      Ray.source_lies_on_toLine --
-      Seg_nd.source_lies_on_toLine --
-      Seg_nd.target_lies_on_toLine --
-      Ray.toLine_eq_rev_toLine --
-      Seg_nd.toLine_eq_rev_toLine --
-      toLine_eq_extn_toLine --
-      lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on --
-      lies_on_iff_lies_on_iff_line_eq_line --
-      Ray.lies_on_toLine_of_lie_on --
-      Seg_nd.lies_on_toLine_of_lie_on --
-      line_toProj_eq_seg_nd_toProj_of_lies_on --
-      Ray.toProj_eq_toLine_toProj --
-      Seg_nd.toProj_eq_toLine_toProj --
-      lies_on_iff_eq_toProj --
-    colinear : theorems related to colinear
-      lies_on_line_of_pt_pt_iff_colinear --
-      lies_on_iff_colinear_of_ne_lies_on_lies_on --
-      colinear_iff_exist_line_lies_on --
+  (coersion compatibility)
+    fst_pt_lies_on_line_of_pt_pt --
+    snd_pt_lies_on_line_of_pt_pt --
+    lies_on_line_of_pt_pt_iff_colinear --
+    lies_on_iff_lies_on_iff_line_eq_line --
+    eq_line_of_pt_pt_of_ne --
+    eq_of_pt_pt_lies_on_of_ne -- 2 ne pts lies on 2 lines implies 2 liones are the same
+    colinear_iff_exist_line_lies_on --
 
-    (archemidean) `Line_ex`
+    Ray.lies_on_toLine_of_lie_on --
+    Seg_nd.lies_on_toLine_of_lie_on --
+    Ray.source_lies_on_toLine --
+    Seg_nd.source_lies_on_toLine --
+    Seg_nd.target_lies_on_toLine --
+    Seg_nd.toLine_eq_toRay_toLine --
+    line_of_pt_pt_eq_ray_toLine --
+    line_of_pt_pt_eq_seg_nd_toLine --
+
+    pt_lies_on_and_proj_eq_of_line_mk_pt_proj --
+
+    Ray.toProj_eq_toLine_toProj `Line_ex`--
+    Seg_nd.toProj_eq_toLine_toProj `Line_ex` --
+    lies_on_iff_eq_toProj `Line_ex`--
+
+    (reverse)`Line_ex`
+    Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev --
+    Ray.toLine_eq_rev_toLine --
+    Seg_nd.toLine_eq_rev_toLine --
+
+    (extension)`Line_ex`
+    toLine_eq_extn_toLine --
+    lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on --
+
+    (archemidean)
     exists_ne_pt_pt_lies_on_of_line --
     lies_on_of_Seg_nd_toProj_eq_toProj --
     Seg_nd_toProj_eq_toProj_iff_lies_on --
     Line.exist_pt_beyond_pt --
+    
+
+
+
   
 -/
