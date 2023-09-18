@@ -118,16 +118,54 @@ theorem Ray.toDir_of_reverse_eq_neg_toDir : ray.reverse.toDir = - ray.toDir := r
 
 theorem Ray.toProj_of_reverse_eq_toProj : ray.reverse.toProj = ray.toProj := sorry
 
-theorem Seg.toVec_of_reverse_eq_neg_toVec : seg.reverse.toVec = - seg.toVec := sorry
+theorem Seg.toVec_of_reverse_eq_neg_toVec : seg.reverse.toVec = - seg.toVec := by
+-- sorry
+  unfold toVec reverse
+  simp
+  rw[neg_vec]
 
-theorem Seg_nd.toVec_nd_of_reverse_eq_neg_toVec_nd : seg_nd.reverse.toVec_nd = - seg_nd.toVec_nd := sorry
+theorem Seg_nd.toVec_nd_of_reverse_eq_neg_toVec_nd : seg_nd.reverse.toVec_nd = - seg_nd.toVec_nd := by
+-- sorry
+  apply Subtype.eq
+  apply Seg.toVec_of_reverse_eq_neg_toVec
+  -- simp
 
-theorem Seg_nd.toDir_of_reverse_eq_neg_toDir : seg_nd.reverse.toDir = - seg_nd.toDir := sorry
+theorem Seg_nd.toDir_of_reverse_eq_neg_toDir : seg_nd.reverse.toDir = - seg_nd.toDir := by
+-- sorry
+  unfold toDir
+  symm
+  have :seg_nd.reverse.toVec_nd.1=(-1)•seg_nd.toVec_nd.1:=by
+    rw[neg_smul,one_smul]
+    rw[Seg_nd.toVec_nd_of_reverse_eq_neg_toVec_nd]
+    rfl
+  apply @neg_normalize_eq_normalize_smul_neg _ _ (-1)
+  rw[this]
+  simp
+  simp
 
-theorem Seg_nd.toProj_of_reverse_eq_toProj : seg_nd.reverse.toProj = seg_nd.toProj := sorry
+theorem Seg_nd.toProj_of_reverse_eq_toProj : seg_nd.reverse.toProj = seg_nd.toProj := by
+-- sorry
+  apply @eq_toProj_of_smul _ _ (-1)
+  rw[neg_smul,one_smul]
+  rw[Seg_nd.toVec_nd_of_reverse_eq_neg_toVec_nd]
+  apply neg_eq_iff_eq_neg.mp
+  rfl
 
 -- reversing the toDir does not change the length
-theorem length_eq_length_of_rev : seg.length = seg.reverse.length := sorry
+theorem length_eq_length_of_rev : seg.length = seg.reverse.length := by
+-- sorry
+  unfold Seg.length
+  have h:Vec.norm seg.toVec=Vec.Norm.norm seg.toVec:=by
+    rfl
+  have h':Vec.norm seg.reverse.toVec=Vec.Norm.norm seg.reverse.toVec:=by
+    rfl
+  rw[←h,←h']
+  rw[Seg.toVec_of_reverse_eq_neg_toVec]
+  rw[Vec.norm_eq_abs_toComplex,Vec.norm_eq_abs_toComplex]
+  have eq:Vec.toComplex (-Seg.toVec seg)=-Vec.toComplex (Seg.toVec seg):=by
+    rfl
+  rw[eq]
+  norm_num
 
 -- A point lies on the directed segment if and only if it lies on the ray associated to the segment and the ray associated to the reverse of this segment.
 -- need to be refined
