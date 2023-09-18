@@ -483,6 +483,8 @@ def Dir.toProj (v : Dir) : Proj := ⟦v⟧
 instance : Coe Dir Proj where
   coe v := v.toProj
 
+theorem Dir.eq_toProj_iff (x y : Dir) : x.toProj = y.toProj ↔ x = y ∨ x = -y := Quotient.eq (r := PM.con.toSetoid)
+
 def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.normalize v : Proj) 
 
 -- Coincidence of toProj gives rise to important results, especially that two Vec_nd-s have the same toProj iff they are equal by taking a real (nonzero) scaler. We will prove this statement in the following section. 
@@ -731,6 +733,14 @@ end Cosine_theorem_for_Vec_nd
 -- Our aim is to prove nonparallel lines have common point, but in this section, we will only form the theorem in a Linear algebraic way by proving two Vec_nd-s could span the space with different toProj, which is the main theorem about toProj we will use in the proof of the intersection theorem. 
 
 section Linear_Algebra
+
+def det (u v : Vec) : ℝ := u.1 * v.2 - u.2 * v.1
+
+def det' (u v : Vec) : ℂ := u.1 * v.2 - u.2 * v.1
+
+def cu (u v w: Vec) : ℝ := (det u v)⁻¹ * (w.1 * v.2 - v.1 * w.2)
+
+def cv (u v w: Vec) : ℝ := (det u v)⁻¹ * (u.1 * w.2 - w.1 * u.2)
 
 theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.1 = 0 ↔ (∃ (t : ℝ), v = t • u) := by
   have h : (u.1 ≠ 0) ∨ (u.2 ≠ 0) := by
