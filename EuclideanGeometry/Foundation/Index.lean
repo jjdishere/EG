@@ -13,7 +13,6 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Line
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
-import EuclideanGeometry.Foundation.Axiom.Linear.Line_ex
 /- Axiom.Position -/
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation
