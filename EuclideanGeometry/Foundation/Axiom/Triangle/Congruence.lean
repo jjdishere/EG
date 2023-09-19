@@ -7,7 +7,8 @@ namespace EuclidGeom
 /- congruences of triangles, separate definitions for reversing orientation or not, (requiring all sides and angles being the same)-/
 
 variable {P : Type _} [EuclideanPlane P]
-
+-- only define congrence for Triangle_nd
+--def IsCongr (tr_nd₁ tr_nd₂: Triangle_nd P) : Prop := (tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length ∧ tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length ∧ tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length ∧ tr_nd₁.angle₁ = tr_nd₂.angle₁ ∧ tr_nd₁.angle₂ = tr_nd₂.angle₂ ∧ tr_nd₁.angle₃ = tr_nd₂.angle₃)
 def IsCongr (tr₁ tr₂: Triangle P) : Prop := by
   by_cases tr₁.is_nd ∧ tr₂.is_nd
   · let tr_nd₁ : Triangle_nd P := ⟨tr₁, h.1⟩
@@ -17,7 +18,7 @@ def IsCongr (tr₁ tr₂: Triangle P) : Prop := by
 
 scoped infix : 50 "IsCongrTo" => IsCongr
 
-scoped infix : 50 "≃" => IsCongr --do we need?
+scoped infix : 50 "≅" => IsCongr --do we need?
 
 namespace IsCongr
 
@@ -73,12 +74,12 @@ def IsACongr (tr₁ tr₂: Triangle P) : Prop := by
   by_cases tr₁.is_nd ∧ tr₂.is_nd
   · let tr_nd₁ : Triangle_nd P := ⟨tr₁, h.1⟩
     let tr_nd₂ : Triangle_nd P := ⟨tr₂, h.2⟩
-    exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length ∧ - tr_nd₁.angle₁ = tr_nd₂.angle₁ ∧ tr_nd₁.angle₂ = - tr_nd₂.angle₂ ∧ tr_nd₁.angle₃ = - tr_nd₂.angle₃
+    exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length ∧ tr_nd₁.angle₁ = - tr_nd₂.angle₁ ∧ tr_nd₁.angle₂ = - tr_nd₂.angle₂ ∧ tr_nd₁.angle₃ = - tr_nd₂.angle₃
   · exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length
 
 scoped infix : 50 "IsACongrTo" => IsACongr
 
-scoped infix : 50 "≃ₐ" => IsACongr --do we need?
+scoped infix : 50 "≅ₐ" => IsACongr --do we need?
 
 namespace IsACongr
 

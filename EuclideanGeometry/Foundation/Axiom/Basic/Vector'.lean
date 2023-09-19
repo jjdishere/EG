@@ -742,7 +742,8 @@ def cu (u v w: Vec) : ℝ := (det u v)⁻¹ * (w.1 * v.2 - v.1 * w.2)
 
 def cv (u v w: Vec) : ℝ := (det u v)⁻¹ * (u.1 * w.2 - w.1 * u.2)
 
-theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.1 = 0 ↔ (∃ (t : ℝ), v = t • u) := by
+theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : det u v = 0 ↔ (∃ (t : ℝ), v = t • u) := by
+  unfold det
   have h : (u.1 ≠ 0) ∨ (u.2 ≠ 0) := by
     by_contra _
     have h₁ : u.1 = 0 := by tauto
@@ -781,34 +782,52 @@ theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v
     rcases e
     ring
 
-theorem linear_combination_of_not_colinear' {u v w : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
+theorem det'_ne_zero_of_not_colinear {u v : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : det' u v ≠ 0 := by 
+  unfold det'
   have h₁ : (¬ (∃ (t : ℝ), v = t • u)) → (¬ (u.1 * v.2 - u.2 * v.1 = 0)) := by
     intro _
     by_contra h₂
     let _ := (det_eq_zero_iff_eq_smul u v hu).1 h₂
     tauto
-  let d := u.1 * v.2 - u.2 * v.1
-  have h₃ : d ≠ 0 := h₁ h'
-  use d⁻¹ * (w.1 * v.2 - v.1 * w.2) 
-  use d⁻¹ * (u.1 * w.2 - w.1 * u.2)
   symm
-  rw [mul_smul, mul_smul, ← smul_add]
-  apply ((inv_smul_eq_iff₀ h₃).2)
-  unfold HSMul.hSMul instHSMul SMul.smul MulAction.toSMul Complex.mulAction Complex.instSMulRealComplex
-  simp only [smul_eq_mul, zero_mul, sub_zero]
+  field_simp
+  have trivial : ((u.re : ℂ)  * v.im - u.im * v.re) = ((Sub.sub (α := ℝ) (Mul.mul (α := ℝ) u.re v.im)  (Mul.mul (α := ℝ) u.im v.re)) : ℂ) := by 
+    symm
+    calc
+      ((Sub.sub (α := ℝ) (Mul.mul (α := ℝ) u.re v.im)  (Mul.mul (α := ℝ) u.im v.re)) : ℂ) = ((Mul.mul u.re v.im) - (Mul.mul u.im v.re)) := Complex.ofReal_sub _ _
+      _ = ((Mul.mul u.re v.im) - (u.im * v.re)) := by 
+        rw [← Complex.ofReal_mul u.im v.re] 
+        rfl
+      _ = ((u.re * v.im) - (u.im * v.re)) := by 
+        rw [← Complex.ofReal_mul u.re _] 
+        rfl 
+  rw [trivial, ← ne_eq]
+  symm
+  rw [ne_eq, Complex.ofReal_eq_zero]
+  exact h₁ h'
+
+theorem linear_combination_of_not_colinear' {u v w : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : w = (cu u v w) • u + (cv u v w) • v := by
+  unfold cu cv det
+  have : ((u.re : ℂ)  * v.im - u.im * v.re) ≠ 0 := det'_ne_zero_of_not_colinear hu h'
+  field_simp
   apply Complex.ext
-  simp only [add_zero, Complex.add_re]
+  simp
   ring
-  simp only [add_zero, Complex.add_im]
+  simp
   ring
 
-theorem linear_combination_of_not_colinear {u v : Vec_nd} (w : Vec) (h' : Vec_nd.toProj u ≠ Vec_nd.toProj v) : ∃ (cᵤ cᵥ : ℝ), w = cᵤ • u.1 + cᵥ • v.1 := by
+theorem linear_combination_of_not_colinear_vec_nd {u v : Vec_nd} (w : Vec) (h' : Vec_nd.toProj u ≠ Vec_nd.toProj v) : w = (cu u.1 v.1 w) • u.1 + (cv u.1 v.1 w) • v.1 := by
   have h₁ : (Vec_nd.toProj u ≠ Vec_nd.toProj v) → ¬(∃ (t : ℝ), v.1 = t • u.1) := by
     intro _
     by_contra h₂
     let _ := (Vec_nd.eq_toProj_iff u v).2 h₂
     tauto
-  exact linear_combination_of_not_colinear' u.2 (h₁ h')
+  exact @linear_combination_of_not_colinear' u.1 v.1 w u.2 (h₁ h')
+
+theorem linear_combination_of_not_colinear_dir {u v : Dir} (w : Vec) (h' : u.toProj ≠ v.toProj) : w = (cu u.1 v.1 w) • u.1 + (cv u.1 v.1 w) • v.1 := by
+  have h₁ : (u.toProj ≠ v.toProj) → ¬(∃ (t : ℝ), v.1 = t • u.1) := by
+    sorry
+  exact @linear_combination_of_not_colinear' u.1 v.1 w u.toVec_nd.2 (h₁ h')
 
 end Linear_Algebra
 
