@@ -57,7 +57,20 @@ theorem Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev (a : P) (l : Ray P) : (a L
   simp
   exact eq
 
-theorem Ray.toLine_eq_rev_toLine (ray : Ray P) : ray.toLine = ray.reverse.toLine := sorry
+theorem Ray.toLine_eq_rev_toLine (ray : Ray P) : ray.toLine = ray.reverse.toLine := by
+  apply (lies_on_iff_lies_on_iff_line_eq_line _ _).mp
+  intro A
+  unfold lies_on Carrier.carrier Line.instCarrierLine
+  simp only [Set.setOf_mem_eq]
+  unfold Line.carrier Ray.toLine Line.mk_pt_pt
+  simp
+  constructor
+  · rintro ⟨t, h⟩
+    use -t
+    simp; assumption
+  rintro ⟨t, h⟩
+  use -t
+  simp; assumption
 
 theorem Seg_nd.toLine_eq_rev_toLine (seg_nd : Ray P) : seg_nd.toLine = seg_nd.reverse.toLine := sorry
 
