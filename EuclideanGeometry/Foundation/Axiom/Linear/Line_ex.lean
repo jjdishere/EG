@@ -8,20 +8,6 @@ variable {P : Type _} [EuclideanPlane P]
 
 section compatibility
 
--- theorem Ray.toProj_eq_toLine_toProj (ray : Ray P) : ray.toProj = ray.toLine.toProj := by
---   symm
---   apply ray_toLine_toProj_eq_ray_toProj ray
-
--- theorem Seg_nd.toProj_eq_toLine_toProj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := by
---   set ray := seg_nd.toRay with ray_def
---   have h₁ : seg_nd.toProj = ray.toProj := by
---     rw [ray_def]
---     apply Seg_nd.toProj_eq_toRay_toProj
---   have h₂ : seg_nd.toLine.toProj = ray.toLine.toProj := by
---     rw [ray_def, Seg_nd.toLine_eq_toRay_toLine seg_nd]
---   rw [h₁, h₂, Ray.toProj_eq_toLine_toProj ray]
-
--- theorem lies_on_iff_eq_toProj {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B h).toProj = l.toProj := Seg_nd_toProj_eq_toProj_iff_lies_on hA h
 variable (A B : P) (h : B ≠ A) (ray : Ray P) (seg_nd : Seg_nd P)
 
 section pt_pt
@@ -71,49 +57,6 @@ theorem snd_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B 
   rw [line_of_pt_pt_eq_rev]
   exact fst_pt_lies_on_line_of_pt_pt h.symm
 
--- The first point and the second point in Line.mk_pt_pt LiesOn the line it make. 
-
--- theorem Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev (a : P) (l : Ray P) : (a LiesOn l.toLine) ↔ (a LiesOn l) ∨ (a LiesOn l.reverse) := by
---   constructor
---   · unfold lies_on Carrier.carrier Line.instCarrierLine Ray.instCarrierRay
---     simp only [Set.setOf_mem_eq]
---     unfold Line.carrier Ray.carrier Ray.IsOn Ray.toLine Line.mk_pt_pt
---     simp only [Set.mem_setOf_eq, vec_same_eq_zero]
---     simp
---     intro x h
---     by_cases x0 : x ≥ 0
---     · left
---       use x
---     right
---     use -x
---     simp
---     constructor
---     linarith; assumption
---   unfold lies_on Carrier.carrier Line.instCarrierLine Ray.instCarrierRay
---   simp only [Set.setOf_mem_eq]
---   unfold Line.carrier Ray.carrier Ray.IsOn Ray.toLine Line.mk_pt_pt
---   simp only [Set.mem_setOf_eq, vec_same_eq_zero]
---   simp
---   rintro (⟨t, tpos, eq⟩ | ⟨t, tpos, eq⟩)
---   · use t
---   use -t
---   simp
---   exact eq
-
--- theorem Ray.toLine_eq_rev_toLine (ray : Ray P) : ray.toLine = ray.reverse.toLine := by
---   apply (lies_on_iff_lies_on_iff_line_eq_line _ _).mp
---   intro A
---   unfold lies_on Carrier.carrier Line.instCarrierLine
---   simp only [Set.setOf_mem_eq]
---   unfold Line.carrier Ray.toLine Line.mk_pt_pt
---   simp
---   constructor
---   · rintro ⟨t, h⟩
---     use -t
---     simp; assumption
---   rintro ⟨t, h⟩
---   use -t
---   simp; assumption
 theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B h ∧ B LiesOn LIN A B h := by
   constructor
   exact fst_pt_lies_on_line_of_pt_pt h
