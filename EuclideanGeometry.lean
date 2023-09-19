@@ -1,1 +1,1 @@
-def hello := "world" 1111111
+def hello := "world"
