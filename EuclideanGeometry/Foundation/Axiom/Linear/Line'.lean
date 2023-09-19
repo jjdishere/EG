@@ -5,6 +5,8 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 noncomputable section
 namespace EuclidGeom
 
+-- alt+z better to see 
+
 section setoid
 
 variable {P : Type _} [EuclideanPlane P]
