@@ -21,16 +21,22 @@ section compatibility
 --     rw [ray_def, Seg_nd.toLine_eq_toRay_toLine seg_nd]
 --   rw [h₁, h₂, Ray.toProj_eq_toLine_toProj ray]
 
-theorem lies_on_iff_eq_toProj {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B h).toProj = l.toProj := Seg_nd_toProj_eq_toProj_iff_lies_on hA h
+-- theorem lies_on_iff_eq_toProj {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B h).toProj = l.toProj := Seg_nd_toProj_eq_toProj_iff_lies_on hA h
 variable (A B : P) (h : B ≠ A) (ray : Ray P) (seg_nd : Seg_nd P)
 
 section pt_pt
 
-theorem line_of_pt_pt_eq_rev : LIN A B h = LIN B A h.symm := sorry
+theorem line_of_pt_pt_eq_rev : LIN A B h = LIN B A h.symm := by
+  unfold Line.mk_pt_pt
+  rw [Quotient.eq]
+  show same_extn_line (RAY A B h) (RAY B A h.symm)
+  sorry
 
 theorem fst_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := Or.inl (Ray.source_lies_on (RAY A B h))
 
-theorem snd_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B h := sorry
+theorem snd_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B h := by
+  rw [line_of_pt_pt_eq_rev]
+  exact fst_pt_lies_on_line_of_pt_pt h.symm
 
 -- The first point and the second point in Line.mk_pt_pt LiesOn the line it make. 
 
@@ -109,7 +115,10 @@ theorem line_of_pt_pt_eq_ray_toLine {A B : P} (h : B ≠ A) : LIN A B h = Ray.to
 
 theorem line_of_pt_pt_eq_seg_nd_toLine {A B : P} (h : B ≠ A) : LIN A B h = Seg_nd.toLine ⟨SEG A B, h⟩ := rfl
 
-theorem Ray.source_lies_on_toLine (l : Ray P) : l.source LiesOn l.toLine := sorry
+theorem Ray.source_lies_on_toLine (l : Ray P) : l.source LiesOn l.toLine := by
+  apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev l.source l).mpr
+  left
+  apply Ray.source_lies_on
 
 theorem Seg_nd.source_lies_on_toLine (s : Seg_nd P) : s.1.source LiesOn s.toLine := sorry
 
