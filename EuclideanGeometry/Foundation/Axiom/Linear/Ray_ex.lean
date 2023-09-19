@@ -350,4 +350,5 @@ theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} (liesint : A L
   simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq]
   rw[←raysegsource] at ha
   
+end extension
 end EuclidGeom
