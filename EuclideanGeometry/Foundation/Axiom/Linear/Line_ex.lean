@@ -30,7 +30,32 @@ end compatibility_coersion_to_Proj
 section reverse
 -- A point lies on a line associated to a ray if and only if it lies on the ray or the reverse of the ray
 
-theorem Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev (a : P) (l : Ray P) : (a LiesOn l.toLine) ↔ (a LiesOn l) ∨ (a LiesOn l.reverse) := sorry
+theorem Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev (a : P) (l : Ray P) : (a LiesOn l.toLine) ↔ (a LiesOn l) ∨ (a LiesOn l.reverse) := by
+  constructor
+  · unfold lies_on Carrier.carrier Line.instCarrierLine Ray.instCarrierRay
+    simp only [Set.setOf_mem_eq]
+    unfold Line.carrier Ray.carrier Ray.IsOn Ray.toLine Line.mk_pt_pt
+    simp only [Set.mem_setOf_eq, vec_same_eq_zero]
+    simp
+    intro x h
+    by_cases x0 : x ≥ 0
+    · left
+      use x
+    right
+    use -x
+    simp
+    constructor
+    linarith; assumption
+  unfold lies_on Carrier.carrier Line.instCarrierLine Ray.instCarrierRay
+  simp only [Set.setOf_mem_eq]
+  unfold Line.carrier Ray.carrier Ray.IsOn Ray.toLine Line.mk_pt_pt
+  simp only [Set.mem_setOf_eq, vec_same_eq_zero]
+  simp
+  rintro (⟨t, tpos, eq⟩ | ⟨t, tpos, eq⟩)
+  · use t
+  use -t
+  simp
+  exact eq
 
 theorem Ray.toLine_eq_rev_toLine (ray : Ray P) : ray.toLine = ray.reverse.toLine := sorry
 
