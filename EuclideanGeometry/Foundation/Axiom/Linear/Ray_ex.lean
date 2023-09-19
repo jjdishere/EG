@@ -69,10 +69,10 @@ theorem eq_source_iff_lies_on_ray_lies_on_ray_rev {A : P} : A = ray.source â†” (
   intro h
   constructor
   use 0
-  simp
+  simp only [le_refl, zero_smul, true_and]
   rw[h,vec_same_eq_zero]
   use 0
-  simp
+  simp only [le_refl, Dir.toVec_neg_eq_neg_toVec, smul_neg, zero_smul, neg_zero, true_and]
   simp only [Ray.reverse]
   rw[h,vec_same_eq_zero]
   simp
@@ -116,8 +116,19 @@ theorem not_lies_int_of_lies_on_rev {A : P} (liesint : A LiesOn ray.reverse) : Â
 
 theorem Ray.toDir_of_reverse_eq_neg_toDir : ray.reverse.toDir = - ray.toDir := rfl
 
-theorem Ray.toProj_of_reverse_eq_toProj : ray.reverse.toProj = ray.toProj := sorry
-
+theorem Ray.toProj_of_reverse_eq_toProj : ray.reverse.toProj = ray.toProj := by
+-- sorry
+  --@HeRunming: Simply imitate the proof of theorem "eq_toProj_of_smul" in Vector.lean
+  unfold Ray.reverse
+  unfold Ray.toDir
+  unfold Ray.toProj
+  apply Quotient.sound
+  unfold HasEquiv.Equiv instHasEquiv PM.con PM
+  simp only [Con.rel_eq_coe, Con.rel_mk]
+  unfold EuclidGeom.Ray.toDir
+  right
+  rfl
+  
 theorem Seg.toVec_of_reverse_eq_neg_toVec : seg.reverse.toVec = - seg.toVec := by
 -- sorry
   unfold toVec reverse
