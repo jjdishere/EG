@@ -21,12 +21,42 @@ section compatibility
 --     rw [ray_def, Seg_nd.toLine_eq_toRay_toLine seg_nd]
 --   rw [h₁, h₂, Ray.toProj_eq_toLine_toProj ray]
 
-theorem lies_on_iff_eq_toProj {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B h).toProj = l.toProj := Seg_nd_toProj_eq_toProj_iff_lies_on hA h
+-- theorem lies_on_iff_eq_toProj {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B h).toProj = l.toProj := Seg_nd_toProj_eq_toProj_iff_lies_on hA h
 variable (A B : P) (h : B ≠ A) (ray : Ray P) (seg_nd : Seg_nd P)
 
 section pt_pt
 
-theorem line_of_pt_pt_eq_rev : LIN A B h = LIN B A h.symm := sorry
+theorem line_of_pt_pt_eq_rev : LIN A B h = LIN B A h.symm := by
+  set r1 := RAY A B h with r1_def
+  set r2 := RAY B A h.symm with r2_def
+  unfold Line.mk_pt_pt
+  apply Quotient.eq.mpr
+  rw [← r1_def, ← r2_def]
+  constructor
+  · unfold Ray.toProj Ray.toDir
+    apply (Dir.eq_toProj_iff _ _).mpr
+    right
+    --unfold Ray.mk_pt_pt
+    --simp
+    --let v1 := r1.toVec_nd
+    have : VEC A B = -VEC B A := by
+      apply neg
+    set v1 := ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h⟩ with v1_def
+  unfold Ray.source Ray.mk_pt_pt
+  simp
+  left
+  unfold lies_on Carrier.carrier Ray.instCarrierRay
+  simp
+  unfold Ray.carrier Ray.IsOn Dir.toVec
+  simp
+  unfold Vec_nd.normalize
+  simp
+  use Vec.norm (VEC A B)
+  constructor
+  · have : 0 < Vec.norm (VEC A B) := norm_pos_iff''.2 h
+    sorry
+  
+  sorry
 
 theorem fst_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := Or.inl (Ray.source_lies_on (RAY A B h))
 
