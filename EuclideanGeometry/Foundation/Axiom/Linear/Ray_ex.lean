@@ -301,54 +301,55 @@ theorem eq_target_iff_lies_on_lies_on_extn {A : P} : (A LiesOn seg_nd.1) ∧ (A 
   rw[this]
   simp only [vec_same_eq_zero]
 
-theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} (liesint : A LiesInt seg_nd.extension) : seg_nd.1.target LiesInt SEG seg_nd.1.source A := by
+theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} (liesint : A LiesInt seg_nd.extension) : seg_nd.1.target LiesInt SEG seg_nd.1.source A := sorry
+-- by
 -- sorry
-  rcases liesint with ⟨⟨a,anonneg,ha⟩,nonsource⟩
-  have raysegsource:seg_nd.1.target=seg_nd.extension.1:=by
-    rfl
-  have apos:0<a:=by
-    contrapose! nonsource
-    have:a=0:=by linarith
-    rw[this] at ha
-    simp only [Dir.toVec_neg_eq_neg_toVec, smul_neg, zero_smul, neg_zero] at ha
-    apply (eq_iff_vec_eq_zero _ _).mpr
-    exact ha
-  set l:= seg_nd.toVec_nd.norm with l_def
-  have reldef:seg_nd.toVec_nd.norm=Vec.norm ↑(Seg_nd.toVec_nd seg_nd):=by
-    rfl
-  rw[reldef] at l_def
-  constructor
-  use (l*(l+a)⁻¹)
-  have lpos:0<l:=by
-    simp only [l_def]
-    apply norm_pos_iff.mpr (seg_nd.toVec_nd.2)
+  -- rcases liesint with ⟨⟨a,anonneg,ha⟩,nonsource⟩
+  -- have raysegsource:seg_nd.1.target=seg_nd.extension.1:=by
+  --   rfl
+  -- have apos:0<a:=by
+  --   contrapose! nonsource
+  --   have:a=0:=by linarith
+  --   rw[this] at ha
+  --   simp only [Dir.toVec_neg_eq_neg_toVec, smul_neg, zero_smul, neg_zero] at ha
+  --   apply (eq_iff_vec_eq_zero _ _).mpr
+  --   exact ha
+  -- set l:= seg_nd.toVec_nd.norm with l_def
+  -- have reldef:seg_nd.toVec_nd.norm=Vec.norm ↑(Seg_nd.toVec_nd seg_nd):=by
+  --   rfl
+  -- rw[reldef] at l_def
+  -- constructor
+  -- use (l*(l+a)⁻¹)
+  -- have lpos:0<l:=by
+  --   simp only [l_def]
+  --   apply norm_pos_iff.mpr (seg_nd.toVec_nd.2)
   
-  have la:0<l+a:=by linarith
-  have lan0:l+a≠0:=by linarith
-  have lplusa:0<(l*(l+a)⁻¹)∧ (l*(l+a)⁻¹)<1:=by
-    simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq, gt_iff_lt, inv_pos]
-    constructor
-    apply mul_pos
-    rw[←l_def]
-    exact lpos
-    apply inv_pos_of_pos
-    rw[←l_def]
-    exact la
-    rw[←l_def]
-    rw[←mul_inv_cancel lan0]
-    apply mul_lt_mul
-    linarith
-    rfl
-    simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq, inv_pos]
-    linarith
-    linarith
-  constructor  
-  linarith
-  constructor
-  apply le_of_lt
-  linarith
-  simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq]
-  rw[←raysegsource] at ha
-  
+  -- have la:0<l+a:=by linarith
+  -- have lan0:l+a≠0:=by linarith
+  -- have lplusa:0<(l*(l+a)⁻¹)∧ (l*(l+a)⁻¹)<1:=by
+  --   simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq, gt_iff_lt, inv_pos]
+  --   constructor
+  --   apply mul_pos
+  --   rw[←l_def]
+  --   exact lpos
+  --   apply inv_pos_of_pos
+  --   rw[←l_def]
+  --   exact la
+  --   rw[←l_def]
+  --   rw[←mul_inv_cancel lan0]
+  --   apply mul_lt_mul
+  --   linarith
+  --   rfl
+  --   simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq, inv_pos]
+  --   linarith
+  --   linarith
+  -- constructor  
+  -- linarith
+  -- constructor
+  -- apply le_of_lt
+  -- linarith
+  -- simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq]
+  -- rw[←raysegsource] at ha
+
 end extension
 end EuclidGeom
