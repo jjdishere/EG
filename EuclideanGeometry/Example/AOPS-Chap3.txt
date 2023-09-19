@@ -1,0 +1,28 @@
+import EuclideanGeometry.Foundation.Index
+
+noncomputable section
+
+-- All exercises are from AOPS Geometry book Chapter 3
+
+namespace EuclidGeom
+
+variable {P : Type _} [EuclideanPlane P]
+
+section Exercise_3_4_4
+
+/- Let $\triangle AOB$ be a nondegenerate isosceles triangle in which $OA = OB$. Let $X$ and $Y$ be points on the interior of the segments of $OA$ and $OB$, respectively, such that $\angle OAY = - \angle OBX$. Let $M$ denote the intersection of the segment $AY$ and $BX$.
+Theorem: $MX = MY$.
+-/
+variable  (tr = ⟨⟨ TRI A B C, h⟩⟩ : Triangle_nd P)
+
+
+(trind : Triangle_nd P) (hiso: (▵ A O B).IsIsoceles) (hnd : (▵ A O B).is_nd) (htri : trind = Triangle_nd.mk  (▵ A O B) hnd)
+
+
+ (hx : X LiesOn SEG O A) (hy : Y LiesOn SEG O B)
+trind := Triangle_nd.mk (▵ A O B) hnd
+let oang₁ = ∠ 
+end Exercise_3_4_4
+
+
+end EuclidGeom
