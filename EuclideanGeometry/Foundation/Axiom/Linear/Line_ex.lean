@@ -9,11 +9,20 @@ variable {P : Type _} [EuclideanPlane P]
 -- compatibility with coersion to Proj
 section compatibility_coersion_to_Proj
 
-theorem Ray.toProj_eq_toLine_toProj (ray : Ray P) : ray.toProj = ray.toLine.toProj := by sorry
+theorem Ray.toProj_eq_toLine_toProj (ray : Ray P) : ray.toProj = ray.toLine.toProj := by
+  symm
+  apply ray_toLine_toProj_eq_ray_toProj ray
 
-theorem Seg_nd.toProj_eq_toLine_toProj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := by sorry
+theorem Seg_nd.toProj_eq_toLine_toProj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := by
+  set ray := seg_nd.toRay with ray_def
+  have h₁ : seg_nd.toProj = ray.toProj := by
+    rw [ray_def]
+    apply Seg_nd.toProj_eq_toRay_toProj
+  have h₂ : seg_nd.toLine.toProj = ray.toLine.toProj := by
+    rw [ray_def, Seg_nd.toLine_eq_toRay_toLine seg_nd]
+  rw [h₁, h₂, Ray.toProj_eq_toLine_toProj ray]
 
-theorem lies_on_iff_eq_toProj {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B h).toProj = l.toProj := sorry
+theorem lies_on_iff_eq_toProj {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B h).toProj = l.toProj := Seg_nd_toProj_eq_toProj_iff_lies_on hA h
 
 
 end compatibility_coersion_to_Proj
