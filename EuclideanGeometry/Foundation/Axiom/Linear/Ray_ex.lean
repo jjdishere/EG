@@ -325,30 +325,29 @@ theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} (liesint : A L
   
   have la:0<l+a:=by linarith
   have lan0:l+a≠0:=by linarith
-  have lplusa:0<(l*(l+a)⁻¹)∧ (l*(l+a)⁻¹)<1:= sorry
-  --   by
-  --   simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq, gt_iff_lt, inv_pos]
-  --   constructor
-  --   apply mul_pos
-  --   rw[←l_def]
-  --   exact lpos
-  --   apply inv_pos_of_pos
-  --   rw[←l_def]
-  --   exact la
-  --   rw[←l_def]
-  --   rw[←mul_inv_cancel lan0]
-  --   apply mul_lt_mul
-  --   linarith
-  --   rfl
-  --   simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq, inv_pos]
-  --   linarith
-  --   linarith
-  -- constructor  
-  -- linarith
-  -- constructor
-  -- apply le_of_lt
-  -- linarith
-  -- simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq]
-  -- rw[←raysegsource] at ha
+  have lplusa:0<(l*(l+a)⁻¹)∧ (l*(l+a)⁻¹)<1:=by
+    simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq, gt_iff_lt, inv_pos]
+    constructor
+    apply mul_pos
+    rw[←l_def]
+    exact lpos
+    apply inv_pos_of_pos
+    rw[←l_def]
+    exact la
+    rw[←l_def]
+    rw[←mul_inv_cancel lan0]
+    apply mul_lt_mul
+    linarith
+    rfl
+    simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq, inv_pos]
+    linarith
+    linarith
+  constructor  
+  linarith
+  constructor
+  apply le_of_lt
+  linarith
+  simp only [norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, ne_eq]
+  rw[←raysegsource] at ha
   
 end EuclidGeom
