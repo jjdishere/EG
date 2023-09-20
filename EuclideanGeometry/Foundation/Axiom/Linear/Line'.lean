@@ -23,12 +23,18 @@ protected theorem symm {x y : Ray P} (h : same_extn_line x y) : same_extn_line y
   · exact h.1.symm 
   · apply or_iff_not_imp_right.mpr
     intro hxs
-    have g := dir_eq_or_eq_neg h
-    cases g with 
-    | inl h₁ => sorry
-    | inr h₂ => sorry
+    have x_not_y : x.source ≠ y.source := by simp [eq_source_iff_lies_on_ray_lies_on_ray_rev, hxs]
+    let y_to_x := Seg_nd.mk y.source x.source x_not_y
+    have yx_eq_y: y_to_x.toRay = y := by 
+      have dir := dir_eq_or_eq_neg h
+      cases dir with 
+        | inl h₁ => sorry
+        | inr h₂ => sorry
+    rw [← yx_eq_y]
+    have : x.source LiesOn y_to_x.1 := by apply Seg.target_lies_on
+    simp[this, Seg_nd.lies_on_toRay_of_lies_on]
 
-#check or_iff_not_imp_left
+
 protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same_extn_line y z) :  same_extn_line x z := by
     constructor
     · rw [h₁.1, h₂.1]
