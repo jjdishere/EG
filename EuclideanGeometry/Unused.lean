@@ -7,7 +7,7 @@ noncomputable section
 namespace EuclidGeom
 /- Another way of defining 2DVecSpace before define EuclideanPlane，-/
 section Cartesian2dVectorSpace
-
+/- -/
 class Cartesian2dVectorSpace (V : Type _)  extends  NormedAddCommGroup V, InnerProductSpace ℝ V where
   dim_two : FiniteDimensional.finrank ℝ V = 2
   basis : Basis (Fin 2) ℝ V
