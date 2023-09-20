@@ -97,17 +97,31 @@ section intersection_theorem
 -- Let us consider the intersection of lines first. 
 -- If two lines l₁ and l₂ are parallel, then there is a unique point on l₁ ∩ l₂.  The definition of the point uses the ray intersection by first picking a point
 
-def intx_of_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : P := by
-  exact (cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) • r₁.toDir.toVec +ᵥ r₁.source)
+def intx_of_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : P := (cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) • r₁.toDir.toVec +ᵥ r₁.source)
+
+open Classical
+def intx_of_extn_line' (r₁ r₂ : Ray P) (A : P) : P := if (r₂.toProj ≠ r₁.toProj) then (cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) • r₁.toDir.toVec +ᵥ r₁.source) else A
 
 theorem intx_lies_on_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : ((intx_of_extn_line r₁ r₂ h) ∈ r₁.carrier ∪ r₁.reverse.carrier) ∧ ((intx_of_extn_line r₁ r₂ h) ∈ r₂.carrier ∪ r₂.reverse.carrier) := sorry
+
+theorem intx_lies_on_extn_line' (r₁ r₂ : Ray P) (A : P) (h : r₂.toProj ≠ r₁.toProj) : ((intx_of_extn_line' r₁ r₂ A) ∈ r₁.carrier ∪ r₁.reverse.carrier) ∧ ((intx_of_extn_line' r₁ r₂ A) ∈ r₂.carrier ∪ r₂.reverse.carrier) := sorry
 
 -- `key theorem`
 
 theorem intx_eq_of_same_extn_line (r₁ r₁' r₂ r₂' : Ray P) (h₁ : same_extn_line r₁ r₁') (h₂ : same_extn_line r₂ r₂') (h : r₂.toProj ≠ r₁.toProj) (h' : r₂'.toProj ≠ r₁'.toProj) : intx_of_extn_line r₁ r₂ h = intx_of_extn_line r₁' r₂' h' := sorry
 
-def intx_of_line (l₁ l₂ : Line P) (h : l₁.toProj ≠ l₂.toProj): P := sorry
+def intx_of_line (l₁ l₂ : Line P) (h : l₁.toProj ≠ l₂.toProj): P := by
+  unfold Line at *
+  apply @Quotient.hrecOn₂ (Ray P) (Ray P) same_extn_line.setoid same_extn_line.setoid (fun l l' => (Line.toProj l ≠ Line.toProj l') → P ) l₁ l₂ _ _ h
+  ·  exact  sorry
+  sorry
+  
 
+variable (ray : Ray P)  (l : Line P)
+#check let l := (⟦ray⟧ : Line P); Line.toProj l
+#check l.toProj
+theorem test: let l := (⟦ray⟧ : Line P); Line.toProj l = ray.toProj := rfl
+theorem test' : let l := (⟦ray⟧ : Line P); let l' := (⟦ray'⟧ : Line P); (Line.toProj l : Proj) = Line.toProj l' ↔ ray.toProj = ray'.toProj  := sorry
 /-
 theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃ p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
   rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
