@@ -329,7 +329,8 @@ by
   have aseg_nonzero:Vec_nd.norm (Seg_nd.toVec_nd seg_nd)+a≠ 0:=by
     linarith
   have raydir:seg_nd.extension.toDir.toVec=seg_nd.toVec_nd.normalize.toVec:=by
-    sorry
+    rw[Ray.toDir_of_reverse_eq_neg_toDir,←Seg_nd.toDir_eq_toRay_toDir,Seg_nd.toDir_of_reverse_eq_neg_toDir]
+    simp only [neg_neg]
   have segleaseg:Vec_nd.norm (Seg_nd.toVec_nd seg_nd)≤Vec_nd.norm (Seg_nd.toVec_nd seg_nd)+a:=by
     linarith
   constructor
