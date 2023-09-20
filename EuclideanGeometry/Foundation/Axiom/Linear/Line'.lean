@@ -11,6 +11,7 @@ variable {P : Type _} [EuclideanPlane P]
 
 def same_extn_line : Ray P → Ray P → Prop := fun r₁ r₂ => r₁.toProj = r₂.toProj ∧ (r₂.source LiesOn r₁ ∨ r₂.source LiesOn r₁.reverse) 
 
+
 namespace same_extn_line
 
 theorem dir_eq_or_eq_neg {x y : Ray P} (h : same_extn_line x y) : (x.toDir = y.toDir ∨ x.toDir = - y.toDir) := (Dir.eq_toProj_iff _ _).mp h.1
@@ -20,12 +21,24 @@ protected theorem refl (x : Ray P) : same_extn_line x x := ⟨rfl, Or.inl (Ray.s
 protected theorem symm {x y : Ray P} (h : same_extn_line x y) : same_extn_line y x := by
   constructor
   · exact h.1.symm 
-  · have g := dir_eq_or_eq_neg h
+  · apply or_iff_not_imp_right.mpr
+    intro hxs
+    have g := dir_eq_or_eq_neg h
     cases g with 
     | inl h₁ => sorry
     | inr h₂ => sorry
 
-protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same_extn_line y z) :  same_extn_line x z := sorry
+#check or_iff_not_imp_left
+protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same_extn_line y z) :  same_extn_line x z := by
+    constructor
+    · rw [h₁.1, h₂.1]
+    · apply or_iff_not_imp_left.mpr
+      intro zs_not_x
+      cases h₂.2 with
+      | inl g₁ => sorry
+      | inr g₂ => sorry
+
+
 
 protected def setoid : Setoid (Ray P) where
   r := same_extn_line
