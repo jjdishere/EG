@@ -3,7 +3,7 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Ray
 noncomputable section
 namespace EuclidGeom
 
-variable {P: Type _} [EuclideanPlane P] (seg : Seg P) (seg_nd : Seg_nd P) (ray : Ray P) 
+variable {P: Type _} [EuclideanPlane P] (seg_nd : Seg_nd P) (ray : Ray P) 
 
 section reverse
 
@@ -26,14 +26,16 @@ def Seg_nd.reverse : Seg_nd P := ⟨seg_nd.1.reverse, nd_of_rev_of_nd seg_nd.2�
 theorem Ray.rev_rev_eq_self : ray.reverse.reverse = ray := sorry
 
 -- double reverse a generalized directed segment gets back to itself
-theorem Seg.rev_rev_eq_self  : seg.reverse.reverse = seg := rfl
+theorem Seg.rev_rev_eq_self {seg : Seg P} : seg.reverse.reverse = seg := rfl
 
 theorem Seg_nd.rev_rev_eq_self  : seg_nd.reverse.reverse = seg_nd := rfl
 
 theorem Seg_nd.rev_toSeg_eq_toSeg_rev : seg_nd.1.reverse = seg_nd.reverse.1 := rfl
 
 -- reversing the toDir does not change the property that a point lies on the generalized directed segments.
-theorem Seg.lies_on_rev_iff_lie_son {A : P} (lieson : A LiesOn seg) : A LiesOn seg.reverse := sorry
+theorem Seg.lies_on_rev_iff_lies_on {A : P} {seg : Seg P} : A LiesOn seg ↔ A LiesOn seg.reverse := sorry
+
+theorem Seg.lies_int_rev_iff_lies_int {A : P} {seg : Seg P} : A LiesInt seg ↔ A LiesInt seg.reverse := sorry
 
 theorem eq_source_iff_lies_on_ray_lies_on_ray_rev {A : P} : A = ray.source ↔ (A LiesOn ray) ∧ (A LiesOn ray.reverse) := sorry
 
@@ -51,7 +53,7 @@ theorem Ray.toDir_of_reverse_eq_neg_toDir : ray.reverse.toDir = - ray.toDir := r
 
 theorem Ray.toProj_of_reverse_eq_toProj : ray.reverse.toProj = ray.toProj := sorry
 
-theorem Seg.toVec_of_reverse_eq_neg_toVec : seg.reverse.toVec = - seg.toVec := sorry
+theorem Seg.toVec_of_reverse_eq_neg_toVec {seg : Seg P} : seg.reverse.toVec = - seg.toVec := sorry
 
 theorem Seg_nd.toVec_nd_of_reverse_eq_neg_toVec_nd : seg_nd.reverse.toVec_nd = - seg_nd.toVec_nd := sorry
 
@@ -60,7 +62,7 @@ theorem Seg_nd.toDir_of_reverse_eq_neg_toDir : seg_nd.reverse.toDir = - seg_nd.t
 theorem Seg_nd.toProj_of_reverse_eq_toProj : seg_nd.reverse.toProj = seg_nd.toProj := sorry
 
 -- reversing the toDir does not change the length
-theorem length_eq_length_of_rev : seg.length = seg.reverse.length := sorry
+theorem length_eq_length_of_rev {seg : Seg P} : seg.length = seg.reverse.length := sorry
 
 end reverse
 

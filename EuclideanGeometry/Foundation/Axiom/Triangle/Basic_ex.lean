@@ -54,15 +54,20 @@ theorem is_inside_of_is_inside_flip_vertices (tr : Triangle P) (p : P) (inside :
 
 
 
+theorem Triangle.lie_on_snd_and_trd_edge_of_fst_vertex (tr : Triangle P) : tr.point₁ LiesOn tr.edge₂ ∧ tr.point₁ LiesOn tr.edge₃ := sorry
+
+theorem Triangle.lie_on_trd_and_fst_edge_of_snd_vertex (tr : Triangle P) : tr.point₁ LiesOn tr.edge₂ ∧ tr.point₁ LiesOn tr.edge₃ := sorry
+
+theorem Triangle.lie_on_fst_and_snd_edge_of_trd_vertex (tr : Triangle P) : tr.point₁ LiesOn tr.edge₂ ∧ tr.point₁ LiesOn tr.edge₃ := sorry
 namespace Triangle_nd
 
 /- Given a nondegenerate triangle, any point that lies in the interior of the first edge does not lie on the second or the third edge. -/ 
 
-theorem not_lie_on_snd_and_trd_of_int_fst {trind : Triangle_nd P}{A : P} (h: A LiesInt trind.1.edge₁) : (¬ A LiesOn trind.1.edge₂) ∧ (¬ A LiesOn trind.1.edge₃) := sorry
+theorem not_lie_on_snd_and_trd_of_int_fst (trind : Triangle_nd P){A : P} (h: A LiesInt trind.1.edge₁) : (¬ A LiesOn trind.1.edge₂) ∧ (¬ A LiesOn trind.1.edge₃) := sorry
 
-theorem not_lie_on_trd_and_fst_of_int_snd {trind : Triangle_nd P}{A : P} (h: A LiesInt trind.1.edge₂) : (¬ A LiesOn trind.1.edge₃) ∧ (¬ A LiesOn trind.1.edge₁) := sorry
+theorem not_lie_on_trd_and_fst_of_int_snd (trind : Triangle_nd P) {A : P} (h: A LiesInt trind.1.edge₂) : (¬ A LiesOn trind.1.edge₃) ∧ (¬ A LiesOn trind.1.edge₁) := sorry
 
-theorem not_lie_on_fst_and_snd_of_int_trd {trind : Triangle_nd P}{A : P} (h: A LiesInt trind.1.edge₃) : (¬ A LiesOn trind.1.edge₁) ∧ (¬ A LiesOn trind.1.edge₂) := sorry
+theorem not_lie_on_fst_and_snd_of_int_trd (trind : Triangle_nd P){A : P} (h: A LiesInt trind.1.edge₃) : (¬ A LiesOn trind.1.edge₁) ∧ (¬ A LiesOn trind.1.edge₂) := sorry
 
 
 end Triangle_nd
