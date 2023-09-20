@@ -20,7 +20,8 @@ Team A 2 Yongle Bai :
 * Fills sorry's in section coersion_compatibility and section midpoint Ray.lean
 
 Team F 3 Zhuoni Chi :
-* Fills sorry's in Ray_ex.lean `Near Finished` `More to be assigned`
+* Fills sorry's in Ray_ex.lean `Finished` 
+* Filll sorry's in Ray_ex2.lean
 
 Team C 4 Xintao Yu :
 * Fills sorry's in Line'.lean
