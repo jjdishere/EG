@@ -20,17 +20,19 @@ Team A 2 Yongle Bai :
 * Fills sorry's in section coersion_compatibility and section midpoint Ray.lean
 
 Team F 3 Zhuoni Chi :
-* Fills sorry's in Ray_ex.lean `Near Finished` `More to be assigned`
+* Fills sorry's in Ray_ex.lean `Finished` 
+* Fills statements in Ray_ex2.lean
+* Fills proofs in Ray_ex2.lean
 
 Team C 4 Xintao Yu :
-* Fills sorry's in Line.lean
+* Fills sorry's in Line'.lean
 
 Team E 5 Haoran Wang :
 * Fills sorry's in Line_ex.lean
 
 Team H 6 Yebo Peng :
 * Fills sorry's in Perpendicular.lean `Finished`
-* Fills sorry's in cosine theorem and prove SAS in congreunce .lean 
+* Fills sorry's in cosine theorem and prove SAS in congreunce.lean 
 
 Team G 7 Zhaohui Zong :
 * Fills sorry's in Congruence.lean, but you may leave SAS blank and use SAS (and cosine theorem, sine theorem) to show other triangle congruence criteria.
