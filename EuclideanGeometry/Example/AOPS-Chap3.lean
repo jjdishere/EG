@@ -15,53 +15,19 @@ Theorem: We have $BX = CY$ and $MX = MY$.
 -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable (A B C : P) (hnd : ¬ colinear A B C) (tr_nd : Triangle_nd P) (htri : tr_nd = ⟨ ▵ A B C, hnd⟩) (hisoc : tr_nd.1.IsIsoceles)
+variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
 -- Let $X$ and $Y$ be points on the interior of the segments of $AC$ and $AB$, respectively.
-variable (X Y : P) (hx : X LiesInt (SEG A C)) (hy : Y LiesInt (SEG A B))
--- Then $X \neq
-
-lemma hxb : X ≠ B := by 
-
-
+variable {X Y : P} {hx : X LiesInt (SEG A C)} {hy : Y LiesInt (SEG A B)}
+-- Claim: $X \neq B$ and $Y \neq C$. This is because: $X$ is an interior point of an edge of a triangle, so it is not equal to a vertex $B$ of the triangle; similarly, $Y$ is an interior point of an edge of a triangle, so it is not equal to a vertex $C$ of the triangle.
+lemma x_ne_b : X ≠ B := ((▵ A B C).ne_vertex_of_lies_int_snd_edge (Seg.lies_int_iff_lies_int_rev.mp hx)).2.1
+lemma y_ne_c : Y ≠ C := ((▵ A B C).ne_vertex_of_lies_int_trd_edge hy).2.2
 -- We have $\measuredangle XBA = - \measuredangle YCA$.
+variable (hang : (∠ X B A x_ne_b (ne_of_not_colinear hnd).2.2.symm).value = - (∠ Y C A y_ne_c (ne_of_not_colinear hnd).2.1).value )
 
 
 
+theorem Exercise_3_4_4 : (SEG B X).length = (SEG C Y).length ∧ (SEG M X).length = (SEG M Y) := by sorry
 
-
-  have c1 : ¬ X LiesOn tr_nd.1.edge₃ := by 
-    let h3 := Seg.lies_int_rev_iff_lies_int.mp hx
-    simp [Seg.reverse] at h3
-    unfold Triangle.edge₃
-    exact (tr_nd.not_lie_on_trd_and_fst_of_int_snd h3).1
-    sorry
-    
-
-  sorry
-
-let h3 := Seg.lies_int_rev_iff_lies_int.mp hx
-    simp [Seg.reverse] at h3
-    unfold Triangle_nd.1.edge₃
-    exact (tr_nd.not_lie_on_trd_and_fst_of_int_snd h3).1
-variable (oangXBA oangYCA: OAngle P) (hoXBA : oangXBA = ∠ X B A (ne_of_not_mem_of_mem (Triangle_nd.not_lie_on_trd_and_fst_of_int_snd (eq_source_iff_lies_on_ray_lies_on_ray_rev hx).1 tr_nd.edge₃.target_lies_on) )
-
-
-
-
-variable (M : P) (hm1 : M = )
-
-theorem Exercise_3_4_4 : (SEG B X).length = (SEG C Y).length ∧ (SEG M X).length = (SEG M Y) :=
-begin
-  sorry
-end
-
-theorem notttteq : X ≠ B := by
-  Triangle_nd.not_lie_on_snd_and_trd_of_int_fst
-
--- variable (oang₁ oang₂ : OAngle P) (hang1 : oang₁ = ∠ X B A)
-
-trind := Triangle_nd.mk (▵ A O B) hnd
-let oang₁ = ∠ 
 end Exercise_3_4_4
 
 
