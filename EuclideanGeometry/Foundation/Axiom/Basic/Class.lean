@@ -25,6 +25,14 @@ scoped infix : 50 "LiesInt" => lies_int
 -- scoped infix : 50 "LiesIn" => lies_in
 
 
+class Convex2D (P: Type _) [EuclideanPlane P] (α : Type _) extends (Carrier P α), (Interior P α) where
+  convexity : ∀ (F : α) (A B : P), (A LiesOn F) → (B LiesOn F) → ∃ (t : ℝ), t • (B -ᵥ A) +ᵥ A LiesOn F
+  int_of_carrier : ∀ (F : α) (A : P), (A LiesInt F) → ∃ (B₁ B₂ B₃ : P) (t₁ t₂ t₃ : ℝ), (B₁ LiesOn F) ∧ (B₂ LiesOn F) ∧ (B₃ LiesOn F) ∧ (0 < t₁) ∧ (0 < t₂) ∧ (0 < t₃) ∧ (t₁ • VEC A B₁ + t₂ • VEC A B₂ + t₃ • VEC A B₃ = 0)
+
+/- Theorem interior is convex-/
+
+/- Intersection -/
+
 /- -- scoped notation p "LiesInt" F => HasLiesInt.lies_int p F
 
 def IsFallsOn {α β : Type _} (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] : Prop := ∀ (p : P), (p LiesOn A) → (p LiesOn B) 
