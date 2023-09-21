@@ -404,6 +404,15 @@ theorem mk_angle_neg_pi_div_two_eq_neg_I' : mk_angle ((-π) / 2) = -I := by
 
 end Make_angle_theorems
 
+instance : SMul Dir Vec where
+  smul := fun d v => d.1 * v
+
+instance : DistribMulAction Dir Vec where
+  one_smul := one_mul
+  mul_smul _ _ := mul_assoc _ _
+  smul_zero _ := mul_zero _
+  smul_add _ := mul_add _
+
 end Dir
 
 def PM : Dir → Dir → Prop :=
