@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Linear.Line'
+import EuclideanGeometry.Foundation.Axiom.Linear.Line
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 
 noncomputable section
@@ -43,6 +43,14 @@ theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A Lies
 theorem eq_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l₂ : Line P}(hA₁ : A LiesOn l₁) (hB₁ : B LiesOn l₁) (hA₂ : A LiesOn l₂) (hB₂ : B LiesOn l₂) : l₁ = l₂ := sorry
 
 end pt_pt
+
+section pt_proj
+
+theorem pt_lies_on_of_mk_pt_proj (proj : Proj) : A LiesOn Line.mk_pt_proj A proj := sorry
+
+theorem proj_eq_of_mk_pt_proj (proj : Proj) : (Line.mk_pt_proj A proj).toProj = proj := sorry
+
+end pt_proj
 
 section coercion
 
