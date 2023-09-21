@@ -413,6 +413,13 @@ instance : DistribMulAction Dir Vec where
   smul_zero _ := mul_zero _
   smul_add _ := mul_add _
 
+instance : SMul Dir Vec_nd where
+  smul := fun d v => d.toVec_nd * v
+
+instance : MulAction Dir Vec_nd where
+  one_smul := one_mul
+  mul_smul x y := mul_assoc x.toVec_nd y.toVec_nd
+
 end Dir
 
 def PM : Dir → Dir → Prop :=
