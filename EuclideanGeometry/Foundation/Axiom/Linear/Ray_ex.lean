@@ -50,21 +50,13 @@ theorem Ray.toDir_of_rev_eq_neg_toDir {ray : Ray P} : ray.reverse.toDir = - ray.
 theorem Ray.toProj_of_rev_eq_toProj {ray : Ray P} : ray.reverse.toProj = ray.toProj := by
   --@HeRunming: Simply imitate the proof of theorem "eq_toProj_of_smul" in Vector.lean
   -- `??? Why not use that toProj is the quotient of toDir` see the definition of toProj
-  unfold Ray.reverse
-  unfold Ray.toDir
-  unfold Ray.toProj
-  apply Quotient.sound
-  unfold HasEquiv.Equiv instHasEquiv PM.con PM
-  simp only [Con.rel_eq_coe, Con.rel_mk]
-  unfold EuclidGeom.Ray.toDir
+  apply (Dir.eq_toProj_iff ray.reverse.toDir ray.toDir).mpr
   right
   rfl
 
 -- Given a segment, the vector associated to the reverse of the reversed segment is the negative of the vector associated to the segment.
 theorem Seg.toVec_of_rev_eq_neg_toVec (seg : Seg P) : seg.reverse.toVec = - seg.toVec := by
-  unfold toVec reverse
-  simp only [reverse]
-  rw[neg_vec]
+  simp only [reverse,toVec,neg_vec]
 
 -- Given a nondegenerate segment, the nondegenerate vector associated to the reversed nondegenerate segment is the negative of the nondegenerate vector associated to the nondegenerate segment.
 theorem Seg_nd.toVec_nd_of_rev_eq_neg_toVec_nd (seg_nd : Seg_nd P) : seg_nd.reverse.toVec_nd = - seg_nd.toVec_nd := by
@@ -74,29 +66,14 @@ theorem Seg_nd.toVec_nd_of_rev_eq_neg_toVec_nd (seg_nd : Seg_nd P) : seg_nd.reve
 -- Given a nondegenerate segment, the direction of the reversed nondegenerate segment is the negative direction of the nondegenerate segment.
 theorem Seg_nd.toDir_of_rev_eq_neg_toDir (seg_nd : Seg_nd P) : seg_nd.reverse.toDir = - seg_nd.toDir := by
 -- `exists a one=line proof?`
-  unfold toDir
-  symm
-  have :seg_nd.reverse.toVec_nd.1=(-1)•seg_nd.toVec_nd.1:=by
-    rw[neg_smul,one_smul]
-    rw[Seg_nd.toVec_nd_of_rev_eq_neg_toVec_nd]
-    rfl
-  apply @neg_normalize_eq_normalize_smul_neg _ _ (-1)
-  rw[this]
-  simp only [ne_eq, neg_smul, one_smul]
-  norm_num
+  rw[toDir,toDir,←neg_normalize_eq_normalize_eq,Seg_nd.toVec_nd_of_rev_eq_neg_toVec_nd]
 
 -- Given a nondegenerate segment, the projective direction of the reversed nondegenerate segment is the negative projective direction of the nondegenerate segment.
 theorem Seg_nd.toProj_of_rev_eq_toProj (seg_nd : Seg_nd P) : seg_nd.reverse.toProj = seg_nd.toProj := by
   --`follows from teh previous lemma directly?`
-  apply @eq_toProj_of_smul _ _ (-1)
-  rw[neg_smul,one_smul]
-  rw[Seg_nd.toVec_nd_of_rev_eq_neg_toVec_nd]
-  apply neg_eq_iff_eq_neg.mp
-  rfl
-
-
-
-
+  apply (Dir.eq_toProj_iff seg_nd.reverse.toDir seg_nd.toDir).mpr
+  right
+  rw[Seg_nd.toDir_of_rev_eq_neg_toDir]
 
 -- Given a segment and a point, the point lies on the segment if and only if it lies on the reverse of the segment.
 theorem Seg.lies_on_iff_lies_on_rev {A : P} {seg : Seg P} : A LiesOn seg ↔  A LiesOn seg.reverse := by
@@ -136,14 +113,12 @@ theorem Ray.eq_source_iff_lies_on_and_lies_on_rev {A : P} {ray : Ray P} : A = ra
   simp only [le_refl, zero_smul, true_and]
   rw[h,vec_same_eq_zero]
   use 0
-  simp only [le_refl, Dir.toVec_neg_eq_neg_toVec, smul_neg, zero_smul, neg_zero, true_and]
-  simp only [Ray.reverse]
+  simp only [le_refl, Dir.toVec_neg_eq_neg_toVec, smul_neg, zero_smul, neg_zero, true_and,Ray.reverse]
   rw[h,vec_same_eq_zero]
   simp only [and_imp]
   rintro ⟨a,⟨anneg,h⟩⟩ ⟨b,⟨bnneg,h'⟩⟩
-  simp only [Ray.reverse] at h'
-  simp only [Dir.toVec_neg_eq_neg_toVec, smul_neg] at h' 
-  rw[h,←add_zero a,← sub_self b,add_sub,sub_smul] at h'
+  simp only [Ray.reverse,Dir.toVec_neg_eq_neg_toVec, smul_neg,h] at h'
+  rw[←add_zero a,← sub_self b,add_sub,sub_smul] at h'
   simp only [sub_eq_neg_self, mul_eq_zero] at h' 
   have h'': a+b=0:=by
     contrapose! h'
@@ -258,10 +233,15 @@ theorem lies_on_iff_lies_on_toRay_and_rev_toRay {A : P} {seg_nd : Seg_nd P} : A 
   simp only [Complex.real_smul, one_smul]
 
 -- `This theorem really concerns about the total order on a line`
-theorem lies_on_pt_toDir_of_pt_lies_on_rev {A B : P} {ray : Ray P} (hA : A LiesOn ray) (hB : B LiesOn ray.reverse) : A LiesOn Ray.mk B ray.toDir := sorry
-
-
-
+theorem lies_on_pt_toDir_of_pt_lies_on_rev {A B : P} {ray : Ray P} (hA : A LiesOn ray) (hB : B LiesOn ray.reverse) : A LiesOn Ray.mk B ray.toDir := by
+  rcases hA with ⟨a,anonneg,ha⟩
+  rcases hB with ⟨b,bnonneg,hb⟩
+  simp only [Dir.toVec,Ray.reverse,smul_neg] at hb
+  use a+b
+  constructor
+  linarith
+  simp only
+  rw[add_smul,←vec_sub_vec ray.source,ha,hb,sub_neg_eq_add]
 
 -- reversing the toDir does not change the length
 theorem length_eq_length_of_rev (seg : Seg P) : seg.length = seg.reverse.length := by
