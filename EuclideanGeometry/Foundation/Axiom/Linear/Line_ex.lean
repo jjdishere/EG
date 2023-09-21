@@ -403,22 +403,77 @@ theorem Seg_nd_toProj_eq_toProj_iff_lies_on {A B : P} {l : Line P} (ha : A LiesO
 
 -- Given distinct A B on a line, there exist C s.t. C LiesOn AB (a cor of Archimedean_property in Seg) and there exist D s.t. B LiesOn AD
 theorem Line.exist_pt_beyond_pt {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B LiesOn l) (h : B ≠ A) : (∃ C D : P, (C LiesOn l) ∧ (D LiesOn l) ∧ (A LiesInt (SEG C B)) ∧ (B LiesInt (SEG A D))) := by
-  let v₁ : Vec_nd := ⟨VEC A B, (ne_iff_vec_ne_zero _ _).1 h⟩
-  let v₂ : Vec_nd := ⟨VEC B A, (ne_iff_vec_ne_zero _ _).1 h.symm⟩
-  let C : P := v₂.1 +ᵥ A
-  let D : P := v₁.1 +ᵥ B
+  set v₁ : Vec_nd := ⟨VEC A B, (ne_iff_vec_ne_zero _ _).1 h⟩ with v₁_def
+  set v₂ : Vec_nd := ⟨VEC B A, (ne_iff_vec_ne_zero _ _).1 h.symm⟩ with v₂_def
+  set C : P := v₂.1 +ᵥ A with C_def
+  set D : P := v₁.1 +ᵥ B with D_def
   use C, D
   have hc : C LiesOn LIN B A h.symm := by
     apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev C (RAY B A h.symm)).mpr
     left
-    unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn
+    unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn Dir.toVec Ray.toDir Ray.mk_pt_pt
     simp
-    sorry
+    use 2 * (Vec_nd.norm v₂)
+    constructor
+    · have nvpos : 0 < Vec_nd.norm v₂ := norm_pos_iff.2 v₂.2
+      linarith
+    have : VEC B (VEC B A +ᵥ A) = 2 * (VEC B A) := by
+      have : VEC B A = VEC A C := by
+        unfold Vec.mk_pt_pt
+        rw [C_def]
+        simp
+        rfl
+      rw [two_mul]
+      nth_rw 1 [this]
+      nth_rw 2 [this]
+      rw [vec_add_vec]
+      simp
+    rw [this, ← v₂_def, Vec_nd.normalize]
+    simp
+    let nv : ℝ := Vec_nd.norm v₂
+    have : VEC B A = (↑nv) * ((↑nv)⁻¹ * VEC B A) := by
+      symm
+      rw [mul_comm, mul_assoc, inv_mul_eq_iff_eq_mul₀, mul_comm]
+      simp
+      exact norm_ne_zero_iff.2 v₂.2
+    nth_rw 1 [this]
+    rw [mul_assoc]
+    simp
   have : LIN B A h.symm = l := by apply eq_line_of_pt_pt_of_ne h.symm hB hA
   constructor
   rw [← this]
   exact hc
-  have hd : D LiesOn LIN A B h := by sorry
+  have hd : D LiesOn LIN A B h := by
+    apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev D (RAY A B h)).mpr
+    left
+    unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn Dir.toVec Ray.toDir Ray.mk_pt_pt
+    simp
+    use 2 * (Vec_nd.norm v₁)
+    constructor
+    · have nvpos : 0 < Vec_nd.norm v₁ := norm_pos_iff.2 v₁.2
+      linarith
+    have : VEC A (VEC A B +ᵥ B) = 2 * (VEC A B) := by
+      have : VEC A B = VEC B D := by
+        unfold Vec.mk_pt_pt
+        rw [D_def]
+        simp
+        rfl
+      rw [two_mul]
+      nth_rw 1 [this]
+      nth_rw 2 [this]
+      rw [vec_add_vec]
+      simp
+    rw [this, ← v₁_def, Vec_nd.normalize]
+    simp
+    let nv : ℝ := Vec_nd.norm v₁
+    have : VEC A B = (↑nv) * ((↑nv)⁻¹ * VEC A B) := by
+      symm
+      rw [mul_comm, mul_assoc, inv_mul_eq_iff_eq_mul₀, mul_comm]
+      simp
+      exact norm_ne_zero_iff.2 v₁.2
+    nth_rw 1 [this]
+    rw [mul_assoc]
+    simp
   have : LIN A B h = l := by apply eq_line_of_pt_pt_of_ne h hA hB
   constructor
   rw [← this]
@@ -430,16 +485,68 @@ theorem Line.exist_pt_beyond_pt {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B
     use 1 / 2
     constructor; linarith
     constructor; linarith
-    sorry
+    have : VEC B A +ᵥ A = C := by
+      have : VEC B A = VEC A C := by
+        unfold Vec.mk_pt_pt
+        rw [C_def]
+        simp
+        rfl
+      rw [this]
+      simp
+    rw [this]
+    have : VEC C B = 2 * VEC C A := by
+      have : VEC C A = VEC A B := by
+        rw [← neg_vec, ← neg_vec B A]
+        unfold Vec.mk_pt_pt
+        rw [C_def]
+        simp
+        rw [neg_vec]
+        rfl
+      rw [two_mul]
+      nth_rw 2 [this]
+      rw [vec_add_vec]
+    rw [this]
+    simp
     constructor
     intro eq
     symm at eq
     rw [vadd_eq_self_iff_vec_eq_zero] at eq
-    apply h
-    symm
+    apply h; symm
     apply (eq_iff_vec_eq_zero _ _).mpr eq
     exact h.symm
-  sorry
+  unfold lies_int Interior.interior Seg.instInteriorSeg Seg.interior Seg.IsInt Seg.IsOn
+  simp
+  constructor
+  · use 1 / 2
+    constructor; linarith
+    constructor; linarith
+    have : VEC A B +ᵥ B = D := by
+      have : VEC A B = VEC B D := by
+        unfold Vec.mk_pt_pt
+        rw [D_def]
+        simp
+        rfl
+      rw [this]
+      simp
+    rw [this]
+    have : VEC A D = 2 * VEC A B := by
+      have : VEC B D = VEC A B := by
+        unfold Vec.mk_pt_pt
+        rw [D_def]
+        simp
+        rfl
+      rw [two_mul]
+      nth_rw 2 [← this]
+      rw [vec_add_vec]
+    rw [this]
+    simp
+  constructor
+  exact h
+  intro eq
+  symm at eq
+  rw [vadd_eq_self_iff_vec_eq_zero] at eq
+  apply h
+  apply (eq_iff_vec_eq_zero _ _).mpr eq
 
 end Archimedean_property
 
