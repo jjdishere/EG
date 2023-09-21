@@ -338,7 +338,7 @@ theorem colinear_iff_exist_line_lies_on (A B C : P) : colinear A B C ↔ ∃ l :
       exact c
     simp at h
     by_cases hh : C ≠ B
-    · intro c
+    · intro _
       use (LIN B C hh)
       rw [← h]
       simp
@@ -402,7 +402,44 @@ theorem Seg_nd_toProj_eq_toProj_iff_lies_on {A B : P} {l : Line P} (ha : A LiesO
   exact fun a => lies_on_of_Seg_nd_toProj_eq_toProj ha hab a
 
 -- Given distinct A B on a line, there exist C s.t. C LiesOn AB (a cor of Archimedean_property in Seg) and there exist D s.t. B LiesOn AD
-theorem Line.exist_pt_beyond_pt {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B LiesOn l) (h : B ≠ A) : (∃ C D : P, (C LiesOn l) ∧ (D LiesOn l) ∧ (A LiesInt (SEG C B)) ∧ (B LiesInt (SEG A D))) := sorry
+theorem Line.exist_pt_beyond_pt {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B LiesOn l) (h : B ≠ A) : (∃ C D : P, (C LiesOn l) ∧ (D LiesOn l) ∧ (A LiesInt (SEG C B)) ∧ (B LiesInt (SEG A D))) := by
+  let v₁ : Vec_nd := ⟨VEC A B, (ne_iff_vec_ne_zero _ _).1 h⟩
+  let v₂ : Vec_nd := ⟨VEC B A, (ne_iff_vec_ne_zero _ _).1 h.symm⟩
+  let C : P := v₂.1 +ᵥ A
+  let D : P := v₁.1 +ᵥ B
+  use C, D
+  have hc : C LiesOn LIN B A h.symm := by
+    apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev C (RAY B A h.symm)).mpr
+    left
+    unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn
+    simp
+    sorry
+  have : LIN B A h.symm = l := by apply eq_line_of_pt_pt_of_ne h.symm hB hA
+  constructor
+  rw [← this]
+  exact hc
+  have hd : D LiesOn LIN A B h := by sorry
+  have : LIN A B h = l := by apply eq_line_of_pt_pt_of_ne h hA hB
+  constructor
+  rw [← this]
+  exact hd
+  constructor
+  · unfold lies_int Interior.interior Seg.instInteriorSeg Seg.interior Seg.IsInt Seg.IsOn
+    simp
+    constructor
+    use 1 / 2
+    constructor; linarith
+    constructor; linarith
+    sorry
+    constructor
+    intro eq
+    symm at eq
+    rw [vadd_eq_self_iff_vec_eq_zero] at eq
+    apply h
+    symm
+    apply (eq_iff_vec_eq_zero _ _).mpr eq
+    exact h.symm
+  sorry
 
 end Archimedean_property
 
