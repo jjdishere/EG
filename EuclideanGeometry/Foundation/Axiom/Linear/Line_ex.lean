@@ -7,7 +7,7 @@ namespace EuclidGeom
 variable {P : Type _} [EuclideanPlane P] 
 
 section compatibility
-
+-- `eq_toProj theorems should be relocate to file parallel using parallel`.
 variable (A B : P) (h : B ≠ A) (ray : Ray P) (seg_nd : Seg_nd P)
 
 section pt_pt

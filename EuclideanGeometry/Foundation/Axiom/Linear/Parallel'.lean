@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Line'
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
+import EuclideanGeometry.Foundation.Axiom.Linear.Line_ex
 
 noncomputable section
 namespace EuclidGeom
@@ -14,8 +15,6 @@ inductive LinearObj (P : Type _) [EuclideanPlane P] where
 variable {P : Type _} [EuclideanPlane P]
 
 section coersion
-
--- `Is this correct?`
 
 instance : Coe Vec_nd (LinearObj P) where
   coe := fun v => LinearObj.vec_nd v
@@ -44,31 +43,9 @@ def toProj (l : LinearObj P) : Proj :=
   | seg_nd s => s.toProj
   | line l => l.toProj
 
-/- No need to define this. Should never talk about a LinearObj directly in future. Only mention it for ∥ ⟂.  
-def IsOnLinearObj (a : P) (l : LinearObj P) : Prop :=
-  match l with
-  | vec v h => False
-  | dir v => False
-  | ray r => a LiesOn r
-  | seg s nontriv => a LiesOn s
-  | line l => a ∈ l.carrier
--/
-
 end LinearObj
 
-/-
-scoped infix : 50 "LiesOnarObj" => LinearObj.IsOnLinearObj
--/
-
 -- Our definition of parallel for LinearObj is very general. Not only can it apply to different types of Objs, but also include degenerate cases, such as ⊆(inclusions), =(equal). 
-
-def parallel' {α β: Type _} (l₁ : α) (l₂ : β) [Coe α (LinearObj P)] [Coe β (LinearObj P)] : Prop :=  LinearObj.toProj (P := P) (Coe.coe l₁) = LinearObj.toProj (P := P) (Coe.coe l₂)
-
--- class PlaneFigure' (P : Type _) [EuclideanPlane P] {α : Type _} where
-
--- instance : PlaneFigure' P (LinearObj P) where
-
-
 
 def parallel (l₁ l₂: LinearObj P) : Prop := l₁.toProj = l₂.toProj
 
@@ -84,7 +61,7 @@ scoped infix : 50 "∥" => parallel
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coersions, ... -/
 
 section parallel_theorem
-
+---- `eq_toProj theorems should be relocate to this file, they are in Line_ex now`.
 theorem Ray.para_toLine (ray : Ray P) :  (LinearObj.ray ray) ∥ ray.toLine := sorry
 
 theorem Seg_nd.para_toRay (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := sorry
@@ -124,7 +101,7 @@ theorem heq_of_intx_of_extn_line (a₁ b₁ a₂ b₂ : Ray P) (h₁ : a₁ ≈ 
 /- the construction of the intersection point of two lines-/
 def Line.intx (l₁ l₂ : Line P) (h : l₂.toProj ≠ l₁.toProj) : P := @Quotient.hrecOn₂ (Ray P) (Ray P) same_extn_line.setoid same_extn_line.setoid (fun l l' => (Line.toProj l' ≠ Line.toProj l) → P) l₁ l₂ intx_of_extn_line heq_of_intx_of_extn_line h
 
-theorem Line.intx_is_intx (l₁ l₂ : Line P) (h : l₂.toProj ≠ l₁.toProj) : is_intx (Line.intx l₁ l₂ h) l₁ l₂ := sorry
+theorem Line.intx_is_intx {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : is_intx (Line.intx l₁ l₂ h) l₁ l₂ := sorry
 
 end construction
 
@@ -135,9 +112,16 @@ section property
 theorem unique_of_intx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) (a : is_intx A l₁ l₂) (b : is_intx B l₁ l₂) : B = A := by
   by_contra d
   let p := (SEG_nd A B d).toProj
-  sorry
+  have : Line.toProj l₂ = Line.toProj l₁ := by
+    apply Eq.trans (b := p)
+    · exact (line_toProj_eq_seg_nd_toProj_of_lies_on a.2 b.2 d).symm
+    · exact line_toProj_eq_seg_nd_toProj_of_lies_on a.1 b.1 d
+  tauto
 
--- theorem unique_of_intx_of_not_para
+theorem Line.intx.symm {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : Line.intx l₂ l₁ h.symm = Line.intx l₁ l₂ h := unique_of_intx_of_line_of_not_para h (Line.intx_is_intx h) $ is_intx.symm (Line.intx_is_intx h.symm)
+
+theorem eq_of_parallel_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A LiesOn l₁) (h₂ : A LiesOn l₂) (h : LinearObj.line l₁ ∥ l₂) : l₁ = l₂ := sorry
+
 
 /-!
 theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃ p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
