@@ -19,8 +19,8 @@ SEG (seg) -- (directed) segment
 nd -- nondegenerate (e.g. SEG_nd, VEC.nd, or nd : B ≠ A)
 A (use capital letters) -- point  (abbreviate to pt in the name of theorem)
 CIR (cir) -- circle
-ANG (ang) -- oriented angle
-∠ -- value of the oriented angle
+∠ (ang) -- oriented angle
+ANG -- value of the oriented angle
 TRI (tri) -- triangle
 QDL (qdl) -- quadrilateral
 ARC (arc) -- arc
