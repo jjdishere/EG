@@ -80,36 +80,36 @@ section intersection_of_line
 
 section construction
 
-def intx_of_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : P := (cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) • r₁.toDir.toVec +ᵥ r₁.source)
+def inx_of_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : P := (cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) • r₁.toDir.toVec +ᵥ r₁.source)
 
-theorem intx_lies_on_fst_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : ((intx_of_extn_line r₁ r₂ h) ∈ r₁.carrier ∪ r₁.reverse.carrier) := sorry
+theorem inx_lies_on_fst_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : ((inx_of_extn_line r₁ r₂ h) ∈ r₁.carrier ∪ r₁.reverse.carrier) := sorry
 
-theorem intx_lies_on_snd_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : ((intx_of_extn_line r₁ r₂ h) ∈ r₂.carrier ∪ r₂.reverse.carrier) := sorry
+theorem inx_lies_on_snd_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : ((inx_of_extn_line r₁ r₂ h) ∈ r₂.carrier ∪ r₂.reverse.carrier) := sorry
 
 -- `key theorem`
-theorem intx_eq_of_same_extn_line {a₁ b₁ a₂ b₂ : Ray P} (g₁ : same_extn_line a₁ a₂) (g₂ : same_extn_line b₁ b₂) (h₁ : b₁.toProj ≠ a₁.toProj) (h₂ : b₂.toProj ≠ a₂.toProj) : intx_of_extn_line a₁ b₁ h₁ = intx_of_extn_line a₂ b₂ h₂ := by
+theorem inx_eq_of_same_extn_line {a₁ b₁ a₂ b₂ : Ray P} (g₁ : same_extn_line a₁ a₂) (g₂ : same_extn_line b₁ b₂) (h₁ : b₁.toProj ≠ a₁.toProj) (h₂ : b₂.toProj ≠ a₂.toProj) : inx_of_extn_line a₁ b₁ h₁ = inx_of_extn_line a₂ b₂ h₂ := by
   sorry
 
 -- This theorem deals only with `HEq`
 theorem heq_funext {c₁ c₂ d: Sort _} (e : c₁ = c₂) {f₁ : c₁ → d} {f₂ : c₂ → d} (h : ∀ (s : c₁) (t : c₂), f₁ s = f₂ t) : HEq f₁ f₂ := Function.hfunext e (fun _ _ _ => (heq_of_eq (h _ _)))
 
-theorem heq_of_intx_of_extn_line (a₁ b₁ a₂ b₂ : Ray P) (h₁ : a₁ ≈ a₂) (h₂ : b₁ ≈ b₂) : HEq (fun h => intx_of_extn_line a₁ b₁ h) (fun h => intx_of_extn_line a₂ b₂ h) := by
+theorem heq_of_inx_of_extn_line (a₁ b₁ a₂ b₂ : Ray P) (h₁ : a₁ ≈ a₂) (h₂ : b₁ ≈ b₂) : HEq (fun h => inx_of_extn_line a₁ b₁ h) (fun h => inx_of_extn_line a₂ b₂ h) := by
   have e : (Ray.toProj b₁ ≠ Ray.toProj a₁) = (Ray.toProj b₂ ≠ Ray.toProj a₂) := by
     rw [h₁.1, h₂.1]
-  exact @heq_funext (Ray.toProj b₁ ≠ Ray.toProj a₁) (Ray.toProj b₂ ≠ Ray.toProj a₂) P e (fun h => intx_of_extn_line a₁ b₁ h) (fun h => intx_of_extn_line a₂ b₂ h) (intx_eq_of_same_extn_line h₁ h₂)
+  exact @heq_funext (Ray.toProj b₁ ≠ Ray.toProj a₁) (Ray.toProj b₂ ≠ Ray.toProj a₂) P e (fun h => inx_of_extn_line a₁ b₁ h) (fun h => inx_of_extn_line a₂ b₂ h) (inx_eq_of_same_extn_line h₁ h₂)
 
 /- the construction of the intersection point of two lines-/
-def Line.intx (l₁ l₂ : Line P) (h : l₂.toProj ≠ l₁.toProj) : P := @Quotient.hrecOn₂ (Ray P) (Ray P) same_extn_line.setoid same_extn_line.setoid (fun l l' => (Line.toProj l' ≠ Line.toProj l) → P) l₁ l₂ intx_of_extn_line heq_of_intx_of_extn_line h
+def Line.inx (l₁ l₂ : Line P) (h : l₂.toProj ≠ l₁.toProj) : P := @Quotient.hrecOn₂ (Ray P) (Ray P) same_extn_line.setoid same_extn_line.setoid (fun l l' => (Line.toProj l' ≠ Line.toProj l) → P) l₁ l₂ inx_of_extn_line heq_of_inx_of_extn_line h
 
-theorem Line.intx_is_intx {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : is_intx (Line.intx l₁ l₂ h) l₁ l₂ := sorry
+theorem Line.inx_is_inx {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : is_inx (Line.inx l₁ l₂ h) l₁ l₂ := sorry
 
 end construction
 
 section property
 
--- In this section, we discuss the property of intersection point using `is_intx` instead of `Line.intx`. As a corollory, we deduce the symmetry of Line.intx.  
+-- In this section, we discuss the property of intersection point using `is_inx` instead of `Line.inx`. As a corollory, we deduce the symmetry of Line.inx.  
 
-theorem unique_of_intx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) (a : is_intx A l₁ l₂) (b : is_intx B l₁ l₂) : B = A := by
+theorem unique_of_inx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) (a : is_inx A l₁ l₂) (b : is_inx B l₁ l₂) : B = A := by
   by_contra d
   let p := (SEG_nd A B d).toProj
   have : Line.toProj l₂ = Line.toProj l₁ := by
@@ -118,7 +118,7 @@ theorem unique_of_intx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : l
     · exact line_toProj_eq_seg_nd_toProj_of_lies_on a.1 b.1 d
   tauto
 
-theorem Line.intx.symm {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : Line.intx l₂ l₁ h.symm = Line.intx l₁ l₂ h := unique_of_intx_of_line_of_not_para h (Line.intx_is_intx h) $ is_intx.symm (Line.intx_is_intx h.symm)
+theorem Line.inx.symm {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : Line.inx l₂ l₁ h.symm = Line.inx l₁ l₂ h := unique_of_inx_of_line_of_not_para h (Line.inx_is_inx h) $ is_inx.symm (Line.inx_is_inx h.symm)
 
 theorem eq_of_parallel_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A LiesOn l₁) (h₂ : A LiesOn l₂) (h : LinearObj.line l₁ ∥ l₂) : l₁ = l₂ := sorry
 
@@ -177,9 +177,9 @@ theorem intersection_of_nonparallel_line_lies_on_snd_line {l₁ l₂ : Line P} (
 -- `Should we define this concept? Why don't we just use Intersection of Lines and use coersion (ray : Line)`
 def Intersection_of_Lines_of_Rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : P := sorry
 
-scoped notation "RayIntx" => Intersection_of_Lines_of_Rays
+scoped notation "RayInx" => Intersection_of_Lines_of_Rays
 
-theorem ray_intersection_lies_on_lines_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : (RayIntx h) LiesOn ray₁.toLine ∧ (RayIntx h) LiesOn ray₂.toLine := by sorry
+theorem ray_intersection_lies_on_lines_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : (RayInx h) LiesOn ray₁.toLine ∧ (RayInx h) LiesOn ray₂.toLine := by sorry
 
 -- theorem ray_intersection_eq_line_intersection_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : RayInt h = LineInt (Ne.trans (ray_parallel_to_line_assoc_ray ray₁) h) := sorry
 -/

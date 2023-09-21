@@ -143,9 +143,9 @@ theorem intersection_of_nonparallel_line_lies_on_snd_line {l₁ l₂ : Line P} (
 -- `Should we define this concept? Why don't we just use Intersection of Lines and use coersion (ray : Line)`
 def Intersection_of_Lines_of_Rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : P := sorry
 
-scoped notation "RayIntx" => Intersection_of_Lines_of_Rays
+scoped notation "RayInx" => Intersection_of_Lines_of_Rays
 
-theorem ray_intersection_lies_on_lines_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : (RayIntx h) LiesOn ray₁.toLine ∧ (RayIntx h) LiesOn ray₂.toLine := by sorry
+theorem ray_intersection_lies_on_lines_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : (RayInx h) LiesOn ray₁.toLine ∧ (RayInx h) LiesOn ray₂.toLine := by sorry
 
 -- theorem ray_intersection_eq_line_intersection_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : RayInt h = LineInt (Ne.trans (ray_parallel_to_line_assoc_ray ray₁) h) := sorry
 

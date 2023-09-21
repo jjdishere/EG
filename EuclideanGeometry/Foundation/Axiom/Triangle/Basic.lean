@@ -82,6 +82,10 @@ instance : Interior P (Triangle P) where
 
 end Triangle
 
+scoped notation "TRI" => Triangle.mk
+scoped notation "▵" => Triangle.mk
+scoped notation "TRI_nd" A B C h => (⟨TRI A B C, h⟩ : Triangle_nd)
+
 namespace Triangle
 
 variable (tr : Triangle P) (tr_nd : Triangle_nd P)
