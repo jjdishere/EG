@@ -20,9 +20,14 @@ def lies_int {P : Type _} [EuclideanPlane P] {α : Type _} [Interior P α] (p : 
 
 -- def lies_in {P : Type _} [EuclideanPlane P] {α : Type _} [Carrier P α] [Interior P α] (p : P) (F : α) : Prop := lies_int p F ∨ lies_on p F
 
+def is_inx {P : Type _} [EuclideanPlane P] {α β: Type _} [Carrier P α] [Carrier P β] (p : P) (F : α) (G : β) := p ∈ (Carrier.carrier F) ∧ p ∈ (Carrier.carrier G)
+
+theorem is_inx.symm {P : Type _} [EuclideanPlane P] {α β: Type _} [Carrier P α] [Carrier P β] {p : P} {F : α} {G : β} (h : is_inx p F G) : is_inx p G F := And.symm h
+
 scoped infix : 50 "LiesOn" => lies_on
 scoped infix : 50 "LiesInt" => lies_int
 -- scoped infix : 50 "LiesIn" => lies_in
+-- scoped notation p "IsInx" F G => (is_inx p F G) -- this notation doesn't work as imagined
 
 
 class Convex2D (P: Type _) [EuclideanPlane P] (α : Type _) extends (Carrier P α), (Interior P α) where
@@ -33,7 +38,8 @@ class Convex2D (P: Type _) [EuclideanPlane P] (α : Type _) extends (Carrier P �
 
 /- Intersection -/
 
-/- -- scoped notation p "LiesInt" F => HasLiesInt.lies_int p F
+/-! 
+-- scoped notation p "LiesInt" F => HasLiesInt.lies_int p F
 
 def IsFallsOn {α β : Type _} (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] : Prop := ∀ (p : P), (p LiesOn A) → (p LiesOn B) 
 

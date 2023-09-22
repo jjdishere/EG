@@ -43,7 +43,7 @@ let h3 := Seg.lies_int_rev_iff_lies_int.mp hx
     simp [Seg.reverse] at h3
     unfold Triangle_nd.1.edge₃
     exact (tr_nd.not_lie_on_trd_and_fst_of_int_snd h3).1
-variable (oangXBA oangYCA: OAngle P) (hoXBA : oangXBA = ∠ X B A (ne_of_not_mem_of_mem (Triangle_nd.not_lie_on_trd_and_fst_of_int_snd (eq_source_iff_lies_on_ray_lies_on_ray_rev hx).1 tr_nd.edge₃.target_lies_on) )
+variable (angXBA angYCA: Angle P) (hoXBA : angXBA = ANG X B A (ne_of_not_mem_of_mem (Triangle_nd.not_lie_on_trd_and_fst_of_int_snd (eq_source_iff_lies_on_ray_lies_on_ray_rev hx).1 tr_nd.edge₃.target_lies_on) )
 
 
 
@@ -58,10 +58,10 @@ end
 theorem notttteq : X ≠ B := by
   Triangle_nd.not_lie_on_snd_and_trd_of_int_fst
 
--- variable (oang₁ oang₂ : OAngle P) (hang1 : oang₁ = ∠ X B A)
+-- variable (ang₁ ang₂ : Angle P) (hang1 : ang₁ = ANG X B A)
 
 trind := Triangle_nd.mk (▵ A O B) hnd
-let oang₁ = ∠ 
+let ang₁ = ANG 
 end Exercise_3_4_4
 
 

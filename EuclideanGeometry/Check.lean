@@ -65,7 +65,7 @@ end raymk
 section anglecheck
 
 variable {P : Type _} [h : EuclideanPlane P] (O : P) (A : P) (B : P)
-#check ∠ A O B
+#check ANG A O B
 
 variable (l : GDirSeg P)
 #check l.toVec

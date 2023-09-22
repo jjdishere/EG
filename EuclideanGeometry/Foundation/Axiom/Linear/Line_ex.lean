@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Linear.Line'
+import EuclideanGeometry.Foundation.Axiom.Linear.Line
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 
 noncomputable section
@@ -7,7 +7,7 @@ namespace EuclidGeom
 variable {P : Type _} [EuclideanPlane P] 
 
 section compatibility
-
+-- `eq_toProj theorems should be relocate to file parallel using parallel`.
 variable (A B : P) (h : B ≠ A) (ray : Ray P) (seg_nd : Seg_nd P)
 
 section pt_pt
@@ -149,6 +149,14 @@ theorem eq_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l₂ : Line P}(h
   exact eq_line_of_pt_pt_of_ne h hA₂ hB₂
 
 end pt_pt
+
+section pt_proj
+
+theorem pt_lies_on_of_mk_pt_proj (proj : Proj) : A LiesOn Line.mk_pt_proj A proj := sorry
+
+theorem proj_eq_of_mk_pt_proj (proj : Proj) : (Line.mk_pt_proj A proj).toProj = proj := sorry
+
+end pt_proj
 
 section coercion
 

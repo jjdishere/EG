@@ -14,7 +14,7 @@ section IsocelesTriangles
 
 def Triangle.IsIsoceles (tri : Triangle P) : Prop := tri.edge₂.length = tri.edge₃.length
 
-theorem is_isoceles_tri_iff_ang_eq_ang_of_nd_tri {tri_nd : Triangle_nd P} : tri_nd.1.IsIsoceles ↔ (tri_nd.angle₂= - tri_nd.angle₃) := sorry
+theorem is_isoceles_tri_iff_ang_eq_ang_of_nd_tri {tri_nd : Triangle_nd P} : tri_nd.1.IsIsoceles ↔ (tri_nd.angle₂.value= - tri_nd.angle₃.value) := sorry
 -- To show angle equal => sides equal, use anti-congruent of the triangle with itself. SAS
 
 namespace Triangle
@@ -46,22 +46,22 @@ theorem regular_of_regular_perm_vert (tri : Triangle P) (h : tri.IsRegular) : tr
 end Triangle
 
 -- A nontrivial triangle is an regular triangle if and only if all of its angles are equal.
-theorem regular_tri_iff_eq_angle_of_nd_tri (tri_nd : Triangle_nd P) : tri_nd.1.IsRegular ↔ tri_nd.angle₁ = tri_nd.angle₂ ∧ tri_nd.angle₁ = tri_nd.angle₃ := by sorry
+theorem regular_tri_iff_eq_angle_of_nd_tri (tri_nd : Triangle_nd P) : tri_nd.1.IsRegular ↔ tri_nd.angle₁.value = tri_nd.angle₂.value ∧ tri_nd.angle₁.value = tri_nd.angle₃.value := by sorry
 
 -- An clockwise regular triangle has all angles being π/3
 
-theorem ang_eq_sixty_deg_of_cclock_regular_tri (tri_nd : Triangle_nd P) (cclock : tri_nd.is_cclock) : tri_nd.angle₁= (π / 3) ∧ tri_nd.angle₂ = π / 3 ∧ tri_nd.angle₃ = π / 3 := by sorry
+theorem ang_eq_sixty_deg_of_cclock_regular_tri (tri_nd : Triangle_nd P) (cclock : tri_nd.is_cclock) : tri_nd.angle₁.value= (π / 3) ∧ tri_nd.angle₂.value = π / 3 ∧ tri_nd.angle₃.value = π / 3 := by sorry
 
 -- An anticlockwise equilateral triangle has all angles being - π/3
 
-theorem ang_eq_sixty_deg_of_acclock_regular_tri (tri_nd : Triangle_nd P) (acclock : ¬ tri_nd.is_cclock) : tri_nd.angle₁= - π / 3 ∧ tri_nd.angle₂ = - π / 3 ∧ tri_nd.angle₃ = - π / 3 := by sorry
+theorem ang_eq_sixty_deg_of_acclock_regular_tri (tri_nd : Triangle_nd P) (acclock : ¬ tri_nd.is_cclock) : tri_nd.angle₁.value= - π / 3 ∧ tri_nd.angle₂.value = - π / 3 ∧ tri_nd.angle₃.value = - π / 3 := by sorry
 
 -- An isoceles triangle is an equilateral triangle if one of its angle is π/3 (or -π /3). Here there are two possibilities
 
-theorem regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg(tri_nd : Triangle_nd P) (h : tri_nd.angle₁ = π /3 ∨ tri_nd.angle₁ = - π / 3) : tri_nd.1.IsRegular := by sorry
+theorem regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg(tri_nd : Triangle_nd P) (h : tri_nd.angle₁.value = π /3 ∨ tri_nd.angle₁.value = - π / 3) : tri_nd.1.IsRegular := by sorry
 
-theorem regular_tri_of_isoceles_tri_of_snd_ang_eq_sixty_deg (tri_nd : Triangle_nd P) (h : tri_nd.angle₂ = π /3 ∨ tri_nd.angle₂ = - π / 3) : tri_nd.1.IsRegular:= by sorry
+theorem regular_tri_of_isoceles_tri_of_snd_ang_eq_sixty_deg (tri_nd : Triangle_nd P) (h : tri_nd.angle₂.value = π /3 ∨ tri_nd.angle₂.value = - π / 3) : tri_nd.1.IsRegular:= by sorry
 
-theorem regular_tri_of_isoceles_tri_of_trd_ang_eq_sixty_deg (tri_nd : Triangle_nd P) (h : tri_nd.angle₃ = π /3 ∨ tri_nd.angle₃ = - π / 3) : tri_nd.1.IsRegular:= by sorry
+theorem regular_tri_of_isoceles_tri_of_trd_ang_eq_sixty_deg (tri_nd : Triangle_nd P) (h : tri_nd.angle₃.value = π /3 ∨ tri_nd.angle₃.value = - π / 3) : tri_nd.1.IsRegular:= by sorry
 
 end EuclidGeom

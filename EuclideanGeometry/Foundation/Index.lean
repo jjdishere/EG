@@ -18,6 +18,7 @@ import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation_ex
+import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex2
 /- Axiom.Isometry -/
 import EuclideanGeometry.Foundation.Axiom.Isometry.Rotation
 import EuclideanGeometry.Foundation.Axiom.Isometry.Translation_ex

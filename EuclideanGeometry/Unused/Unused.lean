@@ -126,11 +126,11 @@ instance {P : Type _} [EuclideanPlane P] : Coe (Ray P) (Line' P) where
 end undirected
 
 section angle
-namespace OAngle
+namespace Angle
 open Classical
 
 noncomputable def angle_of_three_points' {P : Type _} [h : EuclideanPlane P] (A O B : P) : ℝ := if ((A = O) ∨ (B = O)) then 0 else Real.Angle.toReal (value (mk_pt_pt_pt A O B sorry sorry))
-end OAngle
+end Angle
 end angle
 
 section nondeg
@@ -223,12 +223,12 @@ variable {P : Type _} [EuclideanPlane P]
 def IsOnPosSide (A : P) (ray : Ray P) : Prop := by
   by_cases A = ray.source
   · exact False
-  · exact (OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = 0 
+  · exact (Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = 0 
 
 def IsOnNegSide (A : P) (ray : Ray P) : Prop := by
   by_cases A = ray.source
   · exact False
-  · exact (OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = π 
+  · exact (Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = π 
 
 def IsSource (A : P) (ray : Ray P) : Prop := ray.source = A
 
