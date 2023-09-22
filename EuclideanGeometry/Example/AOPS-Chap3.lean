@@ -26,8 +26,18 @@ variable (hang : (∠ X B A x_ne_b (ne_of_not_colinear hnd).2.2.symm).value = - 
 
 
 
-theorem Exercise_3_4_4 : (SEG B X).length = (SEG C Y).length ∧ (SEG M X).length = (SEG M Y) := by sorry
+theorem Exercise_3_4_4 : (SEG B X).length = (SEG C Y).length ∧ (SEG M X).length = (SEG M Y) :=
+begin
+  sorry
+end
 
+theorem notttteq : X ≠ B := by
+  Triangle_nd.not_lie_on_snd_and_trd_of_int_fst
+
+-- variable (oang₁ oang₂ : OAngle P) (hang1 : oang₁ = ∠ X B A)
+
+trind := Triangle_nd.mk (▵ A O B) hnd
+let oang₁ = ∠ 
 end Exercise_3_4_4
 
 

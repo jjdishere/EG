@@ -21,11 +21,11 @@ Team A 2 Yongle Bai :
 
 Team F 3 Zhuoni Chi :
 * Fills sorry's in Ray_ex.lean `Finished` 
-* Fills statements in Ray_ex2.lean
+* Fills statements in Ray_ex2.lean `Finished`
 * Fills proofs in Ray_ex2.lean
 
 Team C 4 Xintao Yu :
-* Fills sorry's in Line'.lean
+* Fills sorry's in Line.lean
 
 Team E 5 Haoran Wang :
 * Fills sorry's in Line_ex.lean
