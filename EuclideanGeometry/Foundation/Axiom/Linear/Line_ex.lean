@@ -224,9 +224,167 @@ theorem Seg_nd.toLine_eq_rev_toLine : seg_nd.toLine = seg_nd.reverse.toLine := b
   apply line_of_pt_pt_eq_rev
 
 theorem toLine_eq_extn_toLine : seg_nd.toLine = seg_nd.extension.toLine := by
-  sorry
+  let A : P := seg_nd.1.source
+  let B : P := seg_nd.1.target
+  have h : B ≠ A := seg_nd.2
+  unfold Seg_nd.toLine Ray.toLine
+  rw [Quotient.eq]
+  constructor
+  · unfold Ray.toProj
+    rw [Seg_nd.extension]
+    show seg_nd.toRay.toDir.toProj = (seg_nd.reverse.toRay).reverse.toDir.toProj
+    have h₁ : (seg_nd.reverse.toRay).reverse.toProj = seg_nd.reverse.toRay.toProj := by apply Ray.toProj_of_rev_eq_toProj
+    have h₂ : (seg_nd.reverse.toRay).reverse.toDir.toProj = (seg_nd.reverse.toRay).reverse.toProj := rfl
+    rw [h₂, h₁]
+    apply (Dir.eq_toProj_iff _ _).mpr
+    right
+    show (RAY A B h).toDir = -(RAY B A h.symm).toDir
+    let v₁ : Vec_nd := ⟨VEC A B, (vsub_ne_zero.mpr h)⟩
+    let v₂ : Vec_nd := ⟨VEC B A, (vsub_ne_zero.mpr h.symm)⟩
+    show Vec_nd.normalize v₁ = -Vec_nd.normalize v₂
+    symm
+    have : v₁.1 = (-1 : ℝ) • v₂.1 := by
+      simp
+      show VEC A B = -VEC B A
+      rw [neg_vec]
+    apply neg_normalize_eq_normalize_smul_neg _ _ this
+    norm_num
+  left
+  show B LiesOn seg_nd.toRay
+  apply Seg_nd.lies_on_toRay_of_lies_on _
+  apply Seg.target_lies_on
 
-theorem lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on {A : P} (seg_nd : Seg_nd P) (h : ¬ A LiesInt seg_nd.1) : A LiesOn seg_nd.toLine ↔ (A LiesOn seg_nd.extension) ∨ (A LiesOn seg_nd.reverse.extension) := sorry
+theorem lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on {A : P} (seg_nd : Seg_nd P) (h : ¬ A LiesInt seg_nd.1) : A LiesOn seg_nd.toLine ↔ (A LiesOn seg_nd.extension) ∨ (A LiesOn seg_nd.reverse.extension) := by
+  let X : P := seg_nd.1.source
+  let Y : P := seg_nd.1.target
+  let v : Vec_nd := ⟨VEC X Y, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩
+  let vr : Vec_nd := ⟨VEC Y X, (ne_iff_vec_ne_zero _ _).mp seg_nd.reverse.2⟩
+  let vnr : Dir := Vec_nd.normalize v
+  let nv : ℝ := Vec_nd.norm v
+  constructor
+  · intro hh
+    have hh' : A LiesOn seg_nd.toRay.toLine := by exact hh
+    rcases (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev _ _).mp hh' with h₁ | h₂
+    · by_cases ax : A = X
+      · right
+        show A LiesOn seg_nd.toRay.reverse
+        rw [ax]
+        have : X = seg_nd.toRay.source := rfl
+        rcases Ray.eq_source_iff_lies_on_and_lies_on_rev.1 this with ⟨_, h₂⟩
+        exact h₂
+      left
+      unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn at h₁
+      simp at h₁
+      rcases h₁ with ⟨t, tpos, eq⟩
+      have eq' : VEC X A = t * vnr.1 := by
+        calc
+          VEC X A = VEC seg_nd.toRay.source A := rfl
+          _ = t * seg_nd.toRay.toDir.toVec := eq
+      have tge1 : t ≥ nv := by
+        unfold lies_int Interior.interior Seg.instInteriorSeg Seg.interior Seg.IsInt Seg.IsOn at h
+        simp at h
+        by_cases ge : t ≥ nv
+        assumption
+        exfalso
+        push_neg at ge
+        set x : ℝ := t * nv⁻¹ with x_def
+        have xh₁ : x ≥ 0 := by
+          apply mul_nonneg_iff.mpr
+          left
+          use tpos
+          apply inv_nonneg.mpr
+          have : 0 < nv := by simp; apply norm_pos_iff.2 v.2
+          linarith
+        have xh₂ : x ≤ 1 := by
+          rw [x_def, mul_comm, inv_mul_le_iff, mul_one]
+          linarith
+          simp; apply norm_pos_iff.2 v.2
+        have xh₃ : VEC X A = x * VEC X Y := by
+          rw [x_def, eq']
+          unfold Dir.toVec
+          simp
+          unfold Vec_nd.normalize
+          simp; ring
+        have xh₄ : A = Y := by apply h x xh₁ xh₂ xh₃ ax
+        have : t = nv := by
+          rw [xh₄] at eq'
+          unfold Dir.toVec at eq'
+          simp at eq'
+          unfold Vec_nd.normalize at eq'
+          simp at eq'
+          have : 1 * VEC X Y = (t * (↑nv)⁻¹) * VEC X Y := by nth_rw 1 [eq']; simp; ring
+          have : (1 : ℂ) = ↑t * (↑nv)⁻¹ := by
+            apply (mul_left_inj' v.2).1
+            apply this
+          symm at this
+          rw [mul_comm, inv_mul_eq_iff_eq_mul₀, mul_one] at this
+          unfold Complex.ofReal' at this
+          simp at this
+          exact this
+          simp; apply norm_ne_zero_iff.2 v.2
+        rw [lt_iff_not_ge] at ge
+        apply ge
+        rw [this]
+      unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn
+      simp
+      use t - nv
+      constructor
+      linarith
+      have eq1 : seg_nd.extension.toDir.toVec = (↑nv)⁻¹ * v.1 := by
+        calc
+          seg_nd.extension.toDir.toVec = seg_nd.reverse.toRay.reverse.toDir.toVec := rfl
+          _ = -seg_nd.reverse.toRay.toDir.toVec := by
+            have : seg_nd.reverse.toRay.reverse.toDir = -seg_nd.reverse.toRay.toDir := by apply Ray.toDir_of_rev_eq_neg_toDir
+            rfl
+          _ = -seg_nd.reverse.toDir.toVec := rfl
+          _ = -(Vec_nd.normalize vr).1 := rfl
+          _ = (Vec_nd.normalize v).1 := by
+            have : v.1 = (-1 : ℝ) * vr.1 := by
+              simp
+              rw [neg_vec]
+            have : -Vec_nd.normalize vr = Vec_nd.normalize v := by
+              apply neg_normalize_eq_normalize_smul_neg _ _ this
+              simp
+            unfold Dir.toVec
+            rw [← this]
+            rfl
+          _ = (↑nv)⁻¹ * v.1 := by
+            unfold Dir.toVec Vec_nd.normalize
+            simp
+      have eq2 : VEC Y A = (t - nv) * ((↑nv)⁻¹ * v.1) := by
+        calc
+          VEC Y A = VEC X A - VEC X Y := by rw [vec_sub_vec]
+          _ = t * (Vec_nd.normalize v).1 - VEC X Y := by rw [eq']
+          _ = t * (Vec_nd.normalize v).1 - v.1 := rfl
+          _ = t * ((↑nv)⁻¹ * v.1) - v.1 := by
+            unfold Dir.toVec Vec_nd.normalize
+            simp
+          _ = t * ((↑nv)⁻¹ * v.1) - ((↑nv) * (↑nv)⁻¹) * v.1 := by
+            have : v.1 = ((↑nv) * (↑nv)⁻¹) * v.1 := by
+              rw [mul_assoc, mul_comm, mul_assoc]
+              symm
+              rw [inv_mul_eq_iff_eq_mul₀, mul_comm]
+              simp
+              exact norm_ne_zero_iff.2 v.2
+            nth_rw 2 [this]
+          _ = (t - nv) * ((↑nv)⁻¹ * v.1) := by ring
+      calc
+        VEC seg_nd.extension.source A = VEC Y A := rfl
+        _ = (t - nv) * ((↑nv)⁻¹ * v.1) := eq2
+        _ = (t - nv) * seg_nd.extension.toDir.toVec := by rw [eq1]
+        _ = ↑(t - nv) * seg_nd.extension.toDir.toVec := by simp
+    right
+    show A LiesOn seg_nd.toRay.reverse
+    exact h₂
+  intro hh
+  rcases hh with h₁ | h₂
+  · rw [toLine_eq_extn_toLine]
+    apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev _ _).mpr
+    left
+    exact h₁
+  apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev _ _).mpr
+  right
+  exact h₂
 
 /- Two lines are equal iff they have the same carrier -/
 
@@ -245,7 +403,27 @@ theorem lies_on_iff_lies_on_iff_line_eq_line (l₁ l₂ : Line P) : (∀ A : P, 
     rw [@Quotient.lift_mk _ _ same_extn_line.setoid _ _ _, @Quotient.lift_mk _ _ same_extn_line.setoid _ _ _] at h
     rw [Quotient.eq]
     show same_extn_line r₁ r₂
-    sorry
+    rcases r₁.toLine.nontriv with ⟨X, ⟨Y, ⟨Xrl₁, ⟨Yrl₁, neq⟩⟩⟩⟩
+    have Xr₁ : X ∈ r₁.carrier ∪ r₁.reverse.carrier := by
+      show (X LiesOn r₁) ∨ (X LiesOn r₁.reverse)
+      apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev _ _).mp Xrl₁
+    have Yr₁ : Y ∈ r₁.carrier ∪ r₁.reverse.carrier := by
+      show (Y LiesOn r₁) ∨ (Y LiesOn r₁.reverse)
+      apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev _ _).mp Yrl₁
+    have Xrl₂ : X LiesOn r₂.toLine := by
+      have : (X LiesOn r₂) ∨ (X LiesOn r₂.reverse) := by
+        show X ∈ r₂.carrier ∪ r₂.reverse.carrier
+        apply (h X).mp Xr₁
+      apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev _ _).mpr this
+    have Yrl₂ : Y LiesOn r₂.toLine := by
+      have : (Y LiesOn r₂) ∨ (Y LiesOn r₂.reverse) := by
+        show Y ∈ r₂.carrier ∪ r₂.reverse.carrier
+        apply (h Y).mp Yr₁
+      apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev _ _).mpr this
+    have : r₁.toLine = r₂.toLine := by apply eq_of_pt_pt_lies_on_of_ne neq Xrl₁ Yrl₁ Xrl₂ Yrl₂
+    unfold Ray.toLine at this
+    rw [Quotient.eq] at this
+    exact this
   · intro e
     rw [e]
     simp only [forall_const]
