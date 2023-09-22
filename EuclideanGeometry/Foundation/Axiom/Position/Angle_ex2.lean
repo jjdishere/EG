@@ -14,38 +14,38 @@ section AngleValue
 
 
 /- theorem - π < angle.value, angle.value ≤ π,  -/
-theorem val_gt_neg_pi (oang : OAngle P) : -π < oang.value := sorry
+theorem val_gt_neg_pi (ang : Angle P) : -π < ang.value := sorry
 
-theorem val_le_pi (oang : OAngle P) : oang.value < π := sorry
+theorem val_le_pi (ang : Angle P) : ang.value < π := sorry
 
 /- theorem when angle > 0, IsInt means lies left of start ray + right of end ray; when angle < 0, ...  -/
 
-theorem 
+theorem undefined : sorry := sorry
 
 end AngleValue
 
-section OAngleSum
+section AngleSum
 
-namespace OAngle
+namespace Angle
 
-theorem source_start_ray_eq_source_end_ray (oang : OAngle P) : oang.start_ray.source = oang.end_ray.source := sorry
+theorem source_start_ray_eq_source_end_ray (ang : Angle P) : ang.start_ray.source = ang.end_ray.source := sorry
 
 
 -- Can use congrArg @Ray.source P _) h to turn h into the sources of two terms being equal.
-theorem source_eq_source_of_adj {oang₁ oang₂: OAngle P} (h : oang₁.end_ray = oang₂.start_ray) : oang₁.start_ray.source = oang₂.end_ray.source := sorry
+theorem source_eq_source_of_adj {ang₁ ang₂: Angle P} (h : ang₁.end_ray = ang₂.start_ray) : ang₁.start_ray.source = ang₂.end_ray.source := sorry
 
 
-def sum_adj {oang₁ oang₂: OAngle P} (h :oang₁.end_ray = oang₂.start_ray) : OAngle P := OAngle.mk oang₁.start_ray oang₂.end_ray (source_eq_source_of_adj h)
-
-
-
-
-theorem ang_eq_ang_add_ang_mod_pi_of_adj_oang (oang₁ oang₂ : OAngle P) (h: oang₁.end_ray = oang₂.start_ray) : (sum_adj h).value = oang₁.value + oang₂.value ∨ (sum_adj h).value = oang₁.value + oang₂.value + π ∨ (sum_adj h).value = oang₁.value + oang₂.value - π := sorry
+def sum_adj {ang₁ ang₂: Angle P} (h :ang₁.end_ray = ang₂.start_ray) : Angle P := Angle.mk ang₁.start_ray ang₂.end_ray (source_eq_source_of_adj h)
 
 
 
-end OAngle 
 
-end OAngleSum
+theorem ang_eq_ang_add_ang_mod_pi_of_adj_ang (ang₁ ang₂ : Angle P) (h: ang₁.end_ray = ang₂.start_ray) : (sum_adj h).value = ang₁.value + ang₂.value ∨ (sum_adj h).value = ang₁.value + ang₂.value + π ∨ (sum_adj h).value = ang₁.value + ang₂.value - π := sorry
+
+
+
+end Angle 
+
+end AngleSum
 
 end EuclidGeom

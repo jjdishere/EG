@@ -11,14 +11,14 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P] 
 
-namespace OAngle
+namespace Angle
 
-/- when the OAngle is flat, bisector is on the left side-/
-def bisector (oang : OAngle P) : Ray P := sorry
+/- when the Angle is flat, bisector is on the left side-/
+def bisector (ang : Angle P) : Ray P := sorry
 
 
-end OAngle
+end Angle
 
--- theorem bisect_perp_bisect_of_supp (oang : OAngle P) : oang.bisector ⟂ oang.supplementary.bisector := sorry
+-- theorem bisect_perp_bisect_of_supp (ang : Angle P) : ang.bisector ⟂ ang.supplementary.bisector := sorry
 
 end EuclidGeom

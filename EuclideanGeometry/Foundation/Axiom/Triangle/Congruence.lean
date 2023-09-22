@@ -8,12 +8,12 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
 -- only define congrence for Triangle_nd
---def IsCongr (tr_nd₁ tr_nd₂: Triangle_nd P) : Prop := (tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length ∧ tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length ∧ tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length ∧ tr_nd₁.angle₁ = tr_nd₂.angle₁ ∧ tr_nd₁.angle₂ = tr_nd₂.angle₂ ∧ tr_nd₁.angle₃ = tr_nd₂.angle₃)
+--def IsCongr (tr_nd₁ tr_nd₂: Triangle_nd P) : Prop := (tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length ∧ tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length ∧ tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length ∧ tr_nd₁.angle₁.value = tr_nd₂.angle₁.value ∧ tr_nd₁.angle₂.value = tr_nd₂.angle₂.value ∧ tr_nd₁.angle₃.value = tr_nd₂.angle₃.value)
 def IsCongr (tr₁ tr₂: Triangle P) : Prop := by
   by_cases tr₁.is_nd ∧ tr₂.is_nd
   · let tr_nd₁ : Triangle_nd P := ⟨tr₁, h.1⟩
     let tr_nd₂ : Triangle_nd P := ⟨tr₂, h.2⟩
-    exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length ∧ tr_nd₁.angle₁ = tr_nd₂.angle₁ ∧ tr_nd₁.angle₂ = tr_nd₂.angle₂ ∧ tr_nd₁.angle₃ = tr_nd₂.angle₃
+    exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length ∧ tr_nd₁.angle₁.value = tr_nd₂.angle₁.value ∧ tr_nd₁.angle₂.value = tr_nd₂.angle₂.value ∧ tr_nd₁.angle₃.value = tr_nd₂.angle₃.value
   · exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length
 
 scoped infix : 50 "IsCongrTo" => IsCongr
@@ -40,11 +40,11 @@ section triangle_nd
 
 variable (tr_nd₁ tr_nd₂: Triangle_nd P)
 
-theorem angle₁ : tr_nd₁.angle₁ = tr_nd₂.angle₁ := sorry
+theorem angle₁.value : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value := sorry
 
-theorem angle₂ : tr_nd₁.angle₂ = tr_nd₂.angle₂ := sorry
+theorem angle₂.value : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value := sorry
 
-theorem angle₃ : tr_nd₁.angle₃ = tr_nd₂.angle₃ := sorry
+theorem angle₃.value : tr_nd₁.angle₃.value = tr_nd₂.angle₃.value := sorry
 
 theorem is_cclock : tr_nd₁.is_cclock = tr_nd₂.is_cclock := sorry
 
@@ -74,7 +74,7 @@ def IsACongr (tr₁ tr₂: Triangle P) : Prop := by
   by_cases tr₁.is_nd ∧ tr₂.is_nd
   · let tr_nd₁ : Triangle_nd P := ⟨tr₁, h.1⟩
     let tr_nd₂ : Triangle_nd P := ⟨tr₂, h.2⟩
-    exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length ∧ tr_nd₁.angle₁ = - tr_nd₂.angle₁ ∧ tr_nd₁.angle₂ = - tr_nd₂.angle₂ ∧ tr_nd₁.angle₃ = - tr_nd₂.angle₃
+    exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length ∧ tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value ∧ tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value ∧ tr_nd₁.angle₃.value = - tr_nd₂.angle₃.value
   · exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length
 
 scoped infix : 50 "IsACongrTo" => IsACongr
@@ -101,11 +101,11 @@ section triangle_nd
 
 variable (tr_nd₁ tr_nd₂: Triangle_nd P) (h : tr_nd₁.1 IsACongrTo tr_nd₂.1)
 
-theorem angle₁ : tr_nd₁.angle₁ = - tr_nd₂.angle₁ := sorry
+theorem angle₁.value : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value := sorry
 
-theorem angle₂ : tr_nd₁.angle₂ = - tr_nd₂.angle₂ := sorry
+theorem angle₂.value : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value := sorry
 
-theorem angle₃ : tr_nd₁.angle₃ = - tr_nd₂.angle₃ := sorry
+theorem angle₃.value : tr_nd₁.angle₃.value = - tr_nd₂.angle₃.value := sorry
 
 theorem is_cclock : tr_nd₁.is_cclock = ¬ tr_nd₂.is_cclock := sorry
 
@@ -137,19 +137,19 @@ Need a tactic `Congrence` to consider filp and permutation. -/
 variable {tr_nd₁ tr_nd₂ : Triangle_nd P}
 
 /- SAS -/
-theorem congr_of_SAS (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (a₁ : tr_nd₁.angle₁ = tr_nd₂.angle₁) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length): tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
+theorem congr_of_SAS (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length): tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
 
-theorem acongr_of_SAS (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (a₁ : tr_nd₁.angle₁ = - tr_nd₂.angle₁) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length): tr_nd₁.1 IsACongrTo tr_nd₂.1 := sorry
+theorem acongr_of_SAS (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length): tr_nd₁.1 IsACongrTo tr_nd₂.1 := sorry
 
 /- ASA -/
-theorem congr_of_ASA (a₂ : tr_nd₁.angle₂ = tr_nd₂.angle₂) (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) (a₃ : tr_nd₁.angle₃ = tr_nd₂.angle₃): tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
+theorem congr_of_ASA (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value) (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) (a₃ : tr_nd₁.angle₃.value = tr_nd₂.angle₃.value): tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
 
-theorem acongr_of_ASA (a₂ : tr_nd₁.angle₂ = - tr_nd₂.angle₂) (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) (a₃ : tr_nd₁.angle₃ = - tr_nd₂.angle₃): tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
+theorem acongr_of_ASA (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) (a₃ : tr_nd₁.angle₃.value = - tr_nd₂.angle₃.value): tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
 
 /- AAS -/
-theorem congr_of_AAS (a₁ : tr_nd₁.angle₁ = tr_nd₂.angle₁) (a₂ : tr_nd₁.angle₂ = tr_nd₂.angle₂) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) : tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
+theorem congr_of_AAS (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) : tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
 
-theorem acongr_of_AAS (a₁ : tr_nd₁.angle₁ = - tr_nd₂.angle₁) (a₂ : tr_nd₁.angle₂ = - tr_nd₂.angle₂) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) : tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
+theorem acongr_of_AAS (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) : tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
 
 /- SSS -/ 
 /- cannot decide orientation -/
