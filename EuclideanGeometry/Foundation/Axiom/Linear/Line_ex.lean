@@ -23,7 +23,8 @@ theorem line_of_pt_pt_eq_rev : LIN A B h = LIN B A h.symm := by
     simp
     rw [neg_vec]
   constructor
-  · unfold Ray.toProj Ray.toDir
+  · /- need a lemma : (RAY A B h).toProj = (RAY B A h.symm).toProj -/
+    unfold Ray.toProj Ray.toDir
     apply (Dir.eq_toProj_iff _ _).mpr
     right
     unfold Ray.mk_pt_pt
@@ -34,6 +35,7 @@ theorem line_of_pt_pt_eq_rev : LIN A B h = LIN B A h.symm := by
     apply neg_normalize_eq_normalize_smul_neg v₂ v₁ eq this
   left
   show B LiesOn (RAY A B h)
+  /- need a lemma : B LiesOn RAY A B h -/
   unfold lies_on Carrier.carrier Ray.instCarrierRay
   simp
   unfold Ray.carrier Ray.IsOn Dir.toVec Ray.toDir
@@ -188,25 +190,9 @@ theorem Seg_nd.target_lies_on_toLine (s : Seg_nd P) : s.1.target LiesOn s.toLine
   rw [Seg_nd.toLine_eq_toRay_toLine]
   apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev s.1.target s.toRay).mpr
   left
-  let A : P := s.1.source
-  let B : P := s.1.target
-  let nv : ℝ := Vec_nd.norm s.toVec_nd
-  have nvpos : 0 < nv := norm_pos_iff.2 s.toVec_nd.2
-  unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn
-  simp
-  use nv
-  constructor
-  · linarith
-  show VEC A B = nv * s.toDir.1
-  unfold Dir.toVec Seg_nd.toDir Vec_nd.normalize
-  simp
-  show VEC A B = ↑nv * ((↑nv)⁻¹ * s.toVec_nd.1)
-  have : VEC A B = s.toVec_nd.1 := rfl
-  rw [this, mul_comm]
-  symm
-  rw [mul_assoc, inv_mul_eq_iff_eq_mul₀, mul_comm]
-  simp
-  exact norm_ne_zero_iff.2 s.toVec_nd.2
+  apply Seg_nd.lies_on_toRay_of_lies_on _
+  show s.1.target LiesOn s.1
+  apply Seg.target_lies_on
 
 theorem Ray.toLine_eq_rev_toLine : ray.toLine = ray.reverse.toLine := by
   unfold Ray.toLine
@@ -244,6 +230,7 @@ theorem toLine_eq_extn_toLine : seg_nd.toLine = seg_nd.extension.toLine := by
     apply (Dir.eq_toProj_iff _ _).mpr
     right
     show (RAY A B h).toDir = -(RAY B A h.symm).toDir
+    /- need a lemma -/
     let v₁ : Vec_nd := ⟨VEC A B, (vsub_ne_zero.mpr h)⟩
     let v₂ : Vec_nd := ⟨VEC B A, (vsub_ne_zero.mpr h.symm)⟩
     show Vec_nd.normalize v₁ = -Vec_nd.normalize v₂
@@ -573,19 +560,7 @@ theorem exists_ne_pt_pt_lies_on_of_line (A : P) (l : Line P) : ∃ B : P, B Lies
     tauto
 
 theorem lies_on_of_Seg_nd_toProj_eq_toProj {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) (hp : Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) : B LiesOn l := by
-  rcases exists_ne_pt_pt_lies_on_of_line A l with ⟨X, h⟩
-  let g := line_toProj_eq_seg_nd_toProj_of_lies_on ha h.1 h.2
-  rw [← hp] at g
-  unfold Seg_nd.toProj Seg_nd.toVec_nd at g
-  simp only [ne_eq] at g 
-  have c : colinear A X B := by
-    rw [← iff_true (colinear A X B), ← eq_iff_iff]
-    unfold colinear colinear_of_nd
-    simp [g]
-    by_cases (B = X ∨ A = B ∨ X = A) 
-    · simp only [h, dite_eq_ite]
-    · simp only [h, dite_eq_ite]
-  exact (lies_on_iff_colinear_of_ne_lies_on_lies_on h.2 ha h.1 B).2 c
+  apply (lies_on_iff_eq_toProj hab ha).mpr hp
 
 theorem Seg_nd_toProj_eq_toProj_iff_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) : B LiesOn l ↔ (Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) := by
   constructor
