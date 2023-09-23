@@ -16,13 +16,16 @@ Theorem: We have $BX = CY$ and $MX = MY$.
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
 variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+-- Claim: $A \ne B$ and $A \neq C$. This is because vertices of nondegenerate triangles are distinct.
+lemma a_ne_b : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
+lemma a_ne_c : A ≠ C := (ne_of_not_colinear hnd).2.1
 -- Let $X$ and $Y$ be points on the interior of the segments of $AC$ and $AB$, respectively.
 variable {X Y : P} {hx : X LiesInt (SEG A C)} {hy : Y LiesInt (SEG A B)}
 -- Claim: $X \neq B$ and $Y \neq C$. This is because: $X$ is an interior point of an edge of a triangle, so it is not equal to a vertex $B$ of the triangle; similarly, $Y$ is an interior point of an edge of a triangle, so it is not equal to a vertex $C$ of the triangle.
 lemma x_ne_b : X ≠ B := ((▵ A B C).ne_vertex_of_lies_int_snd_edge (Seg.lies_int_iff_lies_int_rev.mp hx)).2.1
 lemma y_ne_c : Y ≠ C := ((▵ A B C).ne_vertex_of_lies_int_trd_edge hy).2.2
--- We have $\angle XBA = - \angle$.
-variable (hang : ∠ X B A x_ne_b (ne_of_not_colinear hnd).2.2.symm = - ∠ A C Y (ne_of_not_colinear hnd).2.1 y_ne_c)
+-- We have $\angle XBA = \angle ACY$.
+variable (hang : ∠ X B A x_ne_b a_ne_b = - ∠ A C Y a_ne_c y_ne_c)
 
 
 
