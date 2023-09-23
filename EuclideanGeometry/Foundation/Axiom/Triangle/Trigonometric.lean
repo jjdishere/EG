@@ -34,7 +34,6 @@ theorem cosine_rule (tr_nd : Triangle_nd P) : 2 * (tr_nd.1.edge₃.length * tr_n
     exact p (triv_colinear C B)
   have h2 : A≠C := Ne.symm h1
   have h3:2*(Vec.norm (⟨VEC A B,(ne_iff_vec_ne_zero A B).mp h0⟩:Vec_nd)*Vec.norm (⟨VEC A C,(ne_iff_vec_ne_zero A C).mp h1⟩:Vec_nd)*Real.cos (Vec_nd.angle ⟨VEC A B,(ne_iff_vec_ne_zero A B).mp h0⟩ ⟨VEC A C,(ne_iff_vec_ne_zero A C).mp h1⟩))=Seg.length (SEG A B)^2+Seg.length (SEG A C)^2-Seg.length (SEG B C)^2:=cosine_rule' A B C h0 h1
--- maybe should add a theorem to simplify proof here
   have h4: Vec.norm (⟨VEC A C,(ne_iff_vec_ne_zero A C).mp h1⟩:Vec_nd)=Vec.norm (⟨VEC C A,(ne_iff_vec_ne_zero C A).mp h2⟩:Vec_nd) := by
     unfold Vec.norm; simp; unfold Vec.mk_pt_pt
     have l0: A-ᵥC=-1*(C-ᵥA) := by
