@@ -1,0 +1,23 @@
+import EuclideanGeometry.Foundation.Index
+
+noncomputable section
+
+-- All exercises are from Shan Zun's book Exercise 1
+
+namespace EuclidGeom
+
+variable {P : Type _} [EuclideanPlane P]
+
+namespace Shan_Problem_1_1
+/- Statement: Let $\triangle ABC$ be a nopndegenerate triangle. Let $D$ and $E$ be points on the line $BC$ such that $AE$ is the bisector of $\angle BAC$ and $AD$ is the height over $BC$. 
+Theorem: $\angle DAE = (\angle CBA - \angle ACB) / 2$. -/
+
+
+
+end Shan_Problem_1_1
+
+namespace Shan_Problem_1_2
+
+
+
+end Shan_Problem_1_2
