@@ -16,42 +16,14 @@ theorem line_of_pt_pt_eq_rev : LIN A B h = LIN B A h.symm := by
   unfold Line.mk_pt_pt
   rw [Quotient.eq]
   show same_extn_line (RAY A B h) (RAY B A h.symm)
-  let v₁ : Vec_nd := ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h⟩
-  let v₂ : Vec_nd := ⟨VEC B A, (ne_iff_vec_ne_zero _ _).mp h.symm⟩
-  let nv₁ : ℝ := Vec_nd.norm v₁
-  have eq : v₁.1 = (-1 : ℝ) • v₂.1 := by
-    simp
-    rw [neg_vec]
   constructor
-  · /- need a lemma : (RAY A B h).toProj = (RAY B A h.symm).toProj -/
-    unfold Ray.toProj Ray.toDir
+  · unfold Ray.toProj Ray.toDir
     apply (Dir.eq_toProj_iff _ _).mpr
     right
-    unfold Ray.mk_pt_pt
-    simp
-    show Vec_nd.normalize v₁ = -Vec_nd.normalize v₂
-    symm
-    have : (-1 : ℝ) < 0 := by norm_num
-    apply neg_normalize_eq_normalize_smul_neg v₂ v₁ eq this
+    exact Ray.todir_eq_neg_todir_of_mk_pt_pt h
   left
   show B LiesOn (RAY A B h)
-  /- need a lemma : B LiesOn RAY A B h -/
-  unfold lies_on Carrier.carrier Ray.instCarrierRay
-  simp
-  unfold Ray.carrier Ray.IsOn Dir.toVec Ray.toDir
-  simp
-  have nvpos : 0 < nv₁ := norm_pos_iff.2 v₁.2
-  set norv : Vec := (↑nv₁)⁻¹ • v₁.1 with norv_def
-  use nv₁
-  constructor
-  · linarith
-  show v₁.1 = nv₁ * norv
-  rw [mul_comm, norv_def]
-  simp; symm
-  rw [mul_assoc, inv_mul_eq_iff_eq_mul₀, mul_comm]
-  simp
-  show nv₁ ≠ 0
-  linarith
+  exact Ray.snd_pt_lies_on_mk_pt_pt h
 
 theorem fst_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := Or.inl (Ray.source_lies_on (RAY A B h))
 
@@ -230,17 +202,7 @@ theorem toLine_eq_extn_toLine : seg_nd.toLine = seg_nd.extension.toLine := by
     apply (Dir.eq_toProj_iff _ _).mpr
     right
     show (RAY A B h).toDir = -(RAY B A h.symm).toDir
-    /- need a lemma -/
-    let v₁ : Vec_nd := ⟨VEC A B, (vsub_ne_zero.mpr h)⟩
-    let v₂ : Vec_nd := ⟨VEC B A, (vsub_ne_zero.mpr h.symm)⟩
-    show Vec_nd.normalize v₁ = -Vec_nd.normalize v₂
-    symm
-    have : v₁.1 = (-1 : ℝ) • v₂.1 := by
-      simp
-      show VEC A B = -VEC B A
-      rw [neg_vec]
-    apply neg_normalize_eq_normalize_smul_neg _ _ this
-    norm_num
+    exact Ray.todir_eq_neg_todir_of_mk_pt_pt h
   left
   show B LiesOn seg_nd.toRay
   apply Seg_nd.lies_on_toRay_of_lies_on _
