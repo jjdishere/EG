@@ -75,7 +75,59 @@ theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A Lies
   simp only at ha hb
   rw [@Quotient.lift_mk _ _ same_extn_line.setoid _ _ _] at ha hb
   show same_extn_line (RAY A B h) ray
-  sorry
+  set S : P := ray.source
+  apply same_extn_line.symm
+  cases ha with
+  | inl ha₁ =>
+    cases hb with
+    | inl hb₁ =>
+      constructor
+      · unfold Ray.carrier Ray.IsOn at ha₁ hb₁
+        simp at ha₁ hb₁
+        rcases ha₁ with ⟨ta, tapos, eq₁⟩
+        rcases hb₁ with ⟨tb, tbpos, eq₂⟩
+        have bnea : tb ≠ ta := by
+          intro beqa
+          rw [beqa, ← eq₁] at eq₂
+          have : VEC A B = 0 := by
+            rw [← vec_sub_vec S A B, eq₂]
+            simp
+          apply h
+          apply (eq_iff_vec_eq_zero _ _).mpr this
+        apply (Dir.eq_toProj_iff _ _).mpr
+        by_cases h₁ : ta ≤ tb
+        · have h₁' : ta < tb := by
+            have : ta < tb ∨ ta = tb := by apply lt_or_eq_of_le h₁
+            rcases this with hh | hh
+            assumption
+            exfalso
+            exact bnea hh.symm
+          left
+          unfold Ray.toDir Ray.mk_pt_pt Vec_nd.normalize
+          simp
+          sorry
+        push_neg at h₁
+        right
+        sorry
+      left
+      exact ha₁
+    | inr hb₂ =>
+      constructor
+      · sorry
+      left
+      exact ha₁
+  | inr ha₂ =>
+    cases hb with
+    | inl hb₁ =>
+      constructor
+      · sorry
+      right
+      exact ha₂
+    | inr hb₂ =>
+      constructor
+      · sorry
+      right
+      exact ha₂
 
 theorem eq_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l₂ : Line P}(hA₁ : A LiesOn l₁) (hB₁ : B LiesOn l₁) (hA₂ : A LiesOn l₂) (hB₂ : B LiesOn l₂) : l₁ = l₂ := by
   have : LIN A B h = l₁ := by apply eq_line_of_pt_pt_of_ne h hA₁ hB₁
