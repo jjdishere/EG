@@ -165,24 +165,6 @@ section lies
 
 theorem Ray.source_lies_on : ray.source LiesOn ray := by sorry
 
-theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
-  let v₁ : Vec_nd := ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h⟩
-  let nv₁ : ℝ := Vec_nd.norm v₁
-  unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn Dir.toVec Ray.toDir
-  simp
-  have nvpos : 0 < nv₁ := norm_pos_iff.2 v₁.2
-  set norv : Vec := (↑nv₁)⁻¹ • v₁.1 with norv_def
-  use nv₁
-  constructor
-  · linarith
-  show v₁.1 = nv₁ * norv
-  rw [mul_comm, norv_def]
-  simp; symm
-  rw [mul_assoc, inv_mul_eq_iff_eq_mul₀, mul_comm]
-  simp
-  show nv₁ ≠ 0
-  linarith
-
 theorem Seg.source_lies_on : seg.source LiesOn seg := by sorry
 
 theorem Seg.target_lies_on : seg.target LiesOn seg := by sorry
@@ -198,6 +180,13 @@ theorem Ray.lies_on_of_lies_int (p : P) : (p LiesInt ray) → (p LiesOn ray) := 
 theorem Seg_nd.lies_on_toRay_of_lies_on (p : P) : (p LiesOn seg_nd.1) → (p LiesOn seg_nd.toRay) := by sorry
 
 theorem Seg_nd.lies_int_toRay_of_lies_int (p : P) : (p LiesInt seg_nd.1) → (p LiesInt seg_nd.toRay) := by sorry
+
+theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
+  let s :Seg_nd P := SEG_nd A B h
+  show B LiesOn s.toRay
+  apply Seg_nd.lies_on_toRay_of_lies_on
+  show B LiesOn s.1
+  apply Seg.target_lies_on
 
 end lies
 
