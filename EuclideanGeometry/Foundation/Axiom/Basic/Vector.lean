@@ -752,11 +752,22 @@ section Linear_Algebra
 
 def det (u v : Vec) : ℝ := u.1 * v.2 - u.2 * v.1
 
+theorem det_symm (u v : Vec) : det u v = - det v u := by simp only [det, mul_comm, neg_sub]
+
 def det' (u v : Vec) : ℂ := u.1 * v.2 - u.2 * v.1
 
 def cu (u v w: Vec) : ℝ := (det u v)⁻¹ * (w.1 * v.2 - v.1 * w.2)
 
 def cv (u v w: Vec) : ℝ := (det u v)⁻¹ * (u.1 * w.2 - w.1 * u.2)
+
+theorem cu_cv (u v w : Vec) : cu u v w = cv v u w := by
+  rw[cu, cv, det_symm v u, inv_neg]
+  field_simp
+
+theorem cu_neg (u v w : Vec) : cu u v (- w) = - cu u v w := by
+  rw[cu, cu, neg_mul_eq_mul_neg]
+  congr
+  rw[Complex.neg_re, Complex.neg_im, neg_mul, mul_neg, sub_neg_eq_add, neg_sub, neg_add_eq_sub]
 
 theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : det u v = 0 ↔ (∃ (t : ℝ), v = t • u) := by
   unfold det

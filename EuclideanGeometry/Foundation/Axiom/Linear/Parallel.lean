@@ -82,9 +82,35 @@ section construction
 
 def inx_of_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : P := (cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) • r₁.toDir.toVec +ᵥ r₁.source)
 
-theorem inx_lies_on_fst_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : ((inx_of_extn_line r₁ r₂ h) ∈ r₁.carrier ∪ r₁.reverse.carrier) := sorry
+theorem inx_of_extn_line_symm (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) :
+  inx_of_extn_line r₁ r₂ h = inx_of_extn_line r₂ r₁ h.symm := by
+  have hsymm : cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) • r₁.toDir.toVec =
+      cu r₂.toDir.toVec_nd r₁.toDir.toVec_nd (VEC r₂.source r₁.source) • r₂.toDir.toVec + 
+      (r₂.source -ᵥ r₁.source) := by
+    have h1 : r₁.toDir.toVec_nd = r₁.toDir.toVec := rfl
+    have h2 : r₂.toDir.toVec_nd = r₂.toDir.toVec := rfl
+    have h := linear_combination_of_not_colinear_dir (VEC r₁.source r₂.source) h
+    nth_rw 1 [← EuclidGeom.cu_cv, Vec.mk_pt_pt] at h
+    rw [h1, h2, h, ← neg_vec r₁.source r₂.source, cu_neg, Complex.real_smul, neg_smul]
+    rw [neg_add_cancel_left]
+  rw [inx_of_extn_line, inx_of_extn_line, hsymm, add_vadd, Complex.real_smul, vsub_vadd]
 
-theorem inx_lies_on_snd_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : ((inx_of_extn_line r₁ r₂ h) ∈ r₂.carrier ∪ r₂.reverse.carrier) := sorry
+theorem inx_lies_on_fst_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : ((inx_of_extn_line r₁ r₂ h) ∈ r₁.carrier ∪ r₁.reverse.carrier) := by
+  rw [inx_of_extn_line]
+  by_cases hn : cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) ≥ 0
+  left
+  use cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source)
+  exact ⟨hn, by apply vec_of_pt_vadd_pt_eq_vec⟩
+  right
+  use - cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source)
+  constructor
+  linarith
+  dsimp[Ray.reverse]
+  rw [vec_of_pt_vadd_pt_eq_vec r₁.source ((cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source)) * r₁.toDir.toVec), Complex.ofReal_neg, mul_neg, neg_mul, neg_neg]
+
+theorem inx_lies_on_snd_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : ((inx_of_extn_line r₁ r₂ h) ∈ r₂.carrier ∪ r₂.reverse.carrier) := by
+  rw[inx_of_extn_line_symm]
+  exact inx_lies_on_fst_extn_line r₂ r₁ h.symm
 
 -- `key theorem`
 theorem inx_eq_of_same_extn_line {a₁ b₁ a₂ b₂ : Ray P} (g₁ : same_extn_line a₁ a₂) (g₂ : same_extn_line b₁ b₂) (h₁ : b₁.toProj ≠ a₁.toProj) (h₂ : b₂.toProj ≠ a₂.toProj) : inx_of_extn_line a₁ b₁ h₁ = inx_of_extn_line a₂ b₂ h₂ := by
