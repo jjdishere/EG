@@ -17,12 +17,8 @@ theorem line_of_pt_pt_eq_rev : LIN A B h = LIN B A h.symm := by
   rw [Quotient.eq]
   show same_extn_line (RAY A B h) (RAY B A h.symm)
   constructor
-  · unfold Ray.toProj Ray.toDir
-    apply (Dir.eq_toProj_iff _ _).mpr
-    right
-    exact Ray.todir_eq_neg_todir_of_mk_pt_pt h
+  · exact Ray.toProj_eq_toProj_of_mk_pt_pt h
   left
-  show B LiesOn (RAY A B h)
   exact Ray.snd_pt_lies_on_mk_pt_pt h
 
 theorem fst_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := Or.inl (Ray.source_lies_on (RAY A B h))
@@ -37,7 +33,7 @@ theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B
   exact snd_pt_lies_on_line_of_pt_pt h
 
 /- two point determines a line -/
-
+/- unfinished -/
 theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : LIN A B h = l := by
   revert l
   unfold Line
@@ -154,8 +150,7 @@ theorem Ray.source_lies_on_toLine (l : Ray P) : l.source LiesOn l.toLine := by
 
 theorem Seg_nd.source_lies_on_toLine (s : Seg_nd P) : s.1.source LiesOn s.toLine := by
   rw [Seg_nd.toLine_eq_toRay_toLine]
-  have : s.1.source = s.toRay.source := rfl
-  rw [this]
+  show s.toRay.source LiesOn s.toRay.toLine
   apply Ray.source_lies_on_toLine
 
 theorem Seg_nd.target_lies_on_toLine (s : Seg_nd P) : s.1.target LiesOn s.toLine := by
@@ -208,6 +203,7 @@ theorem toLine_eq_extn_toLine : seg_nd.toLine = seg_nd.extension.toLine := by
   apply Seg_nd.lies_on_toRay_of_lies_on _
   apply Seg.target_lies_on
 
+/- need to simplify -/
 theorem lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on {A : P} (seg_nd : Seg_nd P) (h : ¬ A LiesInt seg_nd.1) : A LiesOn seg_nd.toLine ↔ (A LiesOn seg_nd.extension) ∨ (A LiesOn seg_nd.reverse.extension) := by
   let X : P := seg_nd.1.source
   let Y : P := seg_nd.1.target
@@ -524,12 +520,14 @@ theorem exists_ne_pt_pt_lies_on_of_line (A : P) (l : Line P) : ∃ B : P, B Lies
 theorem lies_on_of_Seg_nd_toProj_eq_toProj {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) (hp : Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) : B LiesOn l := by
   apply (lies_on_iff_eq_toProj hab ha).mpr hp
 
+/- already have Thm lies_on_iff_eq_toProj -/
 theorem Seg_nd_toProj_eq_toProj_iff_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) : B LiesOn l ↔ (Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) := by
   constructor
   exact fun a => line_toProj_eq_seg_nd_toProj_of_lies_on ha a hab
   exact fun a => lies_on_of_Seg_nd_toProj_eq_toProj ha hab a
 
 -- Given distinct A B on a line, there exist C s.t. C LiesOn AB (a cor of Archimedean_property in Seg) and there exist D s.t. B LiesOn AD
+/- need to simplify -/
 theorem Line.exist_pt_beyond_pt {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B LiesOn l) (h : B ≠ A) : (∃ C D : P, (C LiesOn l) ∧ (D LiesOn l) ∧ (A LiesInt (SEG C B)) ∧ (B LiesInt (SEG A D))) := by
   set v₁ : Vec_nd := ⟨VEC A B, (ne_iff_vec_ne_zero _ _).1 h⟩ with v₁_def
   set v₂ : Vec_nd := ⟨VEC B A, (ne_iff_vec_ne_zero _ _).1 h.symm⟩ with v₂_def
