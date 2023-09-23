@@ -165,6 +165,8 @@ section lies
 
 theorem Ray.source_lies_on : ray.source LiesOn ray := by sorry
 
+theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h: B ≠ A) : B LiesOn (RAY A B h) := by sorry
+
 theorem Seg.source_lies_on : seg.source LiesOn seg := by sorry
 
 theorem Seg.target_lies_on : seg.target LiesOn seg := by sorry
@@ -186,6 +188,8 @@ end lies
 theorem Seg_nd.toDir_eq_toRay_toDir : seg_nd.toDir = seg_nd.toRay.toDir := by sorry
 
 theorem Seg_nd.toProj_eq_toRay_toProj : seg_nd.toProj = seg_nd.toRay.toProj := by sorry
+
+theorem Ray.todir_eq_neg_todir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toDir = - (RAY B A h.symm).toDir := sorry
 
 theorem Ray.is_in_inter_iff_add_pos_Dir : p LiesInt ray ↔ ∃ t : ℝ, 0 < t ∧ VEC ray.source p = t • ray.toDir.toVec := by sorry
 
