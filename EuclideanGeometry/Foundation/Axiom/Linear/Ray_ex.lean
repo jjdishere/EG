@@ -260,6 +260,29 @@ theorem lies_on_iff_lies_on_toRay_and_rev_toRay {A : P} {seg_nd : Seg_nd P} : A 
 -- `This theorem really concerns about the total order on a line`
 theorem lies_on_pt_toDir_of_pt_lies_on_rev {A B : P} {ray : Ray P} (hA : A LiesOn ray) (hB : B LiesOn ray.reverse) : A LiesOn Ray.mk B ray.toDir := sorry
 
+-- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies on $ray_2$, then the source of $ray_2$ lies on the reverse of $ray_1$
+
+theorem lies_on_iff_lies_on_rev_of_same_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = ray₂.toDir) : ray₁.source LiesOn ray₂ ↔ ray₂.source LiesOn ray₁.reverse := sorry
+
+-- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies int $ray_2$, then the source of $ray_2$ lies int the reverse of $ray_1$
+
+theorem lies_int_iff_lies_int_rev_of_same_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = ray₂.toDir) : ray₁.source LiesInt ray₂ ↔ ray₂.source LiesInt ray₁.reverse := sorry
+
+-- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies on the reverse of $ray_2$, then the source of $ray_2$ lies on the reverse of $ray_1$
+
+theorem lies_on_rev_iff_lies_on_rev_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesOn ray₂.reverse ↔ ray₂.source LiesOn ray₁.reverse := sorry
+
+-- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies int the reverse of $ray_2$, then the source of $ray_2$ lies int the reverse of $ray_1$
+
+theorem lies_int_rev_iff_lies_int_rev_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesInt ray₂.reverse ↔ ray₂.source LiesInt ray₁.reverse := sorry
+
+-- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies on $ray_2$, then the source of $ray_2$ lies on $ray_1$
+
+theorem lies_on_iff_lies_on_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesOn ray₂ ↔ ray₂.source LiesOn ray₁ := sorry
+
+-- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies int $ray_2$, then the source of $ray_2$ lies int $ray_1$
+
+theorem lies_int_iff_lies_int_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesInt ray₂ ↔ ray₂.source LiesInt ray₁ := sorry
 
 
 
