@@ -165,7 +165,23 @@ section lies
 
 theorem Ray.source_lies_on : ray.source LiesOn ray := by sorry
 
-theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h: B ≠ A) : B LiesOn (RAY A B h) := by sorry
+theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
+  let v₁ : Vec_nd := ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h⟩
+  let nv₁ : ℝ := Vec_nd.norm v₁
+  unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn Dir.toVec Ray.toDir
+  simp
+  have nvpos : 0 < nv₁ := norm_pos_iff.2 v₁.2
+  set norv : Vec := (↑nv₁)⁻¹ • v₁.1 with norv_def
+  use nv₁
+  constructor
+  · linarith
+  show v₁.1 = nv₁ * norv
+  rw [mul_comm, norv_def]
+  simp; symm
+  rw [mul_assoc, inv_mul_eq_iff_eq_mul₀, mul_comm]
+  simp
+  show nv₁ ≠ 0
+  linarith
 
 theorem Seg.source_lies_on : seg.source LiesOn seg := by sorry
 
@@ -189,7 +205,21 @@ theorem Seg_nd.toDir_eq_toRay_toDir : seg_nd.toDir = seg_nd.toRay.toDir := by so
 
 theorem Seg_nd.toProj_eq_toRay_toProj : seg_nd.toProj = seg_nd.toRay.toProj := by sorry
 
-theorem Ray.todir_eq_neg_todir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toDir = - (RAY B A h.symm).toDir := sorry
+theorem Ray.todir_eq_neg_todir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toDir = - (RAY B A h.symm).toDir := by
+  let v₁ : Vec_nd := ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h⟩
+  let v₂ : Vec_nd := ⟨VEC B A, (ne_iff_vec_ne_zero _ _).mp h.symm⟩
+  have eq : v₁.1 = (-1 : ℝ) • v₂.1 := by simp; rw [neg_vec]
+  unfold Ray.mk_pt_pt
+  simp
+  show Vec_nd.normalize v₁ = -Vec_nd.normalize v₂
+  symm
+  have : (-1 : ℝ) < 0 := by norm_num
+  apply neg_normalize_eq_normalize_smul_neg v₂ v₁ eq this
+
+theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toProj = (RAY B A h.symm).toProj := by
+  apply (Dir.eq_toProj_iff _ _).mpr
+  right
+  exact Ray.todir_eq_neg_todir_of_mk_pt_pt h
 
 theorem Ray.is_in_inter_iff_add_pos_Dir : p LiesInt ray ↔ ∃ t : ℝ, 0 < t ∧ VEC ray.source p = t • ray.toDir.toVec := by sorry
 
