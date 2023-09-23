@@ -27,7 +27,7 @@ theorem nd_of_rev_of_nd {seg : Seg P} (nd : seg.is_nd) : seg.reverse.is_nd := by
 -- Given a nondegenerate segment, this function returns the reversed nondegenerate segment, that is to swap the source and the target of the segment.
 def Seg_nd.reverse (seg_nd : Seg_nd P) : Seg_nd P := ⟨seg_nd.1.reverse, nd_of_rev_of_nd seg_nd.2⟩ 
 
--- Given a nondegenerate segment, first viewing it as a segment and then reverse is the same as first reversing it and then view it as a segment.
+-- Given a nondegenerate segment $segnd$, first viewing $segnd$ as a segment and then reverse is the same as first reversing $segnd$ and then view it as a segment.
 theorem Seg_nd.rev_toSeg_eq_toSeg_rev (seg_nd : Seg_nd P) : seg_nd.1.reverse = seg_nd.reverse.1 := rfl
 
 -- Given a ray, reversing it twice gives back to itself.
