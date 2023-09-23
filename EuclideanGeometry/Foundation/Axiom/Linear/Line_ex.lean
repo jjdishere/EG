@@ -75,73 +75,7 @@ theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A Lies
   simp only at ha hb
   rw [@Quotient.lift_mk _ _ same_extn_line.setoid _ _ _] at ha hb
   show same_extn_line (RAY A B h) ray
-  set S : P := Ray.source with s_def
-  let v : Vec_nd := ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h⟩
-  let vr : Vec_nd := ray.2.toVec_nd
-  have vrDir : Vec_nd.normalize vr = ray.2 := by apply Dir.dir_toVec_nd_normalize_eq_self ray.2
-  have vrDir' : vr = ray.2.1 := by rfl
-  cases ha with
-  | inl ha =>
-    cases hb with
-    | inl hb =>
-      unfold Ray.carrier Ray.IsOn Dir.toVec Ray.toDir at ha
-      simp at ha
-      rcases ha with ⟨ta, tapos, aeq⟩
-      rw [← s_def] at aeq
-      unfold Ray.carrier Ray.IsOn Dir.toVec Ray.toDir at hb
-      simp at hb
-      rcases hb with ⟨tb, tbpos, beq⟩
-      rw [← s_def] at beq
-      by_cases hh : ta ≥ tb
-      · have eq : v.1 = (tb - ta) • vr.1 := by
-          simp
-          rw [sub_mul]
-          show VEC A B = tb * ray.2.1 - ta * ray.2.1
-          have : VEC S A + VEC A B = VEC S B := by apply vec_add_vec
-          have : VEC A B = VEC S B - VEC S A := by simp
-          rw [this, aeq, beq]
-          rfl
-        have blta : tb < ta := by
-          apply lt_iff_le_and_ne.mpr
-          use hh
-          intro aeqb
-          rw [aeqb] at eq
-          simp at eq
-          have : B = A := by apply (eq_iff_vec_eq_zero A B).mpr eq
-          contradiction
-        constructor
-        · unfold Ray.toProj Ray.toDir
-          apply (Dir.eq_toProj_iff _ _).mpr
-          right
-          unfold Ray.mk_pt_pt
-          simp
-          show Vec_nd.normalize v = -ray.2
-          rw [← vrDir]
-          symm
-          apply neg_normalize_eq_normalize_smul_neg vr v eq
-          linarith
-        left
-        show S LiesOn (RAY A B h)
-        unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn
-        simp
-        use ta, tapos
-        show VEC A S = ta * (RAY A B h).2.1
-        have : (RAY A B h).2.1 = (-1) * vr := by
-          rw [vrDir']
-          simp
-          sorry
-        rw [this, ← mul_assoc, vrDir']
-        have : VEC A S = -ta * ray.2.1 := by
-          calc
-            VEC A S = -VEC S A := by rw [neg_vec]
-            _ = -ta * ray.2.1 := by
-              rw [aeq]; simp; left; rfl
-        rw [this]
-        simp
-      sorry
-    | inr hb =>
-      sorry
-  | inr ha => sorry
+  sorry
 
 theorem eq_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l₂ : Line P}(hA₁ : A LiesOn l₁) (hB₁ : B LiesOn l₁) (hA₂ : A LiesOn l₂) (hB₂ : B LiesOn l₂) : l₁ = l₂ := by
   have : LIN A B h = l₁ := by apply eq_line_of_pt_pt_of_ne h hA₁ hB₁
@@ -152,9 +86,28 @@ end pt_pt
 
 section pt_proj
 
-theorem pt_lies_on_of_mk_pt_proj (proj : Proj) : A LiesOn Line.mk_pt_proj A proj := sorry
+theorem pt_lies_on_of_mk_pt_proj (proj : Proj) : A LiesOn Line.mk_pt_proj A proj := by
+  set v : Dir := (@Quotient.out _ PM.con.toSetoid proj)
+  have eq : ⟦v⟧ = proj := by apply @Quotient.out_eq _ PM.con.toSetoid proj
+  rw [← eq]
+  unfold Line.mk_pt_proj
+  rw [@Quotient.map_mk _ _ PM.con.toSetoid same_extn_line.setoid _ _ _]
+  set rayA : Ray P := {source := A, toDir := v}
+  show A LiesOn rayA.toLine
+  apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev _ _).mpr
+  left
+  apply Ray.source_lies_on
 
-theorem proj_eq_of_mk_pt_proj (proj : Proj) : (Line.mk_pt_proj A proj).toProj = proj := sorry
+theorem proj_eq_of_mk_pt_proj (proj : Proj) : (Line.mk_pt_proj A proj).toProj = proj := by
+  set v : Dir := (@Quotient.out _ PM.con.toSetoid proj)
+  have eq : ⟦v⟧ = proj := by apply @Quotient.out_eq _ PM.con.toSetoid proj
+  rw [← eq]
+  unfold Line.mk_pt_proj
+  rw [@Quotient.map_mk _ _ PM.con.toSetoid same_extn_line.setoid _ _ _]
+  unfold Line.toProj
+  rw [@Quotient.lift_mk _ _ same_extn_line.setoid _ _ _]
+  unfold Ray.toProj Dir.toProj Ray.toDir
+  simp
 
 end pt_proj
 
