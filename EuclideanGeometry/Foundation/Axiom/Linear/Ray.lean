@@ -29,7 +29,8 @@ noncomputable section
 namespace EuclidGeom
 
 section definition
-/- Rays -/
+
+-- A \emph{ray} consists of a pair of a point $P$ and a direction; it is the ray that starts at the point and extends in the given direction.
 @[ext]
 class Ray (P : Type _) [EuclideanPlane P] where
   source : P
