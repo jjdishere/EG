@@ -20,12 +20,26 @@ def lies_int {P : Type _} [EuclideanPlane P] {α : Type _} [Interior P α] (p : 
 
 -- def lies_in {P : Type _} [EuclideanPlane P] {α : Type _} [Carrier P α] [Interior P α] (p : P) (F : α) : Prop := lies_int p F ∨ lies_on p F
 
+def is_inx {P : Type _} [EuclideanPlane P] {α β: Type _} [Carrier P α] [Carrier P β] (p : P) (F : α) (G : β) := p ∈ (Carrier.carrier F) ∧ p ∈ (Carrier.carrier G)
+
+theorem is_inx.symm {P : Type _} [EuclideanPlane P] {α β: Type _} [Carrier P α] [Carrier P β] {p : P} {F : α} {G : β} (h : is_inx p F G) : is_inx p G F := And.symm h
+
 scoped infix : 50 "LiesOn" => lies_on
 scoped infix : 50 "LiesInt" => lies_int
 -- scoped infix : 50 "LiesIn" => lies_in
+-- scoped notation p "IsInx" F G => (is_inx p F G) -- this notation doesn't work as imagined
 
 
-/- -- scoped notation p "LiesInt" F => HasLiesInt.lies_int p F
+class Convex2D (P: Type _) [EuclideanPlane P] (α : Type _) extends (Carrier P α), (Interior P α) where
+  convexity : ∀ (F : α) (A B : P), (A LiesOn F) → (B LiesOn F) → ∃ (t : ℝ), t • (B -ᵥ A) +ᵥ A LiesOn F
+  int_of_carrier : ∀ (F : α) (A : P), (A LiesInt F) → ∃ (B₁ B₂ B₃ : P) (t₁ t₂ t₃ : ℝ), (B₁ LiesOn F) ∧ (B₂ LiesOn F) ∧ (B₃ LiesOn F) ∧ (0 < t₁) ∧ (0 < t₂) ∧ (0 < t₃) ∧ (t₁ • VEC A B₁ + t₂ • VEC A B₂ + t₃ • VEC A B₃ = 0)
+
+/- Theorem interior is convex-/
+
+/- Intersection -/
+
+/-! 
+-- scoped notation p "LiesInt" F => HasLiesInt.lies_int p F
 
 def IsFallsOn {α β : Type _} (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] : Prop := ∀ (p : P), (p LiesOn A) → (p LiesOn B) 
 
