@@ -40,7 +40,10 @@ theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A Lies
   show same_extn_line (RAY A B h) ray
   sorry
 
-theorem eq_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l₂ : Line P}(hA₁ : A LiesOn l₁) (hB₁ : B LiesOn l₁) (hA₂ : A LiesOn l₂) (hB₂ : B LiesOn l₂) : l₁ = l₂ := sorry
+-- If two lines have two distinct intersection points, then these two lines are identical.
+theorem eq_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l₂ : Line P} (hA₁ : A LiesOn l₁) (hB₁ : B LiesOn l₁) (hA₂ : A LiesOn l₂) (hB₂ : B LiesOn l₂) : l₁ = l₂ := by
+  rw [← eq_line_of_pt_pt_of_ne h hA₁ hB₁]
+  exact eq_line_of_pt_pt_of_ne h hA₂ hB₂
 
 end pt_pt
 
@@ -115,37 +118,14 @@ end coercion
 
 section colinear
 
-theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) : ∀ X : P, (X LiesOn (LIN A B h)) ↔ colinear A B X := by
-  intro X
-  constructor
-  intro hx
-  apply (LIN A B h).linear
-  exact fst_pt_lies_on_line_of_pt_pt h
-  exact snd_pt_lies_on_line_of_pt_pt h
-  exact hx
-  intro c
-  apply (LIN A B h).maximal
-  exact fst_pt_lies_on_line_of_pt_pt h
-  exact snd_pt_lies_on_line_of_pt_pt h
-  exact h
-  exact c
+theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) : ∀ X : P, (X LiesOn (LIN A B h)) ↔ colinear A B X := fun X ↦ 
+  ⟨fun hx ↦ (LIN A B h).linear (fst_pt_lies_on_line_of_pt_pt h) (snd_pt_lies_on_line_of_pt_pt h) hx, 
+  fun c ↦ (LIN A B h).maximal (fst_pt_lies_on_line_of_pt_pt h) (snd_pt_lies_on_line_of_pt_pt h) h X c⟩
 
 -- This is also a typical proof that shows how to use linear, maximal, nontriv of a line. Please write it shorter in future.
 
-theorem lies_on_iff_colinear_of_ne_lies_on_lies_on {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : ∀ C : P, (C LiesOn l) ↔ colinear A B C := by
-  intro C
-  constructor
-  intro hc
-  apply l.linear
-  exact ha
-  exact hb
-  exact hc
-  intro c
-  apply l.maximal
-  exact ha
-  exact hb
-  exact h
-  exact c
+theorem lies_on_iff_colinear_of_ne_lies_on_lies_on {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : ∀ C : P, (C LiesOn l) ↔ colinear A B C :=
+  fun C ↦ ⟨fun hc ↦ l.linear ha hb hc, fun c ↦ l.maximal ha hb h C c⟩
 
 theorem colinear_iff_exist_line_lies_on (A B C : P) : colinear A B C ↔ ∃ l : Line P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) := by
   sorry
