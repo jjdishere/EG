@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Basic.Plane
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray
 
 /- This file discuss the relative positions of points and rays on a plane. -/
 noncomputable section
@@ -111,6 +111,21 @@ theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (
   tauto
 
 end colinear
+
+section compatibility
+
+theorem Ray.colinear_of_lies_on {A B C : P} {ray : Ray P} (hA : A LiesOn ray) (hB : B LiesOn ray) (hC : C LiesOn ray) : colinear A B C := sorry 
+
+theorem Seg.colinear_of_lies_on {A B C : P} {seg : Seg P} (hA : A LiesOn seg) (hB : B LiesOn seg) (hC : C LiesOn seg) : colinear A B C := sorry
+
+/-
+Note that we do not need all reverse, extension line,... here. instead we should show that
+1. reverse, extension line coerce to same line with the original segment (in Line.lean)
+2. If A B C falls on reverse then A B C falls on the coercing line. (This should be a corollory)
+3. If A B C falls on the same line, then they are colinear (in Line.lean)
+-/
+
+end compatibility
 
 theorem nontriv_of_plane {H : Type _} [EuclideanPlane H] : ∃ A B C : H, ¬(colinear A B C) := by
   sorry

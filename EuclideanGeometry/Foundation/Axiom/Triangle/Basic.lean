@@ -13,8 +13,6 @@ class Triangle (P : Type _) [EuclideanPlane P] where
   point₂ : P
   point₃ : P
 
-scoped notation "▵" => Triangle.mk
-
 variable {P : Type _} [EuclideanPlane P]
 
 namespace Triangle
@@ -51,17 +49,11 @@ def nontriv₃ := (ne_of_not_colinear tr_nd.2).2.2
 /- Only nondegenerate triangles can talk about orientation -/
 def is_cclock : Prop := tr_nd.1.3 LiesOnLeft (Ray.mk_pt_pt tr_nd.1.1 tr_nd.1.2 (tr_nd.nontriv₃))
 
-def oangle₁ : OAngle P := OAngle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₃) (tr_nd.nontriv₂).symm
+def angle₁ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₃) (tr_nd.nontriv₂).symm
 
-def oangle₂ : OAngle P := OAngle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₁) (tr_nd.nontriv₃).symm
+def angle₂ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₁) (tr_nd.nontriv₃).symm
 
-def oangle₃ : OAngle P := OAngle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₂) (tr_nd.nontriv₁).symm
-
-def angle₁ : ℝ := tr_nd.oangle₁.value
-
-def angle₂ : ℝ := tr_nd.oangle₂.value
-
-def angle₃ : ℝ := tr_nd.oangle₃.value
+def angle₃ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₂) (tr_nd.nontriv₁).symm
 
 end Triangle_nd
 
@@ -82,21 +74,25 @@ instance : Interior P (Triangle P) where
 
 end Triangle
 
+scoped notation "TRI" => Triangle.mk
+scoped notation "▵" => Triangle.mk
+scoped notation "TRI_nd" A B C h => (⟨TRI A B C, h⟩ : Triangle_nd)
+
 namespace Triangle
 
 variable (tr : Triangle P) (tr_nd : Triangle_nd P)
 
-theorem angle_pos_of_cclock (cclock : tr_nd.is_cclock) : 0 < tr_nd.angle₁ ∧ 0 < tr_nd.angle₂ ∧ 0 < tr_nd.angle₃ := by sorry
+theorem angle_pos_of_cclock (cclock : tr_nd.is_cclock) : 0 < tr_nd.angle₁.value ∧ 0 < tr_nd.angle₂.value ∧ 0 < tr_nd.angle₃.value := by sorry
 
-theorem angle_neg_of_clock (clock : ¬ tr_nd.is_cclock) : tr_nd.angle₁ < 0 ∧ tr_nd.angle₂  < 0 ∧ tr_nd.angle₃ < 0  := by sorry
+theorem angle_neg_of_clock (clock : ¬ tr_nd.is_cclock) : tr_nd.angle₁.value < 0 ∧ tr_nd.angle₂.value  < 0 ∧ tr_nd.angle₃.value < 0  := by sorry
 
-theorem cclock_of_pos_angle (h : 0 < tr_nd.angle₁ ∨ 0 < tr_nd.angle₂ ∨ 0 < tr_nd.angle₃) : tr_nd.is_cclock := sorry
+theorem cclock_of_pos_angle (h : 0 < tr_nd.angle₁.value ∨ 0 < tr_nd.angle₂.value ∨ 0 < tr_nd.angle₃.value) : tr_nd.is_cclock := sorry
 
-theorem clock_of_neg_angle (h : tr_nd.angle₁ < 0 ∨ tr_nd.angle₂ < 0 ∨ tr_nd.angle₃ < 0) : tr_nd.is_cclock := sorry
+theorem clock_of_neg_angle (h : tr_nd.angle₁.value < 0 ∨ tr_nd.angle₂.value < 0 ∨ tr_nd.angle₃.value < 0) : tr_nd.is_cclock := sorry
 
-theorem angle_sum_eq_pi_of_cclock (cclock : tr_nd.is_cclock): tr_nd.angle₁ + tr_nd.angle₂ + tr_nd.angle₃ = π := sorry
+theorem angle_sum_eq_pi_of_cclock (cclock : tr_nd.is_cclock): tr_nd.angle₁.value + tr_nd.angle₂.value + tr_nd.angle₃.value = π := sorry
 
-theorem angle_sum_eq_neg_pi_of_clock (clock : ¬ tr_nd.is_cclock): tr_nd.angle₁ + tr_nd.angle₂ + tr_nd.angle₃ = - π := sorry 
+theorem angle_sum_eq_neg_pi_of_clock (clock : ¬ tr_nd.is_cclock): tr_nd.angle₁.value + tr_nd.angle₂.value + tr_nd.angle₃.value = - π := sorry 
 
 theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.length := sorry
 
