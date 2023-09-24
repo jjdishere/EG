@@ -9,15 +9,20 @@ namespace EuclidGeom
 variable {P : Type _} [EuclideanPlane P]
 
 namespace Shan_Problem_1_1
-/- Statement: Let $\triangle ABC$ be a nopndegenerate triangle. Let $D$ and $E$ be points on the line $BC$ such that $AE$ is the bisector of $\angle BAC$ and $AD$ is the height over $BC$. 
+/- In $\triangle ABC$, let $AD$ be the height and $AE$ be the angle bisector of $\triangle ABC$.
 Prove that $\angle DAE = (\angle CBA - \angle ACB) / 2$. -/
 
+
+-- Let $\triangle ABC$ be an nondegenerate triangle.
+variable {A B C : P} {hnd : ¬ colinear A B C}
 
 
 end Shan_Problem_1_1
 
 namespace Shan_Problem_1_2
+/- Let $\triangle ABC$ be a nondegenerate isosceles triangle in which $AB = AC$. Let $D$ be a point on the extension of $AB$ and $E$ a point on the extension of $AC$, such that $\angle EBC = \angle BCD$.
 
+Prove that $\angle CDA = \angle BEA$. -/
 
 
 end Shan_Problem_1_2
