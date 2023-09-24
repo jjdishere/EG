@@ -11,7 +11,6 @@ class Circle (P : Type _) [EuclideanPlane P] where
   radius : ℝ
   rad_pos : 0 < radius
 
-
 variable {P : Type _} [EuclideanPlane P]
 
 namespace Circle
