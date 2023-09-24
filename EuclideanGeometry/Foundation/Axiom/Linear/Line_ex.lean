@@ -33,7 +33,15 @@ theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B
   exact snd_pt_lies_on_line_of_pt_pt h
 
 /- two point determines a line -/
-/- unfinished -/
+
+theorem Mytheorem1 {A : P} {ray : Ray P} (h : A LiesOn ray ∨ A LiesOn ray.reverse) : ∃ t : ℝ, VEC ray.source A = t • ray.2.1 := by
+  unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn at h
+  simp at h
+  rcases h with ⟨t, _, eq⟩ | ⟨t, _, eq⟩
+  · use t, eq
+  use -t
+  simp; exact eq
+
 theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : LIN A B h = l := by
   revert l
   unfold Line
@@ -45,59 +53,25 @@ theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A Lies
   simp only at ha hb
   rw [@Quotient.lift_mk _ _ same_extn_line.setoid _ _ _] at ha hb
   show same_extn_line (RAY A B h) ray
-  set S : P := ray.source
+  rcases Mytheorem1 ha with ⟨ta, eqa⟩
+  rcases Mytheorem1 hb with ⟨tb, eqb⟩
+  have : VEC A B = (tb - ta) • ray.2.1 := by rw [← vec_sub_vec _ A B, eqa, eqb, sub_smul]
   apply same_extn_line.symm
-  cases ha with
-  | inl ha₁ =>
-    cases hb with
-    | inl hb₁ =>
-      constructor
-      · unfold Ray.carrier Ray.IsOn at ha₁ hb₁
-        simp at ha₁ hb₁
-        rcases ha₁ with ⟨ta, tapos, eq₁⟩
-        rcases hb₁ with ⟨tb, tbpos, eq₂⟩
-        have bnea : tb ≠ ta := by
-          intro beqa
-          rw [beqa, ← eq₁] at eq₂
-          have : VEC A B = 0 := by
-            rw [← vec_sub_vec S A B, eq₂]
-            simp
-          apply h
-          apply (eq_iff_vec_eq_zero _ _).mpr this
-        apply (Dir.eq_toProj_iff _ _).mpr
-        by_cases h₁ : ta ≤ tb
-        · have h₁' : ta < tb := by
-            have : ta < tb ∨ ta = tb := by apply lt_or_eq_of_le h₁
-            rcases this with hh | hh
-            assumption
-            exfalso
-            exact bnea hh.symm
-          left
-          unfold Ray.toDir Ray.mk_pt_pt Vec_nd.normalize
-          simp
-          sorry
-        push_neg at h₁
-        right
-        sorry
-      left
-      exact ha₁
-    | inr hb₂ =>
-      constructor
-      · sorry
-      left
-      exact ha₁
-  | inr ha₂ =>
-    cases hb with
-    | inl hb₁ =>
-      constructor
-      · sorry
-      right
-      exact ha₂
-    | inr hb₂ =>
-      constructor
-      · sorry
-      right
-      exact ha₂
+  constructor
+  · set u : Vec_nd := ray.2.toVec_nd with u_def
+    let v : Vec_nd := ⟨VEC A B, (vsub_ne_zero.mpr h)⟩
+    have : v.1 = (tb - ta) • u.1 := this
+    unfold Ray.toProj
+    calc
+      ray.2.toProj = u.toProj := by
+        have hh : Vec_nd.normalize u = ray.2 := by
+          rw [u_def]
+          apply Dir.dir_toVec_nd_normalize_eq_self _
+        unfold Vec_nd.toProj
+        rw [hh]
+      _ = v.toProj := by apply eq_toProj_of_smul _ _ this
+      _ = (RAY A B h).2.toProj := rfl
+  exact ha
 
 theorem eq_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l₂ : Line P}(hA₁ : A LiesOn l₁) (hB₁ : B LiesOn l₁) (hA₂ : A LiesOn l₂) (hB₂ : B LiesOn l₂) : l₁ = l₂ := by
   have : LIN A B h = l₁ := by apply eq_line_of_pt_pt_of_ne h hA₁ hB₁
@@ -231,50 +205,40 @@ theorem lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on {A : P} (seg_
           VEC X A = VEC seg_nd.toRay.source A := rfl
           _ = t * seg_nd.toRay.toDir.toVec := eq
       have tge1 : t ≥ nv := by
-        unfold lies_int Interior.interior Seg.instInteriorSeg Seg.interior Seg.IsInt Seg.IsOn at h
-        simp at h
-        by_cases ge : t ≥ nv
-        assumption
-        exfalso
-        push_neg at ge
-        set x : ℝ := t * nv⁻¹ with x_def
-        have xh₁ : x ≥ 0 := by
-          apply mul_nonneg_iff.mpr
-          left
-          use tpos
-          apply inv_nonneg.mpr
-          have : 0 < nv := by simp; apply norm_pos_iff.2 v.2
-          linarith
-        have xh₂ : x ≤ 1 := by
-          rw [x_def, mul_comm, inv_mul_le_iff, mul_one]
-          linarith
-          simp; apply norm_pos_iff.2 v.2
-        have xh₃ : VEC X A = x * VEC X Y := by
-          rw [x_def, eq']
+        contrapose! h
+        unfold lies_int Interior.interior Seg.instInteriorSeg Seg.interior Seg.IsInt Seg.IsOn
+        simp
+        constructor
+        · use t * nv⁻¹
+          constructor
+          · apply mul_nonneg_iff.mpr
+            left
+            use tpos
+            apply inv_nonneg.mpr
+            have : 0 < nv := by simp; apply norm_pos_iff.2 v.2
+            linarith
+          constructor
+          · rw [mul_inv_le_iff, mul_one]
+            linarith
+            simp; apply norm_pos_iff.2 v.2
+          rw [eq']
           unfold Dir.toVec
-          simp
-          unfold Vec_nd.normalize
+          simp; unfold Vec_nd.normalize
           simp; ring
-        have xh₄ : A = Y := by apply h x xh₁ xh₂ xh₃ ax
-        have : t = nv := by
-          rw [xh₄] at eq'
-          unfold Dir.toVec at eq'
-          simp at eq'
-          unfold Vec_nd.normalize at eq'
-          simp at eq'
-          have : 1 * VEC X Y = (t * (↑nv)⁻¹) * VEC X Y := by nth_rw 1 [eq']; simp; ring
-          have : (1 : ℂ) = ↑t * (↑nv)⁻¹ := by
-            apply (mul_left_inj' v.2).1
-            apply this
-          symm at this
-          rw [mul_comm, inv_mul_eq_iff_eq_mul₀, mul_one] at this
-          unfold Complex.ofReal' at this
-          simp at this
-          exact this
-          simp; apply norm_ne_zero_iff.2 v.2
-        rw [lt_iff_not_ge] at ge
-        apply ge
-        rw [this]
+        use ax
+        contrapose! h
+        rw [h] at eq'
+        unfold Dir.toVec at eq'
+        simp at eq'
+        unfold Vec_nd.normalize at eq'
+        simp at eq'
+        symm at eq'
+        rw [mul_comm, mul_assoc, inv_mul_eq_iff_eq_mul₀, mul_comm, mul_left_inj'] at eq'
+        unfold Complex.ofReal' at eq'
+        simp at eq'
+        rw [eq']; rfl
+        apply (ne_iff_vec_ne_zero _ _).mp seg_nd.2
+        simp; apply norm_ne_zero_iff.2 v.2
       unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn
       simp
       use t - nv
