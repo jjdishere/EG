@@ -4,7 +4,7 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P] 
+variable {P : Type _} [EuclideanPlane P]
 
 section compatibility
 -- `eq_toProj theorems should be relocate to file parallel using parallel`.
@@ -27,6 +27,8 @@ theorem snd_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B 
   rw [line_of_pt_pt_eq_rev]
   exact fst_pt_lies_on_line_of_pt_pt h.symm
 
+-- The first point and the second point in Line.mk_pt_pt LiesOn the line it make.
+
 theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B h ∧ B LiesOn LIN A B h := by
   constructor
   exact fst_pt_lies_on_line_of_pt_pt h
@@ -45,7 +47,7 @@ theorem exist_real_vec_eq_smul_of_lies_on_or_rev {A : P} {ray : Ray P} (h : A Li
 theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : LIN A B h = l := by
   revert l
   unfold Line
-  rw [forall_quotient_iff (r := same_extn_line.setoid)]
+  rw [Quotient.forall (s := same_extn_line.setoid)]
   intro ray ha hb
   unfold Line.mk_pt_pt
   rw [Quotient.eq]
@@ -307,9 +309,9 @@ theorem lies_on_iff_lies_on_iff_line_eq_line (l₁ l₂ : Line P) : (∀ A : P, 
   · intro hiff
     revert l₁ l₂
     unfold Line
-    rw [forall_quotient_iff (r := same_extn_line.setoid)]
+    rw [Quotient.forall (s := same_extn_line.setoid)]
     intro r₁
-    rw [forall_quotient_iff (r := same_extn_line.setoid)]
+    rw [Quotient.forall (s := same_extn_line.setoid)]
     intro r₂
     intro h
     unfold lies_on Line.instCarrierLine Carrier.carrier Line.carrier at h
