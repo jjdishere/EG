@@ -192,4 +192,11 @@ theorem Line.exist_pt_beyond_pt {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B
 
 end Archimedean_property
 
+
+section NewTheorems
+
+theorem Seg_nd.lies_on_toline_of_lies_on_extn {X : P} {segnd : Seg_nd P} (lieson : X LiesOn segnd.extension) : X LiesOn segnd.toLine := by sorry
+
+end NewTheorems
+
 end EuclidGeom
