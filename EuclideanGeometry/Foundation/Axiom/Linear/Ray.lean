@@ -209,11 +209,8 @@ theorem length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ _ _
 
 -- A generalized directed segment is nontrivial if and only if its length is positive.
 theorem length_pos_iff_nd : 0 < l.length ↔ (l.is_nd) := by
-  rw [Seg.length]
-  rw [Seg.is_nd]
-  rw [norm_pos_iff]
-  apply Iff.not
-  rw [toVec_eq_zero_of_deg]
+  rw [Seg.length, Seg.is_nd, norm_pos_iff]
+  exact (toVec_eq_zero_of_deg l).symm.not
 
 theorem length_ne_zero_iff_nd : 0 ≠ l.length ↔ (l.is_nd) := by 
   rw [Seg.length]
@@ -228,43 +225,27 @@ theorem length_pos (l : Seg_nd P): 0 < l.1.length := by
   simp only [l.2, not_false_eq_true]
 
 theorem length_sq_eq_inner_toVec_toVec : l.length ^ 2 = inner l.toVec l.toVec := by
-  have w : l.length = Real.sqrt (inner l.toVec l.toVec) := by 
-    unfold Seg.length inner InnerProductSpace.toInner InnerProductSpace.complexToReal InnerProductSpace.isROrCToReal
-    simp only [Complex.norm_eq_abs, Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul,
-      sub_neg_eq_add]
-    rfl
-  rw [w]
-  have n : (0 : ℝ)  ≤ inner l.toVec l.toVec := by 
-    exact InnerProductSpace.Core.nonneg_re (@InnerProductSpace.toCore _ _ _ _ InnerProductSpace.complexToReal) l.toVec
-  rw [Real.sq_sqrt n]
+  rw [Seg.length]
+  exact Eq.symm (real_inner_self_eq_norm_sq (Seg.toVec l))
 
 -- A generalized directed segment is trivial if and only if length is zero.
 theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by
-  unfold Seg.length
   exact Iff.trans (toVec_eq_zero_of_deg _)  (@norm_eq_zero _ _).symm
 
 -- If P lies on a generalized directed segment AB, then length(AB) = length(AP) + length(PB)
 theorem length_eq_length_add_length (l : Seg P) (A : P) (lieson : A LiesOn l) : l.length = (SEG l.source A).length + (SEG A l.target).length := by
   unfold Seg.length
-  rw [seg_toVec_eq_vec]
-  rw [seg_toVec_eq_vec]
-  rw [seg_toVec_eq_vec]
+  repeat rw [seg_toVec_eq_vec]
   rcases lieson with ⟨t, ⟨a, b, c⟩ ⟩
-  have h: VEC l.source l.target = VEC l.source A + VEC A l.target := by simp
+  have h: VEC l.source l.target = VEC l.source A + VEC A l.target := by rw [vec_add_vec]
   rw [c]
   have s: VEC A l.target = ( 1 - t ) • VEC l.source l.target := by 
     rw [c] at h
-    rw [sub_smul]
-    rw [one_smul]
+    rw [sub_smul, one_smul]
     exact eq_sub_of_add_eq' (id (Eq.symm h))
-  rw [s]
-  rw [norm_smul]
-  rw [norm_smul]
-  rw [← add_mul]
-  rw [Real.norm_of_nonneg]
-  rw [Real.norm_of_nonneg]
+  rw [s, norm_smul, norm_smul, ← add_mul, Real.norm_of_nonneg, Real.norm_of_nonneg]
   linarith
-  simp
+  rw [sub_nonneg]
   exact b
   exact a
 
@@ -298,30 +279,21 @@ theorem Seg_nd.exist_pt_beyond_pt {P : Type _} [EuclideanPlane P] (l : Seg_nd P)
   let half : ℝ := 1/2
   have c: 0 ≤ half ∧ half ≤ 1 ∧ VEC l.1.source l.1.target = half • VEC l.1.source h := by
     norm_num
-    rw [seg_toVec_eq_vec]
-    repeat rw [Vec.mk_pt_pt]
-    rw [vadd_vsub_assoc]
-    let t := l.1.target -ᵥ l.1.source
-    have x: t = 1/2 * (t + t) := by
-      calc t = 1/2 * (2 * t) := by simp
-      _ = 1/2 * (t + t) := by rw [two_mul]
-    exact x
-  have a: l.1.target LiesOn SEG l.1.source h := ⟨half, c⟩
+    rw [seg_toVec_eq_vec, Vec.mk_pt_pt]
+    field_simp
   have b: l.1.target ≠ l.1.source ∧ l.1.target ≠ h := by
     constructor
     exact l.2
     have x: l.1.toVec ≠ 0 := by 
-      rw [seg_toVec_eq_vec]
-      rw [Vec.mk_pt_pt]
-      rw [vsub_ne_zero]
+      rw [seg_toVec_eq_vec, Vec.mk_pt_pt, vsub_ne_zero]
       exact l.2
     have y: l.1.target ≠ l.1.toVec +ᵥ l.1.target := by
       rw [ne_comm]
       by_contra t
-      simp at t
+      rw [vadd_eq_self_iff_vec_eq_zero] at t 
       exact x t
     exact y
-  have k: l.1.target LiesInt SEG l.1.source h := ⟨a, b⟩
+  have k: l.1.target LiesInt SEG l.1.source h := ⟨ ⟨half, c⟩, b⟩
   use h
  
 -- Archimedean property II: On an nontrivial directed segment, one can always find a point in its interior.  `This will be moved to later disccusion about midpoint of a segment, as the midpoint is a point in the interior of a nontrivial segment`
@@ -332,21 +304,15 @@ theorem nd_of_exist_int_pt (l : Seg P) (p : P) (h : p LiesInt l) : l.is_nd := by
   rcases b with ⟨p_ne_s, _⟩
   rcases d with ⟨_, _, e⟩
   have t: VEC Seg.source p ≠ 0 := by exact Iff.mp (ne_iff_vec_ne_zero Seg.source p) p_ne_s
-  have u: c • VEC Seg.source Seg.target ≠ 0 := by 
-    rw [← e]
-    exact t
-  have v: VEC Seg.source Seg.target ≠ 0 := by
-    exact right_ne_zero_of_smul u
-  exact Iff.mp vsub_ne_zero v
+  rw [e] at t
+  exact Iff.mp vsub_ne_zero (right_ne_zero_of_smul t)
 
 -- If a generalized directed segment contains an interior point, then it is nontrivial
 theorem nd_iff_exist_int_pt (l : Seg P) : (∃ (p : P), p LiesInt l) ↔ l.is_nd := by
   constructor
-
   intro h
   rcases h with ⟨a, b⟩
   exact nd_of_exist_int_pt l a b
-
   intro h
   use l.midpoint
   exact Seg_nd.midpt_lies_int ⟨l, h⟩
