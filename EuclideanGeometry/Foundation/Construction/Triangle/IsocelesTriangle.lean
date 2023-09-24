@@ -6,6 +6,14 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 
+-- 增加了edge_eq_edge_of_flip_vertices等四个关于 perm,flip的边,角相等的定理
+-- Triangle.Basic判断clock的地方：clock_of_neg_angle 结论从is_cclock 改为 ¬ ... is_cclock
+-- 判断三角形反全等的地方：acongr_of_AAS，acongr_of_ASA；的结论从全等改为反全等
+
+-- 第一题is_isoceles_tri_iff_ang_eq_ang_of_nd_tri把angle₂=-angle₃ 删去负号
+-- 最后三题regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg 等，加上了isisoceles 的条件
+-- ang_eq_sixty_deg_of_cclock_regular_tri 加上了等边三角形的条件
+
 
 noncomputable section
 namespace EuclidGeom
@@ -13,7 +21,6 @@ namespace EuclidGeom
 variable {P : Type _} [EuclideanPlane P]
 
 -- Prefer to define IsIsocelesTriangle than to just state the properties. Isoceles triangle by definition has a prefered orientation
-
 
 section IsocelesTriangles
 
