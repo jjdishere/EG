@@ -72,6 +72,8 @@ variable (l : GDirSeg P)
 
 end anglecheck
 
+variable {P : Type _} [EuclideanPlane P]
+theorem test_is_on (A : P) (seg : Seg P) : (p LiesOn seg) = (Seg.IsOn p seg) := rfl
 
 
 end EuclidGeom
