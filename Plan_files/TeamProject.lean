@@ -68,7 +68,7 @@ Yibing Chen + 1 Team H
 5. Formalize exercises 
 Liang Xiao + 2 Team B F
 
-6. Create Axiom/Position/Convex.lean
+6. Create Construction/PolygonParallelogram.lean
 Jiedong Jiang + 1 Team D
 
 ## Special Missions
