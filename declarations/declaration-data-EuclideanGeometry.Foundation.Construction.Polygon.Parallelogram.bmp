@@ -1,0 +1,1 @@
+{"name":"EuclideanGeometry.Foundation.Construction.Polygon.Parallelogram","instances":[],"imports":["Init","EuclideanGeometry.Foundation.Axiom.Triangle.Basic","EuclideanGeometry.Foundation.Axiom.Linear.Parallel"],"declarations":[]}
