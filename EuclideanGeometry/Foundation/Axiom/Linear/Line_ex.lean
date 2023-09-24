@@ -34,7 +34,7 @@ theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B
 
 /- two point determines a line -/
 
-theorem Mytheorem1 {A : P} {ray : Ray P} (h : A LiesOn ray ∨ A LiesOn ray.reverse) : ∃ t : ℝ, VEC ray.source A = t • ray.2.1 := by
+theorem exist_real_vec_eq_smul_of_lies_on_or_rev {A : P} {ray : Ray P} (h : A LiesOn ray ∨ A LiesOn ray.reverse) : ∃ t : ℝ, VEC ray.source A = t • ray.2.1 := by
   unfold lies_on Carrier.carrier Ray.instCarrierRay Ray.carrier Ray.IsOn at h
   simp at h
   rcases h with ⟨t, _, eq⟩ | ⟨t, _, eq⟩
@@ -53,8 +53,8 @@ theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A Lies
   simp only at ha hb
   rw [@Quotient.lift_mk _ _ same_extn_line.setoid _ _ _] at ha hb
   show same_extn_line (RAY A B h) ray
-  rcases Mytheorem1 ha with ⟨ta, eqa⟩
-  rcases Mytheorem1 hb with ⟨tb, eqb⟩
+  rcases exist_real_vec_eq_smul_of_lies_on_or_rev ha with ⟨ta, eqa⟩
+  rcases exist_real_vec_eq_smul_of_lies_on_or_rev hb with ⟨tb, eqb⟩
   have : VEC A B = (tb - ta) • ray.2.1 := by rw [← vec_sub_vec _ A B, eqa, eqb, sub_smul]
   apply same_extn_line.symm
   constructor
