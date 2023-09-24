@@ -9,19 +9,19 @@ section setoid
 
 variable {P : Type _} [EuclideanPlane P]
 
-def same_extn_line : Ray P → Ray P → Prop := fun r₁ r₂ => r₁.toProj = r₂.toProj ∧ (r₂.source LiesOn r₁ ∨ r₂.source LiesOn r₁.reverse) 
+def same_extn_line : Ray P → Ray P → Prop := fun r₁ r₂ => r₁.toProj = r₂.toProj ∧ (r₂.source LiesOn r₁ ∨ r₂.source LiesOn r₁.reverse)
 
 namespace same_extn_line
 
 theorem dir_eq_or_eq_neg {x y : Ray P} (h : same_extn_line x y) : (x.toDir = y.toDir ∨ x.toDir = - y.toDir) := (Dir.eq_toProj_iff _ _).mp h.1
 
-protected theorem refl (x : Ray P) : same_extn_line x x := ⟨rfl, Or.inl (Ray.source_lies_on x)⟩  
+protected theorem refl (x : Ray P) : same_extn_line x x := ⟨rfl, Or.inl (Ray.source_lies_on x)⟩
 
 protected theorem symm {x y : Ray P} (h : same_extn_line x y) : same_extn_line y x := by
   constructor
-  · exact h.1.symm 
+  · exact h.1.symm
   · have g := dir_eq_or_eq_neg h
-    cases g with 
+    cases g with
     | inl h₁ => sorry
     | inr h₂ => sorry
 
@@ -39,7 +39,7 @@ instance : Setoid (Ray P) := same_extn_line.setoid
 
 end same_extn_line
 
-theorem same_extn_line_of_PM (A : P) (x y : Dir) (h : PM x y) : same_extn_line (Ray.mk A x) (Ray.mk A y) := sorry 
+theorem same_extn_line_of_PM (A : P) (x y : Dir) (h : PM x y) : same_extn_line (Ray.mk A x) (Ray.mk A y) := sorry
 
 theorem same_extn_line.eq_carrier_union_rev_carrier (ray ray' : Ray P) (h : same_extn_line ray ray') : ray.carrier ∪ ray.reverse.carrier = ray'.carrier ∪ ray'.reverse.carrier := sorry
 
@@ -47,13 +47,13 @@ end setoid
 
 def Line (P : Type _) [EuclideanPlane P] := Quotient (@same_extn_line.setoid P _)
 
-variable {P : Type _} [EuclideanPlane P] 
+variable {P : Type _} [EuclideanPlane P]
 
 section make
 
 namespace Line
 
--- define a line from two points 
+-- define a line from two points
 def mk_pt_pt (A B : P) (h : B ≠ A) : Line P := ⟦RAY A B h⟧
 
 -- define a line from a point and a proj
@@ -67,7 +67,7 @@ def mk_pt_vec_nd (A : P) (vec_nd : Vec_nd) : Line P := mk_pt_proj A vec_nd.toPro
 
 end Line
 
-scoped notation "LIN" => Line.mk_pt_pt 
+scoped notation "LIN" => Line.mk_pt_pt
 
 end make
 
@@ -75,7 +75,7 @@ section coercion
 
 def Line.toProj (l : Line P) : Proj := Quotient.lift (fun ray : Ray P => ray.toProj) (fun _ _ h => And.left h) l
 
-def Ray.toLine (ray : Ray P) : Line P := ⟦ray⟧ 
+def Ray.toLine (ray : Ray P) : Line P := ⟦ray⟧
 
 theorem ray_toLine_eq_of_same_extn_line {r₁ r₂ : Ray P} (h : same_extn_line r₁ r₂) : r₁.toLine = r₂.toLine := Quotient.eq.mpr h
 
@@ -100,7 +100,7 @@ instance : Carrier P (Line P) where
 theorem linear (l : Line P) {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h₃ : C LiesOn l) : colinear A B C := by
   unfold Line at l
   revert l
-  rw [forall_quotient_iff (p := fun k : Line P => A LiesOn k → B LiesOn k → C LiesOn k → colinear A B C)]
+  rw [Quotient.forall (p := fun k : Line P => A LiesOn k → B LiesOn k → C LiesOn k → colinear A B C)]
   unfold lies_on instCarrierLine Carrier.carrier Line.carrier at *
   simp only
   intro ray a b c
@@ -108,11 +108,11 @@ theorem linear (l : Line P) {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
   cases a with
   | inl a =>
     cases b with
-    | inl b => 
+    | inl b =>
       cases c with
-      | inl c => 
+      | inl c =>
         exact Ray.colinear_of_lies_on a b c
-      | inr c => 
+      | inr c =>
         let ray' := Ray.mk C ray.toDir
         have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a c
         have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b c
@@ -121,9 +121,9 @@ theorem linear (l : Line P) {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
       cases c with
       | inl c => sorry
       | inr c => sorry
-  | inr a => 
+  | inr a =>
     cases b with
-    | inl b => 
+    | inl b =>
       cases c with
       | inl c => sorry
       | inr c => sorry

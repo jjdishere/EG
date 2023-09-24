@@ -18,16 +18,17 @@ Team D 1 Muqing Jiang :
 
 Team A 2 Yongle Bai :
 * Fills sorry's in section coersion_compatibility and section midpoint Ray.lean
+`Team A cease to exist`
 
 Team F 3 Zhuoni Chi :
-* Fills sorry's in Ray_ex.lean `Finished` 
+* Fills sorry's in Ray_ex.lean `Finished` `Improved the proof greatly`
 * Fills statements in Ray_ex2.lean `Finished`
 * Fills proofs in Ray_ex2.lean
 
 Team C 4 Xintao Yu :
 * Fills sorry's in Line.lean
 
-Team E 5 Haoran Wang :
+Team E 5 Haoran Wang → Yuchen Xie :
 * Fills sorry's in Line_ex.lean
 
 Team H 6 Yebo Peng :
@@ -45,4 +46,34 @@ Team B 8 Zhehao Zheng :
 * Vector.lean has been updated, please sync fork then pull to keep update.
 
 * Line.lean and Line_ex.lean is under a major reform. Please wait for the update.
+-/
+
+/-!
+## New Team Projects
+
+0. Each team should continue to fill in sorry's of their own file. New theorems in early files are still increasing as formalizing advanced theorems creates more needs.
+
+1. Finish Axiom/Linear
+Jiedong Jiang, Yongle Hu + 1 Team G
+
+2. Create Axiom/Circle 
+Shun Yin + 1 Team E
+
+3. Create Construction/AngleBisector 
+Yuefeng Wang + 1 Team C
+
+4. Rebuild Construction/Position (especially det, oriented area, theorems in Position.lean) 
+Yibing Chen + 1 Team H
+
+5. Formalize exercises 
+Liang Xiao + 2 Team B F
+
+6. Create Construction/PolygonParallelogram.lean
+Jiedong Jiang + 1 Team D
+
+## Special Missions
+
+1. Finish sine theorem and related theorems. Assigned to Yebo Peng, after formalized oriented area.
+
+2. Tactics. For those who are interested in writing tactics, we will arrange trainings by Anjie Dong. `TBA` 
 -/
