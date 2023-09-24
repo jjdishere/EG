@@ -643,7 +643,12 @@ end Archimedean_property
 
 section NewTheorems
 
-theorem Seg_nd.lies_on_toline_of_lies_on_extn {X : P} {segnd : Seg_nd P} (lieson : X LiesOn segnd.extension) : X LiesOn segnd.toLine := by sorry
+theorem Seg_nd.lies_on_toline_of_lies_on_extn {X : P} {seg_nd : Seg_nd P} (lieson : X LiesOn seg_nd.extension) : X LiesOn seg_nd.toLine := by
+  rw [Seg_nd.toLine_eq_rev_toLine]
+  show X LiesOn seg_nd.reverse.toRay.toLine
+  apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev _ _).mpr
+  right
+  exact lieson
 
 end NewTheorems
 
