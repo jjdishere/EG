@@ -17,8 +17,44 @@ theorem cosine_rule (tr_nd : Triangle_nd P) : 2 * (tr_nd.1.edge₃.length * tr_n
   let A := tr_nd.1.point₁
   let B := tr_nd.1.point₂
   let C := tr_nd.1.point₃
-  sorry
-
+  dsimp only [Seg.length]
+  unfold edge₃; unfold edge₂; unfold edge₁
+  simp
+  have h : ¬colinear A B C := (tr_nd).2
+  have h0 : B ≠ A := by
+    intro k
+    rw [←k] at h
+    exact h (triv_colinear B C)
+  have h1 : C ≠ A := by 
+    intro k
+    rw [←k] at h
+    have p : ¬colinear C C B := by
+     intro k
+     exact h (flip_colinear_snd_trd k)
+    exact p (triv_colinear C B)
+  have h2 : A ≠ C := Ne.symm h1
+  have h3 : 2 * (Vec.norm (⟨VEC A B,(ne_iff_vec_ne_zero A B).mp h0⟩ : Vec_nd) * Vec.norm (⟨VEC A C,(ne_iff_vec_ne_zero A C).mp h1⟩ : Vec_nd) * Real.cos (Vec_nd.angle ⟨VEC A B,(ne_iff_vec_ne_zero A B).mp h0⟩ ⟨VEC A C,(ne_iff_vec_ne_zero A C).mp h1⟩)) = Seg.length (SEG A B) ^ 2 + Seg.length (SEG A C) ^ 2 - Seg.length (SEG B C) ^ 2 := cosine_rule' A B C h0 h1
+  have h4 : Vec.norm (⟨VEC A C,(ne_iff_vec_ne_zero A C).mp h1⟩ : Vec_nd) = Vec.norm (⟨VEC C A,(ne_iff_vec_ne_zero C A).mp h2⟩ : Vec_nd) := by
+    unfold Vec.norm; simp; unfold Vec.mk_pt_pt
+    have l0 : A -ᵥ C = -1 * (C -ᵥ A) := by
+      rw [neg_one_mul]
+      simp
+    rw [l0,map_mul Complex.abs (-1) (C -ᵥ A)]
+    have l1: Complex.abs (-1)=1 := by simp
+    rw [l1,one_mul]
+  have h5 : Seg.length (SEG A C)=Seg.length (SEG C A) := by
+    unfold Seg.length
+    simp; unfold Vec.mk_pt_pt
+    have l0 : A -ᵥ C = -1 * (C -ᵥ A) := by
+      rw [neg_one_mul]
+      simp
+    rw [l0,map_mul Complex.abs (-1) (C -ᵥ A)]
+    have l1 : Complex.abs (-1) = 1 := by simp
+    rw [l1,one_mul]
+  rw [h4] at h3
+  unfold Vec.norm at h3;
+  rw [h5] at h3; unfold Seg.length at h3; simp at h3
+  exact h3
 
 -- Sine rule (but only for counterclockwise triangle here, or we need some absolute values)
 -- Should we reformulate it without circle?
