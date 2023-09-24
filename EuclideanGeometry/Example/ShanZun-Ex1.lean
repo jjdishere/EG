@@ -10,7 +10,7 @@ variable {P : Type _} [EuclideanPlane P]
 
 namespace Shan_Problem_1_1
 /- Statement: Let $\triangle ABC$ be a nopndegenerate triangle. Let $D$ and $E$ be points on the line $BC$ such that $AE$ is the bisector of $\angle BAC$ and $AD$ is the height over $BC$. 
-Theorem: $\angle DAE = (\angle CBA - \angle ACB) / 2$. -/
+Prove that $\angle DAE = (\angle CBA - \angle ACB) / 2$. -/
 
 
 
