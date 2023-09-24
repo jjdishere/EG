@@ -683,7 +683,6 @@ theorem cos_arg_of_dir_eq_fst (x : Dir) : Real.cos (Complex.arg x.1) = x.1.1 := 
   have w₁ : (Dir.mk_angle (Complex.arg x.1)).1.1 = Real.cos (Complex.arg x.1) := rfl
   simp only [← w₁, Dir.mk_angle_arg_toComplex_of_Dir_eq_self]
 
---reproved this theorem
 theorem sin_arg_of_dir_eq_fst (x : Dir) : Real.sin (Complex.arg (x.1)) = x.1.2 := by
   have w₁ : (Dir.mk_angle (Complex.arg (x.1))).1.2 = Real.sin (Complex.arg (x.1)) := rfl
   simp only [← w₁, Dir.mk_angle_arg_toComplex_of_Dir_eq_self]
