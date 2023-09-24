@@ -212,12 +212,9 @@ theorem length_pos_iff_nd : 0 < l.length ↔ (l.is_nd) := by
   rw [Seg.length, Seg.is_nd, norm_pos_iff]
   exact (toVec_eq_zero_of_deg l).symm.not
 
-theorem length_ne_zero_iff_nd : 0 ≠ l.length ↔ (l.is_nd) := by 
-  rw [Seg.length]
-  rw [Seg.is_nd]
+theorem length_ne_zero_iff_nd : 0 ≠ l.length ↔ (l.is_nd) := by
   apply Iff.not
-  rw [toVec_eq_zero_of_deg]
-  rw [eq_comm]
+  rw [toVec_eq_zero_of_deg, eq_comm]
   exact norm_eq_zero
 
 theorem length_pos (l : Seg_nd P): 0 < l.1.length := by
