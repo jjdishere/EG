@@ -156,9 +156,9 @@ theorem acongr_of_AAS (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.valu
 
 /- SSS -/ 
 /- cannot decide orientation -/--/
-theorem cosine_eq_of_SSS (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) : Real.cos tr_nd₁.angle₁ = Real.cos tr_nd₂.angle₁:= by
-  have cos₁ : 2 * (tr_nd₁.1.edge₃.length * tr_nd₁.1.edge₂.length * Real.cos tr_nd₁.angle₁) = tr_nd₁.1.edge₃.length ^ 2 + tr_nd₁.1.edge₂.length ^ 2 - tr_nd₁.1.edge₁.length^2 := Triangle.cosine_rule tr_nd₁
-  have cos₂ : 2 * (tr_nd₂.1.edge₃.length * tr_nd₂.1.edge₂.length * Real.cos tr_nd₂.angle₁) = tr_nd₂.1.edge₃.length ^ 2 + tr_nd₂.1.edge₂.length ^ 2 - tr_nd₂.1.edge₁.length^2 := Triangle.cosine_rule tr_nd₂
+theorem cosine_eq_of_SSS (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) : Real.cos tr_nd₁.angle₁.value = Real.cos tr_nd₂.angle₁.value:= by
+  have cos₁ : 2 * (tr_nd₁.1.edge₃.length * tr_nd₁.1.edge₂.length * Real.cos tr_nd₁.angle₁.value) = tr_nd₁.1.edge₃.length ^ 2 + tr_nd₁.1.edge₂.length ^ 2 - tr_nd₁.1.edge₁.length^2 := Triangle.cosine_rule tr_nd₁
+  have cos₂ : 2 * (tr_nd₂.1.edge₃.length * tr_nd₂.1.edge₂.length * Real.cos tr_nd₂.angle₁.value) = tr_nd₂.1.edge₃.length ^ 2 + tr_nd₂.1.edge₂.length ^ 2 - tr_nd₂.1.edge₁.length^2 := Triangle.cosine_rule tr_nd₂
   rw [e₁,e₂,e₃,←cos₂] at cos₁
   field_simp at cos₁
   have h0 : (tr_nd₂.1.edge₃.length * tr_nd₂.1.edge₂.length) > 0 := by
@@ -170,13 +170,13 @@ theorem cosine_eq_of_SSS (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.
    exact False.elim (h1 y)
 
 theorem congr_of_SSS_of_eq_orientation (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) (c : tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) : tr_nd₁.1 IsCongrTo tr_nd₂.1 := by
-  have a₁ : tr_nd₁.angle₁ = tr_nd₂.angle₁ := by sorry
+  have a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value := by sorry
     --have g₁ : (0 < tr_nd₁.angle₁ ∧ 0 < tr_nd₂.angle₁) ∨ (tr_nd₁.--angle₁ < 0 ∧ tr_nd₂.angle₁ < 0) := by 
       --rw [Triangle.pos_pos_or_neg_neg_of_iff_cclock] at c
       --apply c
-  have a₂ : tr_nd₁.angle₂ = tr_nd₂.angle₂ := sorry
-  have a₃ : tr_nd₁.angle₃ = tr_nd₂.angle₃ := sorry
-  have final : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length ∧ tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length ∧tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length ∧ tr_nd₁.angle₁ = tr_nd₂.angle₁ ∧ tr_nd₁.angle₂ = tr_nd₂.angle₂ ∧ tr_nd₁.angle₃ = tr_nd₂.angle₃ := ⟨e₁,e₂,e₃,a₁,a₂,a₃⟩  
+  have a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value := sorry
+  have a₃ : tr_nd₁.angle₃.value = tr_nd₂.angle₃.value := sorry
+  have final : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length ∧ tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length ∧tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length ∧ tr_nd₁.angle₁.value = tr_nd₂.angle₁.value ∧ tr_nd₁.angle₂.value = tr_nd₂.angle₂.value ∧ tr_nd₁.angle₃.value = tr_nd₂.angle₃.value := ⟨e₁,e₂,e₃,a₁,a₂,a₃⟩  
   have h0 : tr_nd₁.1.is_nd ∧ tr_nd₂.1.is_nd := ⟨tr_nd₁.2,tr_nd₂.2⟩ 
   have k : (tr_nd₁.1 IsCongrTo tr_nd₂.1) = True := by 
     dsimp only [IsCongr] 
