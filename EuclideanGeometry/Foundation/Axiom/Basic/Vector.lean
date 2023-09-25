@@ -64,6 +64,15 @@ end Vec_nd
 
 def Vec.norm (x : Vec) := Complex.abs x
 
+/- norm of multiplication by a nonnegative real number equal multiplication of norm -/
+theorem Vec.norm_smul_eq_mul_norm {x : ℝ} (x_nonneg : 0 ≤ x) (u : Vec) : Vec.norm (x • u) = x * Vec.norm u := by
+  unfold Vec.norm
+  simp only [Complex.real_smul, map_mul, Complex.abs_ofReal, mul_eq_mul_right_iff, abs_eq_self, map_eq_zero]
+  tauto
+
+-- norm is nonnegetive
+theorem Vec.norm_nonnegative (u : Vec) : 0 ≤ Vec.norm u := Real.sqrt_nonneg _
+
 def Vec_nd.norm (x : Vec_nd) := Complex.abs x
 
 theorem Vec_nd.norm_ne_zero (z : Vec_nd) : Vec_nd.norm z ≠ 0 := norm_ne_zero_iff.2 z.2
@@ -92,22 +101,6 @@ theorem fst_of_mul_eq_fst_mul_fst (z w : Vec_nd) : (z * w).1 = z.1 * w.1 := by r
 @[simp]
 theorem norm_of_Vec_nd_eq_norm_of_Vec_nd_fst (z : Vec_nd) : Vec_nd.norm z = Vec.norm z := rfl
 
-def Vec_nd.normalize_toVec_nd (z : Vec_nd) : Vec_nd := ⟨(Vec_nd.norm z)⁻¹ • z.1, Vec_nd.ne_zero_of_ne_zero_smul z (inv_ne_zero (Vec_nd.norm_ne_zero z))⟩
-
-def Vec_nd.normalize_toVec_nd' : Vec_nd →* Vec_nd where
-  toFun := Vec_nd.normalize_toVec_nd
-  map_one' := by
-    apply Subtype.ext
-    unfold normalize_toVec_nd norm
-    simp only [ne_eq, fst_of_one_toVec_eq_one, map_one, inv_one, one_smul]
-  map_mul' x y := by
-    apply Subtype.ext
-    unfold normalize_toVec_nd norm
-    simp only [ne_eq, fst_of_mul_eq_fst_mul_fst, map_mul, mul_inv_rev, Complex.real_smul, Complex.ofReal_mul,
-      Complex.ofReal_inv]
-    ring
-
-
 @[ext]
 class Dir where
   toVec : Vec
@@ -128,6 +121,18 @@ def Vec_nd.normalize (z : Vec_nd) : Dir where
     rfl
     exact norm_ne_zero_iff.2 z.2
     exact norm_ne_zero_iff.2 z.2
+
+--nondegenerate vector equal norm multiply normalized vector
+theorem Vec_nd.self_eq_norm_smul_normalized_vector (z : Vec_nd) : z.1 = Vec_nd.norm z • (Vec_nd.normalize z).1 := by
+  dsimp only [Vec_nd.normalize]
+  repeat rw [Complex.real_smul]
+  rw [←mul_assoc, ←Complex.ofReal_mul]
+  have : Vec_nd.norm z * (Vec.norm z)⁻¹ = 1 := by
+    field_simp
+    apply div_self
+    apply Vec_nd.norm_ne_zero
+  rw [this]
+  simp
 
 -- Basic facts about Dir, the group structure, neg, and the fact that we can make angle using Dir. There are a lot of relevant (probably easy) theorems under the following namespace. 
 
@@ -404,6 +409,22 @@ theorem mk_angle_neg_pi_div_two_eq_neg_I' : mk_angle ((-π) / 2) = -I := by
 
 end Make_angle_theorems
 
+instance : SMul Dir Vec where
+  smul := fun d v => d.1 * v
+
+instance : DistribMulAction Dir Vec where
+  one_smul := one_mul
+  mul_smul _ _ := mul_assoc _ _
+  smul_zero _ := mul_zero _
+  smul_add _ := mul_add _
+
+instance : SMul Dir Vec_nd where
+  smul := fun d v => d.toVec_nd * v
+
+instance : MulAction Dir Vec_nd where
+  one_smul := one_mul
+  mul_smul x y := mul_assoc x.toVec_nd y.toVec_nd
+
 end Dir
 
 def PM : Dir → Dir → Prop :=
@@ -662,11 +683,9 @@ theorem cos_arg_of_dir_eq_fst (x : Dir) : Real.cos (Complex.arg x.1) = x.1.1 := 
   have w₁ : (Dir.mk_angle (Complex.arg x.1)).1.1 = Real.cos (Complex.arg x.1) := rfl
   simp only [← w₁, Dir.mk_angle_arg_toComplex_of_Dir_eq_self]
 
-/-
-theorem sin_arg_of_dir_eq_fst (x : Dir) : Real.sin (Complex.arg (Vec.toComplex x.1)) = x.1.2 := by
-  have w₁ : (Dir.mk_angle (Complex.arg (Vec.toComplex x.1))).1.2 = Real.sin (Complex.arg (Vec.toComplex x.1)) := rfl
+theorem sin_arg_of_dir_eq_fst (x : Dir) : Real.sin (Complex.arg (x.1)) = x.1.2 := by
+  have w₁ : (Dir.mk_angle (Complex.arg (x.1))).1.2 = Real.sin (Complex.arg (x.1)) := rfl
   simp only [← w₁, Dir.mk_angle_arg_toComplex_of_Dir_eq_self]
--/
 
 theorem cos_angle_of_dir_dir_eq_inner (d₁ d₂ : Dir) : Real.cos (Dir.angle d₁ d₂) = inner d₁.1 d₂.1 := by
   unfold Dir.angle inner InnerProductSpace.toInner InnerProductSpace.complexToReal InnerProductSpace.isROrCToReal
@@ -742,7 +761,8 @@ def cu (u v w: Vec) : ℝ := (det u v)⁻¹ * (w.1 * v.2 - v.1 * w.2)
 
 def cv (u v w: Vec) : ℝ := (det u v)⁻¹ * (u.1 * w.2 - w.1 * u.2)
 
-theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.1 = 0 ↔ (∃ (t : ℝ), v = t • u) := by
+theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : det u v = 0 ↔ (∃ (t : ℝ), v = t • u) := by
+  unfold det
   have h : (u.1 ≠ 0) ∨ (u.2 ≠ 0) := by
     by_contra _
     have h₁ : u.1 = 0 := by tauto
@@ -781,34 +801,137 @@ theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v
     rcases e
     ring
 
-theorem linear_combination_of_not_colinear' {u v w : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
+theorem det'_ne_zero_of_not_colinear {u v : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : det' u v ≠ 0 := by 
+  unfold det'
   have h₁ : (¬ (∃ (t : ℝ), v = t • u)) → (¬ (u.1 * v.2 - u.2 * v.1 = 0)) := by
     intro _
     by_contra h₂
     let _ := (det_eq_zero_iff_eq_smul u v hu).1 h₂
     tauto
-  let d := u.1 * v.2 - u.2 * v.1
-  have h₃ : d ≠ 0 := h₁ h'
-  use d⁻¹ * (w.1 * v.2 - v.1 * w.2) 
-  use d⁻¹ * (u.1 * w.2 - w.1 * u.2)
   symm
-  rw [mul_smul, mul_smul, ← smul_add]
-  apply ((inv_smul_eq_iff₀ h₃).2)
-  unfold HSMul.hSMul instHSMul SMul.smul MulAction.toSMul Complex.mulAction Complex.instSMulRealComplex
-  simp only [smul_eq_mul, zero_mul, sub_zero]
+  field_simp
+  have trivial : ((u.re : ℂ)  * v.im - u.im * v.re) = ((Sub.sub (α := ℝ) (Mul.mul (α := ℝ) u.re v.im)  (Mul.mul (α := ℝ) u.im v.re)) : ℂ) := by 
+    symm
+    calc
+      ((Sub.sub (α := ℝ) (Mul.mul (α := ℝ) u.re v.im)  (Mul.mul (α := ℝ) u.im v.re)) : ℂ) = ((Mul.mul u.re v.im) - (Mul.mul u.im v.re)) := Complex.ofReal_sub _ _
+      _ = ((Mul.mul u.re v.im) - (u.im * v.re)) := by 
+        rw [← Complex.ofReal_mul u.im v.re] 
+        rfl
+      _ = ((u.re * v.im) - (u.im * v.re)) := by 
+        rw [← Complex.ofReal_mul u.re _] 
+        rfl 
+  rw [trivial, ← ne_eq]
+  symm
+  rw [ne_eq, Complex.ofReal_eq_zero]
+  exact h₁ h'
+
+theorem linear_combination_of_not_colinear' {u v w : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : w = (cu u v w) • u + (cv u v w) • v := by
+  unfold cu cv det
+  have : ((u.re : ℂ)  * v.im - u.im * v.re) ≠ 0 := det'_ne_zero_of_not_colinear hu h'
+  field_simp
   apply Complex.ext
-  simp only [add_zero, Complex.add_re]
+  simp
   ring
-  simp only [add_zero, Complex.add_im]
+  simp
   ring
 
-theorem linear_combination_of_not_colinear {u v : Vec_nd} (w : Vec) (h' : Vec_nd.toProj u ≠ Vec_nd.toProj v) : ∃ (cᵤ cᵥ : ℝ), w = cᵤ • u.1 + cᵥ • v.1 := by
+theorem linear_combination_of_not_colinear_vec_nd {u v : Vec_nd} (w : Vec) (h' : Vec_nd.toProj u ≠ Vec_nd.toProj v) : w = (cu u.1 v.1 w) • u.1 + (cv u.1 v.1 w) • v.1 := by
   have h₁ : (Vec_nd.toProj u ≠ Vec_nd.toProj v) → ¬(∃ (t : ℝ), v.1 = t • u.1) := by
     intro _
     by_contra h₂
     let _ := (Vec_nd.eq_toProj_iff u v).2 h₂
     tauto
-  exact linear_combination_of_not_colinear' u.2 (h₁ h')
+  exact @linear_combination_of_not_colinear' u.1 v.1 w u.2 (h₁ h')
+
+theorem linear_combination_of_not_colinear_dir {u v : Dir} (w : Vec) (h' : u.toProj ≠ v.toProj) : w = (cu u.1 v.1 w) • u.1 + (cv u.1 v.1 w) • v.1 := by
+  have h₁ : (u.toProj ≠ v.toProj) → ¬(∃ (t : ℝ), v.1 = t • u.1) := by
+    by_contra h
+    push_neg at h
+    let u' := u.toVec_nd
+    let v' := v.toVec_nd
+    have hu0 : (⟨u.toVec, Dir.toVec_ne_zero u⟩ : Vec_nd) = u' := rfl
+    have hu1 : u = u'.normalize := by rw [←Dir.dir_toVec_nd_normalize_eq_self u, hu0]
+    have hu2 : Vec_nd.toProj u' = u.toProj := by
+      unfold Vec_nd.toProj
+      rw [hu1]
+    have hu3 : u.1 = u'.1 := rfl
+    have hv0 : (⟨v.toVec, Dir.toVec_ne_zero v⟩ : Vec_nd) = v' := rfl
+    have hv1 : v = v'.normalize := by rw [←Dir.dir_toVec_nd_normalize_eq_self v, hv0]
+    have hv2 : Vec_nd.toProj v' = v.toProj := by
+      unfold Vec_nd.toProj
+      rw [hv1]
+    have hv3 : v.1 = v'.1 := rfl
+    rw [hu3, hv3 ,←hu2, ←hv2, ←Vec_nd.eq_toProj_iff u' v'] at h
+    tauto
+  exact @linear_combination_of_not_colinear' u.1 v.1 w u.toVec_nd.2 (h₁ h')
+
+--bilinearity of det
+theorem det_add_left_eq_add_det (u1 u2 v : Vec) : det (u1+u2) v = det u1 v + det u2 v := by
+  unfold det
+  rw [Complex.add_re, Complex.add_im]
+  ring
+
+theorem det_add_right_eq_add_det (u v1 v2 : Vec) : det u (v1+v2) = det u v1 + det u v2 := by
+  unfold det
+  rw [Complex.add_re, Complex.add_im]
+  ring
+
+theorem det_smul_left_eq_mul_det (u v : Vec) (x : ℝ) : det (x • u) v = x * (det u v) := by
+  unfold det
+  rw[Complex.real_smul, Complex.ofReal_mul_re, Complex.ofReal_mul_im]
+  ring
+
+theorem det_smul_right_eq_mul_det (u v : Vec) (x : ℝ) : det u (x • v) = x * (det u v) := by
+  unfold det
+  rw[Complex.real_smul, Complex.ofReal_mul_re, Complex.ofReal_mul_im]
+  ring
+
+--antisymmetricity of det
+theorem det_eq_neg_det (u v : Vec) : det u v = -det v u := by 
+  unfold det
+  ring
+
+--permuting vertices of a triangle has simple effect on area
+theorem det_sub_eq_det (u v : Vec) : det (u-v) v= det u v := by 
+  rw [sub_eq_add_neg, det_add_left_eq_add_det u (-v) v]
+  have : det (-v) v = 0 := by
+    unfold det
+    rw [Complex.neg_im, Complex.neg_re]
+    ring
+  rw [this, add_zero]
+
+--computing area using sine
+theorem det_eq_im_of_quotient (u v : Dir) : det u.1 v.1 = (v * (u⁻¹)).1.im := by
+  have h1 : u⁻¹.1.im = - u.1.im := rfl
+  have h2 : u⁻¹.1.re = u.1.re := rfl
+  have h3 : (v * (u⁻¹)).1 = v.1 * u⁻¹.1 := rfl
+  rw [h3, Complex.mul_im]
+  unfold det
+  rw [h1, h2]
+  ring
+
+theorem det_eq_sin_mul_norm_mul_norm' (u v :Dir) : det u.1 v.1 = Real.sin (Dir.angle u v) := by
+  rw [det_eq_im_of_quotient]
+  unfold Dir.angle
+  rw [sin_arg_of_dir_eq_fst]
+  
+theorem det_eq_sin_mul_norm_mul_norm (u v : Vec_nd): det u v = Real.sin (Vec_nd.angle u v) * Vec.norm u * Vec.norm v := by
+  let nu := u.normalize
+  let nv := v.normalize
+  let unorm := u.norm
+  let vnorm := v.norm
+  have hu : u.1 = unorm • nu.1 := Vec_nd.self_eq_norm_smul_normalized_vector u
+  have hv : v.1 = vnorm • nv.1 := Vec_nd.self_eq_norm_smul_normalized_vector v
+  rw [hu, hv, det_smul_left_eq_mul_det, det_smul_right_eq_mul_det]
+  have unorm_nonneg : 0 ≤ unorm := Vec.norm_nonnegative u
+  have vnorm_nonneg : 0 ≤ vnorm := Vec.norm_nonnegative v
+  rw [Vec.norm_smul_eq_mul_norm (unorm_nonneg), Vec.norm_smul_eq_mul_norm (vnorm_nonneg)]
+  have : det nu.1 nv.1 = Real.sin (Vec_nd.angle u v) * Vec.norm nu.1 *Vec.norm nv.1 := by
+    rw[Dir.norm_of_dir_toVec_eq_one, Dir.norm_of_dir_toVec_eq_one, mul_one, mul_one, det_eq_sin_mul_norm_mul_norm']
+    unfold Vec_nd.angle
+    rfl
+  rw[this]
+  ring
 
 end Linear_Algebra
 
