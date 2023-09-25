@@ -294,7 +294,7 @@ theorem lies_on_of_Seg_nd_toProj_eq_toProj {A B : P} {l : Line P} (ha : A LiesOn
     · simp only [h, dite_eq_ite]
   exact (lies_on_iff_colinear_of_ne_lies_on_lies_on h.2 ha h.1 B).2 c
 
-theorem Seg_nd_toProj_eq_toProj_iff_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) : B LiesOn l ↔ (Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) := by
+theorem lies_on_iff_eq_toProj_of_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) : B LiesOn l ↔ (Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) := by
   constructor
   exact fun a => line_toProj_eq_seg_nd_toProj_of_lies_on ha a hab
   exact fun a => lies_on_of_Seg_nd_toProj_eq_toProj ha hab a
@@ -329,7 +329,7 @@ theorem exist_unique_line_of_pt_proj (A : P) (pr : Proj) : ∃! l : Line P, A Li
   by_cases X = A 
   · rw [h]
     tauto
-  · rw [Seg_nd_toProj_eq_toProj_iff_lies_on hl₁.1 h, hl₁.2, Seg_nd_toProj_eq_toProj_iff_lies_on hl₂.1 h, hl₂.2]
+  · rw [lies_on_iff_eq_toProj_of_lies_on hl₁.1 h, hl₁.2, lies_on_iff_eq_toProj_of_lies_on hl₂.1 h, hl₂.2]
 
 def Line.mk_pt_proj (A : P) (pr : Proj) : Line P := 
   Classical.choose (exist_unique_line_of_pt_proj A pr)

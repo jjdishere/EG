@@ -372,7 +372,7 @@ theorem Ray.toProj_eq_toLine_toProj (ray : Ray P) : ray.toProj = ray.toLine.toPr
 
 theorem Seg_nd.toProj_eq_toLine_toProj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := rfl
 
-theorem lies_on_iff_eq_toProj {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B h).toProj = l.toProj := by
+theorem lies_on_iff_eq_toProj_of_lies_on {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B h).toProj = l.toProj := by
   constructor
   · intro hB
     apply line_toProj_eq_seg_nd_toProj_of_lies_on hA hB
@@ -461,13 +461,7 @@ theorem exists_ne_pt_pt_lies_on_of_line (A : P) (l : Line P) : ∃ B : P, B Lies
     tauto
 
 theorem lies_on_of_Seg_nd_toProj_eq_toProj {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) (hp : Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) : B LiesOn l := by
-  apply (lies_on_iff_eq_toProj hab ha).mpr hp
-
-/- already have Thm lies_on_iff_eq_toProj -/
-theorem Seg_nd_toProj_eq_toProj_iff_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) : B LiesOn l ↔ (Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) := by
-  constructor
-  exact fun a => line_toProj_eq_seg_nd_toProj_of_lies_on ha a hab
-  exact fun a => lies_on_of_Seg_nd_toProj_eq_toProj ha hab a
+  apply (lies_on_iff_eq_toProj_of_lies_on hab ha).mpr hp
 
 -- Given distinct A B on a line, there exist C s.t. C LiesOn AB (a cor of Archimedean_property in Seg) and there exist D s.t. B LiesOn AD
 /- need to simplify -/
