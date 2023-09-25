@@ -1,6 +1,8 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Convex
+import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
+
 
 noncomputable section
 
@@ -47,5 +49,15 @@ theorem ang_eq_ang_add_ang_mod_pi_of_adj_oang (oang₁ oang₂ : OAngle P) (h: o
 end OAngle 
 
 end OAngleSum
+
+section AngleColinear
+
+namespace OAngle
+
+theorem colinear_of_zero_angle (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O) : (OAngle.mk_pt_pt_pt A O B h₁ h₂).value = 0 → colinear A O B  := by sorry
+
+end OAngle
+
+end AngleColinear
 
 end EuclidGeom

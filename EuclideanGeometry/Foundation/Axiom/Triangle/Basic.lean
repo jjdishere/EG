@@ -92,7 +92,7 @@ theorem angle_neg_of_clock (clock : ¬ tr_nd.is_cclock) : tr_nd.angle₁ < 0 ∧
 
 theorem cclock_of_pos_angle (h : 0 < tr_nd.angle₁ ∨ 0 < tr_nd.angle₂ ∨ 0 < tr_nd.angle₃) : tr_nd.is_cclock := sorry
 
-theorem clock_of_neg_angle (h : tr_nd.angle₁ < 0 ∨ tr_nd.angle₂ < 0 ∨ tr_nd.angle₃ < 0) : tr_nd.is_cclock := sorry
+theorem clock_of_neg_angle (h : tr_nd.angle₁ < 0 ∨ tr_nd.angle₂ < 0 ∨ tr_nd.angle₃ < 0) : ¬ tr_nd.is_cclock := sorry
 
 theorem angle_sum_eq_pi_of_cclock (cclock : tr_nd.is_cclock): tr_nd.angle₁ + tr_nd.angle₂ + tr_nd.angle₃ = π := sorry
 
