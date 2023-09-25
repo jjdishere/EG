@@ -47,7 +47,7 @@ end setoid
 
 def Line (P : Type _) [EuclideanPlane P] := Quotient (@same_extn_line.setoid P _)
 
-variable  {P : Type _} [EuclideanPlane P]
+variable {P : Type _} [EuclideanPlane P]
 
 section make
 
@@ -76,6 +76,8 @@ section coercion
 def Line.toProj (l : Line P) : Proj := Quotient.lift (fun ray : Ray P => ray.toProj) (fun _ _ h => And.left h) l
 
 def Ray.toLine (ray : Ray P) : Line P := ⟦ray⟧
+
+theorem ray_toLine_eq_of_same_extn_line {r₁ r₂ : Ray P} (h : same_extn_line r₁ r₂) : r₁.toLine = r₂.toLine := Quotient.eq.mpr h
 
 def Seg_nd.toLine (seg_nd : Seg_nd P) : Line P := ⟦seg_nd.toRay⟧
 
