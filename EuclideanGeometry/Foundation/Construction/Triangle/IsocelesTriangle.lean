@@ -215,9 +215,6 @@ rw [← is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp h1, p2] at f3
 linarith [f3]
 exact h1
 
-
-
-
 theorem regular_tri_of_isoceles_tri_of_trd_ang_eq_sixty_deg (tri_nd : Triangle_nd P) (h : tri_nd.angle₃.value = π /3 ∨ tri_nd.angle₃.value = - π / 3)(h1 : tri_nd.1.IsIsoceles) : tri_nd.1.IsRegular:= by 
 apply regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg
 rcases h with (p1 | p2)
