@@ -15,6 +15,7 @@ This file describes the projects of each team.
 ## Project Detail
 Team D 1 Muqing Jiang : 
 * Fills sorry's in Plane.lean, section length, and section existence in Ray.lean.
+* Formalize ShanZun Exercise_1a 1b (1.3-1.6)
 
 Team A 2 Yongle Bai :
 * Fills sorry's in section coersion_compatibility and section midpoint Ray.lean
@@ -24,6 +25,7 @@ Team F 3 Zhuoni Chi :
 * Fills sorry's in Ray_ex.lean `Finished` `Improved the proof greatly`
 * Fills statements in Ray_ex2.lean `Finished`
 * Fills proofs in Ray_ex2.lean
+* Formalize ShanZun Exercise_1c 1d 1.7-1.10 `low priority for now`
 
 Team C 4 Xintao Yu :
 * Fills sorry's in Line.lean
@@ -40,6 +42,10 @@ Team G 7 Zhaohui Zong :
 
 Team B 8 Zhehao Zheng :
 * Fills sorry's in IsocelesTriangle.lean
+* Formalize ShanZun Exercise 1.1 1.2
+* Formalize ArefWernick-Chap1 Chap1a
+* Formalize AOPS Chap3a.lean
+
 
 ## Special Notes
 
