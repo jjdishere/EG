@@ -358,7 +358,7 @@ theorem line_toProj_eq_seg_nd_toProj_of_lies_on {A B : P} {l : Line P} (ha : A L
   have : LIN A B hab = l := by apply eq_line_of_pt_pt_of_ne _ ha hb
   revert l
   unfold Line
-  rw [forall_quotient_iff (r := same_extn_line.setoid)]
+  rw [Quotient.forall (s := same_extn_line.setoid)]
   intro r _ _ eq
   unfold Line.mk_pt_pt at eq
   rw [Quotient.eq] at eq
@@ -380,7 +380,7 @@ theorem lies_on_iff_eq_toProj {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesO
   have hh : (SEG_nd A B h).toLine = l := by
     revert l
     unfold Line
-    rw [forall_quotient_iff (r := same_extn_line.setoid)]
+    rw [Quotient.forall (s := same_extn_line.setoid)]
     intro r ha eq
     unfold Seg_nd.toLine
     rw [Quotient.eq]
