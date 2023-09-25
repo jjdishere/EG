@@ -180,7 +180,7 @@ Line.lean -- Define lines
       line_toProj_eq_seg_nd_toProj_of_lies_on --
       Ray.toProj_eq_toLine_toProj --
       Seg_nd.toProj_eq_toLine_toProj --
-      lies_on_iff_eq_toProj --
+      lies_on_iff_eq_toProj_of_lies_on --
     colinear : theorems related to colinear
       lies_on_line_of_pt_pt_iff_colinear --
       lies_on_iff_colinear_of_ne_lies_on_lies_on --
@@ -189,7 +189,7 @@ Line.lean -- Define lines
     (archemidean) `Line_ex`
     exists_ne_pt_pt_lies_on_of_line --
     lies_on_of_Seg_nd_toProj_eq_toProj --
-    Seg_nd_toProj_eq_toProj_iff_lies_on --
+    lies_on_iff_eq_toProj_of_lies_on --
     Line.exist_pt_beyond_pt --
   
 -/
