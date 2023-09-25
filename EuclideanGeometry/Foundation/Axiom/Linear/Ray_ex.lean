@@ -105,8 +105,12 @@ theorem Seg.lies_on_iff_lies_on_rev {A : P} {seg : Seg P} : A LiesOn seg ↔  A 
     exact Eq.symm smul_add_one_sub_smul 
 
 -- Given a segment and a point, the point lies in the interior of the segment if and only if it lies in the interior of the reverse of the segment.
-theorem Seg.lies_int_iff_lies_int_rev {A : P} {seg : Seg P} : A LiesInt seg ↔  A LiesInt seg.reverse := by sorry
-
+theorem Seg.lies_int_iff_lies_int_rev {A : P} {seg : Seg P} : A LiesInt seg ↔  A LiesInt seg.reverse := by 
+  constructor
+  rintro ⟨ha,⟨nonsource,nontarget⟩⟩
+  exact ⟨Seg.lies_on_iff_lies_on_rev.mp ha,⟨nontarget,nonsource⟩⟩
+  rintro ⟨ha,⟨nonrevsource,nonrevtarget⟩⟩
+  exact ⟨Seg.lies_on_iff_lies_on_rev.mpr ha,⟨nonrevtarget,nonrevsource⟩⟩
 
 -- Given a ray and a point, the point is equal to the source of the ray if and only if it lies on the ray and it lies on the reverse of the ray.
 theorem Ray.eq_source_iff_lies_on_and_lies_on_rev {A : P} {ray : Ray P} : A = ray.source ↔ (A LiesOn ray) ∧ (A LiesOn ray.reverse) := by
