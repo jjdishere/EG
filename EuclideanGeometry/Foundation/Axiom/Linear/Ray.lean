@@ -160,7 +160,7 @@ end coersion
 
 section coersion_compatibility
 
-variable (seg : Seg P) (seg_nd : Seg_nd P) (ray : Ray P) 
+variable {seg : Seg P} {seg_nd : Seg_nd P} {ray : Ray P} 
 
 section lies
 
