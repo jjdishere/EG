@@ -43,6 +43,9 @@ Team G 7 Zhaohui Zong :
 Team B 8 Zhehao Zheng :
 * Fills sorry's in IsocelesTriangle.lean
 * Formalize ShanZun Exercise 1.1 1.2
+* Formalize ArefWernick-Chap1 Chap1a
+* Formalize AOPS Chap3a.lean
+
 
 ## Special Notes
 
