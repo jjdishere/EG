@@ -75,6 +75,12 @@ theorem Seg_nd.toProj_of_rev_eq_toProj (seg_nd : Seg_nd P) : seg_nd.reverse.toPr
   right
   rw[Seg_nd.toDir_of_rev_eq_neg_toDir]
 
+theorem Ray.source_lies_on_rev (ray : Ray P) : ray.source LiesOn ray.reverse := by sorry
+
+theorem Seg.target_lies_on_rev (seg : Seg P) : seg.target LiesOn seg.reverse := by sorry
+
+theorem Seg.source_lies_on_rev (seg : Seg P) : seg.source LiesOn seg.reverse := by sorry
+
 -- Given a segment and a point, the point lies on the segment if and only if it lies on the reverse of the segment.
 theorem Seg.lies_on_iff_lies_on_rev {A : P} {seg : Seg P} : A LiesOn seg ↔  A LiesOn seg.reverse := by
   unfold lies_on Carrier.carrier instCarrierSeg
@@ -211,6 +217,7 @@ theorem lies_on_pt_toDir_of_pt_lies_on_rev {A B : P} {ray : Ray P} (hA : A LiesO
 -- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies on $ray_2$, then the source of $ray_2$ lies on the reverse of $ray_1$
 
 theorem lies_on_iff_lies_on_rev_of_same_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = ray₂.toDir) : ray₁.source LiesOn ray₂ ↔ ray₂.source LiesOn ray₁.reverse := sorry
+
 
 -- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies int $ray_2$, then the source of $ray_2$ lies int the reverse of $ray_1$
 
