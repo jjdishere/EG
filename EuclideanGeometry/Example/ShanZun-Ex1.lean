@@ -40,11 +40,7 @@ variable {D E : P} {hd : D LiesOn (SEG_nd A B (b_ne_a (hnd := hnd))).extension}
 {he : E LiesOn (SEG_nd A C (c_ne_a (hnd := hnd))).extension}
 -- Claim: $E \ne B$ and $D \ne C$. This is because $E$ lies on line AC, but $B$ doesn't lies on AC; $D$ lies on line AB, but $C$ doesn't lies on AB. 
 lemma e_ne_b : E ≠ B := ne_of_lieson_and_not_lieson (Seg_nd.lies_on_toline_of_lies_on_extn he) ((lies_on_iff_colinear_of_ne_lies_on_lies_on (c_ne_a (hnd := hnd)) (Seg_nd.lies_on_toLine_of_lie_on (Seg.source_lies_on (SEG_nd A C (c_ne_a (hnd := hnd))).1)) (Seg_nd.lies_on_toLine_of_lie_on (Seg.target_lies_on (SEG_nd A C (c_ne_a (hnd := hnd))).1)) B).mp.mt (flip_colinear_snd_trd.mt hnd))
-  --have b_notlieson_ac : ¬ B LiesOn (SEG_nd A C (c_ne_a (hnd := hnd))).toLine := (lies_on_iff_colinear_of_ne_lies_on_lies_on (c_ne_a (hnd := hnd)) (Seg_nd.lies_on_toLine_of_lie_on (Seg.source_lies_on (SEG_nd A C (c_ne_a (hnd := hnd))).1)) (Seg_nd.lies_on_toLine_of_lie_on (Seg.target_lies_on (SEG_nd A C (c_ne_a (hnd := hnd))).1)) B).mp.mt (flip_colinear_snd_trd.mt hnd)
-  --have e_lieson_ac : E LiesOn (SEG_nd A C (c_ne_a (hnd := hnd))).toLine := Seg_nd.lies_on_toline_of_lies_on_extn he
 lemma d_ne_c : D ≠ C := ne_of_lieson_and_not_lieson (Seg_nd.lies_on_toline_of_lies_on_extn hd) ((lies_on_iff_colinear_of_ne_lies_on_lies_on (b_ne_a (hnd := hnd)) (Seg_nd.lies_on_toLine_of_lie_on (Seg.source_lies_on (SEG_nd A B (b_ne_a (hnd := hnd))).1)) (Seg_nd.lies_on_toLine_of_lie_on (Seg.target_lies_on (SEG_nd A B (b_ne_a (hnd := hnd))).1)) C).mp.mt hnd)
-  --have c_notlieson_ab := (lies_on_iff_colinear_of_ne_lies_on_lies_on (b_ne_a (hnd := hnd)) (Seg_nd.lies_on_toLine_of_lie_on (Seg.source_lies_on (SEG_nd A B (b_ne_a (hnd := hnd))).1)) (Seg_nd.lies_on_toLine_of_lie_on (Seg.target_lies_on (SEG_nd A B (b_ne_a (hnd := hnd))).1)) C).mp.mt hnd
-  --have d_lieson_ab := Seg_nd.lies_on_toline_of_lies_on_extn hd
 -- Claim: $A \ne D$ and $A \ne E$. This is because $E$ lies on extension of $AC$, but $A$ doesn't lies on extension of $AC$; $D$ lies on extension of $AB$, but $A$ doesn't lies on extension of $AB$
 lemma a_ne_d : A ≠ D := by
   have a_notlieson_ab_extn : ¬ A LiesOn (SEG_nd A B (b_ne_a (hnd := hnd))).extension := by
