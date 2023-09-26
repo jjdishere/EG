@@ -36,12 +36,18 @@ protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same
     rcases pt_liesOn_ray_iff_vec_same_dir.mp (h₁.2) with ⟨a, dyx⟩
     rcases pt_liesOn_ray_iff_vec_same_dir.mp (h₂.2) with ⟨b, dzy⟩
     apply pt_liesOn_ray_iff_vec_same_dir.mpr
-    sorry
-
-
-    -- let g₁ := h₁.2
-    -- let g₂ := h₂.2
-
+    have ⟨t, xpary⟩ : ∃t : ℝ, y.toDir.toVec = t • x.toDir.toVec := by
+      rcases (Dir.eq_toProj_iff _ _).mp h₁.1 with xy | xry
+      · use 1
+        simp only [one_smul]
+        rw [xy]
+      · use -1
+        simp only [xry, Dir.toVec_neg_eq_neg_toVec, smul_neg, neg_smul, one_smul, neg_neg]
+    rw [xpary] at dzy
+    use a + b * t
+    rw [(vec_add_vec _ _ _).symm, dyx, dzy]
+    simp only [Complex.real_smul, Complex.ofReal_mul, Complex.ofReal_add]
+    ring_nf
 
 
 
