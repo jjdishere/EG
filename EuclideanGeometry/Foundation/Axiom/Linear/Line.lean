@@ -15,7 +15,7 @@ namespace same_extn_line
 
 theorem dir_eq_or_eq_neg {x y : Ray P} (h : same_extn_line x y) : (x.toDir = y.toDir ∨ x.toDir = - y.toDir) := (Dir.eq_toProj_iff _ _).mp h.1
 
-protected theorem refl (x : Ray P) : same_extn_line x x := ⟨rfl, Or.inl (Ray.source_lies_on x)⟩
+protected theorem refl (x : Ray P) : same_extn_line x x := ⟨rfl, Or.inl (Ray.source_lies_on)⟩
 
 protected theorem symm {x y : Ray P} (h : same_extn_line x y) : same_extn_line y x := by
   constructor
@@ -116,7 +116,7 @@ theorem linear (l : Line P) {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
         let ray' := Ray.mk C ray.toDir
         have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a c
         have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b c
-        exact Ray.colinear_of_lies_on a' b' (Ray.source_lies_on ray')
+        exact Ray.colinear_of_lies_on a' b' (Ray.source_lies_on)
     | inr b =>
       cases c with
       | inl c => sorry

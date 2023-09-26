@@ -160,9 +160,9 @@ end coersion
 
 section coersion_compatibility
 
-variable (seg : Seg P) (seg_nd : Seg_nd P) (ray : Ray P) 
+variable {seg : Seg P} {seg_nd : Seg_nd P} {ray : Ray P} 
 
-section lies
+section lines
 
 theorem Ray.source_lies_on : ray.source LiesOn ray := by sorry
 
@@ -174,13 +174,13 @@ theorem Seg.source_not_lies_int : ¬ seg.source LiesInt seg := by sorry
 
 theorem Seg.target_not_lies_int : ¬ seg.target LiesInt seg := by sorry
 
-theorem Seg.lies_on_of_lies_int (p : P) : (p LiesInt seg) → (p LiesOn seg) := by sorry
+theorem Seg.lies_on_of_lies_int {p : P} : (p LiesInt seg) → (p LiesOn seg) := by sorry
 
-theorem Ray.lies_on_of_lies_int (p : P) : (p LiesInt ray) → (p LiesOn ray) := by sorry
+theorem Ray.lies_on_of_lies_int {p : P} : (p LiesInt ray) → (p LiesOn ray) := by sorry
 
-theorem Seg_nd.lies_on_toRay_of_lies_on (p : P) : (p LiesOn seg_nd.1) → (p LiesOn seg_nd.toRay) := by sorry
+theorem Seg_nd.lies_on_toRay_of_lies_on {p : P} : (p LiesOn seg_nd.1) → (p LiesOn seg_nd.toRay) := by sorry
 
-theorem Seg_nd.lies_int_toRay_of_lies_int (p : P) : (p LiesInt seg_nd.1) → (p LiesInt seg_nd.toRay) := by sorry
+theorem Seg_nd.lies_int_toRay_of_lies_int {p : P} : (p LiesInt seg_nd.1) → (p LiesInt seg_nd.toRay) := by sorry
 
 theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
   let s :Seg_nd P := SEG_nd A B h
@@ -189,7 +189,7 @@ theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B 
   show B LiesOn s.1
   apply Seg.target_lies_on
 
-end lies
+end lines
 
 theorem Seg_nd.toDir_eq_toRay_toDir : seg_nd.toDir = seg_nd.toRay.toDir := by sorry
 
@@ -218,14 +218,14 @@ end coersion_compatibility
 @[simp]
 theorem seg_toVec_eq_vec (A B : P) : (SEG A B).toVec = VEC A B := rfl
 
-theorem toVec_eq_zero_of_deg (l : Seg P) : (l.target = l.source) ↔ l.toVec = 0 := by unfold Seg.toVec Vec.mk_pt_pt; simp
+theorem toVec_eq_zero_of_deg {l : Seg P} : (l.target = l.source) ↔ l.toVec = 0 := by unfold Seg.toVec Vec.mk_pt_pt; simp
 
 section length
 
-variable (l : Seg P)
+variable {l : Seg P}
 
 -- define the length of a generalized directed segment.
-def Seg.length : ℝ := norm (l.toVec)
+def Seg.length (l : Seg P) : ℝ := norm (l.toVec)
 
 -- length of a generalized directed segment is nonnegative.
 theorem length_nonneg : 0 ≤ l.length := @norm_nonneg _ _ _
@@ -235,7 +235,7 @@ theorem length_pos_iff_nd : 0 < l.length ↔ (l.is_nd) := by sorry
 
 theorem length_ne_zero_iff_nd : 0 ≠ l.length ↔ (l.is_nd) := by sorry
 
-theorem length_pos (l : Seg_nd P): 0 < l.1.length := by sorry
+theorem length_pos {l : Seg_nd P}: 0 < l.1.length := by sorry
 
 theorem length_sq_eq_inner_toVec_toVec : l.length ^ 2 = inner l.toVec l.toVec := by
   have w : l.length = Real.sqrt (inner l.toVec l.toVec) := by 
@@ -251,25 +251,25 @@ theorem length_sq_eq_inner_toVec_toVec : l.length ^ 2 = inner l.toVec l.toVec :=
 -- A generalized directed segment is trivial if and only if length is zero.
 theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by
   unfold Seg.length
-  exact Iff.trans (toVec_eq_zero_of_deg _)  (@norm_eq_zero _ _).symm
+  exact Iff.trans (toVec_eq_zero_of_deg)  (@norm_eq_zero _ _).symm
 
 -- If P lies on a generalized directed segment AB, then length(AB) = length(AP) + length(PB)
-theorem length_eq_length_add_length (l : Seg P) (A : P) (lieson : A LiesOn l) : l.length = (SEG l.source A).length + (SEG A l.target).length := sorry
+theorem length_eq_length_add_length {l : Seg P} {A : P} (lieson : A LiesOn l) : l.length = (SEG l.source A).length + (SEG A l.target).length := sorry
 
 end length
 
 section midpoint
 
-variable (seg : Seg P) (seg_nd : Seg_nd P)
+variable {seg : Seg P} {seg_nd : Seg_nd P}
 
-def Seg.midpoint : P := (1 / 2 : ℝ) • (seg.toVec) +ᵥ seg.source
+def Seg.midpoint (seg : Seg P) : P := (1 / 2 : ℝ) • (seg.toVec) +ᵥ seg.source
 
 theorem Seg.midpt_lies_on : seg.midpoint LiesOn seg := sorry
 
 theorem Seg_nd.midpt_lies_int : seg_nd.1.midpoint LiesInt seg_nd.1 := sorry
 
 -- A point is the mid opint of a segment if and only it defines the same vector to the source and the target of the segment
-theorem midpt_iff_same_vector_to_source_and_target (A : P) (l : Seg P) : A = l.midpoint ↔ (SEG l.source A).toVec = (SEG A l.target).toVec := by sorry
+theorem midpt_iff_same_vector_to_source_and_target {A : P} {l : Seg P} : A = l.midpoint ↔ (SEG l.source A).toVec = (SEG A l.target).toVec := by sorry
 
 theorem dist_target_eq_dist_source_of_midpt : (SEG seg.source seg.midpoint).length = (SEG seg.midpoint seg.target).length := sorry
 
@@ -279,20 +279,22 @@ end midpoint
 
 section existence
 
+variable {l : Seg P}
+
 -- Archimedean property I : given a directed segment AB (with A ≠ B), then there exists a point P such that B lies on the directed segment AP and P ≠ B.
 
 theorem Seg_nd.exist_pt_beyond_pt {P : Type _} [EuclideanPlane P] (l : Seg_nd P) : (∃ q : P, l.1.target LiesInt (SEG l.1.source q)) := by sorry
 
 -- Archimedean property II: On an nontrivial directed segment, one can always find a point in its interior.  `This will be moved to later disccusion about midpoint of a segment, as the midpoint is a point in the interior of a nontrivial segment`
 
-theorem nd_of_exist_int_pt (l : Seg P) (p : P) (h : p LiesInt l) : l.is_nd := sorry
+theorem nd_of_exist_int_pt {p : P} (h : p LiesInt l) : l.is_nd := sorry
 
 -- If a generalized directed segment contains an interior point, then it is nontrivial
-theorem nd_iff_exist_int_pt (l : Seg P) : ∃ (p : P), p LiesInt l ↔ l.is_nd := sorry
+theorem nd_iff_exist_int_pt : ∃ (p : P), p LiesInt l ↔ l.is_nd := sorry
 
-theorem Seg_nd.exist_int_pt (l : Seg_nd P) : ∃ (p : P), p LiesInt l.1 := sorry
+theorem Seg_nd.exist_int_pt {l : Seg_nd P} : ∃ (p : P), p LiesInt l.1 := sorry
 
-theorem length_pos_iff_exist_int_pt (l : Seg P) : 0 < l.length ↔  ∃ (p : P), p LiesInt l := sorry 
+theorem length_pos_iff_exist_int_pt : 0 < l.length ↔  ∃ (p : P), p LiesInt l := sorry 
 
 end existence
 
