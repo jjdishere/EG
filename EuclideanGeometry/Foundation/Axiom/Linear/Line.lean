@@ -11,6 +11,10 @@ variable {P : Type _} [EuclideanPlane P]
 
 def same_extn_line : Ray P → Ray P → Prop := fun r₁ r₂ => r₁.toProj = r₂.toProj ∧ (r₂.source LiesOn r₁ ∨ r₂.source LiesOn r₁.reverse)
 
+-- A point `p` lies on the line determined by a ray `r` if and only if the vector `VEC r.source p` is parallel to the direction of `r`.
+theorem pt_liesOn_ray_iff_vec_same_dir {p : P} {r : Ray P} : (p LiesOn r ∨ p LiesOn r.reverse) ↔ ∃t : ℝ, VEC p r.source = t • r.toDir.toVec := sorry
+
+
 namespace same_extn_line
 
 theorem dir_eq_or_eq_neg {x y : Ray P} (h : same_extn_line x y) : (x.toDir = y.toDir ∨ x.toDir = - y.toDir) := (Dir.eq_toProj_iff _ _).mp h.1
@@ -25,7 +29,21 @@ protected theorem symm {x y : Ray P} (h : same_extn_line x y) : same_extn_line y
     | inl h₁ => sorry
     | inr h₂ => sorry
 
-protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same_extn_line y z) :  same_extn_line x z := sorry
+
+protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same_extn_line y z) : same_extn_line x z where
+  left := Eq.trans h₁.1 h₂.1
+  right := by
+    rcases pt_liesOn_ray_iff_vec_same_dir.mp (h₁.2) with ⟨a, dyx⟩
+    rcases pt_liesOn_ray_iff_vec_same_dir.mp (h₂.2) with ⟨b, dzy⟩
+    apply pt_liesOn_ray_iff_vec_same_dir.mpr
+    sorry
+
+
+    -- let g₁ := h₁.2
+    -- let g₂ := h₂.2
+
+
+
 
 protected def setoid : Setoid (Ray P) where
   r := same_extn_line

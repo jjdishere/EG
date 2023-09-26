@@ -50,7 +50,7 @@ theorem Ray.toDir_of_rev_eq_neg_toDir {ray : Ray P} : ray.reverse.toDir = - ray.
 theorem Ray.toProj_of_rev_eq_toProj {ray : Ray P} : ray.reverse.toProj = ray.toProj := by
   --@HeRunming: Simply imitate the proof of theorem "eq_toProj_of_smul" in Vector.lean
   -- `??? Why not use that toProj is the quotient of toDir` see the definition of toProj
-  apply (Dir.eq_toProj_iff ray.reverse.toDir ray.toDir).mpr
+  apply (Dir.eq_toProj_iff _ _).mpr
   right
   rfl
 
