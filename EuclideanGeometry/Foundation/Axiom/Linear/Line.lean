@@ -11,9 +11,6 @@ variable {P : Type _} [EuclideanPlane P]
 
 def same_extn_line : Ray P → Ray P → Prop := fun r₁ r₂ => r₁.toProj = r₂.toProj ∧ (r₂.source LiesOn r₁ ∨ r₂.source LiesOn r₁.reverse)
 
--- A point `p` lies on the line determined by a ray `r` if and only if the vector `VEC r.source p` is parallel to the direction of `r`.
-theorem pt_liesOn_ray_iff_vec_same_dir {p : P} {r : Ray P} : (p LiesOn r ∨ p LiesOn r.reverse) ↔ ∃t : ℝ, VEC p r.source = t • r.toDir.toVec := sorry
-
 
 namespace same_extn_line
 
