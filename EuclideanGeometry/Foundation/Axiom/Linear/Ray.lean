@@ -299,8 +299,10 @@ theorem Seg_nd.exist_pt_beyond_pt {P : Type _} [EuclideanPlane P] (l : Seg_nd P)
   let half : ℝ := 1/2
   have c: 0 ≤ half ∧ half ≤ 1 ∧ VEC l.1.source l.1.target = half • VEC l.1.source h := by
     norm_num
-    rw [seg_toVec_eq_vec, Vec.mk_pt_pt]
+    rw [seg_toVec_eq_vec, Vec.mk_pt_pt, Vec.mk_pt_pt]
     field_simp
+    rw [vadd_vsub_assoc]
+    exact mul_two (l.1.target -ᵥ l.1.source)
   have b: l.1.target ≠ l.1.source ∧ l.1.target ≠ h := by
     constructor
     exact l.2
