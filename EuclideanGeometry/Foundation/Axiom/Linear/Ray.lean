@@ -182,11 +182,34 @@ theorem Seg_nd.lies_on_toRay_of_lies_on (p : P) : (p LiesOn seg_nd.1) → (p Lie
 
 theorem Seg_nd.lies_int_toRay_of_lies_int (p : P) : (p LiesInt seg_nd.1) → (p LiesInt seg_nd.toRay) := by sorry
 
+theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
+  let s :Seg_nd P := SEG_nd A B h
+  show B LiesOn s.toRay
+  apply Seg_nd.lies_on_toRay_of_lies_on
+  show B LiesOn s.1
+  apply Seg.target_lies_on
+
 end lies
 
 theorem Seg_nd.toDir_eq_toRay_toDir : seg_nd.toDir = seg_nd.toRay.toDir := by sorry
 
 theorem Seg_nd.toProj_eq_toRay_toProj : seg_nd.toProj = seg_nd.toRay.toProj := by sorry
+
+theorem Ray.todir_eq_neg_todir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toDir = - (RAY B A h.symm).toDir := by
+  let v₁ : Vec_nd := ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h⟩
+  let v₂ : Vec_nd := ⟨VEC B A, (ne_iff_vec_ne_zero _ _).mp h.symm⟩
+  have eq : v₁.1 = (-1 : ℝ) • v₂.1 := by simp; rw [neg_vec]
+  unfold Ray.mk_pt_pt
+  simp
+  show Vec_nd.normalize v₁ = -Vec_nd.normalize v₂
+  symm
+  have : (-1 : ℝ) < 0 := by norm_num
+  apply neg_normalize_eq_normalize_smul_neg v₂ v₁ eq this
+
+theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toProj = (RAY B A h.symm).toProj := by
+  apply (Dir.eq_toProj_iff _ _).mpr
+  right
+  exact Ray.todir_eq_neg_todir_of_mk_pt_pt h
 
 theorem Ray.is_in_inter_iff_add_pos_Dir : p LiesInt ray ↔ ∃ t : ℝ, 0 < t ∧ VEC ray.source p = t • ray.toDir.toVec := by sorry
 
