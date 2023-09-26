@@ -228,7 +228,7 @@ variable (l : Seg P)
 def Seg.length : ℝ := norm (l.toVec)
 
 -- length of a generalized directed segment is nonnegative.
-theorem length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ _ _
+theorem length_nonneg : 0 ≤ l.length := @norm_nonneg _ _ _
 
 -- A generalized directed segment is nontrivial if and only if its length is positive.
 theorem length_pos_iff_nd : 0 < l.length ↔ (l.is_nd) := by sorry
