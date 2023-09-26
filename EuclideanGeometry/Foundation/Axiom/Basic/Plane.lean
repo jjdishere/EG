@@ -47,7 +47,7 @@ instance : AddTorsor (Vec) P := by infer_instance
 
 /- vector $AB +$ point $A =$ point $B$ -/
 @[simp]
-theorem start_vadd_vec_eq_end (A B : P) : (VEC A B) +ᵥ A = B := sorry
+theorem start_vadd_vec_eq_end (A B : P) : (VEC A B) +ᵥ A = B := vsub_vadd B A
 
 @[simp]
 theorem vadd_eq_self_iff_vec_eq_zero {A : P} {v : Vec} : v +ᵥ A = A ↔ v = 0 := sorry
