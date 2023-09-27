@@ -84,4 +84,24 @@ theorem not_lie_on_fst_and_snd_of_int_trd (trind : Triangle_nd P){A : P} (h: A L
 
 end Triangle_nd
 
+namespace Triangle
+
+theorem edge_eq_edge_of_flip_vertices (tr : Triangle P) : tr.edge₁.length = tr.flip_vertices.edge₁.length ∧ tr.edge₂.length = tr.flip_vertices.edge₃.length ∧ tr.edge₃.length = tr.flip_vertices.edge₂.length := by sorry
+
+theorem edge_eq_edge_of_perm_vertices (tr : Triangle P) : tr.edge₁.length = tr.perm_vertices.edge₂.length ∧ tr.edge₂.length = tr.perm_vertices.edge₃.length ∧ tr.edge₃.length = tr.perm_vertices.edge₁.length := by sorry
+
+end Triangle
+
+namespace Triangle_nd
+
+theorem edge_eq_edge_of_flip_vertices (tr_nd : Triangle_nd P) : tr_nd.1.edge₁.length = tr_nd.flip_vertices.1.edge₁.length ∧ tr_nd.1.edge₂.length = tr_nd.flip_vertices.1.edge₃.length ∧ tr_nd.1.edge₃.length = tr_nd.flip_vertices.1.edge₂.length := by sorry
+
+theorem edge_eq_edge_of_perm_vertices (tr_nd : Triangle_nd P) : tr_nd.1.edge₁.length = tr_nd.perm_vertices.1.edge₂.length ∧ tr_nd.1.edge₂.length = tr_nd.perm_vertices.1.edge₃.length ∧ tr_nd.1.edge₃.length = tr_nd.perm_vertices.1.edge₁.length := by sorry
+
+theorem angle_eq_neg_angle_of_flip_vertices (tr_nd : Triangle_nd P) : tr_nd.angle₁.value = - tr_nd.flip_vertices.angle₁.value ∧ tr_nd.angle₂.value = -tr_nd.flip_vertices.angle₃.value ∧ tr_nd.angle₃.value = -tr_nd.flip_vertices.angle₂.value := by sorry 
+
+theorem angle_eq_angle_of_perm_vertices (tr_nd : Triangle_nd P) : tr_nd.angle₁.value = tr_nd.perm_vertices.angle₂.value ∧ tr_nd.angle₂.value = tr_nd.perm_vertices.angle₃.value ∧ tr_nd.angle₃.value = tr_nd.perm_vertices.angle₁.value := by sorry
+
+end Triangle_nd
+
 end EuclidGeom
