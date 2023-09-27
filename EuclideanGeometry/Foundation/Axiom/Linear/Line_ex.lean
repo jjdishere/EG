@@ -21,7 +21,7 @@ theorem line_of_pt_pt_eq_rev : LIN A B h = LIN B A h.symm := by
   left
   exact Ray.snd_pt_lies_on_mk_pt_pt h
 
-theorem fst_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := Or.inl (Ray.source_lies_on (RAY A B h))
+theorem fst_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := Or.inl (Ray.source_lies_on)
 
 theorem snd_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B h := by
   rw [line_of_pt_pt_eq_rev]
@@ -342,7 +342,7 @@ theorem Ray.lies_on_toLine_of_lie_on {A : P} {r : Ray P} (h : A LiesOn r) : A Li
 theorem Seg_nd.lies_on_toLine_of_lie_on {A : P} {s : Seg_nd P} (h : A LiesOn s.1) : A LiesOn (s.toLine) := by
   constructor
   show A LiesOn s.toRay
-  exact Seg_nd.lies_on_toRay_of_lies_on _ A h
+  exact Seg_nd.lies_on_toRay_of_lies_on h
 
 theorem line_toProj_eq_seg_nd_toProj_of_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hb : B LiesOn l) (hab : B ≠ A) : Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj := by
   have : LIN A B hab = l := by apply eq_line_of_pt_pt_of_ne _ ha hb
