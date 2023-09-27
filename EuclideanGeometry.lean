@@ -1,2 +1,6 @@
 import EuclideanGeometry.Foundation.Index
-def hello := "world"
+import EuclideanGeometry.Example.Index
+
+/-!
+#
+-/
