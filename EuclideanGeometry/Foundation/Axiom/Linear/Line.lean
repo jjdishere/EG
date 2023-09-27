@@ -60,9 +60,13 @@ instance : Setoid (Ray P) := same_extn_line.setoid
 
 end same_extn_line
 
-theorem same_extn_line_of_PM (A : P) (x y : Dir) (h : PM x y) : same_extn_line (Ray.mk A x) (Ray.mk A y) := sorry
+theorem same_extn_line_of_PM (A : P) (x y : Dir) (h : PM x y) : same_extn_line (Ray.mk A x) (Ray.mk A y) := by
+  constructor
+  · simp only [Ray.toProj, Dir.eq_toProj_iff', h]
+  · exact Or.inl Ray.source_lies_on
 
-theorem same_extn_line.eq_carrier_union_rev_carrier (ray ray' : Ray P) (h : same_extn_line ray ray') : ray.carrier ∪ ray.reverse.carrier = ray'.carrier ∪ ray'.reverse.carrier := sorry
+theorem same_extn_line.eq_carrier_union_rev_carrier {ray ray' : Ray P} (h : same_extn_line ray ray') : ray.carrier ∪ ray.reverse.carrier = ray'.carrier ∪ ray'.reverse.carrier := by
+  sorry
 
 end setoid
 
