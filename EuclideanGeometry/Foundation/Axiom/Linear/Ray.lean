@@ -233,7 +233,7 @@ theorem length_nonneg : 0 ≤ l.length := @norm_nonneg _ _ _
 -- A generalized directed segment is nontrivial if and only if its length is positive.
 theorem length_pos_iff_nd : 0 < l.length ↔ (l.is_nd) := by
   rw [Seg.length, Seg.is_nd, norm_pos_iff]
-  exact (toVec_eq_zero_of_deg l).symm.not
+  exact (toVec_eq_zero_of_deg).symm.not
 
 theorem length_ne_zero_iff_nd : 0 ≠ l.length ↔ (l.is_nd) := by
   apply Iff.not
@@ -252,7 +252,7 @@ theorem length_sq_eq_inner_toVec_toVec : l.length ^ 2 = inner l.toVec l.toVec :=
 
 -- A generalized directed segment is trivial if and only if length is zero.
 theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by
-  exact Iff.trans (toVec_eq_zero_of_deg _)  (@norm_eq_zero _ _).symm
+  exact Iff.trans (toVec_eq_zero_of_deg)  (@norm_eq_zero _ _).symm
 
 -- If P lies on a generalized directed segment AB, then length(AB) = length(AP) + length(PB)
 theorem length_eq_length_add_length (l : Seg P) (A : P) (lieson : A LiesOn l) : l.length = (SEG l.source A).length + (SEG A l.target).length := by
@@ -281,7 +281,7 @@ def Seg.midpoint (seg : Seg P) : P := (1 / 2 : ℝ) • (seg.toVec) +ᵥ seg.sou
 
 theorem Seg.midpt_lies_on : seg.midpoint LiesOn seg := sorry
 
-theorem Seg_nd.midpt_lies_int : seg_nd.1.midpoint LiesInt seg_nd.1 := sorry
+theorem Seg_nd.midpt_lies_int (seg_nd : Seg_nd P) : seg_nd.1.midpoint LiesInt seg_nd.1 := sorry
 
 -- A point is the mid opint of a segment if and only it defines the same vector to the source and the target of the segment
 theorem midpt_iff_same_vector_to_source_and_target {A : P} {l : Seg P} : A = l.midpoint ↔ (SEG l.source A).toVec = (SEG A l.target).toVec := by sorry
@@ -348,7 +348,7 @@ theorem Seg_nd.exist_int_pt (l : Seg_nd P) : ∃ (p : P), p LiesInt l.1 := by
   exact midpt_lies_int l
 
 theorem length_pos_iff_exist_int_pt (l : Seg P) : 0 < l.length ↔ (∃ (p : P), p LiesInt l) := by 
-  exact Iff.trans (length_pos_iff_nd _) (nd_iff_exist_int_pt _).symm
+  exact Iff.trans (length_pos_iff_nd) (nd_iff_exist_int_pt l).symm
 
 end existence
 
