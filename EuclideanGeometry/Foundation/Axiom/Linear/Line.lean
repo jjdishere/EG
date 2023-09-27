@@ -11,7 +11,6 @@ variable {P : Type _} [EuclideanPlane P]
 
 def same_extn_line : Ray P → Ray P → Prop := fun r₁ r₂ => r₁.toProj = r₂.toProj ∧ (r₂.source LiesOn r₁ ∨ r₂.source LiesOn r₁.reverse)
 
-
 namespace same_extn_line
 
 theorem dir_eq_or_eq_neg {x y : Ray P} (h : same_extn_line x y) : (x.toDir = y.toDir ∨ x.toDir = - y.toDir) := (Dir.eq_toProj_iff _ _).mp h.1
@@ -36,12 +35,11 @@ protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same
     have ⟨t, xpary⟩ : ∃t : ℝ, y.toDir.toVec = t • x.toDir.toVec := by
       rcases (Dir.eq_toProj_iff _ _).mp h₁.1 with xy | xy
       · use 1
-        simp only [one_smul]
-        rw [xy]
+        rw [one_smul, xy]
       · use -1
-        simp only [xy, Dir.toVec_neg_eq_neg_toVec, smul_neg, neg_smul, one_smul, neg_neg]
-    rw [xpary] at dzy
+        rw [xy, Dir.toVec_neg_eq_neg_toVec, smul_neg, neg_smul, one_smul, neg_neg]
     use a + b * t
+    rw [xpary] at dzy
     rw [(vec_add_vec _ _ _).symm, dyx, dzy]
     simp only [Complex.real_smul, Complex.ofReal_mul, Complex.ofReal_add]
     ring_nf
@@ -65,7 +63,7 @@ theorem same_extn_line_of_PM (A : P) (x y : Dir) (h : PM x y) : same_extn_line (
   · simp only [Ray.toProj, Dir.eq_toProj_iff', h]
   · exact Or.inl Ray.source_lies_on
 
-theorem same_extn_line.eq_carrier_union_rev_carrier {ray ray' : Ray P} (h : same_extn_line ray ray') : ray.carrier ∪ ray.reverse.carrier = ray'.carrier ∪ ray'.reverse.carrier := by
+theorem same_extn_line.eq_carrier_union_rev_carrier (ray ray' : Ray P) (h : same_extn_line ray ray') : ray.carrier ∪ ray.reverse.carrier = ray'.carrier ∪ ray'.reverse.carrier := by
   sorry
 
 end setoid
