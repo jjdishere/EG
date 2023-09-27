@@ -1,1 +1,0 @@
-import EuclideanGeometry.Axioms.Basic.Plane
