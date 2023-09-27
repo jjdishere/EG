@@ -42,7 +42,20 @@ theorem every_pt_lies_on_seg_of_source_and_target_lies_on_seg {seg₁ seg₂ : S
   
 /- Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie in the interior of $seg_2$, and if $A$ is a point on $seg_1$, then $A$ lies in the interior of $seg_2$. -/
 
-theorem every_pt_lies_int_seg_of_source_and_target_lies_int_seg {seg₁ seg₂ : Seg P} (h₂ : seg₁.source LiesInt seg₂) (h₂ : seg₁.target LiesInt seg₂) {A : P} (ha : A LiesOn seg₁) : A LiesInt seg₂ := sorry
+theorem every_pt_lies_int_seg_of_source_and_target_lies_int_seg {seg₁ seg₂ : Seg P} (h₁ : seg₁.source LiesInt seg₂) (h₂ : seg₁.target LiesInt seg₂) {A : P} (ha : A LiesOn seg₁) : A LiesInt seg₂ := sorry
+  -- rcases h₁.1 with ⟨x,xnonneg,xle1,hx⟩
+  -- rcases h₂.1 with ⟨y,ynonneg,yle1,hy⟩
+  -- rcases ha with ⟨t,tnonneg,tleone,ht⟩
+  -- rw[←vec_add_vec seg₁.source seg₂.source,←vec_add_vec seg₁.source seg₂.source seg₁.target,←neg_vec,hx,hy,neg_add_eq_iff_eq_add,←neg_smul,smul_add,smul_smul,smul_smul,←add_smul,←add_smul,←add_assoc,mul_neg,←sub_eq_add_neg,←one_mul x,←mul_assoc,←sub_mul,mul_one] at ht 
+  -- by_cases ¬seg₂.is_nd
+  -- use every_pt_lies_on_seg_of_source_and_target_lies_on_seg h₁.1 h₂.1 ha
+  -- constructor
+  -- contrapose! ht
+  -- rw[eq_iff_vec_eq_zero] at ht
+  -- rw[ht]
+  -- symm
+  -- apply smul_ne_zero_iff.mpr
+  -- constructor
 
 /- Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie on $seg_2$, and if $A$ is a point in the interior of $seg_1$, then $A$ lies in the interior of $seg_2$. -/
 theorem every_int_pt_lies_int_seg_of_source_and_target_lies_on_seg {seg₁ seg₂ : Seg P} (h₁ : seg₁.source LiesOn seg₂) (h₂ : seg₂.source LiesOn seg₂) {A : P} (ha : A LiesInt seg₁) : A LiesInt seg₂ := sorry
