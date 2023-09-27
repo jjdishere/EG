@@ -21,23 +21,16 @@ theorem every_pt_lies_on_seg_of_source_and_target_lies_on_seg {seg₁ seg₂ : S
   apply mul_nonneg
   linarith
   linarith
-  apply mul_nonneg
-  linarith
-  linarith
+  apply mul_nonneg tnonneg ynonneg
   constructor
   nth_rw 2[←sub_add_cancel 1 t,←mul_one (1-t)]
   nth_rw 4[←mul_one t]
   apply add_le_add
-  apply mul_le_mul
+  apply mul_le_mul _ xle1 xnonneg
   linarith
-  linarith
-  linarith
-  linarith
-  apply mul_le_mul
-  linarith
-  linarith
-  linarith
-  linarith
+  simp only [le_refl]
+  apply mul_le_mul _ yle1 ynonneg tnonneg
+  simp only [le_refl]
   rw [ht]
   
 /- Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie in the interior of $seg_2$, and if $A$ is a point on $seg_1$, then $A$ lies in the interior of $seg_2$. -/
@@ -241,7 +234,5 @@ theorem every_pt_lies_int_ray_of_source_lies_int_ray_and_same_dir {ray₁ ray₂
   rw[←vec_add_vec ray₂.1 ray₁.1,hx,ht,add_smul]
 
 end MoreCoercionCompatibility
-
-
 
 end EuclidGeom
