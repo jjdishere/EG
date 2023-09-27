@@ -62,11 +62,11 @@ scoped infix : 50 "∥" => parallel
 
 section parallel_theorem
 ---- `eq_toProj theorems should be relocate to this file, they are in Line_ex now`.
-theorem Ray.para_toLine (ray : Ray P) : (LinearObj.ray ray) ∥ ray.toLine := sorry
+theorem Ray.para_toLine (ray : Ray P) : (LinearObj.ray ray) ∥ ray.toLine := rfl
 
-theorem Seg_nd.para_toRay (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := sorry
+theorem Seg_nd.para_toRay (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := rfl
 
-theorem Seg_nd.para_toLine (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toLine := sorry
+theorem Seg_nd.para_toLine (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toLine := rfl
 
 -- many more...
 
@@ -129,10 +129,31 @@ theorem heq_of_inx_of_extn_line (a₁ b₁ a₂ b₂ : Ray P) (h₁ : a₁ ≈ a
     rw [h₁.1, h₂.1]
   exact @heq_funext (Ray.toProj b₁ ≠ Ray.toProj a₁) (Ray.toProj b₂ ≠ Ray.toProj a₂) P e (fun h => inx_of_extn_line a₁ b₁ h) (fun h => inx_of_extn_line a₂ b₂ h) (inx_eq_of_same_extn_line h₁ h₂)
 
-/- the construction of the intersection point of two lines-/
+/-- The construction of the intersection point of two lines. -/
 def Line.inx (l₁ l₂ : Line P) (h : l₂.toProj ≠ l₁.toProj) : P := @Quotient.hrecOn₂ (Ray P) (Ray P) same_extn_line.setoid same_extn_line.setoid (fun l l' => (Line.toProj l' ≠ Line.toProj l) → P) l₁ l₂ inx_of_extn_line heq_of_inx_of_extn_line h
 
-theorem Line.inx_is_inx {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : is_inx (Line.inx l₁ l₂ h) l₁ l₂ := sorry
+theorem mk_pt_proj_eq {l : Line P} {A : P} (h : A LiesOn l) : Line.mk_pt_proj A l.toProj = l := sorry
+
+theorem mk_pt_proj_eq_of_eq_toProj {l : Line P} {A : P} (h : A LiesOn l) {x : Proj} 
+    (hx : x = l.toProj) : Line.mk_pt_proj A x = l := by
+  rw[hx]
+  exact mk_pt_proj_eq h
+
+/-- For any point lies on a line, there exists ray of on the line starts at given point. -/
+theorem exists_ray_rep_line_starts_at_given_pt {l : Line P} {A : P} (h : A LiesOn l) : 
+    ∃ r : Ray P, r.toLine = l ∧ r.source = A := by
+  rcases Quotient.exists_rep l with ⟨r, hr⟩
+  use ⟨A, r.toDir⟩
+  constructor
+  · exact mk_pt_proj_eq_of_eq_toProj h (by rw[← hr])
+  · rfl
+
+theorem Line.inx_lies_on_fst {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : Line.inx l₁ l₂ h ∈ l₁.carrier := sorry
+
+theorem Line.inx_lies_on_snd {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : Line.inx l₁ l₂ h ∈ l₂.carrier := sorry
+
+theorem Line.inx_is_inx {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : is_inx (Line.inx l₁ l₂ h) l₁ l₂ := 
+  ⟨inx_lies_on_fst h, inx_lies_on_snd h⟩
 
 end construction
 

@@ -34,7 +34,7 @@ section definition
 @[ext]
 class Ray (P : Type _) [EuclideanPlane P] where
   source : P
-  toDir: Dir
+  toDir : Dir
 
 /- Generalized Directed segment -/
 @[ext]
@@ -186,7 +186,6 @@ theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B 
   let s :Seg_nd P := SEG_nd A B h
   show B LiesOn s.toRay
   apply Seg_nd.lies_on_toRay_of_lies_on
-  show B LiesOn s.1
   apply Seg.target_lies_on
 
 end lies
@@ -198,18 +197,11 @@ theorem Seg_nd.toProj_eq_toRay_toProj : seg_nd.toProj = seg_nd.toRay.toProj := b
 theorem Ray.todir_eq_neg_todir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toDir = - (RAY B A h.symm).toDir := by
   let v₁ : Vec_nd := ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h⟩
   let v₂ : Vec_nd := ⟨VEC B A, (ne_iff_vec_ne_zero _ _).mp h.symm⟩
-  have eq : v₁.1 = (-1 : ℝ) • v₂.1 := by simp; rw [neg_vec]
-  unfold Ray.mk_pt_pt
-  simp
-  show Vec_nd.normalize v₁ = -Vec_nd.normalize v₂
-  symm
-  have : (-1 : ℝ) < 0 := by norm_num
-  apply neg_normalize_eq_normalize_smul_neg v₂ v₁ eq this
+  have eq : v₁.1 = (-1 : ℝ) • v₂.1 := by rw [neg_smul, one_smul, neg_vec]
+  simp only [Ray.mk_pt_pt, ne_eq]
+  exact (neg_normalize_eq_normalize_smul_neg v₂ v₁ eq (by norm_num)).symm
 
-theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toProj = (RAY B A h.symm).toProj := by
-  apply (Dir.eq_toProj_iff _ _).mpr
-  right
-  exact Ray.todir_eq_neg_todir_of_mk_pt_pt h
+theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toProj = (RAY B A h.symm).toProj := (Dir.eq_toProj_iff _ _).mpr (Or.inr (todir_eq_neg_todir_of_mk_pt_pt h))
 
 theorem Ray.is_in_inter_iff_add_pos_Dir : p LiesInt ray ↔ ∃ t : ℝ, 0 < t ∧ VEC ray.source p = t • ray.toDir.toVec := by sorry
 
@@ -218,7 +210,8 @@ end coersion_compatibility
 @[simp]
 theorem seg_toVec_eq_vec (A B : P) : (SEG A B).toVec = VEC A B := rfl
 
-theorem toVec_eq_zero_of_deg (l : Seg P) : (l.target = l.source) ↔ l.toVec = 0 := by unfold Seg.toVec Vec.mk_pt_pt; simp
+theorem toVec_eq_zero_of_deg (l : Seg P) : (l.target = l.source) ↔ l.toVec = 0 := by
+  rw [Seg.toVec, Vec.mk_pt_pt, vsub_eq_zero_iff_eq]
 
 section length
 
@@ -228,7 +221,7 @@ variable (l : Seg P)
 def Seg.length : ℝ := norm (l.toVec)
 
 -- length of a generalized directed segment is nonnegative.
-theorem length_nonneg : 0 ≤ l.length := by exact @norm_nonneg _ _ _
+theorem length_nonneg : 0 ≤ l.length := norm_nonneg _
 
 -- A generalized directed segment is nontrivial if and only if its length is positive.
 theorem length_pos_iff_nd : 0 < l.length ↔ (l.is_nd) := by sorry
@@ -244,14 +237,13 @@ theorem length_sq_eq_inner_toVec_toVec : l.length ^ 2 = inner l.toVec l.toVec :=
       sub_neg_eq_add]
     rfl
   rw [w]
-  have n : (0 : ℝ)  ≤ inner l.toVec l.toVec := by 
-    exact InnerProductSpace.Core.nonneg_re (@InnerProductSpace.toCore _ _ _ _ InnerProductSpace.complexToReal) l.toVec
+  have n : (0 : ℝ)  ≤ inner l.toVec l.toVec := InnerProductSpace.Core.nonneg_re (@InnerProductSpace.toCore _ _ _ _ InnerProductSpace.complexToReal) l.toVec
   rw [Real.sq_sqrt n]
 
 -- A generalized directed segment is trivial if and only if length is zero.
 theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 := by
   unfold Seg.length
-  exact Iff.trans (toVec_eq_zero_of_deg _)  (@norm_eq_zero _ _).symm
+  exact Iff.trans (toVec_eq_zero_of_deg _) (@norm_eq_zero _ _).symm
 
 -- If P lies on a generalized directed segment AB, then length(AB) = length(AP) + length(PB)
 theorem length_eq_length_add_length (l : Seg P) (A : P) (lieson : A LiesOn l) : l.length = (SEG l.source A).length + (SEG A l.target).length := sorry

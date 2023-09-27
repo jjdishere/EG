@@ -85,27 +85,17 @@ end pt_pt
 section pt_proj
 
 theorem pt_lies_on_of_mk_pt_proj (proj : Proj) : A LiesOn Line.mk_pt_proj A proj := by
-  set v : Dir := (@Quotient.out _ PM.con.toSetoid proj)
-  have eq : ⟦v⟧ = proj := by apply @Quotient.out_eq _ PM.con.toSetoid proj
-  rw [← eq]
-  unfold Line.mk_pt_proj
-  rw [@Quotient.map_mk _ _ PM.con.toSetoid same_extn_line.setoid _ _ _]
-  set rayA : Ray P := {source := A, toDir := v}
-  show A LiesOn rayA.toLine
+  rw [← @Quotient.out_eq _ PM.con.toSetoid proj]
+  simp only [Line.mk_pt_proj, @Quotient.map_mk _ _ PM.con.toSetoid same_extn_line.setoid _ _ _]
   apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev _ _).mpr
   left
   apply Ray.source_lies_on
 
 theorem proj_eq_of_mk_pt_proj (proj : Proj) : (Line.mk_pt_proj A proj).toProj = proj := by
-  set v : Dir := (@Quotient.out _ PM.con.toSetoid proj)
-  have eq : ⟦v⟧ = proj := by apply @Quotient.out_eq _ PM.con.toSetoid proj
-  rw [← eq]
-  unfold Line.mk_pt_proj
+  rw [← @Quotient.out_eq _ PM.con.toSetoid proj]
+  unfold Line.mk_pt_proj Line.toProj Ray.toProj Dir.toProj Ray.toDir
   rw [@Quotient.map_mk _ _ PM.con.toSetoid same_extn_line.setoid _ _ _]
-  unfold Line.toProj
   rw [@Quotient.lift_mk _ _ same_extn_line.setoid _ _ _]
-  unfold Ray.toProj Dir.toProj Ray.toDir
-  simp
 
 end pt_proj
 
