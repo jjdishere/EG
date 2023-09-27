@@ -162,7 +162,7 @@ section coersion_compatibility
 
 variable {seg : Seg P} {seg_nd : Seg_nd P} {ray : Ray P} 
 
-section lines
+section lieson
 
 theorem Ray.source_lies_on : ray.source LiesOn ray := by sorry
 
@@ -189,7 +189,7 @@ theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B 
   show B LiesOn s.1
   apply Seg.target_lies_on
 
-end lines
+end lieson
 
 theorem Seg_nd.toDir_eq_toRay_toDir : seg_nd.toDir = seg_nd.toRay.toDir := by sorry
 
