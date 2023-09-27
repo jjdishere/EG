@@ -506,8 +506,6 @@ instance : Coe Dir Proj where
 
 theorem Dir.eq_toProj_iff (x y : Dir) : x.toProj = y.toProj ↔ x = y ∨ x = -y := Quotient.eq (r := PM.con.toSetoid)
 
-theorem Dir.eq_toProj_iff' {x y : Dir} : x.toProj = y.toProj ↔ PM x y := by rw [Dir.eq_toProj_iff, PM]
-
 def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.normalize v : Proj) 
 
 -- Coincidence of toProj gives rise to important results, especially that two Vec_nd-s have the same toProj iff they are equal by taking a real (nonzero) scaler. We will prove this statement in the following section. 

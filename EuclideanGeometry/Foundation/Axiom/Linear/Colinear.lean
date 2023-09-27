@@ -34,7 +34,8 @@ theorem colinear_of_vec_eq_smul_vec {A B C : P} {t : ℝ} (e : VEC A C = t • V
   tauto
 
 theorem colinear_of_vec_eq_smul_vec' {A B C : P} : (∃ t : ℝ, VEC A C = t • VEC A B) → colinear A B C := by
-  intro ⟨_, e⟩
+  intro h
+  rcases h with ⟨t, e⟩
   exact colinear_of_vec_eq_smul_vec e
 
 theorem eq_mul_vec_iff_colinear_of_ne {A B C : P} (g : B ≠ A) : colinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B := by
@@ -57,7 +58,8 @@ theorem eq_mul_vec_iff_colinear_of_ne {A B C : P} (g : B ≠ A) : colinear A B C
       unfold colinear_of_nd at c
       simp only [ne_eq, eq_iff_iff, iff_true] at c
       exact smul_of_eq_toProj ⟨VEC A B, (ne_iff_vec_ne_zero A B).1 g⟩ ⟨VEC A C, (ne_iff_vec_ne_zero A C).1 h.2.1.symm⟩ c
-  · intro ⟨_, e⟩
+  · intro he
+    rcases he with ⟨t, e⟩
     exact colinear_of_vec_eq_smul_vec e
 
 -- Please rewrite this part, use minimal theorems, but create a tactic called `colinearity`

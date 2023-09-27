@@ -50,7 +50,7 @@ theorem Ray.toDir_of_rev_eq_neg_toDir {ray : Ray P} : ray.reverse.toDir = - ray.
 theorem Ray.toProj_of_rev_eq_toProj {ray : Ray P} : ray.reverse.toProj = ray.toProj := by
   --@HeRunming: Simply imitate the proof of theorem "eq_toProj_of_smul" in Vector.lean
   -- `??? Why not use that toProj is the quotient of toDir` see the definition of toProj
-  apply (Dir.eq_toProj_iff _ _).mpr
+  apply (Dir.eq_toProj_iff ray.reverse.toDir ray.toDir).mpr
   right
   rfl
 
@@ -222,11 +222,6 @@ theorem length_eq_length_of_rev (seg : Seg P) : seg.length = seg.reverse.length 
   rw[eq]
   simp only [Vec.norm]
   norm_num
-
--- A point `p` lies on the line determined by a ray `r` if and only if the vector `VEC r.source p` is parallel to the direction of `r`.
-theorem pt_lies_on_ray_iff_vec_same_dir {p : P} {r : Ray P} : (p LiesOn r ∨ p LiesOn r.reverse) ↔ ∃t : ℝ, VEC p r.source = t • r.toDir.toVec := sorry
-
-
 
 end reverse
 

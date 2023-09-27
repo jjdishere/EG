@@ -7,17 +7,17 @@ variable {P: Type _} [EuclideanPlane P]
 
 section MoreCoercionCompatibility
 
-/- Given two segments `seg₁` and `seg₂`, if the source and the target of the `seg₁` both lie on `seg₂`, then every point of `seg₁` lies on `seg₂`. -/
+/- Given two segments $seg_1$ and $seg_2$, if the source and the target of the $seg_1$ both lie on $seg_2$, then every point of $seg_1$ lies on $seg_2$. -/
 theorem every_pt_lies_on_seg_of_source_and_target_lies_on_seg {seg₁ seg₂ : Seg P} (h₁ : seg₁.source LiesOn seg₂) (h₂ : seg₁.target LiesOn seg₂) {A : P} (ha : A LiesOn seg₁) : (A LiesOn seg₂) := sorry
 
 
 -- More theorem of this flavor, please formulate them on your own, following the instructions.  `But be careful that we introduced seg₁ and seg₂ using {}, this is because we want the compute to infer what they are; same applies to the point A.`
 
-/- Given two segments `seg₁` and `seg₂`, if the source and the target of `seg₁` both lie in the interior of `seg₂`, and if $A$ is a point on `se`g₁, then $A$ lies in the interior of `seg₂`. -/
+/- Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie in the interior of $seg_2$, and if $A$ is a point on $seg_1$, then $A$ lies in the interior of $seg_2$. -/
 theorem
 every_pt_lies_int_seg_of_source_and_target_lies_int_seg {seg₁ seg₂ : Seg P} (h₂ : seg₁.source LiesInt seg₂) (h₂ : seg₁.target LiesInt seg₂) {A : P} (ha : A LiesOn seg₁) : A LiesInt seg₂ := sorry
 
-/- Given two segments `seg₁` and `seg₂`, if the source and the target of `seg₁` both lie on `seg₂`, and if $A$ is a point in the interior of `se`g₁, then $A$ lies in the interior of `seg₂`. -/
+/- Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie on $seg_2$, and if $A$ is a point in the interior of $seg_1$, then $A$ lies in the interior of $seg_2$. -/
 theorem
 every_int_pt_lies_int_seg_of_source_and_target_lies_on_seg {seg₁ seg₂ : Seg P} (h₁ : seg₁.source LiesOn seg₂) (h₂ : seg₂.source LiesOn seg₂) {A : P} (ha : A LiesInt seg₁) : A LiesInt seg₂ := sorry
 
