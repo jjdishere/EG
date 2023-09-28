@@ -56,6 +56,10 @@ def diag₂₄ : Seg P := SEG qdr.2 qdr.4
 
 end Quadrilateral
 
+/- 
+`Should change here, first should define a single propert IsConvex then define the class, this will enable the class to defined as adding this single property`
+`and we can write QDR_cvx A B C D h`
+-/
 /--
 Class of Convex Quadrilateral: A convex quadrilateral is quadrilateral such that 
 1. both diagnals are non-degenerate, 
@@ -76,47 +80,57 @@ class Quadrilateral_cvx (P : Type _) [EuclideanPlane P] extends Quadrilateral P 
 namespace Quadrilateral_cvx
 variable {P : Type _} [EuclideanPlane P] {qdr_cvx : Quadrilateral_cvx P}
 
+/-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
+theorem diag₁₃_nd : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := qdr_cvx.nd₁₃
+
+/-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
+theorem diag₂₄_nd : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := qdr_cvx.nd₂₄
+
 /-- The non-degenerate diagonal from the first point and third point of a convex quadrilateral -/
-def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ nd₁₃
+def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃
 
 /-- The non-degenerate diagonal from the second point and fourth point of a convex quadrilateral -/
-def diag_nd₂₄ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ nd₂₄
+def diag_nd₂₄ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem edge₁₂.is_nd : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := sorry
+theorem edge₁₂_nd : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem edge₂₃.is_nd : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := sorry
+theorem edge₂₃_nd : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem edge₃₄.is_nd : qdr_cvx.point₄ ≠ qdr_cvx.point₃ := sorry
+theorem edge₃₄_nd : qdr_cvx.point₄ ≠ qdr_cvx.point₃ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem edge₄₁.is_nd : qdr_cvx.point₁ ≠ qdr_cvx.point₄ := sorry
+theorem edge₄₁_nd : qdr_cvx.point₁ ≠ qdr_cvx.point₄ := sorry
 
 /-- The edge from the first point to the second point of a quadrilateral -/
-def edge_nd₁₂ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ edge₁₂.is_nd
+def edge_nd₁₂ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.edge₁₂_nd
 
 /-- The edge from the second point to the third point of a quadrilateral -/
-def edge_nd₂₃ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃ edge₂₃.is_nd
+def edge_nd₂₃ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.edge₂₃_nd
 
 /-- The edge from the third point to the fourth point of a quadrilateral -/
-def edge_nd₃₄ : Seg_nd P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ edge₃₄.is_nd
+def edge_nd₃₄ : Seg_nd P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.edge₃₄_nd
 
 /-- The edge from the fourth point to the first point of a quadrilateral -/
-def edge_nd₄₁ : Seg_nd P := SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ edge₄₁.is_nd
+def edge_nd₄₁ : Seg_nd P := SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.edge₄₁_nd
 
 end Quadrilateral_cvx
 
--- `Do I need such a predicate is_convex?`
 section is_convex
 variable {P : Type _} [EuclideanPlane P]
 
-def Quadrilateral.is_convex (qdr : Quadrilateral P) : Prop := sorry
+def Quadrilateral.IsConvex (qdr : Quadrilateral P) : Prop := by
+  by_cases ((qdr.point₃ ≠ qdr.point₁) ∧ (qdr.point₄ ≠ qdr.point₂))
+  · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ h.2 ∥ (LinearObj.seg_nd (SEG_nd qdr.point₁ qdr.point₃ h.1)))
+    · exact Line.inx (SEG_nd qdr.point₁ qdr.point₃ h.1).toLine (SEG_nd qdr.point₂ qdr.point₄ h.2).toLine g LiesInt (SEG qdr.point₁ qdr.point₃) ∧ Line.inx (SEG_nd qdr.point₁ qdr.point₃ h.1).toLine (SEG_nd qdr.point₂ qdr.point₄ h.2).toLine g LiesInt (SEG qdr.point₂ qdr.point₄)
+    · exact False
+  · exact False
 
-theorem Quadrilateral_cvx.is_convex (qdr_cvx : Quadrilateral_cvx P) : qdr_cvx.1.is_convex := sorry
+theorem Quadrilateral_cvx.is_convex (qdr_cvx : Quadrilateral_cvx P) : qdr_cvx.1.IsConvex := sorry
 
-def Quadrilateral_cvx.mk_is_convex {qdr : Quadrilateral P} (h : qdr.is_convex) : Quadrilateral_cvx P where
+def Quadrilateral_cvx.mk_is_convex {qdr : Quadrilateral P} (h : qdr.IsConvex) : Quadrilateral_cvx P where
   toQuadrilateral := qdr
   nd₁₃ := sorry
   nd₂₄ := sorry
