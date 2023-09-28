@@ -148,9 +148,19 @@ theorem exists_ray_rep_line_starts_at_given_pt {l : Line P} {A : P} (h : A LiesO
   · exact mk_pt_proj_eq_of_eq_toProj h (by rw[← hr])
   · rfl
 
-theorem Line.inx_lies_on_fst {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : Line.inx l₁ l₂ h ∈ l₁.carrier := sorry
-
-theorem Line.inx_lies_on_snd {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : Line.inx l₁ l₂ h ∈ l₂.carrier := sorry
+theorem Line.inx_lies_on_fst {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : 
+    Line.inx l₁ l₂ h ∈ l₁.carrier := by
+  rcases Quotient.exists_rep l₁ with ⟨r1, hr1⟩
+  rcases Quotient.exists_rep l₂ with ⟨r2, hr2⟩
+  simp only [← hr1, ← hr2]
+  exact inx_lies_on_fst_extn_line r1 r2 (by rw[← hr1, ← hr2] at h; exact h)
+  
+theorem Line.inx_lies_on_snd {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : 
+    Line.inx l₁ l₂ h ∈ l₂.carrier := by
+  rcases Quotient.exists_rep l₁ with ⟨r1, hr1⟩
+  rcases Quotient.exists_rep l₂ with ⟨r2, hr2⟩
+  simp only [← hr1, ← hr2]
+  exact inx_lies_on_snd_extn_line r1 r2 (by rw[← hr1, ← hr2] at h; exact h)
 
 theorem Line.inx_is_inx {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : is_inx (Line.inx l₁ l₂ h) l₁ l₂ := 
   ⟨inx_lies_on_fst h, inx_lies_on_snd h⟩

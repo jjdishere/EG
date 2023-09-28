@@ -210,7 +210,7 @@ end coersion_compatibility
 @[simp]
 theorem seg_toVec_eq_vec (A B : P) : (SEG A B).toVec = VEC A B := rfl
 
-theorem toVec_eq_zero_of_deg (l : Seg P) : (l.target = l.source) ↔ l.toVec = 0 := by
+theorem toVec_eq_zero_of_deg {l : Seg P} : (l.target = l.source) ↔ l.toVec = 0 := by
   rw [Seg.toVec, Vec.mk_pt_pt, vsub_eq_zero_iff_eq]
 
 section length
