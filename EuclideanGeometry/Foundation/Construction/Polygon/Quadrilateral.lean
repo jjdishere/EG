@@ -23,6 +23,7 @@ noncomputable section
 namespace EuclidGeom
 
 /-- Class of Quadrilateral: A quadrilateral consists of four points; it is the generalized quadrilateral formed by these four points -/
+@[ext]
 class Quadrilateral (P : Type _) [EuclideanPlane P] where
   point₁ : P
   point₂ : P
@@ -61,11 +62,12 @@ Class of Convex Quadrilateral: A convex quadrilateral is quadrilateral such that
 2. two diagonals are not parallel to each other,
 3. the interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals.
 -/
+@[ext]
 class Quadrilateral_cvx (P : Type _) [EuclideanPlane P] extends Quadrilateral P where
   nd₁₃ : point₃ ≠ point₁ 
   nd₂₄ : point₄ ≠ point₂
   diag_not_para : ¬ SEG_nd point₂ point₄ nd₂₄ ∥ (LinearObj.seg_nd (SEG_nd point₁ point₃ nd₁₃))
-  diag_intx : Line.inx (SEG_nd point₁ point₃ nd₁₃).toLine (SEG_nd point₂ point₄ nd₂₄).toLine diag_not_para LiesInt (SEG point₁ point₃) ∧ Line.inx (SEG_nd point₁ point₃ nd₁₃).toLine (SEG_nd point₂ point₄ nd₂₄).toLine diag_not_para LiesInt (SEG point₂ point₄) 
+  diag_intx : Line.inx (SEG_nd point₁ point₃ nd₁₃).toLine (SEG_nd point₂ point₄ nd₂₄).toLine diag_not_para LiesInt (SEG point₁ point₃) ∧ Line.inx (SEG_nd point₁ point₃ nd₁₃).toLine (SEG_nd point₂ point₄ nd₂₄).toLine diag_not_para LiesInt (SEG point₂ point₄)
 
 -- `do we need the following notation?`
 -- scoped notation "QDR_cvx" => Quadrilateral_cvx.mk
@@ -106,6 +108,33 @@ def edge_nd₄₁ : Seg_nd P := SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ edge₄
 
 end Quadrilateral_cvx
 
+-- `Do I need such a predicate is_convex?`
+section is_convex
+variable {P : Type _} [EuclideanPlane P]
+
+def Quadrilateral.is_convex (qdr : Quadrilateral P) : Prop := sorry
+
+theorem Quadrilateral_cvx.is_convex (qdr_cvx : Quadrilateral_cvx P) : qdr_cvx.1.is_convex := sorry
+
+def Quadrilateral_cvx.mk_is_convex {qdr : Quadrilateral P} (h : qdr.is_convex) : Quadrilateral_cvx P where
+  toQuadrilateral := qdr
+  nd₁₃ := sorry
+  nd₂₄ := sorry
+  diag_not_para := sorry
+  diag_intx := sorry
+
+end is_convex
+
+section criteria
+/-
+the criteria of a quadrilateral being convex
+-/
+
+end criteria
+
+section property
 -- properties of convex quadrilateral `to be added`
+
+end property
 
 end EuclidGeom
