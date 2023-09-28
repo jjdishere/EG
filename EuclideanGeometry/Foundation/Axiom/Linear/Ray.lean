@@ -242,7 +242,7 @@ theorem Ray.lies_int_iff (p : P) : (p LiesInt ray) ↔ ∃ (t:ℝ) , 0 < t  ∧ 
   linarith
   exact Dir.toVec_ne_zero ray.toDir
 
-theorem Seg_nd.lies_on_toRay_of_lies_on (p : P) : (p LiesOn seg_nd.1) → (p LiesOn seg_nd.toRay) := by sorry
+theorem Seg_nd.lies_on_toRay_of_lies_on {p : P} : (p LiesOn seg_nd.1) → (p LiesOn seg_nd.toRay) := by sorry
 
 theorem Seg_nd.lies_int_toRay_of_lies_int {p : P} : (p LiesInt seg_nd.1) → (p LiesInt seg_nd.toRay) := by sorry
 

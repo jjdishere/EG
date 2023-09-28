@@ -38,7 +38,7 @@ theorem every_pt_lies_on_seg_of_source_and_target_lies_on_seg {seg₁ seg₂ : S
 theorem every_pt_lies_int_seg_of_source_and_target_lies_int_seg {seg₁ seg₂ : Seg P} (h₁ : seg₁.source LiesInt seg₂) (h₂ : seg₁.target LiesInt seg₂) {A : P} (ha : A LiesOn seg₁) : A LiesInt seg₂ := by
   rw[Seg.lies_int_iff]
   constructor
-  apply ((Seg.lies_int_iff seg₂ seg₁.source).mp h₁).1
+  apply ((Seg.lies_int_iff seg₁.source).mp h₁).1
   rw[Seg.lies_int_iff] at h₁ h₂
   rcases h₁ with ⟨ _ ,x,xpos,xlt1,hx⟩
   rcases h₂ with ⟨ _ ,y,ypos,ylt1,hy⟩
@@ -81,10 +81,10 @@ theorem every_pt_lies_int_seg_of_source_and_target_lies_int_seg {seg₁ seg₂ :
 
 /- Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie on $seg_2$, and if $A$ is a point in the interior of $seg_1$, then $A$ lies in the interior of $seg_2$. -/
 theorem every_int_pt_lies_int_seg_of_source_and_target_lies_on_seg {seg₁ seg₂ : Seg P} (h₁ : seg₁.source LiesOn seg₂) (h₂ : seg₁.target LiesOn seg₂) {A : P} (ha : A LiesInt seg₁) : A LiesInt seg₂ := by
-  apply (Seg.lies_int_iff seg₂ A).mpr
+  apply (Seg.lies_int_iff A).mpr
   rcases h₁ with ⟨x,xnonneg,xle1,hx⟩
   rcases h₂ with ⟨y,ynonneg,yle1,hy⟩
-  rcases (Seg.lies_int_iff seg₁ A).mp ha with ⟨nd,t,tpos,tlt1,ht⟩
+  rcases (Seg.lies_int_iff A).mp ha with ⟨nd,t,tpos,tlt1,ht⟩
   constructor
   rw[Seg.is_nd,ne_iff_vec_ne_zero]
   contrapose! nd
@@ -160,9 +160,9 @@ theorem every_pt_lies_on_ray_of_source_and_target_lies_on_ray {seg : Seg P} {ray
 
 /- Given a segment and a ray, if the source and the target of the segment both lie in the interior of the ray, and if $A$ is a point on the segment, then $A$ lies in the interior of the ray.-/
 theorem every_pt_lies_int_ray_of_source_and_target_lies_int_ray {seg : Seg P} {ray : Ray P}(h₁ : seg.source LiesInt ray) (h₂ : seg.target LiesInt ray) {A : P} (ha : A LiesOn seg) : A LiesInt ray := by
-  rcases ((Ray.lies_int_iff ray seg.source).mp h₁) with ⟨x,xpos,hx⟩
-  rcases ((Ray.lies_int_iff ray seg.target).mp h₂) with ⟨y,ypos,hy⟩
-  apply (Ray.lies_int_iff ray A).mpr
+  rcases ((Ray.lies_int_iff seg.source).mp h₁) with ⟨x,xpos,hx⟩
+  rcases ((Ray.lies_int_iff seg.target).mp h₂) with ⟨y,ypos,hy⟩
+  apply (Ray.lies_int_iff A).mpr
   rcases ha with ⟨t,tnonneg,tle1,ht⟩
   rw[←vec_sub_vec ray.source,←vec_sub_vec ray.source seg.source seg.target,hx,hy,sub_eq_iff_eq_add,←sub_smul,smul_smul,←add_smul,mul_sub] at ht 
   use (t*y+(1-t)*x)
@@ -183,9 +183,9 @@ theorem every_pt_lies_int_ray_of_source_and_target_lies_int_ray {seg : Seg P} {r
 theorem every_int_pt_lies_int_ray_of_source_and_target_lies_on_ray {seg : Seg P} {ray : Ray P} (h₁ : seg.source LiesOn ray) (h₂ : seg.target LiesOn ray) {A : P} (ha : A LiesInt seg) : A LiesInt ray := by
   rcases h₁ with ⟨x,xnonneg,hx⟩
   rcases h₂ with ⟨y,ynonneg,hy⟩
-  rcases (Seg.lies_int_iff seg A).mp ha with ⟨nd,t,tpos,tlt1,ht⟩
+  rcases (Seg.lies_int_iff A).mp ha with ⟨nd, t, tpos, tlt1, ht⟩
   simp only [Seg.toVec,←vec_sub_vec ray.1 seg.1,hx,hy,sub_eq_iff_eq_add,←sub_smul,smul_smul,←add_smul] at ht
-  apply (Ray.lies_int_iff ray A).mpr
+  apply (Ray.lies_int_iff A).mpr
   use (1-t)*x+t*y
   have ynex:y≠x:= by
     contrapose! nd
@@ -224,9 +224,9 @@ theorem every_pt_lies_on_ray_of_source_lies_on_ray_and_same_dir {ray₁ ray₂ :
 
 /- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies in the interior of $ray_2$, and if $A$ is a point on $ray_1$, then $A$ lies in the interior of $ray_2$. -/
 theorem every_pt_lies_int_ray_of_source_lies_int_ray_and_same_dir {ray₁ ray₂ : Ray P} (e : ray₁.toDir = ray₂.toDir) (h : ray₁.source LiesInt ray₂) {A : P} (ha : A LiesOn ray₁) : A LiesInt ray₂ := by
-  apply (Ray.lies_int_iff ray₂ A).mpr
+  apply (Ray.lies_int_iff A).mpr
   rcases ha with ⟨t,tnonneg,ht⟩
-  rcases (Ray.lies_int_iff ray₂ ray₁.1).mp h with ⟨x,xpos,hx⟩
+  rcases (Ray.lies_int_iff ray₁.1).mp h with ⟨x, xpos, hx⟩
   rw[e] at ht
   use x+t
   constructor
