@@ -21,7 +21,7 @@ theorem line_of_pt_pt_eq_rev : LIN A B h = LIN B A h.symm := by
   left
   exact Ray.snd_pt_lies_on_mk_pt_pt h
 
-theorem fst_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := Or.inl (Ray.source_lies_on (RAY A B h))
+theorem fst_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := Or.inl (Ray.source_lies_on)
 
 theorem snd_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B h := by
   rw [line_of_pt_pt_eq_rev]
@@ -42,7 +42,7 @@ theorem exist_real_vec_eq_smul_of_lies_on_or_rev {A : P} {ray : Ray P} (h : A Li
   rcases h with ⟨t, _, eq⟩ | ⟨t, _, eq⟩
   · use t, eq
   use -t
-  simp; exact eq
+  simpa only [neg_smul, Complex.real_smul] using eq
 
 theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : LIN A B h = l := by
   revert l
@@ -85,27 +85,24 @@ end pt_pt
 section pt_proj
 
 theorem pt_lies_on_of_mk_pt_proj (proj : Proj) : A LiesOn Line.mk_pt_proj A proj := by
-  set v : Dir := (@Quotient.out _ PM.con.toSetoid proj)
-  have eq : ⟦v⟧ = proj := by apply @Quotient.out_eq _ PM.con.toSetoid proj
-  rw [← eq]
-  unfold Line.mk_pt_proj
-  rw [@Quotient.map_mk _ _ PM.con.toSetoid same_extn_line.setoid _ _ _]
-  set rayA : Ray P := {source := A, toDir := v}
-  show A LiesOn rayA.toLine
+  rw [← @Quotient.out_eq _ PM.con.toSetoid proj]
+  simp only [Line.mk_pt_proj, @Quotient.map_mk _ _ PM.con.toSetoid same_extn_line.setoid _ _ _]
   apply (Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev _ _).mpr
   left
   apply Ray.source_lies_on
 
 theorem proj_eq_of_mk_pt_proj (proj : Proj) : (Line.mk_pt_proj A proj).toProj = proj := by
-  set v : Dir := (@Quotient.out _ PM.con.toSetoid proj)
-  have eq : ⟦v⟧ = proj := by apply @Quotient.out_eq _ PM.con.toSetoid proj
-  rw [← eq]
-  unfold Line.mk_pt_proj
+  rw [← @Quotient.out_eq _ PM.con.toSetoid proj]
+  unfold Line.mk_pt_proj Line.toProj Ray.toProj Dir.toProj Ray.toDir
   rw [@Quotient.map_mk _ _ PM.con.toSetoid same_extn_line.setoid _ _ _]
-  unfold Line.toProj
   rw [@Quotient.lift_mk _ _ same_extn_line.setoid _ _ _]
-  unfold Ray.toProj Dir.toProj Ray.toDir
-  simp
+
+theorem mk_pt_proj_eq {l : Line P} {A : P} (h : A LiesOn l) : Line.mk_pt_proj A l.toProj = l := sorry
+
+theorem mk_pt_proj_eq_of_eq_toProj {l : Line P} {A : P} (h : A LiesOn l) {x : Proj} 
+    (hx : x = l.toProj) : Line.mk_pt_proj A x = l := by
+  rw [hx]
+  exact mk_pt_proj_eq h
 
 end pt_proj
 
@@ -352,7 +349,7 @@ theorem Ray.lies_on_toLine_of_lie_on {A : P} {r : Ray P} (h : A LiesOn r) : A Li
 theorem Seg_nd.lies_on_toLine_of_lie_on {A : P} {s : Seg_nd P} (h : A LiesOn s.1) : A LiesOn (s.toLine) := by
   constructor
   show A LiesOn s.toRay
-  exact Seg_nd.lies_on_toRay_of_lies_on _ A h
+  exact Seg_nd.lies_on_toRay_of_lies_on h
 
 theorem line_toProj_eq_seg_nd_toProj_of_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hb : B LiesOn l) (hab : B ≠ A) : Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj := by
   have : LIN A B hab = l := by apply eq_line_of_pt_pt_of_ne _ ha hb
@@ -415,20 +412,18 @@ theorem colinear_iff_exist_line_lies_on (A B C : P) : colinear A B C ↔ ∃ l :
       use (LIN A B h), fst_pt_lies_on_line_of_pt_pt h, snd_pt_lies_on_line_of_pt_pt h
       rw [lies_on_line_of_pt_pt_iff_colinear]
       exact c
-    simp at h
+    rw [ne_eq, not_not] at h 
     by_cases hh : C ≠ B
     · intro _
       use (LIN B C hh)
-      rw [← h]
-      simp
+      rw [← h, and_self_left]
       exact ⟨fst_pt_lies_on_line_of_pt_pt hh, snd_pt_lies_on_line_of_pt_pt hh⟩
-    simp at hh
+    rw [ne_eq, not_not] at hh 
     intro _
-    rw [hh, h]
-    simp
+    simp only [hh, h, and_self]
     have : ∃ D : P, D ≠ A := by
       let v : Vec := 1
-      have : v ≠ 0 := by simp
+      have : v ≠ 0 := by simp only [ne_eq, one_ne_zero, not_false_eq_true]
       use v +ᵥ A
       intro eq
       rw [vadd_eq_self_iff_vec_eq_zero] at eq
@@ -439,9 +434,8 @@ theorem colinear_iff_exist_line_lies_on (A B C : P) : colinear A B C ↔ ∃ l :
   by_cases h : B ≠ A
   · apply (lies_on_iff_colinear_of_ne_lies_on_lies_on h ha hb _).mp
     exact hc
-  simp at h
-  rw [h, colinear]
-  simp
+  rw [ne_eq, not_not] at h
+  simp only [h, colinear, or_true, dite_true]
 
 end colinear
 
