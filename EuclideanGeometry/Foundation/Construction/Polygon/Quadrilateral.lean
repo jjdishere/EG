@@ -8,13 +8,13 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 In this file we define general quadrilaterals as four points on the plane and convex quadrilaterals.
 
 ## Important Definitions
-*
-*
+* `Quadrilateral P` : general quadrilaterals on the plane `P`, i.e. four points on `P`
+* `Quadrilateral_cvx P` : convex quadrilaterals on the plane `P`
 
 ## Notation
+* `QDR A B C D` : notation for quadrilateral `A B C D`
 
 ## Implementation Notes
-
 Currently, we just defines general quadrilaterals and convex quadrilaterals. There are more classes in between. For example, quadrilateral without self-intersection, quadrilateral of non-degenerate (which means it does not self-intersect and not degenerate to a triangle). 
 Of course many definitions work on these classes already, but without necessarity in application, we will not formalize these class for present.
 -/
@@ -105,5 +105,7 @@ def edge_nd₃₄ : Seg_nd P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ edge₃
 def edge_nd₄₁ : Seg_nd P := SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ edge₄₁.is_nd
 
 end Quadrilateral_cvx
+
+-- properties of convex quadrilateral `to be added`
 
 end EuclidGeom
