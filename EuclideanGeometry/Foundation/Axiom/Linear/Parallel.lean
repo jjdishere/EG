@@ -62,11 +62,11 @@ scoped infix : 50 "∥" => parallel
 
 section parallel_theorem
 ---- `eq_toProj theorems should be relocate to this file, they are in Line_ex now`.
-theorem Ray.para_toLine (ray : Ray P) : (LinearObj.ray ray) ∥ ray.toLine := sorry
+theorem Ray.para_toLine (ray : Ray P) : (LinearObj.ray ray) ∥ ray.toLine := rfl
 
-theorem Seg_nd.para_toRay (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := sorry
+theorem Seg_nd.para_toRay (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := rfl
 
-theorem Seg_nd.para_toLine (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toLine := sorry
+theorem Seg_nd.para_toLine (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toLine := rfl
 
 -- many more...
 
@@ -129,10 +129,25 @@ theorem heq_of_inx_of_extn_line (a₁ b₁ a₂ b₂ : Ray P) (h₁ : a₁ ≈ a
     rw [h₁.1, h₂.1]
   exact @heq_funext (Ray.toProj b₁ ≠ Ray.toProj a₁) (Ray.toProj b₂ ≠ Ray.toProj a₂) P e (fun h => inx_of_extn_line a₁ b₁ h) (fun h => inx_of_extn_line a₂ b₂ h) (inx_eq_of_same_extn_line h₁ h₂)
 
-/-- the intersection point of two non-parallel lines-/
+/-- The construction of the intersection point of two lines. -/
 def Line.inx (l₁ l₂ : Line P) (h : l₂.toProj ≠ l₁.toProj) : P := @Quotient.hrecOn₂ (Ray P) (Ray P) same_extn_line.setoid same_extn_line.setoid (fun l l' => (Line.toProj l' ≠ Line.toProj l) → P) l₁ l₂ inx_of_extn_line heq_of_inx_of_extn_line h
 
-theorem Line.inx_is_inx {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : is_inx (Line.inx l₁ l₂ h) l₁ l₂ := sorry
+theorem Line.inx_lies_on_fst {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : 
+    Line.inx l₁ l₂ h ∈ l₁.carrier := by
+  rcases Quotient.exists_rep l₁ with ⟨r1, hr1⟩
+  rcases Quotient.exists_rep l₂ with ⟨r2, hr2⟩
+  simp only [← hr1, ← hr2]
+  exact inx_lies_on_fst_extn_line r1 r2 (by rw [← hr1, ← hr2] at h; exact h)
+  
+theorem Line.inx_lies_on_snd {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : 
+    Line.inx l₁ l₂ h ∈ l₂.carrier := by
+  rcases Quotient.exists_rep l₁ with ⟨r1, hr1⟩
+  rcases Quotient.exists_rep l₂ with ⟨r2, hr2⟩
+  simp only [← hr1, ← hr2]
+  exact inx_lies_on_snd_extn_line r1 r2 (by rw [← hr1, ← hr2] at h; exact h)
+
+theorem Line.inx_is_inx {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : is_inx (Line.inx l₁ l₂ h) l₁ l₂ := 
+  ⟨inx_lies_on_fst h, inx_lies_on_snd h⟩
 
 end construction
 
@@ -146,7 +161,9 @@ theorem unique_of_inx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : l�
 
 theorem Line.inx.symm {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : Line.inx l₂ l₁ h.symm = Line.inx l₁ l₂ h := unique_of_inx_of_line_of_not_para h (Line.inx_is_inx h) <| is_inx.symm (Line.inx_is_inx h.symm)
 
-theorem eq_of_parallel_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A LiesOn l₁) (h₂ : A LiesOn l₂) (h : LinearObj.line l₁ ∥ l₂) : l₁ = l₂ := sorry
+theorem eq_of_parallel_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A LiesOn l₁) (h₂ : A LiesOn l₂) 
+    (h : LinearObj.line l₁ ∥ LinearObj.line l₂) : l₁ = l₂ := by
+  rw [← mk_pt_proj_eq h₁, mk_pt_proj_eq_of_eq_toProj h₂ (by exact h)]
 
 theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃ p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
   rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
