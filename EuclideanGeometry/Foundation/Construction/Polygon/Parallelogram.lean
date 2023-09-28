@@ -20,7 +20,11 @@ variable {P : Type _} [EuclideanPlane P]
 section criteria
 variable {A B C D : P} (h : (QDR A B C D) IsConvex)
 /- 
-1. is_prg_of_
+0. is_prg_of_para_para
+1. is_prg_of_eq_length_eq_length
+2. is_prg_of_para_eq_length -- a pair of edge both eq_length and parallel
+3. is_prg_of_eq_angle_value_eq_angle_value
+4. is_prg_of_diag_inx_eq_mid_eq_mid -- diag intersection is the midpoint of both diagonal
 -/
 end criteria
 
@@ -52,9 +56,9 @@ theorem para_of_is_prg' (h : QDR A B C D IsPRG) : LinearObj.seg_nd (SEG_nd B C s
 13. eq_angle_value_of_is_prg'
 -/
 
-theorem eq_length_of_diag_inx_of_is_prg {E : P} (h : QDR A B C D IsPRG) (e : E = Quadrilateral_cvx.diag_inx (QDR_cvx A B C D (is_convex_of_is_prg h))) : (SEG A E).length = (SEG C E).length := sorry
+theorem eq_midpt_of_diag_inx_of_is_prg {E : P} (h : QDR A B C D IsPRG) : Quadrilateral_cvx.diag_inx (QDR_cvx A B C D (is_convex_of_is_prg h)) = (SEG A C).midpoint := sorry
 
-theorem eq_length_of_diag_inx_of_is_prg' {E : P} (h : QDR A B C D IsPRG) (e : E = Quadrilateral_cvx.diag_inx (QDR_cvx A B C D (is_convex_of_is_prg h))) : (SEG B E).length = (SEG D E).length := sorry
+theorem eq_midpt_of_diag_inx_of_is_prg' {E : P} (h : QDR A B C D IsPRG) : Quadrilateral_cvx.diag_inx (QDR_cvx A B C D (is_convex_of_is_prg h)) = (SEG B D).midpoint := sorry
 
 theorem parallelogram_law (h : QDR A B C D IsPRG) : 2 * (SEG A B).length ^ 2 + 2 * (SEG B C).length ^ 2 = (SEG A C).length ^ 2 + (SEG B D).length ^ 2
 := sorry
