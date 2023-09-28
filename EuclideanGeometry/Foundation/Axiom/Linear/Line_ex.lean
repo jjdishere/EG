@@ -42,7 +42,7 @@ theorem exist_real_vec_eq_smul_of_lies_on_or_rev {A : P} {ray : Ray P} (h : A Li
   rcases h with ⟨t, _, eq⟩ | ⟨t, _, eq⟩
   · use t, eq
   use -t
-  simp; exact eq
+  simpa only [neg_smul, Complex.real_smul] using eq
 
 theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : LIN A B h = l := by
   revert l
@@ -96,6 +96,13 @@ theorem proj_eq_of_mk_pt_proj (proj : Proj) : (Line.mk_pt_proj A proj).toProj = 
   unfold Line.mk_pt_proj Line.toProj Ray.toProj Dir.toProj Ray.toDir
   rw [@Quotient.map_mk _ _ PM.con.toSetoid same_extn_line.setoid _ _ _]
   rw [@Quotient.lift_mk _ _ same_extn_line.setoid _ _ _]
+
+theorem mk_pt_proj_eq {l : Line P} {A : P} (h : A LiesOn l) : Line.mk_pt_proj A l.toProj = l := sorry
+
+theorem mk_pt_proj_eq_of_eq_toProj {l : Line P} {A : P} (h : A LiesOn l) {x : Proj} 
+    (hx : x = l.toProj) : Line.mk_pt_proj A x = l := by
+  rw [hx]
+  exact mk_pt_proj_eq h
 
 end pt_proj
 
@@ -405,20 +412,18 @@ theorem colinear_iff_exist_line_lies_on (A B C : P) : colinear A B C ↔ ∃ l :
       use (LIN A B h), fst_pt_lies_on_line_of_pt_pt h, snd_pt_lies_on_line_of_pt_pt h
       rw [lies_on_line_of_pt_pt_iff_colinear]
       exact c
-    simp at h
+    rw [ne_eq, not_not] at h 
     by_cases hh : C ≠ B
     · intro _
       use (LIN B C hh)
-      rw [← h]
-      simp
+      rw [← h, and_self_left]
       exact ⟨fst_pt_lies_on_line_of_pt_pt hh, snd_pt_lies_on_line_of_pt_pt hh⟩
-    simp at hh
+    rw [ne_eq, not_not] at hh 
     intro _
-    rw [hh, h]
-    simp
+    simp only [hh, h, and_self]
     have : ∃ D : P, D ≠ A := by
       let v : Vec := 1
-      have : v ≠ 0 := by simp
+      have : v ≠ 0 := by simp only [ne_eq, one_ne_zero, not_false_eq_true]
       use v +ᵥ A
       intro eq
       rw [vadd_eq_self_iff_vec_eq_zero] at eq
@@ -429,9 +434,8 @@ theorem colinear_iff_exist_line_lies_on (A B C : P) : colinear A B C ↔ ∃ l :
   by_cases h : B ≠ A
   · apply (lies_on_iff_colinear_of_ne_lies_on_lies_on h ha hb _).mp
     exact hc
-  simp at h
-  rw [h, colinear]
-  simp
+  rw [ne_eq, not_not] at h
+  simp only [h, colinear, or_true, dite_true]
 
 end colinear
 

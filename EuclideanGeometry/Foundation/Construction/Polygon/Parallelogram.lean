@@ -27,7 +27,7 @@ end criteria
 
 section property
 
-theorem cvx_of_is_prg 
+-- theorem cvx_of_is_prg 
 
 end property
 
