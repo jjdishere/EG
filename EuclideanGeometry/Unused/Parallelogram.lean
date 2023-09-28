@@ -26,7 +26,7 @@ end make
 def Quadrilateral_cvx.is_parallelogram {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := (LinearObj.seg_nd qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (LinearObj.seg_nd qdr_cvx.edge_nd₂₃ ∥ qdr_cvx.edge_nd₄₁)
 
 def Quadrilateral.is_parallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
-  by_cases qdr.is_convex 
+  by_cases qdr.IsConvex 
   · exact (Quadrilateral_cvx.mk_is_convex h).is_parallelogram
   · exact False 
 
@@ -46,3 +46,10 @@ section property
 end property
 
 end EuclidGeom
+
+  /-
+  nd₁₃ : point₃ ≠ point₁ 
+  nd₂₄ : point₄ ≠ point₂
+  diag_not_para : ¬ SEG_nd point₂ point₄ nd₂₄ ∥ (LinearObj.seg_nd (SEG_nd point₁ point₃ nd₁₃))
+  diag_intx : Line.inx (SEG_nd point₁ point₃ nd₁₃).toLine (SEG_nd point₂ point₄ nd₂₄).toLine diag_not_para LiesInt (SEG point₁ point₃) ∧ Line.inx (SEG_nd point₁ point₃ nd₁₃).toLine (SEG_nd point₂ point₄ nd₂₄).toLine diag_not_para LiesInt (SEG point₂ point₄)
+  -/
