@@ -56,35 +56,52 @@ def diag₂₄ : Seg P := SEG qdr.2 qdr.4
 
 end Quadrilateral
 
-/- 
-`Should change here, first should define a single propert IsConvex then define the class, this will enable the class to defined as adding this single property`
-`and we can write QDR_cvx A B C D h`
--/
+
 /--
-Class of Convex Quadrilateral: A convex quadrilateral is quadrilateral such that 
+A quadrilateral is called convex if 
 1. both diagnals are non-degenerate, 
 2. two diagonals are not parallel to each other,
 3. the interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals.
 -/
+def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
+  by_cases ((qdr.point₃ ≠ qdr.point₁) ∧ (qdr.point₄ ≠ qdr.point₂))
+  · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ h.2 ∥ (LinearObj.seg_nd (SEG_nd qdr.point₁ qdr.point₃ h.1)))
+    · exact Line.inx (SEG_nd qdr.point₁ qdr.point₃ h.1).toLine (SEG_nd qdr.point₂ qdr.point₄ h.2).toLine g LiesInt (SEG qdr.point₁ qdr.point₃) ∧ Line.inx (SEG_nd qdr.point₁ qdr.point₃ h.1).toLine (SEG_nd qdr.point₂ qdr.point₄ h.2).toLine g LiesInt (SEG qdr.point₂ qdr.point₄)
+    · exact False
+  · exact False
+
+scoped postfix : 50 "IsConvex" => Quadrilateral.IsConvex
+
+/--
+Class of Convex Quadrilateral: A convex quadrilateral is quadrilateral with the property of convex.
+-/
 @[ext]
 class Quadrilateral_cvx (P : Type _) [EuclideanPlane P] extends Quadrilateral P where
-  nd₁₃ : point₃ ≠ point₁ 
-  nd₂₄ : point₄ ≠ point₂
-  diag_not_para : ¬ SEG_nd point₂ point₄ nd₂₄ ∥ (LinearObj.seg_nd (SEG_nd point₁ point₃ nd₁₃))
-  diag_intx : Line.inx (SEG_nd point₁ point₃ nd₁₃).toLine (SEG_nd point₂ point₄ nd₂₄).toLine diag_not_para LiesInt (SEG point₁ point₃) ∧ Line.inx (SEG_nd point₁ point₃ nd₁₃).toLine (SEG_nd point₂ point₄ nd₂₄).toLine diag_not_para LiesInt (SEG point₂ point₄)
+  convex : toQuadrilateral IsConvex
 
--- `do we need the following notation?`
--- scoped notation "QDR_cvx" => Quadrilateral_cvx.mk
--- `I think it is better to state (qdr_cvx : Quadrilateral_cvx P) (A = qdr_cvx.point₁) ...`
+def Quadrilateral_cvx.mk_pt_pt_pt_pt_convex {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D) IsConvex) : Quadrilateral_cvx P where
+  toQuadrilateral := (QDR A B C D)
+  convex := h
+
+scoped notation "QDR_cvx" => Quadrilateral_cvx.mk_pt_pt_pt_pt_convex
 
 namespace Quadrilateral_cvx
-variable {P : Type _} [EuclideanPlane P] {qdr_cvx : Quadrilateral_cvx P}
+
+/-- Given a property that a quadrilateral qdr is convex, this function returns qdr itself as an object in the class of convex quadrilateral-/
+def mk_is_convex {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsConvex) : Quadrilateral_cvx P where
+  toQuadrilateral := qdr
+  convex := h
+
+section property
+-- properties of convex quadrilateral `to be added`
+
+variable {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem diag₁₃_nd : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := qdr_cvx.nd₁₃
+theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem diag₂₄_nd : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := qdr_cvx.nd₂₄
+theorem nd₂₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := sorry
 
 /-- The non-degenerate diagonal from the first point and third point of a convex quadrilateral -/
 def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃
@@ -93,62 +110,52 @@ def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx
 def diag_nd₂₄ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem edge₁₂_nd : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := sorry
+theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem edge₂₃_nd : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := sorry
+theorem nd₂₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem edge₃₄_nd : qdr_cvx.point₄ ≠ qdr_cvx.point₃ := sorry
+theorem nd₃₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₃ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem edge₄₁_nd : qdr_cvx.point₁ ≠ qdr_cvx.point₄ := sorry
+theorem nd₄₁ : qdr_cvx.point₁ ≠ qdr_cvx.point₄ := sorry
 
 /-- The edge from the first point to the second point of a quadrilateral -/
-def edge_nd₁₂ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.edge₁₂_nd
+def edge_nd₁₂ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.nd₁₂
 
 /-- The edge from the second point to the third point of a quadrilateral -/
-def edge_nd₂₃ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.edge₂₃_nd
+def edge_nd₂₃ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.nd₂₃
 
 /-- The edge from the third point to the fourth point of a quadrilateral -/
-def edge_nd₃₄ : Seg_nd P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.edge₃₄_nd
+def edge_nd₃₄ : Seg_nd P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.nd₃₄
 
 /-- The edge from the fourth point to the first point of a quadrilateral -/
-def edge_nd₄₁ : Seg_nd P := SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.edge₄₁_nd
+def edge_nd₄₁ : Seg_nd P := SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₄₁
+
+/-- Two diagonals are not parallel to each other -/
+theorem diag_not_para : ¬ (LinearObj.seg_nd qdr_cvx.diag_nd₂₄) ∥ qdr_cvx.diag_nd₁₃ := sorry
+
+def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.toLine qdr_cvx.diag_not_para
+
+/-- The interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals. -/
+theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄.1
+:= sorry
+
+theorem not_colinear₁₂₃ : ¬ colinear qdr_cvx.1.1 qdr_cvx.1.2 qdr_cvx.1.3 := sorry
+
+theorem not_colinear₂₃₄ : ¬ colinear qdr_cvx.1.2 qdr_cvx.1.3 qdr_cvx.1.4 := sorry
+
+theorem not_colinear₃₄₁ : ¬ colinear qdr_cvx.1.3 qdr_cvx.1.4 qdr_cvx.1.1 := sorry
+
+theorem not_colinear₄₁₂ : ¬ colinear qdr_cvx.1.4 qdr_cvx.1.1 qdr_cvx.1.2 := sorry
+end property
 
 end Quadrilateral_cvx
 
-section is_convex
-variable {P : Type _} [EuclideanPlane P]
-
-def Quadrilateral.IsConvex (qdr : Quadrilateral P) : Prop := by
-  by_cases ((qdr.point₃ ≠ qdr.point₁) ∧ (qdr.point₄ ≠ qdr.point₂))
-  · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ h.2 ∥ (LinearObj.seg_nd (SEG_nd qdr.point₁ qdr.point₃ h.1)))
-    · exact Line.inx (SEG_nd qdr.point₁ qdr.point₃ h.1).toLine (SEG_nd qdr.point₂ qdr.point₄ h.2).toLine g LiesInt (SEG qdr.point₁ qdr.point₃) ∧ Line.inx (SEG_nd qdr.point₁ qdr.point₃ h.1).toLine (SEG_nd qdr.point₂ qdr.point₄ h.2).toLine g LiesInt (SEG qdr.point₂ qdr.point₄)
-    · exact False
-  · exact False
-
-theorem Quadrilateral_cvx.is_convex (qdr_cvx : Quadrilateral_cvx P) : qdr_cvx.1.IsConvex := sorry
-
-def Quadrilateral_cvx.mk_is_convex {qdr : Quadrilateral P} (h : qdr.IsConvex) : Quadrilateral_cvx P where
-  toQuadrilateral := qdr
-  nd₁₃ := sorry
-  nd₂₄ := sorry
-  diag_not_para := sorry
-  diag_intx := sorry
-
-end is_convex
-
 section criteria
-/-
-the criteria of a quadrilateral being convex
--/
+-- the criteria of a quadrilateral being convex `to be added`
 
 end criteria
-
-section property
--- properties of convex quadrilateral `to be added`
-
-end property
 
 end EuclidGeom
