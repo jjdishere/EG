@@ -176,9 +176,73 @@ theorem Seg.target_not_lies_int : ¬ seg.target LiesInt seg := by sorry
 
 theorem Seg.lies_on_of_lies_int {p : P} : (p LiesInt seg) → (p LiesOn seg) := by sorry
 
-theorem Ray.lies_on_of_lies_int {p : P} : (p LiesInt ray) → (p LiesOn ray) := by sorry
+theorem Seg.lies_int_iff (p : P) : p LiesInt seg ↔ seg.is_nd ∧ ∃ (t:ℝ) , 0 < t ∧ t < 1 ∧ VEC seg.1 p = t • seg.toVec := by
+  constructor
+  rintro ⟨lieson,ns,nt⟩
+  rw[ne_iff_vec_ne_zero] at ns nt
+  simp only [Seg.IsOn] at lieson
+  rcases lieson with ⟨t,tnonneg,tle1,ht⟩
+  constructor
+  simp only [Seg.is_nd]
+  contrapose! ns
+  rw [ns, vec_same_eq_zero,smul_zero] at ht
+  rw [ht]
+  use t
+  constructor
+  contrapose! ns
+  have : t=0 := by linarith
+  rw [ht, this, zero_smul]
+  constructor
+  contrapose! nt
+  have :t=1:=by linarith
+  rw [←vec_sub_vec seg.source, ht, this, one_smul, sub_self]
+  exact ht
+  rintro ⟨nd,t,tpos,tlt1,ht⟩
+  constructor
+  use t
+  constructor
+  linarith
+  constructor
+  linarith
+  exact ht
+  constructor
+  rw[ne_iff_vec_ne_zero,ht,smul_ne_zero_iff]
+  constructor
+  linarith
+  simp only [Seg.toVec,←ne_iff_vec_ne_zero]
+  exact nd
+  have :t • VEC seg.source seg.target - VEC seg.source seg.target = (t-1) • VEC seg.source seg.target:= by
+    rw[sub_smul,one_smul]
+  rw[ne_iff_vec_ne_zero,←vec_sub_vec seg.source,ht,toVec,this,smul_ne_zero_iff]
+  constructor
+  linarith
+  simp only [Seg.toVec,←ne_iff_vec_ne_zero]
+  exact nd
 
-theorem Seg_nd.lies_on_toRay_of_lies_on {p : P} : (p LiesOn seg_nd.1) → (p LiesOn seg_nd.toRay) := by sorry
+theorem Ray.lies_on_of_lies_int (p : P) : (p LiesInt ray) → (p LiesOn ray) := by sorry
+
+theorem Ray.lies_int_iff (p : P) : (p LiesInt ray) ↔ ∃ (t:ℝ) , 0 < t  ∧  VEC ray.source p = t • ray.toDir.toVec := by
+  constructor
+  rintro ⟨⟨t,tnonneg,ht⟩,ns⟩
+  use t
+  constructor
+  contrapose! ns
+  have : t = 0 :=by linarith
+  rw[eq_iff_vec_eq_zero,ht,this,zero_smul]
+  exact ht
+  rintro ⟨t,tpos,ht⟩
+  constructor
+  simp only [Ray.IsOn]
+  use t
+  constructor
+  linarith
+  exact ht
+  rw[ne_iff_vec_ne_zero,ht,smul_ne_zero_iff]
+  constructor
+  linarith
+  exact Dir.toVec_ne_zero ray.toDir
+
+theorem Seg_nd.lies_on_toRay_of_lies_on (p : P) : (p LiesOn seg_nd.1) → (p LiesOn seg_nd.toRay) := by sorry
 
 theorem Seg_nd.lies_int_toRay_of_lies_int {p : P} : (p LiesInt seg_nd.1) → (p LiesInt seg_nd.toRay) := by sorry
 
