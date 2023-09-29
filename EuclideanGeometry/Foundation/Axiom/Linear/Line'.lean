@@ -31,8 +31,8 @@ protected theorem symm {x y : Ray P} (h : same_extn_line x y) : same_extn_line y
         | inl h₁ => sorry
         | inr h₂ => sorry
     rw [← yx_eq_y]
-    have : x.source LiesOn y_to_x.1 := by apply Seg.target_lies_on
-    simp[this, Seg_nd.lies_on_toRay_of_lies_on]
+    apply Seg_nd.lies_on_toRay_of_lies_on
+    apply Seg.target_lies_on
 
 
 protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same_extn_line y z) :  same_extn_line x z := by
