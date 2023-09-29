@@ -7,7 +7,7 @@ noncomputable section
 namespace EuclidGeom
 /- Another way of defining 2DVecSpace before define EuclideanPlane，-/
 section Cartesian2dVectorSpace
-
+/- -/
 class Cartesian2dVectorSpace (V : Type _)  extends  NormedAddCommGroup V, InnerProductSpace ℝ V where
   dim_two : FiniteDimensional.finrank ℝ V = 2
   basis : Basis (Fin 2) ℝ V
@@ -46,6 +46,7 @@ end Cartesian2dVectorSpace
 
 -- Our aim is to prove Pythagoras theorem in the file Perpendicular, but in this section, we will only prove that the inner product of to Vec_nd having same toProj is zero, which is the main theorem about toProj we will use in the proof of Pythagoras theorem. 
 
+/-!
 section Pythagoras
 
 theorem Dir.inner_eq_zero_of_toProj_eq_toProj_perp (d₁ d₂ : Dir) (h : d₁.toProj.perp = d₂.toProj) : Vec.InnerProductSpace.Core.inner d₁.toVec d₂.toVec = 0 := by
@@ -78,6 +79,7 @@ theorem inner_eq_zero_of_toProj_perp_eq_toProj (v₁ v₂ : Vec_nd) (h : v₁.to
   ring
 
 end Pythagoras
+-/
 
 /- Unused section Pythagoras in Perpendicular
 
@@ -100,7 +102,7 @@ theorem Pythagoras_of_perp_foot' (P : Type _) [EuclideanPlane P] (A B : P) {l : 
 
 end Pythagoras
 -/
-
+/-!
 /- unused sketch of undirected lines, segments-/
 section undirected
 
@@ -126,11 +128,11 @@ instance {P : Type _} [EuclideanPlane P] : Coe (Ray P) (Line' P) where
 end undirected
 
 section angle
-namespace OAngle
+namespace Angle
 open Classical
 
 noncomputable def angle_of_three_points' {P : Type _} [h : EuclideanPlane P] (A O B : P) : ℝ := if ((A = O) ∨ (B = O)) then 0 else Real.Angle.toReal (value (mk_pt_pt_pt A O B sorry sorry))
-end OAngle
+end Angle
 end angle
 
 section nondeg
@@ -223,12 +225,12 @@ variable {P : Type _} [EuclideanPlane P]
 def IsOnPosSide (A : P) (ray : Ray P) : Prop := by
   by_cases A = ray.source
   · exact False
-  · exact (OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = 0 
+  · exact (Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = 0 
 
 def IsOnNegSide (A : P) (ray : Ray P) : Prop := by
   by_cases A = ray.source
   · exact False
-  · exact (OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = π 
+  · exact (Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = π 
 
 def IsSource (A : P) (ray : Ray P) : Prop := ray.source = A
 
@@ -237,6 +239,7 @@ scoped infix : 50 "LiesOnNeg" => IsOnNegSide
 scoped infix : 50 "LiesAtSource" => IsSource
 
 end pos_neg_ray
+-/
 
 section nondeg_tri
 open Classical
@@ -298,6 +301,7 @@ theorem colinear_CAB_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear 
 theorem colinear_CBA_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear C B A := sorry
 end colinear
 
+/-!
 section HasFallsOn
 
 class HasFallsOn (α β : Type _) [HasLiesOn P α] [HasLiesOn P β] where
@@ -312,5 +316,74 @@ scoped notation A "FallsOn" B => HasFallsOn.falls_on A B
 scoped notation A "FallsIn" B => HasFallsIn.falls_in A B
 
 end HasFallsOn
+-/
+
+/-! 
+
+-- scoped notation A "LiesInt" F => HasLiesInt.lies_int A F
+
+def IsFallsOn {α β : Type _} (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] : Prop := ∀ (A : P), (A LiesOn A) → (A LiesOn B) 
+
+def IsFallsIn {α β : Type _} (A : α) (B : β) [HasLiesIn P α] [HasLiesIn P β] : Prop := ∀ (A : P), (A LiesIn A) → (A LiesIn B) 
+
+-- LiesOn → LiesInt is FallsInt ?
+
+scoped notation A "FallsOn" B "Over" P => IsFallsOn P A B
+scoped notation A "FallsIn" B "Over" P => IsFallsIn P A B
+
+namespace IsFallsOn
+
+protected theorem refl {P : Type _} {α : Type _} (A : α) [HasLiesOn P α] : A FallsOn A Over P := by tauto
+
+protected theorem trans {P : Type _} {α β γ : Type _} (A : α) (B : β) (C : γ) [HasLiesOn P α] [HasLiesOn P β] [HasLiesOn P γ] : (A FallsOn B Over P) → (B FallsOn C Over P) → (A FallsOn C Over P)   := by tauto
+
+end IsFallsOn
+
+namespace IsFallsIn
+
+protected theorem refl {P : Type _} {α : Type _} (A : α) [HasLiesIn P α] : A FallsIn A Over P := by tauto
+
+protected theorem trans {P : Type _} {α β γ : Type _} (A : α) (B : β) (C : γ) [HasLiesIn P α] [HasLiesIn P β] [HasLiesIn P γ] : (A FallsIn B Over P) → (B FallsIn C Over P) → (A FallsIn C Over P)   := by tauto
+
+end IsFallsIn
+
+def IsIntersectionPoint {P : Type _} {α β : Type _} (A : P) (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] := (A LiesOn A) ∧ (A LiesOn B)
+
+scoped notation p "IsIntersectionOf" A B => IsIntersectionPoint p A B
+
+/- 
+class HasProj (α : Type _) where
+  toProj : (α → Proj)
+
+def parallel {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := HasProj.toProj A = HasProj.toProj B 
+
+scoped notation A "IsParallelTo" B => parallel A B
+scoped notation A "∥" B => parallel A B
+
+namespace parallel
+
+protected theorem refl {α : Type _} (A : α) [HasProj α] : A ∥ A := rfl
+
+protected theorem symm {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : (A ∥ B) → (B ∥ A) := Eq.symm
+
+protected theorem trans {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ]: (A ∥ B) → (B ∥ C) → (A ∥ C) := Eq.trans
+
+end parallel 
+
+def perpendicular {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := sorry
+
+scoped notation A "IsPerpendicularTo" B => perpendicular A B
+scoped notation A "⟂" B => perpendicular A B
+
+namespace perpendicular
+
+protected theorem irrefl {α : Type _} (A : α) [HasProj α] : ¬ (A ⟂ A) := by sorry
+
+protected theorem symm {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : (A ⟂ B) → (B ⟂ A) := sorry
+
+end perpendicular
+
+theorem parallel_of_perp_perp {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ] : (A ⟂ B) → (B ⟂ C) → (A ∥ C)  := sorry
+-/ -/
 
 end EuclidGeom

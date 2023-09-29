@@ -15,12 +15,12 @@ section point_to_ray
 def IsOnLeftSide (A : P) (ray : Ray P) : Prop := by
   by_cases A = ray.source
   · exact False
-  · exact (0 < (OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value) ∧ ((OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value ≠ π) 
+  · exact (0 < (Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value) ∧ ((Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value ≠ π) 
 
 def IsOnRightSide (A : P) (ray : Ray P) : Prop := by
   by_cases A = ray.source
   · exact False
-  · exact ((OAngle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value < 0)
+  · exact ((Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value < 0)
 
 
 end point_to_ray
@@ -32,7 +32,7 @@ scoped infix : 50 "LiesOnRight" => IsOnRightSide
 section ray_to_ray
 
 /- Statement of his theorem should change, since ray₀.source ≠ ray₂.source. -/
-theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < OAngle.angle_of_two_ray_of_eq_source ray₀ ray₁ rfl) ∧ (OAngle.angle_of_two_ray_of_eq_source ray₀ ray₁ rfl < OAngle.angle_of_two_ray_of_eq_source ray₀ ray₂ sorry) ∧ (OAngle.angle_of_two_ray_of_eq_source ray₀ ray₂ sorry < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
+theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < Angle.angle_of_two_ray_of_eq_source ray₀ ray₁ rfl) ∧ (Angle.angle_of_two_ray_of_eq_source ray₀ ray₁ rfl < Angle.angle_of_two_ray_of_eq_source ray₀ ray₂ sorry) ∧ (Angle.angle_of_two_ray_of_eq_source ray₀ ray₂ sorry < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
 
 end ray_to_ray
 
