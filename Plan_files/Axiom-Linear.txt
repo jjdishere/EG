@@ -1,0 +1,735 @@
+\documentclass[12pt]{amsart}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{fullpage}
+\usepackage{color}
+
+\newcommand{\toadd}{{\color{red}To Add: }}
+\newcommand{\changename}{{\color{red}To Change Name: }}
+\title{Document file for content in subfolder: Axiom--Linear}
+
+\begin{document}
+
+\maketitle
+
+\section{Content in file Ray.lean}
+
+In this file, we define the class of segments, rays and their coercions, as well as basic properties.  A more precise plan is the following:
+
+\begin{enumerate}
+\item 
+We define the corresponding classes: rays, segments, and nondegenerate segments. 
+\item 
+We define the coercions among these concepts as well as coercions to directions, or projective directions.
+\item 
+We give different ways to make a segment or a ray.
+\item 
+We discuss compatibility of the coercion functions.
+\item 
+We introduce the concept of reversing a segment, that is to switch the start and end point of a segment.
+\item 
+We define the length function of a segment.
+\item 
+We define the concept of extending a segment into a ray.
+\item 
+We define the function that gives the midpoint of a segment.
+\item 
+We discuss the Archimedean property of a segment.
+\end{enumerate}
+
+\subsection{Definitions}
+\begin{itemize}
+\item 
+Class \verb|Ray|: A \emph{ray} consists of a pair of a point $P$ and a direction; it is the ray that starts at the point and extends in the given direction.
+
+\item
+Class \verb|Seg|: A \emph{Segment} consists of a pair of points: the source and the target; it is the segment from the source to the target. (We allow the source and the target to be the same.)
+
+\item
+Definition \verb|Seg.is_nd|: Given a segment $AB$, this function returns whether the segment $AB$ is nondegenerate, i.e. whether $A \neq B$.
+
+\item
+Class \verb|Seg_nd|: A \emph{nondegenerate segment} is a segment $AB$ that is nondegenerate, i.e. $A \neq B$.
+
+\end{itemize}
+
+\subsection{Coercion}
+\begin{itemize}
+\item 
+Definition \verb|Ray.toProj|: Given a ray, this function returns its projective direction; it is the projective direction of the direction of the ray.
+
+\item 
+Definition \verb|Ray.IsOn|: Given a point $A$ and a ray $ray$, this function returns whether $A$ lies on $ray$; here saying that $A$ lies on $ray$ means that the vector from the start point of the ray to $A$ is some nonnegative multiple of the direction vector of the ray.
+
+\item
+Definition \verb|Ray.IsInt|: Given a point $A$ and a ray, this function returns whether the point lies in the interior of the ray; here saying that a point lies in the interior of a ray means that it lies on the ray and is not equal to the source of the ray.
+
+\item 
+Definition \verb|Ray.carrier|: Given a ray, its carrier is the set of points that lie on the ray.
+
+\item 
+Definition \verb|Ray.interior|: Given a ray, its interior is the set of points that lie in the interior of the ray.
+
+\item
+Definition \verb|Seg.toVec|: Given a segment, this function returns the vector associated to the segment, that is, the vector from the source of the segment to the target of the segment.
+
+\item 
+Definition \verb|Seg.IsOn|:  Given a point $A$ and a segment $seg$, this function returns whether $A$ lies on $seg$; here saying that $A$ lies on $seg$ means that the vector from the source of $seg$ to $A$ is a real multiple $t$ of the vector of $seg$ with $0 \leq t \leq 1$.
+
+\item
+Definition \verb|Seg.IsInt|: Given a point $A$ and a segment $seg$, this function returns whether $A$ lies in the interior of $seg$; here saying that $A$ lies in the interior of $seg$ means $A$ lies on $seg$ and is different from the source and the target of $seg$.
+
+\item Definition \verb|Seg.carrier|: Given a segment, this function returns the set of points that lie on the segment.
+
+\item Definition \verb|Seg.interior|: Given a segment, this function returns the set of points that lie in the interior of the segment.
+
+\item Definition \verb|Seg_nd.toVec_nd|: Given a nondegenerate segment $AB$, this function returns the nondegenerate vector $\overrightarrow{AB}$.
+
+\item Definition \verb|Seg_nd.toDir|: Given a nondegenerate segment $AB$, this function returns the direction associated to the segment, defined by normalizing the nondegenerate vector $\overrightarrow{AB}$.
+
+\item Definition \verb|Seg_nd.toRay|: Given a nondegenerate segment $AB$, this function returns the ray $AB$, whose source is $A$ in the direction of $B$.
+
+\item Definition \verb|Seg_nd.toProj|: Given a nondegenerate segment $AB$, this function returns the projective direction  of $AB$, defined as the projective direction of the nondegenerate vector $\overrightarrow{AB}$. 
+\end{itemize}
+
+
+\subsection{Make of concepts}
+
+\begin{itemize}
+\item 
+Definition \verb|SEG| as \verb|Seg.mk|: Given two points $A$ and $B$, this returns the segment with source $A$ and target $B$; it is an abbreviation of  \verb|Seg.mk|.
+
+\item
+Definition \verb|Seg_nd.mk|: Given two distinct points $A$ and $B$, this function returns a nondegenerate segment with source $A$ and target $B$.
+
+\item 
+Definition \verb|SEG_nd| as \verb|Seg_nd.mk|: This is to abbreviate the function \verb|Seg_nd.mk| into \verb|SEG_nd|.
+
+\item
+{\color{red} To change the definition}
+Definition \verb|Ray.mk_pt_pt|: Given two distinct points $A$ and $B$, this function returns the ray starting from $A$ in the direction of $B$. By definition, it is to first construct the nondegenerate segment from $A$ to $B$, and then convert the nondegenerate segment $AB$ to the associated ray using \verb|toRay| function.
+
+\item
+Definition \verb|RAY| as \verb|Ray.mk_pt_pt|: This is to abbreviate \verb|Ray.mk_pt_pt| into \verb|RAY|.
+\end{itemize}
+
+\subsection{Coercion compatibility}
+
+\begin{itemize}
+\item 
+Theorem \verb|Seg_nd.toDir_eq_toRay_toDir|: Given a nondegenerate segment, the direction associated to the nondegenerate segment is the same as the direction associated to the ray associated to the nondegenerate segment.
+
+\item Theorem \verb|Seg_nd.toProj_eq_toRay_toProj|: Given a nondegenerate segment,  the projective direction associated to the nondegenerate segment is the same as the projective direction associated to the ray associated to the nondegenerate segment.
+
+\item Theorem \verb|Ray.is_in_inter_iff_add_pos_Dir|: Given a ray, a point $A$ lies in the interior of the ray if and only if the vector from the source of the ray to $A$ is a positive multiple of the direction of ray.
+
+\item Theorem \verb|seg_toVec_eq_vec|: Given two points $A$ and $B$, the vector $\overrightarrow{AB}$ is the the same as the vector associated to the segment $AB$ with source $A$ and target $B$.
+
+\item {\color{red} To change the file} Theorem \verb|Seg.toVec_eq_zero_iff_deg|: Given a segment, the vector associated to the segment is zero if and only if the segment is degenerate, i.e. its target is equal to its source.
+
+(more compatibility)
+\end{itemize}
+
+
+\subsection{LiesOn compatibility}
+
+\begin{itemize}
+\item 
+Theorem \verb|Ray.source_lies_on|: Given a ray, the source of the ray lies on the ray.
+
+\item 
+Theorem \verb|Ray.snd_pt_lies_on_mk_pt_pt|: Given two distinct points $A$ and $B$, $B$ lies on the ray $AB$.
+
+\item
+Theorem \verb|Seg.source_lies_on|: Given a segment, the source of the segment lies on the segment.
+
+
+\item 
+Theorem \verb|Seg.target_lies_on|: Given a segment $AB$, the target $B$ lies on the segment $AB$.
+
+\item
+Theorem \verb|Ray.source_not_lies_int|: Given a ray, the source of the ray does not lie in the interior of the ray.
+
+\item Theorem \verb|Seg.source_not_lies_int|: Given a segment $AB$, the source $A$ does not belong to the interior of $AB$.
+
+\item Theorem \verb|Seg.target_not_lies_int|: Given a segment $AB$, the target $B$ does not belong to the interior of $AB$.
+
+\item Theorem \verb|Seg.lies_on_of_lies_int|: For a segment $AB$, every point of the interior of $AB$ lies on the segment $AB$.
+
+\item Theorem \verb|Ray.lies_on_of_lies_int|: For a ray, every point of the interior of the ray lies on the ray.
+
+\item Theorem \verb|Seg_nd.lies_on_toRay_of_lies_on|: For a nondegenerate segment $AB$, every point of the segment $AB$ lies on the ray associated to $AB$. 
+
+\item Theorem
+\verb|Seg_nd.lies_int_toRay_of_lies_int|: For a nondegenerate segment $segnd$, every point of the interior of the $segnd$ lies in the interior of the ray associated to the $segnd$.
+\vspace{10pt}
+\item\toadd
+Theorem \verb|every_pt_lies_on_seg_of_source_and_target_lies_on_seg|:
+Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie on $seg_2$, then every point of $seg_1$ lies on $seg_2$.
+
+\item \toadd
+Theorem \verb|every_pt_lies_int_seg_of_source_and_target_lies_int_seg|:
+Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie in the interior of $seg_2$, then every point of $seg_1$ lies in the interior of $seg_2$.
+
+\item \toadd
+Theorem \verb|every_int_pt_lies_int_seg_of_source_and_target_lies_on_seg|:
+Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie on $seg_2$, then every point of the interior of $seg_1$ lies in the interior of $seg_2$.
+
+\item \toadd
+Theorem \verb|every_pt_lies_on_ray_of_source_and_target_lies_on_ray|:
+Given a segment $seg$ and a ray $ray$, if the source and the target of the $seg$ both lie on $ray$, then every point of $seg$ lies on the $ray$.
+
+\item \toadd
+Theorem \verb|every_pt_lies_int_ray_of_source_and_target_lies_int_ray|:
+Given a segment $seg$ and a ray $ray$, if the source and the target of $seg$ both lie in the interior of $ray$, then every point of $seg$ lies in the interior of $ray$.
+
+\item \toadd
+Theorem \verb|every_int_pt_lies_int_ray_of_source_and_target_lies_on_ray|:
+Given a segment $seg$ and a ray $ray$, if the source and the target of $seg$ both lie on $ray$, then every interior point of $seg$ lies in the interior of $ray$.
+
+\item \toadd
+Theorem \verb|every_pt_lies_on_ray_of_source_lies_on_ray_and_same_dir|:
+Given two rays $ray_1$ and $ray_2$ in the same direction, if the source of $ray_1$ lies on $ray_2$, then every point of $ray_1$ lies on $ray_2$.
+
+\item \toadd
+Theorem \verb|every_pt_lies_int_ray_of_source_lies_int_ray_and_same_dir|:
+Given two rays $ray_1$ and $ray_2$ in the same direction, if the source of $ray_1$ lies in the interior of $ray_2$, then every point of $ray_1$ lies in the interior of $ray_2$.
+
+\item \toadd
+Theorem \verb|every_int_pt_lies_int_ray_of_source_lies_on_ray_and_same_dir|:
+Given two rays $ray_1$ and $ray_2$ in the same direction, if the source of $ray_1$ lies on $ray_2$, then every interior point of $ray_1$ lies in the interior of $ray_2$.
+\end{itemize}
+
+
+
+\subsection{Length of Segments}
+
+\begin{itemize}
+\item 
+Definition \verb|Seg.length|: This function gives the length of a given segment.
+
+\item \changename 
+Theorem \verb|Seg.length_sq_eq_inner_toVec_toVec|: Given a segment, the square of its length is equal to the the inner product of the associated vector with itself.
+
+\item \changename Theorem \verb|Seg.length_nonneg|: Every segment has nonnegative length.
+
+\item \changename Theorem \verb|Seg.length_pos_iff_nd|: A segment has positive length if and only if it is nondegenerate.
+
+\item \changename Theorem \verb|Seg.length_ne_zero_iff_nd|: The length of a given segment is nonzero if and only if the segment is nondegenerate.
+
+\item \changename {\color{red} Change statement to bracket}  Theorem \verb|Seg.length_eq_length_add_length|: Given a segment and a point that lies on the segment, the additional point will separate the segment into two segments, whose lengths add up to the length of the original segment.
+
+\item \changename Theorem \verb|Seg_nd.length_pos|: A nondegenerate segment has strictly positive length.
+
+\item \changename
+Theorem \verb|Seg.length_eq_zero_iff_deg|: The length of a segment is zero if and only if it is degenerate, i.e. it has same source and target.
+
+\end{itemize}
+
+\subsection{Reversing segments and rays}
+
+\begin{itemize}
+\item 
+Definition \verb|Ray.reverse|: Given a ray, this function returns the ray with the same source but with reversed direction.
+\item 
+Definition \verb|Seg.reverse|: Given a segment $AB$, this function returns its reverse, i.e. the segment $BA$.
+\item
+Theorem \verb|nd_of_rev_of_nd|: If a segment is nondegenerate, so is its reverse segment.
+
+\item 
+Definition \verb|Seg_nd.reverse|: Given a nondegenerate segment $AB$, this function returns the reversed nondegenerate segment $BA$.
+
+\item 
+Theorem \verb|Seg_nd.rev_toSeg_eq_toSeg_rev|: Given a nondegenerate segment, first viewing it as a segment and then reversing it is the same as first reversing it and then viewing it as a segment.
+
+\item 
+Theorem \verb|Ray.rev_rev_eq_self|: Reversing a ray twice gives back to the original ray.
+
+\item 
+Theorem \verb|Seg.rev_rev_eq_self|: Reversing a segment twice gives back to the original segment.
+
+\item 
+Theorem \verb|Seg_nd.rev_rev_eq_self|: Reversing a nondegenerate segment twice gives back to the original nondegenerate segment.
+
+\item 
+Theorem \verb|Ray.toDir_of_rev_eq_neg_toDir|: Given a ray, the direction of the reversed ray is the negative of the direction of the ray.
+
+\item 
+Theorem \verb|Ray.toProj_of_rev_eq_toProj|: Given a ray, the projective direction of the reversed ray is the negative of the projective direction of the ray.
+
+\item 
+Theorem \verb|Seg.toVec_of_rev_eq_neg_toVec|: Given a segment, the vector associated to the reversed segment is the negative of the vector associated to the segment.
+
+\item 
+Theorem
+\verb|Seg_nd.toVec_nd_of_rev_eq_neg_toVec_nd|: Given a nondegenerate segment, the nondegenerate vector associated to the reversed nondegenerate segment is the negative of the nondegenerate vector associated to the nondegenerate segment.
+
+\item 
+Theorem \verb|Seg_nd.toDir_of_rev_eq_neg_toDir|: Given a nondegenerate segment, the direction of the reversed nondegenerate segment is the negative direction of the nondegenerate segment.
+
+\item 
+Theorem \verb|Seg_nd.toproj_of_ver_eq_neg_toproj|: Given a nondegenerate segment, the projective direction of the reversed nondegenerate segment is the negative projective direction of the nondegenerate segment.
+
+
+\item
+Theorem \verb|Seg.lies_on_iff_lies_on_rev|: A point lies on a segment if and only if it lies on its reverse segment.
+
+\item 
+Theorem \verb|Seg.lies_int_iff_lies_int_rev|: A point lies in the interior of a segment if and only if it lies in the interior of the reverse of the segment.
+
+\item
+Theorem \verb|Ray.eq_source_iff_lies_on_and_lies_on_rev|: A point is equal to the source of a ray if and only if it lies on the ray and it lies on the reverse of the ray.
+
+\item 
+Theorem \verb|Ray.not_lies_on_of_lies_int_rev|: If a point lies in the interior of the reverse of a ray, then it does not lie on the ray.
+
+\item
+Theorem \verb|Ray.not_lies_int_of_lies_on_rev|: If a point lies on of the reverse of a ray, then it does not lie in the interior of the ray. 
+
+\item 
+Theorem \verb|Seg_nd.lies_on_iff_lies_on_toRay_and_rev_toRay|: A point lies on a nondegenerate segment $AB$ if and only if it lies on the ray associated to $AB$ and on the ray associated to $BA$.
+
+\item
+Theorem
+\verb|Ray.lies_on_rev_iff_lies_on_of_same_todir|: If two rays $ray_1$ and $ray_2$ are in the same direction, the source of $ray_1$ lies on $ray_2$ if and only if the source of $ray_2$ lies on the reverse of $ray_1$.
+
+\item
+Theorem
+\verb|Ray.lies_int_rev_iff_lies_int_of_same_todir|: If two rays $ray_1$ and $ray_2$ are in the same direction, the source of $ray_1$ lies in the interior of $ray_2$ if and only if the source of $ray_2$ lies in the interior of the reverse of $ray_1$.
+
+\item
+Theorem
+\verb|Ray.lies_on_iff_lies_on_of_neg_todir|: If two rays $ray_1$ and $ray_2$ are in the opposite direction, the source of $ray_1$ lies on $ray_2$ if and only if the source of $ray_2$ lies on $ray_1$.
+
+\item
+Theorem
+\verb|Ray.lies_int_iff_lies_int_of_neg_todir|: If two rays $ray_1$ and $ray_2$ are in the opposite direction, the source of $ray_1$ lies in the interior of $ray_2$ if and only if the source of $ray_2$ lies in the interior of $ray_1$.
+
+\item \toadd Theorem \verb|Seg.length_rev_eq_length|: The length of the reverse of a segment is the same as the length of the segment.
+
+\end{itemize}
+
+\subsection{Midpoints}
+
+\begin{itemize}
+\item 
+Definition \verb|Seg.midpoint|: Given a segment $AB$, this function returns the midpoint of $AB$, defined as moving from $A$ by the vector $\overrightarrow{AB}/2$.
+
+\item 
+Theorem \verb|Seg.midpt_lies_on|: The midpoint of a segment lies on the segment.
+
+\item 
+Theorem \verb|Seg_nd.midpt_lies_int|: 
+The midpoint of a nondegenerate segment lies in the interior of the segment.
+
+\item {\color{red}need to change the name of the variables}
+Theorem \verb|Seg.midpt_iff_same_vector_to_source_and_target|: A point $X$ on a given segment $AB$ is the midpoint if and only if the vector $\overrightarrow{AX}$ is the same as the vector $\overrightarrow{XB}$.
+
+\item 
+Theorem \verb|Seg.dist_target_eq_dist_source_of_midpt|: The midpoint of a segment has same distance to the source and to the target of the segment.
+
+\item 
+\changename
+Theorem
+\verb|Seg.eq_midpt_iff_lies_on_and_dist_target_eq_dist_source|: A point $X$ is the midpoint of a segment $AB$ if and only if $X$ lies on $AB$ and $X$ has equal distance to $A$ and $B$.
+
+
+\end{itemize}
+
+
+\section{Content in file Colinear.lean}
+
+In this section, We discuss colinarity of points on a plane.
+
+\subsection{Definitions}
+
+\begin{itemize}
+\item Definition \verb|colinear_of_nd|: Given three distinct (ordered) points $A$, $B$, $C$, this function returns whether they are colinear, i.e. whether the projective direction of the vector $\overrightarrow{AB}$ is the same as the projective direction of the vector $\overrightarrow{AC}$.
+
+\item Definition \verb|colinear|: Given three points $A$, $B$, $C$, return whether they are colinear: if at least two of them are equal, then they are considered colinear; if the three points are distinct, we use the earlier definition of colinarity for distinct points.
+\end{itemize}
+
+\subsection{Theorems}
+
+\begin{itemize}
+\item 
+Theorem \verb|colinear_of_vec_eq_smul_vec|: Given three points $A$, $B$, $C$ and a real number $t$, if the vector $\overrightarrow{AC}$ is $t$ times the vector $\overrightarrow{AB}$, then $A$, $B$, and $C$ are colinear.
+\item 
+Theorem \verb|colinear_of_vec_eq_smul_vec'|: Given three points $A$, $B$, $C$, if the vector $\overrightarrow{AC}$ is a scalar multiple of the vector $\overrightarrow{AB}$, then $A$, $B$, $C$ are colinear.
+
+\item 
+Theorem \verb|colinear_iff_eq_smul_vec_of_ne|: Given three points $A$, $B$, $C$ such that $B \neq A$, we have $A$, $B$, $C$ are colinear if and only if the vector $\overrightarrow{AC}$ is a scalar multiple of the vector $\overrightarrow{AB}$.
+
+\item 
+Theorem \verb|triv_colinear|: For any two points $A$ and $C$, the points $A$, $A$, $C$ are colinear.
+
+\item 
+Theorem \verb|flip_colinear_snd_trd|: Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are colinear (in that order), then $A$, $C$, $B$ are colinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity.
+
+\item 
+Theorem \verb|flip_colinear_fst_snd|: Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are colinear (in that order), then $B$, $A$, $C$ are colinear (in that order); in other words, in the definition of colinarity, swapping the first two of the three points does not change property of the three points being colinear.
+
+\item 
+Theorem \verb|colinear_of_colinear_colinear_ne|: Given four points $A$, $B$, $C$, $D$ with $B \neq A$, if $A$, $B$, $C$ are colinear, and if $A$, $B$, $D$ are colinear, then $A$, $C$, $D$ are colinear.
+
+\item {\color{red} where did this theorem go?}
+Theorem \verb|ne_of_not_colinear|: Given three points $A$, $B$, $C$, if they are not colinear, then they are pairwise distinct, i.e. $C \neq B$, $A \neq C$, and $B \neq A$.
+
+\end{itemize}
+
+\subsection{Compatibility}
+\begin{itemize}
+\item 
+Theorem \verb|Ray.colinear_of_lies_on|: If $A$, $B$, $C$ are three points which lie on a ray, then they are colinear.
+\item 
+Theorem \verb|Seg.colinear_of_lies_on|: If $A$, $B$, $C$ are three points which lie on a segment, then they are colinear.
+
+{\color{red}More theorems of this kind.}
+
+\end{itemize}
+
+\subsection{Miscellany}
+\begin{itemize}
+\item 
+Theorem \verb|nontriv_of_plane|: There exists three points $A$, $B$, $C$ on the plane such that they are not colinear.
+
+\end{itemize}
+
+
+
+
+
+
+\section{Content in Line.lean}
+
+In this file, we define the class of lines.
+
+\subsection{Setoid: Equivalence relations among rays}
+\begin{itemize}
+\item 
+Definition \verb|same_extn_line|: Given two rays $r_1$ and $r_2$, this function returns whether $r_2$ has the same extension line as $r_1$, in the sense that $r_1$ and $r_2$ have the same projective direction, and that either the source of $r_2$ lies on ray $r_1$ or the source of $r_2$ lies on the reverse of ray $r_1$.
+
+\item 
+Theorem \verb|SameExtnLine.dir_eq_or_eq_neg|:
+If the ray $y$ has the same extension line as $x$, then either they have the same direction, or they have the opposite direction.
+
+\item 
+Theorem \verb|SameExtnLine.refl|: Any ray $x$ has the same extension line as itself.
+
+
+\item 
+Theorem \verb|SameExtnLine.symm|: Given two rays $x$ and $y$, if $x$ has the same extension line as $y$, then $y$ has the same extension line as $x$.
+
+
+\item 
+Theorem \verb|SameExtnLine.trans|: Given three rays $x$, $y$ and $z$, if $x$ has the same extension line as $y$, and $y$ has the same extension line as $z$, then $x$ has the same extension line as $z$.
+
+\item 
+Definition \verb|SameExtnLine.setoid|: Having the same extension line is an equivalence relation, namely, it satisfies the reflexivity, symmetry, and transitivity conditions.
+
+\item
+Theorem \verb|same_extn_line_of_PM|: Given a point $A$ and two directions $x$ and $y$ such that $x$ is either the same as $y$ or the opposite direction of $y$, then the ray starting at $A$ in the direction of $x$ has the same extension line as the ray starting at $A$ in the direction of $y$.
+
+\item 
+Theorem \verb|SameExtnLine.eq_carrier_union_rev_carrier|: Given two rays that have the same extension line, the union of the carrier of one ray and its inverse is the same as the union of the carrier of the other ray and its inverse.
+\end{itemize}
+
+\subsection{Definition of Line}
+
+\begin{itemize}
+\item Definition \verb|Line|: A \emph{line} is an equivalence class of rays, defined by taking the quotient of the set of rays by the equivalence relations of having same extension lines.
+\end{itemize}
+
+\subsection{Make of Line}
+\begin{itemize}
+\item 
+Definition \verb|Line.mk_pt_pt|: Given two distinct points $A$ and $B$, this function defines the line $AB$, namely the line through $A$ and $B$, i.e. the equivalence class of the ray from $A$ to $B$.
+
+\item
+Definition \verb|Line.mk_pt_proj|: Given a point $A$ and a projective direction, this function defines the line through $A$ with the given projective direction.
+
+\item 
+Definition \verb|Line.mk_pt_dir|: Given a point $A$ and a direction, this function defines the line through $A$ with the given direction. 
+{\color{red} Why not do this first and then do the mkptproj?}
+
+\item
+Definition \verb|Line.mk_pt_vec_nd|: Given a point $A$ and a nondegenerate vector, this function defines the line through $A$ in the direction associated to the nondegenerate vector.
+
+\item
+Definition \verb|LIN| as \verb|Line.mk_pt_pt|: Abbreviate the notation form defining a line through two points from \verb|Line.mk_pt_pt| to \verb|LIN|.
+
+\end{itemize}
+
+\subsection{Coercion}
+
+\begin{itemize}
+\item
+Definition \verb|Line.toProj|: Given a line, this function returns the projective direction of the line.
+
+\item
+Definition \verb|Ray.toLine|: Given a ray, this function returns the extension line of the ray.
+
+\item
+Definition \verb|Seg_nd.toLine|: Given a nondegenerate segment, this function returns the line through the nondegenerate segment.
+
+\item 
+Definition \verb|Line.carrier|: Given a line, this function defines the set of points on the line, given by choosing any ray in the equivalence class, the set of points on the ray or on the inverse of the ray.
+
+\item
+Definition \verb|Line.IsOn|: Given a point and a line, this function returns whether the point lies on the line.
+\end{itemize}
+
+\subsection{Coercion compatibility}
+
+\begin{itemize}
+\item 
+Theorem \verb|Seg_nd.toLine_eq_toRay_toLine|: The line associated to a given nondegenerate segment is the same as the line associated to the ray associated to this nondegenerate segment. 
+
+\item
+Theorem \verb|line_of_pt_pt_eq_ray_toLine|: Given two distinct points $A$ and $B$, the line $AB$ is the same as the line associated to the ray from $A$ to $B$.
+
+\item
+Theorem \verb|line_of_pt_pt_eq_seg_nd_toLine|: For two distinct points $A$ and $B$, the line $AB$ is the same as the line associated to the segment $AB$.
+
+\item 
+Theorem \verb|Ray.source_lies_on_toLine|: The source of a ray lies on the extension line of the ray.
+
+theorem Seg_nd.source_lies_on_toLine (s : Seg_nd P) : s.1.source LiesOn s.toLine := sorry
+
+theorem Seg_nd.target_lies_on_toLine (s : Seg_nd P) : s.1.target LiesOn s.toLine := sorry
+
+theorem Ray.toLine_eq_rev_toLine : ray.toLine = ray.reverse.toLine := sorry
+
+theorem Seg_nd.toLine_eq_rev_toLine : seg_nd.toLine = seg_nd.reverse.toLine := sorry
+
+theorem toLine_eq_extn_toLine : seg_nd.toLine = seg_nd.extension.toLine := sorry
+
+theorem Ray.toProj_eq_toLine_toProj (ray : Ray P) : ray.toProj = ray.toLine.toProj := rfl
+
+theorem Seg_nd.toProj_eq_toLine_toProj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := rfl
+
+
+\end{itemize}
+\subsection{Key properties of Line}
+
+\begin{itemize}
+\item 
+Theorem \verb|Line.linear|: Given a line and three points $A$, $B$, $C$ on this line, then these three points $A$, $B$, $C$ are colinear.
+
+\item
+Theorem \verb|Line.maximal|: Given a line $l$ and two distinct points $A$ and $B$ on $l$, if $C$ is another point such that $A$, $B$, $C$ are colinear, then $C$ lines on the line $l$.
+{\color{red} In the description, why not write C LiesOn l?}
+
+\item
+Theorem \verb|Line.nontriv|: Given a line $l$, there exists two distinct points on this line.
+
+\end{itemize}
+
+\subsection{LiesOn compatibility}
+
+\begin{itemize}
+\item \changename
+Theorem \verb|Ray.lies_on_toline_iff_lies_on_or_lies_on_rev|: Given a point and a ray, the point lies on the line extension of the ray if and only if the point lies on either the ray or the reverse of the ray.
+
+\item \changename
+Theorem
+\verb|Ray.lies_on_toline_iff_eq_source_or_lies_int_or_lies_int_rev|: Given a point and a ray, the point lies on the line extension of the ray if and only if either the point is the source of the ray, or the point lies in the interior of the ray or its reverse ray.
+{\color{red} also change the lean formulation to match with the wording here.}
+
+\item
+Theorem \verb|line_of_pt_pt_eq_rev|: Given two distinct points $A$ and $B$, the line through $A$ and $B$ is the same as the line through $B$ and $A$.
+
+\item
+Theorem \verb|fst_pt_lies_on_line_of_pt_pt|: Given two distinct points $A$ and $B$, then $A$ lies on the line $AB$.
+
+\item
+Theorem \verb|snd_pt_lies_on_line_of_pt_pt|: Given two distinct points $A$ and $B$, then $B$ lies on the line $AB$. {\color{red} Maybe consider combining the two theorems into one, as is already done?}
+
+\item
+Theorem \verb|pt_lies_on_line_of_pt_pt_of_ne|: Given two distinct points $A$ and $B$, then $A$ lies on the line $AB$ and $B$ lies on the line $AB$.
+
+\item 
+Theorem \verb|eq_line_of_pt_pt_of_ne|: Given two distinct points $A$ and $B$ and a line $l$, if each of $A$ and $B$ lies on the line $l$, then the line $AB$ is equal to the line $l$. In other words, two distinct points on the plane determines a unique line.
+
+\item 
+Theorem \verb|eq_of_pt_pt_lies_on_of_ne|: Given two distinct points $A$ and $B$ and two lies $l_1$ and $l_2$. Suppose that $A$ and $B$ both lie on $l_1$ and both lie on $l_2$, then $l_1 = l_2$.
+
+\item 
+
+
+\end{itemize}
+    lies_on_line_of_pt_pt_iff_colinear --
+    lies_on_iff_lies_on_iff_line_eq_line --
+    eq_line_of_pt_pt_of_ne --
+    eq_of_pt_pt_lies_on_of_ne -- 2 ne pts lies on 2 lines implies 2 liones are the same
+    colinear_iff_exist_line_lies_on --
+
+
+
+    Ray.lies_on_toLine_of_lie_on --
+    Seg_nd.lies_on_toLine_of_lie_on --
+    Ray.source_lies_on_toLine --
+    Seg_nd.source_lies_on_toLine --
+    Seg_nd.target_lies_on_toLine --
+    Seg_nd.toLine_eq_toRay_toLine --
+    line_of_pt_pt_eq_ray_toLine --
+    line_of_pt_pt_eq_seg_nd_toLine --
+
+    pt_lies_on_and_proj_eq_of_line_mk_pt_proj --
+
+    Ray.toProj_eq_toLine_toProj `Line_ex`--
+    Seg_nd.toProj_eq_toLine_toProj `Line_ex` --
+    lies_on_iff_eq_toProj `Line_ex`--
+
+    (reverse)`Line_ex`
+    Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev --
+    Ray.toLine_eq_rev_toLine --
+    Seg_nd.toLine_eq_rev_toLine --
+
+    (extension)`Line_ex`
+    toLine_eq_extn_toLine --
+    lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on --
+
+    (archemidean)
+    exists_ne_pt_pt_lies_on_of_line --
+    lies_on_of_Seg_nd_toProj_eq_toProj --
+    Seg_nd_toProj_eq_toProj_iff_lies_on --
+    Line.exist_pt_beyond_pt --
+
+\subsection{}
+\begin{itemize}
+\item 
+{\color{red} Important}
+Theorem \verb||
+Given a line $l$ and two points $A$ and $B$ on $l$, if we choose a direction $dir$ that maps to the projective direction of $l$, then either $A$ lies on the ray starting $B$ in the direction $dir$, or $B$ lies on the ray starting at $A$ in the direction $dir$.
+
+\item 
+\end{itemize}
+
+
+\section{Content in Parallel.lean}
+
+In this file, we define the concept for two lines to be parallel. A more precise plan is the following:
+\begin{enumerate}
+\item We define a class called linear objects, consisting of one of the five types: nondegenerate vector, direction, ray, nondegenerate segment, and line.
+
+\item We define the meaning of any pair of linear objects to be parallel.
+
+\item We prove that coercion among linear objects generates linear objects that are parallel to the original ones.
+
+\item We prove theorems related to that non-parallel lines intersection, and define the intersections.
+\end{enumerate}
+
+\subsection{Linear Objects and its coercion}
+
+\begin{itemize}
+\item 
+Inductive \verb|LinearObj|: A linear object is one of the following five types: a nondegenerate vector, a direction, a ray, a nondegenerate segment, or a line.
+
+\item
+Coercion: In the following, we define natural ways to view a nondegenerate vector, a direction, a ray, a nondegenerate segment or a line, as a linear object.
+
+\item
+Definition \verb|toProj|: Given a linear object, we return its associated projective direction, which is the associated projective direction in each of the five instances of a linear object.
+\end{itemize}
+
+\subsection{Definition of parallel}
+
+\begin{itemize}
+\item 
+Definition \verb|parallel|: Given two linear objects $l_1$ and $l_2$ (not necessarily of the same type), this function returns whether they are parallel, defined as having the same associated projective direction.
+
+\item 
+\verb|parallel| is an instance of \verb|Equiv|: Being parallel defines an equivalence relation among all linear objects, that is they satisfy the three conditions: (1) reflexive: every linear object $l$ is parallel to itself; (2) symmetric: if the linear object $l_1$ is parallel to the linear object $l_2$, then $l_2$ is $l_1$; (3) transitive: if the linear object $l_1$ is parallel to the linear object $l_2$, and if the linear object $l_2$ is parallel to the linear object $l_3$, then $l_1$ is parallel to $l_3$.
+
+\item Definition \verb|ParallelTo| as \verb|parallel|: This is to rewrite \verb|parallel l l'| as \verb|l ParallelTo l'|.
+
+\item Definition $\parallel$ as \verb|parallel|: This is to rewrite \verb|parallel l l'| as $l \parallel l'$.
+\end{itemize}
+
+\subsection{Parallel Theorems}
+\begin{itemize}
+\item 
+Theorem \verb|ray_parallel_toline|: Given a ray, the ray is parallel to the line associated to the ray.
+
+\item 
+Theorem
+\verb|segnd_parallel_toray|: Given a nondegenate segment, it is parallel to the ray associated to this nondegenerate segment.
+
+\item \toadd Lots of such similar theorem regarding coercions among linear objects
+\end{itemize}
+
+\subsection{Intersection Theorems}
+
+
+
+\section{Content in Perpendicular.lean}
+
+In this file, we define the concept for two linear objects to be perpendicular. A more precise plan is the following:
+\begin{enumerate}
+\item We define the meaning for two linear objects to be perpendicular.
+\item We briefly discuss the basic properties.
+\item We discuss the relation between parallel linear objects and perpendicular linear objects.
+\item We construct the line through a point perpendicular to a given line.
+\end{enumerate}
+
+\subsection{Definition}
+\begin{itemize}
+\item Definition \verb|perpendicular|: Given two linear objects, this function returns whether they are perpendicular, defined as whether their associated projective directions are perpendicular.
+\item Define \verb|IsPerpendicularTo| as \verb|perpendicular|: This to rewrite \verb|perpendicular l l'| as \verb|l IsPerpendicularTo l'|.
+
+\item Define $\perp$ as \verb|perpendicular|: This to rewrite \verb|perpendicular l l'| as $l \perp l'$.
+\end{itemize}
+
+\subsection{Basic properties}
+\begin{itemize}
+\item Theorem \verb|perpendicular.irrefl|: For a linear object $l$, it is not perpendicular to itself.
+
+\item Theorem \verb|perpendicular.symm|: For two linear objects $l_1$ and $l_2$, $l_1 \perp l_2$ if and only if $l_2 \perp l_1$.
+\end{itemize}
+
+\subsection{Perpendicular and parallel}
+\begin{itemize}
+\item 
+Theorem
+\verb|parallel_of_perp_perp|: Given three linear objects $l_1$, $l_2$, $l_3$, if $l_1 \perp l_2$ and $l_2 \perp l_3$, then $l_1 \parallel l_3$.
+
+\item
+Theorem \verb|perp_of_parallel_perp|: Given three linear objects $l_1$, $l_2$, $l_3$, if $l_1 \parallel l_2$ and $l_2 \perp l_3$, then $l_1 \perp l_3$.
+\item
+Theorem \verb|perp_of_perp_parallel|: Given three linear objects $l_1$, $l_2$, $l_3$, if $l_1 \perp l_2$ and $l_2 \parallel l_3$, then $l_1 \perp l_3$.
+
+\item Theorem \verb|toProj_ne_toProj_of_perp|: Given two linear objects $l_1$ and $l_2$, if $l_1 \perp l_2$, then the associated projected direction of $l_1$ is not equal to that of $l_2$.
+
+\item Theorem \verb|not_parallel_of_perp|: Given two linear objects $l_1$ and $l_2$, if $l_1 \perp l_2$, then $l_1$ is not parallel to $l_2$.
+
+\end{itemize}
+
+\subsection{Perpendicular construction}
+\begin{itemize}
+\item 
+Definition \verb|perp_line|: Given a point $A$ and a line $l$, this function returns the line through $A$ that is perpendicular to $l$; it is defined as the the line through $A$ with direction perpendicular to that of $l$.
+\item 
+Theorem \verb|toProj_of_perp_line_eq_toProj_perp|: Given a point $A$ and a line $l$, the projective direction of the line through $A$ perpendicular to $l$ is the perpendicular projective direction of $l$.
+
+\item 
+Theorem \verb|perp_foot_preparation|: Given a point $A$ and a line $l$, the projective direction of the line through $A$ perpendicular to $l$ is not the same as the projective direction of $l$.
+
+\item 
+Definition \verb|perp_foot|: Given a point $A$ and a line $l$, the function returns the perpendicular foot of $A$ to $l$, i.e. the intersection of the perpendicular of $l$ through $A$ with $l$.
+
+\item
+Definition \verb|dist_pt_line|: Given a point $A$ and a line $l$, this function returns the distance from $A$ to the line $l$, defined as the the length of the segment from $A$ to the perpendicular foot of $A$ to $l$.
+
+\item 
+Theorem \verb|perp_foot_eq_self_iff_lies_on|: Given a point $A$ and a line $l$, the perpendicular foot of $A$ to $l$ is $A$ if and only if $A$ lies on $l$.
+
+\item 
+Theorem \verb|line_of_self_perp_foot_eq_perp_line_of_not_lies_on|: Given a point $A$ and a line $l$ such that $A$ does not lie on $l$, the line through $A$ and the perpendicular foot of $A$ to $l$ is the line through $A$ that is perpendicular to $l$.
+
+\item 
+Theorem \verb|dist_eq_zero_iff_lies_on|: Given a point $A$ and a line $l$, the distance from $A$ to $l$ is zero if and only if $A$ lies on $l$.
+\end{itemize}
+\end{document}
