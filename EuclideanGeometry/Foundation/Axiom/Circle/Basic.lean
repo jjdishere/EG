@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
+import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
 
 noncomputable section
 namespace EuclidGeom
@@ -100,6 +101,78 @@ theorem pt_lies_inside_circle_of_seg_inside_circle {l : Seg P} {ω : Circle P} (
 end Circle
 
 end position
+
+
+section line_position
+
+namespace Circle
+
+def IsDeparture (l : Line P) (ω : Circle P) : Prop := dist_pt_line ω.center l > ω.radius
+
+def IsTangent (l : Line P) (ω : Circle P) : Prop := dist_pt_line ω.center l = ω.radius
+
+def IsIntersected (l : Line P) (ω : Circle P) : Prop := dist_pt_line ω.center l < ω.radius
+
+end Circle
+
+scoped infix : 50 "Departure" => Circle.IsDeparture
+scoped infix : 50 "Tangent" => Circle.IsTangent
+scoped infix : 50 "Intersect" => Circle.IsIntersected
+
+def Tangent_point {l : Line P} {ω : Circle P} (ht : l Tangent ω) : P := perp_foot ω.center l
+
+theorem Tangent_point_LiesOn_Circle {l : Line P} {ω : Circle P} (ht : l Tangent ω) : (Tangent_point ht) LiesOn ω := sorry
+
+end line_position
+
+
+section ray_position
+
+namespace Circle
+
+def source_Int_Of_Intersection_one (r : Ray P) (ω : Circle P) : Prop := (r.source LiesInt ω) ∧ (r.toLine Intersect ω)
+
+def source_Int_Intersection {r : Ray P} {ω : Circle P} (h : source_Int_Of_Intersection_one r ω) : P := sorry
+
+theorem source_Int_Intersection_LiesOn_Circle {r : Ray P} {ω : Circle P} (h : source_Int_Of_Intersection_one r ω) : (source_Int_Intersection h) LiesOn ω := sorry
+
+def source_Out_Of_Intersection_zero (r : Ray P) (ω : Circle P) : Prop := (r.source LiesOut ω) ∧ (r.toLine Departure ω)
+
+def source_Out_Of_Intersection_two (r : Ray P) (ω : Circle P) : Prop := (r.source LiesOut ω) ∧ (r.toLine Intersect ω)
+
+def source_Out_Intersection_in_seg {r : Ray P} {ω : Circle P} (h : source_Out_Of_Intersection_two r ω) : P := sorry
+
+def source_Out_Intersection_out_seg {r : Ray P} {ω : Circle P} (h : source_Out_Of_Intersection_two r ω) : P := sorry
+
+theorem source_Out_Intersection_LiesOn_Circle {r : Ray P} {ω : Circle P} (h : source_Out_Of_Intersection_two r ω) : ((source_Out_Intersection_in_seg h) LiesOn ω) ∧ ((source_Out_Intersection_out_seg h) LiesOn ω) := sorry
+
+def source_Out_Of_Tangent (r : Ray P) (ω : Circle P) : Prop := (r.source LiesOut ω) ∧ (r.toLine Tangent ω)
+
+def source_Out_Tangent_point {r : Ray P} {ω : Circle P} (h : source_Out_Of_Tangent r ω) : P := sorry
+
+theorem source_Out_Tangent_point_LiesOn_Circle {r : Ray P} {ω : Circle P} (h : source_Out_Of_Tangent r ω) : (source_Out_Tangent_point h) LiesOn ω := sorry
+
+def source_On_Of_Tangent (r : Ray P) (ω : Circle P) : Prop := (r.source LiesOn ω) ∧ (r.toLine Tangent ω)
+
+def source_On_Tangent_point {r : Ray P} {ω : Circle P} (h : source_On_Of_Tangent r ω) : P := r.source
+
+def source_On_Of_Intersection_two (r : Ray P) (ω : Circle P) : Prop := (r.source LiesOn ω) ∧ (r.toLine Intersect ω)
+
+def source_On_Intersection_not_self {r : Ray P} {ω : Circle P} (h : source_On_Of_Intersection_two r ω) : P := sorry
+
+theorem source_On_Intersection_LiesOn_Circle {r : Ray P} {ω : Circle P} (h : source_On_Of_Intersection_two r ω) : (source_On_Intersection_not_self h) LiesOn ω := sorry
+
+/- If a point is outside the circle, then we can construct two tangent rays which we can distinguish them with the position of circle.center and these tangent rays. -/
+def pt_Out_Left_Tangent_Ray {p : P} {ω : Circle P} (h : p LiesOut ω) : Ray P := sorry
+
+def pt_Out_Right_Tangent_Ray {p : P} {ω : Circle P} (h : p LiesOut ω) : Ray P := sorry
+
+end Circle
+
+end ray_position
+
+
+
 
 -- ray with circle
 -- line with circle
