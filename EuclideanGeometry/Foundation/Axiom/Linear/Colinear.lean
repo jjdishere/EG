@@ -37,7 +37,7 @@ theorem colinear_of_vec_eq_smul_vec' {A B C : P} : (∃ t : ℝ, VEC A C = t •
   intro ⟨_, e⟩
   exact colinear_of_vec_eq_smul_vec e
 
-theorem eq_mul_vec_iff_colinear_of_ne {A B C : P} (g : B ≠ A) : colinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B := by
+theorem  eq_mul_vec_iff_colinear_of_ne {A B C : P} (g : B ≠ A) : colinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B := by
   constructor
   · intro c
     rw [← iff_true (colinear A B C), ← eq_iff_iff] at c
@@ -98,7 +98,28 @@ theorem flip_colinear_fst_snd {A B C : P} (c : colinear A B C) : (colinear B A C
     exact colinear_of_vec_eq_smul_vec e'
 
 -- the proof of this theorem using def of line seems to be easier
-theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h₂ : colinear A B D) (h : B ≠ A) : (colinear A C D) := sorry
+theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h₂ : colinear A B D) (h : B ≠ A) : (colinear A C D) := by
+  have ac : ∃ r : ℝ , VEC A C = r • VEC A B := (eq_mul_vec_iff_colinear_of_ne h).mp h₁
+  have ad : ∃ s : ℝ , VEC A D = s • VEC A B := (eq_mul_vec_iff_colinear_of_ne h).mp h₂
+  rcases ac with ⟨r,eq⟩
+  rcases ad with ⟨s,eq'⟩
+  by_cases nd : r = 0
+  . simp only [nd, zero_smul] at eq
+    have : C = A :=(eq_iff_vec_eq_zero A C).mpr eq
+    rw[this] ; apply triv_colinear
+  apply colinear_of_vec_eq_smul_vec'
+  rw[eq,eq'] 
+  use s/r
+  simp only [Complex.real_smul, Complex.ofReal_div, Complex.ofReal_sub]
+  rw[<-mul_assoc]
+  simp only [ne_eq, mul_eq_mul_right_iff]
+  left 
+  rw[mul_comm,mul_div,mul_comm,<-mul_div]
+  rw[<-ne_eq] at nd
+  have  : r/r = 1 := by apply div_self ; exact nd
+  rw[<-Complex.ofReal_inj] at this
+  simp only [ne_eq, Complex.ofReal_div, Complex.ofReal_sub, Complex.ofReal_one] at this 
+  simp only [ne_eq, this, mul_one]
 
 theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (A ≠ C) ∧ (B ≠ A) := by
   rw [← iff_true (colinear A B C), ← eq_iff_iff] at h
@@ -112,9 +133,58 @@ end colinear
 
 section compatibility
 
-theorem Ray.colinear_of_lies_on {A B C : P} {ray : Ray P} (hA : A LiesOn ray) (hB : B LiesOn ray) (hC : C LiesOn ray) : colinear A B C := sorry 
+theorem Ray.colinear_of_lies_on {A B C : P} {ray : Ray P} (hA : A LiesOn ray) (hB : B LiesOn ray) (hC : C LiesOn ray) : colinear A B C := by
+  rcases hA with ⟨a,_,Ap⟩
+  rcases hB with ⟨b,_,Bp⟩
+  rcases hC with ⟨c,_,Cp⟩
+  have ab : VEC A B = (b - a) * (ray.toDir.toVec) := by
+    rw[<-vec_sub_vec ray.source, Ap ,Bp]
+    simp only [Complex.real_smul]
+    rw [sub_mul]
+  have ac : VEC A C = (c - a) * (ray.toDir.toVec) := by
+    rw[<-vec_sub_vec ray.source, Ap ,Cp]
+    simp only [Complex.real_smul]
+    rw [sub_mul]
+  by_cases nd : b - a = 0
+  . have : b = a := by 
+      rw[<-sub_self a] at nd
+      apply add_right_cancel_iff.mp nd
+    rw[this] at ab
+    simp only [sub_self, zero_mul] at ab 
+    have : B = A := by apply (eq_iff_vec_eq_zero A B).mpr ab
+    rw[this] ; apply triv_colinear 
+  apply colinear_of_vec_eq_smul_vec'
+  use (c - a)/(b - a)
+  rw[ac,ab]
+  simp only [Complex.real_smul, Complex.ofReal_div, Complex.ofReal_sub]
+  rw[<-mul_assoc]
+  simp only [ne_eq, mul_eq_mul_right_iff]
+  left 
+  rw[mul_comm,mul_div,mul_comm,<-mul_div]
+  rw[<-ne_eq] at nd
+  have  : (b - a) / (b - a) = 1 := by apply div_self ; exact nd
+  rw[<-Complex.ofReal_inj] at this
+  simp only [ne_eq, Complex.ofReal_div, Complex.ofReal_sub, Complex.ofReal_one] at this 
+  simp only [ne_eq, this, mul_one]
 
-theorem Seg.colinear_of_lies_on {A B C : P} {seg : Seg P} (hA : A LiesOn seg) (hB : B LiesOn seg) (hC : C LiesOn seg) : colinear A B C := sorry
+theorem Seg.colinear_of_lies_on {A B C : P} {seg : Seg P} (hA : A LiesOn seg) (hB : B LiesOn seg) (hC : C LiesOn seg) : colinear A B C := by
+  by_cases nd : seg.source =seg.target 
+  . rcases hA with ⟨_,_,_,a⟩
+    simp [nd] at a
+    have a_d : A = seg.target := by apply (eq_iff_vec_eq_zero seg.target A).mpr a
+    rcases hB with ⟨_,_,_,b⟩
+    simp [nd] at b
+    have b_d : B = seg.target := by apply (eq_iff_vec_eq_zero seg.target B).mpr b
+    rw[a_d,b_d] ; apply triv_colinear
+  rw[<-ne_eq] at nd
+  let seg_nd := Seg_nd.mk seg.source seg.target nd.symm
+  have ha : A LiesOn seg_nd.1 := by apply hA
+  have hb : B LiesOn seg_nd.1 := by apply hB
+  have hc : C LiesOn seg_nd.1 := by apply hC
+  have al := Seg_nd.lies_on_toRay_of_lies_on ha
+  have bl := Seg_nd.lies_on_toRay_of_lies_on hb
+  have cl := Seg_nd.lies_on_toRay_of_lies_on hc
+  apply Ray.colinear_of_lies_on al bl cl
 
 /-
 Note that we do not need all reverse, extension line,... here. instead we should show that
@@ -127,5 +197,7 @@ end compatibility
 
 theorem nontriv_of_plane {H : Type _} [EuclideanPlane H] : ∃ A B C : H, ¬(colinear A B C) := by
   sorry
+
+
 
 end EuclidGeom
