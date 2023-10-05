@@ -46,6 +46,12 @@ def nontriv₂ := (ne_of_not_colinear tr_nd.2).2.1
 
 def nontriv₃ := (ne_of_not_colinear tr_nd.2).2.2
 
+def edge_nd₁ : Seg_nd P := ⟨tr_nd.1.edge₁, tr_nd.nontriv₁⟩
+
+def edge_nd₂ : Seg_nd P := ⟨tr_nd.1.edge₂, tr_nd.nontriv₂⟩
+
+def edge_nd₃ : Seg_nd P := ⟨tr_nd.1.edge₃, tr_nd.nontriv₃⟩
+
 /- Only nondegenerate triangles can talk about orientation -/
 def is_cclock : Prop := tr_nd.1.3 LiesOnLeft (Ray.mk_pt_pt tr_nd.1.1 tr_nd.1.2 (tr_nd.nontriv₃))
 
@@ -54,6 +60,8 @@ def angle₁ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₃) (tr_nd.nont
 def angle₂ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₁) (tr_nd.nontriv₃).symm
 
 def angle₃ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₂) (tr_nd.nontriv₁).symm
+
+
 
 end Triangle_nd
 
@@ -88,7 +96,7 @@ theorem angle_neg_of_clock (clock : ¬ tr_nd.is_cclock) : tr_nd.angle₁.value <
 
 theorem cclock_of_pos_angle (h : 0 < tr_nd.angle₁.value ∨ 0 < tr_nd.angle₂.value ∨ 0 < tr_nd.angle₃.value) : tr_nd.is_cclock := sorry
 
-theorem clock_of_neg_angle (h : tr_nd.angle₁.value < 0 ∨ tr_nd.angle₂.value < 0 ∨ tr_nd.angle₃.value < 0) : tr_nd.is_cclock := sorry
+theorem clock_of_neg_angle (h : tr_nd.angle₁.value < 0 ∨ tr_nd.angle₂.value < 0 ∨ tr_nd.angle₃.value < 0) :¬ tr_nd.is_cclock := sorry
 
 theorem angle_sum_eq_pi_of_cclock (cclock : tr_nd.is_cclock): tr_nd.angle₁.value + tr_nd.angle₂.value + tr_nd.angle₃.value = π := sorry
 

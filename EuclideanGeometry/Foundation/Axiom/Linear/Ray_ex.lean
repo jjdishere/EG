@@ -50,7 +50,7 @@ theorem Ray.toDir_of_rev_eq_neg_toDir {ray : Ray P} : ray.reverse.toDir = - ray.
 theorem Ray.toProj_of_rev_eq_toProj {ray : Ray P} : ray.reverse.toProj = ray.toProj := by
   --@HeRunming: Simply imitate the proof of theorem "eq_toProj_of_smul" in Vector.lean
   -- `??? Why not use that toProj is the quotient of toDir` see the definition of toProj
-  apply (Dir.eq_toProj_iff ray.reverse.toDir ray.toDir).mpr
+  apply (Dir.eq_toProj_iff _ _).mpr
   right
   rfl
 
@@ -105,8 +105,12 @@ theorem Seg.lies_on_iff_lies_on_rev {A : P} {seg : Seg P} : A LiesOn seg ↔  A 
     exact Eq.symm smul_add_one_sub_smul 
 
 -- Given a segment and a point, the point lies in the interior of the segment if and only if it lies in the interior of the reverse of the segment.
-theorem Seg.lies_int_iff_lies_int_rev {A : P} {seg : Seg P} : A LiesInt seg ↔  A LiesInt seg.reverse := by sorry
-
+theorem Seg.lies_int_iff_lies_int_rev {A : P} {seg : Seg P} : A LiesInt seg ↔  A LiesInt seg.reverse := by 
+  constructor
+  rintro ⟨ha,⟨nonsource,nontarget⟩⟩
+  exact ⟨Seg.lies_on_iff_lies_on_rev.mp ha,⟨nontarget,nonsource⟩⟩
+  rintro ⟨ha,⟨nonrevsource,nonrevtarget⟩⟩
+  exact ⟨Seg.lies_on_iff_lies_on_rev.mpr ha,⟨nonrevtarget,nonrevsource⟩⟩
 
 -- Given a ray and a point, the point is equal to the source of the ray if and only if it lies on the ray and it lies on the reverse of the ray.
 theorem Ray.eq_source_iff_lies_on_and_lies_on_rev {A : P} {ray : Ray P} : A = ray.source ↔ (A LiesOn ray) ∧ (A LiesOn ray.reverse) := by
@@ -223,6 +227,11 @@ theorem length_eq_length_of_rev (seg : Seg P) : seg.length = seg.reverse.length 
   simp only [Vec.norm]
   norm_num
 
+-- A point `p` lies on the line determined by a ray `r` if and only if the vector `VEC r.source p` is parallel to the direction of `r`.
+theorem pt_lies_on_ray_iff_vec_same_dir {p : P} {r : Ray P} : (p LiesOn r ∨ p LiesOn r.reverse) ↔ ∃t : ℝ, VEC p r.source = t • r.toDir.toVec := sorry
+
+
+
 end reverse
 
 section extension
@@ -242,9 +251,7 @@ theorem eq_target_iff_lies_on_lies_on_extn {A : P} {seg_nd : Seg_nd P} : (A Lies
   apply Ray.eq_source_iff_lies_on_and_lies_on_rev.mpr
   constructor
   exact hyp2
-  have h':seg_nd.reverse.toRay=seg_nd.extension.reverse:=by
-    simp only [Seg_nd.extension,Ray.reverse,neg_neg]
-  rw[←h']
+  simp only[Seg_nd.extension,Ray.reverse,neg_neg]
   apply Seg_nd.lies_on_toRay_of_lies_on
   apply Seg.lies_on_iff_lies_on_rev.mp
   apply hyp1
@@ -256,10 +263,7 @@ theorem eq_target_iff_lies_on_lies_on_extn {A : P} {seg_nd : Seg_nd P} : (A Lies
   use 0
   simp only [le_refl, Dir.toVec_neg_eq_neg_toVec, smul_neg, zero_smul, neg_zero, true_and]
   rw[hyp]
-  have :(Seg_nd.extension seg_nd).source=seg_nd.1.target:=by
-    rfl
-  rw[this]
-  simp only [vec_same_eq_zero]
+  simp only [Seg_nd.extension,Ray.reverse,Seg_nd.toRay,Seg_nd.reverse,Seg.reverse,vec_same_eq_zero]
 
 theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} {seg_nd : Seg_nd P} (liesint : A LiesInt seg_nd.extension) : seg_nd.1.target LiesInt SEG seg_nd.1.source A :=
 by 

@@ -11,7 +11,6 @@ class Circle (P : Type _) [EuclideanPlane P] where
   radius : ℝ
   rad_pos : 0 < radius
 
-
 variable {P : Type _} [EuclideanPlane P]
 
 namespace Circle
@@ -19,7 +18,7 @@ namespace Circle
 def mk_pt_pt (O A : P) (h : A ≠ O) : Circle P where
   center := O
   radius := (SEG O A).length
-  rad_pos := (length_pos_iff_nd _).mpr h
+  rad_pos := (length_pos_iff_nd).mpr h
 
 def mk_pt_pt_pt (A B C: P) (h : ¬ colinear A B C) : Circle P := sorry
 
