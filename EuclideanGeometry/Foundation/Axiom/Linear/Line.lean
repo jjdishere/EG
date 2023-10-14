@@ -29,8 +29,8 @@ protected theorem symm {x y : Ray P} (h : same_extn_line x y) : same_extn_line y
 protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same_extn_line y z) : same_extn_line x z where
   left := Eq.trans h₁.1 h₂.1
   right := by
-    rcases pt_lies_on_ray_iff_vec_same_dir.mp (h₁.2) with ⟨a, dyx⟩
-    rcases pt_lies_on_ray_iff_vec_same_dir.mp (h₂.2) with ⟨b, dzy⟩
+    rcases pt_lies_on_ray_iff_vec_same_dir.mp h₁.2 with ⟨a, dyx⟩
+    rcases pt_lies_on_ray_iff_vec_same_dir.mp h₂.2 with ⟨b, dzy⟩
     apply pt_lies_on_ray_iff_vec_same_dir.mpr
     have ⟨t, xpary⟩ : ∃t : ℝ, y.toDir.toVec = t • x.toDir.toVec := by
       rcases (Dir.eq_toProj_iff _ _).mp h₁.1 with xy | xy
