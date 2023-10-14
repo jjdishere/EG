@@ -29,9 +29,9 @@ protected theorem symm {x y : Ray P} (h : same_extn_line x y) : same_extn_line y
 protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same_extn_line y z) : same_extn_line x z where
   left := Eq.trans h₁.1 h₂.1
   right := by
-    rcases pt_lies_on_ray_iff_vec_same_dir.mp h₁.2 with ⟨a, dyx⟩
-    rcases pt_lies_on_ray_iff_vec_same_dir.mp h₂.2 with ⟨b, dzy⟩
-    apply pt_lies_on_ray_iff_vec_same_dir.mpr
+    rcases pt_lies_on_line_from_ray_iff_vec_parallel.mp h₁.2 with ⟨a, dyx⟩
+    rcases pt_lies_on_line_from_ray_iff_vec_parallel.mp h₂.2 with ⟨b, dzy⟩
+    apply pt_lies_on_line_from_ray_iff_vec_parallel.mpr
     have ⟨t, xpary⟩ : ∃t : ℝ, y.toDir.toVec = t • x.toDir.toVec := by
       rcases (Dir.eq_toProj_iff _ _).mp h₁.1 with xy | xy
       · use 1
@@ -43,8 +43,6 @@ protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same
     rw [(vec_add_vec _ _ _).symm, dyx, dzy]
     simp only [Complex.real_smul, Complex.ofReal_mul, Complex.ofReal_add]
     ring_nf
-
-
 
 protected def setoid : Setoid (Ray P) where
   r := same_extn_line
@@ -64,7 +62,23 @@ theorem same_extn_line_of_PM (A : P) (x y : Dir) (h : PM x y) : same_extn_line (
   · exact Or.inl Ray.source_lies_on
 
 theorem same_extn_line.eq_carrier_union_rev_carrier (ray ray' : Ray P) (h : same_extn_line ray ray') : ray.carrier ∪ ray.reverse.carrier = ray'.carrier ∪ ray'.reverse.carrier := by
-  sorry
+  ext p
+  simp only [Set.mem_union, Ray.in_carrier_iff_lies_on]
+  simp only [pt_lies_on_line_from_ray_iff_vec_parallel, Complex.real_smul]
+  -- repeat rw [pt_lies_on_line_from_ray_iff_vec_parallel]
+  let ⟨a, b⟩ := pt_lies_on_line_from_ray_iff_vec_parallel.mp h.2
+  rw [Complex.real_smul] at b
+  constructor
+  · intro g
+    rcases g with ⟨t, g⟩
+    sorry
+  · sorry
+
+  
+
+
+
+
 
 end setoid
 
