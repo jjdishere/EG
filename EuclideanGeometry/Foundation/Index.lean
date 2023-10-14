@@ -36,6 +36,7 @@ import EuclideanGeometry.Foundation.Axiom.Circle.IncribedAngle
 import EuclideanGeometry.Foundation.Construction.Triangle.IsocelesTriangle
 import EuclideanGeometry.Foundation.Construction.Triangle.AngleBisector
 /- Constuction.Polygon -/
+import EuclideanGeometry.Foundation.Construction.Polygon.Quadrilateral
 import EuclideanGeometry.Foundation.Construction.Polygon.Parallelogram
 /- Constuction.Circle -/
 import EuclideanGeometry.Foundation.Construction.Circle.CyclicPolygon

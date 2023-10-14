@@ -110,6 +110,7 @@ theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr
 
 theorem nontrivial_of_edge_sum_ne_edge : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length → tr.is_nd  := sorry -- should this theorem stated as ≠, or as > ???
 
+theorem edge_sum_eq_edge_iff_colinear :  colinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry 
 /- area ≥ 0, nontrivial → >0, =0 → trivial -/
 
 end Triangle

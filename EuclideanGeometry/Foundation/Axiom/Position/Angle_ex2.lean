@@ -1,6 +1,7 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Convex
+import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 
 noncomputable section
 
@@ -34,15 +35,15 @@ theorem source_start_ray_eq_source_end_ray (ang : Angle P) : ang.start_ray.sourc
 -- Can use congrArg @Ray.source P _) h to turn h into the sources of two terms being equal.
 theorem source_eq_source_of_adj {ang₁ ang₂: Angle P} (h : ang₁.end_ray = ang₂.start_ray) : ang₁.start_ray.source = ang₂.end_ray.source := sorry
 
-
 def sum_adj {ang₁ ang₂: Angle P} (h :ang₁.end_ray = ang₂.start_ray) : Angle P := Angle.mk ang₁.start_ray ang₂.end_ray (source_eq_source_of_adj h)
-
-
-
 
 theorem ang_eq_ang_add_ang_mod_pi_of_adj_ang (ang₁ ang₂ : Angle P) (h: ang₁.end_ray = ang₂.start_ray) : (sum_adj h).value = ang₁.value + ang₂.value ∨ (sum_adj h).value = ang₁.value + ang₂.value + π ∨ (sum_adj h).value = ang₁.value + ang₂.value - π := sorry
 
+section colinear
 
+theorem colinear_of_zero_angle {A O B : P} {h₁ : A ≠ O} {h₂ : B ≠ O} : ∠ A O B h₁ h₂ = 0 → colinear O A B := by sorry
+
+end colinear
 
 end Angle 
 
