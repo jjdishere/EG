@@ -30,6 +30,9 @@ def Seg_nd.reverse (seg_nd : Seg_nd P) : Seg_nd P := ⟨seg_nd.1.reverse, nd_of_
 -- Given a nondegenerate segment $segnd$, first viewing $segnd$ as a segment and then reverse is the same as first reversing $segnd$ and then view it as a segment.
 theorem Seg_nd.rev_toSeg_eq_toSeg_rev (seg_nd : Seg_nd P) : seg_nd.1.reverse = seg_nd.reverse.1 := rfl
 
+-- Given a ray, the source of the reversed ray is the source of the ray.
+theorem Ray.source_of_rev_eq_source {ray : Ray P} : ray.reverse.source = ray.source := rfl
+
 -- Given a ray, reversing it twice gives back to itself.
 @[simp]
 theorem Ray.rev_rev_eq_self (ray : Ray P) : ray.reverse.reverse = ray := by
@@ -45,6 +48,8 @@ theorem Seg_nd.rev_rev_eq_self (seg_nd : Seg_nd P)  : seg_nd.reverse.reverse = s
 
 -- Given a ray, the direction of the reversed ray is the negative of the direction of the ray.
 theorem Ray.toDir_of_rev_eq_neg_toDir {ray : Ray P} : ray.reverse.toDir = - ray.toDir := rfl
+
+theorem Ray.toVec_of_rev_eq_neg_toVec {ray : Ray P} : ray.reverse.toDir.toVec = - ray.toDir.toVec := rfl
 
 -- Given a ray, the projective direction of the reversed ray is the negative of the projective direction of the ray.
 theorem Ray.toProj_of_rev_eq_toProj {ray : Ray P} : ray.reverse.toProj = ray.toProj := by
@@ -242,8 +247,49 @@ theorem ray_toProj_eq_mk_pt_pt_toProj {A B : P} {ray : Ray P} (h : B ≠ A) (ha 
     _ = ray.2.toVec_nd.toProj := congrArg Dir.toProj (Dir.dir_toVec_nd_normalize_eq_self ray.2).symm
     _ = _ := eq_toProj_of_smul ray.2.toVec_nd ⟨VEC A B, (vsub_ne_zero.mpr h)⟩ heq
 
+theorem Ray.in_carrier_iff_lies_on {r : Ray P} {p : P} : p ∈ r.carrier ↔ p LiesOn r := by
+  rfl
+
+theorem pt_lies_on_ray_iff_vec_same_dir {p : P} {r : Ray P} : p LiesOn r ↔ ∃t : ℝ, (t ≥ 0) ∧ VEC r.source p = t • r.toDir.toVec := by
+  rw [← Ray.in_carrier_iff_lies_on, Ray.carrier, Set.mem_setOf, Ray.IsOn]
+
+theorem pt_lies_on_ray_rev_iff_vec_opposite_dir {p : P} {r : Ray P} : p LiesOn r.reverse ↔ ∃t : ℝ, (t ≤ 0) ∧ VEC r.source p = t • r.toDir.toVec := by
+  rw [pt_lies_on_ray_iff_vec_same_dir]
+  constructor
+  · intro h
+    rcases h with ⟨u, ⟨_, h⟩⟩
+    use -u
+    rw [Ray.toVec_of_rev_eq_neg_toVec, Ray.source_of_rev_eq_source] at h
+    constructor
+    · linarith
+    · simp only [h, smul_neg, Complex.real_smul, neg_smul]
+  · intro h
+    rcases h with ⟨u, ⟨_, h⟩⟩
+    use -u
+    rw [Ray.toVec_of_rev_eq_neg_toVec, Ray.source_of_rev_eq_source]
+    constructor
+    · linarith
+    · simp only [h, Complex.real_smul, smul_neg, neg_smul, neg_neg]
+
 -- A point `p` lies on the line determined by a ray `r` if and only if the vector `VEC r.source p` is parallel to the direction of `r`.
-theorem pt_lies_on_ray_iff_vec_same_dir {p : P} {r : Ray P} : (p LiesOn r ∨ p LiesOn r.reverse) ↔ ∃t : ℝ, VEC p r.source = t • r.toDir.toVec := sorry
+theorem pt_lies_on_line_from_ray_iff_vec_parallel {p : P} {r : Ray P} : (p LiesOn r ∨ p LiesOn r.reverse) ↔ ∃t : ℝ, VEC r.source p = t • r.toDir.toVec := by
+  constructor
+  · intro h
+    rcases h with h | h
+    · rcases pt_lies_on_ray_iff_vec_same_dir.mp h with ⟨t, ⟨_, _⟩⟩
+      use t
+    · rcases pt_lies_on_ray_rev_iff_vec_opposite_dir.mp h with ⟨t, ⟨_, _⟩⟩
+      use t
+  · intro h
+    rcases h with ⟨t, h⟩
+    by_cases g : t ≥ 0
+    · left
+      apply pt_lies_on_ray_iff_vec_same_dir.mpr
+      use t
+    · right
+      apply pt_lies_on_ray_rev_iff_vec_opposite_dir.mpr
+      use t
+      exact ⟨le_of_lt (lt_of_not_ge g), h⟩
 
 end reverse
 
