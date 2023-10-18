@@ -137,9 +137,9 @@ def source_Int_Of_Intersection_one (r : Ray P) (ω : Circle P) : Prop := (r.sour
 theorem Ray_Source_Int_toLine_Intersect {r : Ray P} {ω : Circle P} (h : r.source LiesInt ω) : r.toLine Intersect ω := sorry
 
 /- use the perp foot -/
-def source_Int_Intersection {r : Ray P} {ω : Circle P} (h : source_Int_Of_Intersection_one r ω) : P := sorry
+def source_Int_Intersection {r : Ray P} {ω : Circle P} (h : source_Int_Of_Intersection_one r ω) : P := ((Real.sqrt (ω.radius ^ 2 - (dist_pt_line ω.center r.toLine) ^ 2)) • r.2.1) +ᵥ (perp_foot ω.center r.toLine)
 
-/- use the law of cosines -/
+/- use the Pythagoras theorem -/
 theorem source_Int_Intersection_LiesOn_Circle {r : Ray P} {ω : Circle P} (h : source_Int_Of_Intersection_one r ω) : (source_Int_Intersection h) LiesOn ω := sorry
 
 def source_Out_Of_Intersection_zero (r : Ray P) (ω : Circle P) : Prop := (r.source LiesOut ω) ∧ (r.toLine Departure ω)
@@ -147,10 +147,10 @@ def source_Out_Of_Intersection_zero (r : Ray P) (ω : Circle P) : Prop := (r.sou
 def source_Out_Of_Intersection_two (r : Ray P) (ω : Circle P) : Prop := (r.source LiesOut ω) ∧ (r.toLine Intersect ω)
 
 /- (-Dir) +ᵥ perp foot -/
-def source_Out_Intersection_in_seg {r : Ray P} {ω : Circle P} (h : source_Out_Of_Intersection_two r ω) : P := sorry
+def source_Out_Intersection_in_seg {r : Ray P} {ω : Circle P} (h : source_Out_Of_Intersection_two r ω) : P := (-(Real.sqrt (ω.radius ^ 2 - (dist_pt_line ω.center r.toLine) ^ 2)) • r.2.1) +ᵥ (perp_foot ω.center r.toLine)
 
 /- Dir +ᵥ perp foot -/
-def source_Out_Intersection_out_seg {r : Ray P} {ω : Circle P} (h : source_Out_Of_Intersection_two r ω) : P := sorry
+def source_Out_Intersection_out_seg {r : Ray P} {ω : Circle P} (h : source_Out_Of_Intersection_two r ω) : P := ((Real.sqrt (ω.radius ^ 2 - (dist_pt_line ω.center r.toLine) ^ 2)) • r.2.1) +ᵥ (perp_foot ω.center r.toLine)
 
 theorem source_Out_Intersection_LiesOn_Circle {r : Ray P} {ω : Circle P} (h : source_Out_Of_Intersection_two r ω) : ((source_Out_Intersection_in_seg h) LiesOn ω) ∧ ((source_Out_Intersection_out_seg h) LiesOn ω) := sorry
 
@@ -166,7 +166,7 @@ def source_On_Tangent_point {r : Ray P} {ω : Circle P} (h : source_On_Of_Tangen
 
 def source_On_Of_Intersection_two (r : Ray P) (ω : Circle P) : Prop := (r.source LiesOn ω) ∧ (r.toLine Intersect ω)
 
-def source_On_Intersection_not_self {r : Ray P} {ω : Circle P} (h : source_On_Of_Intersection_two r ω) : P := sorry
+def source_On_Intersection_not_self {r : Ray P} {ω : Circle P} (h : source_On_Of_Intersection_two r ω) : P := ((Real.sqrt (ω.radius ^ 2 - (dist_pt_line ω.center r.toLine) ^ 2)) • r.2.1) +ᵥ (perp_foot ω.center r.toLine)
 
 theorem source_On_Intersection_LiesOn_Circle {r : Ray P} {ω : Circle P} (h : source_On_Of_Intersection_two r ω) : (source_On_Intersection_not_self h) LiesOn ω := sorry
 
