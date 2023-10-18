@@ -29,18 +29,8 @@ variable (hang : ∠ X B A x_ne_b a_ne_b = - ∠ A C Y a_ne_c y_ne_c)
 
 
 
-theorem Exercise_3_4_4 : (SEG B X).length = (SEG C Y).length ∧ (SEG M X).length = (SEG M Y) :=
-begin
-  sorry
-end
+--theorem Exercise_3_4_4 : (SEG B X).length = (SEG C Y).length ∧ (SEG M X).length = (SEG M Y) :=
 
-theorem notttteq : X ≠ B := by
-  Triangle_nd.not_lie_on_snd_and_trd_of_int_fst
-
--- variable (oang₁ oang₂ : OAngle P) (hang1 : oang₁ = ∠ X B A)
-
-trind := Triangle_nd.mk (▵ A O B) hnd
-let oang₁ = ∠ 
 end Exercise_3_4_4
 
 

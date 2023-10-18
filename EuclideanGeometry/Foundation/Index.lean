@@ -1,6 +1,3 @@
--- ######## IMPORTANT NOTE ######## --
-/- This file imports all files in Foundation. Please parse this file before any pull request modifying anything in folder Foundation. -/
-
 /- Axiom -/
 /- Axiom.Basic -/
 import EuclideanGeometry.Foundation.Axiom.Basic.Vector
@@ -39,6 +36,7 @@ import EuclideanGeometry.Foundation.Axiom.Circle.IncribedAngle
 import EuclideanGeometry.Foundation.Construction.Triangle.IsocelesTriangle
 import EuclideanGeometry.Foundation.Construction.Triangle.AngleBisector
 /- Constuction.Polygon -/
+import EuclideanGeometry.Foundation.Construction.Polygon.Quadrilateral
 import EuclideanGeometry.Foundation.Construction.Polygon.Parallelogram
 /- Constuction.Circle -/
 import EuclideanGeometry.Foundation.Construction.Circle.CyclicPolygon
@@ -46,3 +44,11 @@ import EuclideanGeometry.Foundation.Construction.Circle.CyclicPolygon
 /- Theorem -/
 /- Theorem.Circle-/
 import EuclideanGeometry.Foundation.Theorem.Circle.Power
+
+/-!
+# Index of Foundations
+
+`IMPORTANT!`
+
+This file imports all files in Foundation. Please parse this file before creat any pull request modifying anything in folder Foundation. 
+-/

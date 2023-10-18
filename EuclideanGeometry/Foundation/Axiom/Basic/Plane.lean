@@ -47,35 +47,52 @@ instance : AddTorsor (Vec) P := by infer_instance
 
 /- vector $AB +$ point $A =$ point $B$ -/
 @[simp]
-theorem start_vadd_vec_eq_end (A B : P) : (VEC A B) +ᵥ A = B := sorry
+theorem start_vadd_vec_eq_end (A B : P) : (VEC A B) +ᵥ A = B := vsub_vadd B A
 
 @[simp]
-theorem vadd_eq_self_iff_vec_eq_zero {A : P} {v : Vec} : v +ᵥ A = A ↔ v = 0 := sorry
+theorem vadd_eq_self_iff_vec_eq_zero {A : P} {v : Vec} : v +ᵥ A = A ↔ v = 0 := by
+  rw [eq_comm, eq_vadd_iff_vsub_eq, vsub_self, eq_comm]
 
 @[simp]
-theorem vec_same_eq_zero (A : P) : VEC A A = 0 := sorry
+theorem vec_same_eq_zero (A : P) : VEC A A = 0 := by
+  rw [Vec.mk_pt_pt, vsub_self]
 
-theorem neg_vec (A B : P) : - VEC A B = VEC B A := sorry
+theorem neg_vec (A B : P) : - VEC A B = VEC B A := by
+  rw [Vec.mk_pt_pt, Vec.mk_pt_pt, neg_vsub_eq_vsub_rev]
 
-theorem eq_iff_vec_eq_zero (A B : P) : B = A ↔ VEC A B = 0 := sorry
+theorem eq_iff_vec_eq_zero (A B : P) : B = A ↔ VEC A B = 0 := vsub_eq_zero_iff_eq.symm
 
-theorem ne_iff_vec_ne_zero (A B : P) : B ≠ A ↔ (VEC A B) ≠ 0 := sorry
-
-@[simp]
-theorem vec_add_vec (A B C : P) : VEC A B + VEC B C = VEC A C := sorry
-
-@[simp]
-theorem vec_of_pt_vadd_pt_eq_vec (A : P) (v : Vec) : (VEC A (v +ᵥ A)) = v := sorry
+theorem ne_iff_vec_ne_zero (A B : P) : B ≠ A ↔ (VEC A B) ≠ 0 := (eq_iff_vec_eq_zero A B).not
 
 @[simp]
-theorem vec_sub_vec (O A B: P) : VEC O B - VEC O A = VEC A B := sorry
+theorem vec_add_vec (A B C : P) : VEC A B + VEC B C = VEC A C := by
+  rw [add_comm, Vec.mk_pt_pt, Vec.mk_pt_pt, Vec.mk_pt_pt, vsub_add_vsub_cancel]
+
+@[simp]
+theorem vec_of_pt_vadd_pt_eq_vec (A : P) (v : Vec) : (VEC A (v +ᵥ A)) = v := vadd_vsub v A
+
+@[simp]
+theorem vec_sub_vec (O A B: P) : VEC O B - VEC O A = VEC A B := by
+  rw [Vec.mk_pt_pt, Vec.mk_pt_pt, Vec.mk_pt_pt, vsub_sub_vsub_cancel_right]
+
+@[simp]
+theorem vec_sub_vec' (O A B: P) : VEC A O - VEC B O = VEC A B := by
+  rw [Vec.mk_pt_pt, Vec.mk_pt_pt, Vec.mk_pt_pt, vsub_sub_vsub_cancel_left]
 
 theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = tB) (ha : VEC O A = tA • v) (hb : VEC O B = tB • v) : A = B := by
-  have hc : VEC A B = VEC O B - VEC O A := Eq.symm (vec_sub_vec O A B)
-  rw [ha, hb, ← sub_smul, Iff.mpr sub_eq_zero (Eq.symm h), zero_smul] at hc
-  exact Eq.symm ((eq_iff_vec_eq_zero A B).2 hc)
+  have hc : VEC A B = VEC O B - VEC O A := (vec_sub_vec O A B).symm
+  rw [ha, hb, ← sub_smul, Iff.mpr sub_eq_zero h.symm, zero_smul] at hc
+  exact ((eq_iff_vec_eq_zero A B).2 hc).symm
 
 theorem eq_of_smul_Vec_nd_eq_smul_Vec_nd {v : Vec_nd} {tA tB : ℝ} (e : tA • v.1 = tB • v.1) : tA = tB := by
-  sorry
+  have h : (tA - tB) • v.1 = 0 := by
+    rw [sub_smul, e, Complex.real_smul, sub_self]
+  rw [smul_eq_zero] at h
+  rcases h with x | y
+  linarith
+  have: v.1 ≠ 0 := by
+    apply v.2
+  contradiction
+
 
 end EuclidGeom
