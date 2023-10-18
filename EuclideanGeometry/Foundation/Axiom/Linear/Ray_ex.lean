@@ -256,15 +256,13 @@ theorem pt_lies_on_ray_iff_vec_same_dir {p : P} {r : Ray P} : p LiesOn r ↔ ∃
 theorem pt_lies_on_ray_rev_iff_vec_opposite_dir {p : P} {r : Ray P} : p LiesOn r.reverse ↔ ∃t : ℝ, (t ≤ 0) ∧ VEC r.source p = t • r.toDir.toVec := by
   rw [pt_lies_on_ray_iff_vec_same_dir]
   constructor
-  · intro h
-    rcases h with ⟨u, ⟨_, h⟩⟩
+  · rintro ⟨u, ⟨_, h⟩⟩
     use -u
     rw [Ray.toVec_of_rev_eq_neg_toVec, Ray.source_of_rev_eq_source] at h
     constructor
     · linarith
     · simp only [h, smul_neg, Complex.real_smul, neg_smul]
-  · intro h
-    rcases h with ⟨u, ⟨_, h⟩⟩
+  · rintro ⟨u, ⟨_, h⟩⟩
     use -u
     rw [Ray.toVec_of_rev_eq_neg_toVec, Ray.source_of_rev_eq_source]
     constructor
@@ -274,14 +272,12 @@ theorem pt_lies_on_ray_rev_iff_vec_opposite_dir {p : P} {r : Ray P} : p LiesOn r
 -- A point `p` lies on the line determined by a ray `r` if and only if the vector `VEC r.source p` is parallel to the direction of `r`.
 theorem pt_lies_on_line_from_ray_iff_vec_parallel {p : P} {r : Ray P} : (p LiesOn r ∨ p LiesOn r.reverse) ↔ ∃t : ℝ, VEC r.source p = t • r.toDir.toVec := by
   constructor
-  · intro h
-    rcases h with h | h
+  · rintro (h | h)
     · rcases pt_lies_on_ray_iff_vec_same_dir.mp h with ⟨t, ⟨_, _⟩⟩
       use t
     · rcases pt_lies_on_ray_rev_iff_vec_opposite_dir.mp h with ⟨t, ⟨_, _⟩⟩
       use t
-  · intro h
-    rcases h with ⟨t, h⟩
+  · rintro ⟨t, h⟩
     by_cases g : t ≥ 0
     · left
       apply pt_lies_on_ray_iff_vec_same_dir.mpr
