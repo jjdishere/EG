@@ -27,20 +27,22 @@ constructor
 intro h0
 have h1 : tri_nd.1.edge₂.length = tri_nd.1.edge₃.length := by
   exact h0  
-have _ : tri_nd.1 IsACongrTo tri_nd.flip_vertices.1 := by
+have h2 : tri_nd.1 IsACongrTo tri_nd.flip_vertices.1 := by
   apply acongr_of_SAS
   rw [← c, h1]
   rw [x]
   rw [← b, ← h1]
-rw [IsACongr.angle₂.value, z]
+rw [IsACongr.angle₂.value tri_nd tri_nd.flip_vertices,<-z]
+exact h2
 intro k0
-have _ : tri_nd.1 IsACongrTo tri_nd.flip_vertices.1 := by
+have k1 : tri_nd.1 IsACongrTo tri_nd.flip_vertices.1 := by
   apply acongr_of_ASA
   rw [k0, z]
   exact a
   rw [← k0, y]
 have k2 := IsACongr.edge₂ tri_nd.1 tri_nd.flip_vertices.1
 rw [← c] at k2
+specialize k2 k1
 exact k2
 
 namespace Triangle

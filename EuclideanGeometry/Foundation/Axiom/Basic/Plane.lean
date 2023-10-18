@@ -75,6 +75,10 @@ theorem vec_of_pt_vadd_pt_eq_vec (A : P) (v : Vec) : (VEC A (v +ᵥ A)) = v := v
 theorem vec_sub_vec (O A B: P) : VEC O B - VEC O A = VEC A B := by
   rw [Vec.mk_pt_pt, Vec.mk_pt_pt, Vec.mk_pt_pt, vsub_sub_vsub_cancel_right]
 
+@[simp]
+theorem vec_sub_vec' (O A B: P) : VEC A O - VEC B O = VEC A B := by
+  rw [Vec.mk_pt_pt, Vec.mk_pt_pt, Vec.mk_pt_pt, vsub_sub_vsub_cancel_left]
+
 theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = tB) (ha : VEC O A = tA • v) (hb : VEC O B = tB • v) : A = B := by
   have hc : VEC A B = VEC O B - VEC O A := (vec_sub_vec O A B).symm
   rw [ha, hb, ← sub_smul, Iff.mpr sub_eq_zero h.symm, zero_smul] at hc
