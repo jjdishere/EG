@@ -247,7 +247,7 @@ theorem ray_toProj_eq_mk_pt_pt_toProj {A B : P} {ray : Ray P} (h : B ≠ A) (ha 
     _ = ray.2.toVec_nd.toProj := congrArg Dir.toProj (Dir.dir_toVec_nd_normalize_eq_self ray.2).symm
     _ = _ := eq_toProj_of_smul ray.2.toVec_nd ⟨VEC A B, (vsub_ne_zero.mpr h)⟩ heq
 
-theorem Ray.in_carrier_iff_lies_on {r : Ray P} {p : P} : p ∈ r.carrier ↔ p LiesOn r := by
+theorem Ray.in_carrier_iff_lies_on {p : P} {r : Ray P} : p ∈ r.carrier ↔ p LiesOn r := by
   rfl
 
 theorem pt_lies_on_ray_iff_vec_same_dir {p : P} {r : Ray P} : p LiesOn r ↔ ∃t : ℝ, (t ≥ 0) ∧ VEC r.source p = t • r.toDir.toVec := by
@@ -290,6 +290,13 @@ theorem pt_lies_on_line_from_ray_iff_vec_parallel {p : P} {r : Ray P} : (p LiesO
       apply pt_lies_on_ray_rev_iff_vec_opposite_dir.mpr
       use t
       exact ⟨le_of_lt (lt_of_not_ge g), h⟩
+
+theorem dir_parallel_of_same_proj {x y : Ray P} (h : x.toProj = y.toProj) : ∃t : ℝ, y.toDir.toVec = t • x.toDir.toVec := by
+  rcases (Dir.eq_toProj_iff _ _).mp h with xy | xy
+  · use 1
+    rw [one_smul, xy]
+  · use -1
+    rw [xy, Dir.toVec_neg_eq_neg_toVec, smul_neg, neg_smul, one_smul, neg_neg]
 
 end reverse
 
