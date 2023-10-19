@@ -15,6 +15,13 @@ namespace same_extn_line
 
 theorem dir_eq_or_eq_neg {x y : Ray P} (h : same_extn_line x y) : (x.toDir = y.toDir ∨ x.toDir = - y.toDir) := (Dir.eq_toProj_iff _ _).mp h.1
 
+theorem vec_parallel_of_same_extn_line {x y : Ray P} (h : same_extn_line x y) : ∃t : ℝ, y.toDir.toVec = t • x.toDir.toVec := by
+  rcases (Dir.eq_toProj_iff _ _).mp h.1 with xy | xy
+  · use 1
+    rw [one_smul, xy]
+  · use -1
+    rw [xy, Dir.toVec_neg_eq_neg_toVec, smul_neg, neg_smul, one_smul, neg_neg]
+
 protected theorem refl (x : Ray P) : same_extn_line x x := ⟨rfl, Or.inl (Ray.source_lies_on)⟩
 
 protected theorem symm {x y : Ray P} (h : same_extn_line x y) : same_extn_line y x := by
@@ -29,22 +36,15 @@ protected theorem symm {x y : Ray P} (h : same_extn_line x y) : same_extn_line y
 protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same_extn_line y z) : same_extn_line x z where
   left := Eq.trans h₁.1 h₂.1
   right := by
-    rcases pt_lies_on_ray_iff_vec_same_dir.mp (h₁.2) with ⟨a, dyx⟩
-    rcases pt_lies_on_ray_iff_vec_same_dir.mp (h₂.2) with ⟨b, dzy⟩
-    apply pt_lies_on_ray_iff_vec_same_dir.mpr
-    have ⟨t, xpary⟩ : ∃t : ℝ, y.toDir.toVec = t • x.toDir.toVec := by
-      rcases (Dir.eq_toProj_iff _ _).mp h₁.1 with xy | xy
-      · use 1
-        rw [one_smul, xy]
-      · use -1
-        rw [xy, Dir.toVec_neg_eq_neg_toVec, smul_neg, neg_smul, one_smul, neg_neg]
+    rcases pt_lies_on_line_from_ray_iff_vec_parallel.mp h₁.2 with ⟨a, dyx⟩
+    rcases pt_lies_on_line_from_ray_iff_vec_parallel.mp h₂.2 with ⟨b, dzy⟩
+    apply pt_lies_on_line_from_ray_iff_vec_parallel.mpr
+    let ⟨t, xpary⟩ := vec_parallel_of_same_extn_line h₁
     use a + b * t
     rw [xpary] at dzy
     rw [(vec_add_vec _ _ _).symm, dyx, dzy]
     simp only [Complex.real_smul, Complex.ofReal_mul, Complex.ofReal_add]
     ring_nf
-
-
 
 protected def setoid : Setoid (Ray P) where
   r := same_extn_line
@@ -64,7 +64,30 @@ theorem same_extn_line_of_PM (A : P) (x y : Dir) (h : PM x y) : same_extn_line (
   · exact Or.inl Ray.source_lies_on
 
 theorem same_extn_line.eq_carrier_union_rev_carrier (ray ray' : Ray P) (h : same_extn_line ray ray') : ray.carrier ∪ ray.reverse.carrier = ray'.carrier ∪ ray'.reverse.carrier := by
-  sorry
+  ext p
+  simp only [Set.mem_union, Ray.in_carrier_iff_lies_on, pt_lies_on_line_from_ray_iff_vec_parallel]
+  let ⟨a, ha⟩ := pt_lies_on_line_from_ray_iff_vec_parallel.mp h.symm.2
+  let ⟨b, hb⟩ := vec_parallel_of_same_extn_line h.symm
+  constructor
+  · intro hc
+    rcases hc with ⟨c, hc⟩
+    use a + c * b
+    calc
+      VEC ray'.source p = VEC ray'.source ray.source + VEC ray.source p := (vec_add_vec _ _ _).symm
+      _ = a • ray'.toDir.toVec + c • ray.toDir.toVec := by rw [ha, hc]
+      _ = a • ray'.toDir.toVec + (c * b) • ray'.toDir.toVec := by
+        simp only [hb, Complex.real_smul, Complex.ofReal_mul, add_right_inj]
+        ring_nf
+      _ = (a + c * b) • ray'.toDir.toVec := (add_smul _ _ _).symm
+  · sorry
+  /-
+  Proof for the second case is almost the same with the first case.
+  I suppose it better to write a tactic for this kind of proof ?
+  (i.e., reducing arguments about `•` and `VEC`) 
+
+  Another issue is that, `Lean Infoview` doesn't show enough info about the type. 
+  e.g., there could be `Dir.toVec = b • Dir.toVec` in `Infoview`, but moving cursor to `Dir.toVec` doesn't tells me which is the argument of this function.
+  -/
 
 end setoid
 
