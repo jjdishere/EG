@@ -15,13 +15,6 @@ namespace same_extn_line
 
 theorem dir_eq_or_eq_neg {x y : Ray P} (h : same_extn_line x y) : (x.toDir = y.toDir ∨ x.toDir = - y.toDir) := (Dir.eq_toProj_iff _ _).mp h.1
 
-theorem vec_parallel_of_same_extn_line {x y : Ray P} (h : same_extn_line x y) : ∃t : ℝ, y.toDir.toVec = t • x.toDir.toVec := by
-  rcases (Dir.eq_toProj_iff _ _).mp h.1 with xy | xy
-  · use 1
-    rw [one_smul, xy]
-  · use -1
-    rw [xy, Dir.toVec_neg_eq_neg_toVec, smul_neg, neg_smul, one_smul, neg_neg]
-
 protected theorem refl (x : Ray P) : same_extn_line x x := ⟨rfl, Or.inl (Ray.source_lies_on)⟩
 
 protected theorem symm {x y : Ray P} (h : same_extn_line x y) : same_extn_line y x := by
@@ -39,7 +32,7 @@ protected theorem trans {x y z : Ray P} (h₁ : same_extn_line x y) (h₂ : same
     rcases pt_lies_on_line_from_ray_iff_vec_parallel.mp h₁.2 with ⟨a, dyx⟩
     rcases pt_lies_on_line_from_ray_iff_vec_parallel.mp h₂.2 with ⟨b, dzy⟩
     apply pt_lies_on_line_from_ray_iff_vec_parallel.mpr
-    let ⟨t, xpary⟩ := vec_parallel_of_same_extn_line h₁
+    let ⟨t, xpary⟩ := dir_parallel_of_same_proj h₁.1
     use a + b * t
     rw [xpary] at dzy
     rw [(vec_add_vec _ _ _).symm, dyx, dzy]
@@ -66,11 +59,10 @@ theorem same_extn_line_of_PM (A : P) (x y : Dir) (h : PM x y) : same_extn_line (
 theorem same_extn_line.eq_carrier_union_rev_carrier (ray ray' : Ray P) (h : same_extn_line ray ray') : ray.carrier ∪ ray.reverse.carrier = ray'.carrier ∪ ray'.reverse.carrier := by
   ext p
   simp only [Set.mem_union, Ray.in_carrier_iff_lies_on, pt_lies_on_line_from_ray_iff_vec_parallel]
-  let ⟨a, ha⟩ := pt_lies_on_line_from_ray_iff_vec_parallel.mp h.symm.2
-  let ⟨b, hb⟩ := vec_parallel_of_same_extn_line h.symm
   constructor
-  · intro hc
-    rcases hc with ⟨c, hc⟩
+  · rintro ⟨c, hc⟩
+    let ⟨a, ha⟩ := pt_lies_on_line_from_ray_iff_vec_parallel.mp h.symm.2
+    let ⟨b, hb⟩ := dir_parallel_of_same_proj h.symm.1
     use a + c * b
     calc
       VEC ray'.source p = VEC ray'.source ray.source + VEC ray.source p := (vec_add_vec _ _ _).symm
@@ -79,9 +71,19 @@ theorem same_extn_line.eq_carrier_union_rev_carrier (ray ray' : Ray P) (h : same
         simp only [hb, Complex.real_smul, Complex.ofReal_mul, add_right_inj]
         ring_nf
       _ = (a + c * b) • ray'.toDir.toVec := (add_smul _ _ _).symm
-  · sorry
+  · rintro ⟨c, hc⟩
+    let ⟨a, ha⟩ := pt_lies_on_line_from_ray_iff_vec_parallel.mp h.2
+    let ⟨b, hb⟩ := dir_parallel_of_same_proj h.1
+    use a + c * b
+    calc
+      VEC ray.source p = VEC ray.source ray'.source + VEC ray'.source p := (vec_add_vec _ _ _).symm
+      _ = a • ray.toDir.toVec + c • ray'.toDir.toVec := by rw [ha, hc]
+      _ = a • ray.toDir.toVec + (c * b) • ray.toDir.toVec := by
+        simp only [hb, Complex.real_smul, Complex.ofReal_mul, add_right_inj]
+        ring_nf
+      _ = (a + c * b) • ray.toDir.toVec := (add_smul _ _ _).symm
   /-
-  Proof for the second case is almost the same with the first case.
+  Proof for the second case is almost the same as the first case.
   I suppose it better to write a tactic for this kind of proof ?
   (i.e., reducing arguments about `•` and `VEC`) 
 
@@ -143,6 +145,20 @@ protected def IsOn (a : P) (l : Line P) : Prop :=
 instance : Carrier P (Line P) where
   carrier := fun l => l.carrier
 
+end Line
+
+theorem Ray.toLine_carrier_eq_ray_carrier_union_rev_carrier (r : Ray P) : r.toLine.carrier = r.carrier ∪ r.reverse.carrier := rfl
+
+theorem Ray.subset_toLine (r : Ray P) : r.carrier ⊆ r.toLine.carrier := by
+  rw [toLine_carrier_eq_ray_carrier_union_rev_carrier]
+  exact Set.subset_union_left _ _
+
+namespace Line
+
+theorem ray_subset_line {r : Ray P} {l : Line P} (h : r.toLine = l) : r.carrier ⊆ l.carrier := by
+  rw [← h]
+  exact r.subset_toLine
+
 theorem linear (l : Line P) {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h₃ : C LiesOn l) : colinear A B C := by
   unfold Line at l
   revert l
@@ -180,15 +196,45 @@ theorem linear (l : Line P) {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
 
 theorem maximal (l : Line P) {A B : P} (h₁ : A ∈ l.carrier) (h₂ : B ∈ l.carrier) (h : B ≠ A) : (∀ (C : P), colinear A B C → (C ∈ l.carrier)) := sorry
 
-theorem nontriv (l : Line P) : ∃ (A B : P), (A ∈ l.carrier) ∧ (B ∈ l.carrier) ∧ (B ≠ A) := sorry
+theorem nontriv (l : Line P) : ∃ (A B : P), (A ∈ l.carrier) ∧ (B ∈ l.carrier) ∧ (B ≠ A) := by
+  let ⟨r, h⟩ := l.exists_rep
+  rcases r.nontriv with ⟨A, B, g⟩
+  have : r.carrier ⊆ l.carrier := ray_subset_line h
+  exact ⟨A, B, ⟨this g.1, this g.2.1, g.2.2⟩⟩
 
 end Line
 
 -- A point lies on a line associated to a ray if and only if it lies on the ray or the reverse of the ray
 
-theorem Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev (A : P) (ray : Ray P) : (A LiesOn ray.toLine) ↔ (A LiesOn ray) ∨ (A LiesOn ray.reverse) := sorry
+theorem Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev (A : P) (r : Ray P) : (A LiesOn r.toLine) ↔ (A LiesOn r) ∨ (A LiesOn r.reverse) := by
+  simp only [lies_on]
+  rw [← Set.mem_union]
+  revert A
+  rw [← Set.ext_iff]
+  exact Ray.toLine_carrier_eq_ray_carrier_union_rev_carrier r
 
-theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source (A : P) (ray : Ray P) : (A LiesOn ray.toLine) ↔ (A LiesInt ray) ∨ (A LiesInt ray.reverse) ∨ (A = ray.source) := sorry
+theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source (A : P) (r : Ray P) : (A LiesOn r.toLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) := by
+  rw [Ray.lies_int_def, Ray.lies_int_def, Ray.source_of_rev_eq_source]
+  have : A LiesOn r ∧ A ≠ r.source ∨ A LiesOn r.reverse ∧ A ≠ r.source ∨ A = r.source ↔ A LiesOn r ∨ A LiesOn r.reverse := by 
+    constructor
+    · exact fun
+      | .inl h => Or.inl h.1
+      | .inr h => by
+        rcases h with h | h
+        · exact Or.inr h.1
+        · right
+          rw [h]
+          exact Ray.source_lies_on
+    · exact fun
+      | .inl h => by
+        by_cases g : A = source
+        · exact Or.inr (Or.inr g)
+        · exact Or.inl ⟨h, g⟩
+      | .inr h => by
+        by_cases g : A = source
+        · exact Or.inr (Or.inr g)
+        · exact Or.inr (Or.inl ⟨h, g⟩)
+  rw [this, Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev]
 
 end carrier
 

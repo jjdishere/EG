@@ -229,6 +229,8 @@ theorem Ray.lies_int_iff (p : P) : p LiesInt ray ↔ ∃ (t : ℝ) , 0 < t ∧ V
     · rw [ne_iff_vec_ne_zero, ht, smul_ne_zero_iff]
       exact ⟨by linarith, Dir.toVec_ne_zero ray.toDir⟩
 
+theorem Ray.lies_int_def {p : P} : p LiesInt ray ↔ p LiesOn ray ∧ p ≠ ray.source := Iff.rfl
+
 theorem Seg_nd.lies_on_toRay_of_lies_on {p : P} (h : p LiesOn seg_nd.1) : p LiesOn seg_nd.toRay := by
   rcases h with ⟨t, ht0, _, h⟩
   refine' ⟨t * Vec.norm (VEC seg_nd.1.1 seg_nd.1.2), 
@@ -422,6 +424,8 @@ theorem Seg_nd.exist_int_pt (l : Seg_nd P) : ∃ (p : P), p LiesInt l.1 := ⟨l.
 
 theorem length_pos_iff_exist_int_pt (l : Seg P) : 0 < l.length ↔ (∃ (p : P), p LiesInt l) :=
   length_pos_iff_nd.trans (nd_iff_exist_int_pt l).symm
+
+theorem Ray.nontriv (r : Ray P) : ∃ (A B : P), (A ∈ r.carrier) ∧ (B ∈ r.carrier) ∧ (B ≠ A) := sorry
 
 end existence
 
