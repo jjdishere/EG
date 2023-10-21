@@ -463,6 +463,8 @@ theorem Seg_nd.exist_int_pt (l : Seg_nd P) : ∃ (p : P), p LiesInt l.1 := ⟨l.
 theorem length_pos_iff_exist_int_pt (l : Seg P) : 0 < l.length ↔ (∃ (p : P), p LiesInt l) :=
   Seg.length_pos_iff_nd.trans (nd_iff_exist_int_pt l).symm
 
+theorem Ray.nontriv (r : Ray P) : ∃ (A B : P), (A ∈ r.carrier) ∧ (B ∈ r.carrier) ∧ (B ≠ A) := sorry
+
 end existence
 
 end EuclidGeom
