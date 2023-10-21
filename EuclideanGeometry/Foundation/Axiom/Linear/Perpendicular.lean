@@ -125,9 +125,9 @@ theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on {A : P} {l : Line P} 
   apply eq_line_of_pt_pt_of_ne h2 h0 h1
 
 theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l := by
-  rw[←perp_foot_eq_self_iff_lies_on A l]
+  rw [←perp_foot_eq_self_iff_lies_on A l]
   unfold dist_pt_line
-  rw[←triv_iff_length_eq_zero]
+  rw [←Seg.length_eq_zero_iff_deg]
   simp
 
 end Perpendicular_constructions
