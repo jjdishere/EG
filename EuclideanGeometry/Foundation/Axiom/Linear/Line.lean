@@ -214,8 +214,9 @@ theorem Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev (A : P) (r : Ray P) : (A L
   exact Ray.toLine_carrier_eq_ray_carrier_union_rev_carrier r
 
 theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source (A : P) (r : Ray P) : (A LiesOn r.toLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) := by
-  rw [Ray.lies_int_def, Ray.lies_int_def, Ray.source_of_rev_eq_source]
-  have : A LiesOn r ∧ A ≠ r.source ∨ A LiesOn r.reverse ∧ A ≠ r.source ∨ A = r.source ↔ A LiesOn r ∨ A LiesOn r.reverse := by 
+  have eq (l: Ray P) : A LiesInt l ↔ A LiesOn l ∧ A ≠ l.source := by rfl 
+  rw [eq r,eq (reverse r), Ray.source_of_rev_eq_source]
+  have :  A LiesOn r ∧  A ≠ r.source ∨ A LiesOn r.reverse ∧ A ≠ r.source ∨ A = r.source ↔ A LiesOn r ∨ A LiesOn r.reverse := by 
     constructor
     · exact fun
       | .inl h => Or.inl h.1
