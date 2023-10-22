@@ -27,10 +27,32 @@ protected theorem refl (r : Ray P) : same_extn_line r r := ⟨rfl, Or.inl (Ray.s
 protected theorem symm {r r' : Ray P} (h : same_extn_line r r') : same_extn_line r' r := by
   constructor
   · exact h.1.symm
-  · have g := dir_eq_or_eq_neg h
-    cases g with
-    | inl h₁ => sorry
-    | inr h₂ => sorry
+  · rcases pt_lies_on_line_from_ray_iff_vec_parallel.mp h.2 with ⟨a, dxy⟩
+    apply pt_lies_on_line_from_ray_iff_vec_parallel.mpr
+    have h₁ : VEC r'.source r.source = - VEC r.source r'.source := by simp [neg_vec]
+    rw [dxy] at h₁
+    rcases (Dir.eq_toProj_iff _ _).mp h.1 with xy | xy
+    · have : r'.toDir.toVec = r.toDir.toVec := by rw [xy]
+      use -a
+      rw [h₁]
+      rw [this]
+      rw [neg_smul]
+    · have : r'.toDir.toVec = -1 • r.toDir.toVec := by
+        rw [xy]
+        rw [Dir.toVec_neg_eq_neg_toVec]
+        rw [smul_neg]
+        rw [neg_smul]
+        rw [one_smul]
+        rw [neg_neg]
+      use a
+      rw [h₁]
+      rw [this]
+      rw [neg_smul]
+      rw [one_smul]
+      rw [smul_neg]
+
+    
+
 
 
 protected theorem trans {r r' r'' : Ray P} (h₁ : same_extn_line r r') (h₂ : same_extn_line r' r'') : same_extn_line r r'' where
@@ -210,18 +232,49 @@ theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
         exact Ray.colinear_of_lies_on a' b' (Ray.source_lies_on)
     | inr b =>
       cases c with
-      | inl c => sorry
-      | inr c => sorry
+      | inl c => 
+        let ray' := Ray.mk B ray.toDir
+        have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a b
+        have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev c b
+        exact Ray.colinear_of_lies_on a' (Ray.source_lies_on) c'
+      | inr c => 
+        let ray' := Ray.mk A ray.reverse.toDir
+        have a' : A LiesOn ray.reverse.reverse := by
+          rw [Ray.rev_rev_eq_self]
+          exact a
+        have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b a'
+        have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev c a'
+        exact Ray.colinear_of_lies_on (Ray.source_lies_on) b' c'
   | inr a =>
     cases b with
     | inl b =>
       cases c with
-      | inl c => sorry
-      | inr c => sorry
+      | inl c => 
+        let ray' := Ray.mk A ray.toDir
+        have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b a
+        have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev c a
+        exact Ray.colinear_of_lies_on (Ray.source_lies_on) b' c'
+      | inr c => 
+        let ray' := Ray.mk B ray.reverse.toDir
+        have b' : B LiesOn ray.reverse.reverse := by
+          rw [Ray.rev_rev_eq_self]
+          exact b
+        have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a b'
+        have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev c b'
+        exact Ray.colinear_of_lies_on a' (Ray.source_lies_on) c'
     | inr b =>
       cases c with
-      | inl c => sorry
-      | inr c => sorry
+      | inl c => 
+        let ray' := Ray.mk C ray.reverse.toDir
+        have c' : C LiesOn ray.reverse.reverse := by
+          rw [Ray.rev_rev_eq_self]
+          exact c
+        have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a c'
+        have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b c'
+        exact Ray.colinear_of_lies_on  a' b' (Ray.source_lies_on)
+      | inr c => 
+        exact Ray.colinear_of_lies_on a b c
+
 
 theorem maximal' {l : Line P} {A B : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h : B ≠ A) : (∀ (C : P), colinear A B C → (C LiesOn l)) := by 
   intro C Co
@@ -270,7 +323,7 @@ theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source (A : P) (r 
         · exact Or.inr (Or.inr g)
         · exact Or.inr (Or.inl ⟨h, g⟩)
   rw [this, Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev]
-
+  
 end carrier
 
 namespace Line
