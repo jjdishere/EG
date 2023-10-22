@@ -63,7 +63,8 @@ def evalSAS : Tactic := fun stx =>
     tryEvalExact TermCandidate
     IO.println s!" Checkpoint2 reached"
   | _ => throwUnsupportedSyntax
-
+/-
 example {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : Triangle_nd P} (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) : tr_nd₁.1 IsCongrTo tr_nd₂.1 := by
   -- exact congr_of_SAS e₂ a₁ e₃
   by_SAS a₁ e₂ e₃
+-/
