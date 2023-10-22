@@ -208,33 +208,42 @@ theorem linear (l : Line P) {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
       | inl c => 
         let ray' := Ray.mk B ray.toDir
         have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a b
-        have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b c
-        exact Ray.colinear_of_lies_on a' c' (Ray.source_lies_on)
+        have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev c b
+        exact Ray.colinear_of_lies_on a' (Ray.source_lies_on) c'
       | inr c => 
-        let ray' := Ray.mk C ray.toDir
-        have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a c
-        have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b c
-        exact Ray.colinear_of_lies_on a' b' (Ray.source_lies_on)
+        let ray' := Ray.mk A ray.reverse.toDir
+        have a' : A LiesOn ray.reverse.reverse := by
+          rw [Ray.rev_rev_eq_self]
+          exact a
+        have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b a'
+        have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev c a'
+        exact Ray.colinear_of_lies_on (Ray.source_lies_on) b' c'
   | inr a =>
     cases b with
     | inl b =>
       cases c with
       | inl c => 
         let ray' := Ray.mk A ray.toDir
-        have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a b
-        have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a c
+        have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b a
+        have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev c a
         exact Ray.colinear_of_lies_on (Ray.source_lies_on) b' c'
       | inr c => 
         let ray' := Ray.mk B ray.reverse.toDir
-        have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b a
-        have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b c
-        exact Ray.colinear_of_lies_on (Ray.source_lies_on) a' c'
+        have b' : B LiesOn ray.reverse.reverse := by
+          rw [Ray.rev_rev_eq_self]
+          exact b
+        have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a b'
+        have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev c b'
+        exact Ray.colinear_of_lies_on a' (Ray.source_lies_on) c'
     | inr b =>
       cases c with
       | inl c => 
         let ray' := Ray.mk C ray.reverse.toDir
-        have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev c a
-        have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev c b
+        have c' : C LiesOn ray.reverse.reverse := by
+          rw [Ray.rev_rev_eq_self]
+          exact c
+        have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a c'
+        have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b c'
         exact Ray.colinear_of_lies_on  a' b' (Ray.source_lies_on)
       | inr c => 
         exact Ray.colinear_of_lies_on a b c
@@ -281,7 +290,7 @@ theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source (A : P) (r 
         · exact Or.inr (Or.inr g)
         · exact Or.inr (Or.inl ⟨h, g⟩)
   rw [this, Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev]
-
+  
 end carrier
 
 end coercion
