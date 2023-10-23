@@ -162,8 +162,7 @@ theorem unique_of_inx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : l�
 theorem Line.inx.symm {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : Line.inx l₂ l₁ h.symm = Line.inx l₁ l₂ h := unique_of_inx_of_line_of_not_para h (Line.inx_is_inx h) <| is_inx.symm (Line.inx_is_inx h.symm)
 
 theorem eq_of_parallel_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A LiesOn l₁) (h₂ : A LiesOn l₂) 
-    (h : LinearObj.line l₁ ∥ LinearObj.line l₂) : l₁ = l₂ := by
-  rw [← mk_pt_proj_eq h₁, mk_pt_proj_eq_of_eq_toProj h₂ (by exact h)]
+  (h : LinearObj.line l₁ ∥ LinearObj.line l₂) : l₁ = l₂ := eq_of_same_toProj_and_pt_lies_on h₁ h₂ h
 
 theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃ p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
   rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
