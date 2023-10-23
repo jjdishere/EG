@@ -259,6 +259,9 @@ theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).t
 
 theorem pt_pt_seg_toRay_eq_pt_pt_ray {A B : P} (h : B ≠ A) : (Seg_nd.mk A B h).toRay = Ray.mk_pt_pt A B h := sorry
 
+-- Given ray and a point A, A lies int the ray, then the ray from ray.source to A is just the ray
+theorem Ray.source_int_toRay_eq_ray {ray : Ray P} {A : P} {ha : A LiesInt ray} : (SEG_nd ray.1 A (ha.2)).toRay = ray := sorry
+
 end coersion_compatibility
 
 @[simp]
