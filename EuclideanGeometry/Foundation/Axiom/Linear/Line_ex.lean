@@ -39,6 +39,8 @@ theorem eq_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l₂ : Line P} (
 
 end pt_pt
 
+
+--**This part is completely irrelevant to Line. Indeed, we didn't prove any theorem about toProj in Line.
 section pt_proj
 
 theorem pt_lies_on_of_mk_pt_proj (proj : Proj) : A LiesOn Line.mk_pt_proj A proj := by
