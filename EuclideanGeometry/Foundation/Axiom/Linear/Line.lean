@@ -162,7 +162,7 @@ theorem ray_rev_of_same_extn_line {r : Ray P} : same_extn_line r r.reverse := by
   constructor
   · simp [Ray.toProj_of_rev_eq_toProj]
   · right
-    apply Ray.source_lies_on
+    exact Ray.source_lies_on
 
 theorem ray_rev_toLine_eq_ray_toLine {r : Ray P} : r.toLine = r.reverse.toLine := ray_toLine_eq_of_same_extn_line ray_rev_of_same_extn_line
 
@@ -201,7 +201,7 @@ theorem ray_subset_line {r : Ray P} {l : Line P} (h : r.toLine = l) : r.carrier 
 theorem seg_lies_on_Line {s : Seg_nd P}{A : P}(h : A LiesOn s.1) : A LiesOn s.toLine := by 
   have g : A ∈ s.toRay.carrier := Seg_nd.lies_on_toRay_of_lies_on h
   have h : s.toRay.toLine = s.toLine := rfl
-  apply Set.mem_of_subset_of_mem (ray_subset_line h) g
+  exact Set.mem_of_subset_of_mem (ray_subset_line h) g
 
 theorem seg_subset_line {s : Seg_nd P} {l : Line P} (h : s.toLine = l) : s.1.carrier ⊆ l.carrier := by
   intro A Ain
@@ -290,7 +290,7 @@ end Line
 
 -- A point lies on a line associated to a ray if and only if it lies on the ray or the reverse of the ray
 
-theorem Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev {A : P} {r : Ray P} : (A LiesOn r.toLine) ↔ (A LiesOn r) ∨ (A LiesOn r.reverse) := by
+theorem Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev {A : P} {r : Ray P}: (A LiesOn r.toLine) ↔ (A LiesOn r) ∨ (A LiesOn r.reverse) := by
   simp only [lies_on]
   rw [← Set.mem_union]
   revert A
@@ -328,10 +328,7 @@ end carrier
 
 namespace Line
 
-theorem Line.fst_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := by 
-  apply Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev.mpr 
-  left
-  exact Ray.source_lies_on
+theorem Line.fst_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev.mpr (Or.inl Ray.source_lies_on)
     
 theorem Line.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B h := by 
   apply Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev.mpr 
@@ -357,9 +354,7 @@ theorem pt_pt_lies_on_iff_ray_toLine {A B : P} {l : Line P} (h : B ≠ A) : A Li
   · intro hl
     rw [← hl]
     constructor
-    · apply Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev.mpr
-      left
-      exact Ray.source_lies_on
+    · exact Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev.mpr (Or.inl Ray.source_lies_on)
     · apply Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev.mpr
       left
       apply Ray.snd_pt_lies_on_mk_pt_pt
@@ -375,7 +370,7 @@ theorem eq_pt_pt_line_iff_lies_on {A B : P} {l : Line P} (h : B ≠ A) : A LiesO
     · exact Line.fst_pt_lies_on_mk_pt_pt h
     · exact Line.snd_pt_lies_on_mk_pt_pt h
 
-theorem pt_pt_lies_on_iff_seg_toLine {A B : P}{l : Line P}(h : B ≠ A) : A LiesOn l ∧ B LiesOn l  ↔ (Seg_nd.mk A B h).toLine = l := by 
+theorem pt_pt_lies_on_iff_seg_toLine {A B : P} {l : Line P} (h : B ≠ A) : A LiesOn l ∧ B LiesOn l  ↔ (Seg_nd.mk A B h).toLine = l := by 
   constructor
   · intro lAB
     rw [← seg_toLine_eq_seg_toRay_toLine]
