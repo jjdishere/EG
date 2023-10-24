@@ -98,16 +98,16 @@ section property
 variable {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₁₃ : qdr_cvx.point₁ ≠ qdr_cvx.point₃ := sorry
+theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₂₄ : qdr_cvx.point₂ ≠ qdr_cvx.point₄ := sorry
+theorem nd₂₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := sorry
 
 /-- The non-degenerate diagonal from the first point and third point of a convex quadrilateral -/
-def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ (qdr_cvx.nd₁₃).symm
+def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃
 
 /-- The non-degenerate diagonal from the second point and fourth point of a convex quadrilateral -/
-def diag_nd₂₄ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ (qdr_cvx.nd₂₄).symm
+def diag_nd₂₄ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
 theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := sorry
