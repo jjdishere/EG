@@ -92,18 +92,27 @@ theorem para_of_is_prg (h : QDR A B C D IsPRG) : LinearObj.seg_nd (SEG_nd A B (n
   by_cases k: (QDR A B C D) IsConvex
   simp only [k, dite_true] at h
   unfold Quadrilateral_cvx.IsParallelogram at h
+  rcases h with ⟨a,b⟩
+  --exact a
+  --apply A B ∥ C D ⇔ A B ∥ D C
   sorry
-  sorry
+  simp only [k, dite_false] at h
 
 theorem para_of_is_prg' (h : QDR A B C D IsPRG) : LinearObj.seg_nd (SEG_nd B C (nd₂₃_of_is_prg h)) ∥ SEG_nd D A (nd₄₁_of_is_prg h) := by
   unfold Quadrilateral.IsParallelogram at h
-
-  sorry
+  by_cases k: (QDR A B C D) IsConvex
+  simp only [k, dite_true] at h
+  unfold Quadrilateral_cvx.IsParallelogram at h
+  rcases h with ⟨a,b⟩
+  exact b
+  simp only [k, dite_false] at h
 
 theorem eq_length_of_is_prg  (h : QDR A B C D IsPRG) : (SEG B C).length = (SEG D A).length := by
   unfold Quadrilateral.IsParallelogram at h
-
+  by_cases k: (QDR A B C D) IsConvex
+  simp only [k, dite_true] at h
   sorry
+  simp only [k, dite_false] at h
 
 theorem eq_length_of_is_prg'  (h : QDR A B C D IsPRG) : (SEG A B).length = (SEG C D).length := by
   unfold Quadrilateral.IsParallelogram at h
