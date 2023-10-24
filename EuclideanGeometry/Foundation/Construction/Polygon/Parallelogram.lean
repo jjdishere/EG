@@ -33,9 +33,48 @@ variable {A B C D : P}
 
 theorem is_convex_of_is_prg (h : QDR A B C D IsPRG) : (QDR A B C D) IsConvex := by 
   unfold Quadrilateral.IsParallelogram at h
-  sorry
+  by_cases j: QDR A B C D IsConvex
+  · simp [j]
+  · simp [j] at h
 
-theorem nd₁₃_of_is_prg (h : QDR A B C D IsPRG) : C ≠ A := sorry
+
+
+theorem nd₁₃_of_is_prg (h : QDR A B C D IsPRG) : C ≠ A := by
+  have s : (QDR A B C D) IsConvex:= by
+    exact is_convex_of_is_prg h
+  unfold  Quadrilateral.IsConvex at s
+  by_cases j: C ≠ A
+  · simp [j]
+  · simp [j] at s
+
+theorem nd₂₄_of_is_prg (h : QDR A B C D IsPRG) : D ≠ B := by
+  have s : (QDR A B C D) IsConvex:= by
+    exact is_convex_of_is_prg h
+  unfold  Quadrilateral.IsConvex at s
+  by_cases j:  D ≠ B
+  · simp [j]
+  · simp [j] at s
+  
+theorem nd₁₂_of_is_prg (h : QDR A B C D IsPRG) : B ≠ A := by
+  have s : (QDR A B C D) IsConvex:= by
+    exact is_convex_of_is_prg h
+  exact (Quadrilateral_cvx.mk_is_convex s).nd₁₂
+
+theorem nd₂₃_of_is_prg (h : QDR A B C D IsPRG) : C ≠ B := by
+  have s : (QDR A B C D) IsConvex:= by
+    exact is_convex_of_is_prg h
+  exact (Quadrilateral_cvx.mk_is_convex s).nd₂₃
+
+theorem nd₃₄_of_is_prg (h : QDR A B C D IsPRG) : D ≠ C := by
+  have s : (QDR A B C D) IsConvex:= by
+    exact is_convex_of_is_prg h
+  exact (Quadrilateral_cvx.mk_is_convex s).nd₃₄
+
+theorem nd₄₁_of_is_prg (h : QDR A B C D IsPRG) : A ≠ D := by
+  have s : (QDR A B C D) IsConvex:= by
+    exact is_convex_of_is_prg h
+  exact (Quadrilateral_cvx.mk_is_convex s).nd₄₁
+
 
 /- 
 3. nd₂₄_of_is_prg
