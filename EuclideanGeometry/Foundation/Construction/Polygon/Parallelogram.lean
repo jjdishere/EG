@@ -6,7 +6,7 @@ import EuclideanGeometry.Foundation.Construction.Polygon.Quadrilateral
 noncomputable section
 namespace EuclidGeom
 
-def Quadrilateral_cvx.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := (LinearObj.seg_nd qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (LinearObj.seg_nd qdr_cvx.edge_nd₂₃ ∥ qdr_cvx.edge_nd₁₄)
+def Quadrilateral_cvx.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := (LinearObj.seg_nd qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (LinearObj.seg_nd qdr_cvx.edge_nd₂₃ ∥ (qdr_cvx.edge_nd₁₄))
 
 def Quadrilateral.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases qdr IsConvex
@@ -20,7 +20,7 @@ variable {P : Type _} [EuclideanPlane P]
 section criteria
 variable {A B C D : P} (h : (QDR A B C D) IsConvex)
 
-theorem is_prg_of_para_para (h₁ : LinearObj.seg_nd (SEG_nd A B (Quadrilateral_cvx.nd₁₂ (Quadrilateral_cvx.mk_is_convex h))) ∥ (SEG_nd C D (Quadrilateral_cvx.nd₃₄ (Quadrilateral_cvx.mk_is_convex h)))) (h₂ : LinearObj.seg_nd (SEG_nd B C (Quadrilateral_cvx.nd₂₃ (Quadrilateral_cvx.mk_is_convex h))) ∥ (SEG_nd A B (Quadrilateral_cvx.nd₁₄ (Quadrilateral_cvx.mk_is_convex h)))) : QDR A B C D IsPRG := by
+theorem is_prg_of_para_para (h₁ : LinearObj.seg_nd (SEG_nd A B (Quadrilateral_cvx.nd₁₂ (Quadrilateral_cvx.mk_is_convex h))) ∥ (SEG_nd C D (Quadrilateral_cvx.nd₃₄ (Quadrilateral_cvx.mk_is_convex h)))) (h₂ : LinearObj.seg_nd (SEG_nd B C (Quadrilateral_cvx.nd₂₃ (Quadrilateral_cvx.mk_is_convex h))) ∥ (SEG_nd A D (Quadrilateral_cvx.nd₁₄ (Quadrilateral_cvx.mk_is_convex h)))) : QDR A B C D IsPRG := by
   rw [Quadrilateral.IsParallelogram]
   sorry
 
@@ -54,39 +54,35 @@ theorem is_convex_of_is_prg (h : QDR A B C D IsPRG) : (QDR A B C D) IsConvex := 
   · simp only [j, dite_false] at h
 
 theorem nd₁₃_of_is_prg (h : QDR A B C D IsPRG) : C ≠ A := by
-  have s : (QDR A B C D) IsConvex:= by
-    exact is_convex_of_is_prg h
+  have s : (QDR A B C D) IsConvex:= is_convex_of_is_prg h
   unfold Quadrilateral.IsConvex at s
   by_cases j: C ≠ A
   · simp only [ne_eq, j, not_false_eq_true]
+  simp at j
   · simp only [ne_eq, j, false_and, dite_false] at s
 
 theorem nd₂₄_of_is_prg (h : QDR A B C D IsPRG) : D ≠ B := by
-  have s : (QDR A B C D) IsConvex:= by
-    exact is_convex_of_is_prg h
+  have s : (QDR A B C D) IsConvex:= is_convex_of_is_prg h
   unfold Quadrilateral.IsConvex at s
   by_cases j: D ≠ B
   · simp only [ne_eq, j, not_false_eq_true]
+  simp at j
   · simp only [ne_eq, j, and_false, dite_false] at s
 
 theorem nd₁₂_of_is_prg (h : QDR A B C D IsPRG) : B ≠ A := by
-  have s : (QDR A B C D) IsConvex:= by
-    exact is_convex_of_is_prg h
+  have s : (QDR A B C D) IsConvex:= is_convex_of_is_prg h
   exact (Quadrilateral_cvx.mk_is_convex s).nd₁₂
 
 theorem nd₂₃_of_is_prg (h : QDR A B C D IsPRG) : C ≠ B := by
-  have s : (QDR A B C D) IsConvex:= by
-    exact is_convex_of_is_prg h
+  have s : (QDR A B C D) IsConvex:= is_convex_of_is_prg h
   exact (Quadrilateral_cvx.mk_is_convex s).nd₂₃
 
 theorem nd₃₄_of_is_prg (h : QDR A B C D IsPRG) : D ≠ C := by
-  have s : (QDR A B C D) IsConvex:= by
-    exact is_convex_of_is_prg h
+  have s : (QDR A B C D) IsConvex:= is_convex_of_is_prg h
   exact (Quadrilateral_cvx.mk_is_convex s).nd₃₄
 
 theorem nd₁₄_of_is_prg (h : QDR A B C D IsPRG) : D ≠ A := by
-  have s : (QDR A B C D) IsConvex:= by
-    exact is_convex_of_is_prg h
+  have s : (QDR A B C D) IsConvex:= is_convex_of_is_prg h
   exact (Quadrilateral_cvx.mk_is_convex s).nd₁₄
 
 theorem para_of_is_prg (h : QDR A B C D IsPRG) : LinearObj.seg_nd (SEG_nd A B (nd₁₂_of_is_prg h)) ∥ (SEG_nd C D (nd₃₄_of_is_prg h)) := by
@@ -95,9 +91,7 @@ theorem para_of_is_prg (h : QDR A B C D IsPRG) : LinearObj.seg_nd (SEG_nd A B (n
   simp only [k, dite_true] at h
   unfold Quadrilateral_cvx.IsParallelogram at h
   rcases h with ⟨a,b⟩
-  --exact a
-  --apply A B ∥ C D ⇔ A B ∥ D C
-  sorry
+  exact a
   simp only [k, dite_false] at h
 
 theorem para_of_is_prg' (h : QDR A B C D IsPRG) : LinearObj.seg_nd (SEG_nd A D (nd₁₄_of_is_prg h)) ∥ SEG_nd B C (nd₂₃_of_is_prg h) := by
@@ -106,7 +100,7 @@ theorem para_of_is_prg' (h : QDR A B C D IsPRG) : LinearObj.seg_nd (SEG_nd A D (
   simp only [k, dite_true] at h
   unfold Quadrilateral_cvx.IsParallelogram at h
   rcases h with ⟨a,b⟩
-  exact b
+  exact (b.symm)
   simp only [k, dite_false] at h
 
 theorem eq_length_of_is_prg  (h : QDR A B C D IsPRG) : (SEG A B).length = (SEG C D).length := by
@@ -117,14 +111,15 @@ theorem eq_length_of_is_prg'  (h : QDR A B C D IsPRG) : (SEG A D).length = (SEG 
   unfold Quadrilateral.IsParallelogram at h
   by_cases k: (QDR A B C D) IsConvex
   simp only [k, dite_true] at h
+
   sorry
   simp only [k, dite_false] at h
+
 
 theorem eq_angle_value_of_is_prg (h : QDR A B C D IsPRG) : ANG A B C ((nd₁₂_of_is_prg h).symm) (nd₂₃_of_is_prg h) = ANG C D A ((nd₃₄_of_is_prg h).symm) ((nd₁₄_of_is_prg h).symm) := by
   have h₁ : LinearObj.seg_nd (SEG_nd A B (nd₁₂_of_is_prg h)) ∥ SEG_nd C D (nd₃₄_of_is_prg h) := para_of_is_prg h
   have h₂ : LinearObj.seg_nd (SEG_nd A D (nd₁₄_of_is_prg h)) ∥ SEG_nd B C (nd₂₃_of_is_prg h) := para_of_is_prg' h
   unfold Quadrilateral.IsParallelogram at h
-
   sorry
 
 theorem eq_angle_value_of_is_prg' (h : QDR A B C D IsPRG) : ANG D A B (nd₁₄_of_is_prg h) (nd₁₂_of_is_prg h) = ANG B C D ((nd₂₃_of_is_prg h).symm) (nd₃₄_of_is_prg h) := by
@@ -136,15 +131,11 @@ theorem eq_angle_value_of_is_prg' (h : QDR A B C D IsPRG) : ANG D A B (nd₁₄_
 
 theorem eq_midpt_of_diag_inx_of_is_prg {E : P} (h : QDR A B C D IsPRG) : Quadrilateral_cvx.diag_inx (QDR_cvx A B C D (is_convex_of_is_prg h)) = (SEG A C).midpoint :=
   have h : LinearObj.seg_nd (SEG_nd A B (nd₁₂_of_is_prg h)) ∥ SEG_nd C D (nd₃₄_of_is_prg h) := para_of_is_prg h
-
   sorry
 
 theorem eq_midpt_of_diag_inx_of_is_prg' {E : P} (h : QDR A B C D IsPRG) : Quadrilateral_cvx.diag_inx (QDR_cvx A B C D (is_convex_of_is_prg h)) = (SEG B D).midpoint :=
   have h : LinearObj.seg_nd (SEG_nd A B (nd₁₂_of_is_prg h)) ∥ SEG_nd C D (nd₃₄_of_is_prg h) := para_of_is_prg h
-
   sorry
-
---holidaymaker
 
 theorem parallelogram_law (h : QDR A B C D IsPRG) : 2 * (SEG A B).length ^ 2 + 2 * (SEG B C).length ^ 2 = (SEG A C).length ^ 2 + (SEG B D).length ^ 2 :=
   sorry
