@@ -164,14 +164,19 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)∼ TRI_nd A B C 
   apply Seg.vec_source_midpt
 
 --need to define right angle
-lemma ade_congr_cde : (TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).1 IsCongrTo (TRI_nd C D E (@hnd'' P _ A B C hnd D hd E he)).1:= sorry
+lemma ade_acongr_cde : (TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).1 IsACongrTo (TRI_nd C D E (@hnd'' P _ A B C hnd D hd E he)).1:= by
+  apply acongr_of_SAS
+  simp only [Triangle.edge₂ , Triangle.point₃]
+  sorry
+  sorry
+  sorry
 lemma cd : (TRI C D E).edge₃.length = (SEG C D).length:=by
   simp only [Triangle.edge₃]
 lemma ad : (TRI A D E).edge₃.length = (SEG A D).length:=by
   simp only [Triangle.edge₃]
 lemma ad_eq_cd: (SEG A D).length = (SEG C D).length  := by
     rw[← cd,←ad]
-    apply ade_congr_cde.edge₃
+    apply ade_acongr_cde.edge₃
     trivial
     use E
     use B
