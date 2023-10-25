@@ -62,7 +62,7 @@ lemma midpt_half_length : (SEG A D).length = (SEG A B).length/2:=by
   rw[hd]
   exact Seg.midpt_lies_on (SEG A B)
 
-lemma ad_ratio : (SEG A D).length / (SEG A B).length = 2⁻¹ :=by
+lemma ad_ratio : (SEG A D).length / (SEG A B).length = 2⁻¹ := by
   apply div_eq_of_eq_mul
   apply (length_ne_zero_iff_nd.mpr (b_ne_a)).symm
   use C
@@ -121,7 +121,7 @@ lemma hnd'' : ¬ colinear C D E := by
     apply hnd
     exact hd
   apply hnd this
-lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)∼ TRI_nd A B C hnd :=by
+lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C hnd := by
   apply sim_of_SAS
   simp only [Triangle.edge₂,Triangle.edge₃]
   have tr13: (TRI_nd A D E(@hnd' P _ A B C hnd D hd E he)).1.point₃=E:= rfl
@@ -140,6 +140,7 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)∼ TRI_nd A B C 
   exact hnd
   exact he
 --rays equal, respectively
+  congr 1
   apply Angle.ext
   have h₀:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.1=(SEG_nd A D (@d_ne_a P _ A B C hnd D hd)).toRay := rfl
   rw[h₀]
