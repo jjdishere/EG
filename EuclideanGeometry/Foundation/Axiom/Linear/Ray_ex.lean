@@ -30,6 +30,9 @@ def Seg_nd.reverse (seg_nd : Seg_nd P) : Seg_nd P := ⟨seg_nd.1.reverse, nd_of_
 -- Given a nondegenerate segment $segnd$, first viewing $segnd$ as a segment and then reverse is the same as first reversing $segnd$ and then view it as a segment.
 theorem Seg_nd.rev_toSeg_eq_toSeg_rev (seg_nd : Seg_nd P) : seg_nd.1.reverse = seg_nd.reverse.1 := rfl
 
+-- Given a ray, the source of the reversed ray is the source of the ray.
+theorem Ray.source_of_rev_eq_source {ray : Ray P} : ray.reverse.source = ray.source := rfl
+
 -- Given a ray, reversing it twice gives back to itself.
 @[simp]
 theorem Ray.rev_rev_eq_self (ray : Ray P) : ray.reverse.reverse = ray := by
@@ -45,6 +48,8 @@ theorem Seg_nd.rev_rev_eq_self (seg_nd : Seg_nd P)  : seg_nd.reverse.reverse = s
 
 -- Given a ray, the direction of the reversed ray is the negative of the direction of the ray.
 theorem Ray.toDir_of_rev_eq_neg_toDir {ray : Ray P} : ray.reverse.toDir = - ray.toDir := rfl
+
+theorem Ray.toVec_of_rev_eq_neg_toVec {ray : Ray P} : ray.reverse.toDir.toVec = - ray.toDir.toVec := rfl
 
 -- Given a ray, the projective direction of the reversed ray is the negative of the projective direction of the ray.
 theorem Ray.toProj_of_rev_eq_toProj {ray : Ray P} : ray.reverse.toProj = ray.toProj := by
@@ -75,8 +80,14 @@ theorem Seg_nd.toProj_of_rev_eq_toProj (seg_nd : Seg_nd P) : seg_nd.reverse.toPr
   right
   rw[Seg_nd.toDir_of_rev_eq_neg_toDir]
 
+theorem Ray.source_lies_on_rev (ray : Ray P) : ray.source LiesOn ray.reverse := by sorry
+
+theorem Seg.target_lies_on_rev (seg : Seg P) : seg.target LiesOn seg.reverse := by sorry
+
+theorem Seg.source_lies_on_rev (seg : Seg P) : seg.source LiesOn seg.reverse := by sorry
+
 -- Given a segment and a point, the point lies on the segment if and only if it lies on the reverse of the segment.
-theorem Seg.lies_on_iff_lies_on_rev {A : P} {seg : Seg P} : A LiesOn seg ↔  A LiesOn seg.reverse := by
+theorem Seg.lies_on_iff_lies_on_rev {A : P} {seg : Seg P} : A LiesOn seg ↔ A LiesOn seg.reverse := by
   unfold lies_on Carrier.carrier instCarrierSeg
   simp only [Set.setOf_mem_eq]
   constructor
@@ -212,6 +223,31 @@ theorem lies_on_pt_toDir_of_pt_lies_on_rev {A B : P} {ray : Ray P} (hA : A LiesO
   simp only
   rw[add_smul,←vec_sub_vec ray.source,ha,hb,sub_neg_eq_add]
 
+-- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies on $ray_2$, then the source of $ray_2$ lies on the reverse of $ray_1$
+
+theorem lies_on_iff_lies_on_rev_of_same_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = ray₂.toDir) : ray₁.source LiesOn ray₂ ↔ ray₂.source LiesOn ray₁.reverse := sorry
+
+
+-- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies int $ray_2$, then the source of $ray_2$ lies int the reverse of $ray_1$
+
+theorem lies_int_iff_lies_int_rev_of_same_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = ray₂.toDir) : ray₁.source LiesInt ray₂ ↔ ray₂.source LiesInt ray₁.reverse := sorry
+
+-- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies on the reverse of $ray_2$, then the source of $ray_2$ lies on the reverse of $ray_1$
+
+theorem lies_on_rev_iff_lies_on_rev_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesOn ray₂.reverse ↔ ray₂.source LiesOn ray₁.reverse := sorry
+
+-- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies int the reverse of $ray_2$, then the source of $ray_2$ lies int the reverse of $ray_1$
+
+theorem lies_int_rev_iff_lies_int_rev_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesInt ray₂.reverse ↔ ray₂.source LiesInt ray₁.reverse := sorry
+
+-- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies on $ray_2$, then the source of $ray_2$ lies on $ray_1$
+
+theorem lies_on_iff_lies_on_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesOn ray₂ ↔ ray₂.source LiesOn ray₁ := sorry
+
+-- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies int $ray_2$, then the source of $ray_2$ lies int $ray_1$
+
+theorem lies_int_iff_lies_int_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesInt ray₂ ↔ ray₂.source LiesInt ray₁ := sorry
+
 -- reversing the toDir does not change the length
 theorem length_eq_length_of_rev (seg : Seg P) : seg.length = seg.reverse.length := by
   unfold Seg.length
@@ -227,10 +263,67 @@ theorem length_eq_length_of_rev (seg : Seg P) : seg.length = seg.reverse.length 
   simp only [Vec.norm]
   norm_num
 
+theorem exist_real_vec_eq_smul_of_lies_on_or_rev {A : P} {ray : Ray P} (h : A LiesOn ray ∨ A LiesOn ray.reverse) : ∃ t : ℝ, VEC ray.source A = t • ray.2.1 := by
+  rcases h with ⟨t, _, eq⟩ | ⟨t, _, eq⟩
+  · use t, eq
+  · use - t
+    rw [Dir.toVec_neg_eq_neg_toVec, smul_neg, ← neg_smul] at eq
+    exact eq
+
+theorem ray_toProj_eq_mk_pt_pt_toProj {A B : P} {ray : Ray P} (h : B ≠ A) (ha : A LiesOn ray ∨ A LiesOn ray.reverse) (hb : B LiesOn ray ∨ B LiesOn ray.reverse) : ray.toProj = (RAY A B h).toProj := by
+  rcases exist_real_vec_eq_smul_of_lies_on_or_rev ha with ⟨ta, eqa⟩
+  rcases exist_real_vec_eq_smul_of_lies_on_or_rev hb with ⟨tb, eqb⟩
+  have heq : VEC A B = (tb - ta) • ray.2.1 := by rw [← vec_sub_vec _ A B, eqa, eqb, sub_smul]
+  calc
+    _ = ray.2.toVec_nd.toProj := congrArg Dir.toProj (Dir.dir_toVec_nd_normalize_eq_self ray.2).symm
+    _ = _ := eq_toProj_of_smul ray.2.toVec_nd ⟨VEC A B, (vsub_ne_zero.mpr h)⟩ heq
+
+theorem Ray.in_carrier_iff_lies_on {p : P} {r : Ray P} : p ∈ r.carrier ↔ p LiesOn r := by
+  rfl
+
+theorem pt_lies_on_ray_iff_vec_same_dir {p : P} {r : Ray P} : p LiesOn r ↔ ∃t : ℝ, (t ≥ 0) ∧ VEC r.source p = t • r.toDir.toVec := by
+  rw [← Ray.in_carrier_iff_lies_on, Ray.carrier, Set.mem_setOf, Ray.IsOn]
+
+theorem pt_lies_on_ray_rev_iff_vec_opposite_dir {p : P} {r : Ray P} : p LiesOn r.reverse ↔ ∃t : ℝ, (t ≤ 0) ∧ VEC r.source p = t • r.toDir.toVec := by
+  rw [pt_lies_on_ray_iff_vec_same_dir]
+  constructor
+  · rintro ⟨u, ⟨_, h⟩⟩
+    use -u
+    rw [Ray.toVec_of_rev_eq_neg_toVec, Ray.source_of_rev_eq_source] at h
+    constructor
+    · linarith
+    · simp only [h, smul_neg, Complex.real_smul, neg_smul]
+  · rintro ⟨u, ⟨_, h⟩⟩
+    use -u
+    rw [Ray.toVec_of_rev_eq_neg_toVec, Ray.source_of_rev_eq_source]
+    constructor
+    · linarith
+    · simp only [h, Complex.real_smul, smul_neg, neg_smul, neg_neg]
+
 -- A point `p` lies on the line determined by a ray `r` if and only if the vector `VEC r.source p` is parallel to the direction of `r`.
-theorem pt_lies_on_ray_iff_vec_same_dir {p : P} {r : Ray P} : (p LiesOn r ∨ p LiesOn r.reverse) ↔ ∃t : ℝ, VEC p r.source = t • r.toDir.toVec := sorry
+theorem pt_lies_on_line_from_ray_iff_vec_parallel {p : P} {r : Ray P} : (p LiesOn r ∨ p LiesOn r.reverse) ↔ ∃t : ℝ, VEC r.source p = t • r.toDir.toVec := by
+  constructor
+  · rintro (h | h)
+    · rcases pt_lies_on_ray_iff_vec_same_dir.mp h with ⟨t, ⟨_, _⟩⟩
+      use t
+    · rcases pt_lies_on_ray_rev_iff_vec_opposite_dir.mp h with ⟨t, ⟨_, _⟩⟩
+      use t
+  · rintro ⟨t, h⟩
+    by_cases g : t ≥ 0
+    · left
+      apply pt_lies_on_ray_iff_vec_same_dir.mpr
+      use t
+    · right
+      apply pt_lies_on_ray_rev_iff_vec_opposite_dir.mpr
+      use t
+      exact ⟨le_of_lt (lt_of_not_ge g), h⟩
 
-
+theorem dir_parallel_of_same_proj {x y : Ray P} (h : x.toProj = y.toProj) : ∃t : ℝ, y.toDir.toVec = t • x.toDir.toVec := by
+  rcases (Dir.eq_toProj_iff _ _).mp h with xy | xy
+  · use 1
+    rw [one_smul, xy]
+  · use -1
+    rw [xy, Dir.toVec_neg_eq_neg_toVec, smul_neg, neg_smul, one_smul, neg_neg]
 
 end reverse
 
@@ -239,11 +332,13 @@ section extension
 -- Define the extension ray from a nontrival segment
 def Seg_nd.extension (seg_nd : Seg_nd P) : Ray P := (seg_nd.reverse.toRay).reverse
 
-theorem extn_eq_rev_toray_rev (seg_nd : Seg_nd P) : seg_nd.extension = seg_nd.reverse.toRay.reverse :=by
-  rfl
+theorem extn_eq_rev_toray_rev (seg_nd : Seg_nd P) : seg_nd.extension = seg_nd.reverse.toRay.reverse := rfl
+
+theorem Seg_nd.extension_toDir (seg_nd : Seg_nd P) : seg_nd.extension.toDir = seg_nd.toRay.toDir := by
+  rw [extension, Ray.toDir_of_rev_eq_neg_toDir]
+  exact neg_eq_iff_eq_neg.mpr seg_nd.toDir_of_rev_eq_neg_toDir
 
 theorem eq_target_iff_lies_on_lies_on_extn {A : P} {seg_nd : Seg_nd P} : (A LiesOn seg_nd.1) ∧ (A LiesOn seg_nd.extension) ↔ A = seg_nd.1.target := by
--- sorry
   constructor
   rintro ⟨hyp1,hyp2⟩
   have h:seg_nd.1.target=seg_nd.extension.source :=by rfl
@@ -265,8 +360,7 @@ theorem eq_target_iff_lies_on_lies_on_extn {A : P} {seg_nd : Seg_nd P} : (A Lies
   rw[hyp]
   simp only [Seg_nd.extension,Ray.reverse,Seg_nd.toRay,Seg_nd.reverse,Seg.reverse,vec_same_eq_zero]
 
-theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} {seg_nd : Seg_nd P} (liesint : A LiesInt seg_nd.extension) : seg_nd.1.target LiesInt SEG seg_nd.1.source A :=
-by 
+theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} {seg_nd : Seg_nd P} (liesint : A LiesInt seg_nd.extension) : seg_nd.1.target LiesInt SEG seg_nd.1.source A := by 
   rcases liesint with ⟨⟨a,anonneg,ha⟩,nonsource⟩
   have raysourcesegtarget:seg_nd.1.target=seg_nd.extension.1:=by
     rfl
@@ -320,5 +414,22 @@ by
   rw[←raysourcesegtarget] at nonsource
   symm
   exact nonsource
+
+theorem lies_on_seg_nd_or_extension_of_lies_on_toRay {seg_nd : Seg_nd P} {A : P} 
+    (h : A LiesOn seg_nd.toRay) : A LiesOn seg_nd.1 ∨ A LiesOn seg_nd.extension := by
+  rcases h with ⟨t, tpos, eq⟩
+  let v : Vec_nd := ⟨VEC seg_nd.1.1 seg_nd.1.2, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩
+  by_cases h : t > ‖v.1‖
+  · refine' Or.inr ⟨t - ‖v.1‖, sub_nonneg.mpr (le_of_lt h), _⟩
+    rw [seg_nd.extension_toDir, sub_smul, ← eq]
+    refine' eq_sub_of_add_eq (add_eq_of_eq_sub' _)
+    rw [vec_sub_vec']
+    exact v.norm_smul_normalize_eq_self
+  · have eq : VEC seg_nd.1.1 A = t * v.normalize.1 := eq
+    exact Or.inl ⟨t * ‖v.1‖⁻¹, mul_nonneg tpos (inv_nonneg.mpr (norm_nonneg v.1)), 
+      (mul_inv_le_iff (norm_pos_iff.2 v.2)).mpr (by rw [mul_one]; exact not_lt.mp h),
+      by simpa only [eq, Vec_nd.normalize, ne_eq, Vec.norm, Complex.real_smul, Complex.ofReal_inv,
+      Complex.norm_eq_abs, Complex.ofReal_mul] using by ring⟩
+
 end extension
 end EuclidGeom

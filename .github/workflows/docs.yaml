@@ -2,6 +2,8 @@ name: Build docs
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 on:
   push:
@@ -15,6 +17,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 2
+          lfs: true
       - name: Install Lean
         run: |
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s - -y --default-toolchain `cat ./lean-toolchain`
@@ -22,8 +25,13 @@ jobs:
       - run: |
           export CI_BUILD=1
           lake -Kenv=CI_BUILD update && lake -Kenv=CI_BUILD exe cache get && lake -Kenv=CI_BUILD build && lake -Kenv=CI_BUILD build EuclideanGeometry:docs
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.4.3
+      - name: Fix permissions
+        run: |
+          chmod -c -R +rX "build/doc/" | while read line; do
+            echo "::warning title=Invalid file permissions automatically fixed::$line"
+          done
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          branch: gh-pages
-          folder: build/doc
+          path: ./build/doc
+      - uses: actions/deploy-pages@v2
