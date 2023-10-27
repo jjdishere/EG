@@ -1,6 +1,8 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 
+universe u
+
 noncomputable section
 namespace EuclidGeom
 
@@ -8,15 +10,14 @@ open Classical
 
 /- Class of generalized triangles -/
 @[ext]
-class Triangle (P : Type _) [EuclideanPlane P] where 
+class Triangle (P : Type u) [EuclideanPlane P] where 
   point₁ : P
   point₂ : P
   point₃ : P
 
-variable {P : Type _} [EuclideanPlane P]
-
 namespace Triangle
 
+variable {P : Type u} [EuclideanPlane P]
 --implies  1 left of 23, 2 left of 31
 
 -- not is_cclock implies 1 right of 23, ..., ...
@@ -33,12 +34,11 @@ def is_nd (tr : Triangle P) : Prop := ¬ colinear tr.1 tr.2 tr.3
 
 end Triangle
 
-def Triangle_nd (P : Type _) [EuclideanPlane P] := { tr : Triangle P // tr.is_nd }
-
-section nondeg
+def Triangle_nd (P : Type u) [EuclideanPlane P] := { tr : Triangle P // tr.is_nd }
 
 namespace Triangle_nd
-variable {P : Type _} [EuclideanPlane P] (tr_nd : Triangle_nd P) 
+
+variable {P : Type u} [EuclideanPlane P] (tr_nd : Triangle_nd P) 
 
 def nontriv₁ := (ne_of_not_colinear tr_nd.2).1
 
@@ -61,11 +61,9 @@ def angle₂ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₁) (tr_nd.nont
 
 def angle₃ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₂) (tr_nd.nontriv₁).symm
 
-
-
 end Triangle_nd
 
-end nondeg
+variable {P : Type u} [EuclideanPlane P]
 
 namespace Triangle
 
@@ -82,9 +80,11 @@ instance : Interior P (Triangle P) where
 
 end Triangle
 
+def Triangle_nd.mk (A B C : P) (h : ¬ colinear A B C) : Triangle_nd P := Subtype.mk (Triangle.mk A B C) h
+
 scoped notation "TRI" => Triangle.mk
 scoped notation "▵" => Triangle.mk
-scoped notation "TRI_nd" A B C h => (⟨TRI A B C, h⟩ : Triangle_nd)
+scoped notation "TRI_nd" A:max B:max C:max h:max => EuclidGeom.Triangle_nd.mk A B C h
 
 namespace Triangle
 
