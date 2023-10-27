@@ -30,9 +30,11 @@ jobs:
           chmod -c -R +rX "build/doc/" | while read line; do
             echo "::warning title=Invalid file permissions automatically fixed::$line"
           done
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v2
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
         with:
           path: ./build/doc
-      - uses: actions/deploy-pages@v2
+      - name: Deploy to GitHub Pages
         id: deployment
+        uses: actions/deploy-pages@v1
