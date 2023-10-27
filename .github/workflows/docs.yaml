@@ -35,3 +35,4 @@ jobs:
         with:
           path: ./build/doc
       - uses: actions/deploy-pages@v2
+        id: deployment
