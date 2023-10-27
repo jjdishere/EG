@@ -58,9 +58,15 @@ def evalCongrSa : Tactic := fun stx =>
               try
                 let t <- `(tactic| refine $lemmaName $x0 $x1 $x2)
                 evalTactic t
+                return
               catch
                 _ => continue
+      logInfo "`congr_sa` doesn't close any goals"
   | _ => throwUnsupportedSyntax
 
-example {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : Triangle_nd P} (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) : tr_nd₁.1 IsCongrTo tr_nd₂.1 := by
-  congr_sa
+example {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : Triangle_nd P}
+  (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length)
+  (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value)
+  (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length)
+    : tr_nd₁.1 IsCongrTo tr_nd₂.1 := by
+      congr_sa
