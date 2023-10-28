@@ -1,16 +1,17 @@
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
 /-!
 # Standard Vector Space
 
-This file defines the standard inner product real vector space of dimension two, but we will build this on the complex numbers. 
+This file defines the standard inner product real vector space of dimension two, but we will build this on the complex numbers.
 
 ## Important definitions
 
 * `Vec` : The class of "2-dim vectors" `ℂ`, with a real inner product space structure which is instancialized.
-* `Vec_nd` : The class of nonzero vectors, `nd` for nondegenerate. 
-* `Dir` : The class of vectors of unit length `Vec_nd`. 
-* `Proj` : the class of `Dir` quotient by `±1`, in other words, `ℝP¹`. 
+* `Vec_nd` : The class of nonzero vectors, `nd` for nondegenerate.
+* `Dir` : The class of vectors of unit length `Vec_nd`.
+* `Proj` : the class of `Dir` quotient by `±1`, in other words, `ℝP¹`.
 
 ## Notation
 
@@ -24,11 +25,11 @@ Then we define the class `Dir` of vectors of unit length. We equip it with the s
 
 noncomputable section
 namespace EuclidGeom
-
+scoped macro_rules | `($x ^ $y) => `(HPow.hPow $x $y)
 scoped notation "π" => Real.pi
 
 /- the notation for the class of vectors -/
-scoped notation "Vec" => ℂ 
+scoped notation "Vec" => ℂ
 
 /- the class of non-degenerate vectors -/
 def Vec_nd := {z : ℂ // z ≠ 0}
@@ -80,7 +81,7 @@ theorem Vec_nd.norm_ne_zero (z : Vec_nd) : Vec_nd.norm z ≠ 0 := norm_ne_zero_i
 theorem Vec_nd.ne_zero_of_ne_zero_smul (z : Vec_nd) {t : ℝ} (h : t ≠ 0) : t • z.1 ≠ 0 := by
   simp only [ne_eq, smul_eq_zero, h, z.2, or_self, not_false_eq_true]
 
-theorem Vec_nd.ne_zero_of_neg (z : Vec_nd) : - z.1 ≠ 0 := by 
+theorem Vec_nd.ne_zero_of_neg (z : Vec_nd) : - z.1 ≠ 0 := by
   simp only [ne_eq, neg_eq_zero, z.2, not_false_eq_true]
 
 @[simp]
@@ -134,7 +135,7 @@ theorem Vec_nd.self_eq_norm_smul_normalized_vector (z : Vec_nd) : z.1 = Vec_nd.n
   rw [this]
   simp
 
--- Basic facts about Dir, the group structure, neg, and the fact that we can make angle using Dir. There are a lot of relevant (probably easy) theorems under the following namespace. 
+-- Basic facts about Dir, the group structure, neg, and the fact that we can make angle using Dir. There are a lot of relevant (probably easy) theorems under the following namespace.
 
 namespace Dir
 
@@ -143,7 +144,7 @@ namespace Dir
 instance : Neg Dir where
   neg := fun z => {
       toVec := -z.toVec
-      unit := by 
+      unit := by
         rw [← unit]
         exact inner_neg_neg _ _
     }
@@ -162,7 +163,7 @@ instance : Mul Dir where
 instance : One Dir where
   one := {
     toVec := 1
-    unit := by 
+    unit := by
       simp only [Complex.inner, map_one, mul_one, Complex.one_re]
   }
 
@@ -264,7 +265,7 @@ def mk_angle (θ : ℝ) : Dir where
     rw [← Real.cos_sq_add_sin_sq θ]
     rw [pow_two, pow_two]
     simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
-    
+
 
 theorem toVec_ne_zero (x : Dir) : x.toVec ≠ 0 := by
   by_contra h
@@ -322,6 +323,22 @@ theorem inv_of_I_eq_neg_I : I⁻¹ = - I := by
   apply @mul_right_cancel _ _ _ _ I _
   simp only [mul_left_inv, neg_mul, I_mul_I_eq_neg_one, neg_neg]
 
+theorem pos_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : ℝ) (hang₁ : (0 < ang₁) ∧ (ang₁ < π)) (hang₂ : (0 < ang₂) ∧ (ang₂ < π)) : Real.cos ang₁ = Real.cos ang₂ ↔ ang₁ = ang₂ := by
+  constructor
+  rw [Real.cos_eq_cos_iff]
+  intro ⟨k, e⟩
+  rcases e with e₁ | e₂
+  -- First Case
+  have i₀ : (2 * π) * k > (2 * π) * (-1) := by linarith [Real.pi_pos]
+  have i₁ : (2 * π) * k < (2 * π) * 1 := by linarith [Real.pi_pos]
+  have tst₂ : k = 0 := by linarith [(@Int.cast_lt ℝ _ _ (-1 : ℤ) k).1 (Eq.trans_lt (by norm_num) ((mul_lt_mul_left (Right.mul_pos zero_lt_two Real.pi_pos)).1 i₀)), (@Int.cast_lt ℝ _ _ k (1 : ℤ)).1 (Eq.trans_gt (id (Eq.symm (by norm_num))) ((mul_lt_mul_left (Right.mul_pos zero_lt_two Real.pi_pos)).1 i₁))]
+  simp only [e₁, tst₂, Int.cast_zero, mul_zero, zero_mul, zero_add]
+  -- Second Case
+  have i₂ : (2 * π) * k > (2 * π) * 0 := by linarith [Real.pi_pos]
+  have i₁ : (2 * π) * k < (2 * π) * 1 := by linarith [Real.pi_pos]
+  linarith [(@Int.cast_lt ℝ _ _ (0 : ℤ) k).1 (Eq.trans_lt (by norm_num) ((mul_lt_mul_left (Right.mul_pos zero_lt_two Real.pi_pos)).1 i₂)), (@Int.cast_lt ℝ _ _ k (1 : ℤ)).1 (Eq.trans_gt (id (Eq.symm (by norm_num))) ((mul_lt_mul_left (Right.mul_pos zero_lt_two Real.pi_pos)).1 i₁))]
+  exact fun a => congrArg Real.cos a
+
 section Make_angle_theorems
 
 @[simp]
@@ -350,7 +367,7 @@ theorem mk_angle_arg_toComplex_of_Dir_eq_self (x: Dir) : mk_angle (Complex.arg (
   simp only [div_one]
   by_contra h
   rw [h] at w
-  simp only [map_zero, zero_ne_one] at w  
+  simp only [map_zero, zero_ne_one] at w
 
 @[simp]
 theorem mk_angle_zero_eq_one : mk_angle 0 = 1 := by
@@ -430,13 +447,13 @@ end Dir
 def PM : Dir → Dir → Prop :=
 fun x y => x = y ∨ x = -y
 
--- Now define the equivalence PM. 
+-- Now define the equivalence PM.
 
 namespace PM
 
 def equivalence : Equivalence PM where
   refl _ := by simp [PM]
-  symm := fun h => 
+  symm := fun h =>
     match h with
       | Or.inl h₁ => Or.inl (Eq.symm h₁)
       | Or.inr h₂ => Or.inr (Iff.mp neg_eq_iff_eq_neg (id (Eq.symm h₂)))
@@ -444,10 +461,10 @@ def equivalence : Equivalence PM where
     intro _ _ _ g h
     unfold PM
     match g with
-      | Or.inl g₁ => 
+      | Or.inl g₁ =>
           rw [← g₁] at h
           exact h
-      | Or.inr g₂ => 
+      | Or.inr g₂ =>
           match h with
             | Or.inl h₁ =>
               right
@@ -463,7 +480,7 @@ instance con : Con Dir where
     unfold Setoid.r PM
     intro _ x _ z g h
     match g with
-      | Or.inl g₁ => 
+      | Or.inl g₁ =>
         match h with
           | Or.inl h₁ =>
             left
@@ -471,7 +488,7 @@ instance con : Con Dir where
           | Or.inr h₂ =>
             right
             rw [g₁, h₂, ← mul_neg _ _]
-      | Or.inr g₂ => 
+      | Or.inr g₂ =>
         match h with
           | Or.inl h₁ =>
             right
@@ -484,7 +501,7 @@ end PM
 
 def Proj := Con.Quotient PM.con
 
--- We can take quotient from Dir to get Proj. 
+-- We can take quotient from Dir to get Proj.
 
 namespace Proj
 
@@ -508,9 +525,9 @@ theorem Dir.eq_toProj_iff (x y : Dir) : x.toProj = y.toProj ↔ x = y ∨ x = -y
 
 theorem Dir.eq_toProj_iff' {x y : Dir} : x.toProj = y.toProj ↔ PM x y := by rw [Dir.eq_toProj_iff, PM]
 
-def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.normalize v : Proj) 
+def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.normalize v : Proj)
 
--- Coincidence of toProj gives rise to important results, especially that two Vec_nd-s have the same toProj iff they are equal by taking a real (nonzero) scaler. We will prove this statement in the following section. 
+-- Coincidence of toProj gives rise to important results, especially that two Vec_nd-s have the same toProj iff they are equal by taking a real (nonzero) scaler. We will prove this statement in the following section.
 
 section Vec_nd_toProj
 
@@ -564,7 +581,7 @@ theorem neg_normalize_eq_normalize_smul_neg (u v : Vec_nd) {t : ℝ} (h : v.1 = 
 @[simp]
 theorem neg_normalize_eq_normalize_eq (z : Vec_nd) : Vec_nd.normalize (-z) = - Vec_nd.normalize z := by
   symm
-  apply neg_normalize_eq_normalize_smul_neg z (-z) (t := -1) 
+  apply neg_normalize_eq_normalize_smul_neg z (-z) (t := -1)
   simp only [ne_eq, fst_neg_Vec_nd_is_neg_fst_Vec_nd, neg_smul, one_smul]
   linarith
 
@@ -589,7 +606,7 @@ theorem eq_toProj_of_smul (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) : Vec_n
 theorem smul_of_eq_toProj (u v : Vec_nd) (h : Vec_nd.toProj u = Vec_nd.toProj v) : ∃ (t : ℝ), v.1 = t • u.1 := by
   let h' := Quotient.exact h
   unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
-  simp only [Con.rel_eq_coe, Con.rel_mk] at h' 
+  simp only [Con.rel_eq_coe, Con.rel_mk] at h'
   match h' with
     | Or.inl h₁ =>
       rw [Dir.ext_iff] at h₁
@@ -612,7 +629,7 @@ theorem Vec_nd.eq_toProj_iff (u v : Vec_nd) : (Vec_nd.toProj u = Vec_nd.toProj v
   · intro h
     exact smul_of_eq_toProj _ _ h
   · intro h'
-    rcases h' with ⟨t, h⟩ 
+    rcases h' with ⟨t, h⟩
     exact eq_toProj_of_smul _ _ h
 
 end Vec_nd_toProj
@@ -626,7 +643,7 @@ def I : Proj := Dir.I
 theorem one_ne_I : ¬1=(Proj.I) := by
   intro h
   have h0: Dir.I=1∨Dir.I=-1 := by
-    apply (Con.eq PM.con).mp 
+    apply (Con.eq PM.con).mp
     exact id (Eq.symm h)
   have h1: (Dir.I)^2=1 := by
     rcases h0 with h2|h2
@@ -638,7 +655,7 @@ theorem one_ne_I : ¬1=(Proj.I) := by
     rw [←Dir.I_mul_I_eq_neg_one]
     exact sq Dir.I
   have h4: ¬(-1:Dir)=(1:Dir) := by
-   intro k 
+   intro k
    rw [Dir.ext_iff, Complex.ext_iff] at k
    simp at k
    linarith
@@ -751,7 +768,7 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
 
 end Cosine_theorem_for_Vec_nd
 
--- Our aim is to prove nonparallel lines have common point, but in this section, we will only form the theorem in a Linear algebraic way by proving two Vec_nd-s could span the space with different toProj, which is the main theorem about toProj we will use in the proof of the intersection theorem. 
+-- Our aim is to prove nonparallel lines have common point, but in this section, we will only form the theorem in a Linear algebraic way by proving two Vec_nd-s could span the space with different toProj, which is the main theorem about toProj we will use in the proof of the intersection theorem.
 
 section Linear_Algebra
 
@@ -784,7 +801,7 @@ theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : det u v = 0 ↔ (�
     tauto
   constructor
   · intro e
-    match h with 
+    match h with
     | Or.inl h₁ =>
       use v.1 * (u.1⁻¹)
       unfold HSMul.hSMul instHSMul SMul.smul Complex.instSMulRealComplex
@@ -810,11 +827,11 @@ theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : det u v = 0 ↔ (�
   · intro e'
     rcases e' with ⟨t, e⟩
     unfold HSMul.hSMul instHSMul SMul.smul Complex.instSMulRealComplex at e
-    simp only [smul_eq_mul] at e 
+    simp only [smul_eq_mul] at e
     rcases e
     ring
 
-theorem det'_ne_zero_of_not_colinear {u v : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : det' u v ≠ 0 := by 
+theorem det'_ne_zero_of_not_colinear {u v : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : det' u v ≠ 0 := by
   unfold det'
   have h₁ : (¬ (∃ (t : ℝ), v = t • u)) → (¬ (u.1 * v.2 - u.2 * v.1 = 0)) := by
     intro _
@@ -823,16 +840,16 @@ theorem det'_ne_zero_of_not_colinear {u v : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t 
     tauto
   symm
   field_simp
-  have trivial : ((u.re : ℂ)  * v.im - u.im * v.re) = ((Sub.sub (α := ℝ) (Mul.mul (α := ℝ) u.re v.im)  (Mul.mul (α := ℝ) u.im v.re)) : ℂ) := by 
+  have trivial : ((u.re : ℂ)  * v.im - u.im * v.re) = ((Sub.sub (α := ℝ) (Mul.mul (α := ℝ) u.re v.im)  (Mul.mul (α := ℝ) u.im v.re)) : ℂ) := by
     symm
     calc
       ((Sub.sub (α := ℝ) (Mul.mul (α := ℝ) u.re v.im)  (Mul.mul (α := ℝ) u.im v.re)) : ℂ) = ((Mul.mul u.re v.im) - (Mul.mul u.im v.re)) := Complex.ofReal_sub _ _
-      _ = ((Mul.mul u.re v.im) - (u.im * v.re)) := by 
-        rw [← Complex.ofReal_mul u.im v.re] 
+      _ = ((Mul.mul u.re v.im) - (u.im * v.re)) := by
+        rw [← Complex.ofReal_mul u.im v.re]
         rfl
-      _ = ((u.re * v.im) - (u.im * v.re)) := by 
-        rw [← Complex.ofReal_mul u.re _] 
-        rfl 
+      _ = ((u.re * v.im) - (u.im * v.re)) := by
+        rw [← Complex.ofReal_mul u.re _]
+        rfl
   rw [trivial, ← ne_eq]
   symm
   rw [ne_eq, Complex.ofReal_eq_zero]
@@ -900,12 +917,12 @@ theorem det_smul_right_eq_mul_det (u v : Vec) (x : ℝ) : det u (x • v) = x * 
   ring
 
 --antisymmetricity of det
-theorem det_eq_neg_det (u v : Vec) : det u v = -det v u := by 
+theorem det_eq_neg_det (u v : Vec) : det u v = -det v u := by
   unfold det
   ring
 
 --permuting vertices of a triangle has simple effect on area
-theorem det_sub_eq_det (u v : Vec) : det (u-v) v= det u v := by 
+theorem det_sub_eq_det (u v : Vec) : det (u-v) v= det u v := by
   rw [sub_eq_add_neg, det_add_left_eq_add_det u (-v) v]
   have : det (-v) v = 0 := by
     unfold det
@@ -927,7 +944,7 @@ theorem det_eq_sin_mul_norm_mul_norm' (u v :Dir) : det u.1 v.1 = Real.sin (Dir.a
   rw [det_eq_im_of_quotient]
   unfold Dir.angle
   rw [sin_arg_of_dir_eq_fst]
-  
+
 theorem det_eq_sin_mul_norm_mul_norm (u v : Vec_nd): det u v = Real.sin (Vec_nd.angle u v) * Vec.norm u * Vec.norm v := by
   let nu := u.normalize
   let nv := v.normalize
