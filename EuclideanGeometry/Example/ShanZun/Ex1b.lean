@@ -21,7 +21,7 @@ variable {D : P} {hd : D = (SEG B C).midpoint}
 -- $E$ is a point on $AD$
 variable {E : P} {he : E LiesOn (SEG A D)}
 -- We have $BE = AC$
-variable (h₁ : (SEG B E).length = (SEG A C).length)
+variable (hedg : (SEG B E).length = (SEG A C).length)
 -- Claim: $B \ne E$
 lemma b_ne_e : B ≠ E := sorry
 -- The line $BE$ intersects $AC$ at $F$
@@ -40,6 +40,7 @@ the sum of the the distance of $D$ to $AB$ and to $AC$ is independent of $D$. -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
 variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+-- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma a_ne_b : A ≠ B := sorry
 lemma b_ne_c : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry

@@ -38,7 +38,7 @@ Prove that $\angle CDA = \angle BEA$. -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
 variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
--- Claim: $A \ne B$ and $A \ne C$ and $B \ne C$. This is because vertices of nondegenerate triangles are distinct.
+-- Claim: $B \ne A$ and $C \ne A$ and $B \ne C$. This is because vertices of nondegenerate triangles are distinct.
 lemma b_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
 lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
 lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm

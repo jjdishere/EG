@@ -75,7 +75,7 @@ Prove that $\angle BFD = \pi / 2 - \angle CAB$. -/
 
 -- We have triangle $\triangle ABC$
 variable {A B C : P} {hnd : ¬ colinear A B C}
--- Claim: $A \ne B$ and $A \ne C$ and $B \ne C$.
+-- Claim: $B \ne A$ and $C \ne A$ and $B \ne C$.
 --This is because vertices of nondegenerate triangles are distinct.
 lemma b_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
 lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm

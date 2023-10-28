@@ -33,7 +33,7 @@ Prove that $BD = AC + CD$.-/
 
 -- We have triangle $\triangle ABC$
 variable {A B C : P} {hnd : ¬ colinear A B C}
--- Claim: $A \ne B$ and $A \ne C$ and $B \ne C$.
+-- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma a_ne_b : A ≠ B := sorry
 lemma b_ne_c : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
