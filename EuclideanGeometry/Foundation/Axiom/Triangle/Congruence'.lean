@@ -15,7 +15,7 @@ namespace Triangle
 
 structure IsCongr (tr₁ tr₂ : Triangle P) : Prop where intro ::
   edge₁ : tr₁.edge₁.length = tr₂.edge₁.length
-  edge₂ : tr₂.edge₁.length = tr₂.edge₂.length
+  edge₂ : tr₁.edge₂.length = tr₂.edge₂.length
   edge₃ : tr₁.edge₃.length = tr₂.edge₃.length
   angle₁ : if h : tr₁.is_nd ∧ tr₂.is_nd then
     (Triangle_nd.angle₁ ⟨tr₁, h.1⟩).value = (Triangle_nd.angle₁ ⟨tr₂, h.2⟩).value
@@ -31,23 +31,37 @@ namespace IsCongr
 
 theorem is_nd_of_nd (h : tr₁.IsCongr tr₂) (nd : tr₁.is_nd) : tr₂.is_nd := sorry
 
-protected theorem refl (tr : Triangle P) : tr.IsCongr tr := sorry
+protected theorem refl (tr : Triangle P) : tr.IsCongr tr where
+  edge₁ := rfl
+  edge₂ := rfl
+  edge₃ := rfl
+  angle₁ := (dite_prop_iff_and _).mpr ⟨fun _ ↦ rfl, fun _ ↦ trivial⟩
+  angle₂ := (dite_prop_iff_and _).mpr ⟨fun _ ↦ rfl, fun _ ↦ trivial⟩
+  angle₃ := (dite_prop_iff_and _).mpr ⟨fun _ ↦ rfl, fun _ ↦ trivial⟩
 
-protected theorem symm (h : tr₁.IsCongr tr₂) : tr₂.IsCongr tr₁ := sorry
+protected theorem symm (h : tr₁.IsCongr tr₂) : tr₂.IsCongr tr₁ where
+  edge₁ := h.1.symm
+  edge₂ := h.2.symm
+  edge₃ := h.3.symm
+  angle₁ := (dite_prop_iff_and _).mpr ⟨fun c ↦ (((dite_prop_iff_and _).mp h.4).1 c.symm).symm, fun _ ↦ trivial⟩
+  angle₂ := (dite_prop_iff_and _).mpr ⟨fun c ↦ (((dite_prop_iff_and _).mp h.5).1 c.symm).symm, fun _ ↦ trivial⟩
+  angle₃ := (dite_prop_iff_and _).mpr ⟨fun c ↦ (((dite_prop_iff_and _).mp h.6).1 c.symm).symm, fun _ ↦ trivial⟩
 
 protected theorem trans (h₁ : tr₁.IsCongr tr₂) (h₂ : tr₂.IsCongr tr₃) : tr₁.IsCongr tr₃ := sorry
 
-instance : HasCongr (Triangle P) where
+instance instHasCongr : HasCongr (Triangle P) where
   congr := IsCongr
   refl := IsCongr.refl
   symm := IsCongr.symm
   trans := IsCongr.trans
 
+theorem area (h : tr₁.IsCongr tr₂) : tr₁.area = tr₂.area := sorry
+
 end IsCongr
 
 structure IsACongr (tr₁ tr₂ : Triangle P) : Prop where intro ::
   edge₁ : tr₁.edge₁.length = tr₂.edge₁.length
-  edge₂ : tr₂.edge₁.length = tr₂.edge₂.length
+  edge₂ : tr₁.edge₂.length = tr₂.edge₂.length
   edge₃ : tr₁.edge₃.length = tr₂.edge₃.length
   angle₁ : if h : tr₁.is_nd ∧ tr₂.is_nd then
     (Triangle_nd.angle₁ ⟨tr₁, h.1⟩).value = - (Triangle_nd.angle₁ ⟨tr₂, h.2⟩).value
@@ -67,7 +81,7 @@ protected theorem symm (h : tr₁.IsACongr tr₂) : tr₂.IsACongr tr₁ := sorr
 
 theorem congr_of_trans_acongr (h₁ : tr₁.IsACongr tr₂) (h₂ : tr₂.IsACongr tr₃) : tr₁ ≅ tr₃ := sorry
 
-instance : HasACongr (Triangle P) where
+instance instHasACongr : HasACongr (Triangle P) where
   acongr := IsACongr
   symm := IsACongr.symm
 
@@ -79,7 +93,7 @@ namespace Triangle_nd
 
 structure IsCongr (tr_nd₁ tr_nd₂ : Triangle_nd P) : Prop where intro ::
   edge₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length
-  edge₂ : tr_nd₂.edge₁.length = tr_nd₂.edge₂.length
+  edge₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length
   edge₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length
   angle₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value
   angle₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value
@@ -93,7 +107,7 @@ protected theorem symm (h : tr_nd₁.IsCongr tr_nd₂) : tr_nd₂.IsCongr tr_nd�
 
 protected theorem trans (h₁ : tr_nd₁.IsCongr tr_nd₂) (h₂ : tr_nd₂.IsCongr tr_nd₃) : tr_nd₁.IsCongr tr_nd₃ := sorry
 
-instance : HasCongr (Triangle_nd P) where
+instance instHasCongr : HasCongr (Triangle_nd P) where
   congr := IsCongr
   refl := IsCongr.refl
   symm := IsCongr.symm
@@ -101,11 +115,13 @@ instance : HasCongr (Triangle_nd P) where
 
 theorem is_cclock_of_cclock (h : tr_nd₁ ≅ tr_nd₂) (cc : tr_nd₁.is_cclock) : tr_nd₂.is_cclock := sorry
 
+theorem area (h : tr_nd₁.IsCongr tr_nd₂) : tr_nd₁.area = tr_nd₂.area := sorry
+
 end IsCongr
 
 structure IsACongr (tr_nd₁ tr_nd₂: Triangle_nd P) : Prop where intro ::
   edge₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length
-  edge₂ : tr_nd₂.edge₁.length = tr_nd₂.edge₂.length
+  edge₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length
   edge₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length
   angle₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value
   angle₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value
@@ -119,7 +135,7 @@ protected theorem symm (h : tr_nd₁.IsACongr tr_nd₂) : tr_nd₂.IsACongr tr_n
 
 theorem congr_of_trans_acongr (h₁ : tr_nd₁.IsACongr tr_nd₂) (h₂ : tr_nd₂.IsACongr tr_nd₃) : tr_nd₁.IsACongr tr_nd₃ := sorry
 
-instance : HasACongr (Triangle_nd P) where
+instance instHasACongr : HasACongr (Triangle_nd P) where
   acongr := IsACongr
   symm := IsACongr.symm
 
@@ -170,19 +186,24 @@ Need a tactic `Congrence` to consider filp and permutation. -/
 namespace Triangle_nd
 
 /- SAS -/
-theorem congr_of_SAS (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length): tr_nd₁.IsCongr tr_nd₂ := sorry
+theorem congr_of_SAS (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsCongr tr_nd₂ := sorry
 
-theorem acongr_of_SAS (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length): tr_nd₁.IsACongr tr_nd₂ := sorry
+theorem acongr_of_SAS (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsACongr tr_nd₂ := sorry
 
 /- ASA -/
-theorem congr_of_ASA (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (a₃ : tr_nd₁.angle₃.value = tr_nd₂.angle₃.value): tr_nd₁.IsCongr tr_nd₂ := sorry
+theorem congr_of_ASA (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (a₃ : tr_nd₁.angle₃.value = tr_nd₂.angle₃.value) : tr_nd₁.IsCongr tr_nd₂ := sorry
 
-theorem acongr_of_ASA (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (a₃ : tr_nd₁.angle₃.value = - tr_nd₂.angle₃.value): tr_nd₁.IsACongr tr_nd₂ := sorry
+theorem acongr_of_ASA (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (a₃ : tr_nd₁.angle₃.value = - tr_nd₂.angle₃.value) : tr_nd₁.IsACongr tr_nd₂ := sorry
 
 /- AAS -/
 theorem congr_of_AAS (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsCongr tr_nd₂ := sorry
 
-theorem acongr_of_AAS (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsCongr tr_nd₂ := sorry
+theorem acongr_of_AAS (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsACongr tr_nd₂ := sorry
+
+/- HL -/
+theorem congr_of_HL (h₁ : tr_nd₁.angle₁.value = π / 2) (h₂ : tr_nd₁.angle₂.value = π / 2) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) : tr_nd₁.IsCongr tr_nd₂ := sorry
+
+theorem acongr_of_HL (h₁ : tr_nd₁.angle₁.value = π / 2) (h₂ : tr_nd₁.angle₂.value = - π / 2) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) : tr_nd₁.IsACongr tr_nd₂ := sorry
 
 /- SSS -/
 /- cannot decide orientation -/
@@ -190,7 +211,7 @@ theorem congr_of_SSS_of_eq_orientation (e₁ : tr_nd₁.edge₁.length = tr_nd�
 
 theorem acongr_of_SSS_of_ne_orientation (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) (c : tr_nd₁.is_cclock = ¬ tr_nd₂.is_cclock) : tr_nd₁.IsACongr tr_nd₂ := sorry
 
-theorem congr_or_acongr_of_SSS (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length): tr_nd₁.IsCongr tr_nd₂ ∨ tr_nd₁.IsACongr tr_nd₂ := sorry
+theorem congr_or_acongr_of_SSS (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsCongr tr_nd₂ ∨ tr_nd₁.IsACongr tr_nd₂ := sorry
 
 end Triangle_nd
 

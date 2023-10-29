@@ -1,6 +1,3 @@
-import Lean.Elab
-import Qq
-
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence'
 
 namespace EuclidGeom
@@ -96,11 +93,9 @@ def evalACongrSa : Tactic := fun stx =>
   | `(tactic| acongr_sa) => withTheReader Term.Context ({ · with errToSorry := false }) do
       let acongrDeclNames <- getACongrDeclNames
       for lemmaName in acongrSaLemmas do
-        logInfo (Lean.MessageData.ofName lemmaName)
         for x0 in acongrDeclNames do
           for x1 in acongrDeclNames do
             for x2 in acongrDeclNames do
-              logInfo (((Lean.MessageData.ofName x0).compose (Lean.MessageData.ofName x1)).compose (Lean.MessageData.ofName x2))
               let lemmaName := mkIdent lemmaName
               let x0 := mkIdent x0
               let x1 := mkIdent x1
@@ -110,7 +105,7 @@ def evalACongrSa : Tactic := fun stx =>
                 evalTactic t
                 return
               catch
-                e => logInfo e.toMessageData; continue
+                _ => continue
       logInfo "`acongr_sa` doesn't close any goals"
   | _ => throwUnsupportedSyntax
 
@@ -127,16 +122,15 @@ example (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₂ : tr_nd
 example (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value)
   (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) : tr_nd₁.IsCongr tr_nd₂ := by
     congr_sa
-/-
+
 example (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length)
   (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsACongr tr_nd₂ := by
     acongr_sa
 
--- Time out
 example (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value)
-  (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) : tr_nd₁.IsCongr tr_nd₂ := by
+  (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) : tr_nd₁.IsACongr tr_nd₂ := by
     acongr_sa
--/
+
 end examples
 
 end EuclidGeom
