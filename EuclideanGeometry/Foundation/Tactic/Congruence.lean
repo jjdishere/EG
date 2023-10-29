@@ -1,7 +1,5 @@
-import Lean.Elab
-import Qq
-
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
+import EuclideanGeometry.Foundation.Tactic.Congruence.Attr
 
 namespace EuclidGeom
 
@@ -11,20 +9,20 @@ open Qq
 def liftOrElse [Monad m] (xs : m $ Option A) (ys : m $ Option A) : m (Option A) := do
   match <- xs with
   | .some x => return x
-  | .none => match <- ys with
+  | .none => do match <- ys with
     | .some y => return y
     | .none => return .none
 
-def extractSegLengthEq (expr : Q(Prop)) : MetaM (Option Expr) :=
+def extractSegLengthEq (expr : Q(Prop)) : MetaM (Option Unit) :=
   match expr with
   | ~q(@EuclidGeom.Seg.length _ (_) _ = @EuclidGeom.Seg.length _ (_) _) =>
-      return .some expr
+      return ()
   | _ => return .none
 
-def extractAngleValueEq (expr : Q(Prop)) : MetaM (Option Expr) :=
+def extractAngleValueEq (expr : Q(Prop)) : MetaM (Option Unit) :=
   match expr with
   | ~q(@EuclidGeom.Angle.value _ (_) _ = @EuclidGeom.Angle.value _ (_) _) =>
-      return .some expr
+      return ()
   | _ => return .none
 
 def getCongrDeclNames : TacticM (List Name) := withMainContext do
@@ -34,11 +32,7 @@ def getCongrDeclNames : TacticM (List Name) := withMainContext do
     | .some _ => x.userName :: acc
     | .none => acc
 
-def congrSaLemmas : List Name :=
-  [ ``congr_of_SAS
-  , ``congr_of_ASA
-  , ``congr_of_AAS
-  ]
+def getCongrSaLemmas : MetaM (List Name) := do return congrSaExtension.getState (← getEnv)
 
 syntax (name := congr_sa) "congr_sa" : tactic
 
@@ -47,6 +41,7 @@ def evalCongrSa : Tactic := fun stx =>
   match stx with
   | `(tactic| congr_sa) => withTheReader Term.Context ({ · with errToSorry := false }) do
       let congrDeclNames <- getCongrDeclNames
+      let congrSaLemmas <- getCongrSaLemmas
       for lemmaName in congrSaLemmas do
         for x0 in congrDeclNames do
           for x1 in congrDeclNames do
