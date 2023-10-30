@@ -31,12 +31,12 @@ scoped infix : 50 "LiesInt" => lies_int
 
 section compatibility
 
-theorem ne_of_lieson_and_not_lieson {P : Type _} [EuclideanPlane P] {α : Type _} [Carrier P α] {F : α} {X Y : P} (hx : X LiesOn F) (hy : ¬ Y LiesOn F) : X ≠ Y := by 
+theorem ne_of_lieson_and_not_lieson {P : Type _} [EuclideanPlane P] {α : Type _} [Carrier P α] {F : α} {X Y : P} (hx : X LiesOn F) (hy : ¬ Y LiesOn F) : X ≠ Y := by
   by_contra h
   rw [h] at hx
   tauto
 
-theorem ne_of_liesint_and_not_liesint {P : Type _} [EuclideanPlane P] {α : Type _} [Interior P α] {F : α} {X Y : P} (hx : X LiesInt F) (hy : ¬ Y LiesInt F) : X ≠ Y := by 
+theorem ne_of_liesint_and_not_liesint {P : Type _} [EuclideanPlane P] {α : Type _} [Interior P α] {F : α} {X Y : P} (hx : X LiesInt F) (hy : ¬ Y LiesInt F) : X ≠ Y := by
   by_contra h
   rw [h] at hx
   tauto
@@ -52,5 +52,8 @@ class Convex2D (P: Type _) [EuclideanPlane P] (α : Type _) extends (Carrier P �
 /- Theorem interior is convex-/
 
 /- Intersection -/
+
+class LinearObj (α : Type*) where
+  toProj : α → Proj
 
 end EuclidGeom
