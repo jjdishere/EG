@@ -6,7 +6,7 @@ namespace EuclidGeom
 
 /- Class of Circles-/
 @[ext]
-class Circle (P : Type _) [EuclideanPlane P] where 
+class Circle (P : Type _) [EuclideanPlane P] where
   center : P
   radius : ℝ
   rad_pos : 0 < radius
@@ -18,7 +18,7 @@ namespace Circle
 def mk_pt_pt (O A : P) (h : A ≠ O) : Circle P where
   center := O
   radius := (SEG O A).length
-  rad_pos := (Seg.length_pos_iff_nd).mpr h
+  rad_pos := (length_pos_iff_nd).mpr h
 
 def mk_pt_pt_pt (A B C: P) (h : ¬ colinear A B C) : Circle P := sorry
 
@@ -63,7 +63,7 @@ instance : Carrier P (Circle P) where
 instance : Interior P (Circle P) where
   interior := fun ω => ω.interior
 
-end Circle 
+end Circle
 
 /- `One seldom uses Inside a circle in reality.` Should we delete this? Int On Out is enough-/
 scoped infix : 50 "LiesIn" => Circle.IsInside

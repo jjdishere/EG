@@ -13,7 +13,7 @@ scoped infix : 50 "⟂" => perpendicular
 namespace perpendicular
 
 @[simp]
-protected theorem irrefl {l : LinearObj P}  : ¬ (l ⟂ l) := by 
+protected theorem irrefl {l : LinearObj P}  : ¬ (l ⟂ l) := by
   intro h
   dsimp only [perpendicular] at h
   dsimp only [Proj.perp] at h
@@ -25,7 +25,7 @@ protected theorem irrefl {l : LinearObj P}  : ¬ (l ⟂ l) := by
 protected theorem symm {l₁ l₂ : LinearObj P} (h :l₁ ⟂ l₂) : (l₂ ⟂ l₁) := by
   unfold perpendicular; dsimp only [Proj.perp]
   unfold perpendicular at h; dsimp only [Proj.perp] at h
-  have h0 : (Proj.I)*(Proj.I) = 1 := by 
+  have h0 : (Proj.I)*(Proj.I) = 1 := by
      exact Proj.I_mul_I_eq_one_of_Proj
   rw[h,←mul_assoc,h0,one_mul]
 
@@ -48,7 +48,7 @@ theorem perp_of_parallel_perp {l₁ l₂ l₃ : LinearObj P} : (l₁ ∥ l₂) �
 theorem perp_of_perp_parallel {l₁ l₂ l₃ : LinearObj P} : (l₁ ⟂ l₂) → (l₂ ∥ l₃) → (l₁ ⟂ l₃) := by
   unfold perpendicular parallel
   intro h1 h2
-  rw[h1,h2]  
+  rw[h1,h2]
 
 theorem toProj_ne_toProj_of_perp {l₁ l₂: LinearObj P} : (l₁ ⟂ l₂) → (l₁.toProj ≠ l₂.toProj) := by
   intro h0
@@ -115,7 +115,7 @@ theorem perp_foot_eq_self_iff_lies_on (A : P) (l : Line P) : perp_foot A l = A �
     nth_rw 1 [e]
 
 theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on {A : P} {l : Line P} (h : ¬ A LiesOn l) : LIN A (perp_foot A l) ((perp_foot_eq_self_iff_lies_on A l).mp.mt  h) = perp_line A l := by
-  have h0 : A LiesOn perp_line A l := by 
+  have h0 : A LiesOn perp_line A l := by
     dsimp only [perp_line]
     apply (pt_lies_on_of_mk_pt_proj A l.toProj.perp)
   have h1 : perp_foot A l LiesOn perp_line A l := (Line.inx_is_inx (perp_foot_preparation A l).symm).2
@@ -127,7 +127,7 @@ theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on {A : P} {l : Line P} 
 theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l := by
   rw [←perp_foot_eq_self_iff_lies_on A l]
   unfold dist_pt_line
-  rw [←Seg.length_eq_zero_iff_deg]
+  rw [<-triv_iff_length_eq_zero]
   simp
 
 end Perpendicular_constructions
