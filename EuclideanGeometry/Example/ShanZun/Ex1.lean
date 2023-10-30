@@ -1,5 +1,5 @@
 import EuclideanGeometry.Foundation.Index
-import EuclideanGeometry.Foundation.Axiom.Linear._ex
+import EuclideanGeometry.Foundation.Axiom.Linear.Line_ex
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
 
 noncomputable section
