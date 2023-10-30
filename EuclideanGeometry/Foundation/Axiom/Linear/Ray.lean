@@ -257,6 +257,11 @@ theorem Ray.todir_eq_neg_todir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h)
 
 theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toProj = (RAY B A h.symm).toProj := (Dir.eq_toProj_iff _ _).mpr (Or.inr (todir_eq_neg_todir_of_mk_pt_pt h))
 
+theorem pt_pt_seg_toRay_eq_pt_pt_ray {A B : P} (h : B ≠ A) : (Seg_nd.mk A B h).toRay = Ray.mk_pt_pt A B h := rfl
+
+-- Given ray and a point A, A lies int the ray, then the ray from ray.source to A is just the ray
+theorem Ray.source_int_toRay_eq_ray {ray : Ray P} {A : P} {ha : A LiesInt ray} : (SEG_nd ray.source A (ha.2)).toRay = ray := sorry
+
 end coersion_compatibility
 
 @[simp]
@@ -363,6 +368,10 @@ theorem Seg.lies_on_of_eq_midpt (h : A = l.midpoint) : A LiesOn l := by
 theorem Seg_nd.midpt_lies_int : seg_nd.1.midpoint LiesInt seg_nd.1 :=
   (Seg.lies_int_iff seg_nd.1.midpoint).mpr ⟨seg_nd.2, ⟨1 / 2, by norm_num; exact seg_nd.1.vec_source_midpt⟩⟩
 
+theorem Seg_nd.lies_int_of_eq_midpt (h : A = seg_nd.1.midpoint) : A LiesInt seg_nd.1 := by
+  rw [h]
+  exact seg_nd.midpt_lies_int
+
 /-- A point $X$ on a given segment $AB$ is the midpoint if and only if the vector $\overrightarrow{AX}$ is the same as the vector $\overrightarrow{XB}$. -/
 theorem midpt_iff_same_vector_to_source_and_target (A : P) (l : Seg P) : A = l.midpoint ↔ (SEG l.source A).toVec = (SEG A l.target).toVec :=
   ⟨fun h ↦ Seg.vec_eq_of_eq_midpt h, fun h ↦ midpt_of_same_vector_to_source_and_target h⟩
@@ -397,16 +406,18 @@ end midpoint
 
 section existence
 
+theorem target_eq_vec_vadd_target_midpt (l : Seg P) : l.2 = (SEG l.1 (l.toVec +ᵥ l.2)).midpoint :=
+  midpt_of_same_vector_to_source_and_target (vadd_vsub l.toVec l.2).symm
+
+theorem Seg_nd.target_lies_int_seg_source_vec_vadd_target (l : Seg_nd P) : l.1.2 LiesInt (SEG l.1.source (l.1.toVec +ᵥ l.1.2)) := 
+  lies_int_of_eq_midpt (SEG_nd l.1.1 _ <| fun h ↦ l.2 <| toVec_eq_zero_of_deg.mpr <| 
+    zero_eq_bit0.mp ((vsub_eq_zero_iff_eq.mpr h).symm.trans <| vadd_vsub_assoc l.1.toVec l.1.2 l.1.1))
+      (target_eq_vec_vadd_target_midpt l.1)
+
 -- Archimedean property I : given a directed segment AB (with A ≠ B), then there exists a point P such that B lies on the directed segment AP and P ≠ B.
 
-theorem Seg_nd.exist_pt_beyond_pt (l : Seg_nd P) : (∃ q : P, l.1.target LiesInt (SEG l.1.source q)) := by
-  refine' ⟨l.1.toVec +ᵥ l.1.target, ⟨1 / 2, _⟩, 
-    ⟨l.2, fun t ↦ (Seg.is_nd_iff_toVec_ne_zero.mp l.2) (vadd_eq_self_iff_vec_eq_zero.mp t.symm)⟩⟩
-  norm_num
-  rw [seg_toVec_eq_vec, Vec.mk_pt_pt, Vec.mk_pt_pt]
-  field_simp
-  rw [vadd_vsub_assoc]
-  exact mul_two (l.1.target -ᵥ l.1.source)
+theorem Seg_nd.exist_pt_beyond_pt (l : Seg_nd P) : (∃ q : P, l.1.target LiesInt (SEG l.1.source q)) :=
+  ⟨l.1.toVec +ᵥ l.1.target, l.target_lies_int_seg_source_vec_vadd_target⟩
  
 -- Archimedean property II: On an nontrivial directed segment, one can always find a point in its interior.  `This will be moved to later disccusion about midpoint of a segment, as the midpoint is a point in the interior of a nontrivial segment`
 

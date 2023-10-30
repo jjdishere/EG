@@ -1,5 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
-
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 /- This file discuss the relative positions of points and rays on a plane. -/
 noncomputable section
 namespace EuclidGeom
@@ -183,6 +183,9 @@ theorem Seg.colinear_of_lies_on {A B C : P} {seg : Seg P} (hA : A LiesOn seg) (h
   have hc : C LiesOn seg_nd.1 := by apply hC
   exact Ray.colinear_of_lies_on (Seg_nd.lies_on_toRay_of_lies_on ha) (Seg_nd.lies_on_toRay_of_lies_on hb) (Seg_nd.lies_on_toRay_of_lies_on hc)
 
+theorem lies_on_ray_or_rev_from_seg_iff_colinear {A B C : P} (h: B ≠ A) :  colinear A B C ↔ C LiesOn (Seg_nd.mk A B h).toRay ∨ C LiesOn (Seg_nd.mk A B h).toRay.reverse := by sorry
+-- tip : theorem pt_lies_on_line_from_ray_iff_vec_parallel in Ray.ex may help.
+theorem lies_on_ray_or_rev_iff_colinear {A B C : P} (h: B ≠ A) :  colinear A B C ↔ C LiesOn (Ray.mk_pt_pt A B h) ∨ C LiesOn (Ray.mk_pt_pt A B h).reverse := by sorry
 /-
 Note that we do not need all reverse, extension line,... here. instead we should show that
 1. reverse, extension line coerce to same line with the original segment (in Line.lean)

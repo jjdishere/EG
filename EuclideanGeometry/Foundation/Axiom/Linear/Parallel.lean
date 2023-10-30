@@ -5,51 +5,29 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Line_ex
 noncomputable section
 namespace EuclidGeom
 
-inductive LinearObj (P : Type _) [EuclideanPlane P] where 
-  | vec_nd (v : Vec_nd)
-  | dir (v : Dir)
-  | ray (r : Ray P)
-  | seg_nd (s : Seg_nd P)
-  | line (l : Line P)
-
 variable {P : Type _} [EuclideanPlane P]
 
-section coersion
+instance : LinearObj Vec_nd where
+  toProj := fun l ↦ l.toProj
 
-instance : Coe Vec_nd (LinearObj P) where
-  coe := fun v => LinearObj.vec_nd v
+instance : LinearObj Dir where
+  toProj := fun l ↦ l.toProj
 
-instance : Coe Dir (LinearObj P) where
-  coe := fun d => LinearObj.dir d
+instance : LinearObj (Ray P) where
+  toProj := fun l ↦ l.toProj
 
-instance : Coe (Ray P) (LinearObj P) where
-  coe := fun r => LinearObj.ray r
+instance : LinearObj (Seg_nd P) where
+  toProj := fun l ↦ l.toProj
 
-instance : Coe (Seg_nd P) (LinearObj P) where
-  coe := fun s => LinearObj.seg_nd s
+instance : LinearObj (Line P) where
+  toProj := fun l ↦ l.toProj
 
-instance : Coe (Line P) (LinearObj P) where
-  coe := fun l => LinearObj.line l
+-- Our definition of parallel for LinearObj is very general. Not only can it apply to different types of Objs, but also include degenerate cases, such as ⊆(inclusions), =(equal).
 
-end coersion
+def parallel {α β : Type*} [LinearObj α] [LinearObj β] (l₁ : α) (l₂ : β) : Prop :=
+  LinearObj.toProj l₁ = LinearObj.toProj l₂
 
-namespace LinearObj
-
-def toProj (l : LinearObj P) : Proj :=
-  match l with
-  | vec_nd v => v.toProj
-  | dir v => v.toProj
-  | ray r => r.toProj
-  | seg_nd s => s.toProj
-  | line l => l.toProj
-
-end LinearObj
-
--- Our definition of parallel for LinearObj is very general. Not only can it apply to different types of Objs, but also include degenerate cases, such as ⊆(inclusions), =(equal). 
-
-def parallel (l₁ l₂: LinearObj P) : Prop := l₁.toProj = l₂.toProj
-
-instance : IsEquiv (LinearObj P) parallel where
+instance (α : Type*) [LinearObj α] : IsEquiv α parallel where
   refl _ := rfl
   symm _ _ := Eq.symm
   trans _ _ _ := Eq.trans
@@ -62,17 +40,17 @@ scoped infix : 50 "∥" => parallel
 
 section parallel_theorem
 ---- `eq_toProj theorems should be relocate to this file, they are in Line_ex now`.
-theorem Ray.para_toLine (ray : Ray P) : (LinearObj.ray ray) ∥ ray.toLine := rfl
+theorem Ray.para_toLine (ray : Ray P) : ray ∥ ray.toLine := rfl
 
-theorem Seg_nd.para_toRay (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := rfl
+theorem Seg_nd.para_toRay (seg_nd : Seg_nd P) : seg_nd ∥ seg_nd.toRay := rfl
 
-theorem Seg_nd.para_toLine (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toLine := rfl
+theorem Seg_nd.para_toLine (seg_nd : Seg_nd P) : seg_nd ∥ seg_nd.toLine := rfl
 
 -- many more...
 
-theorem Ray.para_toLine_of_para (ray ray' : Ray P) (h : LinearObj.ray ray ∥ ray') : (LinearObj.line ray.toLine) ∥ ray'.toLine := h
+theorem Ray.para_toLine_of_para (ray ray' : Ray P) (h : ray ∥ ray') : ray.toLine ∥ ray'.toLine := h
 
-theorem Ray.not_para_of_not_para_toLine (ray ray' : Ray P) (h : ¬ (LinearObj.line ray.toLine) ∥ ray'.toLine ) : ¬ LinearObj.ray ray ∥ ray' := h
+theorem Ray.not_para_of_not_para_toLine (ray ray' : Ray P) (h : ¬ ray.toLine ∥ ray'.toLine) : ¬ ray ∥ ray' := h
 
 end parallel_theorem
 
@@ -85,7 +63,7 @@ def inx_of_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : P :
 theorem inx_of_extn_line_symm (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) :
     inx_of_extn_line r₁ r₂ h = inx_of_extn_line r₂ r₁ h.symm := by
   have hsymm : cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) • r₁.toDir.toVec =
-      cu r₂.toDir.toVec_nd r₁.toDir.toVec_nd (VEC r₂.source r₁.source) • r₂.toDir.toVec + 
+      cu r₂.toDir.toVec_nd r₁.toDir.toVec_nd (VEC r₂.source r₁.source) • r₂.toDir.toVec +
       (r₂.source -ᵥ r₁.source) := by
     have h := linear_combination_of_not_colinear_dir (VEC r₁.source r₂.source) h
     nth_rw 1 [← cu_cv, Vec.mk_pt_pt] at h
@@ -110,6 +88,8 @@ theorem inx_lies_on_snd_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.
   rw [inx_of_extn_line_symm]
   exact inx_lies_on_fst_extn_line r₂ r₁ h.symm
 
+theorem ray_toLine_eq_of_same_extn_line {r₁ r₂ : Ray P} (h : same_extn_line r₁ r₂) : r₁.toLine = r₂.toLine := Quotient.eq.mpr h
+
 -- `key theorem`
 theorem inx_eq_of_same_extn_line {a₁ b₁ a₂ b₂ : Ray P} (g₁ : same_extn_line a₁ a₂) (g₂ : same_extn_line b₁ b₂) (h₁ : b₁.toProj ≠ a₁.toProj) (h₂ : b₂.toProj ≠ a₂.toProj) : inx_of_extn_line a₁ b₁ h₁ = inx_of_extn_line a₂ b₂ h₂ := by
   have ha1 : inx_of_extn_line a₁ b₁ h₁ LiesOn a₁.toLine := inx_lies_on_fst_extn_line a₁ b₁ h₁
@@ -117,10 +97,10 @@ theorem inx_eq_of_same_extn_line {a₁ b₁ a₂ b₂ : Ray P} (g₁ : same_extn
   rw [ray_toLine_eq_of_same_extn_line g₁] at ha1
   rw [ray_toLine_eq_of_same_extn_line g₂] at hb1
   by_contra hn
-  have heq : a₂.toLine = b₂.toLine := eq_of_pt_pt_lies_on_of_ne hn 
+  have heq : a₂.toLine = b₂.toLine := eq_of_pt_pt_lies_on_of_ne hn
     (inx_lies_on_fst_extn_line a₂ b₂ h₂) ha1 (inx_lies_on_snd_extn_line a₂ b₂ h₂) hb1
   exact h₂.symm (congrArg Line.toProj heq)
-  
+
 -- This theorem deals only with `HEq`
 theorem heq_funext {c₁ c₂ d: Sort _} (e : c₁ = c₂) {f₁ : c₁ → d} {f₂ : c₂ → d} (h : ∀ (s : c₁) (t : c₂), f₁ s = f₂ t) : HEq f₁ f₂ := Function.hfunext e (fun _ _ _ => (heq_of_eq (h _ _)))
 
@@ -132,40 +112,42 @@ theorem heq_of_inx_of_extn_line (a₁ b₁ a₂ b₂ : Ray P) (h₁ : a₁ ≈ a
 /-- The construction of the intersection point of two lines. -/
 def Line.inx (l₁ l₂ : Line P) (h : l₂.toProj ≠ l₁.toProj) : P := @Quotient.hrecOn₂ (Ray P) (Ray P) same_extn_line.setoid same_extn_line.setoid (fun l l' => (Line.toProj l' ≠ Line.toProj l) → P) l₁ l₂ inx_of_extn_line heq_of_inx_of_extn_line h
 
-theorem Line.inx_lies_on_fst {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : 
+theorem Line.inx_lies_on_fst {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) :
     Line.inx l₁ l₂ h ∈ l₁.carrier := by
   rcases Quotient.exists_rep l₁ with ⟨r1, hr1⟩
   rcases Quotient.exists_rep l₂ with ⟨r2, hr2⟩
   simp only [← hr1, ← hr2]
   exact inx_lies_on_fst_extn_line r1 r2 (by rw [← hr1, ← hr2] at h; exact h)
-  
-theorem Line.inx_lies_on_snd {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : 
+
+theorem Line.inx_lies_on_snd {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) :
     Line.inx l₁ l₂ h ∈ l₂.carrier := by
   rcases Quotient.exists_rep l₁ with ⟨r1, hr1⟩
   rcases Quotient.exists_rep l₂ with ⟨r2, hr2⟩
   simp only [← hr1, ← hr2]
   exact inx_lies_on_snd_extn_line r1 r2 (by rw [← hr1, ← hr2] at h; exact h)
 
-theorem Line.inx_is_inx {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : is_inx (Line.inx l₁ l₂ h) l₁ l₂ := 
+theorem Line.inx_is_inx {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : is_inx (Line.inx l₁ l₂ h) l₁ l₂ :=
   ⟨inx_lies_on_fst h, inx_lies_on_snd h⟩
 
 end construction
 
 section property
 
--- In this section, we discuss the property of intersection point using `is_inx` instead of `Line.inx`. As a corollory, we deduce the symmetry of Line.inx.  
+-- In this section, we discuss the property of intersection point using `is_inx` instead of `Line.inx`. As a corollory, we deduce the symmetry of Line.inx.
 
-theorem unique_of_inx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) (a : is_inx A l₁ l₂) (b : is_inx B l₁ l₂) : B = A := by
-  by_contra d
-  exact h (congrArg Line.toProj (eq_of_pt_pt_lies_on_of_ne d a.1 b.1 a.2 b.2).symm)
+theorem unique_of_inx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) (a : is_inx A l₁ l₂) (b : is_inx B l₁ l₂) : B = A :=
+  Classical.byContradiction fun d ↦ h (congrArg Line.toProj (eq_of_pt_pt_lies_on_of_ne d a.1 b.1 a.2 b.2).symm)
 
-theorem Line.inx.symm {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : Line.inx l₂ l₁ h.symm = Line.inx l₁ l₂ h := unique_of_inx_of_line_of_not_para h (Line.inx_is_inx h) <| is_inx.symm (Line.inx_is_inx h.symm)
+theorem inx_of_line_eq_inx {A : P} {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) (ha : is_inx A l₁ l₂) :
+  A = l₁.inx l₂ h := unique_of_inx_of_line_of_not_para h (Line.inx_is_inx h) ha
 
-theorem eq_of_parallel_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A LiesOn l₁) (h₂ : A LiesOn l₂) 
-    (h : LinearObj.line l₁ ∥ LinearObj.line l₂) : l₁ = l₂ := by
-  rw [← mk_pt_proj_eq h₁, mk_pt_proj_eq_of_eq_toProj h₂ (by exact h)]
+theorem Line.inx.symm {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : Line.inx l₂ l₁ h.symm = Line.inx l₁ l₂ h :=
+  unique_of_inx_of_line_of_not_para h (Line.inx_is_inx h) (is_inx.symm (Line.inx_is_inx h.symm))
 
-theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃ p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
+theorem eq_of_parallel_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A LiesOn l₁) (h₂ : A LiesOn l₂)
+  (h : l₁ ∥ l₂) : l₁ = l₂ := eq_of_same_toProj_and_pt_lies_on h₁ h₂ h
+
+theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : ∃ p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
   rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
   rcases l₂.nontriv with ⟨C, ⟨D, hcd⟩⟩
   have e' : Seg_nd.toProj ⟨SEG A B, hab.2.2⟩ ≠ Seg_nd.toProj ⟨SEG C D, hcd.2.2⟩ := by
@@ -173,41 +155,37 @@ theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l
     exact h
   let x := ((VEC A B).1 * (VEC C D).2 - (VEC A B).2 * (VEC C D).1)⁻¹ * ((VEC A C).1 * (VEC C D).2 - (VEC C D).1 * (VEC A C).2)
   let y := ((VEC A B).1 * (VEC C D).2 - (VEC A B).2 * (VEC C D).1)⁻¹ * ((VEC A B).1 * (VEC A C).2 - (VEC A C).1 * (VEC A B).2)
-  have e : VEC A C = x • VEC A B + y • VEC C D := by 
+  have e : VEC A C = x • VEC A B + y • VEC C D := by
     apply linear_combination_of_not_colinear_vec_nd (VEC A C) e'
-  let X := x • VEC A B +ᵥ A
-  use X
-  constructor
-  exact (lies_on_iff_colinear_of_ne_lies_on_lies_on hab.2.2 hab.1 hab.2.1 _).2 (colinear_of_vec_eq_smul_vec (vec_of_pt_vadd_pt_eq_vec _ _))
-  apply (lies_on_iff_colinear_of_ne_lies_on_lies_on hcd.2.2 hcd.1 hcd.2.1 _).2
-  have e'' : VEC C X = (-y) • VEC C D := by
+  have h : VEC C (x • VEC A B +ᵥ A) = - y • VEC C D := by
     rw [← vec_sub_vec A _ _, vec_of_pt_vadd_pt_eq_vec _ _, e]
     simp only [Complex.real_smul, sub_add_cancel', neg_smul]
-  exact colinear_of_vec_eq_smul_vec e''
+  exact ⟨x • VEC A B +ᵥ A, (lies_on_iff_colinear_of_ne_lies_on_lies_on hab.2.2 hab.1 hab.2.1 _).2
+    (colinear_of_vec_eq_smul_vec (vec_of_pt_vadd_pt_eq_vec A _)),
+    (lies_on_iff_colinear_of_ne_lies_on_lies_on hcd.2.2 hcd.1 hcd.2.1 _).2 (colinear_of_vec_eq_smul_vec h)⟩
 
-theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃! p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
-  rcases (exists_intersection_of_nonparallel_lines h) with ⟨X, ⟨h₁, h₂⟩⟩
+theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : ∃! p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
+  rcases exists_intersection_of_nonparallel_lines h with ⟨X, ⟨h₁, h₂⟩⟩
   use X
   simp only [h₁, h₂, and_self, and_imp, true_and]
-  intro _ h₁' h₂'
-  by_contra n
-  exact h (congrArg LinearObj.toProj (congrArg LinearObj.line (eq_of_pt_pt_lies_on_of_ne n h₁ h₁' h₂ h₂')))
+  exact fun _ h₁' h₂' ↦ Classical.byContradiction fun n ↦
+    h (congrArg LinearObj.toProj (eq_of_pt_pt_lies_on_of_ne n h₁ h₁' h₂ h₂'))
 
-def intersection_of_nonparallel_line (l₁ l₂ : Line P) (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : P := 
+def intersection_of_nonparallel_line (l₁ l₂ : Line P) (h : ¬ l₁ ∥ l₂) : P :=
   Classical.choose (exists_unique_intersection_of_nonparallel_lines h)
   -- by choose X _ using (exists_unique_intersection_of_nonparallel_lines h)
   -- use X
 
 scoped notation "LineInt" => intersection_of_nonparallel_line
 
-theorem intersection_of_nonparallel_line_lies_on_fst_line {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : (LineInt l₁ l₂ h) LiesOn l₁ :=
+theorem intersection_of_nonparallel_line_lies_on_fst_line {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : LineInt l₁ l₂ h LiesOn l₁ :=
   (Classical.choose_spec (exists_unique_intersection_of_nonparallel_lines h)).1.1
 
-theorem intersection_of_nonparallel_line_lies_on_snd_line {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : (LineInt l₁ l₂ h) LiesOn l₂ :=
+theorem intersection_of_nonparallel_line_lies_on_snd_line {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : LineInt l₁ l₂ h LiesOn l₂ :=
   (Classical.choose_spec (exists_unique_intersection_of_nonparallel_lines h)).1.2
 
 /-!
--- Now let's come to rays. 
+-- Now let's come to rays.
 -- If ray₁ and ray₂ are two rays that are not parallel, then the following function returns the unique point of the intersection of the associated two lines. This function is a bit tricky, will come back to this.
 -- `Should we define this concept? Why don't we just use Intersection of Lines and use coersion (ray : Line)`
 def Intersection_of_Lines_of_Rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : P := sorry
