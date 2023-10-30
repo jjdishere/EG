@@ -201,9 +201,9 @@ theorem congr_of_AAS (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) 
 theorem acongr_of_AAS (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsACongr tr_nd₂ := sorry
 
 /- HL -/
-theorem congr_of_HL (h₁ : tr_nd₁.angle₁.value = π / 2) (h₂ : tr_nd₁.angle₂.value = π / 2) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) : tr_nd₁.IsCongr tr_nd₂ := sorry
+theorem congr_of_HL (h₁ : tr_nd₁.angle₁.value = π / 2) (h₂ : tr_nd₂.angle₁.value = π / 2) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) : tr_nd₁.IsCongr tr_nd₂ := sorry
 
-theorem acongr_of_HL (h₁ : tr_nd₁.angle₁.value = π / 2) (h₂ : tr_nd₁.angle₂.value = - π / 2) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) : tr_nd₁.IsACongr tr_nd₂ := sorry
+theorem acongr_of_HL (h₁ : tr_nd₁.angle₁.value = π / 2) (h₂ : tr_nd₂.angle₁.value = - π / 2) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) : tr_nd₁.IsACongr tr_nd₂ := sorry
 
 /- SSS -/
 /- cannot decide orientation -/
