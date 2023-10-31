@@ -136,18 +136,23 @@ def edge_nd₁₄ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₄ (qdr_cv
 /-- Two diagonals are not parallel to each other -/
 theorem diag_not_para : ¬ qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := sorry
 
+/-- The intersection point of two diagonals -/
 def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.toLine qdr_cvx.diag_not_para
 
 /-- The interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals. -/
 theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄.1
 := sorry
 
+/-- Given a convex quadrilateral qdr_cvx, its 1st, 2nd and 3rd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₁ point₂}$ is not the same as the projective direction of the vector $\overrightarrow{point₁ point₃}$. -/
 theorem not_colinear₁₂₃ : ¬ colinear qdr_cvx.1.1 qdr_cvx.1.2 qdr_cvx.1.3 := sorry
 
+/-- Given a convex quadrilateral qdr_cvx, its 2nd, 3rd and 4th points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₂ point₃}$ is not the same as the projective direction of the vector $\overrightarrow{point₂ point₄}$. -/
 theorem not_colinear₂₃₄ : ¬ colinear qdr_cvx.1.2 qdr_cvx.1.3 qdr_cvx.1.4 := sorry
 
+/-- Given a convex quadrilateral qdr_cvx, its 3rd, 4th and 1st points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₃ point₄}$ is not the same as the projective direction of the vector $\overrightarrow{point₃ point₁}$. -/
 theorem not_colinear₃₄₁ : ¬ colinear qdr_cvx.1.3 qdr_cvx.1.4 qdr_cvx.1.1 := sorry
 
+/-- Given a convex quadrilateral qdr_cvx, its 4th, 1st and 2nd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₄ point₁}$ is not the same as the projective direction of the vector $\overrightarrow{point₄ point₂}$. -/
 theorem not_colinear₄₁₂ : ¬ colinear qdr_cvx.1.4 qdr_cvx.1.1 qdr_cvx.1.2 := sorry
 end property
 
