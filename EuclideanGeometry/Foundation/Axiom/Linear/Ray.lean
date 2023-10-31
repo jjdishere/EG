@@ -85,7 +85,7 @@ scoped notation "SEG_nd" => Seg_nd.mk
 /-- Given two distinct points $A$ and $B$, this function returns the ray starting from $A$ in the direction of $B$. By definition, it is to first construct the nondegenerate segment from $A$ to $B$, and then convert the nondegenerate segment $AB$ to the associated ray using \verb|toRay| function. -/
 def Ray.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : Ray P where
   source := A
-  toDir := Vec_nd.normalize ⟨VEC A B, (vsub_ne_zero.mpr h)⟩
+  toDir := Vec_nd.toDir ⟨VEC A B, (vsub_ne_zero.mpr h)⟩
 
 scoped notation "RAY" => Ray.mk_pt_pt
 
@@ -158,7 +158,7 @@ variable (seg_nd : Seg_nd P)
 def toVec_nd : Vec_nd := ⟨VEC seg_nd.1.source seg_nd.1.target, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩
 
 /-- Given a nondegenerate segment $AB$, this function returns the direction associated to the segment, defined by normalizing the nondegenerate vector $\overrightarrow{AB}$. -/
-def toDir : Dir := Vec_nd.normalize seg_nd.toVec_nd
+def toDir : Dir := Vec_nd.toDir seg_nd.toVec_nd
 
 /-- Given a nondegenerate segment $AB$, this function returns the ray $AB$, whose source is $A$ in the direction of $B$. -/
 def toRay : Ray P where
@@ -278,7 +278,7 @@ theorem Seg_nd.lies_on_toRay_of_lies_on {p : P} (h : p LiesOn seg_nd.1) : p Lies
   refine' ⟨t * Vec.norm (VEC seg_nd.1.1 seg_nd.1.2),
     mul_nonneg ht0 (Vec.norm_nonnegative (VEC seg_nd.1.1 seg_nd.1.2)), _⟩
   simp only [toRay, h, Complex.real_smul, Complex.ofReal_mul, mul_assoc]
-  exact congrArg (HMul.hMul _) seg_nd.toVec_nd.self_eq_norm_smul_normalized_vector
+  exact congrArg (HMul.hMul _) seg_nd.toVec_nd.self_eq_norm_smul_todir
 
 /-- For a nondegenerate segment $segnd$, every point of the interior of the $segnd$ lies in the interior of the ray associated to the $segnd$. -/
 theorem Seg_nd.lies_int_toRay_of_lies_int {p : P} (h : p LiesInt seg_nd.1) : p LiesInt seg_nd.toRay :=
@@ -300,7 +300,7 @@ theorem Seg_nd.toRay_toProj_eq_toProj : seg_nd.toRay.toProj = seg_nd.toProj := r
 /-- Given two distinct points $A$ and $B$, the direction of ray $AB$ is same as the negative direction of $BA$ -/
 theorem Ray.todir_eq_neg_todir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toDir = - (RAY B A h.symm).toDir := by
   simp only [Ray.mk_pt_pt, ne_eq]
-  exact (neg_normalize_eq_normalize_smul_neg ⟨VEC B A, (ne_iff_vec_ne_zero _ _).mp h.symm⟩ ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h⟩ (by rw [neg_smul, one_smul, neg_vec]) (by norm_num)).symm
+  exact (neg_to_dir_eq_to_dir_smul_neg ⟨VEC B A, (ne_iff_vec_ne_zero _ _).mp h.symm⟩ ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h⟩ (by rw [neg_smul, one_smul, neg_vec]) (by norm_num)).symm
 
 /-- Given two distinct points $A$ and $B$, the projective direction of ray $AB$ is same as that of $BA$ -/
 theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toProj = (RAY B A h.symm).toProj := (Dir.eq_toProj_iff _ _).mpr (Or.inr (todir_eq_neg_todir_of_mk_pt_pt h))
