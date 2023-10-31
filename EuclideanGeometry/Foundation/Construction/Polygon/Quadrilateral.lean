@@ -65,7 +65,7 @@ A quadrilateral is called convex if
 -/
 def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases ((qdr.point₁ ≠ qdr.point₃) ∧ (qdr.point₂ ≠ qdr.point₄))
-  · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ (h.2).symm ∥ (LinearObj.seg_nd (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm)))
+  · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ (h.2).symm ∥ (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm))
     · exact Line.inx (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm).toLine (SEG_nd qdr.point₂ qdr.point₄ (h.2).symm).toLine g LiesInt (SEG qdr.point₁ qdr.point₃) ∧ Line.inx (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm).toLine (SEG_nd qdr.point₂ qdr.point₄ (h.2).symm).toLine g LiesInt (SEG qdr.point₂ qdr.point₄)
     · exact False
   · exact False
@@ -134,7 +134,7 @@ def edge_nd₃₄ : Seg_nd P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ (qdr_cv
 def edge_nd₁₄ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₄ (qdr_cvx.nd₁₄)
 
 /-- Two diagonals are not parallel to each other -/
-theorem diag_not_para : ¬ (LinearObj.seg_nd qdr_cvx.diag_nd₂₄) ∥ qdr_cvx.diag_nd₁₃ := sorry
+theorem diag_not_para : ¬ qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := sorry
 
 def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.toLine qdr_cvx.diag_not_para
 
