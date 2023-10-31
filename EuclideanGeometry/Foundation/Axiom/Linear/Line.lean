@@ -19,6 +19,14 @@ protected theorem symm {r r' : Ray P} : same_dir_line r r' → same_dir_line r' 
 
 protected theorem trans {r r' r'' : Ray P} (h₁ : same_dir_line r r') (h₂ : same_dir_line r' r'') : same_dir_line r r'' := sorry
 
+protected def setoid : Setoid (Ray P) where
+  r := same_dir_line
+  iseqv := {
+    refl := same_dir_line.refl
+    symm := same_dir_line.symm
+    trans := same_dir_line.trans
+  }
+
 end same_dir_line
 
 def same_extn_line : Ray P → Ray P → Prop := fun r r' => r.toProj = r'.toProj ∧ (r'.source LiesOn r ∨ r'.source LiesOn r.reverse)
@@ -136,6 +144,8 @@ theorem same_extn_line.eq_carrier_union_rev_carrier (r r' : Ray P) (h : same_ext
       _ = (a + c * b) • r.toDir.toVec := (add_smul _ _ _).symm
 
 end setoid
+
+def DirLine (P : Type _) [EuclideanPlane P] := Quotient (@same_dir_line.setoid P _)
 
 def Line (P : Type _) [EuclideanPlane P] := Quotient (@same_extn_line.setoid P _)
 
