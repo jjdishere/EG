@@ -53,6 +53,11 @@ theorem sim_of_AA (tr₁ tr₂ : Triangle_nd P) (h₂ : tr₁.angle₂.value = t
 
 theorem asim_of_AA (tr₁ tr₂ : Triangle_nd P) (h₂ : tr₁.angle₂.value = - tr₂.angle₂.value) (h₃ : tr₁.angle₃.value = - tr₂.angle₃.value) : tr₁ ∼ₐ tr₂ := sorry
 
+/- SAS -/
+theorem sim_of_SAS (tr₁ tr₂ : Triangle_nd P) (e : tr₁.1.edge₂.length / tr₂.1.edge₂.length = tr₁.1.edge₃.length / tr₂.1.edge₃.length) (a : tr₁.angle₁.value = tr₂.angle₁.value): tr₁ ∼ tr₂ := sorry
+
+theorem asim_of_SAS (tr₁ tr₂ : Triangle_nd P) (e : tr₁.1.edge₂.length / tr₂.1.edge₂.length = tr₁.1.edge₃.length / tr₂.1.edge₃.length) (a : tr₁.angle₁.value = - tr₂.angle₁.value): tr₁ ∼ₐ tr₂ := sorry
+
 end simiarity_criterion
 
 end EuclidGeom
