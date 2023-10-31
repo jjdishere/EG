@@ -207,7 +207,7 @@ theorem vec_vadd_pt_lies_on_line {A B : P} {l : Line P} (hA : A LiesOn l) (hB : 
   have eq : VEC A (VEC A B +ᵥ B) = 2 * (VEC A B) := (vadd_vsub_assoc _ B A).trans (two_mul _).symm
   simp only [Ray.mk_pt_pt, eq, Complex.real_smul, Complex.ofReal_mul, Complex.ofReal_ofNat,
     mul_assoc, mul_eq_mul_left_iff, OfNat.ofNat_ne_zero, or_false]
-  exact (Vec_nd.norm_smul_normalize_eq_self ⟨VEC A B, (ne_iff_vec_ne_zero A B).1 h⟩).symm
+  exact (Vec_nd.norm_smul_to_dir_eq_self ⟨VEC A B, (ne_iff_vec_ne_zero A B).1 h⟩).symm
 
 theorem Line.exist_pt_beyond_pt_right {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B LiesOn l) (h : B ≠ A) : ∃ C : P, C LiesOn l ∧ B LiesInt (SEG A C) :=
   ⟨VEC A B +ᵥ B, vec_vadd_pt_lies_on_line hA hB h, (SEG_nd A B h).target_lies_int_seg_source_vec_vadd_target⟩
