@@ -143,6 +143,9 @@ theorem same_extn_line.eq_carrier_union_rev_carrier (r r' : Ray P) (h : same_ext
         ring_nf
       _ = (a + c * b) • r.toDir.toVec := (add_smul _ _ _).symm
 
+-- relation between two setoids, same_dir_line implies same_extn_line
+theorem same_dir_line_le_same_extn_line : same_dir_line.setoid (P := P) ≤ same_extn_line.setoid := fun _ _ h => ⟨congrArg (⟦·⟧) h.1 , h.2⟩
+
 end setoid
 
 def DirLine (P : Type _) [EuclideanPlane P] := Quotient (@same_dir_line.setoid P _)
@@ -152,6 +155,18 @@ def Line (P : Type _) [EuclideanPlane P] := Quotient (@same_extn_line.setoid P _
 variable {P : Type _} [EuclideanPlane P]
 
 section make
+
+namespace DirLine
+
+-- define a directed line from 2 distinct points
+def mk_pt_pt (A B : P) (h : B ≠ A) : DirLine P := Quotient.mk same_dir_line.setoid (RAY A B h)
+
+-- define a directed line from a point and a direction
+def mk_pt_dir (A : P) (dir : Dir) : DirLine P := Quotient.mk same_dir_line.setoid (Ray.mk A dir)
+
+def mk_pt_vec_nd (A : P) (vec_nd : Vec_nd) : DirLine P := mk_pt_dir A vec_nd.toDir
+
+end DirLine
 
 namespace Line
 

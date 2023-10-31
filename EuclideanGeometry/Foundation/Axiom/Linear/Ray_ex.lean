@@ -71,7 +71,7 @@ theorem Seg_nd.toVec_nd_of_rev_eq_neg_toVec_nd (seg_nd : Seg_nd P) : seg_nd.reve
 -- Given a nondegenerate segment, the direction of the reversed nondegenerate segment is the negative direction of the nondegenerate segment.
 theorem Seg_nd.toDir_of_rev_eq_neg_toDir (seg_nd : Seg_nd P) : seg_nd.reverse.toDir = - seg_nd.toDir := by
 -- `exists a one=line proof?`
-  rw[toDir,toDir,←neg_normalize_eq_normalize_eq,Seg_nd.toVec_nd_of_rev_eq_neg_toVec_nd]
+  rw[toDir,toDir,←neg_to_dir_eq_to_dir_eq,Seg_nd.toVec_nd_of_rev_eq_neg_toVec_nd]
 
 -- Given a nondegenerate segment, the projective direction of the reversed nondegenerate segment is the negative projective direction of the nondegenerate segment.
 theorem Seg_nd.toProj_of_rev_eq_toProj (seg_nd : Seg_nd P) : seg_nd.reverse.toProj = seg_nd.toProj := by
@@ -193,7 +193,7 @@ theorem lies_on_iff_lies_on_toRay_and_rev_toRay {A : P} {seg_nd : Seg_nd P} : A 
     simp only [Seg_nd.toVec_nd,Dir.toVec_nd]
     rw[add_smul,←h,←vec_add_vec seg_nd.1.source A seg_nd.1.target,←neg_vec seg_nd.1.target A,h',neg_neg]
   have asumbeqnorm:a+b=(Vec_nd.norm seg_nd.toVec_nd):=by
-    rw [←Vec_nd.norm_smul_normalize_eq_self seg_nd.toVec_nd] at asumbvec
+    rw [←Vec_nd.norm_smul_to_dir_eq_self seg_nd.toVec_nd] at asumbvec
     apply eq_of_smul_Vec_nd_eq_smul_Vec_nd asumbvec
   use a*(Vec_nd.norm seg_nd.toVec_nd)⁻¹
   have :VEC seg_nd.1.source seg_nd.1.target=seg_nd.toVec_nd:=by
@@ -210,7 +210,7 @@ theorem lies_on_iff_lies_on_toRay_and_rev_toRay {A : P} {seg_nd : Seg_nd P} : A 
   simp only[inv_nonneg]
   linarith
   linarith
-  rw[h,mul_smul,this,←Vec_nd.norm_smul_normalize_eq_self seg_nd.toVec_nd,smul_smul,smul_smul,mul_assoc,←norm_of_Vec_nd_eq_norm_of_Vec_nd_fst,inv_mul_cancel (Vec_nd.norm_ne_zero seg_nd.toVec_nd),mul_one]
+  rw[h,mul_smul,this,←Vec_nd.norm_smul_to_dir_eq_self seg_nd.toVec_nd,smul_smul,smul_smul,mul_assoc,←norm_of_Vec_nd_eq_norm_of_Vec_nd_fst,inv_mul_cancel (Vec_nd.norm_ne_zero seg_nd.toVec_nd),mul_one]
 
 -- `This theorem really concerns about the total order on a line`
 theorem lies_on_pt_toDir_of_pt_lies_on_rev {A B : P} {ray : Ray P} (hA : A LiesOn ray) (hB : B LiesOn ray.reverse) : A LiesOn Ray.mk B ray.toDir := by
@@ -275,7 +275,7 @@ theorem ray_toProj_eq_mk_pt_pt_toProj {A B : P} {ray : Ray P} (h : B ≠ A) (ha 
   rcases exist_real_vec_eq_smul_of_lies_on_or_rev hb with ⟨tb, eqb⟩
   have heq : VEC A B = (tb - ta) • ray.2.1 := by rw [← vec_sub_vec _ A B, eqa, eqb, sub_smul]
   calc
-    _ = ray.2.toVec_nd.toProj := congrArg Dir.toProj (Dir.dir_toVec_nd_normalize_eq_self ray.2).symm
+    _ = ray.2.toVec_nd.toProj := congrArg Dir.toProj (Dir.dir_toVec_nd_to_dir_eq_self ray.2).symm
     _ = _ := eq_toProj_of_smul ray.2.toVec_nd ⟨VEC A B, (vsub_ne_zero.mpr h)⟩ heq
 
 theorem Ray.in_carrier_iff_lies_on {p : P} {r : Ray P} : p ∈ r.carrier ↔ p LiesOn r := by
@@ -385,7 +385,7 @@ theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} {seg_nd : Seg_
     linarith
   have aseg_nonzero:Vec_nd.norm (Seg_nd.toVec_nd seg_nd)+a≠ 0:=by
     linarith
-  have raydir:seg_nd.extension.toDir.toVec=seg_nd.toVec_nd.normalize.toVec:=by
+  have raydir:seg_nd.extension.toDir.toVec=seg_nd.toVec_nd.toDir.toVec:=by
     rw[Ray.toDir_of_rev_eq_neg_toDir,←Seg_nd.toDir_eq_toRay_toDir,Seg_nd.toDir_of_rev_eq_neg_toDir,neg_neg]
   constructor
   use (seg_nd.toVec_nd.norm)*(seg_nd.toVec_nd.norm+a)⁻¹
@@ -406,7 +406,7 @@ theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} {seg_nd : Seg_
   linarith
   simp only [Seg.target]
   rw[←raysourcesegtarget] at ha
-  rw[←sourcetargetA,ha,vec_ndtovec,←Vec_nd.norm_smul_normalize_eq_self (seg_nd.toVec_nd),←norm_of_Vec_nd_eq_norm_of_Vec_nd_fst,raydir]
+  rw[←sourcetargetA,ha,vec_ndtovec,←Vec_nd.norm_smul_to_dir_eq_self (seg_nd.toVec_nd),←norm_of_Vec_nd_eq_norm_of_Vec_nd_fst,raydir]
   rw[←add_smul,← mul_smul,mul_assoc,inv_mul_cancel,mul_one]
   linarith
   constructor
@@ -424,11 +424,11 @@ theorem lies_on_seg_nd_or_extension_of_lies_on_toRay {seg_nd : Seg_nd P} {A : P}
     rw [seg_nd.extension_toDir, sub_smul, ← eq]
     refine' eq_sub_of_add_eq (add_eq_of_eq_sub' _)
     rw [vec_sub_vec']
-    exact v.norm_smul_normalize_eq_self
-  · have eq : VEC seg_nd.1.1 A = t * v.normalize.1 := eq
+    exact v.norm_smul_to_dir_eq_self
+  · have eq : VEC seg_nd.1.1 A = t * v.toDir.1 := eq
     exact Or.inl ⟨t * ‖v.1‖⁻¹, mul_nonneg tpos (inv_nonneg.mpr (norm_nonneg v.1)), 
       (mul_inv_le_iff (norm_pos_iff.2 v.2)).mpr (by rw [mul_one]; exact not_lt.mp h),
-      by simpa only [eq, Vec_nd.normalize, ne_eq, Vec.norm, Complex.real_smul, Complex.ofReal_inv,
+      by simpa only [eq, Vec_nd.toDir, ne_eq, Vec.norm, Complex.real_smul, Complex.ofReal_inv,
       Complex.norm_eq_abs, Complex.ofReal_mul] using by ring⟩
 
 end extension
