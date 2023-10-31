@@ -4,7 +4,7 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Class
 /-!
 # Segments and rays
 
-We define the class of generalized directed segments and rays, and their coersions. We also define the property of a point lying on such a structure. Finally, we discuss the nonemptyness/degeneracy of generalized directed segments. 
+We define the class of generalized directed segments and rays, and their coersions. We also define the property of a point lying on such a structure. Finally, we discuss the nonemptyness/degeneracy of generalized directed segments.
 
 From now on, by "segment" we mean a generalized directed segment.
 
@@ -50,6 +50,10 @@ end Seg
 
 def Seg_nd (P : Type _) [EuclideanPlane P] := {seg : Seg P // seg.is_nd}
 
+def Seg_nd.source  (P : Type _) [EuclideanPlane P] (seg_nd : Seg_nd P):= seg_nd.1.source
+
+def Seg_nd.target  (P : Type _) [EuclideanPlane P] (seg_nd : Seg_nd P):= seg_nd.1.target
+
 end definition
 
 variable {P : Type _} [EuclideanPlane P]
@@ -67,7 +71,7 @@ scoped notation "SEG_nd" => Seg_nd.mk
 /- make method of Ray giving 2 distinct point -/
 def Ray.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : Ray P where
   source := A
-  toDir := Vec_nd.normalize ⟨VEC A B, (vsub_ne_zero.mpr h)⟩ 
+  toDir := Vec_nd.normalize ⟨VEC A B, (vsub_ne_zero.mpr h)⟩
 
 scoped notation "RAY" => Ray.mk_pt_pt
 
@@ -75,7 +79,7 @@ end make
 
 section coersion
 
-namespace Ray 
+namespace Ray
 
 variable (ray : Ray P)
 
@@ -106,7 +110,7 @@ def toVec (seg : Seg P) : Vec := VEC seg.source seg.target
 protected def IsOn (a : P) (seg : Seg P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ VEC seg.source a  = t • (VEC seg.source seg.target)
 
-protected def IsInt (a : P) (seg : Seg P) : Prop := Seg.IsOn a seg ∧ a ≠ seg.source ∧ a ≠ seg.target 
+protected def IsInt (a : P) (seg : Seg P) : Prop := Seg.IsOn a seg ∧ a ≠ seg.source ∧ a ≠ seg.target
 
 protected def carrier (seg : Seg P) : Set P := { p : P | Seg.IsOn p seg }
 
@@ -127,7 +131,7 @@ instance : Coe (Seg_nd P) (Seg P) where
 
 variable (seg_nd : Seg_nd P)
 
-def toVec_nd : Vec_nd := ⟨VEC seg_nd.1.source seg_nd.1.target, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩ 
+def toVec_nd : Vec_nd := ⟨VEC seg_nd.source seg_nd.target, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩
 
 def toDir : Dir := Vec_nd.normalize seg_nd.toVec_nd
 
@@ -138,7 +142,7 @@ def toRay : Ray P where
 def toProj : Proj := (seg_nd.toVec_nd.toProj : Proj)
 
 /- We choose not to define IsOn IsInt of Seg_nd directly, since it can always be called by Seg.IsOn p seg_nd.1. And this will save us a lot of lemmas. But I leave the code here temporarily, in case of future changes.-/
-/-
+
 protected def IsOn (a : P) (seg_nd : Seg_nd P) : Prop := Seg.IsOn a seg_nd.1
 
 protected def IsInt (a : P) (seg_nd : Seg_nd P) : Prop := Seg.IsInt a seg_nd.1
@@ -152,7 +156,7 @@ instance : Carrier P (Seg_nd P) where
 
 instance : Interior P (Seg_nd P) where
   interior := fun l => l.interior
--/
+
 
 end Seg_nd
 
@@ -160,13 +164,13 @@ end coersion
 
 section coersion_compatibility
 
-variable {seg : Seg P} {seg_nd : Seg_nd P} {ray : Ray P} 
+variable {seg : Seg P} {seg_nd : Seg_nd P} {ray : Ray P}
 
 section lieson
 
 theorem Ray.source_lies_on : ray.source LiesOn ray := ⟨0, by rfl, by rw [vec_same_eq_zero, zero_smul]⟩
 
-theorem Seg.source_lies_on : seg.source LiesOn seg := 
+theorem Seg.source_lies_on : seg.source LiesOn seg :=
   ⟨0, by rfl, zero_le_one, by rw [vec_same_eq_zero, zero_smul]⟩
 
 theorem Seg.target_lies_on : seg.target LiesOn seg := ⟨1, zero_le_one, by rfl, by rw [one_smul]⟩
@@ -231,14 +235,14 @@ theorem Ray.lies_int_iff (p : P) : p LiesInt ray ↔ ∃ (t : ℝ) , 0 < t ∧ V
 
 theorem Ray.lies_int_def {p : P} : p LiesInt ray ↔ p LiesOn ray ∧ p ≠ ray.source := Iff.rfl
 
-theorem Seg_nd.lies_on_toRay_of_lies_on {p : P} (h : p LiesOn seg_nd.1) : p LiesOn seg_nd.toRay := by
+theorem Seg_nd.lies_on_toRay_of_lies_on {p : P} (h : p LiesOn seg_nd) : p LiesOn seg_nd.toRay := by
   rcases h with ⟨t, ht0, _, h⟩
-  refine' ⟨t * Vec.norm (VEC seg_nd.1.1 seg_nd.1.2), 
-    mul_nonneg ht0 (Vec.norm_nonnegative (VEC seg_nd.1.1 seg_nd.1.2)), _⟩
+  refine' ⟨t * Vec.norm (VEC seg_nd.source seg_nd.target),
+    mul_nonneg ht0 (Vec.norm_nonnegative (VEC seg_nd.source seg_nd.target)), _⟩
   simp only [toRay, h, Complex.real_smul, Complex.ofReal_mul, mul_assoc]
   exact congrArg (HMul.hMul _) seg_nd.toVec_nd.self_eq_norm_smul_normalized_vector
 
-theorem Seg_nd.lies_int_toRay_of_lies_int {p : P} (h : p LiesInt seg_nd.1) : p LiesInt seg_nd.toRay :=
+theorem Seg_nd.lies_int_toRay_of_lies_int {p : P} (h : p LiesInt seg_nd) : p LiesInt seg_nd.toRay :=
   ⟨Seg_nd.lies_on_toRay_of_lies_on h.1, h.2.1⟩
 
 theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
@@ -286,7 +290,7 @@ theorem length_nonneg : 0 ≤ l.length := norm_nonneg _
 theorem length_pos_iff_nd : 0 < l.length ↔ l.is_nd :=
   norm_pos_iff.trans toVec_eq_zero_of_deg.symm.not
 
-theorem length_ne_zero_iff_nd : 0 ≠ l.length ↔ l.is_nd := 
+theorem length_ne_zero_iff_nd : 0 ≠ l.length ↔ l.is_nd :=
   (ne_iff_lt_iff_le.mpr (norm_nonneg _)).trans length_pos_iff_nd
 
 theorem length_pos (l : Seg_nd P) : 0 < l.1.length := length_pos_iff_nd.mpr l.2
@@ -302,7 +306,7 @@ theorem triv_iff_length_eq_zero : (l.target = l.source) ↔ l.length = 0 :=
 theorem length_eq_length_add_length (l : Seg P) (A : P) (lieson : A LiesOn l) : l.length = (SEG l.source A).length + (SEG A l.target).length := by
   rcases lieson with ⟨t, ⟨a, b, c⟩⟩
   have h : VEC l.source l.target = VEC l.source A + VEC A l.target := by rw [vec_add_vec]
-  have s : VEC A l.target = (1 - t) • VEC l.source l.target := by 
+  have s : VEC A l.target = (1 - t) • VEC l.source l.target := by
     rw [c] at h
     rw [sub_smul, one_smul]
     exact eq_sub_of_add_eq' h.symm
@@ -314,45 +318,52 @@ end length
 
 section midpoint
 
-variable (seg : Seg P) (seg_nd : Seg_nd P) {A : P} {l : Seg P} 
+variable (seg : Seg P) (seg_nd : Seg_nd P) {A : P} {l : Seg P}
 
 def Seg.midpoint : P := (1 / 2 : ℝ) • seg.toVec +ᵥ seg.source
+
+def Seg_nd.midpoint : P := seg_nd.1.midpoint
 
 theorem Seg.vec_source_midpt : VEC seg.1 seg.midpoint = 1 / 2 * VEC seg.1 seg.2 := by
   simp only [midpoint, one_div, Complex.real_smul, Complex.ofReal_inv, vec_of_pt_vadd_pt_eq_vec]
   rfl
 
+theorem Seg_nd.vec_source_midpt : VEC seg_nd.source seg_nd.midpoint = 1 / 2 * VEC seg_nd.1.source seg_nd.1.target := by
+  simp only [Seg_nd.midpoint]
+  exact seg_nd.1.vec_source_midpt
+
+
 theorem Seg.vec_midpt_target : VEC seg.midpoint seg.2 = 1 / 2 * VEC seg.1 seg.2 := by
   rw [midpoint, ← vec_add_vec _ seg.1 _, ← neg_vec, vec_of_pt_vadd_pt_eq_vec]
   field_simp
   calc
-    _ = VEC seg.1 seg.2 * (- 1) + VEC seg.1 seg.2 * 2 := by 
+    _ = VEC seg.1 seg.2 * (- 1) + VEC seg.1 seg.2 * 2 := by
       rw [mul_neg, mul_one]
       rfl
-    _ = _ := by 
+    _ = _ := by
       rw [← mul_add]
       norm_num
 
-theorem Seg.vec_midpt_eq : VEC seg.1 seg.midpoint = VEC seg.midpoint seg.2 := by 
+theorem Seg.vec_midpt_eq : VEC seg.1 seg.midpoint = VEC seg.midpoint seg.2 := by
   rw[seg.vec_source_midpt, seg.vec_midpt_target]
 
-theorem Seg.vec_eq_of_eq_midpt (h : A = l.midpoint) : VEC l.1 A = VEC A l.2 := by 
+theorem Seg.vec_eq_of_eq_midpt (h : A = l.midpoint) : VEC l.1 A = VEC A l.2 := by
   rw [h]
   exact l.vec_midpt_eq
 
-theorem midpt_of_vector_from_source (h : VEC l.1 A = 1 / 2 * VEC l.1 l.2) : 
+theorem midpt_of_vector_from_source (h : VEC l.1 A = 1 / 2 * VEC l.1 l.2) :
     A = l.midpoint := by
   rw [← start_vadd_vec_eq_end l.1 A, h, Seg.midpoint, Complex.real_smul]
   norm_num
   rfl
 
-theorem midpt_of_vector_to_target (h : VEC A l.2 = 1 / 2 * VEC l.1 l.2) : 
+theorem midpt_of_vector_to_target (h : VEC A l.2 = 1 / 2 * VEC l.1 l.2) :
     A = l.midpoint := by
   refine' midpt_of_vector_from_source _
   nth_rw 1 [eq_sub_of_add_eq (vec_add_vec l.1 A l.2), h, ← one_mul (VEC l.1 l.2), ← sub_mul]
   norm_num
 
-theorem midpt_of_same_vector_to_source_and_target (h : VEC l.1 A = VEC A l.2) : 
+theorem midpt_of_same_vector_to_source_and_target (h : VEC l.1 A = VEC A l.2) :
     A = l.midpoint := by
   refine' midpt_of_vector_from_source _
   field_simp
@@ -365,10 +376,10 @@ theorem Seg.lies_on_of_eq_midpt (h : A = l.midpoint) : A LiesOn l := by
   rw [h]
   exact l.midpt_lies_on
 
-theorem Seg_nd.midpt_lies_int : seg_nd.1.midpoint LiesInt seg_nd.1 :=
-  (Seg.lies_int_iff seg_nd.1.midpoint).mpr ⟨seg_nd.2, ⟨1 / 2, by norm_num; exact seg_nd.1.vec_source_midpt⟩⟩
+theorem Seg_nd.midpt_lies_int :seg_nd.midpoint LiesInt seg_nd :=
+  (Seg.lies_int_iff seg_nd.midpoint).mpr ⟨seg_nd.2, ⟨1 / 2, by norm_num; exact seg_nd.1.vec_source_midpt⟩⟩
 
-theorem Seg_nd.lies_int_of_eq_midpt (h : A = seg_nd.1.midpoint) : A LiesInt seg_nd.1 := by
+theorem Seg_nd.lies_int_of_eq_midpt (h : A = seg_nd.midpoint) : A LiesInt seg_nd := by
   rw [h]
   exact seg_nd.midpt_lies_int
 
@@ -409,8 +420,8 @@ section existence
 theorem target_eq_vec_vadd_target_midpt (l : Seg P) : l.2 = (SEG l.1 (l.toVec +ᵥ l.2)).midpoint :=
   midpt_of_same_vector_to_source_and_target (vadd_vsub l.toVec l.2).symm
 
-theorem Seg_nd.target_lies_int_seg_source_vec_vadd_target (l : Seg_nd P) : l.1.2 LiesInt (SEG l.1.source (l.1.toVec +ᵥ l.1.2)) := 
-  lies_int_of_eq_midpt (SEG_nd l.1.1 _ <| fun h ↦ l.2 <| toVec_eq_zero_of_deg.mpr <| 
+theorem Seg_nd.target_lies_int_seg_source_vec_vadd_target (l : Seg_nd P) : l.1.2 LiesInt (SEG l.1.source (l.1.toVec +ᵥ l.1.2)) :=
+  lies_int_of_eq_midpt (SEG_nd l.1.1 _ <| fun h ↦ l.2 <| toVec_eq_zero_of_deg.mpr <|
     zero_eq_bit0.mp ((vsub_eq_zero_iff_eq.mpr h).symm.trans <| vadd_vsub_assoc l.1.toVec l.1.2 l.1.1))
       (target_eq_vec_vadd_target_midpt l.1)
 
@@ -418,7 +429,7 @@ theorem Seg_nd.target_lies_int_seg_source_vec_vadd_target (l : Seg_nd P) : l.1.2
 
 theorem Seg_nd.exist_pt_beyond_pt (l : Seg_nd P) : (∃ q : P, l.1.target LiesInt (SEG l.1.source q)) :=
   ⟨l.1.toVec +ᵥ l.1.target, l.target_lies_int_seg_source_vec_vadd_target⟩
- 
+
 -- Archimedean property II: On an nontrivial directed segment, one can always find a point in its interior.  `This will be moved to later disccusion about midpoint of a segment, as the midpoint is a point in the interior of a nontrivial segment`
 
 theorem nd_of_exist_int_pt {p : P} {l : Seg P} (h : p LiesInt l) : l.is_nd := by
