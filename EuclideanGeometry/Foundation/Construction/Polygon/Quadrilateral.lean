@@ -15,7 +15,7 @@ In this file we define general quadrilaterals as four points on the plane and co
 * `QDR A B C D` : notation for quadrilateral `A B C D`
 
 ## Implementation Notes
-Currently, we just defines general quadrilaterals and convex quadrilaterals. There are more classes in between. For example, quadrilateral without self-intersection, quadrilateral of non-degenerate (which means it does not self-intersect and not degenerate to a triangle). 
+Currently, we just defines general quadrilaterals and convex quadrilaterals. There are more classes in between. For example, quadrilateral without self-intersection, quadrilateral of non-degenerate (which means it does not self-intersect and not degenerate to a triangle).
 Of course many definitions work on these classes already, but without necessarity in application, we will not formalize these class for present.
 -/
 
@@ -58,14 +58,14 @@ end Quadrilateral
 
 
 /--
-A quadrilateral is called convex if 
-1. both diagnals are non-degenerate, 
+A quadrilateral is called convex if
+1. both diagnals are non-degenerate,
 2. two diagonals are not parallel to each other,
 3. the interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals.
 -/
 def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases ((qdr.point₃ ≠ qdr.point₁) ∧ (qdr.point₄ ≠ qdr.point₂))
-  · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ h.2 ∥ (LinearObj.seg_nd (SEG_nd qdr.point₁ qdr.point₃ h.1)))
+  · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ h.2 ∥ (SEG_nd qdr.point₁ qdr.point₃ h.1))
     · exact Line.inx (SEG_nd qdr.point₁ qdr.point₃ h.1).toLine (SEG_nd qdr.point₂ qdr.point₄ h.2).toLine g LiesInt (SEG qdr.point₁ qdr.point₃) ∧ Line.inx (SEG_nd qdr.point₁ qdr.point₃ h.1).toLine (SEG_nd qdr.point₂ qdr.point₄ h.2).toLine g LiesInt (SEG qdr.point₂ qdr.point₄)
     · exact False
   · exact False
@@ -134,7 +134,7 @@ def edge_nd₃₄ : Seg_nd P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx
 def edge_nd₄₁ : Seg_nd P := SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₄₁
 
 /-- Two diagonals are not parallel to each other -/
-theorem diag_not_para : ¬ (LinearObj.seg_nd qdr_cvx.diag_nd₂₄) ∥ qdr_cvx.diag_nd₁₃ := sorry
+theorem diag_not_para : ¬ qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := sorry
 
 def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.toLine qdr_cvx.diag_not_para
 

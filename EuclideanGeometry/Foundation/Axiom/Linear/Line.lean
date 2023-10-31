@@ -9,6 +9,26 @@ section setoid
 
 variable {P : Type _} [EuclideanPlane P]
 
+def same_dir_line : Ray P → Ray P → Prop := fun r r' => r.toDir = r'.toDir ∧ (r'.source LiesOn r ∨ r'.source LiesOn r.reverse)
+
+namespace same_dir_line
+
+protected theorem refl (r : Ray P) : same_dir_line r r := ⟨rfl, .inl r.source_lies_on⟩
+
+protected theorem symm {r r' : Ray P} : same_dir_line r r' → same_dir_line r' r := fun h => ⟨h.1.symm, sorry⟩
+
+protected theorem trans {r r' r'' : Ray P} (h₁ : same_dir_line r r') (h₂ : same_dir_line r' r'') : same_dir_line r r'' := sorry
+
+protected def setoid : Setoid (Ray P) where
+  r := same_dir_line
+  iseqv := {
+    refl := same_dir_line.refl
+    symm := same_dir_line.symm
+    trans := same_dir_line.trans
+  }
+
+end same_dir_line
+
 def same_extn_line : Ray P → Ray P → Prop := fun r r' => r.toProj = r'.toProj ∧ (r'.source LiesOn r ∨ r'.source LiesOn r.reverse)
 
 namespace same_extn_line
@@ -22,13 +42,13 @@ theorem vec_parallel_of_same_extn_line {r r' : Ray P} (h : same_extn_line r r') 
   · use -1
     rw [rr', Dir.toVec_neg_eq_neg_toVec, smul_neg, neg_smul, one_smul, neg_neg]
 
-theorem ray_rev_of_same_extn_line {r : Ray P} : same_extn_line r r.reverse := by 
+theorem ray_rev_of_same_extn_line {r : Ray P} : same_extn_line r r.reverse := by
   constructor
   · simp [Ray.toProj_of_rev_eq_toProj]
   · right
     exact Ray.source_lies_on
 
-theorem pt_pt_ray_same_extn_line_of_pt_pt_lies_on_line {A B : P} {r : Ray P} (h : B ≠ A) (ha : A LiesOn r ∨ A LiesOn r.reverse) (hb : B LiesOn r ∨ B LiesOn r.reverse) : same_extn_line r (Ray.mk_pt_pt A B h) := by 
+theorem pt_pt_ray_same_extn_line_of_pt_pt_lies_on_line {A B : P} {r : Ray P} (h : B ≠ A) (ha : A LiesOn r ∨ A LiesOn r.reverse) (hb : B LiesOn r ∨ B LiesOn r.reverse) : same_extn_line r (Ray.mk_pt_pt A B h) := by
   constructor
   · exact ray_toProj_eq_mk_pt_pt_toProj h ha hb
   · by_cases  A LiesOn r
@@ -87,7 +107,7 @@ protected def setoid : Setoid (Ray P) where
     trans := same_extn_line.trans
   }
 
-instance : Setoid (Ray P) := same_extn_line.setoid
+-- instance : Setoid (Ray P) := same_extn_line.setoid
 
 end same_extn_line
 
@@ -96,7 +116,7 @@ theorem same_extn_line_of_PM (A : P) (x y : Dir) (h : PM x y) : same_extn_line (
   · simp only [Ray.toProj, Dir.eq_toProj_iff', h]
   · exact Or.inl Ray.source_lies_on
 
-theorem same_extn_line.eq_carrier_union_rev_carrier (r r' : Ray P) (h : same_extn_line r r') : r.carrier ∪ r.reverse.carrier = r'.carrier ∪ r'.reverse.carrier := by 
+theorem same_extn_line.eq_carrier_union_rev_carrier (r r' : Ray P) (h : same_extn_line r r') : r.carrier ∪ r.reverse.carrier = r'.carrier ∪ r'.reverse.carrier := by
   ext p
   simp only [Set.mem_union, Ray.in_carrier_iff_lies_on, pt_lies_on_line_from_ray_iff_vec_parallel]
   constructor
@@ -125,6 +145,8 @@ theorem same_extn_line.eq_carrier_union_rev_carrier (r r' : Ray P) (h : same_ext
 
 end setoid
 
+def DirLine (P : Type _) [EuclideanPlane P] := Quotient (@same_dir_line.setoid P _)
+
 def Line (P : Type _) [EuclideanPlane P] := Quotient (@same_extn_line.setoid P _)
 
 variable {P : Type _} [EuclideanPlane P]
@@ -134,10 +156,10 @@ section make
 namespace Line
 
 -- define a line from two points
-def mk_pt_pt (A B : P) (h : B ≠ A) : Line P := ⟦RAY A B h⟧
+def mk_pt_pt (A B : P) (h : B ≠ A) : Line P := Quotient.mk same_extn_line.setoid (RAY A B h)
 
 -- define a line from a point and a proj
-def mk_pt_proj (A : P) (proj : Proj) : Line P := Quotient.map (sa := PM.con.toSetoid) (fun x : Dir => Ray.mk A x) (same_extn_line_of_PM A) proj
+def mk_pt_proj (A : P) (proj : Proj) : Line P := Quotient.map (sa := PM.con.toSetoid) (sb := same_extn_line.setoid) (fun x : Dir => Ray.mk A x) (same_extn_line_of_PM A) proj
 
 -- define a line from a point and a direction
 def mk_pt_dir (A : P) (dir : Dir) : Line P := mk_pt_proj A dir.toProj
@@ -153,7 +175,7 @@ end make
 
 section coercion
 
-def Line.toProj (l : Line P) : Proj := Quotient.lift (fun ray : Ray P => ray.toProj) (fun _ _ h => And.left h) l
+def Line.toProj (l : Line P) : Proj := Quotient.lift (s := same_extn_line.setoid) (fun ray : Ray P => ray.toProj) (fun _ _ h => And.left h) l
 
 def Ray.toLine (ray : Ray P) : Line P := ⟦ray⟧
 
@@ -161,8 +183,6 @@ def Seg_nd.toLine (seg_nd : Seg_nd P) : Line P := ⟦seg_nd.toRay⟧
 
 instance : Coe (Ray P) (Line P) where
   coe := Ray.toLine
-
-
 
 section carrier
 
@@ -197,10 +217,10 @@ theorem Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev {A : P} {r : Ray P}: (A Li
 theorem Ray.in_carrier_toLine_iff_in_or_in_rev {r : Ray P} {A : P} : (A ∈ r.toLine.carrier) ↔ ((A ∈ r.carrier) ∨ (A ∈ r.reverse.carrier)) := by rfl
 
 theorem Line.in_carrier_iff_lies_on {l : Line P} {A : P} : A LiesOn l ↔ A ∈ l.carrier := by rfl
-  
+
 theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source {A : P} {r : Ray P} : (A LiesOn r.toLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) := by
   rw [Ray.lies_int_def, Ray.lies_int_def, Ray.source_of_rev_eq_source]
-  have : A LiesOn r ∧ A ≠ r.source ∨ A LiesOn r.reverse ∧ A ≠ r.source ∨ A = r.source ↔ A LiesOn r ∨ A LiesOn r.reverse := by 
+  have : A LiesOn r ∧ A ≠ r.source ∨ A LiesOn r.reverse ∧ A ≠ r.source ∨ A = r.source ↔ A LiesOn r ∨ A LiesOn r.reverse := by
     constructor
     · exact fun
       | .inl h => Or.inl h.1
@@ -231,10 +251,10 @@ namespace Line
 
 -- **section pt_pt--
 -- **This part appears in both Line and Line.ex and needs to be unified.
-theorem line_of_pt_pt_eq_rev {A B : P} (h : B ≠ A): LIN A B h = LIN B A h.symm := Quotient.eq.mpr ⟨Ray.toProj_eq_toProj_of_mk_pt_pt h, Or.inl (Ray.snd_pt_lies_on_mk_pt_pt h)⟩
+theorem line_of_pt_pt_eq_rev {A B : P} (h : B ≠ A): LIN A B h = LIN B A h.symm := (Quotient.eq (r := same_extn_line.setoid)).mpr ⟨Ray.toProj_eq_toProj_of_mk_pt_pt h, Or.inl (Ray.snd_pt_lies_on_mk_pt_pt h)⟩
 
 theorem Line.fst_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := Or.inl (Ray.source_lies_on)
-    
+
 theorem Line.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B h := by
   rw [line_of_pt_pt_eq_rev]
   exact fst_pt_lies_on_mk_pt_pt h.symm
@@ -248,7 +268,7 @@ theorem Line.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B 
 
 --**section coercion--
 --**This part overlaps a lot with "section coercion of Line_ex" and needs to be unified.
-theorem ray_rev_toLine_eq_ray_toLine {r : Ray P} : r.toLine = r.reverse.toLine := Quotient.eq.mpr same_extn_line.ray_rev_of_same_extn_line
+theorem ray_rev_toLine_eq_ray_toLine {r : Ray P} : r.toLine = r.reverse.toLine := (Quotient.eq (r := same_extn_line.setoid)).mpr same_extn_line.ray_rev_of_same_extn_line
 
 theorem seg_toLine_eq_seg_toRay_toLine {s : Seg_nd P} : s.toRay.toLine = s.toLine := rfl
 
@@ -256,7 +276,7 @@ theorem ray_subset_line {r : Ray P} {l : Line P} (h : r.toLine = l) : r.carrier 
   rw [← h]
   exact r.subset_toLine
 
-theorem seg_lies_on_Line {s : Seg_nd P}{A : P}(h : A LiesOn s.1) : A LiesOn s.toLine := by 
+theorem seg_lies_on_Line {s : Seg_nd P}{A : P}(h : A LiesOn s.1) : A LiesOn s.toLine := by
   have g : A ∈ s.toRay.carrier := Seg_nd.lies_on_toRay_of_lies_on h
   have h : s.toRay.toLine = s.toLine := rfl
   exact Set.mem_of_subset_of_mem (ray_subset_line h) g
@@ -266,16 +286,16 @@ theorem seg_subset_line {s : Seg_nd P} {l : Line P} (h : s.toLine = l) : s.1.car
   rw [← h]
   apply seg_lies_on_Line Ain
 
-theorem pt_pt_seg_toLine_eq_seg_toRay_toLine {A B : P} (h : B ≠ A) : (Ray.mk_pt_pt A B h).toLine = LIN A B h := by 
+theorem pt_pt_seg_toLine_eq_seg_toRay_toLine {A B : P} (h : B ≠ A) : (Ray.mk_pt_pt A B h).toLine = LIN A B h := by
   rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
   exact seg_toLine_eq_seg_toRay_toLine
 
-theorem pt_pt_lies_on_iff_ray_toLine {A B : P} {l : Line P} (h : B ≠ A) : A LiesOn l ∧ B LiesOn l  ↔ (Ray.mk_pt_pt A B h).toLine = l := by 
+theorem pt_pt_lies_on_iff_ray_toLine {A B : P} {l : Line P} (h : B ≠ A) : A LiesOn l ∧ B LiesOn l  ↔ (Ray.mk_pt_pt A B h).toLine = l := by
   constructor
   · intro lAB
     let ⟨r, hr⟩ := l.exists_rep
     have rl : r.toLine = l := by apply hr
-    have : ∀ (X : P), X LiesOn l ↔ X LiesOn r ∨ X LiesOn r.reverse  := by 
+    have : ∀ (X : P), X LiesOn l ↔ X LiesOn r ∨ X LiesOn r.reverse  := by
       intro X
       rw [← rl]
       apply Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev
@@ -284,7 +304,7 @@ theorem pt_pt_lies_on_iff_ray_toLine {A B : P} {l : Line P} (h : B ≠ A) : A Li
       · exact (this A).mp lAB.1
       · exact (this B).mp lAB.2
     rw [← rl]
-    apply Quotient.eq.mpr 
+    apply (Quotient.eq (r := same_extn_line.setoid)).mpr
     exact same_extn_line.symm this
   · intro hl
     rw [← hl]
@@ -295,7 +315,7 @@ theorem pt_pt_lies_on_iff_ray_toLine {A B : P} {l : Line P} (h : B ≠ A) : A Li
       apply Ray.snd_pt_lies_on_mk_pt_pt
 
 --**This theorem may be moved to section pt_pt with modifying this proof, perhaps merged with theorem eq_line_of_pt_pt_of_ne in Line.ex.
-theorem eq_pt_pt_line_iff_lies_on {A B : P} {l : Line P} (h : B ≠ A) : A LiesOn l ∧ B LiesOn l  ↔ LIN A B h = l := by 
+theorem eq_pt_pt_line_iff_lies_on {A B : P} {l : Line P} (h : B ≠ A) : A LiesOn l ∧ B LiesOn l  ↔ LIN A B h = l := by
   constructor
   · have : LIN A B h = (Ray.mk_pt_pt A B h).toLine := by apply pt_pt_seg_toLine_eq_seg_toRay_toLine
     rw [this]
@@ -306,7 +326,7 @@ theorem eq_pt_pt_line_iff_lies_on {A B : P} {l : Line P} (h : B ≠ A) : A LiesO
     · exact Line.fst_pt_lies_on_mk_pt_pt h
     · exact Line.snd_pt_lies_on_mk_pt_pt h
 
-theorem pt_pt_lies_on_iff_seg_toLine {A B : P} {l : Line P} (h : B ≠ A) : A LiesOn l ∧ B LiesOn l  ↔ (Seg_nd.mk A B h).toLine = l := by 
+theorem pt_pt_lies_on_iff_seg_toLine {A B : P} {l : Line P} (h : B ≠ A) : A LiesOn l ∧ B LiesOn l  ↔ (Seg_nd.mk A B h).toLine = l := by
   constructor
   · intro lAB
     rw [← seg_toLine_eq_seg_toRay_toLine]
@@ -315,7 +335,7 @@ theorem pt_pt_lies_on_iff_seg_toLine {A B : P} {l : Line P} (h : B ≠ A) : A Li
   · intro hl
     rw [← hl]
     constructor
-    · exact seg_lies_on_Line Seg.source_lies_on 
+    · exact seg_lies_on_Line Seg.source_lies_on
     · exact seg_lies_on_Line Seg.target_lies_on
 --**end coercion--
 
@@ -344,12 +364,12 @@ theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
         exact Ray.colinear_of_lies_on a' b' (Ray.source_lies_on)
     | inr b =>
       cases c with
-      | inl c => 
+      | inl c =>
         let ray' := Ray.mk B ray.toDir
         have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a b
         have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev c b
         exact Ray.colinear_of_lies_on a' (Ray.source_lies_on) c'
-      | inr c => 
+      | inr c =>
         let ray' := Ray.mk A ray.reverse.toDir
         have a' : A LiesOn ray.reverse.reverse := by
           rw [Ray.rev_rev_eq_self]
@@ -361,12 +381,12 @@ theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
     cases b with
     | inl b =>
       cases c with
-      | inl c => 
+      | inl c =>
         let ray' := Ray.mk A ray.toDir
         have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b a
         have c' : C ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev c a
         exact Ray.colinear_of_lies_on (Ray.source_lies_on) b' c'
-      | inr c => 
+      | inr c =>
         let ray' := Ray.mk B ray.reverse.toDir
         have b' : B LiesOn ray.reverse.reverse := by
           rw [Ray.rev_rev_eq_self]
@@ -376,7 +396,7 @@ theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
         exact Ray.colinear_of_lies_on a' (Ray.source_lies_on) c'
     | inr b =>
       cases c with
-      | inl c => 
+      | inl c =>
         let ray' := Ray.mk C ray.reverse.toDir
         have c' : C LiesOn ray.reverse.reverse := by
           rw [Ray.rev_rev_eq_self]
@@ -384,21 +404,21 @@ theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
         have a' : A ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev a c'
         have b' : B ∈ ray'.carrier := lies_on_pt_toDir_of_pt_lies_on_rev b c'
         exact Ray.colinear_of_lies_on  a' b' (Ray.source_lies_on)
-      | inr c => 
+      | inr c =>
         exact Ray.colinear_of_lies_on a b c
 
-theorem maximal' {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h : B ≠ A) (Co : colinear A B C) : C LiesOn l := by 
+theorem maximal' {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h : B ≠ A) (Co : colinear A B C) : C LiesOn l := by
   have : C LiesOn (Ray.mk_pt_pt A B h) ∨ C LiesOn (Ray.mk_pt_pt A B h).reverse := (lies_on_ray_or_rev_iff_colinear h).mp Co
   by_cases Cry : C LiesOn (Ray.mk_pt_pt A B h)
-  · rw [← (pt_pt_lies_on_iff_ray_toLine h).mp ⟨h₁, h₂⟩] 
+  · rw [← (pt_pt_lies_on_iff_ray_toLine h).mp ⟨h₁, h₂⟩]
     apply Ray.subset_toLine
     exact Cry
-  · rw [← (pt_pt_lies_on_iff_ray_toLine h).mp ⟨h₁, h₂⟩] 
+  · rw [← (pt_pt_lies_on_iff_ray_toLine h).mp ⟨h₁, h₂⟩]
     rw [ray_rev_toLine_eq_ray_toLine]
     apply Ray.subset_toLine
     tauto
 
-theorem maximal {l : Line P} {A B C : P} (h₁ : A ∈ l.carrier) (h₂ : B ∈ l.carrier) (h : B ≠ A) (Co : colinear A B C) : C ∈ l.carrier := by 
+theorem maximal {l : Line P} {A B C : P} (h₁ : A ∈ l.carrier) (h₂ : B ∈ l.carrier) (h : B ≠ A) (Co : colinear A B C) : C ∈ l.carrier := by
   have hl : C LiesOn l := by
     apply maximal' _ _ h Co
     · exact Line.in_carrier_iff_lies_on.mpr h₁
@@ -406,7 +426,7 @@ theorem maximal {l : Line P} {A B C : P} (h₁ : A ∈ l.carrier) (h₂ : B ∈ 
   exact Line.in_carrier_iff_lies_on.mp hl
 
 --**Things in section colinear in Line_ex should be put here since they may use theorems above.
- 
+
 --**end colinear--
 
 

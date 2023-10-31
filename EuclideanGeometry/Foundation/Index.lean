@@ -45,10 +45,14 @@ import EuclideanGeometry.Foundation.Construction.Circle.CyclicPolygon
 /- Theorem.Circle-/
 import EuclideanGeometry.Foundation.Theorem.Circle.Power
 
+/- Tactic -/
+/- Tactic.congr_sa -/
+import EuclideanGeometry.Foundation.Tactic.Congruence
+
 /-!
 # Index of Foundations
 
 `IMPORTANT!`
 
-This file imports all files in Foundation. Please parse this file before creat any pull request modifying anything in folder Foundation. 
+This file imports all files in Foundation. Please parse this file before creat any pull request modifying anything in folder Foundation.
 -/
