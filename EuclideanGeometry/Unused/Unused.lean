@@ -68,8 +68,8 @@ theorem Dir.inner_eq_zero_of_toProj_eq_toProj_perp (d₁ d₂ : Dir) (h : d₁.t
     ring
 
 theorem inner_eq_zero_of_toProj_perp_eq_toProj (v₁ v₂ : Vec_nd) (h : v₁.toProj.perp = v₂.toProj) : Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 = 0 := by
-  rw [← Vec_nd.norm_smul_normalize_eq_self v₁, ← Vec_nd.norm_smul_normalize_eq_self v₂]
-  let g := Dir.inner_eq_zero_of_toProj_eq_toProj_perp (Vec_nd.normalize v₁) (Vec_nd.normalize v₂) h
+  rw [← Vec_nd.norm_smul_to_dir_eq_self v₁, ← Vec_nd.norm_smul_to_dir_eq_self v₂]
+  let g := Dir.inner_eq_zero_of_toProj_eq_toProj_perp (Vec_nd.toDir v₁) (Vec_nd.toDir v₂) h
   unfold Vec.InnerProductSpace.Core at g
   simp only at g
   unfold Vec.InnerProductSpace.Core
@@ -160,7 +160,7 @@ instance {P : Type _} [EuclideanPlane P] : Coe (DSeg P) (Seg P) where
 -- def Seg.toDSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv : l.target ≠ l.source): DSeg P where
 --   source := l.source
 --   target := l.target
---   toDir := Vec.normalize (l.target -ᵥ l.source) (vsub_ne_zero.mpr nontriv)
+--   toDir := Vec.toDir (l.target -ᵥ l.source) (vsub_ne_zero.mpr nontriv)
 --   on_ray := sorry
 --   non_triv := sorry
 
