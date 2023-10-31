@@ -52,5 +52,9 @@ Prove that $BD = AC + CD$.-/
   -- Perpendicular base and height, directly stated
   variable {heightproperty : height ⟂ base}
   -- Main theorem statement
+<<<<<<< Updated upstream
   theorem Shan_Problem_1_4 : (SEG B D).length = (SEG A C).length + (SEG C D).length := sorry
+=======
+  theorem Shan_Problem_1_4 : (SEG B D).length = (SEG A C).length +(SEG C D).length := sorry
+>>>>>>> Stashed changes
 end Shan_Problem_1_4
