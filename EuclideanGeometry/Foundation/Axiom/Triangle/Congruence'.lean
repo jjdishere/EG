@@ -232,3 +232,5 @@ theorem congr_or_acongr_of_SSS (e₁ : tr₁.edge₁.length = tr₂.edge₁.leng
 end Triangle
 
 end criteria
+
+end EuclidGeom
