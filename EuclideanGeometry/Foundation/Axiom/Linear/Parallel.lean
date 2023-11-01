@@ -1,9 +1,10 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Line
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
-import EuclideanGeometry.Foundation.Axiom.Linear.Line_ex
 
 noncomputable section
 namespace EuclidGeom
+
+open Line
 
 variable {P : Type _} [EuclideanPlane P]
 
@@ -40,6 +41,10 @@ scoped infix : 50 "∥" => parallel
 
 section parallel_theorem
 ---- `eq_toProj theorems should be relocate to this file, they are in Line_ex now`.
+theorem Ray.toProj_eq_toLine_toProj (ray : Ray P): ray.toProj = ray.toLine.toProj := rfl
+
+theorem Seg_nd.toProj_eq_toLine_toProj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := rfl
+
 theorem Ray.para_toLine (ray : Ray P) : ray ∥ ray.toLine := rfl
 
 theorem Seg_nd.para_toRay (seg_nd : Seg_nd P) : seg_nd ∥ seg_nd.toRay := rfl
@@ -151,7 +156,7 @@ theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l�
   rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
   rcases l₂.nontriv with ⟨C, ⟨D, hcd⟩⟩
   have e' : Seg_nd.toProj ⟨SEG A B, hab.2.2⟩ ≠ Seg_nd.toProj ⟨SEG C D, hcd.2.2⟩ := by
-    rw [line_toProj_eq_seg_nd_toProj_of_lies_on hab.1 hab.2.1 hab.2.2, line_toProj_eq_seg_nd_toProj_of_lies_on hcd.1 hcd.2.1 hcd.2.2]
+    rw [toProj_eq_seg_nd_toProj_of_lies_on hab.1 hab.2.1 hab.2.2, toProj_eq_seg_nd_toProj_of_lies_on hcd.1 hcd.2.1 hcd.2.2]
     exact h
   let x := ((VEC A B).1 * (VEC C D).2 - (VEC A B).2 * (VEC C D).1)⁻¹ * ((VEC A C).1 * (VEC C D).2 - (VEC C D).1 * (VEC A C).2)
   let y := ((VEC A B).1 * (VEC C D).2 - (VEC A B).2 * (VEC C D).1)⁻¹ * ((VEC A B).1 * (VEC A C).2 - (VEC A C).1 * (VEC A B).2)
