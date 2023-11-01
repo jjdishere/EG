@@ -18,14 +18,14 @@ def Seg.reverse (seg : Seg P): Seg P where
   target := seg.source
 
 -- Given a segment, if it is nondegenerate, then its reverse segment is also nondegenerate.
-theorem nd_of_rev_of_nd {seg : Seg P} (nd : seg.is_nd) : seg.reverse.is_nd := by  
+theorem nd_of_rev_of_nd {seg : Seg P} (nd : seg.is_nd) : seg.reverse.is_nd := by
   simp only [Seg.is_nd]
   push_neg
   symm
   apply nd
 
 -- Given a nondegenerate segment, this function returns the reversed nondegenerate segment, that is to swap the source and the target of the segment.
-def Seg_nd.reverse (seg_nd : Seg_nd P) : Seg_nd P := ⟨seg_nd.1.reverse, nd_of_rev_of_nd seg_nd.2⟩ 
+def Seg_nd.reverse (seg_nd : Seg_nd P) : Seg_nd P := ⟨seg_nd.1.reverse, nd_of_rev_of_nd seg_nd.2⟩
 
 -- Given a nondegenerate segment $segnd$, first viewing $segnd$ as a segment and then reverse is the same as first reversing $segnd$ and then view it as a segment.
 theorem Seg_nd.rev_toSeg_eq_toSeg_rev (seg_nd : Seg_nd P) : seg_nd.1.reverse = seg_nd.reverse.1 := rfl
@@ -101,7 +101,7 @@ theorem Seg.lies_on_iff_lies_on_rev {A : P} {seg : Seg P} : A LiesOn seg ↔ A L
     simp only [reverse]; rw [← vec_add_vec target source A, h3, ← neg_vec target source, smul_neg];
     apply add_neg_eq_iff_eq_add.mpr
     rw [add_comm]
-    exact Eq.symm smul_add_one_sub_smul  
+    exact Eq.symm smul_add_one_sub_smul
   · intro h
     rcases h with ⟨t, ⟨ h1, ⟨ h2, h3 ⟩⟩⟩
     use 1-t
@@ -113,10 +113,10 @@ theorem Seg.lies_on_iff_lies_on_rev {A : P} {seg : Seg P} : A LiesOn seg ↔ A L
     rw [← vec_add_vec source target A, h3, ← neg_vec source target, smul_neg];
     apply add_neg_eq_iff_eq_add.mpr
     rw [add_comm]
-    exact Eq.symm smul_add_one_sub_smul 
+    exact Eq.symm smul_add_one_sub_smul
 
 -- Given a segment and a point, the point lies in the interior of the segment if and only if it lies in the interior of the reverse of the segment.
-theorem Seg.lies_int_iff_lies_int_rev {A : P} {seg : Seg P} : A LiesInt seg ↔  A LiesInt seg.reverse := by 
+theorem Seg.lies_int_iff_lies_int_rev {A : P} {seg : Seg P} : A LiesInt seg ↔ A LiesInt seg.reverse := by
   constructor
   rintro ⟨ha,⟨nonsource,nontarget⟩⟩
   exact ⟨Seg.lies_on_iff_lies_on_rev.mp ha,⟨nontarget,nonsource⟩⟩
@@ -138,7 +138,7 @@ theorem Ray.eq_source_iff_lies_on_and_lies_on_rev {A : P} {ray : Ray P} : A = ra
   rintro ⟨a,⟨anneg,h⟩⟩ ⟨b,⟨bnneg,h'⟩⟩
   simp only [Ray.reverse,Dir.toVec_neg_eq_neg_toVec, smul_neg,h] at h'
   rw[←add_zero a,← sub_self b,add_sub,sub_smul] at h'
-  simp only [sub_eq_neg_self, mul_eq_zero] at h' 
+  simp only [sub_eq_neg_self, mul_eq_zero] at h'
   have h'': a+b=0:=by
     contrapose! h'
     apply smul_ne_zero
@@ -147,7 +147,7 @@ theorem Ray.eq_source_iff_lies_on_and_lies_on_rev {A : P} {ray : Ray P} : A = ra
   have:a=0:=by
     linarith
   rw[this] at h
-  simp only [zero_smul] at h 
+  simp only [zero_smul] at h
   rw[eq_iff_vec_eq_zero,h]
 
 -- Given a ray and a point, if the point lies in the interior of the reverse ray, then it does not lie on the ray.
@@ -163,15 +163,14 @@ theorem Ray.not_lies_on_of_lies_int_rev {A : P} {ray : Ray P} (liesint : A LiesI
     exact this
   trivial
 
--- Given a ray and a point, if the point lies on of the reverse ray, then it does not lie in the interior of the ray. 
+-- Given a ray and a point, if the point lies on of the reverse ray, then it does not lie in the interior of the ray.
 theorem Ray.not_lies_int_of_lies_on_rev {A : P} {ray : Ray P} (liesint : A LiesOn ray.reverse) : ¬ A LiesInt ray := by
   by_contra h
   rw [← Ray.rev_rev_eq_self ray] at h
   have:¬A LiesOn ray.reverse:=by
-    apply not_lies_on_of_lies_int_rev 
+    apply not_lies_on_of_lies_int_rev
     exact h
   trivial
-
 
 -- Given a nondegenerate segment and a point, the point lies on the segment if and only if it lies on the ray associated to the segment and it lies on the ray assoicated to the reverse of the segment.
 -- need to be refined
@@ -360,7 +359,7 @@ theorem eq_target_iff_lies_on_lies_on_extn {A : P} {seg_nd : Seg_nd P} : (A Lies
   rw[hyp]
   simp only [Seg_nd.extension,Ray.reverse,Seg_nd.toRay,Seg_nd.reverse,Seg.reverse,vec_same_eq_zero]
 
-theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} {seg_nd : Seg_nd P} (liesint : A LiesInt seg_nd.extension) : seg_nd.1.target LiesInt SEG seg_nd.1.source A := by 
+theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} {seg_nd : Seg_nd P} (liesint : A LiesInt seg_nd.extension) : seg_nd.1.target LiesInt SEG seg_nd.1.source A := by
   rcases liesint with ⟨⟨a,anonneg,ha⟩,nonsource⟩
   have raysourcesegtarget:seg_nd.1.target=seg_nd.extension.1:=by
     rfl
@@ -415,7 +414,7 @@ theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {A : P} {seg_nd : Seg_
   symm
   exact nonsource
 
-theorem lies_on_seg_nd_or_extension_of_lies_on_toRay {seg_nd : Seg_nd P} {A : P} 
+theorem lies_on_seg_nd_or_extension_of_lies_on_toRay {seg_nd : Seg_nd P} {A : P}
     (h : A LiesOn seg_nd.toRay) : A LiesOn seg_nd.1 ∨ A LiesOn seg_nd.extension := by
   rcases h with ⟨t, tpos, eq⟩
   let v : Vec_nd := ⟨VEC seg_nd.1.1 seg_nd.1.2, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩
@@ -426,7 +425,7 @@ theorem lies_on_seg_nd_or_extension_of_lies_on_toRay {seg_nd : Seg_nd P} {A : P}
     rw [vec_sub_vec']
     exact v.norm_smul_to_dir_eq_self
   · have eq : VEC seg_nd.1.1 A = t * v.toDir.1 := eq
-    exact Or.inl ⟨t * ‖v.1‖⁻¹, mul_nonneg tpos (inv_nonneg.mpr (norm_nonneg v.1)), 
+    exact Or.inl ⟨t * ‖v.1‖⁻¹, mul_nonneg tpos (inv_nonneg.mpr (norm_nonneg v.1)),
       (mul_inv_le_iff (norm_pos_iff.2 v.2)).mpr (by rw [mul_one]; exact not_lt.mp h),
       by simpa only [eq, Vec_nd.toDir, ne_eq, Vec.norm, Complex.real_smul, Complex.ofReal_inv,
       Complex.norm_eq_abs, Complex.ofReal_mul] using by ring⟩
