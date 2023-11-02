@@ -52,9 +52,9 @@ Construction Folder
     Parallelogram -- Definition and propeties of parallelograms
     Trapezoid -- Definition and propeties of trapezoids
     Rhombus -- Definition and propeties of rhombus
-    Rectangle -- Definition and propeties of rectangules
+    Rectangle -- Definition and propeties of rectangles
     Square -- Definition and propeties of squares
-    GeneralPolygons -- Define general convex polygons, regular polygons.
+    GeneralPolygon -- Define general convex polygons, regular polygons.
 
   subfolder : Circle
     CyclicQuadrilaterial -- Define the relation of four points concylic, criterion and properties of concyclic `What is the good definition of 4 points concyclic s.t. (a) do not use ∃ ; (b) symmetric in 4 points`
