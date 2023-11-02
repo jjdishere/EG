@@ -31,6 +31,10 @@ import EuclideanGeometry.Foundation.Axiom.Circle.CCPosition
 import EuclideanGeometry.Foundation.Axiom.Circle.LCPosition
 import EuclideanGeometry.Foundation.Axiom.Circle.IncribedAngle
 
+/- Tactic -/
+/- Tactic.congr_sa -/
+import EuclideanGeometry.Foundation.Tactic.Congruence
+
 /- Constuction -/
 /- Constuction.Triangle -/
 import EuclideanGeometry.Foundation.Construction.Triangle.IsocelesTriangle
@@ -42,17 +46,16 @@ import EuclideanGeometry.Foundation.Construction.Polygon.Parallelogram
 import EuclideanGeometry.Foundation.Construction.Circle.CyclicPolygon
 
 /- Theorem -/
+/- Theorem.Triangle-/
+import EuclideanGeometry.Foundation.Theorem.Triangle.EulerLine
+import EuclideanGeometry.Foundation.Theorem.Triangle.NinePointCircle
 /- Theorem.Circle-/
 import EuclideanGeometry.Foundation.Theorem.Circle.Power
-
-/- Tactic -/
-/- Tactic.congr_sa -/
-import EuclideanGeometry.Foundation.Tactic.Congruence
 
 /-!
 # Index of Foundations
 
 `IMPORTANT!`
 
-This file imports all files in Foundation. Please parse this file before creat any pull request modifying anything in folder Foundation.
+This file imports all files in Foundation. Please parse this file before create any pull request modifying anything in folder Foundation.
 -/

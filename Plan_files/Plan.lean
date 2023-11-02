@@ -59,16 +59,23 @@ Construction Folder
   subfolder : Circle
     CyclicQuadrilaterial -- Define the relation of four points concylic, criterion and properties of concyclic `What is the good definition of 4 points concyclic s.t. (a) do not use ∃ ; (b) symmetric in 4 points`
     CyclicPolygon -- Define and discuss properties of general cyclic polygons
+    RadicalAxis -- Define the radical axis given two circle and discuss it's property
+    SimsonLine -- Define the Simson line
 
   Inversion -- Define the inversion given a inversion center and a radius, discuss properties preserved under inversion
 
 Theorem Folder
 
   subfolder : Triangle
-    Power-- Prove power theorems
+    EulerLine -- Define the Euler line
+    NinePointCircle -- Define the nine point circle
 
   subfolder : Circle
-    Power-- Prove power theorems
+    Power -- Prove power theorems
+
+  subfolder : Projective
+    (empty for present)
+
 
 
 
