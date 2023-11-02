@@ -79,6 +79,4 @@ Theorem Folder
 
 
 
-
-
 -/
