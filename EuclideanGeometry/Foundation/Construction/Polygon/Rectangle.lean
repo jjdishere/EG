@@ -8,5 +8,4 @@ namespace EuclidGeom
 
 class Rectangle (P : Type _) [EuclideanPlane P] extends Parallelogram P where
 
-
 end EuclidGeom

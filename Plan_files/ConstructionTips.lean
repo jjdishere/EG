@@ -8,14 +8,17 @@ Broadly speaking, there are three kind of new concepts in Construction: A new cl
 
 1. (only for class/construction) Prove the preparing theorems and define the class/construction;
 2. (only for class) Define the make methods;
-3. Define the predicate (e.g. IsAngleBisector IsParallelogram), if your new class extends some old class by adding new properties, you may also need to define a predicate `before` you can define thr class (e.g. Quadrilaterial.IsConvex); 
+3. Define the predicate (e.g. IsAngleBisector IsParallelogram), if your new class extends some old class by adding new properties, you may also need to define a predicate `before` you can define thr class (e.g. Quadrilaterial.IsConvex);
 4. (only for class/construction) Compatibility of the predicate and your class/construction;
-5. Criterion: theorems with your predicate in the conclusion;
-6. Properties: theorems with your predicate in the condition.
+5. Criterion: theorems with your predicate (construction)/ structure (class) in the conclusion;
+6. Properties: theorems with your predicate (class)/ structure (class) in the condition.
 
 ## Minor Principles
 
 1. We should stick to geometry as much as possible. Please avoid using vector calculations as possible. As a result, one avoids stating theorems using `Vec` or `Vec_nd` (either in conditions or conclusions).
 
-2. 
+2. If you are formulating theorems of a class, please ensure your theorems has a version stated in terms of `structure` you defined, not only state in terms of point. But it is ok to have another version of theorem stated.
+
+3.
+
 -/
