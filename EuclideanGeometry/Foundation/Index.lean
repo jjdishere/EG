@@ -31,17 +31,39 @@ import EuclideanGeometry.Foundation.Axiom.Circle.CCPosition
 import EuclideanGeometry.Foundation.Axiom.Circle.LCPosition
 import EuclideanGeometry.Foundation.Axiom.Circle.IncribedAngle
 
+/- Tactic -/
+/- Tactic.congr_sa -/
+import EuclideanGeometry.Foundation.Tactic.Congruence
+
 /- Constuction -/
-/- Constuction.Triangle -/
-import EuclideanGeometry.Foundation.Construction.Triangle.IsocelesTriangle
+import EuclideanGeometry.Foundation.Construction.Inversion
+/- Construction.ComputationTool-/
+import EuclideanGeometry.Foundation.Construction.ComputationTool.Menelaus
+import EuclideanGeometry.Foundation.Construction.ComputationTool.Ceva
+/- Construction.Triangle -/
 import EuclideanGeometry.Foundation.Construction.Triangle.AngleBisector
-/- Constuction.Polygon -/
+import EuclideanGeometry.Foundation.Construction.Triangle.PerpendicularBisector
+import EuclideanGeometry.Foundation.Construction.Triangle.Orthocenter
+import EuclideanGeometry.Foundation.Construction.Triangle.Centroid
+import EuclideanGeometry.Foundation.Construction.Triangle.IsocelesTriangle
+/- Construction.Polygon -/
 import EuclideanGeometry.Foundation.Construction.Polygon.Quadrilateral
 import EuclideanGeometry.Foundation.Construction.Polygon.Parallelogram
-/- Constuction.Circle -/
+import EuclideanGeometry.Foundation.Construction.Polygon.Trapezoid
+import EuclideanGeometry.Foundation.Construction.Polygon.Rhombus
+import EuclideanGeometry.Foundation.Construction.Polygon.Rectangle
+import EuclideanGeometry.Foundation.Construction.Polygon.Square
+import EuclideanGeometry.Foundation.Construction.Polygon.GeneralPolygon
+/- Construction.Circle -/
+import EuclideanGeometry.Foundation.Construction.Circle.CyclicQuadrilateral
 import EuclideanGeometry.Foundation.Construction.Circle.CyclicPolygon
+import EuclideanGeometry.Foundation.Construction.Circle.RadicalAxis
+import EuclideanGeometry.Foundation.Construction.Circle.SimsonLine
 
 /- Theorem -/
+/- Theorem.Triangle-/
+import EuclideanGeometry.Foundation.Theorem.Triangle.EulerLine
+import EuclideanGeometry.Foundation.Theorem.Triangle.NinePointCircle
 /- Theorem.Circle-/
 import EuclideanGeometry.Foundation.Theorem.Circle.Power
 
@@ -50,5 +72,5 @@ import EuclideanGeometry.Foundation.Theorem.Circle.Power
 
 `IMPORTANT!`
 
-This file imports all files in Foundation. Please parse this file before creat any pull request modifying anything in folder Foundation. 
+This file imports all files in Foundation. Please parse this file before create any pull request modifying anything in folder Foundation.
 -/

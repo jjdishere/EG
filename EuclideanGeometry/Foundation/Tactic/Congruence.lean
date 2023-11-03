@@ -1,90 +1,67 @@
-import Lean.Meta.Basic
-import Lean.Elab
-import Lean.Message
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
+import EuclideanGeometry.Foundation.Tactic.Congruence.Attr
 
 namespace EuclidGeom
 
-open Lean
-open Lean.Meta
-open Lean.Elab
-open Lean.Elab.Tactic
+open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic
+open Qq
 
-def tryCloseMainGoal (candidate : List Expr) : TacticM Unit := do
-  for e in candidate do
-    try
-      closeMainGoal e
-    catch
-    | _ => continue -- should show some information, if failed
+def liftOrElse [Monad m] (xs : m $ Option A) (ys : m $ Option A) : m (Option A) := do
+  match <- xs with
+  | .some x => return x
+  | .none => do match <- ys with
+    | .some y => return y
+    | .none => return .none
 
-def tryEvalExact (candidate : List Term) : TacticM Unit := do
-  let goaltype ← getMainTarget
-  IO.println s!"{candidate.length}"
-  for t in candidate do
-    let r ← elabTermEnsuringType t goaltype
-    IO.println s!"Loop at {t}"
-    IO.println s!"Try Block"
-    try
-      closeMainGoalUsing (checkUnassigned := false)
-        fun type => do
-          let mvarCounterSaved := (← getMCtx).mvarCounter
-          let r ← elabTermEnsuringType t type
-          logUnassignedAndAbort (← filterOldMVars (← getMVars r) mvarCounterSaved)
-          return r
-    catch
-    | .error s mes => 
-      IO.println s!"  {s}failed. {← mes.toString} continue"
-      continue
-    | _ => 
-      IO.println s!"  failed. internal error. continue"
-      continue
-    IO.println s!"Not Catched, after try block"
+def extractSegLengthEq (expr : Q(Prop)) : MetaM (Option Unit) :=
+  match expr with
+  | ~q(@EuclidGeom.Seg.length _ (_) _ = @EuclidGeom.Seg.length _ (_) _) =>
+      return ()
+  | _ => return .none
 
--- the tactic `by_SAS`
-syntax (name := SAS) "by_SAS" (ppSpace colGt term:max) (ppSpace colGt term:max) (ppSpace colGt term:max) : tactic
+def extractAngleValueEq (expr : Q(Prop)) : MetaM (Option Unit) :=
+  match expr with
+  | ~q(@EuclidGeom.Angle.value _ (_) _ = @EuclidGeom.Angle.value _ (_) _) =>
+      return ()
+  | _ => return .none
 
-def mkSASSyntax (l : List Term) : Term := Syntax.mkApp (mkIdent `EuclidGeom.congr_of_SAS) (Array.mk l)
+def getCongrDeclNames : TacticM (List Name) := withMainContext do
+  flip (<- getLCtx).foldlM [] fun acc x => do
+    let type := x.type
+    pure $ match <- liftOrElse (extractSegLengthEq type) (extractAngleValueEq type) with
+    | .some _ => x.userName :: acc
+    | .none => acc
 
-@[tactic SAS]
-def evalSAS : Tactic := fun stx =>
+def getCongrSaLemmas : MetaM (List Name) := do return congrSaExtension.getState (← getEnv)
+
+syntax (name := congr_sa) "congr_sa" : tactic
+
+@[tactic congr_sa]
+def evalCongrSa : Tactic := fun stx =>
   match stx with
-  | `(tactic| by_SAS $t₁ $t₂ $t₃) => do
-    let TermList : List Term := [t₁, t₂, t₃]
-    let TermCandidate : List Term := List.map mkSASSyntax (TermList.permutations)
-    IO.println s!"{TermCandidate}"
-    tryEvalExact TermCandidate
-    IO.println s!" Checkpoint2 reached"
+  | `(tactic| congr_sa) => withTheReader Term.Context ({ · with errToSorry := false }) do
+      let congrDeclNames <- getCongrDeclNames
+      let congrSaLemmas <- getCongrSaLemmas
+      for lemmaName in congrSaLemmas do
+        for x0 in congrDeclNames do
+          for x1 in congrDeclNames do
+            for x2 in congrDeclNames do
+              let lemmaName := mkIdent lemmaName
+              let x0 := mkIdent x0
+              let x1 := mkIdent x1
+              let x2 := mkIdent x2
+              try
+                let t <- `(tactic| refine $lemmaName $x0 $x1 $x2)
+                evalTactic t
+                return
+              catch
+                _ => continue
+      logInfo "`congr_sa` doesn't close any goals"
   | _ => throwUnsupportedSyntax
 
-
-example {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : Triangle_nd P} (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) : tr_nd₁.1 IsCongrTo tr_nd₂.1 := by
-  sorry
-  -- exact congr_of_SAS e₂ a₁ e₃
-  -- by_SAS a₁ e₂ e₃
-
--- the tactic `by_add_comm`
-syntax (name := by_add_comm) "by_add_comm" (ppSpace colGt term:max) (ppSpace colGt term:max) : tactic
-
-def mkAddCommSyntax (l : List Term) : Term := Syntax.mkApp (mkIdent `Nat.add_comm) (Array.mk l)
-
-@[tactic by_add_comm]
-def evalByAddComm : Tactic := fun stx =>
-  match stx with
-  | `(tactic| by_add_comm $t₁ $t₂) => do
-    let TermList : List Term := [t₁, t₂]
-    let TermCandidate : List Term := List.map mkAddCommSyntax (TermList.permutations)
-    IO.println s!"{TermCandidate}"
-    tryEvalExact TermCandidate
-    IO.println s!" Checkpoint2 reached"
-  | _ => throwUnsupportedSyntax
-
-example (m n : Nat) : n + m = m + n := by
-sorry
-  -- exact add_comm n m
-  -- by_add_comm m n
-  -- by_add_comm n m
-
-syntax (name:= by_SAS') "by_SAS'" (ppSpace colGt term:max) (ppSpace colGt term:max) (ppSpace colGt term:max) : tactic
-
-@[tactic by_SAS']
-def evalBySAS' : Tactic := sorry
+example {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : Triangle_nd P}
+  (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length)
+  (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value)
+  (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length)
+    : tr_nd₁.1 IsCongrTo tr_nd₂.1 := by
+      congr_sa
