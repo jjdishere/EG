@@ -144,7 +144,13 @@ end make
 
 section coercion
 
-def Line.toProj (l : Line P) : Proj := Quotient.lift (s := same_extn_line.setoid) (fun ray : Ray P => ray.toProj) (fun _ _ h => And.left h) l
+def DirLine.toDir (l : DirLine P) : Dir := Quotient.lift (s := same_dir_line.setoid) (fun ray => ray.toDir) (fun _ _ h => h.left) l
+
+def DirLine.toProj (l : DirLine P) : Proj := l.toDir.toProj
+
+def DirLine.toLine (l : DirLine P) : Line P := sorry --`TBA`
+
+def Line.toProj (l : Line P) : Proj := Quotient.lift (s := same_extn_line.setoid) (fun ray : Ray P => ray.toProj) (fun _ _ h => h.left) l
 
 def Ray.toLine (ray : Ray P) : Line P := ⟦ray⟧
 
