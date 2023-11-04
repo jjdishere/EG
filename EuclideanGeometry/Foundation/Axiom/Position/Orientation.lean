@@ -12,11 +12,10 @@ variable {P : Type _} [EuclideanPlane P]
 
 section area
 
-def ptarea (A B C : P) : ℝ := (det (VEC A B) (VEC A C))/2
+def wedge (A B C : P) : ℝ := (det (VEC A B) (VEC A C))
 
-theorem permute_first_second_negate_area (A B C : P) : ptarea B A C = - ptarea A B C := by
-  dsimp only [ptarea]
-  field_simp
+theorem permute_first_second_negate_area (A B C : P) : wedge B A C = - wedge A B C := by
+  dsimp only [wedge]
   have h1 : VEC B A = (-1 : ℝ) • VEC A B := by
     dsimp only [Vec.mk_pt_pt]
     rw[Complex.real_smul]
@@ -28,20 +27,25 @@ theorem permute_first_second_negate_area (A B C : P) : ptarea B A C = - ptarea A
     exact Eq.symm (vsub_sub_vsub_cancel_right C B A)
   rw [h2, det_sub_eq_det]
 
-theorem permute_second_third_negate_area (A B C : P) : ptarea A C B = - ptarea A B C := by
-  dsimp only [ptarea]
-  field_simp
+theorem permute_second_third_negate_area (A B C : P) : wedge A C B = - wedge A B C := by
+  dsimp only [wedge]
   apply det_symm
 
-theorem rotate_once_fix_area (A B C : P) : ptarea C A B = ptarea A B C := by
+theorem rotate_once_fix_area (A B C : P) : wedge C A B = wedge A B C := by
   rw [permute_first_second_negate_area, permute_second_third_negate_area]
   ring
 
-theorem rotate_twice_fix_area (A B C : P) : ptarea B C A = ptarea A B C := by rw [rotate_once_fix_area, rotate_once_fix_area]
+theorem rotate_twice_fix_area (A B C : P) : wedge B C A = wedge A B C := by rw [rotate_once_fix_area, rotate_once_fix_area]
 
-theorem permute_first_third_negate_area (A B C : P) : ptarea C B A = - ptarea A B C :=by rw [permute_first_second_negate_area, rotate_twice_fix_area]
+theorem permute_first_third_negate_area (A B C : P) : wedge C B A = - wedge A B C := by rw [permute_first_second_negate_area, rotate_twice_fix_area]
 
-theorem area_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : ptarea A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length)/2 := by sorry
+theorem area_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) := by
+  dsimp only [wedge]
+  have vecabnd : VEC A B ≠ 0 := sorry
+  have vecacnd : VEC A C ≠ 0 := sorry
+  have h0 : (Angle.mk_pt_pt_pt B A C aneb anec).value = Vec_nd.angle ⟨VEC A B , vecabnd⟩ ⟨VEC A C, vecacnd⟩ := sorry
+  rw [h0]
+  apply det_eq_sin_mul_norm_mul_norm ⟨VEC A B , vecabnd⟩ ⟨VEC A C, vecacnd⟩
 
 end area
 
