@@ -12,9 +12,11 @@ variable {P : Type _} [EuclideanPlane P]
 
 section wedge
 
-def wedge (A B C : P) : ℝ := (det (VEC A B) (VEC A C))
+def wedge {P : Type _} [EuclideanPlane P] (A B C : P) : ℝ := 1
 
-theorem permute_first_second_negate_area (A B C : P) : wedge B A C = - wedge A B C := by
+-- def oarea (A B C : P) : ℝ := sorry
+
+theorem wedge213 (A B C : P) : wedge B A C = - wedge A B C := by
   dsimp only [wedge]
   have h1 : VEC B A = (-1 : ℝ) • VEC A B := by
     dsimp only [Vec.mk_pt_pt]
@@ -35,7 +37,7 @@ theorem rotate_once_fix_area (A B C : P) : wedge C A B = wedge A B C := by
   rw [permute_first_second_negate_area, permute_second_third_negate_area]
   ring
 
-theorem rotate_twice_fix_area (A B C : P) : wedge B C A = wedge A B C := by rw [rotate_once_fix_area, rotate_once_fix_area]
+theorem rotate_twice_fix_area (A B C : P) : wedge B C A = wedge A B C := by rw [wedge213, wedge213]
 
 theorem permute_first_third_negate_area (A B C : P) : wedge C B A = - wedge A B C := by rw [permute_first_second_negate_area, rotate_twice_fix_area]
 
