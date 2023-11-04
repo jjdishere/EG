@@ -10,7 +10,7 @@ open Classical
 
 /- Class of generalized triangles -/
 @[ext]
-class Triangle (P : Type u) [EuclideanPlane P] where 
+class Triangle (P : Type u) [EuclideanPlane P] where
   point₁ : P
   point₂ : P
   point₃ : P
@@ -28,7 +28,7 @@ def edge₂ (tr : Triangle P) : Seg P := Seg.mk tr.3 tr.1
 
 def edge₃ (tr : Triangle P) : Seg P := Seg.mk tr.1 tr.2
 
-def area (tr : Triangle P) : ℝ := sorry 
+def area (tr : Triangle P) : ℝ := sorry
 
 def is_nd (tr : Triangle P) : Prop := ¬ colinear tr.1 tr.2 tr.3
 
@@ -38,19 +38,33 @@ def Triangle_nd (P : Type u) [EuclideanPlane P] := { tr : Triangle P // tr.is_nd
 
 namespace Triangle_nd
 
-variable {P : Type u} [EuclideanPlane P] (tr_nd : Triangle_nd P) 
+variable {P : Type u} [EuclideanPlane P] (tr_nd : Triangle_nd P)
 
-def nontriv₁ := (ne_of_not_colinear tr_nd.2).1
+def point₁ : P := tr_nd.1.1
 
-def nontriv₂ := (ne_of_not_colinear tr_nd.2).2.1
+def point₂ : P := tr_nd.1.2
 
-def nontriv₃ := (ne_of_not_colinear tr_nd.2).2.2
+def point₃ : P := tr_nd.1.3
+
+def nontriv₁ : tr_nd.point₃ ≠ tr_nd.point₂ := (ne_of_not_colinear tr_nd.2).1
+
+def nontriv₂ : tr_nd.point₁ ≠ tr_nd.point₃ := (ne_of_not_colinear tr_nd.2).2.1
+
+def nontriv₃ : tr_nd.point₂ ≠ tr_nd.point₁ := (ne_of_not_colinear tr_nd.2).2.2
+
+def edge₁ : Seg P := tr_nd.1.edge₁
+
+def edge₂ : Seg P := tr_nd.1.edge₂
+
+def edge₃ : Seg P := tr_nd.1.edge₃
 
 def edge_nd₁ : Seg_nd P := ⟨tr_nd.1.edge₁, tr_nd.nontriv₁⟩
 
 def edge_nd₂ : Seg_nd P := ⟨tr_nd.1.edge₂, tr_nd.nontriv₂⟩
 
 def edge_nd₃ : Seg_nd P := ⟨tr_nd.1.edge₃, tr_nd.nontriv₃⟩
+
+def area : ℝ := tr_nd.1.area
 
 /- Only nondegenerate triangles can talk about orientation -/
 def is_cclock : Prop := tr_nd.1.3 LiesOnLeft (Ray.mk_pt_pt tr_nd.1.1 tr_nd.1.2 (tr_nd.nontriv₃))
@@ -67,10 +81,10 @@ variable {P : Type u} [EuclideanPlane P]
 
 namespace Triangle
 
-protected def IsInt (A : P) (tr : Triangle P) : Prop := by 
+protected def IsInt (A : P) (tr : Triangle P) : Prop := by
   by_cases colinear tr.1 tr.2 tr.3
   · exact False
-  · let tr_nd : Triangle_nd P := ⟨tr, h⟩ 
+  · let tr_nd : Triangle_nd P := ⟨tr, h⟩
     exact (if tr_nd.is_cclock then A LiesOnLeft Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩ else A LiesOnRight Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩)
 
 protected def interior (tr : Triangle P) : Set P := { p : P | Triangle.IsInt p tr }
@@ -100,7 +114,7 @@ theorem clock_of_neg_angle (h : tr_nd.angle₁.value < 0 ∨ tr_nd.angle₂.valu
 
 theorem angle_sum_eq_pi_of_cclock (cclock : tr_nd.is_cclock): tr_nd.angle₁.value + tr_nd.angle₂.value + tr_nd.angle₃.value = π := sorry
 
-theorem angle_sum_eq_neg_pi_of_clock (clock : ¬ tr_nd.is_cclock): tr_nd.angle₁.value + tr_nd.angle₂.value + tr_nd.angle₃.value = - π := sorry 
+theorem angle_sum_eq_neg_pi_of_clock (clock : ¬ tr_nd.is_cclock): tr_nd.angle₁.value + tr_nd.angle₂.value + tr_nd.angle₃.value = - π := sorry
 
 theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.length := sorry
 
@@ -110,7 +124,7 @@ theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr
 
 theorem nontrivial_of_edge_sum_ne_edge : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length → tr.is_nd  := sorry -- should this theorem stated as ≠, or as > ???
 
-theorem edge_sum_eq_edge_iff_colinear :  colinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry 
+theorem edge_sum_eq_edge_iff_colinear :  colinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry
 /- area ≥ 0, nontrivial → >0, =0 → trivial -/
 
 end Triangle

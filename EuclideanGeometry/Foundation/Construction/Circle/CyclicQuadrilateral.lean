@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Construction.Polygon.GeneralPolygon
+import EuclideanGeometry.Foundation.Construction.Polygon.Quadrilateral
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
 
 /-!

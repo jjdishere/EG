@@ -25,7 +25,7 @@ theorem cosine_rule (tr_nd : Triangle_nd P) : 2 * (tr_nd.1.edge₃.length * tr_n
     intro k
     rw [←k] at h
     exact h (triv_colinear B C)
-  have h1 : C ≠ A := by 
+  have h1 : C ≠ A := by
     intro k
     rw [←k] at h
     have p : ¬colinear C C B := by

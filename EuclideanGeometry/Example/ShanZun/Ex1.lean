@@ -1,5 +1,4 @@
 import EuclideanGeometry.Foundation.Index
-import EuclideanGeometry.Foundation.Axiom.Linear.Line_ex
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
 
 noncomputable section
@@ -68,7 +67,5 @@ variable (hang : ∠ E B C e_ne_b b_ne_c.symm =  ∠ B C D b_ne_c d_ne_c)
 
 -- Prove that $\angle CDA = \angle BEA$
 theorem Shan_Problem_1_2 : ∠ C D A (d_ne_c (hnd := hnd) (hd := hd)).symm (d_ne_a (hnd := hnd) (hd := hd)).symm = ∠ B E A (e_ne_b (hnd := hnd) (he := he)).symm (e_ne_a (hnd := hnd) (he := he)).symm := sorry
-
-
 
 end Shan_Problem_1_2
