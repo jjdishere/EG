@@ -28,7 +28,10 @@ theorem permute_first_second_negate_area (A B C : P) : ptarea B A C = - ptarea A
     exact Eq.symm (vsub_sub_vsub_cancel_right C B A)
   rw [h2, det_sub_eq_det]
 
-theorem permute_second_third_negate_area (A B C : P) : ptarea A C B = - ptarea A B C := by sorry
+theorem permute_second_third_negate_area (A B C : P) : ptarea A C B = - ptarea A B C := by
+  dsimp only [ptarea]
+  field_simp
+  apply det_symm
 
 theorem rotate_once_fix_area (A B C : P) : ptarea C A B = ptarea A B C := by
   rw [permute_first_second_negate_area, permute_second_third_negate_area]
@@ -38,7 +41,7 @@ theorem rotate_twice_fix_area (A B C : P) : ptarea B C A = ptarea A B C := by rw
 
 theorem permute_first_third_negate_area (A B C : P) : ptarea C B A = - ptarea A B C :=by rw [permute_first_second_negate_area, rotate_twice_fix_area]
 
-theorem area_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : ptarea A B C = (Real.sin (Angle.angle_of_three_point_nontriv B A C aneb anec) * (SEG A B).length *(SEG A C).length)/2 := by sorry
+theorem area_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : ptarea A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length)/2 := by sorry
 
 end area
 
