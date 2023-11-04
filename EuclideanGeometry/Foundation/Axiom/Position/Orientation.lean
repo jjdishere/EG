@@ -10,7 +10,7 @@ variable {P : Type _} [EuclideanPlane P]
 
 /- Definition of the area of a triangle, could be used to develop orientation of triangles.-/
 
-section area
+section wedge
 
 def wedge (A B C : P) : ℝ := (det (VEC A B) (VEC A C))
 
@@ -47,40 +47,38 @@ theorem area_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : 
   rw [h0]
   apply det_eq_sin_mul_norm_mul_norm ⟨VEC A B , vecabnd⟩ ⟨VEC A C, vecacnd⟩
 
-end area
+end wedge
 
 /- Directed distance-/
-section directed_distance
+section oriented_distance
 
-def ddistance (A : P) (ray : Ray P) : ℝ := det ray.2.1 (VEC ray.1 A)
+def odist (A : P) (ray : Ray P) : ℝ := det ray.2.1 (VEC ray.1 A)
 
 /- may insert some theorems relating colinearity and zero directed distance, which might take some efforts-/
 
-theorem ddist_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : ddistance A ray = Real.sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by sorry
+theorem odist_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist A ray = Real.sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by sorry
 
-theorem  area_eq_ddist_mul_length (A B C : P) (aneb : B ≠ A) : (ptarea A B C) = ((ddistance A (RAY A B aneb)) * (SEG A B).length/2) := by sorry
+theorem  wedge_eq_odist_mul_length (A B C : P) (aneb : B ≠ A) : (wedge A B C) = ((odist A (RAY A B aneb)) * (SEG A B).length) := by sorry
 
-end directed_distance
+end oriented_distance
 
 /- Positions of points on a line, ray, oriented segments. -/
 
 section point_to_ray
 
+def sign1 (A : P) (ray : Ray P) : ℝ := Real.sign (odist A ray)
+
 def IsOnLeftSide (A : P) (ray : Ray P) : Prop := by
-  by_cases A = ray.source
+  by_cases 0 < odist A ray
+  · exact True
   · exact False
-  · exact (0 < (Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value) ∧ ((Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value ≠ π)
 
 def IsOnRightSide (A : P) (ray : Ray P) : Prop := by
-  by_cases A = ray.source
+  by_cases odist A ray < 0
+  · exact True
   · exact False
-  · exact ((Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value < 0)
 
 /- Relation of position of points on a ray and directed distance-/
-
-theorem isonleft_iff_ddist_pos (A : P) (ray : Ray P) : IsOnLeftSide A ray ↔ 0 < ddistance A ray := by sorry
-
-theorem isonright_iff_ddist_neg (A : P) (ray : Ray P) : IsOnRightSide A ray ↔ ddistance A ray < 0 := by sorry
 
 end point_to_ray
 
