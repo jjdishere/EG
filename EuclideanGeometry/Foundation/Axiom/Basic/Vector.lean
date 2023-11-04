@@ -290,6 +290,8 @@ theorem dir_toVec_nd_to_dir_eq_self (x : Dir) : Vec_nd.toDir (⟨x.toVec, toVec_
   unfold Vec_nd.toDir
   simp only [norm_of_dir_toVec_eq_one, inv_one, one_smul]
 
+theorem toVec_nd_toDir_eq_self (x : Dir) : x.toVec_nd.toDir = x := x.dir_toVec_nd_to_dir_eq_self
+
 /- The direction `Dir.I`, defined as `Complex.I`, the direction of y-axis. It will be used in section perpendicular. -/
 def I : Dir where
   toVec := Complex.I

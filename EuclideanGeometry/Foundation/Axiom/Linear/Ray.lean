@@ -214,7 +214,7 @@ theorem Seg.target_not_lies_int : ¬ seg.target LiesInt seg := fun h ↦ h.2.2 r
 /-- For a segment $AB$, every point of the interior of $AB$ lies on the segment $AB$. -/
 theorem Seg.lies_on_of_lies_int {p : P} (h : p LiesInt seg) : p LiesOn seg := h.1
 
-/-- For a segment $AB$, a point P lies in the interior of $AB$ if and only if there exist a real number between 0 and 1 satisfying the vector $\overrightarrow{AP}$ is same as $t\overrightarrow{AB}$-/
+/-- For a segment $AB$, a point P lies in the interior of $AB$ if and only if there exist a real number between 0 and 1 satisfying the vector $\overrightarrow{AP}$ is same as $t\overrightarrow{AB}$. -/
 theorem Seg.lies_int_iff (p : P) : p LiesInt seg ↔ seg.is_nd ∧ ∃ (t : ℝ) , 0 < t ∧ t < 1 ∧ VEC seg.1 p = t • seg.toVec := by
   constructor
   · intro ⟨⟨t, tnonneg, tle1, ht⟩, ns, nt⟩
@@ -303,17 +303,25 @@ theorem Ray.todir_eq_neg_todir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h)
   exact (neg_to_dir_eq_to_dir_smul_neg ⟨VEC B A, (ne_iff_vec_ne_zero _ _).mp h.symm⟩ ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h⟩ (by rw [neg_smul, one_smul, neg_vec]) (by norm_num)).symm
 
 /-- Given two distinct points $A$ and $B$, the projective direction of ray $AB$ is same as that of $BA$ -/
-theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toProj = (RAY B A h.symm).toProj := (Dir.eq_toProj_iff _ _).mpr (Or.inr (todir_eq_neg_todir_of_mk_pt_pt h))
+theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toProj = (RAY B A h.symm).toProj := (Dir.eq_toProj_iff _ _).mpr (.inr (todir_eq_neg_todir_of_mk_pt_pt h))
 
 /-- Given two distinct points $A$ and $B$, the ray associated to the segment $AB$ is same as ray $AB$-/
 theorem pt_pt_seg_toRay_eq_pt_pt_ray {A B : P} (h : B ≠ A) : (Seg_nd.mk A B h).toRay = Ray.mk_pt_pt A B h := rfl
 
-/-- Given ray and a point A, A lies int the ray, then the ray from ray.source to A is just the ray -/
-theorem Ray.source_int_toRay_eq_ray {ray : Ray P} {A : P} {ha : A LiesInt ray} : (SEG_nd ray.source A (ha.2)).toRay = ray := sorry
+theorem Ray.pt_pt_toDir_eq_ray_toDir {ray : Ray P} {A : P} (h : A LiesInt ray) : (RAY ray.1 A h.2).toDir = ray.toDir := by
+  rcases (lies_int_iff A).mp h with ⟨t, ht, eq⟩
+  exact (to_dir_eq_to_dir_smul_pos ray.2.toVec_nd ⟨VEC ray.1 A, _⟩ eq ht).symm.trans ray.2.toVec_nd_toDir_eq_self
+
+theorem Ray.pt_pt_eq_ray {ray : Ray P} {A : P} (h : A LiesInt ray) : RAY ray.1 A h.2 = ray :=
+  (Ray.ext _ ray) rfl (pt_pt_toDir_eq_ray_toDir h)
+
+/-- Given ray and a point $A$, $A$ lies int the ray, then the ray from ray.source to $A$ is just the ray -/
+theorem Ray.source_int_toRay_eq_ray {ray : Ray P} {A : P} {h : A LiesInt ray} : (SEG_nd ray.source A h.2).toRay = ray :=
+  Ray.pt_pt_eq_ray h
 
 end coersion_compatibility
 
-/-- Given two points $A$ and $B$, the vector associated to the segment $AB$ is same as vector $\overrightarrow{AB}$ -/
+/-- Given two points $A$ and $B$, the vector associated to the segment $AB$ is same as vector $\overrightarrow{AB}$. -/
 @[simp]
 theorem seg_toVec_eq_vec (A B : P) : (SEG A B).toVec = VEC A B := rfl
 
@@ -507,7 +515,11 @@ theorem Seg.length_pos_iff_exist_int_pt (l : Seg P) : 0 < l.length ↔ (∃ (p :
   length_pos_iff_nd.trans (nd_iff_exist_int_pt l).symm
 
 /-- A ray contains two distinct points -/
-theorem Ray.nontriv (r : Ray P) : ∃ (A B : P), (A ∈ r.carrier) ∧ (B ∈ r.carrier) ∧ (B ≠ A) := sorry
+theorem Ray.nontriv (r : Ray P) : ∃ (A B : P), (A ∈ r.carrier) ∧ (B ∈ r.carrier) ∧ (B ≠ A) :=
+  ⟨r.1, (r.2.toVec +ᵥ r.1), source_lies_on,
+  ⟨1 ,zero_le_one ,(vec_of_pt_vadd_pt_eq_vec r.1 r.2.toVec).trans (one_smul ℝ r.2.toVec).symm⟩, by
+  rw [ne_eq, vadd_eq_self_iff_vec_eq_zero]
+  exact r.2.toVec_ne_zero⟩
 
 end existence
 

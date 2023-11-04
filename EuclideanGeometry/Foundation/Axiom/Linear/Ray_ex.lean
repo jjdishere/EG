@@ -7,51 +7,51 @@ variable {P: Type _} [EuclideanPlane P]
 
 section reverse
 
--- Given a ray, this function returns the ray with the same source but with reversed direction.
+/-- Given a ray, this function returns the ray with the same source but with reversed direction. -/
 def Ray.reverse (ray : Ray P): Ray P where
   source := ray.source
   toDir := - ray.toDir
 
--- Given a segment, this function returns the reverse of the segment, that is the swap the source and the target of the segment.
+/-- Given a segment, this function returns the reverse of the segment, that is the swap the source and the target of the segment. -/
 def Seg.reverse (seg : Seg P): Seg P where
   source := seg.target
   target := seg.source
 
--- Given a segment, if it is nondegenerate, then its reverse segment is also nondegenerate.
+/-- Given a segment, if it is nondegenerate, then its reverse segment is also nondegenerate. -/
 theorem nd_of_rev_of_nd {seg : Seg P} (nd : seg.is_nd) : seg.reverse.is_nd := by
   simp only [Seg.is_nd]
   push_neg
   symm
   apply nd
 
--- Given a nondegenerate segment, this function returns the reversed nondegenerate segment, that is to swap the source and the target of the segment.
+/-- Given a nondegenerate segment, this function returns the reversed nondegenerate segment, that is to swap the source and the target of the segment. -/
 def Seg_nd.reverse (seg_nd : Seg_nd P) : Seg_nd P := ⟨seg_nd.1.reverse, nd_of_rev_of_nd seg_nd.2⟩
 
--- Given a nondegenerate segment $segnd$, first viewing $segnd$ as a segment and then reverse is the same as first reversing $segnd$ and then view it as a segment.
+/-- Given a nondegenerate segment $segnd$, first viewing $segnd$ as a segment and then reverse is the same as first reversing $segnd$ and then view it as a segment. -/
 theorem Seg_nd.rev_toSeg_eq_toSeg_rev (seg_nd : Seg_nd P) : seg_nd.1.reverse = seg_nd.reverse.1 := rfl
 
--- Given a ray, the source of the reversed ray is the source of the ray.
+/-- Given a ray, the source of the reversed ray is the source of the ray. -/
 theorem Ray.source_of_rev_eq_source {ray : Ray P} : ray.reverse.source = ray.source := rfl
 
--- Given a ray, reversing it twice gives back to itself.
+/-- Given a ray, reversing it twice gives back to itself. -/
 @[simp]
 theorem Ray.rev_rev_eq_self (ray : Ray P) : ray.reverse.reverse = ray := by
   simp only [reverse, neg_neg]
 
--- Given a segment, reversing it twice gives back to itself.
+/-- Given a segment, reversing it twice gives back to itself. -/
 @[simp]
 theorem Seg.rev_rev_eq_self (seg : Seg P) : seg.reverse.reverse = seg := rfl
 
--- Given a degenerate segment, reversing it twice gives back to itself.
+/-- Given a degenerate segment, reversing it twice gives back to itself. -/
 @[simp]
 theorem Seg_nd.rev_rev_eq_self (seg_nd : Seg_nd P)  : seg_nd.reverse.reverse = seg_nd := rfl
 
--- Given a ray, the direction of the reversed ray is the negative of the direction of the ray.
+/-- Given a ray, the direction of the reversed ray is the negative of the direction of the ray. -/
 theorem Ray.toDir_of_rev_eq_neg_toDir {ray : Ray P} : ray.reverse.toDir = - ray.toDir := rfl
 
 theorem Ray.toVec_of_rev_eq_neg_toVec {ray : Ray P} : ray.reverse.toDir.toVec = - ray.toDir.toVec := rfl
 
--- Given a ray, the projective direction of the reversed ray is the negative of the projective direction of the ray.
+/-- Given a ray, the projective direction of the reversed ray is the negative of the projective direction of the ray. -/
 theorem Ray.toProj_of_rev_eq_toProj {ray : Ray P} : ray.reverse.toProj = ray.toProj := by
   --@HeRunming: Simply imitate the proof of theorem "eq_toProj_of_smul" in Vector.lean
   -- `??? Why not use that toProj is the quotient of toDir` see the definition of toProj
@@ -59,34 +59,34 @@ theorem Ray.toProj_of_rev_eq_toProj {ray : Ray P} : ray.reverse.toProj = ray.toP
   right
   rfl
 
--- Given a segment, the vector associated to the reverse of the reversed segment is the negative of the vector associated to the segment.
+/-- Given a segment, the vector associated to the reverse of the reversed segment is the negative of the vector associated to the segment. -/
 theorem Seg.toVec_of_rev_eq_neg_toVec (seg : Seg P) : seg.reverse.toVec = - seg.toVec := by
   simp only [reverse,toVec,neg_vec]
 
--- Given a nondegenerate segment, the nondegenerate vector associated to the reversed nondegenerate segment is the negative of the nondegenerate vector associated to the nondegenerate segment.
+/-- Given a nondegenerate segment, the nondegenerate vector associated to the reversed nondegenerate segment is the negative of the nondegenerate vector associated to the nondegenerate segment. -/
 theorem Seg_nd.toVec_nd_of_rev_eq_neg_toVec_nd (seg_nd : Seg_nd P) : seg_nd.reverse.toVec_nd = - seg_nd.toVec_nd := by
   apply Subtype.eq
   apply Seg.toVec_of_rev_eq_neg_toVec
 
--- Given a nondegenerate segment, the direction of the reversed nondegenerate segment is the negative direction of the nondegenerate segment.
+/-- Given a nondegenerate segment, the direction of the reversed nondegenerate segment is the negative direction of the nondegenerate segment. -/
 theorem Seg_nd.toDir_of_rev_eq_neg_toDir (seg_nd : Seg_nd P) : seg_nd.reverse.toDir = - seg_nd.toDir := by
 -- `exists a one=line proof?`
   rw[toDir,toDir,←neg_to_dir_eq_to_dir_eq,Seg_nd.toVec_nd_of_rev_eq_neg_toVec_nd]
 
--- Given a nondegenerate segment, the projective direction of the reversed nondegenerate segment is the negative projective direction of the nondegenerate segment.
+/-- Given a nondegenerate segment, the projective direction of the reversed nondegenerate segment is the negative projective direction of the nondegenerate segment. -/
 theorem Seg_nd.toProj_of_rev_eq_toProj (seg_nd : Seg_nd P) : seg_nd.reverse.toProj = seg_nd.toProj := by
   --`follows from teh previous lemma directly?`
   apply (Dir.eq_toProj_iff seg_nd.reverse.toDir seg_nd.toDir).mpr
   right
   rw[Seg_nd.toDir_of_rev_eq_neg_toDir]
 
-theorem Ray.source_lies_on_rev (ray : Ray P) : ray.source LiesOn ray.reverse := by sorry
+theorem Ray.source_lies_on_rev (ray : Ray P) : ray.source LiesOn ray.reverse := source_lies_on
 
-theorem Seg.target_lies_on_rev (seg : Seg P) : seg.target LiesOn seg.reverse := by sorry
+theorem Seg.target_lies_on_rev (seg : Seg P) : seg.target LiesOn seg.reverse := source_lies_on
 
-theorem Seg.source_lies_on_rev (seg : Seg P) : seg.source LiesOn seg.reverse := by sorry
+theorem Seg.source_lies_on_rev (seg : Seg P) : seg.source LiesOn seg.reverse := target_lies_on
 
--- Given a segment and a point, the point lies on the segment if and only if it lies on the reverse of the segment.
+/-- Given a segment and a point, the point lies on the segment if and only if it lies on the reverse of the segment. -/
 theorem Seg.lies_on_iff_lies_on_rev {A : P} {seg : Seg P} : A LiesOn seg ↔ A LiesOn seg.reverse := by
   unfold lies_on Carrier.carrier instCarrierSeg
   simp only [Set.setOf_mem_eq]
@@ -115,7 +115,7 @@ theorem Seg.lies_on_iff_lies_on_rev {A : P} {seg : Seg P} : A LiesOn seg ↔ A L
     rw [add_comm]
     exact Eq.symm smul_add_one_sub_smul
 
--- Given a segment and a point, the point lies in the interior of the segment if and only if it lies in the interior of the reverse of the segment.
+/-- Given a segment and a point, the point lies in the interior of the segment if and only if it lies in the interior of the reverse of the segment. -/
 theorem Seg.lies_int_iff_lies_int_rev {A : P} {seg : Seg P} : A LiesInt seg ↔ A LiesInt seg.reverse := by
   constructor
   rintro ⟨ha,⟨nonsource,nontarget⟩⟩
@@ -123,7 +123,7 @@ theorem Seg.lies_int_iff_lies_int_rev {A : P} {seg : Seg P} : A LiesInt seg ↔ 
   rintro ⟨ha,⟨nonrevsource,nonrevtarget⟩⟩
   exact ⟨Seg.lies_on_iff_lies_on_rev.mpr ha,⟨nonrevtarget,nonrevsource⟩⟩
 
--- Given a ray and a point, the point is equal to the source of the ray if and only if it lies on the ray and it lies on the reverse of the ray.
+/-- Given a ray and a point, the point is equal to the source of the ray if and only if it lies on the ray and it lies on the reverse of the ray. -/
 theorem Ray.eq_source_iff_lies_on_and_lies_on_rev {A : P} {ray : Ray P} : A = ray.source ↔ (A LiesOn ray) ∧ (A LiesOn ray.reverse) := by
   constructor
   intro h
@@ -150,7 +150,7 @@ theorem Ray.eq_source_iff_lies_on_and_lies_on_rev {A : P} {ray : Ray P} : A = ra
   simp only [zero_smul] at h
   rw[eq_iff_vec_eq_zero,h]
 
--- Given a ray and a point, if the point lies in the interior of the reverse ray, then it does not lie on the ray.
+/-- Given a ray and a point, if the point lies in the interior of the reverse ray, then it does not lie on the ray. -/
 theorem Ray.not_lies_on_of_lies_int_rev {A : P} {ray : Ray P} (liesint : A LiesInt ray.reverse) : ¬ A LiesOn ray := by
   by_contra h
   rcases liesint with ⟨h',nsource⟩
@@ -163,7 +163,7 @@ theorem Ray.not_lies_on_of_lies_int_rev {A : P} {ray : Ray P} (liesint : A LiesI
     exact this
   trivial
 
--- Given a ray and a point, if the point lies on of the reverse ray, then it does not lie in the interior of the ray.
+/-- Given a ray and a point, if the point lies on of the reverse ray, then it does not lie in the interior of the ray. -/
 theorem Ray.not_lies_int_of_lies_on_rev {A : P} {ray : Ray P} (liesint : A LiesOn ray.reverse) : ¬ A LiesInt ray := by
   by_contra h
   rw [← Ray.rev_rev_eq_self ray] at h
@@ -172,7 +172,7 @@ theorem Ray.not_lies_int_of_lies_on_rev {A : P} {ray : Ray P} (liesint : A LiesO
     exact h
   trivial
 
--- Given a nondegenerate segment and a point, the point lies on the segment if and only if it lies on the ray associated to the segment and it lies on the ray assoicated to the reverse of the segment.
+/-- Given a nondegenerate segment and a point, the point lies on the segment if and only if it lies on the ray associated to the segment and it lies on the ray assoicated to the reverse of the segment. -/
 -- need to be refined
 theorem lies_on_iff_lies_on_toRay_and_rev_toRay {A : P} {seg_nd : Seg_nd P} : A LiesOn seg_nd.1 ↔ (A LiesOn seg_nd.toRay) ∧ (A LiesOn seg_nd.reverse.toRay) := by
   constructor
@@ -222,30 +222,56 @@ theorem lies_on_pt_toDir_of_pt_lies_on_rev {A B : P} {ray : Ray P} (hA : A LiesO
   simp only
   rw[add_smul,←vec_sub_vec ray.source,ha,hb,sub_neg_eq_add]
 
--- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies on $ray_2$, then the source of $ray_2$ lies on the reverse of $ray_1$
+/-- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies on $ray_2$, then the source of $ray_2$ lies on the reverse of $ray_1$. -/
+theorem lies_on_iff_lies_on_rev_of_same_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = ray₂.toDir) : ray₁.source LiesOn ray₂ ↔ ray₂.source LiesOn ray₁.reverse := by
+  constructor
+  · intro ⟨t, ht, eq⟩
+    refine' ⟨t, ht, _⟩
+    rw [Dir.toVec_neg_eq_neg_toVec, smul_neg, h, ← eq]
+    exact (neg_vec ray₂.source ray₁.source).symm
+  · intro ⟨t, ht, eq⟩
+    refine' ⟨t, ht, _⟩
+    rw [Dir.toVec_neg_eq_neg_toVec, smul_neg, ← neg_vec, h] at eq
+    exact neg_inj.mp eq
 
-theorem lies_on_iff_lies_on_rev_of_same_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = ray₂.toDir) : ray₁.source LiesOn ray₂ ↔ ray₂.source LiesOn ray₁.reverse := sorry
+/-- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies int $ray_2$, then the source of $ray_2$ lies int the reverse of $ray_1$. -/
+theorem lies_int_iff_lies_int_rev_of_same_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = ray₂.toDir) : ray₁.source LiesInt ray₂ ↔ ray₂.source LiesInt ray₁.reverse := ⟨
+  fun ⟨hl, ne⟩ ↦ ⟨(lies_on_iff_lies_on_rev_of_same_todir h).mp hl, ne.symm⟩,
+  fun ⟨hl, ne⟩ ↦ ⟨(lies_on_iff_lies_on_rev_of_same_todir h).mpr hl, ne.symm⟩⟩
 
+/-- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies on the reverse of $ray_2$, then the source of $ray_2$ lies on the reverse of $ray_1$. -/
+theorem lies_on_rev_iff_lies_on_rev_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesOn ray₂.reverse ↔ ray₂.source LiesOn ray₁.reverse := by
+  constructor
+  · intro ⟨t, ht, eq⟩
+    refine' ⟨t, ht, _⟩
+    rw [Dir.toVec_neg_eq_neg_toVec, smul_neg, h, ← eq]
+    exact (neg_vec ray₂.source ray₁.source).symm
+  · intro ⟨t, ht, eq⟩
+    refine' ⟨t, ht, _⟩
+    rw [Dir.toVec_neg_eq_neg_toVec, smul_neg, ← neg_vec, h] at eq
+    exact neg_inj.mp eq
 
--- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies int $ray_2$, then the source of $ray_2$ lies int the reverse of $ray_1$
+/-- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies int the reverse of $ray_2$, then the source of $ray_2$ lies int the reverse of $ray_1$. -/
+theorem lies_int_rev_iff_lies_int_rev_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesInt ray₂.reverse ↔ ray₂.source LiesInt ray₁.reverse := ⟨
+  fun ⟨hl, ne⟩ ↦ ⟨(lies_on_rev_iff_lies_on_rev_of_neg_todir h).mp hl, ne.symm⟩,
+  fun ⟨hl, ne⟩ ↦ ⟨(lies_on_rev_iff_lies_on_rev_of_neg_todir h).mpr hl, ne.symm⟩⟩
 
-theorem lies_int_iff_lies_int_rev_of_same_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = ray₂.toDir) : ray₁.source LiesInt ray₂ ↔ ray₂.source LiesInt ray₁.reverse := sorry
+/-- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies on $ray_2$, then the source of $ray_2$ lies on $ray_1$. -/
+theorem lies_on_iff_lies_on_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesOn ray₂ ↔ ray₂.source LiesOn ray₁ := by
+  constructor
+  · intro ⟨t, ht, eq⟩
+    refine' ⟨t, ht, _⟩
+    rw [h, Dir.toVec_neg_eq_neg_toVec, smul_neg, ← eq]
+    exact (neg_vec ray₂.source ray₁.source).symm
+  · intro ⟨t, ht, eq⟩
+    refine' ⟨t, ht, _⟩
+    rw [h, Dir.toVec_neg_eq_neg_toVec, smul_neg, ← neg_vec] at eq
+    exact neg_inj.mp eq
 
--- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies on the reverse of $ray_2$, then the source of $ray_2$ lies on the reverse of $ray_1$
-
-theorem lies_on_rev_iff_lies_on_rev_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesOn ray₂.reverse ↔ ray₂.source LiesOn ray₁.reverse := sorry
-
--- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies int the reverse of $ray_2$, then the source of $ray_2$ lies int the reverse of $ray_1$
-
-theorem lies_int_rev_iff_lies_int_rev_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesInt ray₂.reverse ↔ ray₂.source LiesInt ray₁.reverse := sorry
-
--- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies on $ray_2$, then the source of $ray_2$ lies on $ray_1$
-
-theorem lies_on_iff_lies_on_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesOn ray₂ ↔ ray₂.source LiesOn ray₁ := sorry
-
--- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies int $ray_2$, then the source of $ray_2$ lies int $ray_1$
-
-theorem lies_int_iff_lies_int_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesInt ray₂ ↔ ray₂.source LiesInt ray₁ := sorry
+/-- Given two rays $ray_1$ and $ray_2$ with opposite direction, if the source of $ray_1$ lies int $ray_2$, then the source of $ray_2$ lies int $ray_1$. -/
+theorem lies_int_iff_lies_int_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesInt ray₂ ↔ ray₂.source LiesInt ray₁ := ⟨
+  fun ⟨hl, ne⟩ ↦ ⟨(lies_on_iff_lies_on_of_neg_todir h).mp hl, ne.symm⟩,
+  fun ⟨hl, ne⟩ ↦ ⟨(lies_on_iff_lies_on_of_neg_todir h).mpr hl, ne.symm⟩⟩
 
 -- reversing the toDir does not change the length
 theorem length_eq_length_of_rev (seg : Seg P) : seg.length = seg.reverse.length := by
