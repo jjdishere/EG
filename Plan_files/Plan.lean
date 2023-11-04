@@ -34,6 +34,14 @@ Axiom Folder
     Translation -- Translation by a vector and varoius compatibility
     Rotation -- Rotation around a point with respect to an angle
 
+Tactic Folder
+
+  subfolder : Congruence
+
+  subfolder : Permutation
+
+  subfolder : PointNe
+
 Construction Folder
 
   subfolder : ComputationTool
@@ -73,7 +81,10 @@ Theorem Folder
   subfolder : Circle
     Power -- Prove power theorems
 
-  subfolder : Projective
+  subfolder : Projective -- projective geometry
+    (empty for present)
+
+  subfolder : Locus -- theorems about locus of points satisfying some condition is exactly a certain geometric figure
     (empty for present)
 
 

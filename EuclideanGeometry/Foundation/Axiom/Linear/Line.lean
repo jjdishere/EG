@@ -138,6 +138,8 @@ end Line
 
 scoped notation "LIN" => Line.mk_pt_pt
 
+scoped notation "DLIN" => DirLine.mk_pt_pt
+
 end make
 
 section coercion

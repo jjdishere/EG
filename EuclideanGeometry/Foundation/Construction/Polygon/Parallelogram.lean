@@ -1,10 +1,15 @@
 import EuclideanGeometry.Foundation.Construction.Polygon.Quadrilateral
+import EuclideanGeometry.Foundation.Construction.Polygon.Trapezoid
 
 /-!
 
 -/
 noncomputable section
 namespace EuclidGeom
+
+-- `Add class parallelogram and state every theorem in structure`
+class Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
+--  `to be added`
 
 def Quadrilateral_cvx.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := ( qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (qdr_cvx.edge_nd₁₄ ∥ (qdr_cvx.edge_nd₂₃))
 
