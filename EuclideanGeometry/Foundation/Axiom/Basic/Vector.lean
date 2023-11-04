@@ -1,6 +1,7 @@
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
+import Mathlib.Data.Real.Sign
 /-!
 # Standard Vector Space
 
