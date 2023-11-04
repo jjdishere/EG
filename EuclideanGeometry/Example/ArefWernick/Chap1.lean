@@ -2,6 +2,15 @@ import EuclideanGeometry.Foundation.Index
 import EuclideanGeometry.Foundation.Axiom.Linear.Line_ex
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
+import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
+import Lean.Meta.Basic
+import Lean.Elab
+import Lean.Message
+
+open Lean
+open Lean.Meta
+open Lean.Elab
+open Lean.Elab.Tactic
 
 noncomputable section
 
@@ -26,6 +35,7 @@ variable {A₁ B₁ C₁ A₂ B₂ C₂ : P} {hnd₁ : ¬ colinear A₁ B₁ C�
 variable {M₁ M₂ : P} {hm₁ : M₁ = (SEG B₁ C₁).midpoint} {hm₂ : M₂ = (SEG B₂ C₂).midpoint}
 -- We have $A_1B_1 = A_2B_2$, $A_1C_1 = A_2C_2$, and $A_1M_1 = A_2M_2$.
 variable {h₁ : (SEG A₁ B₁).length = (SEG A₂ B₂).length} {h₂ : (SEG A₁ C₁).length = (SEG A₂ C₂).length} {h₃ : (SEG A₁ M₁).length = (SEG A₂ M₂).length}
+
 theorem Aref_Wernick_Exercise_1_1 : (▵ A₁ B₁ C₁) IsCongrTo (▵ A₂ B₂ C₂) := sorry
 
 end Aref_Wernick_Exercise_1_1
@@ -73,6 +83,29 @@ namespace Aref_Wernick_Exercise_1_2
 
 Prove that $\angle BFD = \pi / 2 - \angle CAB$. -/
 
+syntax (name := perm_colinear) "perm_colinear" ppSpace colGt term:max : tactic
+
+@[tactic perm_colinear]
+def evalPerm_colinear : Tactic := fun stx =>
+  match stx with
+  | `(tactic| perm_colinear $t) => withTheReader Term.Context ({· with errToSorry := false }) do
+    logInfo "here"
+    -- match t with
+    --   | `(colinear A B C) => do
+    --     try
+    --       evalTactic (← `(tactic| refine $t))
+    --       return
+    --     catch _ => pure ()
+    --     return
+    --   | _ => throwUnsupportedSyntax
+  | _ => throwUnsupportedSyntax
+
+example {A B C D: P} {h : colinear A B C} : colinear A B C := by
+  exact h
+
+example {A B C D: P} {h : colinear A B C} : colinear A B C := by
+  perm_colinear h
+
 -- We have triangle $\triangle ABC$
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $B \ne A$ and $C \ne A$ and $B \ne C$.
@@ -111,7 +144,5 @@ lemma d_ne_f : D ≠ F := sorry
 theorem Aref_Wernick_Exercise_1_2 : ∠ B F D (b_ne_f (hnd := hnd) (hd := hd) (hf := hf)) d_ne_f = π / 2 - ∠ C A B (c_ne_a (hnd := hnd)) (b_ne_a (hnd := hnd)) := sorry
 
 end Aref_Wernick_Exercise_1_2
-
-
 
 end EuclidGeom
