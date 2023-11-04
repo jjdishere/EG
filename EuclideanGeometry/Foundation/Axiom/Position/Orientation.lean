@@ -60,7 +60,7 @@ def odist (A : P) (ray : Ray P) : ℝ := det ray.2.1 (VEC ray.1 A)
 
 theorem odist_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist A ray = Real.sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by sorry
 
-theorem  wedge_eq_odist_mul_length (A B C : P) (aneb : B ≠ A) : (wedge A B C) = ((odist A (RAY A B aneb)) * (SEG A B).length) := by sorry
+theorem wedge_eq_odist_mul_length (A B C : P) (aneb : B ≠ A) : (wedge A B C) = ((odist A (RAY A B aneb)) * (SEG A B).length) := by sorry
 
 end oriented_distance
 
@@ -68,7 +68,7 @@ end oriented_distance
 
 section point_to_ray
 
-def sign1 (A : P) (ray : Ray P) : ℝ := Real.sign (odist A ray)
+def Ray.sign (A : P) (ray : Ray P) : ℝ := Real.sign (odist A ray)
 
 def IsOnLeftSide (A : P) (ray : Ray P) : Prop := by
   by_cases 0 < odist A ray
