@@ -10,11 +10,11 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
 
-structure IsPerpBisector (seg_nd : Seg_nd P) (line : Line P) : Prop where
+structure IsPerpBis (seg_nd : Seg_nd P) (line : Line P) : Prop where
 
-def Seg_nd.PerpBisector (seg_nd : Seg_nd P) : Line P := sorry
+def Seg_nd.PerpBis (seg_nd : Seg_nd P) : Line P := sorry
 
-theorem Seg_nd.perp_bisector_is_perp_bisector (seg_nd : Seg_nd P) : IsPerpBisector seg_nd seg_nd.PerpBisector := sorry
+theorem Seg_nd.perp_bis_is_perp_bis (seg_nd : Seg_nd P) : IsPerpBis seg_nd seg_nd.PerpBis := sorry
 
 structure IsCircumcenter (tr_nd : Triangle_nd P) (O : P) : Prop where
 

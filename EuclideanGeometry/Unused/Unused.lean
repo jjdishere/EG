@@ -386,7 +386,7 @@ end perpendicular
 theorem parallel_of_perp_perp {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ] : (A ⟂ B) → (B ⟂ C) → (A ∥ C)  := sorry
 -/ -/
 
-structure IsAngBisector {P : Type _} [EuclideanPlane P] (ang : Angle P) (ray : Ray P) : Prop where intro ::
+structure IsAngBis {P : Type _} [EuclideanPlane P] (ang : Angle P) (ray : Ray P) : Prop where intro ::
   eq_vtx : ang.source = ray.source
   bisect_ang : 2 * (Angle.mk ang.start_ray ray eq_vtx).value = ang.value
 

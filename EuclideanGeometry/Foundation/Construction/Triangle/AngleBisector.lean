@@ -14,52 +14,52 @@ variable {P : Type _} [EuclideanPlane P]
 -- Feel free to change the name of the theorems and comments into better ones, or add sections to better organize theorems.
 -- `Currently, the theorems are not well-organized, please follow the plan file to write and add theorems in this file into the plan file if they are not already in the plan`
 
--- we don't need to put the following definitions in the namespace Angle, since we will certainly not use it in the form of `ang.IsBisector ray`
+-- we don't need to put the following definitions in the namespace Angle, since we will certainly not use it in the form of `ang.IsBis ray`
 -- if only one condition is used, please change `structure : Prop` back to `def : Prop`, if more than one condition is used, please name each condition under structure, please do not use `∧`.
-structure IsAngBisector (ang : Angle P) (ray : Ray P) : Prop where
+structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
 
-structure IsAngBisectorLine
+structure IsAngBisLine
 
-structure IsExAngBisector
+structure IsExAngBis
 
 structure IsExAngBiscetorLine
 
 namespace Angle
 
-/- when the Angle is flat, bisector is on the left side-/
-def AngBisector (ang : Angle P) : Ray P := sorry
+/- when the Angle is flat, bis is on the left side-/
+def AngBis (ang : Angle P) : Ray P := sorry
 
-def AngBisectorLine (ang : Angle P) : Line P := ang.AngBisector.toLine
+def AngBisLine (ang : Angle P) : Line P := ang.AngBis.toLine
 
-def ExAngBisector (ang : Angle P) : Ray P := sorry
+def ExAngBis (ang : Angle P) : Ray P := sorry
 
-def ExAngBisectorLine (ang : Angle P) : Line P := ang.ExAngBisector.toLine
+def ExAngBisLine (ang : Angle P) : Line P := ang.ExAngBis.toLine
 
 end Angle
 
 namespace Angle
 
-theorem ang_bisector_is_ang_bisector : sorry := sorry
+theorem ang_bis_is_ang_bis : sorry := sorry
 
-theorem ang_bisector_line_is_ang_bisector_line : sorry := sorry
+theorem ang_bis_line_is_ang_bis_line : sorry := sorry
 
-theorem ex_ang_bisector_is_ex_ang_bisector : sorry := sorry
+theorem ex_ang_bis_is_ex_ang_bis : sorry := sorry
 
-theorem ex_ang_bisector_line_is_ex_ang_bisector_line : sorry := sorry
+theorem ex_ang_bis_line_is_ex_ang_bis_line : sorry := sorry
 
 end Angle
 
-/-definition property: lies on the bisector means bisect the angle-/
-theorem lie_on_bisector (ang: Angle P) (A : P): sorry := sorry
+/-definition property: lies on the bis means bisect the angle-/
+theorem lie_on_ang_bis (ang: Angle P) (A : P): sorry := sorry
 
-/- underlying line of bisector as the locus satisfying the sum of distance to each ray of the angle is 0 -/
-theorem lie_on_bisector_line_of_distance_zero (ang: Angle P) : sorry := sorry
+/- underlying line of bis as the locus satisfying the sum of distance to each ray of the angle is 0 -/
+theorem lie_on_ang_bis_line_of_distance_zero (ang: Angle P) : sorry := sorry
 
-theorem lie_on_bisector_of_lie_on_bisector_line_inside_angle (ang : Angle P)  : sorry := sorry
+theorem lie_on_ang_bis_of_lie_on_bis_line_inside_angle (ang : Angle P)  : sorry := sorry
 
-/-bisector lies inside the angle-/
+/-bis lies inside the angle-/
 
-/-construct the intercentor as the intersection of two bisector-/
+/-construct the intercentor as the intersection of two bis-/
 
 /-a triangle_nd admit an unique intercenter-/
 
@@ -98,6 +98,6 @@ end Triangle_nd
 
 /-the intercenter lies inside of the triangle-/
 
-theorem intercenter_lies_in_triangle (triangle_nd : Triangle_nd P): sorry := sorry
+theorem incenter_lies_int_triangle (triangle_nd : Triangle_nd P): sorry := sorry
 
 end EuclidGeom
