@@ -22,6 +22,7 @@ import EuclideanGeometry.Foundation.Axiom.Isometry.Translation_ex
 /- Axiom.Triangle -/
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
+import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence'
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
 import EuclideanGeometry.Foundation.Axiom.Triangle.Similarity
@@ -32,8 +33,11 @@ import EuclideanGeometry.Foundation.Axiom.Circle.LCPosition
 import EuclideanGeometry.Foundation.Axiom.Circle.IncribedAngle
 
 /- Tactic -/
-/- Tactic.congr_sa -/
-import EuclideanGeometry.Foundation.Tactic.Congruence
+/- Tactic.Congruence -/
+import EuclideanGeometry.Foundation.Tactic.Congruence.Attr
+import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence
+-- import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence' -- `need to avoid some name collision during initialization?`
+
 
 /- Constuction -/
 import EuclideanGeometry.Foundation.Construction.Inversion
