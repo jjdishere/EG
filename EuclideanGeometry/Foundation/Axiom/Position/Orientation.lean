@@ -41,9 +41,13 @@ theorem permute_first_third_negate_area (A B C : P) : wedge C B A = - wedge A B 
 
 theorem area_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) := by
   dsimp only [wedge]
-  have vecabnd : VEC A B ≠ 0 := sorry
-  have vecacnd : VEC A C ≠ 0 := sorry
-  have h0 : (Angle.mk_pt_pt_pt B A C aneb anec).value = Vec_nd.angle ⟨VEC A B , vecabnd⟩ ⟨VEC A C, vecacnd⟩ := sorry
+  have vecabnd : VEC A B ≠ 0 := by
+   exact (ne_iff_vec_ne_zero A B).mp aneb
+  have vecacnd : VEC A C ≠ 0 := by
+   exact (ne_iff_vec_ne_zero A C).mp anec
+  have h0 : (Angle.mk_pt_pt_pt B A C aneb anec).value = Vec_nd.angle ⟨VEC A B , vecabnd⟩ ⟨VEC A C, vecacnd⟩ := by
+   dsimp only [Angle.mk_pt_pt_pt,Vec_nd.angle,angle_value_eq_dir_angle]
+   rfl
   rw [h0]
   apply det_eq_sin_mul_norm_mul_norm ⟨VEC A B , vecabnd⟩ ⟨VEC A C, vecacnd⟩
 
