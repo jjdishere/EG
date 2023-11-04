@@ -12,9 +12,9 @@ variable {P : Type _} [EuclideanPlane P]
 
 section wedge
 
-def wedge {P : Type _} [EuclideanPlane P] (A B C : P) : ℝ := 1
+def wedge (A B C : P) : ℝ := det (VEC A B) (VEC A C)
 
--- def oarea (A B C : P) : ℝ := sorry
+def oarea (A B C : P) : ℝ := wedge A B C / 2
 
 theorem wedge213 (A B C : P) : wedge B A C = - wedge A B C := by
   dsimp only [wedge]
@@ -29,17 +29,17 @@ theorem wedge213 (A B C : P) : wedge B A C = - wedge A B C := by
     exact Eq.symm (vsub_sub_vsub_cancel_right C B A)
   rw [h2, det_sub_eq_det]
 
-theorem permute_second_third_negate_area (A B C : P) : wedge A C B = - wedge A B C := by
+theorem wedge132 (A B C : P) : wedge A C B = - wedge A B C := by
   dsimp only [wedge]
   apply det_symm
 
-theorem rotate_once_fix_area (A B C : P) : wedge C A B = wedge A B C := by
-  rw [permute_first_second_negate_area, permute_second_third_negate_area]
+theorem wedge312 (A B C : P) : wedge C A B = wedge A B C := by
+  rw [wedge213, wedge132]
   ring
 
-theorem rotate_twice_fix_area (A B C : P) : wedge B C A = wedge A B C := by rw [wedge213, wedge213]
+theorem wedge231 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge312, wedge312]
 
-theorem permute_first_third_negate_area (A B C : P) : wedge C B A = - wedge A B C := by rw [permute_first_second_negate_area, rotate_twice_fix_area]
+theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, wedge231]
 
 theorem area_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) := by
   dsimp only [wedge]
