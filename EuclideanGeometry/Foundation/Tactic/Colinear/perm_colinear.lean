@@ -4,6 +4,8 @@ namespace EuclidGeom
 
 open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic Qq
 
+variable {P : Type _} [EuclideanPlane P]
+
 def extractColinear (expr : Q(Prop)) : MetaM (Option Expr) :=
   match expr with
   | ~q(@EuclidGeom.colinear _ (_) _ _ _) =>
@@ -65,7 +67,6 @@ def evalPerm_colinear : Tactic := fun stx =>
       logInfo "`perm_colinear` doesn't close any goals"
   | _ => throwUnsupportedSyntax
 
-variable {P : Type _} [EuclideanPlane P]
 
 example {A B C : P} {h : colinear B C A} : colinear A B C := by
   perm_colinear
