@@ -4,10 +4,10 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Class
 /-!
 # Segments and rays
 
-In this file, we define the class of segments, rays and their coercions, as well as basic properties.  A more precise plan is the following:
-We define the corresponding classes: rays, segments, and nondegenerate segments.
-
-We define the coercions among these concepts as well as coercions to directions, or projective directions.
+In this file, we define the class of segments, rays, and their coercions, as well as basic properties.  A more precise plan in terms of sections is as follows:
+(1) (definition) We define the corresponding classes: rays, segments, and nondegenerate segments. 
+(2) (make) We define the make functions of rays, segments, and nondegenerate segments.
+(3) (coercion) We define the coercions among rays, segments, and nondegenerate segments, as well as coercions to directions, or projective directions.
 
 We give different ways to make a segment or a ray.
 
@@ -25,21 +25,31 @@ We discuss the Archimedean property of a segment.
 
 ## Important definitions
 
-* `Ray` : A \emph{ray} consists of a pair of a point $P$ and a direction; it is the ray that starts at the point and extends in the given direction.
-* `Seg` : A \emph{Segment} consists of a pair of points: the source and the target; it is the segment from the source to the target. (We allow the source and the target to be the same.)
+* Class `Ray` : A \emph{ray} consists of a pair of a point $P$ and a direction.
+* Class `Seg` : A \emph{segment} consists of a pair of points: the source and the target. (We allow the source and the target to be the same.)
+* Subclass `Seg_nd` : A \emph{nondegenerate segment} is a segment whose source and target are not equal.
+* Definition `Seg.length` : The function that gives the length of a given segment.
+* Definition `Ray.reverse` : Given a ray, this function returns the ray with the same source but with reversed direction.
+* Definition `Seg.reverse` : Given a segment, this function swapped its source and target point.
+* Definition `Seg_nd.reverse` : Given a nondegenerate segment, this function swapped its source and target point.
+* Definition `Seg.midpoint` : This function returns the hmidpoint of a segment.
 
 
-## Notation
+## List of notations
 
-*  : notation for a point lies on a ray
-*  : notation for a point lies on a generalized directed segment
-* notation for Seg A B
+* `SEG A B` : notation for the segment with source $A$ and target $B$.
+* `SEG_nd A B` : notation for the segment with source $A$ and target $B$, where $h$ is a proof of that $A \neq B$. 
+* `RAY A B h` : notation for the ray with source $A$ in the direction of $B$, where $h$ is a proof of that $A \neq B$.
 
-## Implementation Notes
+## List of main theorems
 
-## Further Works
+## Implementation notes
+
+## Further works
 
 -/
+
+
 noncomputable section
 namespace EuclidGeom
 
