@@ -211,25 +211,54 @@ end Coersion
 
 section Coersion_compatibility
 
-variable {seg : Seg P} {seg_nd : Seg_nd P} {ray : Ray P}
+/-- Given a nondegenerate segment, the direction associated to the nondegenerate segment is the same as the direction associated to the ray associated to the nondegenerate segment. -/
+theorem Seg_nd.toDir_eq_toRay_toDir {seg_nd : Seg_nd P} : seg_nd.toDir = seg_nd.toRay.toDir := rfl
 
-section lieson
+/-- Given a nondegenerate segment, the projective direction associated to the nondegenerate segment is the same as the projective direction associated to the ray associated to the nondegenerate segment. -/
+theorem Seg_nd.toRay_toProj_eq_toProj {seg_nd : Seg_nd P} : seg_nd.toRay.toProj = seg_nd.toProj := rfl
+
+/-- Given two points $A$ and $B$, the vector associated to the segment $AB$ is same as vector $\overrightarrow{AB}$ -/
+@[simp]
+theorem seg_toVec_eq_vec (A B : P) : (SEG A B).toVec = VEC A B := rfl
+
+/-- Given a segment $AB$, $A$ is same as $B$ if and only if vector $\overrightarrow{AB}$ is zero  -/
+theorem toVec_eq_zero_of_deg (l : Seg P) : (l.target = l.source) ↔ l.toVec = 0 := by
+  rw [Seg.toVec, Vec.mk_pt_pt, vsub_eq_zero_iff_eq]
+end Coersion_compatibility
+
+
+
+section LiesOn_compatibility
+
+variable {seg : Seg P} {seg_nd : Seg_nd P} {ray : Ray P}
 
 /-- Given a ray, the source of the ray lies on the ray. -/
 theorem Ray.source_lies_on {ray : Ray P} : ray.source LiesOn ray := ⟨0, by rfl, by rw [vec_same_eq_zero, zero_smul]⟩
 
-/-- Given a segment, the source of the segment lies on the segment. -/
+/-- Given two distinct points $A$ and $B$, $B$ lies on the ray $AB$. -/
+theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
+  show B LiesOn (SEG_nd A B h).toRay
+  exact Seg_nd.lies_on_toRay_of_lies_on Seg.target_lies_on
+
+/-- Given a ray, the source of the ray does not lie in the interior of the ray. -/
+theorem Ray.source_not_lies_int {ray : Ray P} : ¬ ray.source LiesInt ray := fun h ↦ h.2 rfl
+
+/-- For a ray, every point of the interior of the ray lies on the ray. -/
+theorem Ray.lies_on_of_lies_int {p : P} (h : p LiesInt ray) : p LiesOn ray := h.1
+
+
+/-- Given a segment $AB$, the source $A$ of the segment lies on the segment. -/
 theorem Seg.source_lies_on {seg : Seg P} : seg.source LiesOn seg :=
   ⟨0, by rfl, zero_le_one, by rw [vec_same_eq_zero, zero_smul]⟩
 
 /--  Given a segment $AB$, the target $B$ lies on the segment $AB$. -/
-theorem Seg.target_lies_on : seg.target LiesOn seg := ⟨1, zero_le_one, by rfl, by rw [one_smul]⟩
+theorem Seg.target_lies_on {seg : Seg P} : seg.target LiesOn seg := ⟨1, zero_le_one, by rfl, by rw [one_smul]⟩
 
 /-- Given a segment $AB$, the source $A$ does not belong to the interior of $AB$. -/
-theorem Seg.source_not_lies_int : ¬ seg.source LiesInt seg := fun h ↦ h.2.1 rfl
+theorem Seg.source_not_lies_int {seg : Seg P} : ¬ seg.source LiesInt seg := fun h ↦ h.2.1 rfl
 
 /-- Given a segment $AB$, the target $B$ does not belong to the interior of $AB$. -/
-theorem Seg.target_not_lies_int : ¬ seg.target LiesInt seg := fun h ↦ h.2.2 rfl
+theorem Seg.target_not_lies_int {seg : Seg P} : ¬ seg.target LiesInt seg := fun h ↦ h.2.2 rfl
 
 /-- For a segment $AB$, every point of the interior of $AB$ lies on the segment $AB$. -/
 theorem Seg.lies_on_of_lies_int {p : P} (h : p LiesInt seg) : p LiesOn seg := h.1
@@ -270,8 +299,7 @@ theorem Seg.lies_int_iff (p : P) : p LiesInt seg ↔ seg.is_nd ∧ ∃ (t : ℝ)
         · simp only [Seg.toVec, ← ne_iff_vec_ne_zero]
           exact nd
 
-/-- For a ray, every point of the interior of the ray lies on the ray. -/
-theorem Ray.lies_on_of_lies_int {p : P} (h : p LiesInt ray) : p LiesOn ray := h.1
+
 
 /-- Given a ray, a point $A$ lies in the interior of the ray if and only if the vector from the source of the ray to $A$ is a positive multiple of the direction of ray. -/
 theorem Ray.lies_int_iff (p : P) : p LiesInt ray ↔ ∃ (t : ℝ) , 0 < t ∧ VEC ray.source p = t • ray.toDir.toVec := by
@@ -304,18 +332,9 @@ theorem Seg_nd.lies_on_toRay_of_lies_on {p : P} (h : p LiesOn seg_nd.1) : p Lies
 theorem Seg_nd.lies_int_toRay_of_lies_int {p : P} (h : p LiesInt seg_nd.1) : p LiesInt seg_nd.toRay :=
   ⟨Seg_nd.lies_on_toRay_of_lies_on h.1, h.2.1⟩
 
-/-- Given two distinct points $A$ and $B$, $B$ lies on the ray $AB$. -/
-theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
-  show B LiesOn (SEG_nd A B h).toRay
-  exact Seg_nd.lies_on_toRay_of_lies_on Seg.target_lies_on
 
-end lieson
+end LiesOn_compatibility
 
-/-- Given a nondegenerate segment, the direction associated to the nondegenerate segment is the same as the direction associated to the ray associated to the nondegenerate segment. -/
-theorem Seg_nd.toDir_eq_toRay_toDir : seg_nd.toDir = seg_nd.toRay.toDir := rfl
-
-/-- Given a nondegenerate segment, the projective direction associated to the nondegenerate segment is the same as the projective direction associated to the ray associated to the nondegenerate segment. -/
-theorem Seg_nd.toRay_toProj_eq_toProj : seg_nd.toRay.toProj = seg_nd.toProj := rfl
 
 /-- Given two distinct points $A$ and $B$, the direction of ray $AB$ is same as the negative direction of $BA$ -/
 theorem Ray.todir_eq_neg_todir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toDir = - (RAY B A h.symm).toDir := by
@@ -333,13 +352,6 @@ theorem Ray.source_int_toRay_eq_ray {ray : Ray P} {A : P} {ha : A LiesInt ray} :
 
 end Coersion_compatibility
 
-/-- Given two points $A$ and $B$, the vector associated to the segment $AB$ is same as vector $\overrightarrow{AB}$ -/
-@[simp]
-theorem seg_toVec_eq_vec (A B : P) : (SEG A B).toVec = VEC A B := rfl
-
-/-- Given a segment $AB$, $A$ is same as $B$ if and only if vector $\overrightarrow{AB}$ is zero  -/
-theorem toVec_eq_zero_of_deg {l : Seg P} : (l.target = l.source) ↔ l.toVec = 0 := by
-  rw [Seg.toVec, Vec.mk_pt_pt, vsub_eq_zero_iff_eq]
 
 /-- Given a segment $AB$, $AB$ is non-degenerated if and only if vector  $\overrightarrow{AB}$ is not zero -/
 theorem Seg.is_nd_iff_toVec_ne_zero {l : Seg P} : l.is_nd ↔ l.toVec ≠ 0 := toVec_eq_zero_of_deg.not
