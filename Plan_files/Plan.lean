@@ -58,7 +58,7 @@ Construction Folder
   subfolder : Polygon
     Quadrilatral -- Define basics for quadrilatral; discuss its convexity
     Parallelogram -- Definition and propeties of parallelograms
-    Trapezoid -- Definition and propeties of trapezoids
+    Trapezoid -- Definition and propeties of trapezoids, Isoceles Trapezoid
     Rhombus -- Definition and propeties of rhombus
     Rectangle -- Definition and propeties of rectangles
     Square -- Definition and propeties of squares
