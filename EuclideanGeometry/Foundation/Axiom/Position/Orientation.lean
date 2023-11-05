@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
+import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 
 /- This file discuss the relative positions of points and rays on a plane. -/
 noncomputable section
@@ -89,12 +90,32 @@ def IsOnRightSide (A : P) (ray : Ray P) : Prop := by
   · exact True
   · exact False
 
+def OnLine (A : P) (ray : Ray P) : Prop := by
+  by_cases odist A ray = 0
+  · exact True
+  · exact False
+
+def OffLine (A : P) (ray : Ray P) : Prop := by
+  by_cases odist A ray = 0
+  · exact False
+  · exact True
+
 /- Relation of position of points on a ray and directed distance-/
 
 end point_to_ray
 
 scoped infix : 50 "LiesOnLeft" => IsOnLeftSide
 scoped infix : 50 "LiesOnRight" => IsOnRightSide
+
+section handside
+
+theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (RAY A B bnea)  ray) : ray.sign A = ray.sign B := sorry
+
+theorem no_intersect_of_same_sign (A B : P) (ray : Ray P) (signeq : (ray.sign A) * (ray.sign B) = 1) : ¬∃ (C : P), (Seg.IsOn C (SEG A B)) ∧ (Line.IsOn C ray.toLine) := sorry
+
+theorem intersect_of_diff_sign (A B : P) (ray : Ray P) (signdiff : ¬ (ray.sign A) * (ray.sign B) = 1) : ∃ (C : P), (Seg.IsOn C (SEG A B)) ∧ (Line.IsOn C ray.toLine) := sorry
+
+end handside
 
 /- Position of two rays -/
 section ray_to_ray
