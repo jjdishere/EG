@@ -223,6 +223,8 @@ theorem DirLine.lies_on_iff_lies_on_toline {A : P} {l : DirLine P}: (A LiesOn l.
 
 end carrier
 
+-- def DirLine.reverse (l : DirLine P) : DirLine P :=
+
 namespace Line
 
 variable (A B : P) (h : B ≠ A) (ray : Ray P) (seg_nd : Seg_nd P)
@@ -579,7 +581,5 @@ end Archimedean_property
 --**end Archimedean_property--
 
 end Line
-
-end coercion
 
 end EuclidGeom
