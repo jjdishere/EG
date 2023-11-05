@@ -91,7 +91,7 @@ scoped notation "RAY" => Ray.mk_pt_pt
 
 end make
 
-section coersion
+section coercion
 
 namespace Ray
 
@@ -187,9 +187,9 @@ instance : Interior P (Seg_nd P) where
 
 end Seg_nd
 
-end coersion
+end coercion
 
-section coersion_compatibility
+section coercion_compatibility
 
 variable {seg : Seg P} {seg_nd : Seg_nd P} {ray : Ray P}
 
@@ -311,7 +311,7 @@ theorem pt_pt_seg_toRay_eq_pt_pt_ray {A B : P} (h : B ≠ A) : (Seg_nd.mk A B h)
 /-- Given ray and a point A, A lies int the ray, then the ray from ray.source to A is just the ray -/
 theorem Ray.source_int_toRay_eq_ray {ray : Ray P} {A : P} {ha : A LiesInt ray} : (SEG_nd ray.source A (ha.2)).toRay = ray := sorry
 
-end coersion_compatibility
+end coercion_compatibility
 
 /-- Given two points $A$ and $B$, the vector associated to the segment $AB$ is same as vector $\overrightarrow{AB}$ -/
 @[simp]

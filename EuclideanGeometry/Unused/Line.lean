@@ -85,7 +85,7 @@ end Line
 -- Now we introduce useful theorems to avoid using more unfolds in further proofs. 
 variable {P : Type _} [EuclideanPlane P]
 
-section Compaitiblity_of_coersions_of_mk_pt_pt
+section Compaitiblity_of_coercions_of_mk_pt_pt
 
 -- The first point and the second point in Line.mk_pt_pt LiesOn the line it make. 
 
@@ -125,7 +125,7 @@ theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) : ∀ X : P, 
   exact h
   exact c
 
-end Compaitiblity_of_coersions_of_mk_pt_pt
+end Compaitiblity_of_coercions_of_mk_pt_pt
 
 section Define_line_toProj
 
@@ -242,7 +242,7 @@ def Seg_nd.toLine (seg_nd : Seg_nd P) := (LIN seg_nd.1.source seg_nd.1.target se
 def Line.mk_pt_vec_nd (A : P) (vec_nd : Vec_nd) := (LIN A (vec_nd.1 +ᵥ A) (by
   sorry))
 
-section Compaitiblity_of_coersions
+section Compaitiblity_of_coercions
 
 -- If a point lies on a ray, then it lies on the line associated to the ray.
 theorem Ray.lies_on_toLine_of_lie_on {A : P} {r : Ray P} (h : A LiesOn r) : A LiesOn (r.toLine) := sorry
@@ -264,7 +264,7 @@ theorem line_of_pt_pt_eq_ray_toLine {A B : P} (h : B ≠ A) : LIN A B h = Ray.to
 
 theorem line_of_pt_pt_eq_seg_nd_toLine {A B : P} (h : B ≠ A) : LIN A B h = Seg_nd.toLine ⟨SEG A B, h⟩ := rfl
 
-end Compaitiblity_of_coersions
+end Compaitiblity_of_coercions
 
 section Archimedean_property
 

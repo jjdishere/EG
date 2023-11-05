@@ -28,12 +28,12 @@ scoped notation "CIR" => Circle.mk_pt_pt
 
 scoped notation "⨀" => Circle.mk_pt_pt
 
-section coersion
+section coercion
 
 -- this should not live here, this belongs to construction.
 -- def Triangle_nd.toCir (tr_nd : Triangle_nd P) : Circle P := sorry
 
-end coersion
+end coercion
 
 
 section position
