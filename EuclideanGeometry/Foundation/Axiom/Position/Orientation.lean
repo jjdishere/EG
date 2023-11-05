@@ -100,6 +100,8 @@ def OffLine (A : P) (ray : Ray P) : Prop := by
   · exact False
   · exact True
 
+theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A ray.toLine := sorry
+
 /- Relation of position of points on a ray and directed distance-/
 
 end point_to_ray
