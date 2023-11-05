@@ -37,7 +37,9 @@ theorem CC_separated_pt_outside_second_circle {ω₁ : Circle P} {ω₂ : Circle
 theorem CC_separated_pt_outside_first_circle {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h₁ : ω₁ Separate ω₂) (h₂ : A LiesOn ω₂) : A LiesOut ω₁ := sorry
 
 
-def CC_Circumscribe_Point {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Circumscribe ω₂) : P := sorry
+lemma CC_Circumscribe_centers_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Circumscribe ω₂) : ω₁.center ≠ ω₂.center := sorry
+
+def CC_Circumscribe_Point {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Circumscribe ω₂) : P := (ω₁.radius • (RAY ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).2.1) +ᵥ ω₁.center
 
 theorem CC_circumscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Circumscribe ω₂) : ((CC_Circumscribe_Point h) LiesOn ω₁) ∧ ((CC_Circumscribe_Point h) LiesOn ω₂) := sorry
 
@@ -46,7 +48,7 @@ theorem CC_circumscribe_point_lieson_center_seg {ω₁ : Circle P} {ω₂ : Circ
 
 theorem CC_inscribed_pt_inside_second_circle {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h₁ : ω₁ InscribeIn ω₂) (h₂ : A LiesOn ω₁) : A LiesIn ω₂ := sorry
 
-def CC_Inscribe_Point {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ InscribeIn ω₂) : P := sorry
+def CC_Inscribe_Point {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ InscribeIn ω₂) : P := (ω₁.radius • (RAY ω₂.center ω₁.center h.2).2.1) +ᵥ ω₁.center
 
 theorem CC_inscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ InscribeIn ω₂) : ((CC_Inscribe_Point h) LiesOn ω₁) ∧ ((CC_Inscribe_Point h) LiesOn ω₂) := sorry
 
@@ -71,16 +73,16 @@ theorem CC_inx_pts_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Int
 
 theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : ((CC_Intersected_pts h).left LiesOn ω₁) ∧ ((CC_Intersected_pts h).left LiesOn ω₂) ∧ ((CC_Intersected_pts h).right LiesOn ω₁) ∧ ((CC_Intersected_pts h).right LiesOn ω₂) := sorry
 
-lemma CC_intersected_centers_ne {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : ω₁.center ≠ ω₂.center := sorry
+lemma CC_intersected_centers_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : ω₁.center ≠ ω₂.center := sorry
 
-theorem CC_inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (LIN (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm) ⟂ (LIN ω₁.center ω₂.center (CC_intersected_centers_ne h).symm) := sorry
+theorem CC_inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (LIN (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm) ⟂ (LIN ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm) := sorry
 
 /- different circles have at most two intersections -/
-lemma CC_inx_pt_not_lieson_center_line {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) : ¬(A LiesOn (LIN ω₁.center ω₂.center (CC_intersected_centers_ne h).symm)) := sorry
+lemma CC_inx_pt_not_lieson_center_line {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) : ¬(A LiesOn (LIN ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm)) := sorry
 
-theorem CC_inx_pt_liesonleft_center_ray_eq_leftinxpt {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) (h₃ : A LiesOnLeft (RAY ω₁.center ω₂.center (CC_intersected_centers_ne h).symm)) : A = (CC_Intersected_pts h).left := sorry
+theorem CC_inx_pt_liesonleft_center_ray_eq_leftinxpt {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) (h₃ : A LiesOnLeft (RAY ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm)) : A = (CC_Intersected_pts h).left := sorry
 
-theorem CC_inx_pt_liesonright_center_ray_eq_rightinxpt {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) (h₃ : A LiesOnRight (RAY ω₁.center ω₂.center (CC_intersected_centers_ne h).symm)) : A = (CC_Intersected_pts h).right := sorry
+theorem CC_inx_pt_liesonright_center_ray_eq_rightinxpt {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) (h₃ : A LiesOnRight (RAY ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm)) : A = (CC_Intersected_pts h).right := sorry
 
 end Circle
 
