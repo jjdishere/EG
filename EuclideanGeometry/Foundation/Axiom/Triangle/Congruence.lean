@@ -1,7 +1,12 @@
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
+import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex2
 import EuclideanGeometry.Foundation.Tactic.Congruence.Attr
+import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray
+import EuclideanGeometry.Foundation.Axiom.TRiangle.Basic_trash
 
+open Classical
 namespace EuclidGeom
 
 /- definition of congruence of triangles-/
@@ -477,7 +482,81 @@ theorem acongr_of_AAS (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.valu
 
 /- SSS -/
 /- cannot decide orientation -/
-theorem congr_of_SSS_of_eq_orientation (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) (c : tr_nd₁.is_cclock = tr_nd₂.is_cclock) : tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
+theorem cosine_eq_of_SSS (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) : Real.cos tr_nd₁.angle₁.value = Real.cos tr_nd₂.angle₁.value:= by
+  have cos₁ : 2 * (tr_nd₁.1.edge₃.length * tr_nd₁.1.edge₂.length * Real.cos tr_nd₁.angle₁.value) = tr_nd₁.1.edge₃.length ^ 2 + tr_nd₁.1.edge₂.length ^ 2 - tr_nd₁.1.edge₁.length^2 := Triangle.cosine_rule tr_nd₁
+  have cos₂ : 2 * (tr_nd₂.1.edge₃.length * tr_nd₂.1.edge₂.length * Real.cos tr_nd₂.angle₁.value) = tr_nd₂.1.edge₃.length ^ 2 + tr_nd₂.1.edge₂.length ^ 2 - tr_nd₂.1.edge₁.length^2 := Triangle.cosine_rule tr_nd₂
+  rw [e₁,e₂,e₃,←cos₂] at cos₁
+  field_simp at cos₁
+  have u₁ : 0 < tr_nd₂.1.edge₃.length := by
+    exact length_pos_iff_nd.mpr tr_nd₂.edge_nd₃.2
+  have u₂ : 0 < tr_nd₂.1.edge₂.length := by
+    exact length_pos_iff_nd.mpr tr_nd₂.edge_nd₂.2
+  have h0 : (tr_nd₂.1.edge₃.length * tr_nd₂.1.edge₂.length) > 0 := by
+    field_simp [u₁,u₂]
+  rcases cos₁ with x | y
+  ·apply x
+  ·have h1 : ¬((tr_nd₂.1.edge₃.length * tr_nd₂.1.edge₂.length)) = 0 := ne_of_gt h0
+   absurd h1 y
+   exact False.elim (h1 y)
+
+theorem congr_of_SSS_of_eq_orientation (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) (c : tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) : tr_nd₁.1 IsCongrTo tr_nd₂.1 := by
+  have a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value := by
+    exact angle_eq_of_cosine_eq_of_cclock c (cosine_eq_of_SSS e₁ e₂ e₃)
+  have a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value := by
+    let pptr_nd₁ := tr_nd₁.perm_vertices.perm_vertices
+    let pptr_nd₂ := tr_nd₂.perm_vertices.perm_vertices
+    have ppe₁ : pptr_nd₁.1.edge₁.length = pptr_nd₂.1.edge₁.length := by
+      simp
+      rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices_two_times tr_nd₁).2.1,←(Triangle_nd.edge_eq_edge_of_perm_vertices_two_times tr_nd₂).2.1]
+      exact e₂
+    have ppe₂ : pptr_nd₁.1.edge₂.length = pptr_nd₂.1.edge₂.length := by
+      simp
+      rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices_two_times tr_nd₁).2.2,←(Triangle_nd.edge_eq_edge_of_perm_vertices_two_times tr_nd₂).2.2]
+      exact e₃
+    have ppe₃ : pptr_nd₁.1.edge₃.length = pptr_nd₂.1.edge₃.length := by
+      simp
+      rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices_two_times tr_nd₁).1,←(Triangle_nd.edge_eq_edge_of_perm_vertices_two_times tr_nd₂).1]
+      exact e₁
+    have ppc : pptr_nd₁.is_cclock ↔ pptr_nd₂.is_cclock := by
+      rw [←same_orient_of_perm_vertices,←same_orient_of_perm_vertices,←same_orient_of_perm_vertices,←same_orient_of_perm_vertices]
+      exact c
+    have ppa₁ : pptr_nd₁.angle₁.value = pptr_nd₂.angle₁.value := by
+      exact angle_eq_of_cosine_eq_of_cclock ppc (cosine_eq_of_SSS ppe₁ ppe₂ ppe₃)
+    rw [←(Triangle_nd.angle_eq_angle_of_perm_vertices_two_times tr_nd₁).2.1,←(Triangle_nd.angle_eq_angle_of_perm_vertices_two_times tr_nd₂).2.1] at ppa₁
+    exact ppa₁
+  have a₃ : tr_nd₁.angle₃.value = tr_nd₂.angle₃.value := by
+    let ptr_nd₁ := tr_nd₁.perm_vertices
+    let ptr_nd₂ := tr_nd₂.perm_vertices
+    have pe₁ : ptr_nd₁.1.edge₁.length = ptr_nd₂.1.edge₁.length := by
+      simp
+      rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₁).2.2,←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₂).2.2]
+      exact e₃
+    have pe₂ : ptr_nd₁.1.edge₂.length = ptr_nd₂.1.edge₂.length := by
+      simp
+      rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₁).1,←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₂).1]
+      exact e₁
+    have pe₃ : ptr_nd₁.1.edge₃.length = ptr_nd₂.1.edge₃.length := by
+      simp
+      rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₁).2.1,←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₂).2.1]
+      exact e₂
+    have pc : ptr_nd₁.is_cclock ↔ ptr_nd₂.is_cclock := by
+      rw [←same_orient_of_perm_vertices,←same_orient_of_perm_vertices]
+      exact c
+    have pa₁ : ptr_nd₁.angle₁.value = ptr_nd₂.angle₁.value := by
+      exact angle_eq_of_cosine_eq_of_cclock pc (cosine_eq_of_SSS pe₁ pe₂ pe₃)
+    rw [←(Triangle_nd.angle_eq_angle_of_perm_vertices tr_nd₁).2.2,←(Triangle_nd.angle_eq_angle_of_perm_vertices tr_nd₂).2.2] at pa₁
+    exact pa₁
+  have final : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length ∧ tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length ∧tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length ∧ tr_nd₁.angle₁.value = tr_nd₂.angle₁.value ∧ tr_nd₁.angle₂.value = tr_nd₂.angle₂.value ∧ tr_nd₁.angle₃.value = tr_nd₂.angle₃.value := ⟨e₁,e₂,e₃,a₁,a₂,a₃⟩
+  have h0 : tr_nd₁.1.is_nd ∧ tr_nd₂.1.is_nd := ⟨tr_nd₁.2,tr_nd₂.2⟩
+  have k : (tr_nd₁.1 IsCongrTo tr_nd₂.1) = True := by
+    dsimp only [IsCongr]
+    rw [dite_eq_iff]
+    left
+    use h0
+    rw[←iff_eq_eq,iff_true]
+    apply final
+  rw[←iff_eq_eq,iff_true] at k
+  apply k
 
 theorem acongr_of_SSS_of_ne_orientation (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) (c : tr_nd₁.is_cclock = ¬ tr_nd₂.is_cclock) : tr_nd₁.1 IsACongrTo tr_nd₂.1 := sorry
 
