@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Index
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
+import EuclideanGeometry.Foundation.Axiom.Linear.Line
 
 noncomputable section
 
@@ -45,11 +46,11 @@ lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
 variable {D E : P} {hd : D LiesInt (SEG_nd A B (b_ne_a (hnd := hnd))).extension} {he : E LiesInt (SEG_nd A C (c_ne_a (hnd := hnd))).extension}
 -- Claim: $E \ne B$ and $D \ne C$. This is because $E$ lies on line $AC$, but $B$ doesn't lies on $AC$; $D$ lies on line $AB$, but $C$ doesn't lies on $AB$.
 lemma e_ne_b : E ≠ B := by -- for $E \ne B$
-  have b_not_lieson_ac := (lies_on_line_of_pt_pt_iff_colinear (c_ne_a (hnd := hnd)) B).mp.mt (flip_colinear_snd_trd.mt hnd) -- $B$ doesn't lies on line $AC$ because $A, B, C$ not colinear
+  have b_not_lieson_ac := (Line.lies_on_line_of_pt_pt_iff_colinear (c_ne_a (hnd := hnd)) B).mp.mt (flip_colinear_snd_trd.mt hnd) -- $B$ doesn't lies on line $AC$ because $A, B, C$ not colinear
   have e_lieson_ac := Seg_nd.lies_on_toline_of_lies_on_extn (Ray.lies_on_of_lies_int he) -- $E$ lieson line $AC$ because $E$ lies in the extension of $AC$
   exact ne_of_lieson_and_not_lieson e_lieson_ac b_not_lieson_ac -- $E \ne B$ because $E$ lies on line $AC$, but $B$ doesn't lies on line $AC$
 lemma d_ne_c : D ≠ C := by -- for $D \ne C$
-  have c_not_lieson_ab := (lies_on_line_of_pt_pt_iff_colinear (b_ne_a (hnd := hnd)) C).mp.mt hnd -- $C$ doesn't lies on line $AB$ because $A, B, C$ not colinear
+  have c_not_lieson_ab := (Line.lies_on_line_of_pt_pt_iff_colinear (b_ne_a (hnd := hnd)) C).mp.mt hnd -- $C$ doesn't lies on line $AB$ because $A, B, C$ not colinear
   have d_lieson_ab := Seg_nd.lies_on_toline_of_lies_on_extn (Ray.lies_on_of_lies_int hd) -- $D$ lieson line $AB$ because $D$ lies in the extension of $AB$
   exact ne_of_lieson_and_not_lieson d_lieson_ab c_not_lieson_ab -- $D \ne C$ because $D$ lies on line $AB$, but $C$ doesn't lies on line $AB$
 -- Claim: $A \ne D$ and $A \ne E$. This is because $E$ lies on extension of $AC$, but $A$ doesn't lies on extension of $AC$; $D$ lies on extension of $AB$, but $A$ doesn't lies on extension of $AB$
