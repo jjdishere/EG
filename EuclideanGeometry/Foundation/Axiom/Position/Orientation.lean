@@ -11,7 +11,7 @@ open Classical
 
 variable {P : Type _} [EuclideanPlane P]
 
-/- Definition of the area of a triangle, could be used to develop orientation of triangles.-/
+/- Definition of the wedge of three points.-/
 
 section wedge
 
@@ -85,8 +85,6 @@ end wedge
 section oriented_distance
 
 def odist (A : P) (ray : Ray P) : ℝ := det ray.2.1 (VEC ray.1 A)
-
-/- may insert some theorems relating colinearity and zero directed distance, which might take some efforts-/
 
 theorem odist_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist A ray = Real.sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by sorry
 
