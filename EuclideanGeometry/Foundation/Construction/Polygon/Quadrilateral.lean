@@ -98,10 +98,20 @@ section property
 variable {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := sorry
+theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
+  have h: qdr_cvx.IsConvex := convex
+  unfold Quadrilateral.IsConvex at h
+  by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
+  exact k.left.symm
+  simp only [k, dite_false] at h
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₂₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := sorry
+theorem nd₂₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := by
+  have h: qdr_cvx.IsConvex := convex
+  unfold Quadrilateral.IsConvex at h
+  by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
+  exact k.right.symm
+  simp only [k, dite_false] at h
 
 /-- The non-degenerate diagonal from the first point and third point of a convex quadrilateral -/
 def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃
@@ -110,16 +120,36 @@ def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx
 def diag_nd₂₄ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := sorry
+theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := by
+  have h: qdr_cvx.IsConvex := convex
+  unfold Quadrilateral.IsConvex at h
+  by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
+  sorry
+  simp only [k, dite_false] at h
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 2nd point to the 3rd point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₂₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := sorry
+theorem nd₂₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := by
+  have h: qdr_cvx.IsConvex := convex
+  unfold Quadrilateral.IsConvex at h
+  by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
+  sorry
+  simp only [k, dite_false] at h
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 3rd point to the 4th point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₃₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₃ := sorry
+theorem nd₃₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₃ := by
+  have h: qdr_cvx.IsConvex := convex
+  unfold Quadrilateral.IsConvex at h
+  by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
+  sorry
+  simp only [k, dite_false] at h
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 1st point to the 4th point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₁₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₁ := sorry
+theorem nd₁₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₁ := by
+  have h: qdr_cvx.IsConvex := convex
+  unfold Quadrilateral.IsConvex at h
+  by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
+  sorry
+  simp only [k, dite_false] at h
 
 /-- The edge from the first point to the second point of a quadrilateral -/
 def edge_nd₁₂ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ (qdr_cvx.nd₁₂)
@@ -141,7 +171,10 @@ def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.
 
 /-- The interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals. -/
 theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄.1
-:= sorry
+:= by
+  constructor
+  sorry
+  sorry
 
 /-- Given a convex quadrilateral qdr_cvx, its 1st, 2nd and 3rd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₁ point₂}$ is not the same as the projective direction of the vector $\overrightarrow{point₁ point₃}$. -/
 theorem not_colinear₁₂₃ : ¬ colinear qdr_cvx.1.1 qdr_cvx.1.2 qdr_cvx.1.3 := sorry
@@ -154,6 +187,19 @@ theorem not_colinear₃₄₁ : ¬ colinear qdr_cvx.1.3 qdr_cvx.1.4 qdr_cvx.1.1 
 
 /-- Given a convex quadrilateral qdr_cvx, its 4th, 1st and 2nd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₄ point₁}$ is not the same as the projective direction of the vector $\overrightarrow{point₄ point₂}$. -/
 theorem not_colinear₄₁₂ : ¬ colinear qdr_cvx.1.4 qdr_cvx.1.1 qdr_cvx.1.2 := sorry
+
+/--angle at point₁ of qdr_cvx-/
+def angle₁ : Angle P := ANG qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.nd₁₄ qdr_cvx.nd₁₂
+
+/--angle at point₂ of qdr_cvx-/
+def angle₂ : Angle P := ANG qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.nd₁₂.symm qdr_cvx.nd₂₃
+
+/--angle at point₃ of qdr_cvx-/
+def angle₃ : Angle P := ANG qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.nd₂₃.symm qdr_cvx.nd₃₄
+
+/--angle at point₄ of qdr_cvx-/
+def angle₄ : Angle P := ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₃₄.symm qdr_cvx.nd₁₄.symm
+
 end property
 
 end Quadrilateral_cvx
