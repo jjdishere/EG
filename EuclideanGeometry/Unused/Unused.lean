@@ -197,7 +197,7 @@ theorem double_rev_eq_self  : seg.reverse.reverse = seg := sorry
 -- reversing the toDir does not change the property that a point lies on the directed segments.
 theorem IsOnDSeg_of_rev_of_IsOnDSeg (a : P) (lieson : a LiesOnDSeg seg) : a LiesOnDSeg seg.reverse := sorry
 
--- the operation of reversing the toDir commutes with coersion between directed segments and generalized directed segments.
+-- the operation of reversing the toDir commutes with coercion between directed segments and generalized directed segments.
 theorem DSeg.rev_toSeg_eq_toSeg_rev : seg.reverse.toSeg = (seg.toSeg).reverse := sorry
 
 -- theorem Seg.rev_toDSeg_eq_toDSeg_rev (nontriv : gseg.target ≠ gseg.source) : (gseg.reverse).toDSeg_of_nontriv (Seg.nontriv_of_rev_of_nontriv gseg nontriv) = (gseg.toDSeg_of_nontriv nontriv).reverse := sorry
@@ -386,7 +386,7 @@ end perpendicular
 theorem parallel_of_perp_perp {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ] : (A ⟂ B) → (B ⟂ C) → (A ∥ C)  := sorry
 -/ -/
 
-structure IsAngBisector {P : Type _} [EuclideanPlane P] (ang : Angle P) (ray : Ray P) : Prop where intro ::
+structure IsAngBis {P : Type _} [EuclideanPlane P] (ang : Angle P) (ray : Ray P) : Prop where intro ::
   eq_vtx : ang.source = ray.source
   bisect_ang : 2 * (Angle.mk ang.start_ray ray eq_vtx).value = ang.value
 

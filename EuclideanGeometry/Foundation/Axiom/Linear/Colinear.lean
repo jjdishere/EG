@@ -6,7 +6,7 @@ namespace EuclidGeom
 
 open Classical
 
-variable {P : Type _} [EuclideanPlane P] 
+variable {P : Type _} [EuclideanPlane P]
 
 section colinear
 
@@ -21,10 +21,10 @@ def colinear (A B C : P) : Prop := by
   · exact True
   · exact colinear_of_nd h
 
--- The definition of colinear now includes two cases: the degenerate case and the nondegenerate case. We use to_dir' to avoid problems involving using conditions of an "if" in its "then" and "else". And we only use VEC to define colinear. 
+-- The definition of colinear now includes two cases: the degenerate case and the nondegenerate case. We use to_dir' to avoid problems involving using conditions of an "if" in its "then" and "else". And we only use VEC to define colinear.
 
 /- Given three points $A$, $B$, $C$ and a real number $t$, if the vector $\overrightarrow{AC}$ is $t$ times the vector $\overrightarrow{AB}$, then $A$, $B$, and $C$ are colinear. -/
-theorem colinear_of_vec_eq_smul_vec {A B C : P} {t : ℝ} (e : VEC A C = t • VEC A B) : colinear A B C := by 
+theorem colinear_of_vec_eq_smul_vec {A B C : P} {t : ℝ} (e : VEC A C = t • VEC A B) : colinear A B C := by
   have : colinear A B C = True := by
     unfold colinear
     apply dite_eq_left_iff.mpr
@@ -76,7 +76,7 @@ theorem triv_colinear (A C : P) : (colinear A A C) := by
   exact h.2.2 rfl
 
 /- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are colinear (in that order), then $A$, $C$, $B$ are colinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity. -/
-theorem flip_colinear_snd_trd {A B C : P} (c : colinear A B C) : (colinear A C B) := by 
+theorem flip_colinear_snd_trd {A B C : P} (c : colinear A B C) : (colinear A C B) := by
   by_cases (B ≠ A) ∧ (C ≠ A)
   · rcases (colinear_iff_eq_smul_vec_of_ne h.1).1 c with ⟨t, e⟩
     have ht : t ≠ 0 := by
@@ -116,17 +116,17 @@ theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h
     have : C = A := (eq_iff_vec_eq_zero A C).mpr eq
     rw [this] ; apply triv_colinear
   apply colinear_of_vec_eq_smul_vec'
-  rw [eq,eq'] 
+  rw [eq,eq']
   use s/r
   simp only [Complex.real_smul, Complex.ofReal_div, Complex.ofReal_sub]
   rw [<-mul_assoc]
   simp only [ne_eq, mul_eq_mul_right_iff]
-  left 
+  left
   rw [mul_comm,mul_div,mul_comm,<-mul_div]
   rw [<-ne_eq] at nd
   have  : r/r = 1 := by apply div_self ; exact nd
   rw [<-Complex.ofReal_inj] at this
-  simp only [ne_eq, Complex.ofReal_div, Complex.ofReal_sub, Complex.ofReal_one] at this 
+  simp only [ne_eq, Complex.ofReal_div, Complex.ofReal_sub, Complex.ofReal_one] at this
   simp only [ne_eq, this, mul_one]
 
 /- Given three points $A$, $B$, $C$, if they are not colinear, then they are pairwise distinct, i.e. $C \neq B$, $A \neq C$, and $B \neq A$. -/
@@ -156,35 +156,35 @@ theorem Ray.colinear_of_lies_on {A B C : P} {ray : Ray P} (hA : A LiesOn ray) (h
     simp only [Complex.real_smul]
     rw [sub_mul]
   by_cases nd : b - a = 0
-  . have : b = a := by 
+  . have : b = a := by
       rw [<-sub_self a] at nd
       apply add_right_cancel_iff.mp nd
     rw [this] at ab
-    simp only [sub_self, zero_mul] at ab 
+    simp only [sub_self, zero_mul] at ab
     have : B = A := by apply (eq_iff_vec_eq_zero A B).mpr ab
-    rw [this] ; apply triv_colinear 
+    rw [this] ; apply triv_colinear
   apply colinear_of_vec_eq_smul_vec'
   use (c - a)/(b - a)
   rw [ac,ab]
   simp only [Complex.real_smul, Complex.ofReal_div, Complex.ofReal_sub]
   rw [<-mul_assoc]
   simp only [ne_eq, mul_eq_mul_right_iff]
-  left 
+  left
   rw [mul_comm,mul_div,mul_comm,<-mul_div]
   rw [<-ne_eq] at nd
-  have  : (b - a) / (b - a) = 1 := by apply div_self ; exact nd
+  have  : (b - a) / (b - a) = 1 := by field_simp
   rw [<-Complex.ofReal_inj] at this
-  simp only [ne_eq, Complex.ofReal_div, Complex.ofReal_sub, Complex.ofReal_one] at this 
+  simp only [ne_eq, Complex.ofReal_div, Complex.ofReal_sub, Complex.ofReal_one] at this
   simp only [ne_eq, this, mul_one]
 
 /- If $A$, $B$, $C$ are three points which lie on a segment, then they are colinear. -/
 theorem Seg.colinear_of_lies_on {A B C : P} {seg : Seg P} (hA : A LiesOn seg) (hB : B LiesOn seg) (hC : C LiesOn seg) : colinear A B C := by
-  by_cases nd : seg.source =seg.target 
+  by_cases nd : seg.source =seg.target
   . rcases hA with ⟨_,_,_,a⟩
-    simp only [nd, vec_same_eq_zero, smul_zero] at a 
+    simp only [nd, vec_same_eq_zero, smul_zero] at a
     have a_d : A = seg.target := by apply (eq_iff_vec_eq_zero seg.target A).mpr a
     rcases hB with ⟨_,_,_,b⟩
-    simp only [nd, vec_same_eq_zero, smul_zero] at b 
+    simp only [nd, vec_same_eq_zero, smul_zero] at b
     have b_d : B = seg.target := by apply (eq_iff_vec_eq_zero seg.target B).mpr b
     rw [a_d,b_d] ; apply triv_colinear
   rw [<-ne_eq] at nd
@@ -194,8 +194,11 @@ theorem Seg.colinear_of_lies_on {A B C : P} {seg : Seg P} (hA : A LiesOn seg) (h
   have hc : C LiesOn seg_nd.1 := by apply hC
   exact Ray.colinear_of_lies_on (Seg_nd.lies_on_toRay_of_lies_on ha) (Seg_nd.lies_on_toRay_of_lies_on hb) (Seg_nd.lies_on_toRay_of_lies_on hc)
 
+/-- Given two distinct points $A$ $B$, point $C$ are colinear with them if and only if  $C$ lies on the Ray $AB$ or Ray $BA$ -/
 theorem lies_on_ray_or_rev_from_seg_iff_colinear {A B C : P} (h: B ≠ A) :  colinear A B C ↔ C LiesOn (Seg_nd.mk A B h).toRay ∨ C LiesOn (Seg_nd.mk A B h).toRay.reverse := by sorry
 -- tip : theorem pt_lies_on_line_from_ray_iff_vec_parallel in Ray.ex may help.
+
+/-- Given two distinct points $A$ $B$, point $C$ are colinear with them if and only if  $C$ lies on the Ray $AB$ or Ray $BA$ -/
 theorem lies_on_ray_or_rev_iff_colinear {A B C : P} (h: B ≠ A) :  colinear A B C ↔ C LiesOn (Ray.mk_pt_pt A B h) ∨ C LiesOn (Ray.mk_pt_pt A B h).reverse := by sorry
 /-
 Note that we do not need all reverse, extension line,... here. instead we should show that
@@ -214,13 +217,13 @@ theorem nontriv_of_plane {H : Type _} [h : EuclideanPlane H] : ∃ A B C : H, ¬
   use A , B , C
   by_contra col
   rw [colinear_iff_eq_smul_vec_of_ne] at col
-  simp only [Dir.one_eq_one_toComplex, vec_of_pt_vadd_pt_eq_vec, Dir.I_toComplex_eq_I, Complex.real_smul] at col 
+  simp only [Dir.one_eq_one_toComplex, vec_of_pt_vadd_pt_eq_vec, Dir.I_toComplex_eq_I, Complex.real_smul] at col
   rcases col with ⟨r,eq⟩
-  simp only [mul_one] at eq 
+  simp only [mul_one] at eq
   have : (↑r : ℂ).im = 0 := by simp only [Complex.ofReal_im]
   rw [<-eq, Complex.I_im] at this
   linarith
   simp only [Dir.one_eq_one_toComplex, ne_eq, vadd_eq_self_iff_vec_eq_zero, one_ne_zero, not_false_eq_true]
-  
-  
+
+
 end EuclidGeom

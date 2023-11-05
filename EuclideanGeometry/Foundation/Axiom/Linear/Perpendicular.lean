@@ -3,6 +3,8 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 noncomputable section
 namespace EuclidGeom
 
+open Line
+
 variable {P : Type _} [EuclideanPlane P] {α β γ : Type*} [LinearObj α] [LinearObj β] [LinearObj γ]
   {l₁ : α} {l₂ : β} {l₃ : γ}
 
