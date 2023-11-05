@@ -159,6 +159,34 @@ def Seg_nd.toLine (seg_nd : Seg_nd P) : Line P := ⟦seg_nd.toRay⟧
 instance : Coe (Ray P) (Line P) where
   coe := Ray.toLine
 
+section ClassDirFig
+
+variable (P : Type _) [EuclideanPlane P]
+
+class DirFig (α : Type*) where
+  toDirLine : α → DirLine P
+
+instance DirLine.instDirFig : DirFig P (DirLine P) where
+  toDirLine l := l
+
+instance Ray.instDirFig : DirFig P (Ray P) where
+  toDirLine := Quotient.mk (@same_dir_line.setoid P _)
+
+instance Seg_nd.instDirFig : DirFig P (Seg_nd P) where
+  toDirLine s := Quotient.mk (@same_dir_line.setoid P _) s.toRay
+
+namespace DirFig
+
+variable {P : Type _} [EuclideanPlane P] {α : Type _} [DirFig P α] (l : α)
+
+def toDir : Dir := (@toDirLine P _ _ _ l).toDir
+
+-- And other definitions, such as IsLeft, IsRight, OnLine, odist, sign, and so on.
+
+end DirFig
+
+end ClassDirFig
+
 section carrier
 
 namespace Line
