@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Circle.Basic
+import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 
 /-!
 

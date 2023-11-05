@@ -22,13 +22,13 @@ def y_coordinate (v : V) := (Basis.coord h.basis 1).toFun v
 notation "x("v")" => x_coordinate v
 notation "y("v")" => y_coordinate v
 
-theorem eq_of_coord_eq {v₁ : V} {v₂ : V} (hx : x(v₁) = x(v₂)) (hy : y(v₁) = y(v₂)) : v₁ = v₂ := by 
+theorem eq_of_coord_eq {v₁ : V} {v₂ : V} (hx : x(v₁) = x(v₂)) (hy : y(v₁) = y(v₂)) : v₁ = v₂ := by
   rw [Basis.ext_elem_iff h.basis, Fin.forall_iff]
   intro i hi
-  cases i with 
-  | zero => exact hx  
-  | succ i' => 
-    cases i' with 
+  cases i with
+  | zero => exact hx
+  | succ i' =>
+    cases i' with
     | zero => exact hy
     | succ => linarith
 
@@ -44,7 +44,7 @@ end Cartesian2dVectorSpace
 
 -- Unused section Pythagoras in Vector
 
--- Our aim is to prove Pythagoras theorem in the file Perpendicular, but in this section, we will only prove that the inner product of to Vec_nd having same toProj is zero, which is the main theorem about toProj we will use in the proof of Pythagoras theorem. 
+-- Our aim is to prove Pythagoras theorem in the file Perpendicular, but in this section, we will only prove that the inner product of to Vec_nd having same toProj is zero, which is the main theorem about toProj we will use in the proof of Pythagoras theorem.
 
 /-!
 section Pythagoras
@@ -52,7 +52,7 @@ section Pythagoras
 theorem Dir.inner_eq_zero_of_toProj_eq_toProj_perp (d₁ d₂ : Dir) (h : d₁.toProj.perp = d₂.toProj) : Vec.InnerProductSpace.Core.inner d₁.toVec d₂.toVec = 0 := by
   let h' := Quotient.exact h
   unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
-  simp only [Con.rel_eq_coe, Con.rel_mk] at h' 
+  simp only [Con.rel_eq_coe, Con.rel_mk] at h'
   by_cases Dir.I * d₁ = d₂
   · rw [← h]
     unfold Dir.I HMul.hMul instHMul Mul.mul Dir.instMulDir Vec.toComplex Complex.toVec Vec.InnerProductSpace.Core
@@ -68,10 +68,10 @@ theorem Dir.inner_eq_zero_of_toProj_eq_toProj_perp (d₁ d₂ : Dir) (h : d₁.t
     ring
 
 theorem inner_eq_zero_of_toProj_perp_eq_toProj (v₁ v₂ : Vec_nd) (h : v₁.toProj.perp = v₂.toProj) : Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 = 0 := by
-  rw [← Vec_nd.norm_smul_normalize_eq_self v₁, ← Vec_nd.norm_smul_normalize_eq_self v₂]
-  let g := Dir.inner_eq_zero_of_toProj_eq_toProj_perp (Vec_nd.normalize v₁) (Vec_nd.normalize v₂) h
+  rw [← Vec_nd.norm_smul_to_dir_eq_self v₁, ← Vec_nd.norm_smul_to_dir_eq_self v₂]
+  let g := Dir.inner_eq_zero_of_toProj_eq_toProj_perp (Vec_nd.toDir v₁) (Vec_nd.toDir v₂) h
   unfold Vec.InnerProductSpace.Core at g
-  simp only at g 
+  simp only at g
   unfold Vec.InnerProductSpace.Core
   simp only [ne_eq, Prod.smul_fst, smul_eq_mul, Prod.smul_snd]
   rw [← mul_zero (Vec.norm v₁.1 * Vec.norm v₂.1), ← g]
@@ -91,7 +91,7 @@ theorem Pythagoras_of_ne_ne_perp' (P : Type _) [EuclideanPlane P] {A B C : P} (h
   simp only [seg_toVec_eq_vec]
   rw [← vec_sub_vec A B C]
   unfold Vec.InnerProductSpace.Core at i
-  simp only at i 
+  simp only at i
   unfold Vec.InnerProductSpace.Core
   simp only [HSub.hSub, Sub.sub]
   rw [← zero_add ((VEC A B).fst * (VEC A B).fst), ← zero_add ((VEC A B).fst * (VEC A B).fst), ← neg_zero, ← i]
@@ -139,7 +139,7 @@ section nondeg
 
 /- Directed segment -/
 class DSeg (P : Type _) [EuclideanPlane P] extends Ray P, Seg P where
-  on_ray : IsOnRay target toRay 
+  on_ray : IsOnRay target toRay
   non_triv : target ≠ source
 
 /- Define a point lies on an oriented segment, a line, a segment, immediate consequences -/
@@ -160,7 +160,7 @@ instance {P : Type _} [EuclideanPlane P] : Coe (DSeg P) (Seg P) where
 -- def Seg.toDSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv : l.target ≠ l.source): DSeg P where
 --   source := l.source
 --   target := l.target
---   toDir := Vec.normalize (l.target -ᵥ l.source) (vsub_ne_zero.mpr nontriv)
+--   toDir := Vec.toDir (l.target -ᵥ l.source) (vsub_ne_zero.mpr nontriv)
 --   on_ray := sorry
 --   non_triv := sorry
 
@@ -171,7 +171,7 @@ instance {P : Type _} [EuclideanPlane P] : Coe (DSeg P) (Seg P) where
 theorem DSeg.pt_on_toSeg_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toSeg := sorry
 
 -- mk method of DirSeg giving 2 distinct point
-def DSeg.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : DSeg P := sorry  
+def DSeg.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : DSeg P := sorry
 
 namespace DSeg
 
@@ -225,16 +225,16 @@ variable {P : Type _} [EuclideanPlane P]
 def IsOnPosSide (A : P) (ray : Ray P) : Prop := by
   by_cases A = ray.source
   · exact False
-  · exact (Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = 0 
+  · exact (Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = 0
 
 def IsOnNegSide (A : P) (ray : Ray P) : Prop := by
   by_cases A = ray.source
   · exact False
-  · exact (Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = π 
+  · exact (Angle.mk ray (Ray.mk_pt_pt ray.source A h ) rfl).value = π
 
 def IsSource (A : P) (ray : Ray P) : Prop := ray.source = A
 
-scoped infix : 50 "LiesOnPos" => IsOnPosSide 
+scoped infix : 50 "LiesOnPos" => IsOnPosSide
 scoped infix : 50 "LiesOnNeg" => IsOnNegSide
 scoped infix : 50 "LiesAtSource" => IsSource
 
@@ -246,7 +246,7 @@ open Classical
 
 /- Class of generalized triangles -/
 /-
-class Triangle' (P : Type _) [EuclideanPlane P] where 
+class Triangle' (P : Type _) [EuclideanPlane P] where
   point₁ : P
   point₂ : P
   point₃ : P
@@ -276,7 +276,7 @@ def edge₃ (tr : Triangle P) : DSeg P:= DSeg.mk_pt_pt tr.1 tr.2 tr.nontriv₃
 
 def IsInside  (A : P) (tr : Triangle P) : Prop := if tr.is_cclock then A LiesOnLeft tr.edge₁.toRay ∧ A LiesOnLeft tr.edge₂.toRay ∧ A LiesOnLeft tr.edge₃.toRay else A LiesOnRight tr.edge₁.toRay ∧ A LiesOnRight tr.edge₂.toRay ∧ A LiesOnRight tr.edge₃.toRay
 
-def area (tr : Triangle P) : ℝ := sorry 
+def area (tr : Triangle P) : ℝ := sorry
 
 end Triangle
 
@@ -318,13 +318,13 @@ scoped notation A "FallsIn" B => HasFallsIn.falls_in A B
 end HasFallsOn
 -/
 
-/-! 
+/-!
 
 -- scoped notation A "LiesInt" F => HasLiesInt.lies_int A F
 
-def IsFallsOn {α β : Type _} (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] : Prop := ∀ (A : P), (A LiesOn A) → (A LiesOn B) 
+def IsFallsOn {α β : Type _} (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] : Prop := ∀ (A : P), (A LiesOn A) → (A LiesOn B)
 
-def IsFallsIn {α β : Type _} (A : α) (B : β) [HasLiesIn P α] [HasLiesIn P β] : Prop := ∀ (A : P), (A LiesIn A) → (A LiesIn B) 
+def IsFallsIn {α β : Type _} (A : α) (B : β) [HasLiesIn P α] [HasLiesIn P β] : Prop := ∀ (A : P), (A LiesIn A) → (A LiesIn B)
 
 -- LiesOn → LiesInt is FallsInt ?
 
@@ -351,11 +351,11 @@ def IsIntersectionPoint {P : Type _} {α β : Type _} (A : P) (A : α) (B : β) 
 
 scoped notation p "IsIntersectionOf" A B => IsIntersectionPoint p A B
 
-/- 
+/-
 class HasProj (α : Type _) where
   toProj : (α → Proj)
 
-def parallel {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := HasProj.toProj A = HasProj.toProj B 
+def parallel {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := HasProj.toProj A = HasProj.toProj B
 
 scoped notation A "IsParallelTo" B => parallel A B
 scoped notation A "∥" B => parallel A B
@@ -368,7 +368,7 @@ protected theorem symm {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj 
 
 protected theorem trans {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ]: (A ∥ B) → (B ∥ C) → (A ∥ C) := Eq.trans
 
-end parallel 
+end parallel
 
 def perpendicular {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := sorry
 
@@ -385,5 +385,9 @@ end perpendicular
 
 theorem parallel_of_perp_perp {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ] : (A ⟂ B) → (B ⟂ C) → (A ∥ C)  := sorry
 -/ -/
+
+structure IsAngBis {P : Type _} [EuclideanPlane P] (ang : Angle P) (ray : Ray P) : Prop where intro ::
+  eq_vtx : ang.source = ray.source
+  bisect_ang : 2 * (Angle.mk ang.start_ray ray eq_vtx).value = ang.value
 
 end EuclidGeom

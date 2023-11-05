@@ -1,6 +1,6 @@
 /- Naming coventions:
 
-1. Name of theorems: 
+1. Name of theorems:
   (all non-special words are lower-cases, but special cases e.g. `toVec, toProj` do not change capital letters)
 theorem
   A_of_B means B → A
@@ -30,7 +30,7 @@ PRL (prl) -- parallellogram
 ∥ -- parallel
 
 in -- ∈
-subset -- ⊆ 
+subset -- ⊆
 para -- ∥  parallel
 perp -- ⟂ perpendicular
 cong -- ≅ congruent
@@ -47,12 +47,12 @@ col -- colinear
 cyc -- cyclic
 inter -- interior
 on -- only in the case of circle
-angbis -- angle bisector
-perpbis -- perpendicular bisector
+ang_bis -- angle bisector
+perp_bis -- perpendicular bisector
 tang -- tangent
 disj -- disjoint
 rev -- reverse
-extn -- extension ray
+extn -- extension (ray)
 
 
 -/

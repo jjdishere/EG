@@ -45,8 +45,8 @@ def edge₂₃ : Seg P := SEG qdr.2 qdr.3
 /-- The edge from the third point to the fourth point of a quadrilateral -/
 def edge₃₄ : Seg P := SEG qdr.3 qdr.4
 
-/-- The edge from the fourth point to the first point of a quadrilateral -/
-def edge₄₁ : Seg P := SEG qdr.4 qdr.1
+/-- The edge from the 1st point to the 4th point of a quadrilateral -/
+def edge₁₄ : Seg P := SEG qdr.1 qdr.4
 
 /-- The diagonal from the first point to the third point of a quadrilateral -/
 def diag₁₃ : Seg P := SEG qdr.1 qdr.3
@@ -64,9 +64,9 @@ A quadrilateral is called convex if
 3. the interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals.
 -/
 def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
-  by_cases ((qdr.point₃ ≠ qdr.point₁) ∧ (qdr.point₄ ≠ qdr.point₂))
-  · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ h.2 ∥ (SEG_nd qdr.point₁ qdr.point₃ h.1))
-    · exact Line.inx (SEG_nd qdr.point₁ qdr.point₃ h.1).toLine (SEG_nd qdr.point₂ qdr.point₄ h.2).toLine g LiesInt (SEG qdr.point₁ qdr.point₃) ∧ Line.inx (SEG_nd qdr.point₁ qdr.point₃ h.1).toLine (SEG_nd qdr.point₂ qdr.point₄ h.2).toLine g LiesInt (SEG qdr.point₂ qdr.point₄)
+  by_cases ((qdr.point₁ ≠ qdr.point₃) ∧ (qdr.point₂ ≠ qdr.point₄))
+  · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ (h.2).symm ∥ (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm))
+    · exact Line.inx (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm).toLine (SEG_nd qdr.point₂ qdr.point₄ (h.2).symm).toLine g LiesInt (SEG qdr.point₁ qdr.point₃) ∧ Line.inx (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm).toLine (SEG_nd qdr.point₂ qdr.point₄ (h.2).symm).toLine g LiesInt (SEG qdr.point₂ qdr.point₄)
     · exact False
   · exact False
 
@@ -112,26 +112,26 @@ def diag_nd₂₄ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
 theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := sorry
 
-/-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
+/-- Given a convex quadrilateral qdr_cvx, edge from the 2nd point to the 3rd point is not degenerate, i.e. the second point is not equal to the first point. -/
 theorem nd₂₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := sorry
 
-/-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
+/-- Given a convex quadrilateral qdr_cvx, edge from the 3rd point to the 4th point is not degenerate, i.e. the second point is not equal to the first point. -/
 theorem nd₃₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₃ := sorry
 
-/-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₄₁ : qdr_cvx.point₁ ≠ qdr_cvx.point₄ := sorry
+/-- Given a convex quadrilateral qdr_cvx, edge from the 1st point to the 4th point is not degenerate, i.e. the second point is not equal to the first point. -/
+theorem nd₁₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₁ := sorry
 
 /-- The edge from the first point to the second point of a quadrilateral -/
-def edge_nd₁₂ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.nd₁₂
+def edge_nd₁₂ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ (qdr_cvx.nd₁₂)
 
 /-- The edge from the second point to the third point of a quadrilateral -/
-def edge_nd₂₃ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.nd₂₃
+def edge_nd₂₃ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃ (qdr_cvx.nd₂₃)
 
 /-- The edge from the third point to the fourth point of a quadrilateral -/
-def edge_nd₃₄ : Seg_nd P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.nd₃₄
+def edge_nd₃₄ : Seg_nd P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ (qdr_cvx.nd₃₄)
 
 /-- The edge from the fourth point to the first point of a quadrilateral -/
-def edge_nd₄₁ : Seg_nd P := SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₄₁
+def edge_nd₁₄ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₄ (qdr_cvx.nd₁₄)
 
 /-- Two diagonals are not parallel to each other -/
 theorem diag_not_para : ¬ qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := sorry
