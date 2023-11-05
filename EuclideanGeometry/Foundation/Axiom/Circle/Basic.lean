@@ -6,7 +6,7 @@ namespace EuclidGeom
 
 /- Class of Circles-/
 @[ext]
-class Circle (P : Type _) [EuclideanPlane P] where 
+class Circle (P : Type _) [EuclideanPlane P] where
   center : P
   radius : ℝ
   rad_pos : 0 < radius
@@ -63,7 +63,7 @@ instance : Carrier P (Circle P) where
 instance : Interior P (Circle P) where
   interior := fun ω => ω.interior
 
-end Circle 
+end Circle
 
 /- `One seldom uses Inside a circle in reality.` Should we delete this? Int On Out is enough-/
 scoped infix : 50 "LiesIn" => Circle.IsInside
