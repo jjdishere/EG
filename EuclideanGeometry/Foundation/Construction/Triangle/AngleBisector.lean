@@ -39,23 +39,23 @@ end Angle
 
 namespace Angle
 
-theorem ang_bis_is_ang_bis : sorry := sorry
+theorem angbis_is_angbis : sorry := sorry
 
-theorem ang_bis_line_is_ang_bis_line : sorry := sorry
+theorem angbisline_is_angbisline : sorry := sorry
 
-theorem ex_ang_bis_is_ex_ang_bis : sorry := sorry
+theorem exangbis_is_exangbis : sorry := sorry
 
-theorem ex_ang_bis_line_is_ex_ang_bis_line : sorry := sorry
+theorem exangbisline_is_exangbisline : sorry := sorry
 
 end Angle
 
 /-definition property: lies on the bis means bisect the angle-/
-theorem lie_on_ang_bis (ang: Angle P) (A : P): sorry := sorry
+theorem lie_on_angbis (ang: Angle P) (A : P): sorry := sorry
 
 /- underlying line of bis as the locus satisfying the sum of distance to each ray of the angle is 0 -/
-theorem lie_on_ang_bis_line_of_distance_zero (ang: Angle P) : sorry := sorry
+theorem lie_on_angbisline_of_distance_zero (ang: Angle P) : sorry := sorry
 
-theorem lie_on_ang_bis_of_lie_on_bis_line_inside_angle (ang : Angle P)  : sorry := sorry
+theorem lie_on_angbis_of_lie_on_angbisline_inside_angle (ang : Angle P)  : sorry := sorry
 
 /-bis lies inside the angle-/
 
