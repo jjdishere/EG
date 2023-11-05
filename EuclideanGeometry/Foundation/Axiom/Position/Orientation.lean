@@ -1,6 +1,7 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
+import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 
 /- This file discuss the relative positions of points and rays on a plane. -/
 noncomputable section
@@ -43,7 +44,7 @@ theorem wedge231 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge312, wed
 
 theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, wedge231]
 
-theorem area_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) := by
+theorem wedge_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) := by
   dsimp only [wedge]
   have vecabnd : VEC A B ≠ 0 := by
    exact (ne_iff_vec_ne_zero A B).mp aneb
@@ -57,7 +58,26 @@ theorem area_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : 
 
 theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B C = 0) := sorry
 
-theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (wedge A B C > 0) ↔ ((Angle.mk_pt_pt_pt B A C (sorry) (sorry)).value > 0) := sorry
+theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge A B C) ↔ (0 < (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value ∧ (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value < π) := by
+  have h1 : 0 < (SEG A B).length := by
+      have abnd : (SEG A B).is_nd := (ne_of_not_colinear nd).2.2
+      exact length_pos_iff_nd.mpr (abnd)
+  have h2 : 0 < (SEG A C).length := by
+      have acnd : (SEG A C).is_nd := (ne_of_not_colinear nd).2.1.symm
+      exact length_pos_iff_nd.mpr (acnd)
+  constructor
+  · intro h0
+    rw[wedge_eq_sine_mul_lenght_mul_length A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm] at h0
+    have h3 : 0 < Real.sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := by
+      field_simp at h0
+      exact h0
+    rw [sin_pos_iff_angle_pos] at h3
+    exact h3
+  rw[wedge_eq_sine_mul_lenght_mul_length A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm]
+  intro h0
+  have h3 : 0 < Real.sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_angle_pos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
+  field_simp
+  exact h2
 
 end wedge
 
