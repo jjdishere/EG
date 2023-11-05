@@ -339,6 +339,32 @@ theorem pos_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : ℝ) (hang₁ : (0 < 
   linarith [(@Int.cast_lt ℝ _ _ (0 : ℤ) k).1 (Eq.trans_lt (by norm_num) ((mul_lt_mul_left (Right.mul_pos zero_lt_two Real.pi_pos)).1 i₂)), (@Int.cast_lt ℝ _ _ k (1 : ℤ)).1 (Eq.trans_gt (id (Eq.symm (by norm_num))) ((mul_lt_mul_left (Right.mul_pos zero_lt_two Real.pi_pos)).1 i₁))]
   exact fun a => congrArg Real.cos a
 
+theorem neg_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : ℝ) (hang₁ : (-π < ang₁) ∧ (ang₁ < 0)) (hang₂ : (-π < ang₂) ∧ (ang₂ < 0)) : Real.cos ang₁ = Real.cos ang₂ ↔ ang₁ = ang₂ := by
+  let pos_ang₁ := -ang₁
+  let pos_ang₂ := -ang₂
+  have pos_hang₁ : (0 < pos_ang₁) ∧ (pos_ang₁ < π) := by
+    constructor
+    · simp
+      exact hang₁.2
+    simp
+    linarith [hang₁.1]
+  have pos_hang₂ : (0 < pos_ang₂) ∧ (pos_ang₂ < π) := by
+    constructor
+    · simp
+      exact hang₂.2
+    simp
+    linarith [hang₂.1]
+  constructor
+  intro k
+  have h : Real.cos pos_ang₁ = Real.cos pos_ang₂ := by
+    simp
+    exact k
+  have p : pos_ang₁ = pos_ang₂ := by
+    exact (pos_angle_eq_angle_iff_cos_eq_cos pos_ang₁ pos_ang₂ pos_hang₁ pos_hang₂).mp h
+  simp at p
+  exact p
+  exact fun a => congrArg Real.cos a
+
 section Make_angle_theorems
 
 @[simp]
