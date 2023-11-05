@@ -129,7 +129,21 @@ scoped infix : 50 "LiesOnRight" => IsOnRightSide
 
 section handside
 
-theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (RAY A B bnea)  ray) : ray.sign A = ray.sign B := sorry
+theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (RAY A B bnea)  ray) : ray.sign A = ray.sign B := by
+  have h0 : odist A ray = odist B ray := by
+    unfold odist
+    have h1 : det ray.2.1 (VEC ray.1 B) = det ray.2.1 (VEC ray.1 A) + det ray.2.1 (VEC A B) := by
+      rw [←vec_add_vec ray.1 A B]
+      rw [det_add_right_eq_add_det]
+    have h2 : det ray.2.1 (VEC A B) = 0 := by
+      unfold parallel at para
+      unfold LinearObj.toProj at para
+      sorry
+    rw [h2] at h1
+    rw [add_zero] at h1
+    exact h1.symm
+  unfold Ray.sign
+  rw [h0]
 
 theorem no_intersect_of_same_sign (A B : P) (ray : Ray P) (signeq : (ray.sign A) * (ray.sign B) = 1) : ¬∃ (C : P), (Seg.IsOn C (SEG A B)) ∧ (Line.IsOn C ray.toLine) := sorry
 
