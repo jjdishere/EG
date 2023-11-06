@@ -37,7 +37,7 @@ import EuclideanGeometry.Foundation.Axiom.Circle.IncribedAngle
 import EuclideanGeometry.Foundation.Tactic.Congruence.Attr
 import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence
 -- import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence' -- `need to avoid some name collision during initialization?`
-
+import EuclideanGeometry.Foundation.Tactic.Colinear.perm_colinear
 
 /- Constuction -/
 import EuclideanGeometry.Foundation.Construction.Inversion
