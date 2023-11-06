@@ -251,7 +251,23 @@ theorem DirLine.lies_on_iff_lies_on_toline {A : P} {l : DirLine P}: (A LiesOn l.
 
 end carrier
 
--- def DirLine.reverse (l : DirLine P) : DirLine P :=
+section dirline_to_ray
+
+-- the assumption h is for properties, not for construction
+-- this def have to appear after carrier is defined
+def Ray.mk_pt_dirline (A : P) (l : DirLine P) (h : A LiesOn l) : Ray P := Ray.mk A l.toDir
+
+theorem ray_of_pt_dirline_todirline_eq_dirline (A : P) (l : DirLine P) (h : A LiesOn l) : (Ray.mk_pt_dirline A l h).toDirLine = l := by
+  revert l
+  apply Quotient.ind
+  intro r h
+  exact Quotient.sound' $ same_dir_line.symm ⟨rfl, h⟩
+
+theorem ray_of_pt_dirline_todirline_todir_eq_dirline_todir (A : P) (l : DirLine P) (h : A LiesOn l) : (Ray.mk_pt_dirline A l h).toDir = l.toDir := rfl
+
+end dirline_to_ray
+
+def DirLine.reverse (l : DirLine P) : DirLine P := Quotient.lift (⟦·.reverse⟧) (sorry) l
 
 namespace Line
 

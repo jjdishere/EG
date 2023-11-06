@@ -32,6 +32,9 @@ instance : LinearObj (Ray P) where
 instance : LinearObj (Seg_nd P) where
   toProj := fun l ↦ l.toProj
 
+instance : LinearObj (DirLine P) where
+  toProj := fun l ↦ l.toProj
+
 instance : LinearObj (Line P) where
   toProj := fun l ↦ l.toProj
 

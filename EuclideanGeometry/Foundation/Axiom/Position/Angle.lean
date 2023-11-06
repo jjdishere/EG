@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Linear.Ray
+import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 
 noncomputable section
 namespace EuclidGeom
@@ -23,6 +23,11 @@ def mk_ray_pt (ray : Ray P) (A : P) (h : A ≠ ray.source ) : Angle P where
   start_ray := ray
   end_ray := Ray.mk_pt_pt ray.source A h
   source_eq_source := rfl
+
+def mk_dirline_dirline (l₁ l₂ : DirLine P) (h' : ¬  l₁ ∥ l₂) : Angle P where
+  start_ray := Ray.mk_pt_dirline (LineInt l₁.toLine l₂.toLine sorry) l₁ sorry
+  end_ray := sorry
+  source_eq_source := sorry
 
 def value (A : Angle P): ℝ := Dir.angle (A.start_ray.toDir) (A.end_ray.toDir)
 
