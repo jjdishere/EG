@@ -179,6 +179,34 @@ instance : Coe (Ray P) (Line P) where
 
 end coercion_compatibility
 
+section ClassDirFig
+
+variable (P : Type _) [EuclideanPlane P]
+
+class DirFig (α : Type*) where
+  toDirLine : α → DirLine P
+
+instance DirLine.instDirFig : DirFig P (DirLine P) where
+  toDirLine l := l
+
+instance Ray.instDirFig : DirFig P (Ray P) where
+  toDirLine := Quotient.mk (@same_dir_line.setoid P _)
+
+instance Seg_nd.instDirFig : DirFig P (Seg_nd P) where
+  toDirLine s := Quotient.mk (@same_dir_line.setoid P _) s.toRay
+
+namespace DirFig
+
+variable {P : Type _} [EuclideanPlane P] {α : Type _} [DirFig P α] (l : α)
+
+def toDir : Dir := (@toDirLine P _ _ _ l).toDir
+
+-- And other definitions, such as IsLeft, IsRight, OnLine, odist, sign, and so on.
+
+end DirFig
+
+end ClassDirFig
+
 section carrier
 
 namespace Line
@@ -255,7 +283,6 @@ theorem eq_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l₂ : Line P} (
   rw [← eq_line_of_pt_pt_of_ne h hA₁ hB₁]
   exact eq_line_of_pt_pt_of_ne h hA₂ hB₂
 
---**This theorem may be moved to section pt_pt with modifying this proof, perhaps merged with theorem eq_line_of_pt_pt_of_ne in Line.ex.
 theorem eq_pt_pt_line_iff_lies_on {A B : P} {l : Line P} (h : B ≠ A) : A LiesOn l ∧ B LiesOn l ↔ LIN A B h = l := by
   refine' ⟨fun ⟨ha, hb⟩ ↦ eq_line_of_pt_pt_of_ne h ha hb, fun lAB ↦ _⟩
   rw [← lAB]
@@ -501,26 +528,15 @@ theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
       | inr c =>
         exact Ray.colinear_of_lies_on a b c
 
-theorem maximal' {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h : B ≠ A) (Co : colinear A B C) : C LiesOn l := by
-  have : C LiesOn (Ray.mk_pt_pt A B h) ∨ C LiesOn (Ray.mk_pt_pt A B h).reverse := (lies_on_ray_or_rev_iff_colinear h).mp Co
-  by_cases Cry : C LiesOn (Ray.mk_pt_pt A B h)
-  · rw [← (pt_pt_lies_on_iff_ray_toLine h).mp ⟨h₁, h₂⟩]
-    apply Ray.subset_toLine
-    exact Cry
-  · rw [← (pt_pt_lies_on_iff_ray_toLine h).mp ⟨h₁, h₂⟩]
-    rw [Ray.toLine_eq_rev_toLine]
-    apply Ray.subset_toLine
-    tauto
 
-theorem maximal {l : Line P} {A B C : P} (h₁ : A ∈ l.carrier) (h₂ : B ∈ l.carrier) (h : B ≠ A) (Co : colinear A B C) : C ∈ l.carrier := by
-  have hl : C LiesOn l := by
-    apply maximal' _ _ h Co
-    · exact h₁
-    · exact h₂
-  exact Line.in_carrier_iff_lies_on.mp hl
+theorem pt_pt_maximal {A B C : P} (h : B ≠ A) (Co : colinear A B C) : C LiesOn (LIN A B h) := sorry
 
-theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) (X : P) : (X LiesOn (LIN A B h)) ↔ colinear A B X :=
-  ⟨fun hx ↦ (LIN A B h).linear (fst_pt_lies_on_mk_pt_pt h) (snd_pt_lies_on_mk_pt_pt h) hx,
+theorem maximal {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h : B ≠ A) (Co : colinear A B C) : C LiesOn l := by
+  rw [← eq_line_of_pt_pt_of_ne h h₁ h₂]
+  exact pt_pt_maximal h Co
+
+theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) (X : P) : (X LiesOn (LIN A B h)) ↔ colinear A B X := ⟨
+  fun hx ↦ (LIN A B h).linear (fst_pt_lies_on_mk_pt_pt h) (snd_pt_lies_on_mk_pt_pt h) hx,
   fun c ↦ (LIN A B h).maximal (fst_pt_lies_on_mk_pt_pt h) (snd_pt_lies_on_mk_pt_pt h) h c⟩
 
 -- This is also a typical proof that shows how to use linear, maximal, nontriv of a line. Please write it shorter in future.

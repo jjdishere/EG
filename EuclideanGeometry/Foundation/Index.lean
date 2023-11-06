@@ -22,7 +22,7 @@ import EuclideanGeometry.Foundation.Axiom.Isometry.Translation_ex
 /- Axiom.Triangle -/
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
-import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence'
+-- import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence' -- `to avoid ambiguous notation`
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
 import EuclideanGeometry.Foundation.Axiom.Triangle.Similarity
