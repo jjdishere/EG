@@ -52,7 +52,7 @@ scoped infix : 50 "ParallelTo" => parallel
 /-- This is to rewrite \verb|parallel l l'| as $l \parallel l'$. -/
 scoped infix : 50 "∥" => parallel
 
-/- lots of trivial parallel relation of vec of 2 pt lies on Line, coersions, ... -/
+/- lots of trivial parallel relation of vec of 2 pt lies on Line, coercions, ... -/
 
 section parallel_theorem
 ---- `eq_toProj theorems should be relocate to this file, they are in Line_ex now`.
@@ -232,7 +232,7 @@ theorem intersection_of_nonparallel_line_lies_on_snd_line {l₁ l₂ : Line P} (
 /-!
 -- Now let's come to rays.
 -- If ray₁ and ray₂ are two rays that are not parallel, then the following function returns the unique point of the intersection of the associated two lines. This function is a bit tricky, will come back to this.
--- `Should we define this concept? Why don't we just use Intersection of Lines and use coersion (ray : Line)`
+-- `Should we define this concept? Why don't we just use Intersection of Lines and use coercion (ray : Line)`
 def Intersection_of_Lines_of_Rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : P := sorry
 
 scoped notation "RayInx" => Intersection_of_Lines_of_Rays
