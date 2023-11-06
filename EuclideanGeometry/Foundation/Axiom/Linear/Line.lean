@@ -148,7 +148,11 @@ def DirLine.toDir (l : DirLine P) : Dir := Quotient.lift (s := same_dir_line.set
 
 def DirLine.toProj (l : DirLine P) : Proj := l.toDir.toProj
 
-def DirLine.toLine (l : DirLine P) : Line P := sorry --`TBA`
+def DirLine.toLine (l : DirLine P) : Line P := Quotient.lift (⟦·⟧) (fun _ _ h => Quotient.sound $ same_dir_line_le_same_extn_line h) l
+
+def Ray.toDirLine (ray : Ray P) : DirLine P := ⟦ray⟧
+
+def Seg_nd.toDirLine (seg_nd : Seg_nd P) : DirLine P := seg_nd.toRay.toDirLine
 
 def Line.toProj (l : Line P) : Proj := Quotient.lift (s := same_extn_line.setoid) (fun ray : Ray P => ray.toProj) (fun _ _ h => h.left) l
 
@@ -156,8 +160,24 @@ def Ray.toLine (ray : Ray P) : Line P := ⟦ray⟧
 
 def Seg_nd.toLine (seg_nd : Seg_nd P) : Line P := ⟦seg_nd.toRay⟧
 
+end coercion
+
+section coercion_compatibility
+
+theorem DirLine.toproj_eq_toline_toproj (l : DirLine P) : l.toProj = l.toLine.toProj := sorry
+
+theorem Ray.toline_eq_todirline_toline (ray : Ray P) : ray.toLine = ray.toDirLine.toLine := rfl
+
+instance : Coe (Ray P) (DirLine P) where
+  coe := Ray.toDirLine
+
+instance : Coe (DirLine P) (Line P) where
+  coe := DirLine.toLine
+
 instance : Coe (Ray P) (Line P) where
   coe := Ray.toLine
+
+end coercion_compatibility
 
 section carrier
 
@@ -170,9 +190,18 @@ protected def IsOn (A : P) (l : Line P) : Prop :=
   A ∈ l.carrier
 
 instance : Carrier P (Line P) where
-  carrier := fun l => l.carrier
+  carrier := Line.carrier
 
 end Line
+
+namespace DirLine
+
+protected def carrier (l : DirLine P) : Set P := l.toLine.carrier
+
+instance : Carrier P (DirLine P) where
+  carrier := DirLine.carrier
+
+end DirLine
 
 --**section carrier in here may overlap with "section coercion in Line_ex" and may need to be unified. (carrier vs lieson)
 theorem Ray.toLine_carrier_eq_ray_carrier_union_rev_carrier (r : Ray P) : r.toLine.carrier = r.carrier ∪ r.reverse.carrier := rfl
@@ -180,13 +209,21 @@ theorem Ray.toLine_carrier_eq_ray_carrier_union_rev_carrier (r : Ray P) : r.toLi
 /-- A point lies on a line associated to a ray if and only if it lies on the ray or the reverse of the ray. -/
 theorem Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev {A : P} {r : Ray P}: (A LiesOn r.toLine) ↔ (A LiesOn r) ∨ (A LiesOn r.reverse) := Iff.rfl
 
+-- to be deleted
 theorem Ray.in_carrier_toLine_iff_in_or_in_rev {r : Ray P} {A : P} : (A ∈ r.toLine.carrier) ↔ ((A ∈ r.carrier) ∨ (A ∈ r.reverse.carrier)) := Iff.rfl
 
+-- to be deleted
 theorem Line.in_carrier_iff_lies_on {l : Line P} {A : P} : A LiesOn l ↔ A ∈ l.carrier := Iff.rfl
+
+theorem Ray.lies_on_todirline_iff_lies_on_or_lies_on_rev {A : P} {r : Ray P}: (A LiesOn r.toDirLine) ↔ (A LiesOn r) ∨ (A LiesOn r.reverse) := Iff.rfl
+
+theorem DirLine.lies_on_iff_lies_on_toline {A : P} {l : DirLine P}: (A LiesOn l.toLine) ↔ (A LiesOn l) := Iff.rfl
+
+-- add lies on ray implies lies on ray.toLine, ray.toDirLine. Similar for seg_nd
 
 end carrier
 
-
+-- def DirLine.reverse (l : DirLine P) : DirLine P :=
 
 namespace Line
 
@@ -478,8 +515,8 @@ theorem maximal' {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l
 theorem maximal {l : Line P} {A B C : P} (h₁ : A ∈ l.carrier) (h₂ : B ∈ l.carrier) (h : B ≠ A) (Co : colinear A B C) : C ∈ l.carrier := by
   have hl : C LiesOn l := by
     apply maximal' _ _ h Co
-    · exact Line.in_carrier_iff_lies_on.mpr h₁
-    · exact Line.in_carrier_iff_lies_on.mpr h₂
+    · exact h₁
+    · exact h₂
   exact Line.in_carrier_iff_lies_on.mp hl
 
 theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) (X : P) : (X LiesOn (LIN A B h)) ↔ colinear A B X :=
@@ -544,7 +581,5 @@ end Archimedean_property
 --**end Archimedean_property--
 
 end Line
-
-end coercion
 
 end EuclidGeom
