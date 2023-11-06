@@ -376,7 +376,7 @@ theorem triv_of_acongr_self (h : tr IsACongrTo tr) : ¬ tr.is_nd := by
    rcases h with ⟨anti_angle,_⟩
    have eq_zero : Angle.value tr_nd.angle₁ = 0 := by linarith
    unfold Triangle_nd.angle₁ at eq_zero
-   have col := Angle.colinear_of_zero_angle eq_zero
+   have col := colinear_of_zero_angle eq_zero
    unfold Triangle.is_nd at nd
    apply nd ; exact col
 
