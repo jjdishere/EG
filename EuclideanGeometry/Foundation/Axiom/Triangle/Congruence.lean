@@ -236,7 +236,7 @@ def IsACongr (tr₁ tr₂: Triangle P) : Prop := by
 
 scoped infix : 50 "IsACongrTo" => IsACongr
 
-scoped infix : 50 "≅ₐ" => IsACongr --do we need?
+-- scoped infix : 50 "≅ₐ" => IsACongr --do we need?
 
 namespace IsACongr
 

@@ -169,7 +169,7 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   simp only [Seg.toVec,he]
   apply Seg.vec_source_midpt
 
-lemma ade_acongr_cde : (TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)) IsACongrTo (TRI_nd C D E (@hnd'' P _ A B C hnd D hd E he)) := sorry
+lemma ade_acongr_cde : (TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)) ≅ₐ (TRI_nd C D E (@hnd'' P _ A B C hnd D hd E he)) := sorry
   --need to define the value of right angle
   --by_SAS (acongr)
 
