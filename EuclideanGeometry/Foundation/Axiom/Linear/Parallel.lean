@@ -76,11 +76,14 @@ theorem Seg_nd.para_toLine (seg_nd : Seg_nd P) : seg_nd ∥ seg_nd.toLine := rfl
 
 -- many more...
 
+
 /-- Given two parallel rays, there extension lines are parallel -/
 theorem Ray.para_toLine_of_para (ray ray' : Ray P) (h : ray ∥ ray') : ray.toLine ∥ ray'.toLine := h
 
 /-- Given two rays, if there extension lines are not parallel, they are not parallel -/
 theorem Ray.not_para_of_not_para_toLine (ray ray' : Ray P) (h : ¬ ray.toLine ∥ ray'.toLine) : ¬ ray ∥ ray' := h
+
+-- `many many theorems, saying same holds for every coersion`
 
 end parallel_theorem
 
