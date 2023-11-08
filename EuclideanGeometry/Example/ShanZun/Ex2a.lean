@@ -17,7 +17,7 @@ lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
 --Introduce the midpoint D
 variable {D : P} {hd : D = (SEG B C).midpoint}
 --Introduce two points colinear and the orthogonality. The colinear condition is not helpful.
-variable {E F : P} {he : E LiesOn LINE A B ∧ E LiesOn Line.mk_pt_proj A (ANG B A C b_ne_a c_ne_a).bisector.toProj.perp} {hf : F LiesOn LINE AC ∧ F LiesOn Line.mk_pt_proj A (ANG B A C b_ne_a c_ne_a).bisector.toProj.perp}
+variable {E F : P} {he : E LiesOn LINE A B ∧ E LiesOn Line.mk_pt_proj A (ANG B A C b_ne_a c_ne_a).bisector.toProj.perp} {hf : F LiesOn LINE A C ∧ F LiesOn Line.mk_pt_proj A (ANG B A C b_ne_a c_ne_a).bisector.toProj.perp}
 
 theorem Shan_Problem_2_13 : (SEG B E).length=|((SEG A B).length-(SEG A C).length)|/2 ∧ (SEG C F).length = |((SEG A B).length-(SEG A C).length)|/2 := sorry
 
