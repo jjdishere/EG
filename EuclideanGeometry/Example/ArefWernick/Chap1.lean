@@ -34,10 +34,10 @@ theorem edge_toline_not_para_of_not_colinear {A B C : P} (h : ¬ colinear A B C)
   by_contra h1
   have eq1 : LIN A B (ne_of_not_colinear h).2.2 = LIN B C (ne_of_not_colinear h).1 := by
     apply eq_of_parallel_and_pt_lies_on
-    exact (SEG_nd A B (ne_of_not_colinear h).2.2).target_lies_on_toLine
-    exact (SEG_nd B C (ne_of_not_colinear h).1).source_lies_on_toLine
+    exact (SEG_nd A B (ne_of_not_colinear h).2.2).target_lies_on_toline
+    exact (SEG_nd B C (ne_of_not_colinear h).1).source_lies_on_toline
     exact h1
-  have a_lies_on_ab : A LiesOn (LIN A B (ne_of_not_colinear h).2.2) := (SEG_nd A B (ne_of_not_colinear h).2.2).source_lies_on_toLine
+  have a_lies_on_ab : A LiesOn (LIN A B (ne_of_not_colinear h).2.2) := (SEG_nd A B (ne_of_not_colinear h).2.2).source_lies_on_toline
   have a_not_lies_on_bc := (Line.lies_on_line_of_pt_pt_iff_colinear (ne_of_not_colinear h).1 A).mp.mt (flip_colinear_snd_trd.mt (flip_colinear_fst_snd.mt h))
   simp only[← eq1] at a_not_lies_on_bc
   apply a_not_lies_on_bc
@@ -46,10 +46,10 @@ theorem edge_toline_not_para_of_not_colinear {A B C : P} (h : ¬ colinear A B C)
   by_contra h2
   have eq2 : LIN B C (ne_of_not_colinear h).1 = LIN C A (ne_of_not_colinear h).2.1 := by
     apply eq_of_parallel_and_pt_lies_on
-    exact (SEG_nd B C (ne_of_not_colinear h).1).target_lies_on_toLine
-    exact (SEG_nd C A (ne_of_not_colinear h).2.1).source_lies_on_toLine
+    exact (SEG_nd B C (ne_of_not_colinear h).1).target_lies_on_toline
+    exact (SEG_nd C A (ne_of_not_colinear h).2.1).source_lies_on_toline
     exact h2
-  have b_lies_on_bc : B LiesOn (LIN B C (ne_of_not_colinear h).1) := (SEG_nd B C (ne_of_not_colinear h).1).source_lies_on_toLine
+  have b_lies_on_bc : B LiesOn (LIN B C (ne_of_not_colinear h).1) := (SEG_nd B C (ne_of_not_colinear h).1).source_lies_on_toline
   have b_not_lies_on_ca := (Line.lies_on_line_of_pt_pt_iff_colinear (ne_of_not_colinear h).2.1 B).mp.mt (flip_colinear_fst_snd.mt (flip_colinear_snd_trd.mt h))
   simp only[← eq2] at b_not_lies_on_ca
   apply b_not_lies_on_ca
@@ -57,10 +57,10 @@ theorem edge_toline_not_para_of_not_colinear {A B C : P} (h : ¬ colinear A B C)
   by_contra h3
   have eq3 : LIN C A (ne_of_not_colinear h).2.1 = LIN A B (ne_of_not_colinear h).2.2 := by
     apply eq_of_parallel_and_pt_lies_on
-    exact (SEG_nd C A (ne_of_not_colinear h).2.1).target_lies_on_toLine
-    exact (SEG_nd A B (ne_of_not_colinear h).2.2).source_lies_on_toLine
+    exact (SEG_nd C A (ne_of_not_colinear h).2.1).target_lies_on_toline
+    exact (SEG_nd A B (ne_of_not_colinear h).2.2).source_lies_on_toline
     exact h3
-  have c_lies_on_ca : C LiesOn (LIN C A (ne_of_not_colinear h).2.1) := (SEG_nd C A (ne_of_not_colinear h).2.1).source_lies_on_toLine
+  have c_lies_on_ca : C LiesOn (LIN C A (ne_of_not_colinear h).2.1) := (SEG_nd C A (ne_of_not_colinear h).2.1).source_lies_on_toline
   have c_not_lies_on_ab := (Line.lies_on_line_of_pt_pt_iff_colinear (ne_of_not_colinear h).2.2 C).mp.mt h
   simp only[← eq3] at c_not_lies_on_ab
   apply c_not_lies_on_ab
@@ -96,14 +96,14 @@ lemma b_ne_f : B ≠ F := by
     have line_neq : (LIN A B (b_ne_a (hnd := hnd))).toProj ≠ (LIN B C (b_ne_c (hnd := hnd)).symm).toProj := (edge_toline_not_para_of_not_colinear hnd).1
     have aa : D LiesOn (SEG_nd A B (b_ne_a (hnd := hnd))).1 := Seg.lies_on_of_lies_int hd
     have inxd : is_inx D (LIN B C (ne_of_not_colinear hnd).1) (LIN A B (ne_of_not_colinear hnd).2.2) := by
-      exact ⟨not, Seg_nd.lies_on_toLine_of_lie_on aa⟩
+      exact ⟨not, Seg_nd.lies_on_toline_of_lie_on aa⟩
     have inxb : is_inx B (LIN B C (ne_of_not_colinear hnd).1) (LIN A B (ne_of_not_colinear hnd).2.2) := by
-      exact ⟨(SEG_nd B C (ne_of_not_colinear hnd).1).source_lies_on_toLine , (SEG_nd A B (ne_of_not_colinear hnd).2.2).target_lies_on_toLine ⟩
+      exact ⟨(SEG_nd B C (ne_of_not_colinear hnd).1).source_lies_on_toline , (SEG_nd A B (ne_of_not_colinear hnd).2.2).target_lies_on_toline ⟩
     exact d_ne_b (unique_of_inx_of_line_of_not_para line_neq inxb inxd)
   have bcd_notcoli : ¬ colinear B C D := (Line.lies_on_line_of_pt_pt_iff_colinear (b_ne_c (hnd := hnd)).symm D).mpr.mt d_not_lies_on_bc
   have b_not_lies_on_cd : ¬ B LiesOn (LIN C D d_ne_c) := (Line.lies_on_line_of_pt_pt_iff_colinear d_ne_c B).mp.mt (flip_colinear_snd_trd.mt (flip_colinear_fst_snd.mt bcd_notcoli))
   have f_lies_on_seg_cd : F LiesOn (SEG_nd C D d_ne_c).1 := hf.2
-  exact (ne_of_lieson_and_not_lieson (Seg_nd.lies_on_toLine_of_lie_on f_lies_on_seg_cd) b_not_lies_on_cd).symm
+  exact (ne_of_lieson_and_not_lieson (Seg_nd.lies_on_toline_of_lie_on f_lies_on_seg_cd) b_not_lies_on_cd).symm
 lemma d_ne_f : D ≠ F := sorry
 
 theorem Aref_Wernick_Exercise_1_2 : ∠ B F D (b_ne_f (hnd := hnd) (hd := hd) (hf := hf)) d_ne_f = π / 2 - ∠ C A B (c_ne_a (hnd := hnd)) (b_ne_a (hnd := hnd)) := sorry

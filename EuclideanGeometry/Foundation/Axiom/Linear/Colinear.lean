@@ -195,7 +195,7 @@ theorem Seg.colinear_of_lies_on {A B C : P} {seg : Seg P} (hA : A LiesOn seg) (h
   have ha : A LiesOn seg_nd.1 := by apply hA
   have hb : B LiesOn seg_nd.1 := by apply hB
   have hc : C LiesOn seg_nd.1 := by apply hC
-  exact Ray.colinear_of_lies_on (Seg_nd.lies_on_toRay_of_lies_on ha) (Seg_nd.lies_on_toRay_of_lies_on hb) (Seg_nd.lies_on_toRay_of_lies_on hc)
+  exact Ray.colinear_of_lies_on (Seg_nd.lies_on_toray_of_lies_on ha) (Seg_nd.lies_on_toray_of_lies_on hb) (Seg_nd.lies_on_toray_of_lies_on hc)
 
 /-
 Note that we do not need all reverse, extension line,... here. instead we should show that

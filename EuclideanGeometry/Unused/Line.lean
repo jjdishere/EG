@@ -137,7 +137,7 @@ theorem vec_eq_smul_vec_of_lies_on {l : Line P} {A B X Y : P} (ha : A LiesOn l) 
   use t₂ - t₁
   rw [← vec_sub_vec A, e₁, e₂, sub_smul]
 
-theorem toProj_eq_toproj_of_Seg_nd_lies_on {l : Line P} {A B X Y : P} (ha : A LiesOn l) (hb : B LiesOn l) (hx : X LiesOn l) (hy : Y LiesOn l) (hab : B ≠ A) (hxy : Y ≠ X) : Seg_nd.toProj ⟨SEG A B, hab⟩ = Seg_nd.toProj ⟨SEG X Y, hxy⟩ := by
+theorem toproj_eq_toproj_of_Seg_nd_lies_on {l : Line P} {A B X Y : P} (ha : A LiesOn l) (hb : B LiesOn l) (hx : X LiesOn l) (hy : Y LiesOn l) (hab : B ≠ A) (hxy : Y ≠ X) : Seg_nd.toProj ⟨SEG A B, hab⟩ = Seg_nd.toProj ⟨SEG X Y, hxy⟩ := by
   rcases (vec_eq_smul_vec_of_lies_on ha hb hx hy hab) with ⟨t, e⟩
   exact eq_toproj_of_smul _ _ e
 
@@ -145,7 +145,7 @@ theorem toProj_eq_toproj_of_Seg_nd_lies_on {l : Line P} {A B X Y : P} (ha : A Li
 
 theorem uniqueness_of_proj_of_line (l : Line P) : ∀ A B C D : P, (A LiesOn l) → (B LiesOn l) → (C LiesOn l) → (D LiesOn l) → (hab : B ≠ A) → (hcd : D ≠ C) → Seg_nd.toProj ⟨SEG A B, hab⟩ = Seg_nd.toProj ⟨SEG C D, hcd⟩ := by
   intro A B C D ha hb hc hd hab hcd
-  exact toProj_eq_toproj_of_Seg_nd_lies_on ha hb hc hd hab hcd
+  exact toproj_eq_toproj_of_Seg_nd_lies_on ha hb hc hd hab hcd
 
 theorem exist_unique_proj_of_line (l : Line P) : ∃! pr : Proj, ∀ (A B : P) (ha : A LiesOn l) (hb : B LiesOn l) (h : B ≠ A), Seg_nd.toProj ⟨SEG A B, h⟩ = pr := by
   rcases l.nontriv with ⟨x, ⟨y, c⟩⟩
@@ -153,7 +153,7 @@ theorem exist_unique_proj_of_line (l : Line P) : ∃! pr : Proj, ∀ (A B : P) (
   simp
   constructor
   intro A B ha hb hab
-  exact toProj_eq_toproj_of_Seg_nd_lies_on ha hb c.1 c.2.1 hab c.2.2
+  exact toproj_eq_toproj_of_Seg_nd_lies_on ha hb c.1 c.2.1 hab c.2.2
   intro pr w
   rw [← w]
   exact c.1
@@ -227,12 +227,12 @@ end Compatibility_of_LiesOn
 
 def Ray.toLine (r : Ray P) := LIN r.source (r.toDir.toVec +ᵥ r.source) (by 
   simp only [ne_eq, vadd_eq_self_iff_vec_eq_zero]
-  exact Dir.toVec_ne_zero r.toDir)
+  exact Dir.tovec_ne_zero r.toDir)
 
 instance : Coe (Ray P) (Line P) where
   coe := Ray.toLine
 
-theorem ray_toLine_toproj_eq_ray_toproj (r : Ray P) : r.toLine.toProj = r.toProj := by
+theorem ray_toline_toproj_eq_ray_toproj (r : Ray P) : r.toLine.toProj = r.toProj := by
   sorry
 
 /- def coe from non trivial segment to line-/
@@ -245,24 +245,24 @@ def Line.mk_pt_vec_nd (A : P) (vec_nd : Vec_nd) := (LIN A (vec_nd.1 +ᵥ A) (by
 section Compaitiblity_of_coercions
 
 -- If a point lies on a ray, then it lies on the line associated to the ray.
-theorem Ray.lies_on_toLine_of_lie_on {A : P} {r : Ray P} (h : A LiesOn r) : A LiesOn (r.toLine) := sorry
+theorem Ray.lies_on_toline_of_lie_on {A : P} {r : Ray P} (h : A LiesOn r) : A LiesOn (r.toLine) := sorry
 
-theorem Seg_nd.lies_on_toLine_of_lie_on {A : P} {s : Seg_nd P} (h : A LiesOn s.1) : A LiesOn (s.toLine) := sorry
+theorem Seg_nd.lies_on_toline_of_lie_on {A : P} {s : Seg_nd P} (h : A LiesOn s.1) : A LiesOn (s.toLine) := sorry
 
 -- If A and B are two distinct points, they lie on the line AB
-theorem Ray.source_lies_on_toLine (l : Ray P) : l.source LiesOn l.toLine := sorry
+theorem Ray.source_lies_on_toline (l : Ray P) : l.source LiesOn l.toLine := sorry
 
-theorem Seg_nd.source_lies_on_toLine (s : Seg_nd P) : s.1.source LiesOn s.toLine := sorry
+theorem Seg_nd.source_lies_on_toline (s : Seg_nd P) : s.1.source LiesOn s.toLine := sorry
 
-theorem Seg_nd.target_lies_on_toLine (s : Seg_nd P) : s.1.target LiesOn s.toLine := sorry
+theorem Seg_nd.target_lies_on_toline (s : Seg_nd P) : s.1.target LiesOn s.toLine := sorry
 
 -- The line defined from a nontrivial segment is equal to the line defined from the ray associated this nontrivial segment
 
-theorem Seg_nd.toLine_eq_toRay_toLine (seg_nd : Seg_nd P) : seg_nd.toLine = (seg_nd.toRay).toLine := sorry
+theorem Seg_nd.toline_eq_toray_toline (seg_nd : Seg_nd P) : seg_nd.toLine = (seg_nd.toRay).toLine := sorry
 
-theorem line_of_pt_pt_eq_ray_toLine {A B : P} (h : B ≠ A) : LIN A B h = Ray.toLine (RAY A B h) := sorry
+theorem line_of_pt_pt_eq_ray_toline {A B : P} (h : B ≠ A) : LIN A B h = Ray.toLine (RAY A B h) := sorry
 
-theorem line_of_pt_pt_eq_seg_nd_toLine {A B : P} (h : B ≠ A) : LIN A B h = Seg_nd.toLine ⟨SEG A B, h⟩ := rfl
+theorem line_of_pt_pt_eq_seg_nd_toline {A B : P} (h : B ≠ A) : LIN A B h = Seg_nd.toLine ⟨SEG A B, h⟩ := rfl
 
 end Compaitiblity_of_coercions
 
@@ -311,8 +311,8 @@ theorem exist_line_of_pt_proj (A : P) (pr : Proj) : ∃ l : Line P, A LiesOn l �
   let r : Ray P := ⟨A, dir⟩ 
   use r.toLine
   constructor
-  exact Ray.lies_on_toLine_of_lie_on (Ray.source_lies_on r)
-  rw [ray_toLine_toproj_eq_ray_toproj r]
+  exact Ray.lies_on_toline_of_lie_on (Ray.source_lies_on r)
+  rw [ray_toline_toproj_eq_ray_toproj r]
   exact hd
 
 theorem exist_unique_line_of_pt_proj (A : P) (pr : Proj) : ∃! l : Line P, A LiesOn l ∧ l.toProj = pr := by
@@ -323,7 +323,7 @@ theorem exist_unique_line_of_pt_proj (A : P) (pr : Proj) : ∃! l : Line P, A Li
   intro l₂ hl₂
   rcases Quot.exists_rep pr with ⟨dir, _⟩
   have _ : dir.toVec +ᵥ A ≠ A := by
-    simp only [ne_eq, vadd_eq_self_iff_vec_eq_zero, Dir.toVec_ne_zero dir, not_false_eq_true]
+    simp only [ne_eq, vadd_eq_self_iff_vec_eq_zero, Dir.tovec_ne_zero dir, not_false_eq_true]
   apply (lies_on_iff_lies_on_iff_line_eq_line l₂ l₁).1
   intro X
   by_cases X = A 

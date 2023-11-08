@@ -23,12 +23,12 @@ theorem Seg_nd.not_lies_int_extn_and_rev_extn_of_lies_on {A : P} {seg_nd : Seg_n
   constructor
   apply Ray.not_lies_int_of_lies_on_rev
   simp only [extn_eq_rev_toray_rev, Ray.rev_rev_eq_self]
-  apply lies_on_toRay_of_lies_on
+  apply lies_on_toray_of_lies_on
   apply Seg.lies_on_iff_lies_on_rev.mpr
   exact lieson
   apply Ray.not_lies_int_of_lies_on_rev
   simp only [extn_eq_rev_toray_rev, Ray.rev_rev_eq_self, Seg_nd.rev_rev_eq_self]
-  exact lies_on_toRay_of_lies_on lieson
+  exact lies_on_toray_of_lies_on lieson
 
 namespace Shan_Problem_1_2
 /- Let $\triangle ABC$ be a nondegenerate isosceles triangle in which $AB = AC$.

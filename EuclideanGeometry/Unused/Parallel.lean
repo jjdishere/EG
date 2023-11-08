@@ -84,9 +84,9 @@ scoped infix : 50 "∥" => parallel
 
 section parallel_theorem
 
-theorem ray_parallel_to_line_assoc_ray (ray : Ray P) :  parallel (LinearObj.ray ray) ray.toLine := sorry
+theorem ray_parallel_toline_assoc_ray (ray : Ray P) :  parallel (LinearObj.ray ray) ray.toLine := sorry
 
-theorem seg_parallel_to_ray_assoc_seg_of_nontriv (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := sorry
+theorem seg_parallel_toray_assoc_seg_of_nontriv (seg_nd : Seg_nd P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := sorry
 
 end parallel_theorem
 
@@ -147,7 +147,7 @@ scoped notation "RayInx" => Intersection_of_Lines_of_Rays
 
 theorem ray_intersection_lies_on_lines_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : (RayInx h) LiesOn ray₁.toLine ∧ (RayInx h) LiesOn ray₂.toLine := by sorry
 
--- theorem ray_intersection_eq_line_intersection_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : RayInt h = LineInt (Ne.trans (ray_parallel_to_line_assoc_ray ray₁) h) := sorry
+-- theorem ray_intersection_eq_line_intersection_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : RayInt h = LineInt (Ne.trans (ray_parallel_toline_assoc_ray ray₁) h) := sorry
 
 end intersection_theorem
 

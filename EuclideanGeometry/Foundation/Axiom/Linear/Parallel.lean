@@ -64,27 +64,27 @@ section eq_toproj
 
 ---- eq_toproj theorems should be relocate to this file, they are in Line_ex now.
 /-- The projective direction of a ray is same as the projective direction of the extension line of the ray. -/
-theorem Ray.toProj_eq_toLine_toproj (ray : Ray P): ray.toProj = ray.toLine.toProj := rfl
+theorem Ray.toproj_eq_toline_toproj (ray : Ray P): ray.toProj = ray.toLine.toProj := rfl
 
 /-- The projective direction of a nondegenerate segment is same as the projective direction of the extension line of it. -/
-theorem Seg_nd.toProj_eq_toLine_toproj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := rfl
+theorem Seg_nd.toproj_eq_toline_toproj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := rfl
 
 end eq_toproj
 
 section fig_coecion_parallel
 
 /-- Given a nondegenate segment, it is parallel to the ray associated to this nondegenerate segment. -/
-theorem Seg_nd.para_toRay (seg_nd : Seg_nd P) : seg_nd ∥ seg_nd.toRay := rfl
+theorem Seg_nd.para_toray (seg_nd : Seg_nd P) : seg_nd ∥ seg_nd.toRay := rfl
 
 theorem Seg_nd.para_todirline (seg_nd : Seg_nd P) : seg_nd ∥ seg_nd.toDirLine := rfl
 
 /-- Given a nondegenate segment, it is parallel to the extension line of this nondegenerate segment. -/
-theorem Seg_nd.para_toLine (seg_nd : Seg_nd P) : seg_nd ∥ seg_nd.toLine := rfl
+theorem Seg_nd.para_toline (seg_nd : Seg_nd P) : seg_nd ∥ seg_nd.toLine := rfl
 
 theorem Ray.para_todirline (ray : Ray P) : ray ∥ ray.toDirLine := rfl
 
 /-- Given a ray, the ray is parallel to the line associated to the ray. -/
-theorem Ray.para_toLine (ray : Ray P) : ray ∥ ray.toLine := rfl
+theorem Ray.para_toline (ray : Ray P) : ray ∥ ray.toLine := rfl
 
 theorem DirLine.para_toline (dlin : DirLine P) : dlin ∥ dlin.toLine := DirLine.toproj_eq_toline_toproj dlin
 
@@ -98,10 +98,10 @@ end mk_parallel
 section parallel_iff_coercion_parallel
 
 /-- Given two parallel rays, their extension lines are parallel -/
-theorem Ray.para_toLine_of_para (ray ray' : Ray P) (h : ray ∥ ray') : ray.toLine ∥ ray'.toLine := h
+theorem Ray.para_toline_of_para (ray ray' : Ray P) (h : ray ∥ ray') : ray.toLine ∥ ray'.toLine := h
 
 /-- Given two rays, if their extension lines are not parallel, they are not parallel -/
-theorem Ray.not_para_of_not_para_toLine (ray ray' : Ray P) (h : ¬ ray.toLine ∥ ray'.toLine) : ¬ ray ∥ ray' := h
+theorem Ray.not_para_of_not_para_toline (ray ray' : Ray P) (h : ¬ ray.toLine ∥ ray'.toLine) : ¬ ray ∥ ray' := h
 
 -- `many many theorems, saying same holds for every coersion`
 
@@ -148,15 +148,15 @@ theorem inx_lies_on_snd_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.
   exact inx_lies_on_fst_extn_line r₂ r₁ h.symm
 
 /-- Given two rays $r_1$ $r_2$, if they have same projective directions and the source of $r_1$ lies on the extension line of $r_2$, then the two rays have same extension lines. -/
-theorem ray_toLine_eq_of_same_extn_line {r₁ r₂ : Ray P} (h : same_extn_line r₁ r₂) : r₁.toLine = r₂.toLine := (Quotient.eq (r := same_extn_line.setoid)).mpr h
+theorem ray_toline_eq_of_same_extn_line {r₁ r₂ : Ray P} (h : same_extn_line r₁ r₂) : r₁.toLine = r₂.toLine := (Quotient.eq (r := same_extn_line.setoid)).mpr h
 
 -- `key theorem`
 /-- Given four rays $a_1$ $a_2$ $b_1$ $b_2$, if $a_1$ $a_2$ have the same extension line, $b_1$ $b_2$ have the same extension line , $a_1$ $b_1$ have different projective directions and $a_2$ $b_2$ have different projective directions, then the intersection of extension lines of $a_1$ $b_1$ is same as that of $a_2$ $b_2$ -/
 theorem inx_eq_of_same_extn_line {a₁ b₁ a₂ b₂ : Ray P} (g₁ : same_extn_line a₁ a₂) (g₂ : same_extn_line b₁ b₂) (h₁ : b₁.toProj ≠ a₁.toProj) (h₂ : b₂.toProj ≠ a₂.toProj) : inx_of_extn_line a₁ b₁ h₁ = inx_of_extn_line a₂ b₂ h₂ := by
   have ha1 : inx_of_extn_line a₁ b₁ h₁ LiesOn a₁.toLine := inx_lies_on_fst_extn_line a₁ b₁ h₁
   have hb1 : inx_of_extn_line a₁ b₁ h₁ LiesOn b₁.toLine := inx_lies_on_snd_extn_line a₁ b₁ h₁
-  rw [ray_toLine_eq_of_same_extn_line g₁] at ha1
-  rw [ray_toLine_eq_of_same_extn_line g₂] at hb1
+  rw [ray_toline_eq_of_same_extn_line g₁] at ha1
+  rw [ray_toline_eq_of_same_extn_line g₂] at hb1
   by_contra hn
   have heq : a₂.toLine = b₂.toLine := eq_of_pt_pt_lies_on_of_ne hn
     (inx_lies_on_fst_extn_line a₂ b₂ h₂) ha1 (inx_lies_on_snd_extn_line a₂ b₂ h₂) hb1
@@ -220,7 +220,7 @@ theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l�
   rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
   rcases l₂.nontriv with ⟨C, ⟨D, hcd⟩⟩
   have e' : (SEG_nd A B hab.2.2).toProj ≠ (SEG_nd C D hcd.2.2).toProj := by
-    rw [toProj_eq_seg_nd_toproj_of_lies_on hab.1 hab.2.1 hab.2.2, toProj_eq_seg_nd_toproj_of_lies_on hcd.1 hcd.2.1 hcd.2.2]
+    rw [toproj_eq_seg_nd_toproj_of_lies_on hab.1 hab.2.1 hab.2.2, toproj_eq_seg_nd_toproj_of_lies_on hcd.1 hcd.2.1 hcd.2.2]
     exact h
   let x := ((VEC A B).1 * (VEC C D).2 - (VEC A B).2 * (VEC C D).1)⁻¹ * ((VEC A C).1 * (VEC C D).2 - (VEC C D).1 * (VEC A C).2)
   let y := ((VEC A B).1 * (VEC C D).2 - (VEC A B).2 * (VEC C D).1)⁻¹ * ((VEC A B).1 * (VEC A C).2 - (VEC A C).1 * (VEC A B).2)
@@ -267,10 +267,10 @@ scoped notation "RayInx" => Intersection_of_Lines_of_Rays
 
 theorem ray_intersection_lies_on_lines_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : (RayInx h) LiesOn ray₁.toLine ∧ (RayInx h) LiesOn ray₂.toLine := by sorry
 
--- theorem ray_intersection_eq_line_intersection_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : RayInt h = LineInt (Ne.trans (ray_parallel_to_line_assoc_ray ray₁) h) := sorry
+-- theorem ray_intersection_eq_line_intersection_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : RayInt h = LineInt (Ne.trans (ray_parallel_toline_assoc_ray ray₁) h) := sorry
 -/
 
--- `the new solution is to define a class ProjFig, which has a unified method toLine, then define inx_of_toLine all together`
+-- `the new solution is to define a class ProjFig, which has a unified method toLine, then define inx_of_toline all together`
 end property
 
 end intersection_of_line
