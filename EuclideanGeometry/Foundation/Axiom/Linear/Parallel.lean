@@ -57,35 +57,57 @@ scoped infix : 50 "∥" => parallel
 
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coercions, ... -/
 
-section parallel_theorem
----- `eq_toProj theorems should be relocate to this file, they are in Line_ex now`.
+section coercion_theorem
+
+-- `Should this section eq_toproj really exist?? outside this file only parallel is allowed, not eq_toProj, or maybe this section should be marked as private`
+section eq_toproj
+
+---- eq_toProj theorems should be relocate to this file, they are in Line_ex now.
 /-- The projective direction of a ray is same as the projective direction of the extension line of the ray. -/
 theorem Ray.toProj_eq_toLine_toProj (ray : Ray P): ray.toProj = ray.toLine.toProj := rfl
 
 /-- The projective direction of a nondegenerate segment is same as the projective direction of the extension line of it. -/
 theorem Seg_nd.toProj_eq_toLine_toProj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := rfl
 
-/-- Given a ray, the ray is parallel to the line associated to the ray. -/
-theorem Ray.para_toLine (ray : Ray P) : ray ∥ ray.toLine := rfl
+end eq_toproj
+
+section fig_coecion_parallel
 
 /-- Given a nondegenate segment, it is parallel to the ray associated to this nondegenerate segment. -/
 theorem Seg_nd.para_toRay (seg_nd : Seg_nd P) : seg_nd ∥ seg_nd.toRay := rfl
 
+theorem Seg_nd.para_todirline (seg_nd : Seg_nd P) : seg_nd ∥ seg_nd.toDirLine := rfl
+
 /-- Given a nondegenate segment, it is parallel to the extension line of this nondegenerate segment. -/
 theorem Seg_nd.para_toLine (seg_nd : Seg_nd P) : seg_nd ∥ seg_nd.toLine := rfl
 
--- many more...
+theorem Ray.para_todirline (ray : Ray P) : ray ∥ ray.toDirLine := rfl
 
+/-- Given a ray, the ray is parallel to the line associated to the ray. -/
+theorem Ray.para_toLine (ray : Ray P) : ray ∥ ray.toLine := rfl
 
-/-- Given two parallel rays, there extension lines are parallel -/
+theorem DirLine.para_toline (dlin : DirLine P) : dlin ∥ dlin.toLine := DirLine.toproj_eq_toline_toproj dlin
+
+end fig_coecion_parallel
+
+section mk_parallel
+-- parallel from mk methods
+
+end mk_parallel
+
+section parallel_iff_coercion_parallel
+
+/-- Given two parallel rays, their extension lines are parallel -/
 theorem Ray.para_toLine_of_para (ray ray' : Ray P) (h : ray ∥ ray') : ray.toLine ∥ ray'.toLine := h
 
-/-- Given two rays, if there extension lines are not parallel, they are not parallel -/
+/-- Given two rays, if their extension lines are not parallel, they are not parallel -/
 theorem Ray.not_para_of_not_para_toLine (ray ray' : Ray P) (h : ¬ ray.toLine ∥ ray'.toLine) : ¬ ray ∥ ray' := h
 
 -- `many many theorems, saying same holds for every coersion`
 
-end parallel_theorem
+end parallel_iff_coercion_parallel
+
+end coercion_theorem
 
 section intersection_of_line
 
@@ -248,6 +270,7 @@ theorem ray_intersection_lies_on_lines_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (
 -- theorem ray_intersection_eq_line_intersection_of_rays {ray₁ ray₂ : Ray P} (h : ¬ (LinearObj.ray ray₁) ∥ ray₂) : RayInt h = LineInt (Ne.trans (ray_parallel_to_line_assoc_ray ray₁) h) := sorry
 -/
 
+-- `the new solution is to define a class ProjFig, which has a unified method toLine, then define inx_of_toLine all together`
 end property
 
 end intersection_of_line

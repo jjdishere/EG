@@ -39,7 +39,7 @@ This file records all linear objects and describe their relation.
 * `LinearFigure` -> `ProjFig`, `Coe DirFig ProjFig`
 
 ## Usage of classes
-* `Carrier` -- LiesOn InxWith IsInx
+* `Carrier` -- LiesOn InxWith IsInx Concurrent
 * `DirObj` -- given 2 DirObj, have 3 kind of angle value
 * `DirFig` -- Left Right ODist ToDirLine OnLineOf OffLineOf
 * `ProjObj` -- parallel perpendicular
@@ -48,6 +48,10 @@ This file records all linear objects and describe their relation.
 toDirLine toLine carrier compatibility can be shown in general
 
 -/
+
+
+-- Experiments of classes
+
 namespace EuclidGeom
 variable {P : Type _} [EuclideanPlane P]
 
@@ -90,5 +94,7 @@ class PlaneFig (F : (P : Type _) -> [ EuclideanPlane P] -> Type _) where
 
 instance : PlaneFig Seg where
   carrier := Seg.carrier
+variable (s : Seg P)
+#check PlaneFig.carrier s -- ok to infer P
 
 end EuclidGeom

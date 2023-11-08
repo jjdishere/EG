@@ -164,7 +164,7 @@ end coercion
 
 section coercion_compatibility
 
-theorem DirLine.toproj_eq_toline_toproj (l : DirLine P) : l.toProj = l.toLine.toProj := sorry
+theorem DirLine.toproj_eq_toline_toproj (l : DirLine P) : l.toProj = l.toLine.toProj := Quotient.ind (motive := fun l => toProj l = Line.toProj (toLine l)) (fun _ => rfl) l
 
 theorem Ray.toline_eq_todirline_toline (ray : Ray P) : ray.toLine = ray.toDirLine.toLine := rfl
 
@@ -195,15 +195,15 @@ instance Ray.instDirFig : DirFig P (Ray P) where
 instance Seg_nd.instDirFig : DirFig P (Seg_nd P) where
   toDirLine s := Quotient.mk (@same_dir_line.setoid P _) s.toRay
 
-namespace DirFig
+section DirFig
 
 variable {P : Type _} [EuclideanPlane P] {α : Type _} [DirFig P α] (l : α)
 
-def toDir : Dir := (@toDirLine P _ _ _ l).toDir
+def toDir : Dir := (@DirFig.toDirLine P _ _ _ l).toDir
 
-def toProj : Proj := (@toDirLine P _ _ _ l).toDir.toProj
+def toProj : Proj := (@DirFig.toDirLine P _ _ _ l).toDir.toProj
 
-def toLine : Line P := (@toDirLine P _ _ _ l).toLine
+def toLine : Line P := (@DirFig.toDirLine P _ _ _ l).toLine
 
 -- And other definitions, such as IsLeft, IsRight, OnLine, odist, sign, and so on.
 
