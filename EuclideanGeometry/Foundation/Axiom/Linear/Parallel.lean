@@ -95,15 +95,80 @@ section mk_parallel
 
 end mk_parallel
 
+-- 6 theorems for each coercion, 6 coercion
 section parallel_iff_coercion_parallel
 
+theorem Seg_nd.para_toray_of_para (seg_nd seg_nd' : Seg_nd P) : seg_nd ∥ seg_nd' → seg_nd.toRay ∥ seg_nd'.toRay := id
+
+theorem Seg_nd.para_of_para_toray (seg_nd seg_nd' : Seg_nd P) : seg_nd.toRay ∥ seg_nd'.toRay → seg_nd ∥ seg_nd' := id
+
+theorem Seg_nd.para_iff_para_toray (seg_nd seg_nd' : Seg_nd P) : seg_nd.toRay ∥ seg_nd'.toRay ↔ seg_nd ∥ seg_nd' := ⟨id, id⟩
+
+theorem Seg_nd.not_para_toray_of_not_para (seg_nd seg_nd' : Seg_nd P) : ¬ seg_nd ∥ seg_nd' → ¬ seg_nd.toRay ∥ seg_nd'.toRay := id
+
+theorem Seg_nd.not_para_of_not_para_toray (seg_nd seg_nd' : Seg_nd P) : ¬ seg_nd.toRay ∥ seg_nd'.toRay → ¬ seg_nd ∥ seg_nd' := id
+
+theorem Seg_nd.not_para_iff_not_para_toray (seg_nd seg_nd' : Seg_nd P) : ¬ seg_nd ∥ seg_nd' ↔ ¬ seg_nd.toRay ∥ seg_nd'.toRay  := ⟨id, id⟩
+
+theorem Seg_nd.para_todirline_of_para (seg_nd seg_nd' : Seg_nd P) : seg_nd ∥ seg_nd' → seg_nd.toDirLine ∥ seg_nd'.toDirLine := id
+
+theorem Seg_nd.para_of_para_todirline (seg_nd seg_nd' : Seg_nd P) : seg_nd.toDirLine ∥ seg_nd'.toDirLine → seg_nd ∥ seg_nd' := id
+
+theorem Seg_nd.para_iff_para_todirline (seg_nd seg_nd' : Seg_nd P) : seg_nd.toDirLine ∥ seg_nd'.toDirLine ↔ seg_nd ∥ seg_nd' := ⟨id, id⟩
+
+theorem Seg_nd.not_para_todirline_of_not_para (seg_nd seg_nd' : Seg_nd P) : ¬ seg_nd ∥ seg_nd' → ¬ seg_nd.toDirLine ∥ seg_nd'.toDirLine := id
+
+theorem Seg_nd.not_para_of_not_para_todirline (seg_nd seg_nd' : Seg_nd P) : ¬ seg_nd.toDirLine ∥ seg_nd'.toDirLine → ¬ seg_nd ∥ seg_nd' := id
+
+theorem Seg_nd.not_para_iff_not_para_todirline (seg_nd seg_nd' : Seg_nd P) : ¬ seg_nd ∥ seg_nd' ↔ ¬ seg_nd.toDirLine ∥ seg_nd'.toDirLine := ⟨id, id⟩
+
+theorem Seg_nd.para_toline_of_para (seg_nd seg_nd' : Seg_nd P) : seg_nd ∥ seg_nd' → seg_nd.toLine ∥ seg_nd'.toLine := id
+
+theorem Seg_nd.para_of_para_toline (seg_nd seg_nd' : Seg_nd P) : seg_nd.toLine ∥ seg_nd'.toLine → seg_nd ∥ seg_nd' := id
+
+theorem Seg_nd.para_iff_para_toline (seg_nd seg_nd' : Seg_nd P) : seg_nd.toLine ∥ seg_nd'.toLine ↔ seg_nd ∥ seg_nd' := ⟨id, id⟩
+
+theorem Seg_nd.not_para_toline_of_not_para (seg_nd seg_nd' : Seg_nd P) : ¬ seg_nd ∥ seg_nd' → ¬ seg_nd.toLine ∥ seg_nd'.toLine := id
+
+theorem Seg_nd.not_para_of_not_para_toline (seg_nd seg_nd' : Seg_nd P) : ¬ seg_nd.toLine ∥ seg_nd'.toLine → ¬ seg_nd ∥ seg_nd' := id
+
+theorem Seg_nd.not_para_iff_not_para_toline (seg_nd seg_nd' : Seg_nd P) : ¬ seg_nd ∥ seg_nd' ↔ ¬ seg_nd.toLine ∥ seg_nd'.toLine  := ⟨id, id⟩
+
+theorem Ray.para_of_para_todirline (ray ray' : Ray P) : ray.toDirLine ∥ ray'.toDirLine → ray ∥ ray' := id
+
+theorem Ray.para_iff_para_todirline (ray ray' : Ray P) : ray.toDirLine ∥ ray'.toDirLine ↔ ray ∥ ray' := ⟨id, id⟩
+
+theorem Ray.not_para_todirline_of_not_para (ray ray' : Ray P) : ¬ ray ∥ ray' → ¬ ray.toDirLine ∥ ray'.toDirLine := id
+
+theorem Ray.not_para_of_not_para_todirline (ray ray' : Ray P) : ¬ ray.toDirLine ∥ ray'.toDirLine → ¬ ray ∥ ray' := id
+
+theorem Ray.not_para_iff_not_para_todirline (ray ray' : Ray P) : ¬ ray ∥ ray' ↔ ¬ ray.toDirLine ∥ ray'.toDirLine := ⟨id, id⟩
+
 /-- Given two parallel rays, their extension lines are parallel -/
-theorem Ray.para_toline_of_para (ray ray' : Ray P) (h : ray ∥ ray') : ray.toLine ∥ ray'.toLine := h
+theorem Ray.para_toline_of_para (ray ray' : Ray P) : ray ∥ ray' → ray.toLine ∥ ray'.toLine := id
+
+theorem Ray.para_of_para_toline (ray ray' : Ray P) : ray.toLine ∥ ray'.toLine → ray ∥ ray' := id
+
+theorem Ray.para_iff_para_toline (ray ray' : Ray P) : ray.toLine ∥ ray'.toLine ↔ ray ∥ ray' := ⟨id, id⟩
 
 /-- Given two rays, if their extension lines are not parallel, they are not parallel -/
-theorem Ray.not_para_of_not_para_toline (ray ray' : Ray P) (h : ¬ ray.toLine ∥ ray'.toLine) : ¬ ray ∥ ray' := h
+theorem Ray.not_para_toline_of_not_para (ray ray' : Ray P) : ¬ ray ∥ ray' → ¬ ray.toLine ∥ ray'.toLine := id
 
--- `many many theorems, saying same holds for every coersion`
+theorem Ray.not_para_of_not_para_toline (ray ray' : Ray P) : ¬ ray.toLine ∥ ray'.toLine → ¬ ray ∥ ray' := id
+
+theorem Ray.not_para_iff_not_para_toline (ray ray' : Ray P) : ¬ ray ∥ ray' ↔ ¬ ray.toLine ∥ ray'.toLine  := ⟨id, id⟩
+
+theorem Dirline.para_toline_of_para (dirline dirline' : DirLine P) : dirline ∥ dirline' → dirline.toLine ∥ dirline'.toLine := Quotient.ind₂ (fun _ _ => id) dirline dirline'
+
+theorem Dirline.para_of_para_toline (dirline dirline' : DirLine P) : dirline.toLine ∥ dirline'.toLine → dirline ∥ dirline' := Quotient.ind₂ (fun _ _ => id) dirline dirline'
+
+theorem Dirline.para_iff_para_toline (dirline dirline' : DirLine P) : dirline.toLine ∥ dirline'.toLine ↔ dirline ∥ dirline' := ⟨Quotient.ind₂ (fun _ _ => id) dirline dirline', Quotient.ind₂ (fun _ _ => id) dirline dirline'⟩
+
+theorem Dirline.not_para_toline_of_not_para (dirline dirline' : DirLine P) : ¬ dirline ∥ dirline' → ¬ dirline.toLine ∥ dirline'.toLine := Quotient.ind₂ (fun _ _ => id) dirline dirline'
+
+theorem Dirline.not_para_of_not_para_toline (dirline dirline' : DirLine P) : ¬ dirline.toLine ∥ dirline'.toLine → ¬ dirline ∥ dirline' := Quotient.ind₂ (fun _ _ => id) dirline dirline'
+
+theorem Dirline.not_para_iff_not_para_toline (dirline dirline' : DirLine P) : ¬ dirline ∥ dirline' ↔ ¬ dirline.toLine ∥ dirline'.toLine  := ⟨Quotient.ind₂ (fun _ _ => id) dirline dirline', Quotient.ind₂ (fun _ _ => id) dirline dirline'⟩
 
 end parallel_iff_coercion_parallel
 

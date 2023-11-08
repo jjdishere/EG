@@ -61,18 +61,18 @@ class ProjObj (P : Type _) [EuclideanPlane P] (α : Type _)where
 instance : ProjObj P (Line P) where
   toProj := Line.toProj
 
-def toProj {P: Type _} [EuclideanPlane P] (l : Line P) : Proj := ProjObj.toProj P l
+def to_Proj {P: Type _} [EuclideanPlane P] (l : Line P) : Proj := ProjObj.toProj P l
 
 def toProj' ⦃P : Type _⦄ {α: Type _} [EuclideanPlane P] [ProjObj P α] (l : α) : Proj := ProjObj.toProj P l
 
-example {P : Type _} [EuclideanPlane P] (l : Line P) : l.toProj = toProj l := rfl
+example {P : Type _} [EuclideanPlane P] (l : Line P) : l.toProj = to_Proj l := rfl
 
-def toLine {P : Type _ } {α: Type _} [EuclideanPlane P] ⦃h : ProjObj P α⦄ (l : α) : Line P := sorry
+def to_Line {P : Type _ } {α: Type _} [EuclideanPlane P] ⦃h : ProjObj P α⦄ (l : α) : Line P := sorry
 
 variable (l : Line P)
 -- same name enables both writing style without overload
 -- proof together but still need back to traditional dot notation.
-#check toProj l
+#check to_Proj l
 #check toProj' l -- var
 #check l.toProj
 #check toLine  -- var
