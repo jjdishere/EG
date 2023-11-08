@@ -140,33 +140,35 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)∼ TRI_nd A B C 
   exact hnd
   exact he
 --rays equal, respectively
-  apply Angle.ext
-  have h₀:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.1=(SEG_nd A D (@d_ne_a P _ A B C hnd D hd)).toRay := rfl
-  rw[h₀]
-  have h₁:(TRI_nd A B C hnd).angle₁.1=(SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay:=rfl
-  rw[h₁]
-  apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay
-  apply Seg_nd.lies_int_toRay_of_lies_int
-  apply (Seg.lies_int_iff D).mpr
-  constructor
-  exact (@b_ne_a P _ A B C hnd)
-  use 1/2
-  norm_num
-  simp only [Seg.toVec,hd]
-  apply Seg.vec_source_midpt
-  have h₂:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.2=(SEG_nd A E (@e_ne_a P _ A B C hnd E he)).toRay := rfl
-  rw[h₂]
-  have h₃:(TRI_nd A B C hnd).angle₁.2=(SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay:=rfl
-  rw[h₃]
-  apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay
-  apply Seg_nd.lies_int_toRay_of_lies_int
-  apply (Seg.lies_int_iff E).mpr
-  constructor
-  exact (@c_ne_a P _ A B C hnd)
-  use 1/2
-  norm_num
-  simp only [Seg.toVec,he]
-  apply Seg.vec_source_midpt
+  have :Triangle_nd.angle₁ (TRI_nd A D E(_ : ¬colinear A D E))=Triangle_nd.angle₁ (TRI_nd A B C hnd):= by
+    apply Angle.ext
+    have h₀:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.1=(SEG_nd A D (@d_ne_a P _ A B C hnd D hd)).toRay := rfl
+    rw[h₀]
+    have h₁:(TRI_nd A B C hnd).angle₁.1=(SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay:=rfl
+    rw[h₁]
+    apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay
+    apply Seg_nd.lies_int_toRay_of_lies_int
+    apply (Seg.lies_int_iff D).mpr
+    constructor
+    exact (@b_ne_a P _ A B C hnd)
+    use 1/2
+    norm_num
+    simp only [Seg.toVec,hd]
+    apply Seg.vec_source_midpt
+    have h₂:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.2=(SEG_nd A E (@e_ne_a P _ A B C hnd E he)).toRay := rfl
+    rw[h₂]
+    have h₃:(TRI_nd A B C hnd).angle₁.2=(SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay:=rfl
+    rw[h₃]
+    apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay
+    apply Seg_nd.lies_int_toRay_of_lies_int
+    apply (Seg.lies_int_iff E).mpr
+    constructor
+    exact (@c_ne_a P _ A B C hnd)
+    use 1/2
+    norm_num
+    simp only [Seg.toVec,he]
+    apply Seg.vec_source_midpt
+  rw[this]
 
 lemma ade_acongr_cde : (TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).1 IsACongrTo (TRI_nd C D E (@hnd'' P _ A B C hnd D hd E he)).1 := sorry
   --need to define the value of right angle
