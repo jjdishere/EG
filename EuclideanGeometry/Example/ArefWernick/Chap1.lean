@@ -99,7 +99,7 @@ lemma b_ne_f : B ≠ F := by
       exact ⟨not, Seg_nd.lies_on_toline_of_lie_on aa⟩
     have inxb : is_inx B (LIN B C (ne_of_not_colinear hnd).1) (LIN A B (ne_of_not_colinear hnd).2.2) := by
       exact ⟨(SEG_nd B C (ne_of_not_colinear hnd).1).source_lies_on_toline , (SEG_nd A B (ne_of_not_colinear hnd).2.2).target_lies_on_toline ⟩
-    exact d_ne_b (unique_of_inx_of_line_of_not_para line_neq inxb inxd)
+    exact d_ne_b (unique_of_inx_of_line_of_not_para line_neq inxb.symm inxd.symm)
   have bcd_notcoli : ¬ colinear B C D := (Line.lies_on_line_of_pt_pt_iff_colinear (b_ne_c (hnd := hnd)).symm D).mpr.mt d_not_lies_on_bc
   have b_not_lies_on_cd : ¬ B LiesOn (LIN C D d_ne_c) := (Line.lies_on_line_of_pt_pt_iff_colinear d_ne_c B).mp.mt (flip_colinear_snd_trd.mt (flip_colinear_fst_snd.mt bcd_notcoli))
   have f_lies_on_seg_cd : F LiesOn (SEG_nd C D d_ne_c).1 := hf.2

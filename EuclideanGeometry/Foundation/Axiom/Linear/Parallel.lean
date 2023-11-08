@@ -158,17 +158,17 @@ theorem Ray.not_para_of_not_para_toline (ray ray' : Ray P) : ¬ ray.toLine ∥ r
 
 theorem Ray.not_para_iff_not_para_toline (ray ray' : Ray P) : ¬ ray ∥ ray' ↔ ¬ ray.toLine ∥ ray'.toLine  := ⟨id, id⟩
 
-theorem Dirline.para_toline_of_para (dirline dirline' : DirLine P) : dirline ∥ dirline' → dirline.toLine ∥ dirline'.toLine := Quotient.ind₂ (fun _ _ => id) dirline dirline'
+theorem DirLine.para_toline_of_para (dirline dirline' : DirLine P) : dirline ∥ dirline' → dirline.toLine ∥ dirline'.toLine := Quotient.ind₂ (fun _ _ => id) dirline dirline'
 
-theorem Dirline.para_of_para_toline (dirline dirline' : DirLine P) : dirline.toLine ∥ dirline'.toLine → dirline ∥ dirline' := Quotient.ind₂ (fun _ _ => id) dirline dirline'
+theorem DirLine.para_of_para_toline (dirline dirline' : DirLine P) : dirline.toLine ∥ dirline'.toLine → dirline ∥ dirline' := Quotient.ind₂ (fun _ _ => id) dirline dirline'
 
-theorem Dirline.para_iff_para_toline (dirline dirline' : DirLine P) : dirline.toLine ∥ dirline'.toLine ↔ dirline ∥ dirline' := ⟨Quotient.ind₂ (fun _ _ => id) dirline dirline', Quotient.ind₂ (fun _ _ => id) dirline dirline'⟩
+theorem DirLine.para_iff_para_toline (dirline dirline' : DirLine P) : dirline.toLine ∥ dirline'.toLine ↔ dirline ∥ dirline' := ⟨Quotient.ind₂ (fun _ _ => id) dirline dirline', Quotient.ind₂ (fun _ _ => id) dirline dirline'⟩
 
-theorem Dirline.not_para_toline_of_not_para (dirline dirline' : DirLine P) : ¬ dirline ∥ dirline' → ¬ dirline.toLine ∥ dirline'.toLine := Quotient.ind₂ (fun _ _ => id) dirline dirline'
+theorem DirLine.not_para_toline_of_not_para (dirline dirline' : DirLine P) : ¬ dirline ∥ dirline' → ¬ dirline.toLine ∥ dirline'.toLine := Quotient.ind₂ (fun _ _ => id) dirline dirline'
 
-theorem Dirline.not_para_of_not_para_toline (dirline dirline' : DirLine P) : ¬ dirline.toLine ∥ dirline'.toLine → ¬ dirline ∥ dirline' := Quotient.ind₂ (fun _ _ => id) dirline dirline'
+theorem DirLine.not_para_of_not_para_toline (dirline dirline' : DirLine P) : ¬ dirline.toLine ∥ dirline'.toLine → ¬ dirline ∥ dirline' := Quotient.ind₂ (fun _ _ => id) dirline dirline'
 
-theorem Dirline.not_para_iff_not_para_toline (dirline dirline' : DirLine P) : ¬ dirline ∥ dirline' ↔ ¬ dirline.toLine ∥ dirline'.toLine  := ⟨Quotient.ind₂ (fun _ _ => id) dirline dirline', Quotient.ind₂ (fun _ _ => id) dirline dirline'⟩
+theorem DirLine.not_para_iff_not_para_toline (dirline dirline' : DirLine P) : ¬ dirline ∥ dirline' ↔ ¬ dirline.toLine ∥ dirline'.toLine  := ⟨Quotient.ind₂ (fun _ _ => id) dirline dirline', Quotient.ind₂ (fun _ _ => id) dirline dirline'⟩
 
 end parallel_iff_coercion_parallel
 
@@ -179,22 +179,22 @@ section intersection_of_line
 section construction
 
 /-- Given two unparallel rays, this function gives the intersection of their extension lines. -/
-def inx_of_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : P := (cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) • r₁.toDir.toVec +ᵥ r₁.source)
+def inx_of_extn_line (r₁ r₂ : Ray P) (h : ¬ r₁ ∥ r₂) : P := (cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) • r₁.toDir.toVec +ᵥ r₁.source)
 
 /-- Given two unparallel rays, we define the intersection of their extension lines. -/
-theorem inx_of_extn_line_symm (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) :
-    inx_of_extn_line r₁ r₂ h = inx_of_extn_line r₂ r₁ h.symm := by
+theorem inx_of_extn_line_symm (r₁ r₂ : Ray P) (h : ¬ r₁ ∥ r₂) :
+    inx_of_extn_line r₁ r₂ h = inx_of_extn_line r₂ r₁ (Ne.symm h) := by
   have hsymm : cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) • r₁.toDir.toVec =
       cu r₂.toDir.toVec_nd r₁.toDir.toVec_nd (VEC r₂.source r₁.source) • r₂.toDir.toVec +
       (r₂.source -ᵥ r₁.source) := by
-    have h := linear_combination_of_not_colinear_dir (VEC r₁.source r₂.source) h
+    have h := linear_combination_of_not_colinear_dir (VEC r₁.source r₂.source) (Ne.symm h)
     nth_rw 1 [← cu_cv, Vec.mk_pt_pt] at h
     rw [h, ← neg_vec r₁.source r₂.source, cu_neg, Complex.real_smul, neg_smul]
     exact eq_neg_add_of_add_eq rfl
   rw [inx_of_extn_line, inx_of_extn_line, hsymm, add_vadd, Complex.real_smul, vsub_vadd]
 
 /-- Given two unparallel rays $r_1$ and $r_2$, the point given by function "inx_of_extn_line" lies on the extension line of $r_1$ -/
-theorem inx_lies_on_fst_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : ((inx_of_extn_line r₁ r₂ h) ∈ r₁.carrier ∪ r₁.reverse.carrier) := by
+theorem inx_lies_on_fst_extn_line (r₁ r₂ : Ray P) (h : ¬ r₁ ∥ r₂) : ((inx_of_extn_line r₁ r₂ h) ∈ r₁.carrier ∪ r₁.reverse.carrier) := by
   rw [inx_of_extn_line]
   by_cases hn : cu r₁.toDir.toVec_nd r₂.toDir.toVec_nd (VEC r₁.source r₂.source) ≥ 0
   · left
@@ -208,16 +208,16 @@ theorem inx_lies_on_fst_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.
     rw [vec_of_pt_vadd_pt_eq_vec, Complex.ofReal_neg, mul_neg, neg_mul, neg_neg]
 
 /-- Given two unparallel rays $r_1$ and $r_2$, the point given by function "inx_of_extn_line" lies on the extension line of $r_2$ -/
-theorem inx_lies_on_snd_extn_line (r₁ r₂ : Ray P) (h : r₂.toProj ≠ r₁.toProj) : ((inx_of_extn_line r₁ r₂ h) ∈ r₂.carrier ∪ r₂.reverse.carrier) := by
+theorem inx_lies_on_snd_extn_line (r₁ r₂ : Ray P) (h : ¬ r₁ ∥ r₂) : ((inx_of_extn_line r₁ r₂ h) ∈ r₂.carrier ∪ r₂.reverse.carrier) := by
   rw [inx_of_extn_line_symm]
-  exact inx_lies_on_fst_extn_line r₂ r₁ h.symm
+  exact inx_lies_on_fst_extn_line r₂ r₁ (Ne.symm h)
 
 /-- Given two rays $r_1$ $r_2$, if they have same projective directions and the source of $r_1$ lies on the extension line of $r_2$, then the two rays have same extension lines. -/
 theorem ray_toline_eq_of_same_extn_line {r₁ r₂ : Ray P} (h : same_extn_line r₁ r₂) : r₁.toLine = r₂.toLine := (Quotient.eq (r := same_extn_line.setoid)).mpr h
 
 -- `key theorem`
 /-- Given four rays $a_1$ $a_2$ $b_1$ $b_2$, if $a_1$ $a_2$ have the same extension line, $b_1$ $b_2$ have the same extension line , $a_1$ $b_1$ have different projective directions and $a_2$ $b_2$ have different projective directions, then the intersection of extension lines of $a_1$ $b_1$ is same as that of $a_2$ $b_2$ -/
-theorem inx_eq_of_same_extn_line {a₁ b₁ a₂ b₂ : Ray P} (g₁ : same_extn_line a₁ a₂) (g₂ : same_extn_line b₁ b₂) (h₁ : b₁.toProj ≠ a₁.toProj) (h₂ : b₂.toProj ≠ a₂.toProj) : inx_of_extn_line a₁ b₁ h₁ = inx_of_extn_line a₂ b₂ h₂ := by
+theorem inx_eq_of_same_extn_line {a₁ b₁ a₂ b₂ : Ray P} (g₁ : same_extn_line a₁ a₂) (g₂ : same_extn_line b₁ b₂) (h₁ : ¬ a₁ ∥ b₁ ) (h₂ : ¬ a₂ ∥ b₂) : inx_of_extn_line a₁ b₁ h₁ = inx_of_extn_line a₂ b₂ h₂ := by
   have ha1 : inx_of_extn_line a₁ b₁ h₁ LiesOn a₁.toLine := inx_lies_on_fst_extn_line a₁ b₁ h₁
   have hb1 : inx_of_extn_line a₁ b₁ h₁ LiesOn b₁.toLine := inx_lies_on_snd_extn_line a₁ b₁ h₁
   rw [ray_toline_eq_of_same_extn_line g₁] at ha1
@@ -225,37 +225,37 @@ theorem inx_eq_of_same_extn_line {a₁ b₁ a₂ b₂ : Ray P} (g₁ : same_extn
   by_contra hn
   have heq : a₂.toLine = b₂.toLine := eq_of_pt_pt_lies_on_of_ne hn
     (inx_lies_on_fst_extn_line a₂ b₂ h₂) ha1 (inx_lies_on_snd_extn_line a₂ b₂ h₂) hb1
-  exact h₂.symm (congrArg Line.toProj heq)
+  exact h₂ (congrArg Line.toProj heq)
 
 -- This theorem deals only with `HEq`
 theorem heq_funext {c₁ c₂ d: Sort _} (e : c₁ = c₂) {f₁ : c₁ → d} {f₂ : c₂ → d} (h : ∀ (s : c₁) (t : c₂), f₁ s = f₂ t) : HEq f₁ f₂ := Function.hfunext e (fun _ _ _ => (heq_of_eq (h _ _)))
 
 theorem heq_of_inx_of_extn_line (a₁ b₁ a₂ b₂ : Ray P) (h₁ : same_extn_line a₁ a₂) (h₂ : same_extn_line b₁ b₂) : HEq (fun h => inx_of_extn_line a₁ b₁ h) (fun h => inx_of_extn_line a₂ b₂ h) := by
-  have e : (Ray.toProj b₁ ≠ Ray.toProj a₁) = (Ray.toProj b₂ ≠ Ray.toProj a₂) := by
+  have e : (Ray.toProj a₁ ≠ Ray.toProj b₁) = (Ray.toProj a₂ ≠ Ray.toProj b₂) := by
     rw [h₁.1, h₂.1]
-  exact @heq_funext (Ray.toProj b₁ ≠ Ray.toProj a₁) (Ray.toProj b₂ ≠ Ray.toProj a₂) P e (fun h => inx_of_extn_line a₁ b₁ h) (fun h => inx_of_extn_line a₂ b₂ h) (inx_eq_of_same_extn_line h₁ h₂)
+  exact @heq_funext (Ray.toProj a₁ ≠ Ray.toProj b₁) (Ray.toProj a₂ ≠ Ray.toProj b₂) P e (fun h => inx_of_extn_line a₁ b₁ h) (fun h => inx_of_extn_line a₂ b₂ h) (inx_eq_of_same_extn_line h₁ h₂)
 
 /-- Given two lines with different projective directions, this function gives the intersection point of these two lines. -/
-def Line.inx (l₁ l₂ : Line P) (h : l₂.toProj ≠ l₁.toProj) : P := @Quotient.hrecOn₂ (Ray P) (Ray P) same_extn_line.setoid same_extn_line.setoid (fun l l' => (Line.toProj l' ≠ Line.toProj l) → P) l₁ l₂ inx_of_extn_line heq_of_inx_of_extn_line h
+def Line.inx (l₁ l₂ : Line P) (h : ¬ l₁ ∥ l₂) : P := @Quotient.hrecOn₂ (Ray P) (Ray P) same_extn_line.setoid same_extn_line.setoid (fun l l' => (Line.toProj l ≠ Line.toProj l') → P) l₁ l₂ inx_of_extn_line heq_of_inx_of_extn_line h
 
 /-- Given two unparallel line $l_1$ $l_2$, the point given by function "Line.inx" lies on $l_1$ -/
-theorem Line.inx_lies_on_fst {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) :
-    Line.inx l₁ l₂ h ∈ l₁.carrier := by
+theorem Line.inx_lies_on_fst {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) :
+    Line.inx l₁ l₂ h LiesOn l₁ := by
   rcases Quotient.exists_rep l₁ with ⟨r1, hr1⟩
   rcases Quotient.exists_rep l₂ with ⟨r2, hr2⟩
   simp only [← hr1, ← hr2]
   exact inx_lies_on_fst_extn_line r1 r2 (by rw [← hr1, ← hr2] at h; exact h)
 
 /-- Given two unparallel line $l_1$ $l_2$, the point given by function "Line.inx" lies on $l_1$ -/
-theorem Line.inx_lies_on_snd {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) :
-    Line.inx l₁ l₂ h ∈ l₂.carrier := by
+theorem Line.inx_lies_on_snd {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) :
+    Line.inx l₁ l₂ h LiesOn l₂ := by
   rcases Quotient.exists_rep l₁ with ⟨r1, hr1⟩
   rcases Quotient.exists_rep l₂ with ⟨r2, hr2⟩
   simp only [← hr1, ← hr2]
   exact inx_lies_on_snd_extn_line r1 r2 (by rw [← hr1, ← hr2] at h; exact h)
 
 /-- Given two unparallel line $l_1$ $l_2$, the point given by function "Line.inx" is exactly the intersection of these two lines -/
-theorem Line.inx_is_inx {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : is_inx (Line.inx l₁ l₂ h) l₁ l₂ :=
+theorem Line.inx_is_inx {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : is_inx (Line.inx l₁ l₂ h) l₁ l₂ :=
   ⟨inx_lies_on_fst h, inx_lies_on_snd h⟩
 
 end construction
@@ -265,16 +265,16 @@ section property
 -- In this section, we discuss the property of intersection point using `is_inx` instead of `Line.inx`. As a corollory, we deduce the symmetry of Line.inx.
 
 /-- Two unparallel lines have only one intersection point -/
-theorem unique_of_inx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) (a : is_inx A l₁ l₂) (b : is_inx B l₁ l₂) : B = A :=
-  Classical.byContradiction fun d ↦ h (congrArg Line.toProj (eq_of_pt_pt_lies_on_of_ne d a.1 b.1 a.2 b.2).symm)
+theorem unique_of_inx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) (a : is_inx A l₁ l₂) (b : is_inx B l₁ l₂) : B = A :=
+  Classical.byContradiction fun d ↦ h (congrArg Line.toProj (eq_of_pt_pt_lies_on_of_ne d a.1 b.1 a.2 b.2))
 
 /-- Given two unparallel line $l_1$ $l_2$, the point given by function "Line.inx" is exactly the intersection of these two lines -/
-theorem inx_of_line_eq_inx {A : P} {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) (ha : is_inx A l₁ l₂) :
+theorem inx_of_line_eq_inx {A : P} {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) (ha : is_inx A l₁ l₂) :
   A = l₁.inx l₂ h := unique_of_inx_of_line_of_not_para h (Line.inx_is_inx h) ha
 
 /-- The symmetry of Line.inx -/
-theorem Line.inx.symm {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : Line.inx l₂ l₁ h.symm = Line.inx l₁ l₂ h :=
-  unique_of_inx_of_line_of_not_para h (Line.inx_is_inx h) (is_inx.symm (Line.inx_is_inx h.symm))
+theorem Line.inx.symm {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : Line.inx l₂ l₁ (Ne.symm h) = Line.inx l₁ l₂ h :=
+  unique_of_inx_of_line_of_not_para h (Line.inx_is_inx h) (is_inx.symm (Line.inx_is_inx (Ne.symm h)))
 
 /-- If two parallel lines share a same point, they are exactly the same line -/
 theorem eq_of_parallel_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A LiesOn l₁) (h₂ : A LiesOn l₂)
@@ -306,11 +306,13 @@ theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h 
   exact fun _ h₁' h₂' ↦ Classical.byContradiction fun n ↦
     h (congrArg LinearObj.toProj (eq_of_pt_pt_lies_on_of_ne n h₁ h₁' h₂ h₂'))
 
+scoped notation "LineInx" => Line.inx
+
+/-
+-- `why do we creat a version using choose???`
 /-- Given two unparallel lines, this function gives the unique intersection point of these two lines -/
 def intersection_of_nonparallel_line (l₁ l₂ : Line P) (h : ¬ l₁ ∥ l₂) : P :=
   Classical.choose (exists_unique_intersection_of_nonparallel_lines h)
-  -- by choose X _ using (exists_unique_intersection_of_nonparallel_lines h)
-  -- use X
 
 scoped notation "LineInt" => intersection_of_nonparallel_line
 
@@ -321,6 +323,7 @@ theorem intersection_of_nonparallel_line_lies_on_fst_line {l₁ l₂ : Line P} (
 /-- Given two unparallel line $l_1$ $l_2$, the point given by function "Line.inx" lies on $l_2$ -/
 theorem intersection_of_nonparallel_line_lies_on_snd_line {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : LineInt l₁ l₂ h LiesOn l₂ :=
   (Classical.choose_spec (exists_unique_intersection_of_nonparallel_lines h)).1.2
+-/
 
 /-!
 -- Now let's come to rays.

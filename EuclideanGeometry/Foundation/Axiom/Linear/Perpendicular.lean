@@ -54,7 +54,7 @@ theorem toproj_of_perp_line_eq_toproj_perp (A : P) (l : Line P) : (perp_line A l
 theorem perp_foot_preparation (A : P) (l : Line P) : l.toProj ≠ (perp_line A l).toProj :=
   Ne.trans_eq (perpendicular.irrefl l) (toproj_of_perp_line_eq_toproj_perp A l).symm
 
-def perp_foot (A : P) (l : Line P) : P := Line.inx l (perp_line A l) (perp_foot_preparation A l).symm
+def perp_foot (A : P) (l : Line P) : P := Line.inx l (perp_line A l) (perp_foot_preparation A l)
 
 def dist_pt_line (A : P) (l : Line P) := Seg.length (SEG A (perp_foot A l))
 
@@ -65,7 +65,7 @@ theorem perp_foot_eq_self_iff_lies_on (A : P) (l : Line P) : perp_foot A l = A �
   fun h ↦ (inx_of_line_eq_inx _ ⟨h, (pt_lies_on_of_mk_pt_proj A (Proj.perp (Line.toProj l)))⟩).symm⟩
 
 theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on {A : P} {l : Line P} (h : ¬ A LiesOn l) : LIN A (perp_foot A l) ((perp_foot_eq_self_iff_lies_on A l).mp.mt h) = perp_line A l :=
-  eq_line_of_pt_pt_of_ne ((perp_foot_eq_self_iff_lies_on A l).mp.mt h) (pt_lies_on_of_mk_pt_proj A l.toProj.perp) (Line.inx_is_inx (perp_foot_preparation A l).symm).2
+  eq_line_of_pt_pt_of_ne ((perp_foot_eq_self_iff_lies_on A l).mp.mt h) (pt_lies_on_of_mk_pt_proj A l.toProj.perp) (Line.inx_is_inx (perp_foot_preparation A l)).2
 
 theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l :=
   triv_iff_length_eq_zero.symm.trans ((Eq.congr rfl rfl).trans (perp_foot_eq_self_iff_lies_on A l))
