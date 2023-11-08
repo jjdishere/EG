@@ -127,7 +127,7 @@ theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) : ∀ X : P, 
 
 end Compaitiblity_of_coercions_of_mk_pt_pt
 
-section Define_line_toProj
+section Define_line_toproj
 
 /- examine a line has uniquely defined toProj -/
 
@@ -137,15 +137,15 @@ theorem vec_eq_smul_vec_of_lies_on {l : Line P} {A B X Y : P} (ha : A LiesOn l) 
   use t₂ - t₁
   rw [← vec_sub_vec A, e₁, e₂, sub_smul]
 
-theorem toProj_eq_toProj_of_Seg_nd_lies_on {l : Line P} {A B X Y : P} (ha : A LiesOn l) (hb : B LiesOn l) (hx : X LiesOn l) (hy : Y LiesOn l) (hab : B ≠ A) (hxy : Y ≠ X) : Seg_nd.toProj ⟨SEG A B, hab⟩ = Seg_nd.toProj ⟨SEG X Y, hxy⟩ := by
+theorem toProj_eq_toproj_of_Seg_nd_lies_on {l : Line P} {A B X Y : P} (ha : A LiesOn l) (hb : B LiesOn l) (hx : X LiesOn l) (hy : Y LiesOn l) (hab : B ≠ A) (hxy : Y ≠ X) : Seg_nd.toProj ⟨SEG A B, hab⟩ = Seg_nd.toProj ⟨SEG X Y, hxy⟩ := by
   rcases (vec_eq_smul_vec_of_lies_on ha hb hx hy hab) with ⟨t, e⟩
-  exact eq_toProj_of_smul _ _ e
+  exact eq_toproj_of_smul _ _ e
 
 /- define Line.toProj -/
 
 theorem uniqueness_of_proj_of_line (l : Line P) : ∀ A B C D : P, (A LiesOn l) → (B LiesOn l) → (C LiesOn l) → (D LiesOn l) → (hab : B ≠ A) → (hcd : D ≠ C) → Seg_nd.toProj ⟨SEG A B, hab⟩ = Seg_nd.toProj ⟨SEG C D, hcd⟩ := by
   intro A B C D ha hb hc hd hab hcd
-  exact toProj_eq_toProj_of_Seg_nd_lies_on ha hb hc hd hab hcd
+  exact toProj_eq_toproj_of_Seg_nd_lies_on ha hb hc hd hab hcd
 
 theorem exist_unique_proj_of_line (l : Line P) : ∃! pr : Proj, ∀ (A B : P) (ha : A LiesOn l) (hb : B LiesOn l) (h : B ≠ A), Seg_nd.toProj ⟨SEG A B, h⟩ = pr := by
   rcases l.nontriv with ⟨x, ⟨y, c⟩⟩
@@ -153,7 +153,7 @@ theorem exist_unique_proj_of_line (l : Line P) : ∃! pr : Proj, ∀ (A B : P) (
   simp
   constructor
   intro A B ha hb hab
-  exact toProj_eq_toProj_of_Seg_nd_lies_on ha hb c.1 c.2.1 hab c.2.2
+  exact toProj_eq_toproj_of_Seg_nd_lies_on ha hb c.1 c.2.1 hab c.2.2
   intro pr w
   rw [← w]
   exact c.1
@@ -166,15 +166,15 @@ def Line.toProj (l : Line P) : Proj :=
 
 -- If you don't want to use Classical.choose, please use this theorem to simplify your Line.toProj. 
 
-theorem line_toProj_eq_seg_nd_toProj_of_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hb : B LiesOn l) (hab : B ≠ A) : Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj := (Classical.choose_spec (exist_unique_proj_of_line l)).1 A B ha hb hab
+theorem line_toproj_eq_seg_nd_toproj_of_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hb : B LiesOn l) (hab : B ≠ A) : Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj := (Classical.choose_spec (exist_unique_proj_of_line l)).1 A B ha hb hab
 
-theorem line_of_pt_pt_toProj_eq_seg_nd_toProj {A B : P} (h : B ≠ A) : (LIN A B h).toProj = Seg_nd.toProj ⟨SEG A B, h⟩ := by
+theorem line_of_pt_pt_toproj_eq_seg_nd_toproj {A B : P} (h : B ≠ A) : (LIN A B h).toProj = Seg_nd.toProj ⟨SEG A B, h⟩ := by
   symm
-  apply line_toProj_eq_seg_nd_toProj_of_lies_on
+  apply line_toproj_eq_seg_nd_toproj_of_lies_on
   exact fst_pt_lies_on_line_of_pt_pt h
   exact snd_pt_lies_on_line_of_pt_pt h
 
-end Define_line_toProj
+end Define_line_toproj
 
 section Compatibility_of_LiesOn
 
@@ -232,7 +232,7 @@ def Ray.toLine (r : Ray P) := LIN r.source (r.toDir.toVec +ᵥ r.source) (by
 instance : Coe (Ray P) (Line P) where
   coe := Ray.toLine
 
-theorem ray_toLine_toProj_eq_ray_toProj (r : Ray P) : r.toLine.toProj = r.toProj := by
+theorem ray_toLine_toproj_eq_ray_toproj (r : Ray P) : r.toLine.toProj = r.toProj := by
   sorry
 
 /- def coe from non trivial segment to line-/
@@ -279,9 +279,9 @@ theorem exists_ne_pt_pt_lies_on_of_line (A : P) (l : Line P) : ∃ B : P, B Lies
   · use X
     tauto
 
-theorem lies_on_of_Seg_nd_toProj_eq_toProj {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) (hp : Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) : B LiesOn l := by
+theorem lies_on_of_Seg_nd_toproj_eq_toproj {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) (hp : Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) : B LiesOn l := by
   rcases exists_ne_pt_pt_lies_on_of_line A l with ⟨X, h⟩
-  let g := line_toProj_eq_seg_nd_toProj_of_lies_on ha h.1 h.2
+  let g := line_toproj_eq_seg_nd_toproj_of_lies_on ha h.1 h.2
   rw [← hp] at g
   unfold Seg_nd.toProj Seg_nd.toVec_nd at g
   simp only [ne_eq] at g 
@@ -294,10 +294,10 @@ theorem lies_on_of_Seg_nd_toProj_eq_toProj {A B : P} {l : Line P} (ha : A LiesOn
     · simp only [h, dite_eq_ite]
   exact (lies_on_iff_colinear_of_ne_lies_on_lies_on h.2 ha h.1 B).2 c
 
-theorem lies_on_iff_eq_toProj_of_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) : B LiesOn l ↔ (Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) := by
+theorem lies_on_iff_eq_toproj_of_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) : B LiesOn l ↔ (Seg_nd.toProj ⟨SEG A B, hab⟩ = l.toProj) := by
   constructor
-  exact fun a => line_toProj_eq_seg_nd_toProj_of_lies_on ha a hab
-  exact fun a => lies_on_of_Seg_nd_toProj_eq_toProj ha hab a
+  exact fun a => line_toproj_eq_seg_nd_toproj_of_lies_on ha a hab
+  exact fun a => lies_on_of_Seg_nd_toproj_eq_toproj ha hab a
 
 -- Given distinct A B on a line, there exist C s.t. C LiesOn AB (a cor of Archimedean_property in Seg) and there exist D s.t. B LiesOn AD
 theorem Line.exist_pt_beyond_pt {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B LiesOn l) (h : B ≠ A) : (∃ C D : P, (C LiesOn l) ∧ (D LiesOn l) ∧ (A LiesInt (SEG C B)) ∧ (B LiesInt (SEG A D))) := sorry
@@ -312,7 +312,7 @@ theorem exist_line_of_pt_proj (A : P) (pr : Proj) : ∃ l : Line P, A LiesOn l �
   use r.toLine
   constructor
   exact Ray.lies_on_toLine_of_lie_on (Ray.source_lies_on r)
-  rw [ray_toLine_toProj_eq_ray_toProj r]
+  rw [ray_toLine_toproj_eq_ray_toproj r]
   exact hd
 
 theorem exist_unique_line_of_pt_proj (A : P) (pr : Proj) : ∃! l : Line P, A LiesOn l ∧ l.toProj = pr := by
@@ -329,7 +329,7 @@ theorem exist_unique_line_of_pt_proj (A : P) (pr : Proj) : ∃! l : Line P, A Li
   by_cases X = A 
   · rw [h]
     tauto
-  · rw [lies_on_iff_eq_toProj_of_lies_on hl₁.1 h, hl₁.2, lies_on_iff_eq_toProj_of_lies_on hl₂.1 h, hl₂.2]
+  · rw [lies_on_iff_eq_toproj_of_lies_on hl₁.1 h, hl₁.2, lies_on_iff_eq_toproj_of_lies_on hl₂.1 h, hl₂.2]
 
 def Line.mk_pt_proj (A : P) (pr : Proj) : Line P := 
   Classical.choose (exist_unique_line_of_pt_proj A pr)

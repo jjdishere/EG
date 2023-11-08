@@ -100,7 +100,7 @@ theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l
   rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
   rcases l₂.nontriv with ⟨C, ⟨D, hcd⟩⟩
   have e' : Seg_nd.toProj ⟨SEG A B, hab.2.2⟩ ≠ Seg_nd.toProj ⟨SEG C D, hcd.2.2⟩ := by
-    rw [line_toProj_eq_seg_nd_toProj_of_lies_on hab.1 hab.2.1 hab.2.2, line_toProj_eq_seg_nd_toProj_of_lies_on hcd.1 hcd.2.1 hcd.2.2]
+    rw [line_toproj_eq_seg_nd_toproj_of_lies_on hab.1 hab.2.1 hab.2.2, line_toproj_eq_seg_nd_toproj_of_lies_on hcd.1 hcd.2.1 hcd.2.2]
     exact h
   have w : ∃ x y, VEC A C = x • VEC A B + y • VEC C D := linear_combination_of_not_colinear _ e'
   rcases w with ⟨x, ⟨y, e⟩⟩

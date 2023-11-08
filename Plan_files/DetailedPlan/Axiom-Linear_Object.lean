@@ -53,7 +53,7 @@ Ray.lean -- Define (directed) segments and rays
     `More to add here, or other place. e.g. the source and target of a seg LiesOn a ray → every other point lies on it `
 
     Seg_nd.toDir_eq_toRay_toDir : Given a nondegenerate segment (seg_nd : Seg_nd P), we have seg_nd.toDir = seg_nd.toRay.toDir
-    Seg_nd.toProj_eq_toRay_toProj : Given a nondegenerate segment (seg_nd : Seg_nd P), we have seg_nd.toProj = seg_nd.toRay.toProj
+    Seg_nd.toProj_eq_toRay_toproj : Given a nondegenerate segment (seg_nd : Seg_nd P), we have seg_nd.toProj = seg_nd.toRay.toProj
 
     Ray.is_in_inter_iff_add_pos_Dir -- Given a (ray : Ray P), a point (p : P) lies in the interior of ray iff  ∃ t : ℝ, 0 < t ∧ VEC ray.source p = t • ray.toDir.toVec .
 
@@ -73,7 +73,7 @@ Ray.lean -- Define (directed) segments and rays
     not_lies_int_of_lies_on_rev -- Given a (ray : Ray P), the intersection of the interior of ray and the carrier of the reverse of ray is empty.
     lies_on_iff_lies_on_toRay_and_rev_toRay -- Given a nondegenerate segment (segnd : Seg_nd P), a point (A : P) lies on segnd if and only if A lies on the ray associated to the segment as well as the ray associated to the reverse of the segment, i.e. A ∈ segnd.toray ∧ A ∈ segnd.reverse.toray.
     Ray.toDir_of_reverse_eq_neg_toDir --
-    Ray.toProj_of_reverse_eq_toProj --
+    Ray.toProj_of_reverse_eq_toproj --
     Seg.toVec_of_reverse_eq_neg_toVec -- Given a (seg : Seg P), seg.reverse.toVec = - seg.toVec
     Seg_nd.toVec_nd_of_reverse_eq_neg_toVec_nd -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toVec_nd = - seg_nd.toVec_nd
     Seg_nd.toDir_of_reverse_eq_neg_toDir -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toDir = - seg_nd.toDir
@@ -177,10 +177,10 @@ Line.lean -- Define lines
       lies_on_iff_lies_on_iff_line_eq_line --
       Ray.lies_on_toLine_of_lie_on --
       Seg_nd.lies_on_toLine_of_lie_on --
-      line_toProj_eq_seg_nd_toProj_of_lies_on --
-      Ray.toProj_eq_toLine_toProj --
-      Seg_nd.toProj_eq_toLine_toProj --
-      lies_on_iff_eq_toProj_of_lies_on --
+      line_toproj_eq_seg_nd_toproj_of_lies_on --
+      Ray.toProj_eq_toLine_toproj --
+      Seg_nd.toProj_eq_toLine_toproj --
+      lies_on_iff_eq_toproj_of_lies_on --
     colinear : theorems related to colinear
       lies_on_line_of_pt_pt_iff_colinear --
       lies_on_iff_colinear_of_ne_lies_on_lies_on --
@@ -188,8 +188,8 @@ Line.lean -- Define lines
 
     (archemidean) `Line_ex`
     exists_ne_pt_pt_lies_on_of_line --
-    lies_on_of_Seg_nd_toProj_eq_toProj --
-    lies_on_iff_eq_toProj_of_lies_on --
+    lies_on_of_Seg_nd_toproj_eq_toproj --
+    lies_on_iff_eq_toproj_of_lies_on --
     Line.exist_pt_beyond_pt --
   
 -/

@@ -36,10 +36,10 @@ theorem perp_of_parallel_perp (h₁ : l₁ ∥ l₂) (h₂ : l₂ ⟂ l₃) : l�
 
 theorem perp_of_perp_parallel (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ∥ l₃) : l₁ ⟂ l₃ := h₁.trans (congrArg Proj.perp h₂)
 
-theorem toProj_ne_toProj_of_perp (h : l₁ ⟂ l₂) : LinearObj.toProj l₁ ≠ LinearObj.toProj l₂ :=
+theorem toProj_ne_toproj_of_perp (h : l₁ ⟂ l₂) : LinearObj.toProj l₁ ≠ LinearObj.toProj l₂ :=
   fun hp ↦ Proj.one_ne_I (mul_right_cancel (((one_mul (LinearObj.toProj l₂)).trans hp.symm).trans h))
 
-theorem not_parallel_of_perp (h : l₁ ⟂ l₂) : ¬ l₁ ∥ l₂ := toProj_ne_toProj_of_perp h
+theorem not_parallel_of_perp (h : l₁ ⟂ l₂) : ¬ l₁ ∥ l₂ := toProj_ne_toproj_of_perp h
 
 end Perpendicular_and_parallel
 
@@ -48,11 +48,11 @@ section Perpendicular_constructions
 def perp_line (A : P) (l : Line P) := Line.mk_pt_proj A (l.toProj.perp)
 
 @[simp]
-theorem toProj_of_perp_line_eq_toProj_perp (A : P) (l : Line P) : (perp_line A l).toProj = l.toProj.perp :=
+theorem toProj_of_perp_line_eq_toproj_perp (A : P) (l : Line P) : (perp_line A l).toProj = l.toProj.perp :=
   proj_eq_of_mk_pt_proj A l.toProj.perp
 
 theorem perp_foot_preparation (A : P) (l : Line P) : l.toProj ≠ (perp_line A l).toProj :=
-  Ne.trans_eq (perpendicular.irrefl l) (toProj_of_perp_line_eq_toProj_perp A l).symm
+  Ne.trans_eq (perpendicular.irrefl l) (toProj_of_perp_line_eq_toproj_perp A l).symm
 
 def perp_foot (A : P) (l : Line P) : P := Line.inx l (perp_line A l) (perp_foot_preparation A l).symm
 

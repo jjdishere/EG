@@ -295,7 +295,7 @@ end lieson
 theorem Seg_nd.toDir_eq_toRay_toDir : seg_nd.toDir = seg_nd.toRay.toDir := rfl
 
 /-- Given a nondegenerate segment, the projective direction associated to the nondegenerate segment is the same as the projective direction associated to the ray associated to the nondegenerate segment. -/
-theorem Seg_nd.toRay_toProj_eq_toProj : seg_nd.toRay.toProj = seg_nd.toProj := rfl
+theorem Seg_nd.toRay_toproj_eq_toproj : seg_nd.toRay.toProj = seg_nd.toProj := rfl
 
 /-- Given two distinct points $A$ and $B$, the direction of ray $AB$ is same as the negative direction of $BA$ -/
 theorem Ray.todir_eq_neg_todir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toDir = - (RAY B A h.symm).toDir := by
@@ -303,7 +303,7 @@ theorem Ray.todir_eq_neg_todir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h)
   exact (neg_to_dir_eq_to_dir_smul_neg ⟨VEC B A, (ne_iff_vec_ne_zero _ _).mp h.symm⟩ ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h⟩ (by rw [neg_smul, one_smul, neg_vec]) (by norm_num)).symm
 
 /-- Given two distinct points $A$ and $B$, the projective direction of ray $AB$ is same as that of $BA$ -/
-theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toProj = (RAY B A h.symm).toProj := (Dir.eq_toProj_iff _ _).mpr (.inr (todir_eq_neg_todir_of_mk_pt_pt h))
+theorem Ray.toProj_eq_toproj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toProj = (RAY B A h.symm).toProj := (Dir.eq_toproj_iff _ _).mpr (.inr (todir_eq_neg_todir_of_mk_pt_pt h))
 
 /-- Given two distinct points $A$ and $B$, the ray associated to the segment $AB$ is same as ray $AB$-/
 theorem pt_pt_seg_toRay_eq_pt_pt_ray {A B : P} (h : B ≠ A) : (Seg_nd.mk A B h).toRay = Ray.mk_pt_pt A B h := rfl

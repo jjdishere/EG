@@ -121,7 +121,7 @@ Definition \verb|RAY| as \verb|Ray.mk_pt_pt|: This is to abbreviate \verb|Ray.mk
 \item 
 Theorem \verb|Seg_nd.toDir_eq_toRay_toDir|: Given a nondegenerate segment, the direction associated to the nondegenerate segment is the same as the direction associated to the ray associated to the nondegenerate segment.
 
-\item Theorem \verb|Seg_nd.toProj_eq_toRay_toProj|: Given a nondegenerate segment,  the projective direction associated to the nondegenerate segment is the same as the projective direction associated to the ray associated to the nondegenerate segment.
+\item Theorem \verb|Seg_nd.toProj_eq_toRay_toproj|: Given a nondegenerate segment,  the projective direction associated to the nondegenerate segment is the same as the projective direction associated to the ray associated to the nondegenerate segment.
 
 \item Theorem \verb|Ray.is_in_inter_iff_add_pos_Dir|: Given a ray, a point $A$ lies in the interior of the ray if and only if the vector from the source of the ray to $A$ is a positive multiple of the direction of ray.
 
@@ -257,7 +257,7 @@ Theorem \verb|Seg_nd.rev_rev_eq_self|: Reversing a nondegenerate segment twice g
 Theorem \verb|Ray.toDir_of_rev_eq_neg_toDir|: Given a ray, the direction of the reversed ray is the negative of the direction of the ray.
 
 \item 
-Theorem \verb|Ray.toProj_of_rev_eq_toProj|: Given a ray, the projective direction of the reversed ray is the negative of the projective direction of the ray.
+Theorem \verb|Ray.toProj_of_rev_eq_toproj|: Given a ray, the projective direction of the reversed ray is the negative of the projective direction of the ray.
 
 \item 
 Theorem \verb|Seg.toVec_of_rev_eq_neg_toVec|: Given a segment, the vector associated to the reversed segment is the negative of the vector associated to the segment.
@@ -506,9 +506,9 @@ theorem Seg_nd.toLine_eq_rev_toLine : seg_nd.toLine = seg_nd.reverse.toLine := s
 
 theorem toLine_eq_extn_toLine : seg_nd.toLine = seg_nd.extension.toLine := sorry
 
-theorem Ray.toProj_eq_toLine_toProj (ray : Ray P) : ray.toProj = ray.toLine.toProj := rfl
+theorem Ray.toProj_eq_toLine_toproj (ray : Ray P) : ray.toProj = ray.toLine.toProj := rfl
 
-theorem Seg_nd.toProj_eq_toLine_toProj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := rfl
+theorem Seg_nd.toProj_eq_toLine_toproj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := rfl
 
 
 \end{itemize}
@@ -579,9 +579,9 @@ Theorem \verb|eq_of_pt_pt_lies_on_of_ne|: Given two distinct points $A$ and $B$ 
 
     pt_lies_on_and_proj_eq_of_line_mk_pt_proj --
 
-    Ray.toProj_eq_toLine_toProj `Line_ex`--
-    Seg_nd.toProj_eq_toLine_toProj `Line_ex` --
-    lies_on_iff_eq_toProj `Line_ex`--
+    Ray.toProj_eq_toLine_toproj `Line_ex`--
+    Seg_nd.toProj_eq_toLine_toproj `Line_ex` --
+    lies_on_iff_eq_toproj `Line_ex`--
 
     (reverse)`Line_ex`
     Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev --
@@ -594,8 +594,8 @@ Theorem \verb|eq_of_pt_pt_lies_on_of_ne|: Given two distinct points $A$ and $B$ 
 
     (archemidean)
     exists_ne_pt_pt_lies_on_of_line --
-    lies_on_of_Seg_nd_toProj_eq_toProj --
-    Seg_nd_toProj_eq_toProj_iff_lies_on --
+    lies_on_of_Seg_nd_toproj_eq_toproj --
+    Seg_nd_toproj_eq_toproj_iff_lies_on --
     Line.exist_pt_beyond_pt --
 
 \subsection{}
@@ -701,7 +701,7 @@ Theorem \verb|perp_of_parallel_perp|: Given three linear objects $l_1$, $l_2$, $
 \item
 Theorem \verb|perp_of_perp_parallel|: Given three linear objects $l_1$, $l_2$, $l_3$, if $l_1 \perp l_2$ and $l_2 \parallel l_3$, then $l_1 \perp l_3$.
 
-\item Theorem \verb|toProj_ne_toProj_of_perp|: Given two linear objects $l_1$ and $l_2$, if $l_1 \perp l_2$, then the associated projected direction of $l_1$ is not equal to that of $l_2$.
+\item Theorem \verb|toProj_ne_toproj_of_perp|: Given two linear objects $l_1$ and $l_2$, if $l_1 \perp l_2$, then the associated projected direction of $l_1$ is not equal to that of $l_2$.
 
 \item Theorem \verb|not_parallel_of_perp|: Given two linear objects $l_1$ and $l_2$, if $l_1 \perp l_2$, then $l_1$ is not parallel to $l_2$.
 
@@ -712,7 +712,7 @@ Theorem \verb|perp_of_perp_parallel|: Given three linear objects $l_1$, $l_2$, $
 \item 
 Definition \verb|perp_line|: Given a point $A$ and a line $l$, this function returns the line through $A$ that is perpendicular to $l$; it is defined as the the line through $A$ with direction perpendicular to that of $l$.
 \item 
-Theorem \verb|toProj_of_perp_line_eq_toProj_perp|: Given a point $A$ and a line $l$, the projective direction of the line through $A$ perpendicular to $l$ is the perpendicular projective direction of $l$.
+Theorem \verb|toProj_of_perp_line_eq_toproj_perp|: Given a point $A$ and a line $l$, the projective direction of the line through $A$ perpendicular to $l$ is the perpendicular projective direction of $l$.
 
 \item 
 Theorem \verb|perp_foot_preparation|: Given a point $A$ and a line $l$, the projective direction of the line through $A$ perpendicular to $l$ is not the same as the projective direction of $l$.

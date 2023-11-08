@@ -83,7 +83,7 @@ RAY := Ray.mk_pt_pt : This is to abbreviate Ray.mk_pt_pt into RAY.
     `More to add here, or other place. e.g. the source and target of a seg LiesOn a ray → every other point lies on it `
 
     Seg_nd.toDir_eq_toRay_toDir : Given a nondegenerate segment (seg_nd : Seg_nd P), we have seg_nd.toDir = seg_nd.toRay.toDir
-    Seg_nd.toProj_eq_toRay_toProj : Given a nondegenerate segment (seg_nd : Seg_nd P), we have seg_nd.toProj = seg_nd.toRay.toProj
+    Seg_nd.toProj_eq_toRay_toproj : Given a nondegenerate segment (seg_nd : Seg_nd P), we have seg_nd.toProj = seg_nd.toRay.toProj
 
     Ray.is_in_inter_iff_add_pos_Dir -- Given a (ray : Ray P), a point (p : P) lies in the interior of ray iff  ∃ t : ℝ, 0 < t ∧ VEC ray.source p = t • ray.toDir.toVec .
 
@@ -104,7 +104,7 @@ RAY := Ray.mk_pt_pt : This is to abbreviate Ray.mk_pt_pt into RAY.
     not_lies_int_of_lies_on_rev -- Given a (ray : Ray P), the intersection of the interior of ray and the carrier of the reverse of ray is empty.
     lies_on_iff_lies_on_toRay_and_rev_toRay -- Given a nondegenerate segment (segnd : Seg_nd P), a point (A : P) lies on segnd if and only if A lies on the ray associated to the segment as well as the ray associated to the reverse of the segment, i.e. A ∈ segnd.toray ∧ A ∈ segnd.reverse.toray.
     Ray.toDir_of_reverse_eq_neg_toDir --
-    Ray.toProj_of_reverse_eq_toProj --
+    Ray.toProj_of_reverse_eq_toproj --
     Seg.toVec_of_reverse_eq_neg_toVec -- Given a (seg : Seg P), seg.reverse.toVec = - seg.toVec
     Seg_nd.toVec_nd_of_reverse_eq_neg_toVec_nd -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toVec_nd = - seg_nd.toVec_nd
     Seg_nd.toDir_of_reverse_eq_neg_toDir -- Given a (seg_nd : Seg_nd P), seg_nd.reverse.toDir = - seg_nd.toDir
@@ -195,9 +195,9 @@ In this file, we define the concept of lines.
 
     pt_lies_on_and_proj_eq_of_line_mk_pt_proj --
 
-    Ray.toProj_eq_toLine_toProj `Line_ex`--
-    Seg_nd.toProj_eq_toLine_toProj `Line_ex` --
-    lies_on_iff_eq_toProj_of_lies_on `Line_ex`--
+    Ray.toProj_eq_toLine_toproj `Line_ex`--
+    Seg_nd.toProj_eq_toLine_toproj `Line_ex` --
+    lies_on_iff_eq_toproj_of_lies_on `Line_ex`--
 
     (reverse)`Line_ex`
     Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev --
@@ -210,8 +210,8 @@ In this file, we define the concept of lines.
 
     (archemidean)
     exists_ne_pt_pt_lies_on_of_line --
-    lies_on_of_Seg_nd_toProj_eq_toProj --
-    lies_on_iff_eq_toProj_of_lies_on --
+    lies_on_of_Seg_nd_toproj_eq_toproj --
+    lies_on_iff_eq_toproj_of_lies_on --
     Line.exist_pt_beyond_pt --
     
 

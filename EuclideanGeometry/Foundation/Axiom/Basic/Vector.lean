@@ -523,15 +523,15 @@ def Dir.toProj (v : Dir) : Proj := ⟦v⟧
 instance : Coe Dir Proj where
   coe v := v.toProj
 
-theorem Dir.eq_toProj_iff (x y : Dir) : x.toProj = y.toProj ↔ x = y ∨ x = -y := Quotient.eq (r := PM.con.toSetoid)
+theorem Dir.eq_toproj_iff (x y : Dir) : x.toProj = y.toProj ↔ x = y ∨ x = -y := Quotient.eq (r := PM.con.toSetoid)
 
-theorem Dir.eq_toProj_iff' {x y : Dir} : x.toProj = y.toProj ↔ PM x y := by rw [Dir.eq_toProj_iff, PM]
+theorem Dir.eq_toproj_iff' {x y : Dir} : x.toProj = y.toProj ↔ PM x y := by rw [Dir.eq_toproj_iff, PM]
 
 def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.toDir v : Proj)
 
 -- Coincidence of toProj gives rise to important results, especially that two Vec_nd-s have the same toProj iff they are equal by taking a real (nonzero) scaler. We will prove this statement in the following section.
 
-section Vec_nd_toProj
+section Vec_nd_toproj
 
 theorem to_dir_eq_to_dir_smul_pos (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : 0 < t) : Vec_nd.toDir u = Vec_nd.toDir v := by
   unfold Vec_nd.toDir
@@ -587,7 +587,7 @@ theorem neg_to_dir_eq_to_dir_eq (z : Vec_nd) : Vec_nd.toDir (-z) = - Vec_nd.toDi
   simp only [ne_eq, fst_neg_Vec_nd_is_neg_fst_Vec_nd, neg_smul, one_smul]
   linarith
 
-theorem eq_toProj_of_smul (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) : Vec_nd.toProj u = Vec_nd.toProj v := by
+theorem eq_toproj_of_smul (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) : Vec_nd.toProj u = Vec_nd.toProj v := by
   have ht : t ≠ 0 := by
     by_contra ht'
     rw [ht', zero_smul ℝ u.1] at h
@@ -605,7 +605,7 @@ theorem eq_toProj_of_smul (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) : Vec_n
       right
       exact Iff.mp neg_eq_iff_eq_neg (neg_to_dir_eq_to_dir_smul_neg u v h ht₃)
 
-theorem smul_of_eq_toProj (u v : Vec_nd) (h : Vec_nd.toProj u = Vec_nd.toProj v) : ∃ (t : ℝ), v.1 = t • u.1 := by
+theorem smul_of_eq_toproj (u v : Vec_nd) (h : Vec_nd.toProj u = Vec_nd.toProj v) : ∃ (t : ℝ), v.1 = t • u.1 := by
   let h' := Quotient.exact h
   unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
   simp only [Con.rel_eq_coe, Con.rel_mk] at h'
@@ -626,15 +626,15 @@ theorem smul_of_eq_toProj (u v : Vec_nd) (h : Vec_nd.toProj u = Vec_nd.toProj v)
       exact h₂
 
 -- The main theorem of Vec_nd.toProj
-theorem Vec_nd.eq_toProj_iff (u v : Vec_nd) : (Vec_nd.toProj u = Vec_nd.toProj v) ↔ ∃ (t : ℝ), v.1 = t • u.1 := by
+theorem Vec_nd.eq_toproj_iff (u v : Vec_nd) : (Vec_nd.toProj u = Vec_nd.toProj v) ↔ ∃ (t : ℝ), v.1 = t • u.1 := by
   constructor
   · intro h
-    exact smul_of_eq_toProj _ _ h
+    exact smul_of_eq_toproj _ _ h
   · intro h'
     rcases h' with ⟨t, h⟩
-    exact eq_toProj_of_smul _ _ h
+    exact eq_toproj_of_smul _ _ h
 
-end Vec_nd_toProj
+end Vec_nd_toproj
 
 section Perpendicular
 
@@ -871,7 +871,7 @@ theorem linear_combination_of_not_colinear_vec_nd {u v : Vec_nd} (w : Vec) (h' :
   have h₁ : (Vec_nd.toProj u ≠ Vec_nd.toProj v) → ¬(∃ (t : ℝ), v.1 = t • u.1) := by
     intro _
     by_contra h₂
-    let _ := (Vec_nd.eq_toProj_iff u v).2 h₂
+    let _ := (Vec_nd.eq_toproj_iff u v).2 h₂
     tauto
   exact @linear_combination_of_not_colinear' u.1 v.1 w u.2 (h₁ h')
 
@@ -893,7 +893,7 @@ theorem linear_combination_of_not_colinear_dir {u v : Dir} (w : Vec) (h' : u.toP
       unfold Vec_nd.toProj
       rw [hv1]
     have hv3 : v.1 = v'.1 := rfl
-    rw [hu3, hv3 ,←hu2, ←hv2, ←Vec_nd.eq_toProj_iff u' v'] at h
+    rw [hu3, hv3 ,←hu2, ←hv2, ←Vec_nd.eq_toproj_iff u' v'] at h
     tauto
   exact @linear_combination_of_not_colinear' u.1 v.1 w u.toVec_nd.2 (h₁ h')
 

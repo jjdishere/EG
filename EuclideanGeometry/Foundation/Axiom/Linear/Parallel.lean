@@ -59,15 +59,15 @@ scoped infix : 50 "∥" => parallel
 
 section coercion_theorem
 
--- `Should this section eq_toproj really exist?? outside this file only parallel is allowed, not eq_toProj, or maybe this section should be marked as private`
+-- `Should this section eq_toproj really exist?? outside this file only parallel is allowed, not eq_toproj, or maybe this section should be marked as private`
 section eq_toproj
 
----- eq_toProj theorems should be relocate to this file, they are in Line_ex now.
+---- eq_toproj theorems should be relocate to this file, they are in Line_ex now.
 /-- The projective direction of a ray is same as the projective direction of the extension line of the ray. -/
-theorem Ray.toProj_eq_toLine_toProj (ray : Ray P): ray.toProj = ray.toLine.toProj := rfl
+theorem Ray.toProj_eq_toLine_toproj (ray : Ray P): ray.toProj = ray.toLine.toProj := rfl
 
 /-- The projective direction of a nondegenerate segment is same as the projective direction of the extension line of it. -/
-theorem Seg_nd.toProj_eq_toLine_toProj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := rfl
+theorem Seg_nd.toProj_eq_toLine_toproj (seg_nd : Seg_nd P) : seg_nd.toProj = seg_nd.toLine.toProj := rfl
 
 end eq_toproj
 
@@ -213,14 +213,14 @@ theorem Line.inx.symm {l₁ l₂ : Line P} (h : l₂.toProj ≠ l₁.toProj) : L
 
 /-- If two parallel lines share a same point, they are exactly the same line -/
 theorem eq_of_parallel_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A LiesOn l₁) (h₂ : A LiesOn l₂)
-  (h : l₁ ∥ l₂) : l₁ = l₂ := eq_of_same_toProj_and_pt_lies_on h₁ h₂ h
+  (h : l₁ ∥ l₂) : l₁ = l₂ := eq_of_same_toproj_and_pt_lies_on h₁ h₂ h
 
 /-- If two lines are not parallel, then their intersection is not empty -/
 theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : ∃ p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
   rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
   rcases l₂.nontriv with ⟨C, ⟨D, hcd⟩⟩
   have e' : (SEG_nd A B hab.2.2).toProj ≠ (SEG_nd C D hcd.2.2).toProj := by
-    rw [toProj_eq_seg_nd_toProj_of_lies_on hab.1 hab.2.1 hab.2.2, toProj_eq_seg_nd_toProj_of_lies_on hcd.1 hcd.2.1 hcd.2.2]
+    rw [toProj_eq_seg_nd_toproj_of_lies_on hab.1 hab.2.1 hab.2.2, toProj_eq_seg_nd_toproj_of_lies_on hcd.1 hcd.2.1 hcd.2.2]
     exact h
   let x := ((VEC A B).1 * (VEC C D).2 - (VEC A B).2 * (VEC C D).1)⁻¹ * ((VEC A C).1 * (VEC C D).2 - (VEC C D).1 * (VEC A C).2)
   let y := ((VEC A B).1 * (VEC C D).2 - (VEC A B).2 * (VEC C D).1)⁻¹ * ((VEC A B).1 * (VEC A C).2 - (VEC A C).1 * (VEC A B).2)

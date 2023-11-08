@@ -35,7 +35,7 @@ theorem colinear_of_vec_eq_smul_vec {A B C : P} {t : ℝ} (e : VEC A C = t • V
     intro h'
     push_neg at h'
     unfold colinear_of_nd
-    exact (eq_toProj_of_smul ⟨_, (ne_iff_vec_ne_zero A B).1 h'.2.2⟩ ⟨_, ((ne_iff_vec_ne_zero A C).1 h'.2.1.symm)⟩ e)
+    exact (eq_toproj_of_smul ⟨_, (ne_iff_vec_ne_zero A B).1 h'.2.2⟩ ⟨_, ((ne_iff_vec_ne_zero A C).1 h'.2.1.symm)⟩ e)
   tauto
 
 /-- Given three points $A$, $B$, $C$, if the vector $\overrightarrow{AC}$ is a scalar multiple of the vector $\overrightarrow{AB}$, then $A$, $B$, $C$ are colinear. -/
@@ -63,7 +63,7 @@ theorem colinear_iff_eq_smul_vec_of_ne {A B C : P} (g : B ≠ A) : colinear A B 
       push_neg at h
       unfold colinear_of_nd at c
       simp only [ne_eq, eq_iff_iff, iff_true] at c
-      exact smul_of_eq_toProj ⟨VEC A B, (ne_iff_vec_ne_zero A B).1 g⟩ ⟨VEC A C, (ne_iff_vec_ne_zero A C).1 h.2.1.symm⟩ c
+      exact smul_of_eq_toproj ⟨VEC A B, (ne_iff_vec_ne_zero A B).1 g⟩ ⟨VEC A C, (ne_iff_vec_ne_zero A C).1 h.2.1.symm⟩ c
   · intro ⟨_, e⟩
     exact colinear_of_vec_eq_smul_vec e
 

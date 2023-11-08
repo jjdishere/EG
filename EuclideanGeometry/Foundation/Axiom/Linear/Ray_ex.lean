@@ -52,10 +52,10 @@ theorem Ray.toDir_of_rev_eq_neg_toDir {ray : Ray P} : ray.reverse.toDir = - ray.
 theorem Ray.toVec_of_rev_eq_neg_toVec {ray : Ray P} : ray.reverse.toDir.toVec = - ray.toDir.toVec := rfl
 
 /-- Given a ray, the projective direction of the reversed ray is the negative of the projective direction of the ray. -/
-theorem Ray.toProj_of_rev_eq_toProj {ray : Ray P} : ray.reverse.toProj = ray.toProj := by
-  --@HeRunming: Simply imitate the proof of theorem "eq_toProj_of_smul" in Vector.lean
+theorem Ray.toProj_of_rev_eq_toproj {ray : Ray P} : ray.reverse.toProj = ray.toProj := by
+  --@HeRunming: Simply imitate the proof of theorem "eq_toproj_of_smul" in Vector.lean
   -- `??? Why not use that toProj is the quotient of toDir` see the definition of toProj
-  apply (Dir.eq_toProj_iff _ _).mpr
+  apply (Dir.eq_toproj_iff _ _).mpr
   right
   rfl
 
@@ -74,9 +74,9 @@ theorem Seg_nd.toDir_of_rev_eq_neg_toDir (seg_nd : Seg_nd P) : seg_nd.reverse.to
   rw[toDir,toDir,←neg_to_dir_eq_to_dir_eq,Seg_nd.toVec_nd_of_rev_eq_neg_toVec_nd]
 
 /-- Given a nondegenerate segment, the projective direction of the reversed nondegenerate segment is the negative projective direction of the nondegenerate segment. -/
-theorem Seg_nd.toProj_of_rev_eq_toProj (seg_nd : Seg_nd P) : seg_nd.reverse.toProj = seg_nd.toProj := by
+theorem Seg_nd.toProj_of_rev_eq_toproj (seg_nd : Seg_nd P) : seg_nd.reverse.toProj = seg_nd.toProj := by
   --`follows from teh previous lemma directly?`
-  apply (Dir.eq_toProj_iff seg_nd.reverse.toDir seg_nd.toDir).mpr
+  apply (Dir.eq_toproj_iff seg_nd.reverse.toDir seg_nd.toDir).mpr
   right
   rw[Seg_nd.toDir_of_rev_eq_neg_toDir]
 
@@ -295,13 +295,13 @@ theorem exist_real_vec_eq_smul_of_lies_on_or_rev {A : P} {ray : Ray P} (h : A Li
     rw [Dir.toVec_neg_eq_neg_toVec, smul_neg, ← neg_smul] at eq
     exact eq
 
-theorem ray_toProj_eq_mk_pt_pt_toProj {A B : P} {ray : Ray P} (h : B ≠ A) (ha : A LiesOn ray ∨ A LiesOn ray.reverse) (hb : B LiesOn ray ∨ B LiesOn ray.reverse) : ray.toProj = (RAY A B h).toProj := by
+theorem ray_toproj_eq_mk_pt_pt_toproj {A B : P} {ray : Ray P} (h : B ≠ A) (ha : A LiesOn ray ∨ A LiesOn ray.reverse) (hb : B LiesOn ray ∨ B LiesOn ray.reverse) : ray.toProj = (RAY A B h).toProj := by
   rcases exist_real_vec_eq_smul_of_lies_on_or_rev ha with ⟨ta, eqa⟩
   rcases exist_real_vec_eq_smul_of_lies_on_or_rev hb with ⟨tb, eqb⟩
   have heq : VEC A B = (tb - ta) • ray.2.1 := by rw [← vec_sub_vec _ A B, eqa, eqb, sub_smul]
   calc
     _ = ray.2.toVec_nd.toProj := congrArg Dir.toProj (Dir.dir_toVec_nd_to_dir_eq_self ray.2).symm
-    _ = _ := eq_toProj_of_smul ray.2.toVec_nd ⟨VEC A B, (vsub_ne_zero.mpr h)⟩ heq
+    _ = _ := eq_toproj_of_smul ray.2.toVec_nd ⟨VEC A B, (vsub_ne_zero.mpr h)⟩ heq
 
 theorem Ray.in_carrier_iff_lies_on {p : P} {r : Ray P} : p ∈ r.carrier ↔ p LiesOn r := by
   rfl
@@ -344,7 +344,7 @@ theorem pt_lies_on_line_from_ray_iff_vec_parallel {p : P} {r : Ray P} : (p LiesO
       exact ⟨le_of_lt (lt_of_not_ge g), h⟩
 
 theorem dir_parallel_of_same_proj {x y : Ray P} (h : x.toProj = y.toProj) : ∃t : ℝ, y.toDir.toVec = t • x.toDir.toVec := by
-  rcases (Dir.eq_toProj_iff _ _).mp h with xy | xy
+  rcases (Dir.eq_toproj_iff _ _).mp h with xy | xy
   · use 1
     rw [one_smul, xy]
   · use -1
