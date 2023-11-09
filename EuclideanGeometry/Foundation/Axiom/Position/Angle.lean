@@ -72,6 +72,11 @@ theorem eq_end_ray_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang�
 
 theorem eq_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁ = ang₂ := Angle.ext ang₁ ang₂ h (eq_end_ray_of_eq_value_eq_start_ray h v)
 
+-- this section should talks about when different making methods make the same angle
+section mk_compatibility
+
+end mk_compatibility
+
 /- theorem - π < angle.value, angle.value ≤ π,  -/
 
 /- theorem when angle > 0, IsInt means lies left of start ray + right of end ray; when angle < 0, ...  -/
