@@ -52,30 +52,54 @@ class ProjFig (α : (P : Type _) → [ EuclideanPlane P] → Type _) extends Lin
   toProj' : {P : Type _} → [EuclideanPlane P] → α P → Proj
   carrier_toproj_eq_toproj : ∀ {P : Type _} [EuclideanPlane P] (A B : P) (F : α P) (h : B ≠ A), A LiesOn F → B LiesOn F → (SEG_nd A B h).toProj = toProj' F
 
---Do we need DirObj extends ProjObj, DirFig extends ProjFig ???
-
-class DirObj (β : Type _) where
+class DirObj (β : Type _) extends ProjObj β where
   toDir : β → Dir
+  todir_toproj_eq_toproj : ∀ (G : β), (toDir G).toProj = toProj G
 
-class DirFig (α : (P : Type _) → [ EuclideanPlane P] → Type _) extends LinFig α where
+class DirFig (α : (P : Type _) → [ EuclideanPlane P] → Type _) extends ProjFig α where
   toDir' : {P : Type _} → [EuclideanPlane P] → α P → Dir
-  carrier_toproj_eq_todir_toproj : ∀ {P : Type _} [EuclideanPlane P] (A B : P) (F : α P) (h : B ≠ A), A LiesOn F → B LiesOn F → (SEG_nd A B h).toProj = (toDir' F).toProj
+  todir_toproj_eq_toproj : ∀ {P : Type _} [EuclideanPlane P] (F : α P), (toDir' F).toProj = toProj' F
 
 variable {P : Type _} [EuclideanPlane P]
-instance [DirFig α] : DirObj (α P) where
-  toDir := DirFig.toDir'
-
 instance [ProjFig α] : ProjObj (α P) where
   toProj := ProjFig.toProj'
 
+instance [DirFig α] : DirObj (α P) where
+  toDir := DirFig.toDir'
+  todir_toproj_eq_toproj := fun G => DirFig.todir_toproj_eq_toproj G
+
 export ProjFig (toProj')
 export ProjObj (toProj)
+export DirFig (toDir')
+export DirObj (toDir)
 
+section instances
+-- Vec is none of these. Id is LinFig.
+instance : DirObj Vec_nd := sorry
 
+instance : DirObj Dir := sorry
+
+instance : ProjObj Proj := sorry
+
+instance : LinFig Seg := sorry
+
+instance : DirFig Seg_nd := sorry
+
+instance : DirFig Ray := sorry
+
+instance : DirFig DirLine := sorry
+
+instance : ProjFig Line := sorry
+
+end instances
+
+/-
 variable {P : Type _} [EuclideanPlane P] (A B C : P) [h : ProjFig α] (F : α P)
+
 #check toProj F
 example : toProj F = toProj' F := rfl
 #check A LiesOn F
+-/
 
 end debug
 end EuclidGeom
