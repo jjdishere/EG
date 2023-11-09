@@ -19,12 +19,18 @@ In this file, we define classes that will be used in Euclidean geometry.
 
 ## Notations
 
-* `LiesOn`, `LiesInt`, `IsInx`, `InxWith`
-* `≅`, `≅ₐ`
+* `LiesOn` : A point belongs to the carrier of a specific figure.
+* `LiesInt` : A point belongs to the interior of a specific figure.
+* `IsInx` : A point belongs to both carrier of two specific figures.
+* `InxWith` : The carriers of two figures have a common point.
+* `IsCongrTo`, `≅` : the notation for congruence relation
+* `IsACongrTo`, `≅ₐ` : the notation for anti-congruence relation
+
 
 ## Further Works
-1. `concurrent` `Convex_2D`
-2. `IsACongr`
+1. The property `concurrent` (maybe we should extend to an arbitary number of figures version), the class `Convex_2D` is defined, but not actually in use.
+2. Make `HasACongr` extends `HasCongr`, and requires transitivity relations between them in the class.
+3. Now `HasSim` `HasASim` `IsSimTo` `∼` `IsASimTo` `∼` are all defined in file Similarity. Bring them here and use classes.
 
 -/
 
