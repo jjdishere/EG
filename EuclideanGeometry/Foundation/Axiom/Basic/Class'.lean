@@ -1,19 +1,14 @@
 import EuclideanGeometry.Foundation.Axiom.Basic.Plane
 
 /-!
-# Hierarchy Classes in Euclidean Geometry
+# Basic Classes in Euclidean Geometry
 
-In this file, we define classes that will be used in Euclidean geometry.
+In this file, we define classes that will be used in Euclidean geometry. In this file, classes for carriers and classes for notations will be defined.
 
-## Important Definitions
+## Main Definitions
 
 * `Fig` : The class of plane figures equipped with a carrier set.
 * `Interior` : The class of plane figures with interior, further equipped with a interior set.
-* `LinFig` : The class of linear figures, i.e. every three points in the carrier is colinear.
-* `DirObj` : The class of objects with direction, i.e. equipped with a `toDir` method. It does not have to be a plane figure, e.g. `Vec_nd` and `Dir` itself.
-* `DirFig` : The class of linear figures with direction, that is equivalent to say, each figure is equipped with a `toDirLine` method.
-* `ProjObj` : The class of objects with projective direction, i.e. equipped with a `toDir` method. It does not have to be a plane figure, e.g. `Vec_nd` and `Proj` itself.
-* `ProjFig` : The class of linear figures with projective direction, that is equivalent to say, each figure is equipped with a `toLine` method.
 * `HasCongr` : The carrying class of the equivalent relation congruence.
 * `HasACongr` : The carrying class of the symmetric relation anti-congruence.
 
@@ -39,6 +34,7 @@ In this file, we define classes that will be used in Euclidean geometry.
 
 noncomputable section
 namespace EuclidGeom
+namespace debug
 
 section carrier
 
@@ -101,9 +97,6 @@ class Convex2D (α : (P : Type _) → [ EuclideanPlane P] → Type _) extends In
 
 /- Intersection -/
 
-class LinearObj (α : Type*) where
-  toProj : α → Proj
-
 class HasCongr (α : Type*) where
   congr : α → α → Prop
   refl : ∀ (a : α), congr a a
@@ -130,4 +123,5 @@ scoped infix : 50 "≅ₐ" => HasACongr.acongr
 
 scoped infix : 50 "IsACongrTo" => HasACongr.acongr
 
+end debug
 end EuclidGeom

@@ -15,7 +15,7 @@ This file defines the Euclidean Plane as an affine space, which admits an action
 
 ## Implementation Notes
 
-For simplicity, we use the standard inner product real vector space of dimension two as the underlying `SeminormedAddCommGroup` of the `NormedAddTorsor` in the definition of `EuclideanPlane`. 
+For simplicity, we use the standard inner product real vector space of dimension two as the underlying `SeminormedAddCommGroup` of the `NormedAddTorsor` in the definition of `EuclideanPlane`.
 
 Thus we define `EuclideanPlane P` as `NormedAddTorsor (ℝ × ℝ) P` and present instances involving `EuclideanPlane`.
 
@@ -27,15 +27,15 @@ The current definition is far from being general enough. Roughly speaking, it su
 
 noncomputable section
 namespace EuclidGeom
-    
+
 /- Define Euclidean plane as normed vector space over ℝ of dimension 2 -/
 class EuclideanPlane (P : Type _) extends MetricSpace P, @NormedAddTorsor Vec P _ _
 
-variable  {P : Type _} [EuclideanPlane P] 
+variable {P : Type _} [EuclideanPlane P]
 
-def Vec.mk_pt_pt (A B : P) : (Vec) := (B -ᵥ A)
+def Vec.mk_pt_pt (A B : P) : Vec := (B -ᵥ A)
 
-scoped notation "VEC" => Vec.mk_pt_pt
+scoped notation:80 "VEC" A:max B:max => Vec.mk_pt_pt A B -- to make `- VEC A B` work, binding power > 75
 
 instance : EuclideanPlane (Vec) where
   toMetricSpace := _
@@ -62,7 +62,7 @@ theorem neg_vec (A B : P) : - VEC A B = VEC B A := by
 
 theorem eq_iff_vec_eq_zero (A B : P) : B = A ↔ VEC A B = 0 := vsub_eq_zero_iff_eq.symm
 
-theorem ne_iff_vec_ne_zero (A B : P) : B ≠ A ↔ (VEC A B) ≠ 0 := (eq_iff_vec_eq_zero A B).not
+theorem ne_iff_vec_ne_zero (A B : P) : B ≠ A ↔ VEC A B ≠ 0 := (eq_iff_vec_eq_zero A B).not
 
 @[simp]
 theorem vec_add_vec (A B C : P) : VEC A B + VEC B C = VEC A C := by
@@ -94,5 +94,9 @@ theorem eq_of_smul_Vec_nd_eq_smul_Vec_nd {v : Vec_nd} {tA tB : ℝ} (e : tA • 
     apply v.2
   contradiction
 
+
+def Vec_nd.mk_pt_pt (A B : P) (h : B ≠ A) : Vec_nd := ⟨Vec.mk_pt_pt A B, (ne_iff_vec_ne_zero A B).mp h⟩
+
+scoped notation:80 "VEC_nd" A:max B:max h:max => Vec_nd.mk_pt_pt A B h ---- to make `- VEC_nd A B h` work, binding power > 75
 
 end EuclidGeom
