@@ -56,12 +56,14 @@ def IsOutside (p : P) (ω : Circle P) : Prop := ω.radius < (SEG ω.center p).le
 protected def carrier (ω : Circle P) : Set P := { p : P | Circle.IsOn p ω }
 
 protected def interior (ω : Circle P) : Set P := { p : P | Circle.IsInt p ω }
-/- --`should use Disk, not circle`
-instance : Interior Circle where
+--`Interior is NOT a subset of carrier`
+
+instance : Fig Circle where
   carrier := Circle.carrier
+
+instance : Interior Circle where
   interior := Circle.interior
-  interior_subset_carrier := fun _ [EuclideanPlane _] _ _ => by sorry
--/
+
 end Circle
 
 /- `One seldom uses Inside a circle in reality.` Should we delete this? Int On Out is enough-/

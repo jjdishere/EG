@@ -95,9 +95,13 @@ protected def interior (tr : Triangle P) : Set P := { p : P | Triangle.IsInt p t
 
 
 instance : Interior Triangle where
-  carrier := Triangle.carrier
   interior := Triangle.interior
+
+/-
+instance : IntFig Triangle where
+  carrier := Triangle.carrier
   interior_subset_carrier := fun _ [EuclideanPlane _] _ _ => Or.inl
+-/
 
 end Triangle
 

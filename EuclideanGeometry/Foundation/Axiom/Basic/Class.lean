@@ -41,10 +41,13 @@ section carrier
 class Fig (α : (P : Type _) → [EuclideanPlane P] →  Type _) where
   carrier : {P : Type _} →  [EuclideanPlane P] → α P → Set P
 
-/-- The class of plane figures with interior. We say a plane figure `α` is with interior, if for every given Euclidean plane `P`, each element in the collection `α P` is further equipped with a interior set of type `Set P` and the interior set is contained in the carrier set. -/
-class Interior (α : (P : Type _) → [ EuclideanPlane P] →  Type _) extends Fig α where
+/-- The class of plane figures with interior. We say `α` is with interior, if for every given Euclidean plane `P`, each element in the collection `α P` is equipped with an interior set of type `Set P` -/
+class Interior (α : (P : Type _) → [EuclideanPlane P] →  Type _) where
   interior : {P : Type _} →  [EuclideanPlane P] → α P → Set P
-  interior_subset_carrier : ∀ {P : Type _} [EuclideanPlane P] (F : α P) , interior F ⊆ carrier F
+
+/-- The class of plane figures with both carrier and interior. We say a plane figure `α` is with interior, if for every given Euclidean plane `P`, each element in the collection `α P` is equipped with bith a carrier set and an interior set of type `Set P`, and the interior set is contained in the carrier set. -/
+class IntFig (α : (P : Type _) → [EuclideanPlane P] →  Type _) extends Fig α, Interior α where
+    interior_subset_carrier : ∀ {P : Type _} [EuclideanPlane P] (F : α P) , interior F ⊆ carrier F
 
 def lies_on [EuclideanPlane P] [Fig α] (A : P) (F : α P) : Prop := A ∈ (Fig.carrier F)
 
@@ -52,7 +55,7 @@ def lies_int [EuclideanPlane P] [Interior α] (A : P) (F : α P) := A ∈ (Inter
 
 -- def lies_in [EuclideanPlane P] [Interior α] (A : P) (F : α P) : Prop := lies_int A F ∨ lies_on A F
 
-scoped infix : 50 "LiesOn" => lies_on -- to make it works compatible with `∧`, binding power should > 35.
+scoped infix : 50 "LiesOn" => lies_on -- to make it work compatible with `∧`, binding power should > 35.
 scoped infix : 50 "LiesInt" => lies_int
 -- scoped infix : 50 "LiesIn" => lies_in
 
@@ -88,7 +91,7 @@ end carrier
 /- Three figures concurrent at a point -/
 def concurrent {P : Type _} [EuclideanPlane P] [Fig α] [Fig β] [Fig γ] (A : P) (F : α P) (G : β P) (H : γ P) : Prop := A LiesOn F ∧ A LiesOn G ∧ A LiesOn H
 
-class Convex2D (α : (P : Type _) → [ EuclideanPlane P] → Type _) extends Interior α where
+class Convex2D (α : (P : Type _) → [ EuclideanPlane P] → Type _) extends IntFig α where
   convexity : ∀ {P : Type _} [ EuclideanPlane P] (F : α P) (A B : P), (A LiesOn F) → (B LiesOn F) → ∃ (t : ℝ), (t • (B -ᵥ A) +ᵥ A) LiesOn F
   int_of_carrier : ∀ {P : Type _} [ EuclideanPlane P] (F : α P) (A : P), (A LiesInt F) → ∃ (B₁ B₂ B₃ : P) (t₁ t₂ t₃ : ℝ), (B₁ LiesOn F) ∧ (B₂ LiesOn F) ∧ (B₃ LiesOn F) ∧ (0 < t₁) ∧ (0 < t₂) ∧ (0 < t₃) ∧ (t₁ • VEC A B₁ + t₂ • VEC A B₂ + t₃ • VEC A B₃ = 0)
 
