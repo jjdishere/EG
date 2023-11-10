@@ -75,6 +75,8 @@ theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B
   dsimp only [det]
   field_simp [vecab0]
   intro
+  rw [h]
+  exact triv_colinear A C
 
 theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (wedge A B C > 0) ↔ ((Angle.mk_pt_pt_pt B A C (sorry) (sorry)).value > 0) := sorry
 
