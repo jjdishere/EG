@@ -5,11 +5,11 @@ namespace EuclidGeom
 
 open Line
 
-variable {P : Type _} [EuclideanPlane P] {α β γ : Type*} [LinearObj α] [LinearObj β] [LinearObj γ]
+variable {P : Type _} [EuclideanPlane P] {α β γ : Type*} [ProjObj α] [ProjObj β] [ProjObj γ]
   {l₁ : α} {l₂ : β} {l₃ : γ}
 
 def perpendicular (l₁ : α) (l₂ : β) : Prop :=
-  LinearObj.toProj l₁ = (LinearObj.toProj l₂).perp
+  ProjObj.toProj l₁ = (ProjObj.toProj l₂).perp
 
 scoped infix : 50 "IsPerpendicularTo" => perpendicular
 scoped infix : 50 "⟂" => perpendicular
@@ -18,7 +18,7 @@ namespace perpendicular
 
 @[simp]
 protected theorem irrefl (l : α) : ¬ (l ⟂ l) :=
-  fun h ↦ Proj.one_ne_I (mul_right_cancel ((one_mul (LinearObj.toProj l)).trans h))
+  fun h ↦ Proj.one_ne_I (mul_right_cancel ((one_mul (ProjObj.toProj l)).trans h))
 
 protected theorem symm (h : l₁ ⟂ l₂) : (l₂ ⟂ l₁) := by
   rw[perpendicular, Proj.perp, h, Proj.perp, ← mul_assoc , Proj.I_mul_I_eq_one_of_Proj, one_mul]
@@ -36,8 +36,8 @@ theorem perp_of_parallel_perp (h₁ : l₁ ∥ l₂) (h₂ : l₂ ⟂ l₃) : l�
 
 theorem perp_of_perp_parallel (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ∥ l₃) : l₁ ⟂ l₃ := h₁.trans (congrArg Proj.perp h₂)
 
-theorem toproj_ne_toproj_of_perp (h : l₁ ⟂ l₂) : LinearObj.toProj l₁ ≠ LinearObj.toProj l₂ :=
-  fun hp ↦ Proj.one_ne_I (mul_right_cancel (((one_mul (LinearObj.toProj l₂)).trans hp.symm).trans h))
+theorem toproj_ne_toproj_of_perp (h : l₁ ⟂ l₂) : ProjObj.toProj l₁ ≠ ProjObj.toProj l₂ :=
+  fun hp ↦ Proj.one_ne_I (mul_right_cancel (((one_mul (ProjObj.toProj l₂)).trans hp.symm).trans h))
 
 theorem not_parallel_of_perp (h : l₁ ⟂ l₂) : ¬ l₁ ∥ l₂ := toproj_ne_toproj_of_perp h
 

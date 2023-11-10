@@ -87,10 +87,17 @@ protected def IsInt (A : P) (tr : Triangle P) : Prop := by
   · let tr_nd : Triangle_nd P := ⟨tr, h⟩
     exact (if tr_nd.is_cclock then A LiesOnLeft Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩ else A LiesOnRight Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩)
 
+protected def IsOn (A : P) (tr : Triangle P) : Prop := Triangle.IsInt A tr ∨ A LiesOn tr.edge₁ ∨ A LiesOn tr.edge₂ ∨ A LiesOn tr.edge₃
+
+protected def carrier (tr : Triangle P) : Set P := { p : P | Triangle.IsOn p tr }
+
 protected def interior (tr : Triangle P) : Set P := { p : P | Triangle.IsInt p tr }
 
-instance : Interior P (Triangle P) where
-  interior := fun t => t.interior
+
+instance : Interior Triangle where
+  carrier := Triangle.carrier
+  interior := Triangle.interior
+  interior_subset_carrier := fun _ [EuclideanPlane _] _ _ => Or.inl
 
 end Triangle
 

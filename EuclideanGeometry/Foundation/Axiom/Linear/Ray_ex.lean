@@ -88,7 +88,7 @@ theorem Seg.source_lies_on_rev (seg : Seg P) : seg.source LiesOn seg.reverse := 
 
 /-- Given a segment and a point, the point lies on the segment if and only if it lies on the reverse of the segment. -/
 theorem Seg.lies_on_iff_lies_on_rev {A : P} {seg : Seg P} : A LiesOn seg ↔ A LiesOn seg.reverse := by
-  unfold lies_on Carrier.carrier instCarrierSeg
+  unfold lies_on Fig.carrier instFigSeg
   simp only [Set.setOf_mem_eq]
   constructor
   · intro h

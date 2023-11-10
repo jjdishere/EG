@@ -7,6 +7,7 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Class
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Line
+import EuclideanGeometry.Foundation.Axiom.Linear.Class
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex

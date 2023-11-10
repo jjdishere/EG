@@ -179,6 +179,7 @@ instance : Coe (Ray P) (Line P) where
 
 end coercion_compatibility
 
+/-
 section ClassDirFig
 
 variable (P : Type _) [EuclideanPlane P]
@@ -210,6 +211,7 @@ def toLine : Line P := (@DirFig.toDirLine P _ _ _ l).toLine
 end DirFig
 
 end ClassDirFig
+-/
 
 open Classical
 
@@ -223,7 +225,7 @@ protected def carrier (l : Line P) : Set P := Quotient.lift (fun ray : Ray P => 
 protected def IsOn (A : P) (l : Line P) : Prop :=
   A ∈ l.carrier
 
-instance : Carrier P (Line P) where
+instance : Fig Line where
   carrier := Line.carrier
 
 end Line
@@ -232,7 +234,7 @@ namespace DirLine
 
 protected def carrier (l : DirLine P) : Set P := l.toLine.carrier
 
-instance : Carrier P (DirLine P) where
+instance : Fig DirLine where
   carrier := DirLine.carrier
 
 end DirLine

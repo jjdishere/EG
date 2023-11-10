@@ -1,5 +1,7 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Line
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
+import EuclideanGeometry.Foundation.Axiom.Linear.Class
+
 /-!
 In this file, we define the concept for two lines to be parallel. A more precise plan is the following:
 
@@ -10,6 +12,9 @@ We define the meaning of any pair of linear objects to be parallel.
 We prove that coercion among linear objects generates linear objects that are parallel to the original ones.
 
 We prove theorems related to that non-parallel lines intersection, and define the intersections.
+
+## Future Work
+`Comments about LinearObj is outdated. Now we use ProjObj`
 -/
 noncomputable section
 namespace EuclidGeom
@@ -17,6 +22,7 @@ namespace EuclidGeom
 open Line
 
 variable {P : Type _} [EuclideanPlane P]
+/-
 /-- A linear object is one of the following five types: a nondegenerate vector, a direction, a ray, a nondegenerate segment, or a line.
 In the following, we define natural ways to view a nondegenerate vector, a direction, a ray, a nondegenerate segment or a line, as a linear object.
 Given a linear object, we return its associated projective direction, which is the associated projective direction in each of the five instances of a linear object. -/
@@ -37,14 +43,15 @@ instance : LinearObj (DirLine P) where
 
 instance : LinearObj (Line P) where
   toProj := fun l ↦ l.toProj
+-/
 
 -- Our definition of parallel for LinearObj is very general. Not only can it apply to different types of Objs, but also include degenerate cases, such as ⊆(inclusions), =(equal).
 /-- Given two linear objects $l_1$ and $l_2$ (not necessarily of the same type), this function returns whether they are parallel, defined as having the same associated projective direction. -/
-def parallel {α β : Type*} [LinearObj α] [LinearObj β] (l₁ : α) (l₂ : β) : Prop :=
-  LinearObj.toProj l₁ = LinearObj.toProj l₂
+def parallel {α β : Type*} [ProjObj α] [ProjObj β] (l₁ : α) (l₂ : β) : Prop :=
+  toProj l₁ = toProj l₂
 
 /-- Being parallel defines an equivalence relation among all linear objects, that is they satisfy the three conditions: (1) reflexive: every linear object $l$ is parallel to itself; (2) symmetric: if the linear object $l_1$ is parallel to the linear object $l_2$, then $l_2$ is $l_1$; (3) transitive: if the linear object $l_1$ is parallel to the linear object $l_2$, and if the linear object $l_2$ is parallel to the linear object $l_3$, then $l_1$ is parallel to $l_3$. -/
-instance (α : Type*) [LinearObj α] : IsEquiv α parallel where
+instance (α : Type*) [ProjObj α] : IsEquiv α parallel where
   refl _ := rfl
   symm _ _ := Eq.symm
   trans _ _ _ := Eq.trans
@@ -304,7 +311,7 @@ theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h 
   use X
   simp only [h₁, h₂, and_self, and_imp, true_and]
   exact fun _ h₁' h₂' ↦ Classical.byContradiction fun n ↦
-    h (congrArg LinearObj.toProj (eq_of_pt_pt_lies_on_of_ne n h₁ h₁' h₂ h₂'))
+    h (congrArg toProj (eq_of_pt_pt_lies_on_of_ne n h₁ h₁' h₂ h₂'))
 
 scoped notation "LineInx" => Line.inx
 

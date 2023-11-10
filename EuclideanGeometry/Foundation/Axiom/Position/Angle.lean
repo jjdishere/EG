@@ -53,18 +53,44 @@ namespace Angle
 -- `should discuss this later, is there a better definition?` ite, dite is bitter to deal with
 /- `What does it mean to be LiesIn a angle? when the angle < 0`, for now it is defined as the smaller side. and when angle = π, it is defined as the left side -/
 
+protected def IsOn (p : P) (ang : Angle P) : Prop := by
+  by_cases p = ang.source
+  · exact True
+  · let ray := Ray.mk_pt_pt ang.source p h
+    let o₁ := Angle.mk ang.start_ray ray rfl
+    let o₂ := Angle.mk ray ang.end_ray (ang.3)
+    exact if ang.value ≥ 0 then (o₁.value ≥ 0 ∧ o₂.value ≥ 0) else (o₁.value ≤ 0 ∧ o₂.value ≤ 0)
+
 protected def IsInt (p : P) (ang : Angle P) : Prop := by
   by_cases p = ang.source
   · exact False
   · let ray := Ray.mk_pt_pt ang.source p h
     let o₁ := Angle.mk ang.start_ray ray rfl
     let o₂ := Angle.mk ray ang.end_ray (ang.3)
-    exact if ang.value > 0 then (o₁.value > 0 ∧ o₂.value > 0) else (o₁.value < 0 ∧ o₂.value < 0)
+    exact if ang.value ≥ 0 then (o₁.value > 0 ∧ o₂.value > 0) else (o₁.value < 0 ∧ o₂.value < 0)
+
+protected theorem ison_of_isint {A : P} {ang : Angle P} : Angle.IsInt A ang → Angle.IsOn A ang := by
+  unfold Angle.IsOn Angle.IsInt
+  intro g
+  by_cases A = ang.source
+  · simp only [h, ge_iff_le, dite_true]
+  · simp only [h, ge_iff_le, dite_false]
+    simp only [h, ge_iff_le, gt_iff_lt, dite_false] at g
+    by_cases f : 0 ≤ ang.value
+    simp only [f, ite_true] at *
+    constructor <;> linarith
+    simp only [f, ite_false, not_false_eq_true] at *
+    constructor <;> linarith
+
+
+protected def carrier (ang : Angle P) : Set P := { p : P | Angle.IsOn p ang}
 
 protected def interior (ang : Angle P) : Set P := { p : P | Angle.IsInt p ang }
 
-instance : Interior P (Angle P) where
-  interior := fun o => o.interior
+instance : Interior Angle where
+  carrier := Angle.carrier
+  interior := Angle.interior
+  interior_subset_carrier _ _ := Angle.ison_of_isint
 
 end Angle
 

@@ -113,11 +113,12 @@ protected def carrier (ray : Ray P) : Set P := { p : P | Ray.IsOn p ray }
 /-- Given a ray, its interior is the set of points that lie in the interior of the ray. -/
 protected def interior (ray : Ray P) : Set P := { p : P | Ray.IsInt p ray }
 
-instance : Carrier P (Ray P) where
+instance : Fig Ray where
   carrier := fun l => l.carrier
 
-instance : Interior P (Ray P) where
+instance : Interior Ray where
   interior := fun l => l.interior
+  interior_subset_carrier := fun _ [EuclideanPlane _] _ _ => And.left
 
 end Ray
 
@@ -139,11 +140,12 @@ protected def carrier (seg : Seg P) : Set P := { p : P | Seg.IsOn p seg }
 /-- Given a segment, this function returns the set of points that lie in the interior of the segment. -/
 protected def interior (seg : Seg P) : Set P := { p : P | Seg.IsInt p seg }
 
-instance : Carrier P (Seg P) where
+instance : Fig Seg where
   carrier := fun l => l.carrier
 
-instance : Interior P (Seg P) where
+instance : Interior Seg where
   interior := fun l => l.interior
+  interior_subset_carrier := fun _ [EuclideanPlane _] _ _ => And.left
 
 end Seg
 

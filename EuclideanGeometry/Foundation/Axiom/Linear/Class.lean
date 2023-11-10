@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Basic.Class'
+import EuclideanGeometry.Foundation.Axiom.Basic.Class
 import EuclideanGeometry.Foundation.Axiom.Linear.Line
 
 /-!
@@ -40,33 +40,36 @@ Only theorems about `ProjFig` will be dealt in this file.
 
 noncomputable section
 namespace EuclidGeom
-namespace debug
 
 class LinFig (α : (P : Type _) → [ EuclideanPlane P] → Type _) extends Fig α where
-  colinear' : ∀ {P : Type _} [EuclideanPlane P] (A B C : P) (F : α P), A LiesOn F → B LiesOn F → C LiesOn F → colinear A B C
+  colinear' : ∀ {P : Type _} [EuclideanPlane P] {A B C : P} {F : α P}, A LiesOn F → B LiesOn F → C LiesOn F → colinear A B C
 
 class ProjObj (β : Type _) where
   toProj : β → Proj
 
 class ProjFig (α : (P : Type _) → [ EuclideanPlane P] → Type _) extends LinFig α where
   toProj' : {P : Type _} → [EuclideanPlane P] → α P → Proj
-  carrier_toproj_eq_toproj : ∀ {P : Type _} [EuclideanPlane P] (A B : P) (F : α P) (h : B ≠ A), A LiesOn F → B LiesOn F → (SEG_nd A B h).toProj = toProj' F
+  carrier_toproj_eq_toproj : ∀ {P : Type _} [EuclideanPlane P] {A B : P} {F : α P} (h : B ≠ A), A LiesOn F → B LiesOn F → (SEG_nd A B h).toProj = toProj' F
 
 class DirObj (β : Type _) extends ProjObj β where
   toDir : β → Dir
-  todir_toproj_eq_toproj : ∀ (G : β), (toDir G).toProj = toProj G
+  todir_toproj_eq_toproj : ∀ {G : β}, (toDir G).toProj = toProj G
 
 class DirFig (α : (P : Type _) → [ EuclideanPlane P] → Type _) extends ProjFig α where
   toDir' : {P : Type _} → [EuclideanPlane P] → α P → Dir
-  todir_toproj_eq_toproj : ∀ {P : Type _} [EuclideanPlane P] (F : α P), (toDir' F).toProj = toProj' F
+  todir_toproj_eq_toproj : ∀ {P : Type _} [EuclideanPlane P] {F : α P}, (toDir' F).toProj = toProj' F
 
+section fig_to_obj
 variable {P : Type _} [EuclideanPlane P]
+
 instance [ProjFig α] : ProjObj (α P) where
   toProj := ProjFig.toProj'
 
 instance [DirFig α] : DirObj (α P) where
   toDir := DirFig.toDir'
-  todir_toproj_eq_toproj := fun G => DirFig.todir_toproj_eq_toproj G
+  todir_toproj_eq_toproj := DirFig.todir_toproj_eq_toproj
+
+end fig_to_obj
 
 export ProjFig (toProj')
 export ProjObj (toProj)
@@ -75,21 +78,52 @@ export DirObj (toDir)
 
 section instances
 -- Vec is none of these. Id is LinFig.
-instance : DirObj Vec_nd := sorry
+instance : DirObj Vec_nd where
+  toProj := Vec_nd.toProj
+  toDir := Vec_nd.toDir
+  todir_toproj_eq_toproj := rfl
 
-instance : DirObj Dir := sorry
+instance : DirObj Dir where
+  toProj := Dir.toProj
+  toDir := id
+  todir_toproj_eq_toproj := rfl
 
-instance : ProjObj Proj := sorry
+instance : ProjObj Proj where
+  toProj := id
 
-instance : LinFig Seg := sorry
+instance : LinFig Seg where
+  carrier := Seg.carrier
+  colinear' := sorry
 
-instance : DirFig Seg_nd := sorry
+instance : DirFig Seg_nd where
+  carrier := fun s => s.1.carrier -- can be rewrite to `Seg_nd.carrier` soon
+  colinear' := sorry
+  toProj' := Seg_nd.toProj
+  carrier_toproj_eq_toproj := sorry
+  toDir' := Seg_nd.toDir
+  todir_toproj_eq_toproj := rfl
 
-instance : DirFig Ray := sorry
+instance : DirFig Ray where
+  carrier := Ray.carrier
+  colinear' := sorry
+  toProj' := Ray.toProj
+  carrier_toproj_eq_toproj := sorry
+  toDir' := fun r => r.toDir
+  todir_toproj_eq_toproj := rfl
 
-instance : DirFig DirLine := sorry
+instance : DirFig DirLine where
+  carrier := DirLine.carrier
+  colinear' := DirLine.linear
+  toProj' := DirLine.toProj
+  carrier_toproj_eq_toproj := sorry
+  toDir' := DirLine.toDir
+  todir_toproj_eq_toproj := rfl
 
-instance : ProjFig Line := sorry
+instance : ProjFig Line where
+  carrier := Line.carrier
+  colinear' := Line.linear
+  toProj' := Line.toProj
+  carrier_toproj_eq_toproj := sorry
 
 end instances
 
@@ -101,5 +135,4 @@ example : toProj F = toProj' F := rfl
 #check A LiesOn F
 -/
 
-end debug
 end EuclidGeom
