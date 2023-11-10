@@ -55,7 +55,26 @@ theorem area_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : 
   rw [h0]
   apply det_eq_sin_mul_norm_mul_norm ⟨VEC A B , vecabnd⟩ ⟨VEC A C, vecacnd⟩
 
-theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B C = 0) := sorry
+theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B C = 0) := by
+  dsimp only [wedge]
+  by_cases B ≠ A
+  have vecabnd : VEC A B ≠ 0 := by
+    exact (ne_iff_vec_ne_zero A B).mp h
+  constructor
+  intro k
+  apply (det_eq_zero_iff_eq_smul (VEC A B) (VEC A C) vecabnd).mpr
+  exact (colinear_iff_eq_smul_vec_of_ne h).mp k
+  intro k
+  apply (det_eq_zero_iff_eq_smul (VEC A B) (VEC A C) vecabnd).mp at k
+  exact (colinear_iff_eq_smul_vec_of_ne h).mpr k
+  simp at h
+  have vecab0 : VEC A B = 0 := by
+    exact (eq_iff_vec_eq_zero A B).mp h
+  constructor
+  intro
+  dsimp only [det]
+  field_simp [vecab0]
+  intro
 
 theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (wedge A B C > 0) ↔ ((Angle.mk_pt_pt_pt B A C (sorry) (sorry)).value > 0) := sorry
 
@@ -68,9 +87,31 @@ def odist (A : P) (ray : Ray P) : ℝ := det ray.2.1 (VEC ray.1 A)
 
 /- may insert some theorems relating colinearity and zero directed distance, which might take some efforts-/
 
+theorem odist_eq_zero_iff_colinear (A : P) (ray : Ray P) : odist A ray = 0 ↔ (∃ t : ℝ, VEC ray.1 A = t • ray.2.1) := by
+  have q : ray.2.1 ≠ 0 := sorry
+  constructor
+  intro k
+  dsimp only [odist] at k
+  apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) q).mp
+  exact k
+  intro e
+  apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) q).mpr
+  exact e
+
 theorem odist_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist A ray = Real.sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by sorry
 
-theorem wedge_eq_odist_mul_length (A B C : P) (aneb : B ≠ A) : (wedge A B C) = ((odist A (RAY A B aneb)) * (SEG A B).length) := by sorry
+theorem wedge_eq_odist_mul_length (A B C : P) (aneb : B ≠ A) : (wedge A B C) = ((odist C (RAY A B aneb)) * (SEG A B).length) := by
+  by_cases p : C ≠ A
+  rw [area_eq_sine_mul_lenght_mul_length A B C aneb p,odist_eq_sine_mul_length C (RAY A B aneb)]
+  rw [mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B aneb) C p).value)) ((SEG (RAY A B aneb).source C).length) ((SEG A B).length),mul_comm ((SEG (RAY A B aneb).source C).length) ((SEG A B).length),←mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B aneb) C p).value)) ((SEG A B).length) ((SEG (RAY A B aneb).source C).length)]
+  congr
+  simp at p
+  have vecac0 : VEC A C = 0 := by
+    exact (eq_iff_vec_eq_zero A C).mp p
+  have vecrayc0 : VEC (RAY A B aneb).source C = 0 := by
+    exact vecac0
+  dsimp only [wedge,odist,det]
+  field_simp [vecac0,vecrayc0]
 
 end oriented_distance
 
@@ -100,7 +141,11 @@ def OffLine (A : P) (ray : Ray P) : Prop := by
   · exact False
   · exact True
 
-theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A ray.toLine := sorry
+theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A ray.toLine := by
+  dsimp only [OnLine]
+  by_cases h : odist A ray = 0
+  simp
+  constructor
 
 /- Relation of position of points on a ray and directed distance-/
 
