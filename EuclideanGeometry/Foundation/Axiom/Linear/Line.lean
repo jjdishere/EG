@@ -164,7 +164,7 @@ end coercion
 
 section coercion_compatibility
 
-theorem DirLine.toproj_eq_toline_toproj (l : DirLine P) : l.toProj = l.toLine.toProj := Quotient.ind (motive := fun l => toProj l = Line.toProj (toLine l)) (fun _ => rfl) l
+theorem DirLine.toline_toproj_eq_toproj (l : DirLine P) : l.toLine.toProj = l.toProj := Quotient.ind (motive := fun l => Line.toProj (toLine l) = toProj l) (fun _ => rfl) l
 
 theorem Ray.toline_eq_todirline_toline (ray : Ray P) : ray.toLine = ray.toDirLine.toLine := rfl
 
@@ -466,7 +466,7 @@ theorem eq_dirline_or_rev_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l
   eq_or_eq_rev_of_toline_eq (Line.eq_of_pt_pt_lies_on_of_ne h hA₁ hB₁ hA₂ hB₂)
 
 theorem toproj_eq_seg_nd_toproj_of_lies_on {A B : P} {l : DirLine P} (ha : A LiesOn l) (hb : B LiesOn l) (hab : B ≠ A) : (SEG_nd A B hab).toProj = l.toProj :=
-  (Line.toproj_eq_seg_nd_toproj_of_lies_on ha hb hab).trans l.toproj_eq_toline_toproj.symm
+  (Line.toproj_eq_seg_nd_toproj_of_lies_on ha hb hab).trans l.toline_toproj_eq_toproj
 
 theorem exsit_dirline_pt_lies_on : ∃ l : DirLine P, A LiesOn l := by
   rcases Line.exsit_line_pt_lies_on A with ⟨⟨r⟩, h⟩
@@ -619,7 +619,7 @@ theorem DirLine.lies_on_iff_lies_on_iff_toline_eq_toline (l₁ l₂ : DirLine P)
   lies_on_iff_lies_on_iff_line_eq_line l₁.toLine l₂.toLine
 
 theorem DirLine.lies_on_iff_eq_toproj_of_lies_on {A B : P} {l : DirLine P} (h : B ≠ A) (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B h).toProj = l.toProj :=
-  (Line.lies_on_iff_eq_toproj_of_lies_on h hA).trans (Eq.congr rfl l.toproj_eq_toline_toproj.symm)
+  (Line.lies_on_iff_eq_toproj_of_lies_on h hA).trans (Eq.congr rfl l.toline_toproj_eq_toproj)
 
 end lieson
 
@@ -786,7 +786,7 @@ theorem exists_ne_pt_pt_lies_on_of_dirline (A : P) (l : DirLine P) : ∃ B : P, 
   Line.exists_ne_pt_pt_lies_on_of_line A l
 
 theorem lies_on_of_Seg_nd_toproj_eq_toproj {A B : P} {l : DirLine P} (ha : A LiesOn l) (hab : B ≠ A) (hp : (SEG_nd A B hab).toDir = l.toDir) : B LiesOn l :=
-  Line.lies_on_of_Seg_nd_toproj_eq_toproj ha hab ((congrArg Dir.toProj hp).trans l.toproj_eq_toline_toproj)
+  Line.lies_on_of_Seg_nd_toproj_eq_toproj ha hab ((congrArg Dir.toProj hp).trans l.toline_toproj_eq_toproj.symm)
 
 theorem exist_pt_beyond_pt_right {A B : P} {l : DirLine P} (hA : A LiesOn l) (hB : B LiesOn l) (h : B ≠ A) : ∃ C : P, C LiesOn l ∧ B LiesInt (SEG A C) :=
   Line.exist_pt_beyond_pt_right hA hB h
