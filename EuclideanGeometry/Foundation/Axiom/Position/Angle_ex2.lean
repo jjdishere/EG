@@ -49,14 +49,4 @@ theorem colinear_of_zero_angle {A O B : P} {h₁ : A ≠ O} {h₂ : B ≠ O} : �
 
 end colinear
 
-section parallel
--- `Do we need a construction and predicate of such angles? theorems can be stated without constructions` `Maybe yes, otherwise there is too many lengthy proofs in statement`
--- Is Corresponding angles : start ray same dir, end ray same
--- Is Consecutive interior angles : start ray same dir, end ray reverse
-
--- equivlently, this should be named as eq_value_of_eq_dir_of_start_ray_eq_end_ray
-theorem eq_value_of_corresponding_angle {l₁ l₂ l : DirLine P} (h : l₁.toDir = l₂.toDir) (g : ¬ l ∥ l₁) : (Angle.mk_dirline_dirline l₁ l (Ne.symm g)).value = (Angle.mk_dirline_dirline l₂ l (Ne.symm (ne_of_ne_of_eq g (Quotient.sound (h ▸ PM.con.refl _))))).value := sorry
-
-end parallel
-
 end EuclidGeom
