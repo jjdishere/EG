@@ -85,7 +85,7 @@ theorem Vec_nd.ne_zero_of_neg (z : Vec_nd) : - z.1 ≠ 0 := by
   simp only [ne_eq, neg_eq_zero, z.2, not_false_eq_true]
 
 @[simp]
-theorem fst_of_one_toVec_eq_one : (1 : Vec_nd).1 = 1 := rfl
+theorem fst_of_one_tovec_eq_one : (1 : Vec_nd).1 = 1 := rfl
 
 @[simp]
 theorem fst_neg_Vec_nd_is_neg_fst_Vec_nd (z : Vec_nd) : (-z).1 = -(z.1) := rfl
@@ -108,7 +108,7 @@ class Dir where
   unit : @inner ℝ _ _ toVec toVec = 1
 
 @[simp]
-theorem dir_toVec_fst_mul_fst_plus_snd_mul_snd_eq_one (x : Dir) : x.1.1 * x.1.1 + x.1.2 * x.1.2 = 1 := by
+theorem dir_tovec_fst_mul_fst_plus_snd_mul_snd_eq_one (x : Dir) : x.1.1 * x.1.1 + x.1.2 * x.1.2 = 1 := by
   rw [← x.2]
   unfold inner InnerProductSpace.toInner InnerProductSpace.complexToReal InnerProductSpace.isROrCToReal
   simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
@@ -178,9 +178,9 @@ theorem snd_of_one_eq_zero : (1 : Dir).1.2 = 0 := rfl
 theorem one_eq_one_toComplex : (1 : Dir).1 = 1 := rfl
 
 @[simp]
-theorem toVec_sq_add_sq_eq_one (x : Dir) : x.1.1 ^ 2 + x.1.2 ^ 2 = 1 := by
+theorem tovec_sq_add_sq_eq_one (x : Dir) : x.1.1 ^ 2 + x.1.2 ^ 2 = 1 := by
   rw [pow_two, pow_two]
-  simp only [dir_toVec_fst_mul_fst_plus_snd_mul_snd_eq_one]
+  simp only [dir_tovec_fst_mul_fst_plus_snd_mul_snd_eq_one]
 
 -- Give a CommGroup structure to Dir by the mul structure of ℂ
 
@@ -209,15 +209,15 @@ instance : CommGroup Dir where
     unit := by
       unfold inner InnerProductSpace.toInner InnerProductSpace.complexToReal InnerProductSpace.isROrCToReal
       simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_neg, mul_neg, sub_neg_eq_add,
-        dir_toVec_fst_mul_fst_plus_snd_mul_snd_eq_one]
+        dir_tovec_fst_mul_fst_plus_snd_mul_snd_eq_one]
   }
   mul_left_inv x := by
     ext : 1
     unfold Inv.inv HMul.hMul instHMul Mul.mul Semigroup.toMul Monoid.toSemigroup instMonoidDir instSemigroupDir instMulDir HMul.hMul instHMul Mul.mul Complex.instMulComplex
     ext
-    simp only [neg_mul, sub_neg_eq_add, dir_toVec_fst_mul_fst_plus_snd_mul_snd_eq_one, one_eq_one_toComplex,
+    simp only [neg_mul, sub_neg_eq_add, dir_tovec_fst_mul_fst_plus_snd_mul_snd_eq_one, one_eq_one_toComplex,
       Complex.one_re]
-    simp only [neg_mul, sub_neg_eq_add, dir_toVec_fst_mul_fst_plus_snd_mul_snd_eq_one, one_eq_one_toComplex,
+    simp only [neg_mul, sub_neg_eq_add, dir_tovec_fst_mul_fst_plus_snd_mul_snd_eq_one, one_eq_one_toComplex,
       Complex.one_im]
     ring
   mul_comm _ _ := by
@@ -241,7 +241,7 @@ instance : HasDistribNeg Dir where
     simp only [mul_neg]
 
 @[simp]
-theorem toVec_neg_eq_neg_toVec (x : Dir) : (-x).toVec = -(x.toVec) := rfl
+theorem tovec_neg_eq_neg_tovec (x : Dir) : (-x).toVec = -(x.toVec) := rfl
 
 @[simp]
 theorem fst_of_neg_one_eq_neg_one : (-1 : Dir).toVec.1 = -1 := rfl
@@ -253,7 +253,7 @@ theorem snd_of_neg_one_eq_zero : (-1 : Dir).toVec.2 = 0 := by
 
 def angle (x y : Dir) := Complex.arg ( (y * (x⁻¹)).1)
 
-theorem fst_of_angle_toVec (x y : Dir) : (y * (x⁻¹)).1.1 = x.1.1 * y.1.1 + x.1.2 * y.1.2 := by
+theorem fst_of_angle_tovec (x y : Dir) : (y * (x⁻¹)).1.1 = x.1.1 * y.1.1 + x.1.2 * y.1.2 := by
   have h : x.1.1 * y.1.1 + x.1.2 * y.1.2 = y.1.1 * x.1.1 - y.1.2 * (-x.1.2) := by ring
   rw [h]
   rfl
@@ -267,7 +267,7 @@ def mk_angle (θ : ℝ) : Dir where
     simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
 
 
-theorem toVec_ne_zero (x : Dir) : x.toVec ≠ 0 := by
+theorem tovec_ne_zero (x : Dir) : x.toVec ≠ 0 := by
   by_contra h
   have h' : @inner ℝ _ _ x.toVec x.toVec = 0 := by
     rw [h]
@@ -277,18 +277,20 @@ theorem toVec_ne_zero (x : Dir) : x.toVec ≠ 0 := by
   rw [h'] at g
   exact zero_ne_one g
 
-def toVec_nd (x : Dir) : Vec_nd := ⟨x.toVec, toVec_ne_zero x⟩
+def toVec_nd (x : Dir) : Vec_nd := ⟨x.toVec, tovec_ne_zero x⟩
 
 @[simp]
-theorem norm_of_dir_toVec_eq_one (x : Dir) : Vec.norm x.toVec = 1 := by
+theorem norm_of_dir_tovec_eq_one (x : Dir) : Vec.norm x.toVec = 1 := by
   unfold Vec.norm Complex.abs Complex.normSq
-  simp only [MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, AbsoluteValue.coe_mk, MulHom.coe_mk, dir_toVec_fst_mul_fst_plus_snd_mul_snd_eq_one, Real.sqrt_one]
+  simp only [MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, AbsoluteValue.coe_mk, MulHom.coe_mk, dir_tovec_fst_mul_fst_plus_snd_mul_snd_eq_one, Real.sqrt_one]
 
 @[simp]
-theorem dir_toVec_nd_to_dir_eq_self (x : Dir) : Vec_nd.toDir (⟨x.toVec, toVec_ne_zero x⟩ : Vec_nd) = x := by
+theorem dir_tovec_nd_todir_eq_self (x : Dir) : Vec_nd.toDir (⟨x.toVec, tovec_ne_zero x⟩ : Vec_nd) = x := by
   ext : 1
   unfold Vec_nd.toDir
-  simp only [norm_of_dir_toVec_eq_one, inv_one, one_smul]
+  simp only [norm_of_dir_tovec_eq_one, inv_one, one_smul]
+
+theorem tovec_nd_todir_eq_self (x : Dir) : x.toVec_nd.toDir = x := x.dir_tovec_nd_todir_eq_self
 
 /- The direction `Dir.I`, defined as `Complex.I`, the direction of y-axis. It will be used in section perpendicular. -/
 def I : Dir where
@@ -313,7 +315,7 @@ theorem neg_I_toComplex_eq_neg_I : (-I).1 = -Complex.I := rfl
 theorem I_mul_I_eq_neg_one : I * I = -(1 : Dir) := by
   ext : 1
   unfold HMul.hMul instHMul Mul.mul instMulDir
-  simp only [I_toComplex_eq_I, Complex.I_mul_I, toVec_neg_eq_neg_toVec]
+  simp only [I_toComplex_eq_I, Complex.I_mul_I, tovec_neg_eq_neg_tovec]
   ext
   rfl
   rfl
@@ -342,7 +344,7 @@ theorem pos_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : ℝ) (hang₁ : (0 < 
 section Make_angle_theorems
 
 @[simp]
-theorem mk_angle_arg_toComplex_of_nonzero_eq_to_dir (x : Vec_nd) : mk_angle (Complex.arg x.1) = Vec_nd.toDir x := by
+theorem mk_angle_arg_toComplex_of_nonzero_eq_todir (x : Vec_nd) : mk_angle (Complex.arg x.1) = Vec_nd.toDir x := by
   ext : 1
   unfold Vec_nd.toDir mk_angle HSMul.hSMul instHSMul SMul.smul Complex.instSMulRealComplex Vec.norm
   ext
@@ -356,7 +358,7 @@ theorem mk_angle_arg_toComplex_of_nonzero_eq_to_dir (x : Vec_nd) : mk_angle (Com
 
 @[simp]
 theorem mk_angle_arg_toComplex_of_Dir_eq_self (x: Dir) : mk_angle (Complex.arg (x.1)) = x := by
-  have w : Complex.abs (x.1) = 1 := norm_of_dir_toVec_eq_one x
+  have w : Complex.abs (x.1) = 1 := norm_of_dir_tovec_eq_one x
   ext : 1
   unfold mk_angle
   simp
@@ -380,15 +382,15 @@ theorem mk_angle_zero_eq_one : mk_angle 0 = 1 := by
 theorem mk_angle_pi_eq_neg_one : mk_angle π = -1 := by
   unfold mk_angle
   ext
-  simp only [Real.cos_pi, Real.sin_pi, toVec_neg_eq_neg_toVec, one_eq_one_toComplex, Complex.neg_re, Complex.one_re]
-  simp only [Real.cos_pi, Real.sin_pi, toVec_neg_eq_neg_toVec, one_eq_one_toComplex, Complex.neg_im, Complex.one_im, neg_zero]
+  simp only [Real.cos_pi, Real.sin_pi, tovec_neg_eq_neg_tovec, one_eq_one_toComplex, Complex.neg_re, Complex.one_re]
+  simp only [Real.cos_pi, Real.sin_pi, tovec_neg_eq_neg_tovec, one_eq_one_toComplex, Complex.neg_im, Complex.one_im, neg_zero]
 
 @[simp]
 theorem mk_angle_neg_pi_eq_neg_one : mk_angle (-π) = -1 := by
   unfold mk_angle
   ext
-  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, toVec_neg_eq_neg_toVec, one_eq_one_toComplex, Complex.neg_re, Complex.one_re]
-  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, toVec_neg_eq_neg_toVec, one_eq_one_toComplex, Complex.neg_im, Complex.one_im]
+  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, tovec_neg_eq_neg_tovec, one_eq_one_toComplex, Complex.neg_re, Complex.one_re]
+  simp only [Real.cos_neg, Real.cos_pi, Real.sin_neg, Real.sin_pi, neg_zero, tovec_neg_eq_neg_tovec, one_eq_one_toComplex, Complex.neg_im, Complex.one_im]
 
 theorem mk_angle_neg_mul_mk_angle_eq_one (x : ℝ) : mk_angle (-x) * mk_angle x = 1 := by
   ext
@@ -416,8 +418,8 @@ theorem mk_angle_pi_div_two_eq_I : mk_angle (π / 2) = I := by
 theorem mk_angle_neg_pi_div_two_eq_neg_I : mk_angle (-(π / 2)) = -I := by
   unfold mk_angle
   ext
-  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, toVec_neg_eq_neg_toVec, I_toComplex_eq_I, Complex.neg_re, Complex.I_re, neg_zero]
-  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, toVec_neg_eq_neg_toVec, I_toComplex_eq_I, Complex.neg_im, Complex.I_im]
+  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, tovec_neg_eq_neg_tovec, I_toComplex_eq_I, Complex.neg_re, Complex.I_re, neg_zero]
+  simp only [Real.cos_neg, Real.cos_pi_div_two, Real.sin_neg, Real.sin_pi_div_two, tovec_neg_eq_neg_tovec, I_toComplex_eq_I, Complex.neg_im, Complex.I_im]
 
 @[simp]
 theorem mk_angle_neg_pi_div_two_eq_neg_I' : mk_angle ((-π) / 2) = -I := by
@@ -521,17 +523,17 @@ def Dir.toProj (v : Dir) : Proj := ⟦v⟧
 instance : Coe Dir Proj where
   coe v := v.toProj
 
-theorem Dir.eq_toProj_iff (x y : Dir) : x.toProj = y.toProj ↔ x = y ∨ x = -y := Quotient.eq (r := PM.con.toSetoid)
+theorem Dir.eq_toproj_iff (x y : Dir) : x.toProj = y.toProj ↔ x = y ∨ x = -y := Quotient.eq (r := PM.con.toSetoid)
 
-theorem Dir.eq_toProj_iff' {x y : Dir} : x.toProj = y.toProj ↔ PM x y := by rw [Dir.eq_toProj_iff, PM]
+theorem Dir.eq_toproj_iff' {x y : Dir} : x.toProj = y.toProj ↔ PM x y := by rw [Dir.eq_toproj_iff, PM]
 
 def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.toDir v : Proj)
 
 -- Coincidence of toProj gives rise to important results, especially that two Vec_nd-s have the same toProj iff they are equal by taking a real (nonzero) scaler. We will prove this statement in the following section.
 
-section Vec_nd_toProj
+section Vec_nd_toproj
 
-theorem to_dir_eq_to_dir_smul_pos (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : 0 < t) : Vec_nd.toDir u = Vec_nd.toDir v := by
+theorem todir_eq_todir_smul_pos (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : 0 < t) : Vec_nd.toDir u = Vec_nd.toDir v := by
   unfold Vec_nd.toDir
   ext : 1
   have g : (Vec.norm v) • u.1 = (Vec.norm u) • v.1 := by
@@ -552,7 +554,7 @@ theorem to_dir_eq_to_dir_smul_pos (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1)
     OneHom.coe_mk]
   exact Eq.symm ((inv_mul_eq_iff_eq_mul₀ hv).2 (Eq.symm w))
 
-theorem neg_to_dir_eq_to_dir_smul_neg (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : t < 0) : -Vec_nd.toDir u = Vec_nd.toDir v := by
+theorem neg_todir_eq_todir_smul_neg (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) (ht : t < 0) : -Vec_nd.toDir u = Vec_nd.toDir v := by
   unfold Vec_nd.toDir
   ext : 1
   simp only [ne_eq, MonoidHom.coe_mk, OneHom.coe_mk, fst_neg_Vec_nd_is_neg_fst_Vec_nd]
@@ -579,13 +581,13 @@ theorem neg_to_dir_eq_to_dir_smul_neg (u v : Vec_nd) {t : ℝ} (h : v.1 = t • 
   exact Iff.mpr neg_eq_iff_eq_neg w'
 
 @[simp]
-theorem neg_to_dir_eq_to_dir_eq (z : Vec_nd) : Vec_nd.toDir (-z) = - Vec_nd.toDir z := by
+theorem neg_todir_eq_todir_eq (z : Vec_nd) : Vec_nd.toDir (-z) = - Vec_nd.toDir z := by
   symm
-  apply neg_to_dir_eq_to_dir_smul_neg z (-z) (t := -1)
+  apply neg_todir_eq_todir_smul_neg z (-z) (t := -1)
   simp only [ne_eq, fst_neg_Vec_nd_is_neg_fst_Vec_nd, neg_smul, one_smul]
   linarith
 
-theorem eq_toProj_of_smul (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) : Vec_nd.toProj u = Vec_nd.toProj v := by
+theorem eq_toproj_of_smul (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) : Vec_nd.toProj u = Vec_nd.toProj v := by
   have ht : t ≠ 0 := by
     by_contra ht'
     rw [ht', zero_smul ℝ u.1] at h
@@ -598,12 +600,12 @@ theorem eq_toProj_of_smul (u v : Vec_nd) {t : ℝ} (h : v.1 = t • u.1) : Vec_n
   match ht₁ with
     | Or.inl ht₂ =>
       left
-      exact to_dir_eq_to_dir_smul_pos u v h ht₂
+      exact todir_eq_todir_smul_pos u v h ht₂
     | Or.inr ht₃ =>
       right
-      exact Iff.mp neg_eq_iff_eq_neg (neg_to_dir_eq_to_dir_smul_neg u v h ht₃)
+      exact Iff.mp neg_eq_iff_eq_neg (neg_todir_eq_todir_smul_neg u v h ht₃)
 
-theorem smul_of_eq_toProj (u v : Vec_nd) (h : Vec_nd.toProj u = Vec_nd.toProj v) : ∃ (t : ℝ), v.1 = t • u.1 := by
+theorem smul_of_eq_toproj (u v : Vec_nd) (h : Vec_nd.toProj u = Vec_nd.toProj v) : ∃ (t : ℝ), v.1 = t • u.1 := by
   let h' := Quotient.exact h
   unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
   simp only [Con.rel_eq_coe, Con.rel_mk] at h'
@@ -624,15 +626,15 @@ theorem smul_of_eq_toProj (u v : Vec_nd) (h : Vec_nd.toProj u = Vec_nd.toProj v)
       exact h₂
 
 -- The main theorem of Vec_nd.toProj
-theorem Vec_nd.eq_toProj_iff (u v : Vec_nd) : (Vec_nd.toProj u = Vec_nd.toProj v) ↔ ∃ (t : ℝ), v.1 = t • u.1 := by
+theorem Vec_nd.eq_toproj_iff (u v : Vec_nd) : (Vec_nd.toProj u = Vec_nd.toProj v) ↔ ∃ (t : ℝ), v.1 = t • u.1 := by
   constructor
   · intro h
-    exact smul_of_eq_toProj _ _ h
+    exact smul_of_eq_toproj _ _ h
   · intro h'
     rcases h' with ⟨t, h⟩
-    exact eq_toProj_of_smul _ _ h
+    exact eq_toproj_of_smul _ _ h
 
-end Vec_nd_toProj
+end Vec_nd_toproj
 
 section Perpendicular
 
@@ -691,7 +693,7 @@ end Perpendicular
 
 section Cosine_theorem_for_Vec_nd
 
-theorem Vec_nd.norm_smul_to_dir_eq_self (v : Vec_nd) : Vec.norm v.1 • (Vec_nd.toDir v).toVec = v := by
+theorem Vec_nd.norm_smul_todir_eq_self (v : Vec_nd) : Vec.norm v.1 • (Vec_nd.toDir v).toVec = v := by
   symm
   apply (inv_smul_eq_iff₀ (Iff.mpr norm_ne_zero_iff v.2)).1
   rfl
@@ -710,11 +712,11 @@ theorem cos_angle_of_dir_dir_eq_inner (d₁ d₂ : Dir) : Real.cos (Dir.angle d�
   unfold Dir.angle inner InnerProductSpace.toInner InnerProductSpace.complexToReal InnerProductSpace.isROrCToReal
   simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
   rw [cos_arg_of_dir_eq_fst]
-  exact (Dir.fst_of_angle_toVec d₁ d₂)
+  exact (Dir.fst_of_angle_tovec d₁ d₂)
 
 theorem norm_mul_norm_mul_cos_angle_eq_inner_of_Vec_nd (v₁ v₂ : Vec_nd) : (Vec.norm v₁) * (Vec.norm v₂) * Real.cos (Vec_nd.angle v₁ v₂) = inner v₁.1 v₂.1 := by
   have h : @inner ℝ _ _ v₁.1 v₂.1 = inner (Vec.norm v₁ • (Vec_nd.toDir v₁).1) (Vec.norm v₂ • (Vec_nd.toDir v₂).1) := by
-    nth_rw 1 [← Vec_nd.norm_smul_to_dir_eq_self v₁, ← Vec_nd.norm_smul_to_dir_eq_self v₂]
+    nth_rw 1 [← Vec_nd.norm_smul_todir_eq_self v₁, ← Vec_nd.norm_smul_todir_eq_self v₂]
   rw [h]
   rw [inner_smul_left, inner_smul_right, ← cos_angle_of_dir_dir_eq_inner, mul_assoc]
   rfl
@@ -869,7 +871,7 @@ theorem linear_combination_of_not_colinear_vec_nd {u v : Vec_nd} (w : Vec) (h' :
   have h₁ : (Vec_nd.toProj u ≠ Vec_nd.toProj v) → ¬(∃ (t : ℝ), v.1 = t • u.1) := by
     intro _
     by_contra h₂
-    let _ := (Vec_nd.eq_toProj_iff u v).2 h₂
+    let _ := (Vec_nd.eq_toproj_iff u v).2 h₂
     tauto
   exact @linear_combination_of_not_colinear' u.1 v.1 w u.2 (h₁ h')
 
@@ -879,19 +881,19 @@ theorem linear_combination_of_not_colinear_dir {u v : Dir} (w : Vec) (h' : u.toP
     push_neg at h
     let u' := u.toVec_nd
     let v' := v.toVec_nd
-    have hu0 : (⟨u.toVec, Dir.toVec_ne_zero u⟩ : Vec_nd) = u' := rfl
-    have hu1 : u = u'.toDir := by rw [←Dir.dir_toVec_nd_to_dir_eq_self u, hu0]
+    have hu0 : (⟨u.toVec, Dir.tovec_ne_zero u⟩ : Vec_nd) = u' := rfl
+    have hu1 : u = u'.toDir := by rw [←Dir.dir_tovec_nd_todir_eq_self u, hu0]
     have hu2 : Vec_nd.toProj u' = u.toProj := by
       unfold Vec_nd.toProj
       rw [hu1]
     have hu3 : u.1 = u'.1 := rfl
-    have hv0 : (⟨v.toVec, Dir.toVec_ne_zero v⟩ : Vec_nd) = v' := rfl
-    have hv1 : v = v'.toDir := by rw [←Dir.dir_toVec_nd_to_dir_eq_self v, hv0]
+    have hv0 : (⟨v.toVec, Dir.tovec_ne_zero v⟩ : Vec_nd) = v' := rfl
+    have hv1 : v = v'.toDir := by rw [←Dir.dir_tovec_nd_todir_eq_self v, hv0]
     have hv2 : Vec_nd.toProj v' = v.toProj := by
       unfold Vec_nd.toProj
       rw [hv1]
     have hv3 : v.1 = v'.1 := rfl
-    rw [hu3, hv3 ,←hu2, ←hv2, ←Vec_nd.eq_toProj_iff u' v'] at h
+    rw [hu3, hv3 ,←hu2, ←hv2, ←Vec_nd.eq_toproj_iff u' v'] at h
     tauto
   exact @linear_combination_of_not_colinear' u.1 v.1 w u.toVec_nd.2 (h₁ h')
 
@@ -957,7 +959,7 @@ theorem det_eq_sin_mul_norm_mul_norm (u v : Vec_nd): det u v = Real.sin (Vec_nd.
   have vnorm_nonneg : 0 ≤ vnorm := Vec.norm_nonnegative v
   rw [Vec.norm_smul_eq_mul_norm (unorm_nonneg), Vec.norm_smul_eq_mul_norm (vnorm_nonneg)]
   have : det nu.1 nv.1 = Real.sin (Vec_nd.angle u v) * Vec.norm nu.1 *Vec.norm nv.1 := by
-    rw[Dir.norm_of_dir_toVec_eq_one, Dir.norm_of_dir_toVec_eq_one, mul_one, mul_one, det_eq_sin_mul_norm_mul_norm']
+    rw[Dir.norm_of_dir_tovec_eq_one, Dir.norm_of_dir_tovec_eq_one, mul_one, mul_one, det_eq_sin_mul_norm_mul_norm']
     unfold Vec_nd.angle
     rfl
   rw[this]

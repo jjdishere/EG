@@ -1,5 +1,7 @@
 import EuclideanGeometry.Foundation.Index
 
+open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic Qq
+
 noncomputable section
 
 -- All exercises are from Aref-Wernick book: Problems and Solutions in Euclidean Geometry Chapter 1
@@ -19,14 +21,11 @@ Prove that $\triangle A_1B_1C_1$ is congruent to $\triangle A_2B_2C_2$. -/
 
 end Aref_Wernick_Exercise_1_1
 
-
 namespace Aref_Wernick_Exercise_1_2
 /- Let $D$ and $E$ be points on two sides $AB$ and $AC$ of a triangle $ABC$, respectively, such that $BD = BC = CE$. The segments $BE$ and $CD$ intersect at $F$.
 
 Prove that $\angle BFD = \pi / 2 - \angle CAB$. -/
 
 end Aref_Wernick_Exercise_1_2
-
-
 
 end EuclidGeom

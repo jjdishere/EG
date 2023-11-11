@@ -47,12 +47,12 @@ lemma e_ne_c: E ≠ C := by
 lemma adb_colinear : colinear A D B := by
   apply colinear_of_vec_eq_smul_vec'
   use 2
-  simp only [hd,Seg.midpoint,one_div, seg_toVec_eq_vec, vec_of_pt_vadd_pt_eq_vec,smul_smul]
+  simp only [hd,Seg.midpoint,one_div, seg_tovec_eq_vec, vec_of_pt_vadd_pt_eq_vec,smul_smul]
   norm_num
 lemma aec_colinear : colinear A E C := by
   apply colinear_of_vec_eq_smul_vec'
   use 2
-  simp only [he,Seg.midpoint,one_div, seg_toVec_eq_vec, vec_of_pt_vadd_pt_eq_vec,smul_smul]
+  simp only [he,Seg.midpoint,one_div, seg_tovec_eq_vec, vec_of_pt_vadd_pt_eq_vec,smul_smul]
   norm_num
 
 lemma midpt_half_length : (SEG A D).length = (SEG A B).length/2:=by
@@ -146,8 +146,8 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   rw[h₀]
   have h₁:(TRI_nd A B C hnd).angle₁.1=(SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay:=rfl
   rw[h₁]
-  apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay
-  apply Seg_nd.lies_int_toRay_of_lies_int
+  apply @Ray.source_int_toray_eq_ray P _ (SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay
+  apply Seg_nd.lies_int_toray_of_lies_int
   apply (Seg.lies_int_iff D).mpr
   constructor
   exact (@b_ne_a P _ A B C hnd)
@@ -159,8 +159,8 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   rw[h₂]
   have h₃:(TRI_nd A B C hnd).angle₁.2=(SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay:=rfl
   rw[h₃]
-  apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay
-  apply Seg_nd.lies_int_toRay_of_lies_int
+  apply @Ray.source_int_toray_eq_ray P _ (SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay
+  apply Seg_nd.lies_int_toray_of_lies_int
   apply (Seg.lies_int_iff E).mpr
   constructor
   exact (@c_ne_a P _ A B C hnd)
@@ -169,7 +169,7 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   simp only [Seg.toVec,he]
   apply Seg.vec_source_midpt
 
-lemma ade_acongr_cde : (TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).1 IsACongrTo (TRI_nd C D E (@hnd'' P _ A B C hnd D hd E he)).1 := sorry
+lemma ade_acongr_cde : (TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)) ≅ₐ (TRI_nd C D E (@hnd'' P _ A B C hnd D hd E he)) := sorry
   --need to define the value of right angle
   --by_SAS (acongr)
 
