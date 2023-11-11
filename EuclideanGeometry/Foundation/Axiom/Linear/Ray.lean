@@ -216,6 +216,9 @@ theorem Seg.target_not_lies_int : ¬ seg.target LiesInt seg := fun h ↦ h.2.2 r
 /-- For a segment $AB$, every point of the interior of $AB$ lies on the segment $AB$. -/
 theorem Seg.lies_on_of_lies_int {p : P} (h : p LiesInt seg) : p LiesOn seg := h.1
 
+theorem Seg_nd.source_lies_on : seg_nd.source LiesOn seg_nd := by
+  exact seg_nd.1.source_lies_on
+
 theorem Seg_nd.target_lies_on : seg_nd.target LiesOn seg_nd := by
   exact seg_nd.1.target_lies_on
 
