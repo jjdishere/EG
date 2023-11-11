@@ -44,7 +44,7 @@ theorem wedge231 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge312, wed
 
 theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, wedge231]
 
-theorem wedge_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) := by
+theorem wedge_eq_sine_mul_length_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) := by
   dsimp only [wedge]
   have vecabnd : VEC A B ≠ 0 := by
    exact (ne_iff_vec_ne_zero A B).mp aneb
@@ -88,13 +88,13 @@ theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge
       exact length_pos_iff_nd.mpr (acnd)
   constructor
   · intro h0
-    rw[wedge_eq_sine_mul_lenght_mul_length A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm] at h0
+    rw[wedge_eq_sine_mul_length_mul_length A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm] at h0
     have h3 : 0 < Real.sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := by
       field_simp at h0
       exact h0
     rw [sin_pos_iff_angle_pos] at h3
     exact h3
-  rw[wedge_eq_sine_mul_lenght_mul_length A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm]
+  rw[wedge_eq_sine_mul_length_mul_length A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm]
   intro h0
   have h3 : 0 < Real.sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_angle_pos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
   field_simp
@@ -126,7 +126,7 @@ theorem odist_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : 
 
 theorem wedge_eq_odist_mul_length (A B C : P) (aneb : B ≠ A) : (wedge A B C) = ((odist C (RAY A B aneb)) * (SEG A B).length) := by
   by_cases p : C ≠ A
-  rw [area_eq_sine_mul_lenght_mul_length A B C aneb p,odist_eq_sine_mul_length C (RAY A B aneb)]
+  rw [wedge_eq_sine_mul_length_mul_length A B C aneb p,odist_eq_sine_mul_length C (RAY A B aneb)]
   rw [mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B aneb) C p).value)) ((SEG (RAY A B aneb).source C).length) ((SEG A B).length),mul_comm ((SEG (RAY A B aneb).source C).length) ((SEG A B).length),←mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B aneb) C p).value)) ((SEG A B).length) ((SEG (RAY A B aneb).source C).length)]
   congr
   simp at p
@@ -170,6 +170,10 @@ theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A r
   by_cases h : odist A ray = 0
   simp
   constructor
+  intro
+  sorry
+  sorry
+  sorry
 
 /- Relation of position of points on a ray and directed distance-/
 
@@ -188,7 +192,7 @@ theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : p
       rw [det_add_right_eq_add_det]
     have h2 : det ray.2.1 (VEC A B) = 0 := by
       unfold parallel at para
-      unfold LinearObj.toProj at para
+      unfold ProjObj.toProj at para
       sorry
     rw [h2] at h1
     rw [add_zero] at h1
