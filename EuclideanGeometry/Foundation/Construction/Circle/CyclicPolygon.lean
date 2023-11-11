@@ -1,3 +1,4 @@
+import EuclideanGeometry.Foundation.Construction.Polygon.GeneralPolygon
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
 
 /-!

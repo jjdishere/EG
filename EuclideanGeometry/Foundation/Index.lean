@@ -1,6 +1,3 @@
--- ######## IMPORTANT NOTE ######## --
-/- This file imports all files in Foundation. Please parse this file before any pull request modifying anything in folder Foundation. -/
-
 /- Axiom -/
 /- Axiom.Basic -/
 import EuclideanGeometry.Foundation.Axiom.Basic.Vector
@@ -8,11 +5,13 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Plane
 import EuclideanGeometry.Foundation.Axiom.Basic.Class
 /- Axiom.Linear -/
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex2
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Line
+import EuclideanGeometry.Foundation.Axiom.Linear.Class
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
-import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 /- Axiom.Position -/
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation
@@ -25,6 +24,7 @@ import EuclideanGeometry.Foundation.Axiom.Isometry.Translation_ex
 /- Axiom.Triangle -/
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
+import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence' -- `to avoid ambiguous notation, use notation ≅, ≅ₐ`
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
 import EuclideanGeometry.Foundation.Axiom.Triangle.Similarity
@@ -34,15 +34,49 @@ import EuclideanGeometry.Foundation.Axiom.Circle.CCPosition
 import EuclideanGeometry.Foundation.Axiom.Circle.LCPosition
 import EuclideanGeometry.Foundation.Axiom.Circle.IncribedAngle
 
+/- Tactic -/
+/- Tactic.Congruence -/
+import EuclideanGeometry.Foundation.Tactic.Congruence.Attr
+import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence
+-- import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence' -- `need to avoid some name collision during initialization?`
+import EuclideanGeometry.Foundation.Tactic.Colinear.perm_colinear
+
 /- Constuction -/
-/- Constuction.Triangle -/
-import EuclideanGeometry.Foundation.Construction.Triangle.IsocelesTriangle
+import EuclideanGeometry.Foundation.Construction.Inversion
+/- Construction.ComputationTool-/
+import EuclideanGeometry.Foundation.Construction.ComputationTool.Menelaus
+import EuclideanGeometry.Foundation.Construction.ComputationTool.Ceva
+/- Construction.Triangle -/
 import EuclideanGeometry.Foundation.Construction.Triangle.AngleBisector
-/- Constuction.Polygon -/
+import EuclideanGeometry.Foundation.Construction.Triangle.PerpendicularBisector
+import EuclideanGeometry.Foundation.Construction.Triangle.Orthocenter
+import EuclideanGeometry.Foundation.Construction.Triangle.Centroid
+import EuclideanGeometry.Foundation.Construction.Triangle.IsocelesTriangle
+/- Construction.Polygon -/
+import EuclideanGeometry.Foundation.Construction.Polygon.Quadrilateral
 import EuclideanGeometry.Foundation.Construction.Polygon.Parallelogram
-/- Constuction.Circle -/
+import EuclideanGeometry.Foundation.Construction.Polygon.Trapezoid
+import EuclideanGeometry.Foundation.Construction.Polygon.Rhombus
+import EuclideanGeometry.Foundation.Construction.Polygon.Rectangle
+import EuclideanGeometry.Foundation.Construction.Polygon.Square
+import EuclideanGeometry.Foundation.Construction.Polygon.GeneralPolygon
+/- Construction.Circle -/
+import EuclideanGeometry.Foundation.Construction.Circle.CyclicQuadrilateral
 import EuclideanGeometry.Foundation.Construction.Circle.CyclicPolygon
+import EuclideanGeometry.Foundation.Construction.Circle.RadicalAxis
+import EuclideanGeometry.Foundation.Construction.Circle.SimsonLine
 
 /- Theorem -/
+/- Theorem.Triangle-/
+import EuclideanGeometry.Foundation.Theorem.Triangle.EulerLine
+import EuclideanGeometry.Foundation.Theorem.Triangle.NinePointCircle
 /- Theorem.Circle-/
 import EuclideanGeometry.Foundation.Theorem.Circle.Power
+
+/-!
+# Index of Foundations
+
+`IMPORTANT!`
+
+This file imports all files in Foundation. Please parse this file before create any pull request modifying anything in folder Foundation.
+-/

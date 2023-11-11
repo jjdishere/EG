@@ -1,0 +1,44 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+\title{LEAN Project Circle}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Content in file CCPosition.lean}
+In this file, we define the relative positions between circles.
+  Definitions:
+    (defn) separated_of_circle_circle : Prop -- Given two circles (\omega_1 \omega_2 : Circle P), return a proposition  that the distance between two circle centers is larger than the sum of two radii, i.e., |O_1O_2|>r_1+r_2.
+    (defn) intersected_of_circle_circle : Prop -- Given two circles (\omega_1 \omega_2 : Circle P), return a proposition  that the distance between two circle centers is less than the sum of two radii and more than the difference of their radii, i.e., |r_1-r_2|<|O_1O_2|<r_1+r_2.
+    (defn) circumscribed_of_circl_circle : Prop -- Given two circles (\omega_1 \omega_2 : Circle P), return a proposition  that the distance between two circle centers is equal to the sum of two radii, i.e., |O_1O_2|=r_1+r_2.
+    (defn) included_of_circle_circle : Prop -- Given two circles (\omega_1 \omega_2 : Circle P), return a proposition  that the distance between two circle centers is less than the first radius minus the second radius, i.e., |O_1O_2|<r_1-r_2.
+    (defn) inscribed_of_circle_circle : Prop -- Given two circles (\omega_1 \omega_2 : Circle P), return a proposition  that the distance between two circle centers is equal to the first radius minus the second radius , i.e., |O_1O_2|=r_1-r_2.
+  
+  Theorems :
+    separated_circles_zero_intersection -- Given two circles (\omega_1 \omega_2 : Circle P), if they are separated, then they have no intersection.
+    intersected_circles_two_intersection -- Given two circles (\omega_1 \omega_2 : Circle P), if they intersect each other, then they have exactly two common points.
+    circumscribed_circles_one_intersection -- Given two circles (\omega_1 \omega_2 : Circle P), if they are circumscribed, then they have exactly one common point.
+    included_circles_no_intersection -- Given two circles (\omega_1 \omega_2 : Circle P), if \omega_2 is included in \omega_1, then they have no intersections.
+    inscibed_circles_one_intersection --  Given two circles (\omega_1 \omega_2 : Circle P), if \omega_1 is inscribed with \omega_2, then they have exactly one common point.
+
+
+\section{Content in file LCPosition.lean}
+In this file, we define the relative position between lines and circles and rays and circles. What's more, when discuss position bewteen rays and circles, we want give a criterion whether the underlying lines have common points with the circles and give constructions to the TWO intersections (may be the same point).
+  \subsection{position of lines and circles}
+    Definitions : 
+     (defn) line_tangent_to_circle : Prop -- Given a line and a circle, return a proposition that the line has exactly one common point with the circle, i.e., there exist a common point A and any common point must be A.
+     (defn) line_secant_to_circle : Prop -- Given a line and a circle, return a proposition that they have exactly two common points.
+     (defn) line_disjoint_from_circle : Prop -- Given a line and a circle, returen a proposition that they have no common points.
+     (defn) line_intersect_circle : Prop -- Given a line and a circle, returen a proposition that the line has at least a common point with the circle.
+    Theorems : 
+      line_tangent_to_circle_iff_one_intersection -- Given a line and a circle, the line is tangent to the circle iff the distance from the center to the line is equal to radius of the circle. 
+      line_secant_to_circle_iff_two_intersection -- Given a line and a circle, the line is secant to the circle iff the distance from the center to the line is less than the radius of the circle.
+      line_disjoint_from_circle_iff_two_intersection -- Given a line and a circle, the line is disjoint from the circle iff the distance from the center to the line is more than the radius of the circle.
+      
+\end{document}

@@ -6,7 +6,7 @@ namespace EuclidGeom
 
 /- Class of Circles-/
 @[ext]
-class Circle (P : Type _) [EuclideanPlane P] where 
+class Circle (P : Type _) [EuclideanPlane P] where
   center : P
   radius : ℝ
   rad_pos : 0 < radius
@@ -18,7 +18,7 @@ namespace Circle
 def mk_pt_pt (O A : P) (h : A ≠ O) : Circle P where
   center := O
   radius := (SEG O A).length
-  rad_pos := (length_pos_iff_nd _).mpr h
+  rad_pos := (length_pos_iff_nd).mpr h
 
 def mk_pt_pt_pt (A B C: P) (h : ¬ colinear A B C) : Circle P := sorry
 
@@ -28,12 +28,12 @@ scoped notation "CIR" => Circle.mk_pt_pt
 
 scoped notation "⨀" => Circle.mk_pt_pt
 
-section coersion
+section coercion
 
 -- this should not live here, this belongs to construction.
 -- def Triangle_nd.toCir (tr_nd : Triangle_nd P) : Circle P := sorry
 
-end coersion
+end coercion
 
 
 section position
@@ -56,14 +56,15 @@ def IsOutside (p : P) (ω : Circle P) : Prop := ω.radius < (SEG ω.center p).le
 protected def carrier (ω : Circle P) : Set P := { p : P | Circle.IsOn p ω }
 
 protected def interior (ω : Circle P) : Set P := { p : P | Circle.IsInt p ω }
+--`Interior is NOT a subset of carrier`
 
-instance : Carrier P (Circle P) where
-  carrier := fun ω => ω.carrier
+instance : Fig Circle where
+  carrier := Circle.carrier
 
-instance : Interior P (Circle P) where
-  interior := fun ω => ω.interior
+instance : Interior Circle where
+  interior := Circle.interior
 
-end Circle 
+end Circle
 
 /- `One seldom uses Inside a circle in reality.` Should we delete this? Int On Out is enough-/
 scoped infix : 50 "LiesIn" => Circle.IsInside
