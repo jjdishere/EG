@@ -1,6 +1,7 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Convex
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
+import EuclideanGeometry.Foundation.Axiom.Linear.Line_trash
 
 /-!
 # Quadrilateral
@@ -154,7 +155,20 @@ theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := by
   have g: ¬ qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := Ne.symm qdr_cvx.diag_not_para
   rw [diag_nd₁₃, diag_nd₂₄] at g
   simp only [g, dite_true] at k
-  sorry
+  by_contra q
+  have point₁_lieson_diag_nd₁₃: qdr_cvx.point₁ LiesOn qdr_cvx.diag_nd₁₃ := qdr_cvx.diag_nd₁₃.source_lies_on
+  have point₁_lieson_diag_nd₂₄: qdr_cvx.point₁ LiesOn qdr_cvx.diag_nd₂₄ := by
+    rw [←q]
+    exact qdr_cvx.diag_nd₂₄.source_lies_on
+  have point₁_lieson_line_nd₁₃: qdr_cvx.point₁ LiesOn qdr_cvx.diag_nd₁₃.toLine := lieson_seg_nd_toline_lieson_seg_nd point₁_lieson_diag_nd₁₃
+  have point₁_lieson_line_nd₂₄: qdr_cvx.point₁ LiesOn qdr_cvx.diag_nd₂₄.toLine := lieson_seg_nd_toline_lieson_seg_nd point₁_lieson_diag_nd₂₄
+  have s: qdr_cvx.point₁ IsInxOf qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.toLine := is_inx_of_line_inx point₁_lieson_line_nd₁₃ point₁_lieson_line_nd₂₄ (Seg_nd.not_para_toline_of_not_para qdr_cvx.diag_nd₁₃ qdr_cvx.diag_nd₂₄ qdr_cvx.diag_not_para) (A := qdr_cvx.point₁) (l₁ := qdr_cvx.diag_nd₁₃.toLine) (l₂ := qdr_cvx.diag_nd₂₄.toLine)
+  have t: qdr_cvx.diag_inx = qdr_cvx.point₁ := unique_of_inx_of_line_of_not_para qdr_cvx.diag_not_para s (Line.inx_is_inx qdr_cvx.diag_not_para (l₁ := qdr_cvx.diag_nd₁₃.toLine) (l₂ := qdr_cvx.diag_nd₂₄.toLine))
+  have point₁_lies_int_diag_nd₁₃: qdr_cvx.point₁ LiesInt qdr_cvx.diag_nd₁₃ := by
+    rw [←t]
+    exact qdr_cvx.diag_inx_lies_int.1
+  have point₁_not_lies_int_diag_nd₁₃: ¬ qdr_cvx.point₁ LiesInt qdr_cvx.diag_nd₁₃ := qdr_cvx.diag_nd₁₃.source_not_lies_int
+  exact point₁_not_lies_int_diag_nd₁₃ point₁_lies_int_diag_nd₁₃
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 2nd point to the 3rd point is not degenerate, i.e. the second point is not equal to the first point. -/
 theorem nd₂₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := by sorry
