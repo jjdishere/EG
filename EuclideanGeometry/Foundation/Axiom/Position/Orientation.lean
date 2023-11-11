@@ -111,7 +111,7 @@ def odist (A : P) (ray : Ray P) : ℝ := det ray.2.1 (VEC ray.1 A)
 
 /- may insert some theorems relating colinearity and zero directed distance, which might take some efforts-/
 
-theorem odist_eq_zero_iff_colinear (A : P) (ray : Ray P) : odist A ray = 0 ↔ (∃ t : ℝ, VEC ray.1 A = t • ray.2.1) := by
+theorem odist_eq_zero_iff_exist_real_vec_eq_smul (A : P) (ray : Ray P) : odist A ray = 0 ↔ (∃ t : ℝ, VEC ray.1 A = t • ray.2.1) := by
   constructor
   intro k
   dsimp only [odist] at k
@@ -170,14 +170,22 @@ theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A r
   · simp
     constructor
     intro
-    sorry
-    sorry
+    dsimp only [Line.IsOn]
+    have q : ∃ t : ℝ, VEC ray.1 A = t • ray.2.1 := by exact (odist_eq_zero_iff_exist_real_vec_eq_smul A ray).mp h
+    have p : A ∈ ray.carrier ∨ A ∈ ray.reverse.carrier := by exact lies_on_or_rev_of_exist_real_vec_eq_smul q
+    exact p
+    intro
+    exact h
+  simp
   constructor
-  · intro k
-    sorry
+  intro k
+  absurd h k
+  exact (h k).elim
   dsimp only [Line.IsOn]
-  intro h0
-  sorry
+  intro p
+  rw [Ray.toline_carrier_eq_ray_carrier_union_rev_carrier ray] at p
+  have q : ∃ t : ℝ, VEC ray.source A = t • ray.2.1 := by exact exist_real_vec_eq_smul_of_lies_on_or_rev p
+  exact (odist_eq_zero_iff_exist_real_vec_eq_smul A ray).mpr q
 
 /- Relation of position of points on a ray and directed distance-/
 
@@ -208,9 +216,9 @@ theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : p
   unfold Ray.sign
   rw [h0]
 
-theorem no_intersect_of_same_sign (A B : P) (ray : Ray P) (signeq : (ray.sign A) * (ray.sign B) = 1) : ¬∃ (C : P), (Seg.IsOn C (SEG A B)) ∧ (Line.IsOn C ray.toLine) := sorry
+theorem no_intersect_of_same_sign (A B : P) (ray : Ray P) (signeq : ((ray.sign A = 1) ∧ (ray.sign B = 1)) ∨ ((ray.sign A = -1) ∧ (ray.sign B = -1))) : ¬∃ (C : P), (Seg.IsOn C (SEG A B)) ∧ (Line.IsOn C ray.toLine) := sorry
 
-theorem intersect_of_diff_sign (A B : P) (ray : Ray P) (signdiff : ¬ (ray.sign A) * (ray.sign B) = 1) : ∃ (C : P), (Seg.IsOn C (SEG A B)) ∧ (Line.IsOn C ray.toLine) := sorry
+theorem intersect_of_diff_sign (A B : P) (ray : Ray P) (signdiff : ((ray.sign A = 1) ∧ (ray.sign B = -1)) ∨ ((ray.sign A = -1) ∧ (ray.sign B = 1))) : ∃ (C : P), (Seg.IsOn C (SEG A B)) ∧ (Line.IsOn C ray.toLine) := sorry
 
 end handside
 
