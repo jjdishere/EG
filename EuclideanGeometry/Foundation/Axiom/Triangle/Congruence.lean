@@ -4,7 +4,7 @@ import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex2
 import EuclideanGeometry.Foundation.Tactic.Congruence.Attr
 import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
-import EuclideanGeometry.Foundation.Axiom.TRiangle.Basic_trash
+import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_trash
 
 open Classical
 namespace EuclidGeom
