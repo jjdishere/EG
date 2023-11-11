@@ -1,6 +1,7 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
+import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 
 /- This file discuss the relative positions of points and rays on a plane. -/
 noncomputable section
@@ -10,7 +11,7 @@ open Classical
 
 variable {P : Type _} [EuclideanPlane P]
 
-/- Definition of the area of a triangle, could be used to develop orientation of triangles.-/
+/- Definition of the wedge of three points.-/
 
 section wedge
 
@@ -43,7 +44,7 @@ theorem wedge231 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge312, wed
 
 theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, wedge231]
 
-theorem area_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) := by
+theorem wedge_eq_sine_mul_lenght_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) := by
   dsimp only [wedge]
   have vecabnd : VEC A B ≠ 0 := by
    exact (ne_iff_vec_ne_zero A B).mp aneb
@@ -78,7 +79,26 @@ theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B
   rw [h]
   exact triv_colinear A C
 
-theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (wedge A B C > 0) ↔ ((Angle.mk_pt_pt_pt B A C (sorry) (sorry)).value > 0) := sorry
+theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge A B C) ↔ (0 < (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value ∧ (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value < π) := by
+  have h1 : 0 < (SEG A B).length := by
+      have abnd : (SEG A B).is_nd := (ne_of_not_colinear nd).2.2
+      exact length_pos_iff_nd.mpr (abnd)
+  have h2 : 0 < (SEG A C).length := by
+      have acnd : (SEG A C).is_nd := (ne_of_not_colinear nd).2.1.symm
+      exact length_pos_iff_nd.mpr (acnd)
+  constructor
+  · intro h0
+    rw[wedge_eq_sine_mul_lenght_mul_length A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm] at h0
+    have h3 : 0 < Real.sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := by
+      field_simp at h0
+      exact h0
+    rw [sin_pos_iff_angle_pos] at h3
+    exact h3
+  rw[wedge_eq_sine_mul_lenght_mul_length A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm]
+  intro h0
+  have h3 : 0 < Real.sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_angle_pos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
+  field_simp
+  exact h2
 
 end wedge
 
@@ -86,6 +106,7 @@ end wedge
 section oriented_distance
 
 def odist (A : P) (ray : Ray P) : ℝ := det ray.2.1 (VEC ray.1 A)
+
 
 /- may insert some theorems relating colinearity and zero directed distance, which might take some efforts-/
 
@@ -99,6 +120,7 @@ theorem odist_eq_zero_iff_colinear (A : P) (ray : Ray P) : odist A ray = 0 ↔ (
   intro e
   apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) q).mpr
   exact e
+
 
 theorem odist_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist A ray = Real.sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by sorry
 
@@ -158,7 +180,21 @@ scoped infix : 50 "LiesOnRight" => IsOnRightSide
 
 section handside
 
-theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (RAY A B bnea)  ray) : ray.sign A = ray.sign B := sorry
+theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (RAY A B bnea)  ray) : ray.sign A = ray.sign B := by
+  have h0 : odist A ray = odist B ray := by
+    unfold odist
+    have h1 : det ray.2.1 (VEC ray.1 B) = det ray.2.1 (VEC ray.1 A) + det ray.2.1 (VEC A B) := by
+      rw [←vec_add_vec ray.1 A B]
+      rw [det_add_right_eq_add_det]
+    have h2 : det ray.2.1 (VEC A B) = 0 := by
+      unfold parallel at para
+      unfold LinearObj.toProj at para
+      sorry
+    rw [h2] at h1
+    rw [add_zero] at h1
+    exact h1.symm
+  unfold Ray.sign
+  rw [h0]
 
 theorem no_intersect_of_same_sign (A B : P) (ray : Ray P) (signeq : (ray.sign A) * (ray.sign B) = 1) : ¬∃ (C : P), (Seg.IsOn C (SEG A B)) ∧ (Line.IsOn C ray.toLine) := sorry
 

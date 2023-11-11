@@ -80,6 +80,6 @@ instance (α : Type*) [HasACongr α] : IsSymm α HasACongr.acongr where
 
 scoped infix : 50 "≅ₐ" => HasACongr.acongr
 
-scoped infix : 50 "IsCongrTo" => HasACongr.acongr
+scoped infix : 50 "IsACongrTo" => HasACongr.acongr
 
 end EuclidGeom
