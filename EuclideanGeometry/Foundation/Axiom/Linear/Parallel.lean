@@ -93,7 +93,7 @@ theorem Ray.para_todirline (ray : Ray P) : ray ∥ ray.toDirLine := rfl
 /-- Given a ray, the ray is parallel to the line associated to the ray. -/
 theorem Ray.para_toline (ray : Ray P) : ray ∥ ray.toLine := rfl
 
-theorem DirLine.para_toline (dlin : DirLine P) : dlin ∥ dlin.toLine := DirLine.toproj_eq_toline_toproj dlin
+theorem DirLine.para_toline (dlin : DirLine P) : dlin ∥ dlin.toLine := (DirLine.toline_toproj_eq_toproj dlin).symm
 
 end fig_coecion_parallel
 
