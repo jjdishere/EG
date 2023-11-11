@@ -2,6 +2,7 @@ import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
+import EuclideanGeometry.Foundation.Axiom.Basic.Vector_trash
 
 /- This file discuss the relative positions of points and rays on a plane. -/
 noncomputable section
@@ -111,16 +112,14 @@ def odist (A : P) (ray : Ray P) : ℝ := det ray.2.1 (VEC ray.1 A)
 /- may insert some theorems relating colinearity and zero directed distance, which might take some efforts-/
 
 theorem odist_eq_zero_iff_colinear (A : P) (ray : Ray P) : odist A ray = 0 ↔ (∃ t : ℝ, VEC ray.1 A = t • ray.2.1) := by
-  have q : ray.2.1 ≠ 0 := sorry
   constructor
   intro k
   dsimp only [odist] at k
-  apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) q).mp
+  apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) (Dir.tovec_ne_zero ray.2)).mp
   exact k
   intro e
-  apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) q).mpr
+  apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) (Dir.tovec_ne_zero ray.2)).mpr
   exact e
-
 
 theorem odist_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist A ray = Real.sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by sorry
 
@@ -168,11 +167,16 @@ def OffLine (A : P) (ray : Ray P) : Prop := by
 theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A ray.toLine := by
   dsimp only [OnLine]
   by_cases h : odist A ray = 0
-  simp
+  · simp
+    constructor
+    intro
+    sorry
+    sorry
   constructor
-  intro
-  sorry
-  sorry
+  · intro k
+    sorry
+  dsimp only [Line.IsOn]
+  intro h0
   sorry
 
 /- Relation of position of points on a ray and directed distance-/
@@ -192,8 +196,12 @@ theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : p
       rw [det_add_right_eq_add_det]
     have h2 : det ray.2.1 (VEC A B) = 0 := by
       unfold parallel at para
-      unfold ProjObj.toProj at para
-      sorry
+      --unfold ProjObj.toProj at para
+      have h3 : Dir.toProj ray.2 = Vec_nd.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) := para.symm
+      have h4 : Vec_nd.toProj ray.2.toVec_nd = Vec_nd.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) := by
+        rw [← h3]
+        exact dir_toVec_nd_toProj_eq_dir_toProj ray.2
+      exact det_eq_zero_of_toProj_eq (⟨ray.2.1 , Dir.tovec_ne_zero ray.2⟩ : Vec_nd) (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) h4
     rw [h2] at h1
     rw [add_zero] at h1
     exact h1.symm
