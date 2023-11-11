@@ -176,16 +176,15 @@ protected def IsOn (a : P) (seg_nd : Seg_nd P) : Prop := Seg.IsOn a seg_nd.1
 
 protected def IsInt (a : P) (seg_nd : Seg_nd P) : Prop := Seg.IsInt a seg_nd.1
 
+
 protected def carrier (seg_nd : Seg_nd P) : Set P := { p : P | Seg_nd.IsOn p seg_nd }
 
 protected def interior (seg_nd : Seg_nd P) : Set P := { p : P | Seg.IsInt p seg_nd }
 
-instance : Carrier P (Seg_nd P) where
-  carrier := fun l => l.carrier
-
-instance : Interior P (Seg_nd P) where
-  interior := fun l => l.interior
-
+instance : IntFig Seg_nd where
+  carrier := Seg_nd.carrier
+  interior := Seg_nd.interior
+  interior_subset_carrier := fun _ [EuclideanPlane _] _ _ => And.left
 
 end Seg_nd
 
@@ -283,9 +282,13 @@ theorem Seg_nd.lies_on_toRay_of_lies_on {p : P} (h : p LiesOn seg_nd) : p LiesOn
   exact congrArg (HMul.hMul _) seg_nd.toVec_nd.self_eq_norm_smul_todir
 
 /-- For a nondegenerate segment $segnd$, every point of the interior of the $segnd$ lies in the interior of the ray associated to the $segnd$. -/
-theorem Seg_nd.lies_int_toRay_of_lies_int {p : P} (h : p LiesInt seg_nd) : p LiesInt seg_nd.toRay :=
+theorem Seg_nd.lies_int_toray_of_lies_int {p : P} (h : p LiesInt seg_nd.1) : p LiesInt seg_nd.toRay :=
   ⟨Seg_nd.lies_on_toRay_of_lies_on h.1, h.2.1⟩
-  exact Seg_nd.lies_on_toray_of_lies_on Seg.target_lies_on
+
+/-- Given two distinct points $A$ and $B$, $B$ lies on the ray $AB$. -/
+theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
+  show B LiesOn (SEG_nd A B h).toRay
+  exact Seg_nd.lies_on_toRay_of_lies_on Seg.target_lies_on
 
 end lieson
 
