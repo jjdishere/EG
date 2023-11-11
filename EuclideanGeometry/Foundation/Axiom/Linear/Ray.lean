@@ -264,10 +264,9 @@ theorem Seg.lies_int_iff (p : P) : p LiesInt seg ↔ seg.is_nd ∧ ∃ (t : ℝ)
         · simp only [Seg.toVec, ← ne_iff_vec_ne_zero]
           exact nd
 
-theorem Seg_nd.lies_int_iff (p : P) : p LiesInt seg_nd ↔ ∃ (t : ℝ) , 0 < t ∧ t < 1 ∧ VEC seg_nd.source p = t • seg_nd.1.toVec := by
-  have h : p LiesInt seg_nd ↔ seg_nd.1.is_nd ∧ ∃ (t : ℝ) , 0 < t ∧ t < 1 ∧ VEC seg_nd.source p = t • seg_nd.1.toVec := by
-    exact seg_nd.1.lies_int_iff p
-  sorry
+theorem Seg_nd.lies_int_iff (p : P) : p LiesInt seg_nd ↔ seg_nd.1.is_nd ∧ ∃ (t : ℝ) , 0 < t ∧ t < 1 ∧ VEC seg_nd.source p = t • seg_nd.toVec_nd.1 := by
+  exact seg_nd.1.lies_int_iff p
+
 
 
 /-- For a ray, every point of the interior of the ray lies on the ray. -/
@@ -433,6 +432,9 @@ theorem Seg_nd.vec_midpt_target : VEC seg_nd.midpoint seg_nd.target = 1 / 2 * VE
 theorem Seg.vec_midpt_eq : VEC seg.1 seg.midpoint = VEC seg.midpoint seg.2 := by
   rw[seg.vec_source_midpt, seg.vec_midpt_target]
 
+theorem Seg_nd.vec_midpt_eq : VEC seg_nd.source seg_nd.midpoint = VEC seg_nd.midpoint seg_nd.target := by
+  exact seg_nd.1.vec_midpt_eq
+
 /-- Given a segment $AB$ and its midpoint P, the vector from $A$ to $P$ is same as the vector from $P$ to $B$ -/
 theorem Seg.vec_eq_of_eq_midpt (h : A = l.midpoint) : VEC l.1 A = VEC A l.2 := by
   rw [h]
@@ -508,6 +510,9 @@ theorem eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source (A : P) (l : Seg P
       exact (eq_add_of_sub_eq (mul_right_cancel₀ h0 h)).symm
     exact midpt_of_vector_from_source (by rw [ht, h]; norm_num)
 
+theorem Seg_nd_eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source (A : P) (l : Seg_nd P) : A = l.midpoint ↔ (A LiesOn l) ∧ (SEG l.source A).length = (SEG A l.target).length := by
+  exact eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source A l
+
 end midpoint
 
 section existence
@@ -517,13 +522,13 @@ theorem target_eq_vec_vadd_target_midpt (l : Seg P) : l.2 = (SEG l.1 (l.toVec +�
   midpt_of_same_vector_to_source_and_target (vadd_vsub l.toVec l.2).symm
 
 /-- Given a nondegenerate segment $AB$, B lies in the interior of the segment of $A(B + \overrightarrow{AB})$  -/
-theorem Seg_nd.target_lies_int_seg_source_vec_vadd_target (l : Seg_nd P) : l.1.2 LiesInt (SEG l.1.source (l.1.toVec +ᵥ l.1.2)) :=
+theorem Seg_nd.target_lies_int_seg_source_vec_vadd_target (l : Seg_nd P) : l.target LiesInt (SEG l.source (l.toVec_nd.1 +ᵥ l.target)) :=
   lies_int_of_eq_midpt (SEG_nd l.1.1 _ <| fun h ↦ l.2 <| tovec_eq_zero_of_deg.mpr <|
     zero_eq_bit0.mp ((vsub_eq_zero_iff_eq.mpr h).symm.trans <| vadd_vsub_assoc l.1.toVec l.1.2 l.1.1))
       (target_eq_vec_vadd_target_midpt l.1)
 
 /-- Archimedean property I : given a directed segment AB (with A ≠ B), then there exists a point P such that B lies on the directed segment AP and P ≠ B. -/
-theorem Seg_nd.exist_pt_beyond_pt (l : Seg_nd P) : (∃ q : P, l.1.target LiesInt (SEG l.1.source q)) :=
+theorem Seg_nd.exist_pt_beyond_pt (l : Seg_nd P) : (∃ q : P, l.target LiesInt (SEG l.source q)) :=
   ⟨l.1.toVec +ᵥ l.1.target, l.target_lies_int_seg_source_vec_vadd_target⟩
 
 /-- Archimedean property II: On an nontrivial directed segment, one can always find a point in its interior.  `This will be moved to later disccusion about midpoint of a segment, as the midpoint is a point in the interior of a nontrivial segment`
@@ -539,7 +544,7 @@ theorem Seg.nd_iff_exist_int_pt (l : Seg P) : (∃ (p : P), p LiesInt l) ↔ l.i
   ⟨fun ⟨_, b⟩ ↦ nd_of_exist_int_pt b, fun h ↦ ⟨l.midpoint, Seg_nd.midpt_lies_int ⟨l, h⟩⟩⟩
 
 /-- If a segment is nondegenerate, it contains an interior point -/
-theorem Seg_nd.exist_int_pt (l : Seg_nd P) : ∃ (p : P), p LiesInt l.1 := ⟨l.1.midpoint, midpt_lies_int l⟩
+theorem Seg_nd.exist_int_pt (l : Seg_nd P) : ∃ (p : P), p LiesInt l := ⟨l.midpoint, midpt_lies_int l⟩
 
 /-- A segment contains an interior point if and only if its length is positive -/
 theorem Seg.length_pos_iff_exist_int_pt (l : Seg P) : 0 < l.length ↔ (∃ (p : P), p LiesInt l) :=
