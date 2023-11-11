@@ -119,37 +119,51 @@ def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx
 /-- The non-degenerate diagonal from the second point and fourth point of a convex quadrilateral -/
 def diag_nd₂₄ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄
 
+/-- Two diagonals are not parallel to each other -/
+theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := by
+  have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
+  have k: qdr_cvx.IsConvex := convex
+  unfold Quadrilateral.IsConvex at k
+  simp only [ne_eq, h, not_false_eq_true, and_self, dite_true] at k
+  by_contra q
+  have r: qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := by exact q.symm
+  rw [diag_nd₁₃, diag_nd₂₄] at r
+  simp [r] at k
+
+/-- The intersection point of two diagonals -/
+def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.toLine qdr_cvx.diag_not_para
+
+/-- The interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals. -/
+theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄.1
+:= by
+  have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
+  have k: qdr_cvx.IsConvex := convex
+  unfold Quadrilateral.IsConvex at k
+  simp only [ne_eq, h, not_false_eq_true, and_self, dite_true] at k
+  have g: ¬ qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := Ne.symm qdr_cvx.diag_not_para
+  rw [diag_nd₁₃, diag_nd₂₄] at g
+  simp only [g, dite_true] at k
+  exact k
+
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
 theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := by
-  have h: qdr_cvx.IsConvex := convex
-  unfold Quadrilateral.IsConvex at h
-  by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
+  have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
+  have k: qdr_cvx.IsConvex := convex
+  unfold Quadrilateral.IsConvex at k
+  simp only [ne_eq, h, not_false_eq_true, and_self, dite_true] at k
+  have g: ¬ qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := Ne.symm qdr_cvx.diag_not_para
+  rw [diag_nd₁₃, diag_nd₂₄] at g
+  simp only [g, dite_true] at k
   sorry
-  simp only [k, dite_false] at h
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 2nd point to the 3rd point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₂₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := by
-  have h: qdr_cvx.IsConvex := convex
-  unfold Quadrilateral.IsConvex at h
-  by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
-  sorry
-  simp only [k, dite_false] at h
+theorem nd₂₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := by sorry
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 3rd point to the 4th point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₃₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₃ := by
-  have h: qdr_cvx.IsConvex := convex
-  unfold Quadrilateral.IsConvex at h
-  by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
-  sorry
-  simp only [k, dite_false] at h
+theorem nd₃₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₃ := by sorry
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 1st point to the 4th point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₁₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₁ := by
-  have h: qdr_cvx.IsConvex := convex
-  unfold Quadrilateral.IsConvex at h
-  by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
-  sorry
-  simp only [k, dite_false] at h
+theorem nd₁₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₁ := by sorry
 
 /-- The edge from the first point to the second point of a quadrilateral -/
 def edge_nd₁₂ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ (qdr_cvx.nd₁₂)
@@ -162,19 +176,6 @@ def edge_nd₃₄ : Seg_nd P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ (qdr_cv
 
 /-- The edge from the fourth point to the first point of a quadrilateral -/
 def edge_nd₁₄ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₄ (qdr_cvx.nd₁₄)
-
-/-- Two diagonals are not parallel to each other -/
-theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := sorry
-
-/-- The intersection point of two diagonals -/
-def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.toLine qdr_cvx.diag_not_para
-
-/-- The interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals. -/
-theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄.1
-:= by
-  constructor
-  sorry
-  sorry
 
 /-- Given a convex quadrilateral qdr_cvx, its 1st, 2nd and 3rd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₁ point₂}$ is not the same as the projective direction of the vector $\overrightarrow{point₁ point₃}$. -/
 theorem not_colinear₁₂₃ : ¬ colinear qdr_cvx.1.1 qdr_cvx.1.2 qdr_cvx.1.3 := sorry
