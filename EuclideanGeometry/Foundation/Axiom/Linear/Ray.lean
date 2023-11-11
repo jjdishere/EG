@@ -274,7 +274,7 @@ theorem Ray.lies_int_iff (p : P) : p LiesInt ray ↔ ∃ (t : ℝ) , 0 < t ∧ V
 theorem Ray.lies_int_def {p : P} : p LiesInt ray ↔ p LiesOn ray ∧ p ≠ ray.source := Iff.rfl
 
 /-- For a nondegenerate segment $AB$, every point of the segment $AB$ lies on the ray associated to $AB$.  -/
-theorem Seg_nd.lies_on_toRay_of_lies_on {p : P} (h : p LiesOn seg_nd) : p LiesOn seg_nd.toRay := by
+theorem Seg_nd.lies_on_toray_of_lies_on {p : P} (h : p LiesOn seg_nd) : p LiesOn seg_nd.toRay := by
   rcases h with ⟨t, ht0, _, h⟩
   refine' ⟨t * Vec.norm (VEC seg_nd.source seg_nd.target),
     mul_nonneg ht0 (Vec.norm_nonnegative (VEC seg_nd.source seg_nd.target)), _⟩
@@ -283,12 +283,12 @@ theorem Seg_nd.lies_on_toRay_of_lies_on {p : P} (h : p LiesOn seg_nd) : p LiesOn
 
 /-- For a nondegenerate segment $segnd$, every point of the interior of the $segnd$ lies in the interior of the ray associated to the $segnd$. -/
 theorem Seg_nd.lies_int_toray_of_lies_int {p : P} (h : p LiesInt seg_nd.1) : p LiesInt seg_nd.toRay :=
-  ⟨Seg_nd.lies_on_toRay_of_lies_on h.1, h.2.1⟩
+  ⟨Seg_nd.lies_on_toray_of_lies_on h.1, h.2.1⟩
 
 /-- Given two distinct points $A$ and $B$, $B$ lies on the ray $AB$. -/
 theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
   show B LiesOn (SEG_nd A B h).toRay
-  exact Seg_nd.lies_on_toRay_of_lies_on Seg.target_lies_on
+  exact Seg_nd.lies_on_toray_of_lies_on Seg.target_lies_on
 
 end lieson
 
