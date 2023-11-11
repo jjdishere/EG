@@ -5,11 +5,11 @@ namespace EuclidGeom
 
 open Line
 
-variable {P : Type _} [EuclideanPlane P] {α β γ : Type*} [LinearObj α] [LinearObj β] [LinearObj γ]
+variable {P : Type _} [EuclideanPlane P] {α β γ : Type*} [ProjObj α] [ProjObj β] [ProjObj γ]
   {l₁ : α} {l₂ : β} {l₃ : γ}
 
 def perpendicular (l₁ : α) (l₂ : β) : Prop :=
-  LinearObj.toProj l₁ = (LinearObj.toProj l₂).perp
+  ProjObj.toProj l₁ = (ProjObj.toProj l₂).perp
 
 scoped infix : 50 "IsPerpendicularTo" => perpendicular
 scoped infix : 50 "⟂" => perpendicular
@@ -18,7 +18,7 @@ namespace perpendicular
 
 @[simp]
 protected theorem irrefl (l : α) : ¬ (l ⟂ l) :=
-  fun h ↦ Proj.one_ne_I (mul_right_cancel ((one_mul (LinearObj.toProj l)).trans h))
+  fun h ↦ Proj.one_ne_I (mul_right_cancel ((one_mul (ProjObj.toProj l)).trans h))
 
 protected theorem symm (h : l₁ ⟂ l₂) : (l₂ ⟂ l₁) := by
   rw[perpendicular, Proj.perp, h, Proj.perp, ← mul_assoc , Proj.I_mul_I_eq_one_of_Proj, one_mul]
@@ -36,10 +36,10 @@ theorem perp_of_parallel_perp (h₁ : l₁ ∥ l₂) (h₂ : l₂ ⟂ l₃) : l�
 
 theorem perp_of_perp_parallel (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ∥ l₃) : l₁ ⟂ l₃ := h₁.trans (congrArg Proj.perp h₂)
 
-theorem toProj_ne_toProj_of_perp (h : l₁ ⟂ l₂) : LinearObj.toProj l₁ ≠ LinearObj.toProj l₂ :=
-  fun hp ↦ Proj.one_ne_I (mul_right_cancel (((one_mul (LinearObj.toProj l₂)).trans hp.symm).trans h))
+theorem toproj_ne_toproj_of_perp (h : l₁ ⟂ l₂) : ProjObj.toProj l₁ ≠ ProjObj.toProj l₂ :=
+  fun hp ↦ Proj.one_ne_I (mul_right_cancel (((one_mul (ProjObj.toProj l₂)).trans hp.symm).trans h))
 
-theorem not_parallel_of_perp (h : l₁ ⟂ l₂) : ¬ l₁ ∥ l₂ := toProj_ne_toProj_of_perp h
+theorem not_parallel_of_perp (h : l₁ ⟂ l₂) : ¬ l₁ ∥ l₂ := toproj_ne_toproj_of_perp h
 
 end Perpendicular_and_parallel
 
@@ -48,13 +48,13 @@ section Perpendicular_constructions
 def perp_line (A : P) (l : Line P) := Line.mk_pt_proj A (l.toProj.perp)
 
 @[simp]
-theorem toProj_of_perp_line_eq_toProj_perp (A : P) (l : Line P) : (perp_line A l).toProj = l.toProj.perp :=
+theorem toproj_of_perp_line_eq_toproj_perp (A : P) (l : Line P) : (perp_line A l).toProj = l.toProj.perp :=
   proj_eq_of_mk_pt_proj A l.toProj.perp
 
 theorem perp_foot_preparation (A : P) (l : Line P) : l.toProj ≠ (perp_line A l).toProj :=
-  Ne.trans_eq (perpendicular.irrefl l) (toProj_of_perp_line_eq_toProj_perp A l).symm
+  Ne.trans_eq (perpendicular.irrefl l) (toproj_of_perp_line_eq_toproj_perp A l).symm
 
-def perp_foot (A : P) (l : Line P) : P := Line.inx l (perp_line A l) (perp_foot_preparation A l).symm
+def perp_foot (A : P) (l : Line P) : P := Line.inx l (perp_line A l) (perp_foot_preparation A l)
 
 def dist_pt_line (A : P) (l : Line P) := Seg.length (SEG A (perp_foot A l))
 
@@ -65,7 +65,7 @@ theorem perp_foot_eq_self_iff_lies_on (A : P) (l : Line P) : perp_foot A l = A �
   fun h ↦ (inx_of_line_eq_inx _ ⟨h, (pt_lies_on_of_mk_pt_proj A (Proj.perp (Line.toProj l)))⟩).symm⟩
 
 theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on {A : P} {l : Line P} (h : ¬ A LiesOn l) : LIN A (perp_foot A l) ((perp_foot_eq_self_iff_lies_on A l).mp.mt h) = perp_line A l :=
-  eq_line_of_pt_pt_of_ne ((perp_foot_eq_self_iff_lies_on A l).mp.mt h) (pt_lies_on_of_mk_pt_proj A l.toProj.perp) (Line.inx_is_inx (perp_foot_preparation A l).symm).2
+  eq_line_of_pt_pt_of_ne ((perp_foot_eq_self_iff_lies_on A l).mp.mt h) (pt_lies_on_of_mk_pt_proj A l.toProj.perp) (Line.inx_is_inx (perp_foot_preparation A l)).2
 
 theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l :=
   triv_iff_length_eq_zero.symm.trans ((Eq.congr rfl rfl).trans (perp_foot_eq_self_iff_lies_on A l))

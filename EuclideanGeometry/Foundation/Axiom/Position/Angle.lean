@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Linear.Ray
+import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 
 noncomputable section
 namespace EuclidGeom
@@ -22,6 +22,11 @@ def mk_pt_pt_pt (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): Angle P where
 def mk_ray_pt (ray : Ray P) (A : P) (h : A ≠ ray.source ) : Angle P where
   start_ray := ray
   end_ray := Ray.mk_pt_pt ray.source A h
+  source_eq_source := rfl
+
+def mk_dirline_dirline (l₁ l₂ : DirLine P) (h : ¬ l₁ ∥ l₂) : Angle P where
+  start_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toline_of_not_para _ _ h) ) l₁ (Line.inx_lies_on_fst (DirLine.not_para_toline_of_not_para _ _ h))
+  end_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toline_of_not_para _ _ h) ) l₂ (Line.inx_lies_on_snd (DirLine.not_para_toline_of_not_para _ _ h))
   source_eq_source := rfl
 
 def value (A : Angle P): ℝ := Dir.angle (A.start_ray.toDir) (A.end_ray.toDir)
@@ -48,24 +53,59 @@ namespace Angle
 -- `should discuss this later, is there a better definition?` ite, dite is bitter to deal with
 /- `What does it mean to be LiesIn a angle? when the angle < 0`, for now it is defined as the smaller side. and when angle = π, it is defined as the left side -/
 
+protected def IsOn (p : P) (ang : Angle P) : Prop := by
+  by_cases p = ang.source
+  · exact True
+  · let ray := Ray.mk_pt_pt ang.source p h
+    let o₁ := Angle.mk ang.start_ray ray rfl
+    let o₂ := Angle.mk ray ang.end_ray (ang.3)
+    exact if ang.value ≥ 0 then (o₁.value ≥ 0 ∧ o₂.value ≥ 0) else (o₁.value ≤ 0 ∧ o₂.value ≤ 0)
+
 protected def IsInt (p : P) (ang : Angle P) : Prop := by
   by_cases p = ang.source
   · exact False
   · let ray := Ray.mk_pt_pt ang.source p h
     let o₁ := Angle.mk ang.start_ray ray rfl
     let o₂ := Angle.mk ray ang.end_ray (ang.3)
-    exact if ang.value > 0 then (o₁.value > 0 ∧ o₂.value > 0) else (o₁.value < 0 ∧ o₂.value < 0)
+    exact if ang.value ≥ 0 then (o₁.value > 0 ∧ o₂.value > 0) else (o₁.value < 0 ∧ o₂.value < 0)
+
+protected theorem ison_of_isint {A : P} {ang : Angle P} : Angle.IsInt A ang → Angle.IsOn A ang := by
+  unfold Angle.IsOn Angle.IsInt
+  intro g
+  by_cases A = ang.source
+  · simp only [h, ge_iff_le, dite_true]
+  · simp only [h, ge_iff_le, dite_false]
+    simp only [h, ge_iff_le, gt_iff_lt, dite_false] at g
+    by_cases f : 0 ≤ ang.value
+    simp only [f, ite_true] at *
+    constructor <;> linarith
+    simp only [f, ite_false, not_false_eq_true] at *
+    constructor <;> linarith
+
+
+protected def carrier (ang : Angle P) : Set P := { p : P | Angle.IsOn p ang}
 
 protected def interior (ang : Angle P) : Set P := { p : P | Angle.IsInt p ang }
 
-instance : Interior P (Angle P) where
-  interior := fun o => o.interior
+instance : Interior Angle where
+  interior := Angle.interior
+
+/-
+instance : IntFig Angle where
+  carrier := Angle.carrier
+  interior_subset_carrier _ _ := Angle.ison_of_isint
+-/
 
 end Angle
 
 theorem eq_end_ray_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁.end_ray = ang₂.end_ray := sorry
 
 theorem eq_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁ = ang₂ := Angle.ext ang₁ ang₂ h (eq_end_ray_of_eq_value_eq_start_ray h v)
+
+-- this section should talks about when different making methods make the same angle
+section mk_compatibility
+
+end mk_compatibility
 
 /- theorem - π < angle.value, angle.value ≤ π,  -/
 

@@ -141,7 +141,7 @@ end oriented_distance
 
 /- Positions of points on a line, ray, oriented segments. -/
 
-section point_to_ray
+section point_toray
 
 def Ray.sign (A : P) (ray : Ray P) : ℝ := Real.sign (odist A ray)
 
@@ -173,7 +173,7 @@ theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A r
 
 /- Relation of position of points on a ray and directed distance-/
 
-end point_to_ray
+end point_toray
 
 scoped infix : 50 "LiesOnLeft" => IsOnLeftSide
 scoped infix : 50 "LiesOnRight" => IsOnRightSide
@@ -203,12 +203,12 @@ theorem intersect_of_diff_sign (A B : P) (ray : Ray P) (signdiff : ¬ (ray.sign 
 end handside
 
 /- Position of two rays -/
-section ray_to_ray
+section ray_toray
 
 /- Statement of his theorem should change, since ray₀.source ≠ ray₂.source. -/
 theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < value_of_angle_of_two_ray_of_eq_source ray₀ ray₁ rfl) ∧ (value_of_angle_of_two_ray_of_eq_source ray₀ ray₁ rfl < value_of_angle_of_two_ray_of_eq_source ray₀ ray₂ sorry) ∧ (value_of_angle_of_two_ray_of_eq_source ray₀ ray₂ sorry < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
 
-end ray_to_ray
+end ray_toray
 
 
 
