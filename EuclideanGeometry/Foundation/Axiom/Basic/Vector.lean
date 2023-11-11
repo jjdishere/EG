@@ -79,11 +79,10 @@ def Vec_nd.norm (x : Vec_nd) := Complex.abs x
 
 theorem Vec_nd.norm_ne_zero (z : Vec_nd) : Vec_nd.norm z ≠ 0 := norm_ne_zero_iff.2 z.2
 
+theorem Vec_nd.norm_pos (z : Vec_nd) : Vec_nd.norm z > 0 := norm_pos_iff.2 z.2
+
 theorem Vec_nd.ne_zero_of_ne_zero_smul (z : Vec_nd) {t : ℝ} (h : t ≠ 0) : t • z.1 ≠ 0 := by
   simp only [ne_eq, smul_eq_zero, h, z.2, or_self, not_false_eq_true]
-
-theorem Vec_nd.ne_zero_of_neg (z : Vec_nd) : - z.1 ≠ 0 := by
-  simp only [ne_eq, neg_eq_zero, z.2, not_false_eq_true]
 
 @[simp]
 theorem fst_of_one_tovec_eq_one : (1 : Vec_nd).1 = 1 := rfl
@@ -556,6 +555,10 @@ theorem Dir.eq_toproj_iff' {x y : Dir} : x.toProj = y.toProj ↔ PM x y := by rw
 
 def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.toDir v : Proj)
 
+theorem dir_toVec_nd_toProj_eq_dir_toProj (u : Dir) : u.toVec_nd.toProj = u.toProj := by
+  nth_rw 2 [← Dir.tovec_nd_todir_eq_self u]
+  rfl
+
 -- Coincidence of toProj gives rise to important results, especially that two Vec_nd-s have the same toProj iff they are equal by taking a real (nonzero) scaler. We will prove this statement in the following section.
 
 section Vec_nd_toproj
@@ -859,6 +862,8 @@ theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : det u v = 0 ↔ (�
     simp only [smul_eq_mul] at e
     rcases e
     ring
+
+theorem det_eq_zero_of_toProj_eq (u v : Vec_nd) (toprojeq : Vec_nd.toProj u = v.toProj) : det u v = 0 := ((det_eq_zero_iff_eq_smul u.1 v.1 u.2).2) (smul_of_eq_toproj u v toprojeq)
 
 theorem det'_ne_zero_of_not_colinear {u v : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : det' u v ≠ 0 := by
   unfold det'
