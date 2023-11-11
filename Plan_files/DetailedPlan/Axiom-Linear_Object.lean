@@ -37,7 +37,7 @@ Ray.lean -- Define (directed) segments and rays
       Seg_nd.interior -- Given a (seg_nd : Seg_nd P), seg_nd.interior is the set of points in the interior of a seg_nd.
 
 
-  (coersion compatibility)`in Ray_ex.lean, need to rewrite comment`
+  (coercion compatibility)`in Ray_ex.lean, need to rewrite comment`
     Ray.source_lies_on -- Given a (ray : Ray P), the source ray.source ∈ ray.carrier.
     Seg.source_lies_on -- Given a (seg : Seg P), the source seg.source ∈ seg.carrier.
     Seg.target_lies_on -- Given a (seg : Seg P), the target seg.target ∈ seg.carrier.

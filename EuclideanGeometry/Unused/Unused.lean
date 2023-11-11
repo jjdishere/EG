@@ -197,7 +197,7 @@ theorem double_rev_eq_self  : seg.reverse.reverse = seg := sorry
 -- reversing the toDir does not change the property that a point lies on the directed segments.
 theorem IsOnDSeg_of_rev_of_IsOnDSeg (a : P) (lieson : a LiesOnDSeg seg) : a LiesOnDSeg seg.reverse := sorry
 
--- the operation of reversing the toDir commutes with coersion between directed segments and generalized directed segments.
+-- the operation of reversing the toDir commutes with coercion between directed segments and generalized directed segments.
 theorem DSeg.rev_toSeg_eq_toSeg_rev : seg.reverse.toSeg = (seg.toSeg).reverse := sorry
 
 -- theorem Seg.rev_toDSeg_eq_toDSeg_rev (nontriv : gseg.target ≠ gseg.source) : (gseg.reverse).toDSeg_of_nontriv (Seg.nontriv_of_rev_of_nontriv gseg nontriv) = (gseg.toDSeg_of_nontriv nontriv).reverse := sorry
