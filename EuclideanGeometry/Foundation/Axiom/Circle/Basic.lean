@@ -56,12 +56,13 @@ def IsOutside (p : P) (ω : Circle P) : Prop := ω.radius < (SEG ω.center p).le
 protected def carrier (ω : Circle P) : Set P := { p : P | Circle.IsOn p ω }
 
 protected def interior (ω : Circle P) : Set P := { p : P | Circle.IsInt p ω }
+--`Interior is NOT a subset of carrier`
 
-instance : Carrier P (Circle P) where
-  carrier := fun ω => ω.carrier
+instance : Fig Circle where
+  carrier := Circle.carrier
 
-instance : Interior P (Circle P) where
-  interior := fun ω => ω.interior
+instance : Interior Circle where
+  interior := Circle.interior
 
 end Circle
 

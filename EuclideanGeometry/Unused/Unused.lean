@@ -49,7 +49,7 @@ end Cartesian2dVectorSpace
 /-!
 section Pythagoras
 
-theorem Dir.inner_eq_zero_of_toProj_eq_toProj_perp (d₁ d₂ : Dir) (h : d₁.toProj.perp = d₂.toProj) : Vec.InnerProductSpace.Core.inner d₁.toVec d₂.toVec = 0 := by
+theorem Dir.inner_eq_zero_of_toproj_eq_toproj_perp (d₁ d₂ : Dir) (h : d₁.toProj.perp = d₂.toProj) : Vec.InnerProductSpace.Core.inner d₁.toVec d₂.toVec = 0 := by
   let h' := Quotient.exact h
   unfold HasEquiv.Equiv instHasEquiv PM.con PM at h'
   simp only [Con.rel_eq_coe, Con.rel_mk] at h'
@@ -67,9 +67,9 @@ theorem Dir.inner_eq_zero_of_toProj_eq_toProj_perp (d₁ d₂ : Dir) (h : d₁.t
     simp only [Complex.mul_re, Complex.mul_im, zero_mul, one_mul, zero_sub, zero_add, Prod.neg_mk, neg_neg, mul_neg]
     ring
 
-theorem inner_eq_zero_of_toProj_perp_eq_toProj (v₁ v₂ : Vec_nd) (h : v₁.toProj.perp = v₂.toProj) : Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 = 0 := by
-  rw [← Vec_nd.norm_smul_to_dir_eq_self v₁, ← Vec_nd.norm_smul_to_dir_eq_self v₂]
-  let g := Dir.inner_eq_zero_of_toProj_eq_toProj_perp (Vec_nd.toDir v₁) (Vec_nd.toDir v₂) h
+theorem inner_eq_zero_of_toproj_perp_eq_toproj (v₁ v₂ : Vec_nd) (h : v₁.toProj.perp = v₂.toProj) : Vec.InnerProductSpace.Core.inner v₁.1 v₂.1 = 0 := by
+  rw [← Vec_nd.norm_smul_todir_eq_self v₁, ← Vec_nd.norm_smul_todir_eq_self v₂]
+  let g := Dir.inner_eq_zero_of_toproj_eq_toproj_perp (Vec_nd.toDir v₁) (Vec_nd.toDir v₂) h
   unfold Vec.InnerProductSpace.Core at g
   simp only at g
   unfold Vec.InnerProductSpace.Core
@@ -86,9 +86,9 @@ end Pythagoras
 section Pythagoras
 
 theorem Pythagoras_of_ne_ne_perp' (P : Type _) [EuclideanPlane P] {A B C : P} (hab : B ≠ A) (hac : C ≠ A) (h : (Seg_nd.toProj ⟨SEG A B, hab⟩).perp = (Seg_nd.toProj ⟨SEG A C, hac⟩)) : (SEG A B).length ^ 2 + (SEG A C).length ^ 2 = (SEG B C).length ^ 2 := by
-  have i : Vec.InnerProductSpace.Core.inner (VEC A B) (VEC A C) = 0 := inner_eq_zero_of_toProj_perp_eq_toProj (Seg_nd.toVec_nd ⟨SEG A B, hab⟩) (Seg_nd.toVec_nd ⟨SEG A C, hac⟩) h
-  rw [Seg.length_sq_eq_inner_toVec_toVec (SEG A B), Seg.length_sq_eq_inner_toVec_toVec (SEG A C), Seg.length_sq_eq_inner_toVec_toVec (SEG B C)]
-  simp only [seg_toVec_eq_vec]
+  have i : Vec.InnerProductSpace.Core.inner (VEC A B) (VEC A C) = 0 := inner_eq_zero_of_toproj_perp_eq_toproj (Seg_nd.toVec_nd ⟨SEG A B, hab⟩) (Seg_nd.toVec_nd ⟨SEG A C, hac⟩) h
+  rw [Seg.length_sq_eq_inner_tovec_tovec (SEG A B), Seg.length_sq_eq_inner_tovec_tovec (SEG A C), Seg.length_sq_eq_inner_tovec_tovec (SEG B C)]
+  simp only [seg_tovec_eq_vec]
   rw [← vec_sub_vec A B C]
   unfold Vec.InnerProductSpace.Core at i
   simp only at i
@@ -166,9 +166,9 @@ instance {P : Type _} [EuclideanPlane P] : Coe (DSeg P) (Seg P) where
 
 -- theorems "if p LiesOnDSeg l, then p LiesOn l.toRay and p LiesOn l.toSeg"
 
--- theorem DSeg.pt_on_toRay_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toRay := sorry
+-- theorem DSeg.pt_on_toray_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toRay := sorry
 
-theorem DSeg.pt_on_toSeg_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toSeg := sorry
+theorem DSeg.pt_on_toseg_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toSeg := sorry
 
 -- mk method of DirSeg giving 2 distinct point
 def DSeg.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : DSeg P := sorry
@@ -198,7 +198,7 @@ theorem double_rev_eq_self  : seg.reverse.reverse = seg := sorry
 theorem IsOnDSeg_of_rev_of_IsOnDSeg (a : P) (lieson : a LiesOnDSeg seg) : a LiesOnDSeg seg.reverse := sorry
 
 -- the operation of reversing the toDir commutes with coercion between directed segments and generalized directed segments.
-theorem DSeg.rev_toSeg_eq_toSeg_rev : seg.reverse.toSeg = (seg.toSeg).reverse := sorry
+theorem DSeg.rev_toseg_eq_toseg_rev : seg.reverse.toSeg = (seg.toSeg).reverse := sorry
 
 -- theorem Seg.rev_toDSeg_eq_toDSeg_rev (nontriv : gseg.target ≠ gseg.source) : (gseg.reverse).toDSeg_of_nontriv (Seg.nontriv_of_rev_of_nontriv gseg nontriv) = (gseg.toDSeg_of_nontriv nontriv).reverse := sorry
 
