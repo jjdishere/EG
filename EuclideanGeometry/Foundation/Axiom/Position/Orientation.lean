@@ -121,7 +121,17 @@ theorem odist_eq_zero_iff_exist_real_vec_eq_smul (A : P) (ray : Ray P) : odist A
   apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) (Dir.tovec_ne_zero ray.2)).mpr
   exact e
 
-theorem odist_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist A ray = Real.sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by sorry
+theorem odist_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist A ray = Real.sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by
+  rw [odist,Angle.value]
+  have h0 : (Angle.mk_ray_pt ray A h).value = Vec_nd.angle ray.2.toVec_nd (VEC_nd ray.source A h) := by sorry
+  have h1 : ray.2.toVec_nd.1 = ray.2.1 := rfl
+  have h2 : (VEC_nd ray.source A h).1=VEC ray.source A := rfl
+  have h3 : Vec.norm (Dir.toVec_nd (ray.toDir)) = 1 := by apply Dir.norm_of_dir_tovec_eq_one
+  have h4 : (SEG ray.source A).length = Vec.norm (VEC_nd ray.source A h) := rfl
+  rw [← h1, ← h2, det_eq_sin_mul_norm_mul_norm ray.2.toVec_nd (VEC_nd ray.source A h),h3,h4,← h0]
+  ring_nf
+  rw [mul_comm]
+  rfl
 
 theorem wedge_eq_odist_mul_length (A B C : P) (aneb : B ≠ A) : (wedge A B C) = ((odist C (RAY A B aneb)) * (SEG A B).length) := by
   by_cases p : C ≠ A
