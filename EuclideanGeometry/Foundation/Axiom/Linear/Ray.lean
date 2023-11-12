@@ -5,9 +5,9 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Class
 # Segments and rays
 
 In this file, we define the class of segments, rays, and their coercions, as well as basic properties.  A more precise plan in terms of sections is as follows:
-(1) (definition) We define the corresponding classes: rays, segments, and nondegenerate segments.
-(2) (make) We define the make functions of rays, segments, and nondegenerate segments.
-(3) (coercion) We define the coercions among rays, segments, and nondegenerate segments, as well as coercions to directions, or projective directions.
+(1) (Definition) We define the corresponding classes: rays, segments, and nondegenerate segments.
+(2) (Make) We define the make functions of rays, segments, and nondegenerate segments.
+(3) (Coercion) We define the coercions among rays, segments, and nondegenerate segments, as well as coercions to directions, or projective directions.
 
 We give different ways to make a segment or a ray.
 
