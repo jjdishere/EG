@@ -1,6 +1,7 @@
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
+import Mathlib.Data.Real.Sign
 /-!
 # Standard Vector Space
 
@@ -78,11 +79,10 @@ def Vec_nd.norm (x : Vec_nd) := Complex.abs x
 
 theorem Vec_nd.norm_ne_zero (z : Vec_nd) : Vec_nd.norm z ≠ 0 := norm_ne_zero_iff.2 z.2
 
+theorem Vec_nd.norm_pos (z : Vec_nd) : Vec_nd.norm z > 0 := norm_pos_iff.2 z.2
+
 theorem Vec_nd.ne_zero_of_ne_zero_smul (z : Vec_nd) {t : ℝ} (h : t ≠ 0) : t • z.1 ≠ 0 := by
   simp only [ne_eq, smul_eq_zero, h, z.2, or_self, not_false_eq_true]
-
-theorem Vec_nd.ne_zero_of_neg (z : Vec_nd) : - z.1 ≠ 0 := by
-  simp only [ne_eq, neg_eq_zero, z.2, not_false_eq_true]
 
 @[simp]
 theorem fst_of_one_tovec_eq_one : (1 : Vec_nd).1 = 1 := rfl
@@ -341,6 +341,32 @@ theorem pos_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : ℝ) (hang₁ : (0 < 
   linarith [(@Int.cast_lt ℝ _ _ (0 : ℤ) k).1 (Eq.trans_lt (by norm_num) ((mul_lt_mul_left (Right.mul_pos zero_lt_two Real.pi_pos)).1 i₂)), (@Int.cast_lt ℝ _ _ k (1 : ℤ)).1 (Eq.trans_gt (id (Eq.symm (by norm_num))) ((mul_lt_mul_left (Right.mul_pos zero_lt_two Real.pi_pos)).1 i₁))]
   exact fun a => congrArg Real.cos a
 
+theorem neg_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : ℝ) (hang₁ : (-π < ang₁) ∧ (ang₁ < 0)) (hang₂ : (-π < ang₂) ∧ (ang₂ < 0)) : Real.cos ang₁ = Real.cos ang₂ ↔ ang₁ = ang₂ := by
+  let pos_ang₁ := -ang₁
+  let pos_ang₂ := -ang₂
+  have pos_hang₁ : (0 < pos_ang₁) ∧ (pos_ang₁ < π) := by
+    constructor
+    · simp
+      exact hang₁.2
+    simp
+    linarith [hang₁.1]
+  have pos_hang₂ : (0 < pos_ang₂) ∧ (pos_ang₂ < π) := by
+    constructor
+    · simp
+      exact hang₂.2
+    simp
+    linarith [hang₂.1]
+  constructor
+  intro k
+  have h : Real.cos pos_ang₁ = Real.cos pos_ang₂ := by
+    simp
+    exact k
+  have p : pos_ang₁ = pos_ang₂ := by
+    exact (pos_angle_eq_angle_iff_cos_eq_cos pos_ang₁ pos_ang₂ pos_hang₁ pos_hang₂).mp h
+  simp at p
+  exact p
+  exact fun a => congrArg Real.cos a
+
 section Make_angle_theorems
 
 @[simp]
@@ -528,6 +554,10 @@ theorem Dir.eq_toproj_iff (x y : Dir) : x.toProj = y.toProj ↔ x = y ∨ x = -y
 theorem Dir.eq_toproj_iff' {x y : Dir} : x.toProj = y.toProj ↔ PM x y := by rw [Dir.eq_toproj_iff, PM]
 
 def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.toDir v : Proj)
+
+theorem dir_toVec_nd_toProj_eq_dir_toProj (u : Dir) : u.toVec_nd.toProj = u.toProj := by
+  nth_rw 2 [← Dir.tovec_nd_todir_eq_self u]
+  rfl
 
 -- Coincidence of toProj gives rise to important results, especially that two Vec_nd-s have the same toProj iff they are equal by taking a real (nonzero) scaler. We will prove this statement in the following section.
 
@@ -832,6 +862,8 @@ theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : det u v = 0 ↔ (�
     simp only [smul_eq_mul] at e
     rcases e
     ring
+
+theorem det_eq_zero_of_toProj_eq (u v : Vec_nd) (toprojeq : Vec_nd.toProj u = v.toProj) : det u v = 0 := ((det_eq_zero_iff_eq_smul u.1 v.1 u.2).2) (smul_of_eq_toproj u v toprojeq)
 
 theorem det'_ne_zero_of_not_colinear {u v : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : det' u v ≠ 0 := by
   unfold det'
