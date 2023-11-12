@@ -24,7 +24,7 @@ variable {M₁ M₂ : P} {hm₁ : M₁ = (SEG B₁ C₁).midpoint} {hm₂ : M₂
 -- We have $A_1B_1 = A_2B_2$, $A_1C_1 = A_2C_2$, and $A_1M_1 = A_2M_2$.
 variable {h₁ : (SEG A₁ B₁).length = (SEG A₂ B₂).length} {h₂ : (SEG A₁ C₁).length = (SEG A₂ C₂).length} {h₃ : (SEG A₁ M₁).length = (SEG A₂ M₂).length}
 
-theorem Aref_Wernick_Exercise_1_1 : (▵ A₁ B₁ C₁).IsCongr (▵ A₂ B₂ C₂) := sorry
+theorem Aref_Wernick_Exercise_1_1 : (TRI_nd A₁ B₁ C₁ hnd₁) ≅ (TRI_nd A₂ B₂ C₂ hnd₂) := sorry
 
 end Aref_Wernick_Exercise_1_1
 

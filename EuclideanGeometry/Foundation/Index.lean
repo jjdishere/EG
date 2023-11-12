@@ -23,6 +23,7 @@ import EuclideanGeometry.Foundation.Axiom.Isometry.Rotation
 import EuclideanGeometry.Foundation.Axiom.Isometry.Translation_ex
 /- Axiom.Triangle -/
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
+import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_trash
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence' -- `to avoid ambiguous notation, use notation ≅, ≅ₐ`
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex

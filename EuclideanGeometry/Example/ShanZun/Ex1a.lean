@@ -15,6 +15,10 @@ Prove that $CD = 2 \cdot CE$. -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
 variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+-- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
+lemma a_ne_b : A ≠ B := sorry
+lemma b_ne_c : B ≠ C := sorry
+lemma c_ne_a : C ≠ A := sorry
 -- $D$ is a point in the extension of $AB$
 variable {D : P} {hd_1 : D LiesInt (SEG_nd A B (b_ne_a (hnd := hnd))).extension}
 -- We have $BD=AB$
@@ -23,7 +27,6 @@ variable {D : P} {hd_1 : D LiesInt (SEG_nd A B (b_ne_a (hnd := hnd))).extension}
 variable {E : P} {he : E = (SEG A B).midpoint}
 
 theorem Shan_Problem_1_3 : (SEG C D).length = 2 * (SEG C E).length := sorry
-
 end Shan_Problem_1_3
 
 namespace Shan_Problem_1_4
