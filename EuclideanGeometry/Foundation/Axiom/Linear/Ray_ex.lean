@@ -190,7 +190,7 @@ theorem lies_on_iff_lies_on_toray_and_rev_toray {A : P} {seg_nd : Seg_nd P} : A 
   simp only [Seg_nd.reverse,Seg.reverse] at h'
   have asumbvec : (a + b) • seg_nd.toDir.toVec_nd.1 = seg_nd.toVec_nd.1 := by
     simp only [Seg_nd.toVec_nd, Dir.toVec_nd]
-    rw[add_smul, ← h, ← vec_add_vec seg_nd.1.source A seg_nd.1.target, ← neg_vec seg_nd.1.target A, h', neg_neg]
+    rw[add_smul, ← h, ← vec_add_vec seg_nd.source A seg_nd.target, ← neg_vec seg_nd.target A, Seg_nd.source, Seg_nd.target, h', neg_neg]
   have asumbeqnorm : a + b = (Vec_nd.norm seg_nd.toVec_nd):=by
     rw [← Vec_nd.norm_smul_todir_eq_self seg_nd.toVec_nd] at asumbvec
     apply eq_of_smul_Vec_nd_eq_smul_Vec_nd asumbvec

@@ -2,7 +2,6 @@ import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
-import EuclideanGeometry.Foundation.Axiom.Basic.Vector_trash
 
 /- This file discuss the relative positions of points and rays on a plane. -/
 noncomputable section
