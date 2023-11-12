@@ -107,7 +107,7 @@ def Ray.mk_pt_pt (A B : P) (h : B ≠ A) : Ray P where
 /-- This is to abbreviate \verb|Ray.mk_pt_pt| into \verb|RAY|. -/
 scoped notation "RAY" => Ray.mk_pt_pt
 
-end Make
+end make
 
 
 section coersion
@@ -171,10 +171,10 @@ instance : Coe (Seg_nd P) (Seg P) where
   coe := fun x => x.1
 
 /-- Given a nondegenerate segment, this function returns the source of the segment. -/
-def Seg_nd.source (seg_nd : Seg_nd P) : P := seg_nd.1.source
+def source (seg_nd : Seg_nd P) : P := seg_nd.1.source
 
 /-- Given a nondegenerate segment, this function returns the target of the segment. -/
-def Seg_nd.target (seg_nd : Seg_nd P) : P := seg_nd.1.target
+def target (seg_nd : Seg_nd P) : P := seg_nd.1.target
 
 /-- Given a nondegenerate segment $AB$, this function returns the nondegenerate vector $\overrightarrow{AB}$. -/
 def toVec_nd (seg_nd : Seg_nd P) : Vec_nd := ⟨VEC seg_nd.source seg_nd.target, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩
@@ -249,7 +249,7 @@ theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B 
 theorem Ray.source_not_lies_int {ray : Ray P} : ¬ ray.source LiesInt ray := fun h ↦ h.2 rfl
 
 /-- For a ray, every point of the interior of the ray lies on the ray. -/
-theorem Ray.lies_on_of_lies_int {p : P} (h : p LiesInt ray) : p LiesOn ray := h.1
+theorem Ray.lies_on_of_lies_int {p : P} {ray : Ray P} (h : p LiesInt ray) : p LiesOn ray := h.1
 
 /-- Given a segment $AB$, the source $A$ of the segment lies on the segment. -/
 theorem Seg.source_lies_on {seg : Seg P} : seg.source LiesOn seg :=
