@@ -5,13 +5,12 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Class
 # Segments and rays
 
 In this file, we define the class of segments, rays, and their coercions, as well as basic properties.  A more precise plan in terms of sections is as follows:
-(1) (Definition) We define the corresponding classes: rays, segments, and nondegenerate segments.
-(2) (Make) We define the make functions of rays, segments, and nondegenerate segments.
-(3) (Coercion) We define the coercions among rays, segments, and nondegenerate segments, as well as coercions to directions, or projective directions.
+(1) (definition) We define the corresponding classes: rays, segments, and nondegenerate segments.
+(2) (make) We define the make functions of rays, segments, and nondegenerate segments.
+(3) (coercion) We define the coercions among rays, segments, and nondegenerate segments, as well as coercions to directions, or projective directions.
+(4) (coercion-compatibility) We discuss compatibility of coercion functions.
 
 We give different ways to make a segment or a ray.
-
-We discuss compatibility of the coercion functions.
 
 We introduce the concept of reversing a segment, that is to switch the start and end point of a segment.
 
@@ -53,18 +52,22 @@ We discuss the Archimedean property of a segment.
 noncomputable section
 namespace EuclidGeom
 
-section Definition
+section definition
 
 /-- A \emph{ray} consists of a pair of a point $P$ and a direction; it is the ray that starts at the point and extends in the given direction. -/
 @[ext]
 class Ray (P : Type _) [EuclideanPlane P] where
+  /-- returns the source of the ray. -/
   source : P
+  /-- returns the direction of the ray. -/
   toDir : Dir
 
 /-- A \emph{Segment} consists of a pair of points: the source and the target; it is the segment from the source to the target. (We allow the source and the target to be the same.) -/
 @[ext]
 class Seg (P : Type _) [EuclideanPlane P] where
+  /-- returns the source of the segment. -/
   source : P
+  /-- returns the target of the segment. -/
   target : P
 
 namespace Seg
@@ -77,17 +80,13 @@ end Seg
 /-- A \emph{nondegenerate segment} is a segment $AB$ that is nondegenerate, i.e. $A \neq B$. -/
 def Seg_nd (P : Type _) [EuclideanPlane P] := {seg : Seg P // seg.is_nd}
 
-def Seg_nd.source  (P : Type _) [EuclideanPlane P] (seg_nd : Seg_nd P):= seg_nd.1.source
 
-def Seg_nd.target  (P : Type _) [EuclideanPlane P] (seg_nd : Seg_nd P):= seg_nd.1.target
-
-end Definition
-
-
+end definition
 
 variable {P : Type _} [EuclideanPlane P]
 
-section Make
+
+section make
 
 /-- Given two points $A$ and $B$, this returns the segment with source $A$ and target $B$; it is an abbreviation of  \verb|Seg.mk|. -/
 scoped notation "SEG" => Seg.mk
@@ -111,8 +110,7 @@ scoped notation "RAY" => Ray.mk_pt_pt
 end Make
 
 
-
-section Coersion
+section coersion
 
 namespace Ray
 
@@ -132,6 +130,7 @@ protected def carrier (ray : Ray P) : Set P := { p : P | Ray.IsOn p ray }
 /-- Given a ray, its interior is the set of points that lie in the interior of the ray. -/
 protected def interior (ray : Ray P) : Set P := { p : P | Ray.IsInt p ray }
 
+/-- This is to register that a ray is an instance of a class of objects that we may speak of both carrier and interior (and that the interior is a subset of the carrier). -/
 instance : IntFig Ray where
   carrier := Ray.carrier
   interior := Ray.interior
@@ -157,6 +156,7 @@ protected def carrier (seg : Seg P) : Set P := { p : P | Seg.IsOn p seg }
 /-- Given a segment, this function returns the set of points that lie in the interior of the segment. -/
 protected def interior (seg : Seg P) : Set P := { p : P | Seg.IsInt p seg }
 
+/-- Instance \verb|IntFig Seg|: This is to register that a segment is an instance of a class of objects that we may speak of both carrier and interior (and that the interior is a subset of the carrier). -/
 instance : IntFig Seg where
   carrier := Seg.carrier
   interior := Seg.interior
@@ -170,11 +170,14 @@ namespace Seg_nd
 instance : Coe (Seg_nd P) (Seg P) where
   coe := fun x => x.1
 
-variable (seg_nd : Seg_nd P)
+/-- Given a nondegenerate segment, this function returns the source of the segment. -/
+def Seg_nd.source (seg_nd : Seg_nd P) : P := seg_nd.1.source
 
+/-- Given a nondegenerate segment, this function returns the target of the segment. -/
+def Seg_nd.target (seg_nd : Seg_nd P) : P := seg_nd.1.target
 
 /-- Given a nondegenerate segment $AB$, this function returns the nondegenerate vector $\overrightarrow{AB}$. -/
-def toVec_nd : Vec_nd := ⟨VEC seg_nd.source seg_nd.target, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩
+def toVec_nd (seg_nd : Seg_nd P) : Vec_nd := ⟨VEC seg_nd.source seg_nd.target, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩
 
 /-- Given a nondegenerate segment $AB$, this function returns the direction associated to the segment, defined by normalizing the nondegenerate vector $\overrightarrow{AB}$. -/
 def toDir (seg_nd : Seg_nd P) : Dir := Vec_nd.toDir seg_nd.toVec_nd
@@ -187,17 +190,19 @@ def toRay (seg_nd : Seg_nd P) : Ray P where
 /-- Given a nondegenerate segment $AB$, this function returns the projective direction  of $AB$, defined as the projective direction of the nondegenerate vector $\overrightarrow{AB}$.  -/
 def toProj (seg_nd : Seg_nd P) : Proj := (seg_nd.toVec_nd.toProj : Proj)
 
-/- We choose not to define IsOn IsInt of Seg_nd directly, since it can always be called by Seg.IsOn p seg_nd.1. And this will save us a lot of lemmas. But I leave the code here temporarily, in case of future changes.-/
-
+/-- Given a point $A$ and a nondegenerate segment $seg_nd$, this function returns whether $A$ lies on $seg_nd$, namely, whether it lies on the corresponding segment.-/
 protected def IsOn (a : P) (seg_nd : Seg_nd P) : Prop := Seg.IsOn a seg_nd.1
 
+/-- Given a point $A$ and a nondegenerate segment $seg_nd$, this function returns whether $A$ lies in the interior of $seg_nd$, namely, whether it lies in the interior of the corresponding segment. -/
 protected def IsInt (a : P) (seg_nd : Seg_nd P) : Prop := Seg.IsInt a seg_nd.1
 
-
+/-- Given a nondegenerate segment, this function returns the set of points that lie on the segment. -/
 protected def carrier (seg_nd : Seg_nd P) : Set P := { p : P | Seg_nd.IsOn p seg_nd }
 
+/-- Given a nondegenerate segment, this function returns the set of points that lie in the interior of the segment. -/
 protected def interior (seg_nd : Seg_nd P) : Set P := { p : P | Seg.IsInt p seg_nd }
 
+/-- This is to register that a nondegenerate segment is an instance of a class of objects that we may speak of both carrier and interior (and that the interior is a subset of the carrier). -/
 instance : IntFig Seg_nd where
   carrier := Seg_nd.carrier
   interior := Seg_nd.interior
@@ -205,11 +210,11 @@ instance : IntFig Seg_nd where
 
 end Seg_nd
 
-end Coersion
+end coersion
 
 
 
-section Coersion_compatibility
+section coersion_compatibility
 
 /-- Given a nondegenerate segment, the direction associated to the nondegenerate segment is the same as the direction associated to the ray associated to the nondegenerate segment. -/
 theorem Seg_nd.toDir_eq_toRay_toDir {seg_nd : Seg_nd P} : seg_nd.toDir = seg_nd.toRay.toDir := rfl
@@ -224,13 +229,13 @@ theorem seg_toVec_eq_vec (A B : P) : (SEG A B).toVec = VEC A B := rfl
 /-- Given a segment $AB$, $A$ is same as $B$ if and only if vector $\overrightarrow{AB}$ is zero  -/
 theorem toVec_eq_zero_of_deg (l : Seg P) : (l.target = l.source) ↔ l.toVec = 0 := by
   rw [Seg.toVec, Vec.mk_pt_pt, vsub_eq_zero_iff_eq]
-end Coersion_compatibility
+
+
+end coersion_compatibility
 
 
 
-section LiesOn_compatibility
-
-variable {seg : Seg P} {seg_nd : Seg_nd P} {ray : Ray P}
+section lieson_compatibility
 
 /-- Given a ray, the source of the ray lies on the ray. -/
 theorem Ray.source_lies_on {ray : Ray P} : ray.source LiesOn ray := ⟨0, by rfl, by rw [vec_same_eq_zero, zero_smul]⟩
@@ -245,7 +250,6 @@ theorem Ray.source_not_lies_int {ray : Ray P} : ¬ ray.source LiesInt ray := fun
 
 /-- For a ray, every point of the interior of the ray lies on the ray. -/
 theorem Ray.lies_on_of_lies_int {p : P} (h : p LiesInt ray) : p LiesOn ray := h.1
-
 
 /-- Given a segment $AB$, the source $A$ of the segment lies on the segment. -/
 theorem Seg.source_lies_on {seg : Seg P} : seg.source LiesOn seg :=
@@ -355,7 +359,7 @@ theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B 
   show B LiesOn (SEG_nd A B h).toRay
   exact Seg_nd.lies_on_toray_of_lies_on Seg.target_lies_on
 
-end LiesOn_compatibility
+end Lieson_compatibility
 
 
 /-- Given two distinct points $A$ and $B$, the direction of ray $AB$ is same as the negative direction of $BA$ -/
@@ -380,7 +384,7 @@ theorem Ray.pt_pt_eq_ray {ray : Ray P} {A : P} (h : A LiesInt ray) : RAY ray.1 A
 theorem Ray.source_int_toray_eq_ray {ray : Ray P} {A : P} {h : A LiesInt ray} : (SEG_nd ray.source A h.2).toRay = ray :=
   Ray.pt_pt_eq_ray h
 
-end Coersion_compatibility
+end coersion_compatibility
 
 /-- Given two points $A$ and $B$, the vector associated to the segment $AB$ is same as vector $\overrightarrow{AB}$. -/
 @[simp]
