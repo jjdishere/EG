@@ -117,18 +117,18 @@ namespace Ray
 /-- Given a ray, this function returns its projective direction; it is the projective direction of the direction of the ray.  -/
 def toProj (ray : Ray P) : Proj := (ray.toDir : Proj)
 
-/-- Given a point $A$ and a ray $ray$, this function returns whether $A$ lies on $ray$; here saying that $A$ lies on $ray$ means that the vector from the start point of the ray to $A$ is some nonnegative multiple of the direction vector of the ray. -/
-protected def IsOn (a : P) (ray : Ray P) : Prop :=
-  ∃ (t : ℝ), 0 ≤ t ∧ VEC ray.source a = t • ray.toDir.toVec
+/-- Given a point $X$ and a ray $ray$, this function returns whether $X$ lies on $ray$; here saying that $X$ lies on $ray$ means that the vector from the start point of the ray to $X$ is some nonnegative multiple of the direction vector of the ray. -/
+protected def IsOn (X : P) (ray : Ray P) : Prop :=
+  ∃ (t : ℝ), 0 ≤ t ∧ VEC ray.source X = t • ray.toDir.toVec
 
-/-- Given a point $A$ and a ray, this function returns whether the point lies in the interior of the ray; here saying that a point lies in the interior of a ray means that it lies on the ray and is not equal to the source of the ray. -/
-protected def IsInt (a : P) (ray : Ray P) : Prop := Ray.IsOn a ray ∧ a ≠ ray.source
+/-- Given a point $X$ and a ray, this function returns whether the point lies in the interior of the ray; here saying that a point lies in the interior of a ray means that it lies on the ray and is not equal to the source of the ray. -/
+protected def IsInt (X : P) (ray : Ray P) : Prop := Ray.IsOn X ray ∧ X ≠ ray.source
 
 /-- Given a ray, its carrier is the set of points that lie on the ray. -/
-protected def carrier (ray : Ray P) : Set P := { p : P | Ray.IsOn p ray }
+protected def carrier (ray : Ray P) : Set P := { X : P | Ray.IsOn X ray }
 
 /-- Given a ray, its interior is the set of points that lie in the interior of the ray. -/
-protected def interior (ray : Ray P) : Set P := { p : P | Ray.IsInt p ray }
+protected def interior (ray : Ray P) : Set P := { X : P | Ray.IsInt X ray }
 
 /-- This is to register that a ray is an instance of a class of objects that we may speak of both carrier and interior (and that the interior is a subset of the carrier). -/
 instance : IntFig Ray where
@@ -143,18 +143,18 @@ namespace Seg
 /-- Given a segment, this function returns the vector associated to the segment, that is, the vector from the source of the segment to the target of the segment. -/
 def toVec (seg : Seg P) : Vec := VEC seg.source seg.target
 
-/-- Given a point $A$ and a segment $seg$, this function returns whether $A$ lies on $seg$; here saying that $A$ lies on $seg$ means that the vector from the source of $seg$ to $A$ is a real multiple $t$ of the vector of $seg$ with $0 \leq t \leq 1$. -/
-protected def IsOn (a : P) (seg : Seg P) : Prop :=
-  ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ VEC seg.source a  = t • (VEC seg.source seg.target)
+/-- Given a point $X$ and a segment $seg$, this function returns whether $X$ lies on $seg$; here saying that $X$ lies on $seg$ means that the vector from the source of $seg$ to $X$ is a real multiple $t$ of the vector of $seg$ with $0 \leq t \leq 1$. -/
+protected def IsOn (X : P) (seg : Seg P) : Prop :=
+  ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ VEC seg.source X  = t • (VEC seg.source seg.target)
 
-/-- Given a point $A$ and a segment $seg$, this function returns whether $A$ lies in the interior of $seg$; here saying that $A$ lies in the interior of $seg$ means $A$ lies on $seg$ and is different from the source and the target of $seg$. -/
-protected def IsInt (a : P) (seg : Seg P) : Prop := Seg.IsOn a seg ∧ a ≠ seg.source ∧ a ≠ seg.target
+/-- Given a point $X$ and a segment $seg$, this function returns whether $X$ lies in the interior of $seg$; here saying that $X$ lies in the interior of $seg$ means $X$ lies on $seg$ and is different from the source and the target of $seg$. -/
+protected def IsInt (X : P) (seg : Seg P) : Prop := Seg.IsOn X seg ∧ X ≠ seg.source ∧ X ≠ seg.target
 
 /-- Given a segment, this function returns the set of points that lie on the segment. -/
-protected def carrier (seg : Seg P) : Set P := { p : P | Seg.IsOn p seg }
+protected def carrier (seg : Seg P) : Set P := { X : P | Seg.IsOn X seg }
 
 /-- Given a segment, this function returns the set of points that lie in the interior of the segment. -/
-protected def interior (seg : Seg P) : Set P := { p : P | Seg.IsInt p seg }
+protected def interior (seg : Seg P) : Set P := { X : P | Seg.IsInt X seg }
 
 /-- Instance \verb|IntFig Seg|: This is to register that a segment is an instance of a class of objects that we may speak of both carrier and interior (and that the interior is a subset of the carrier). -/
 instance : IntFig Seg where
@@ -191,16 +191,16 @@ def toRay (seg_nd : Seg_nd P) : Ray P where
 def toProj (seg_nd : Seg_nd P) : Proj := (seg_nd.toVec_nd.toProj : Proj)
 
 /-- Given a point $A$ and a nondegenerate segment $seg_nd$, this function returns whether $A$ lies on $seg_nd$, namely, whether it lies on the corresponding segment.-/
-protected def IsOn (a : P) (seg_nd : Seg_nd P) : Prop := Seg.IsOn a seg_nd.1
+protected def IsOn (X : P) (seg_nd : Seg_nd P) : Prop := Seg.IsOn X seg_nd.1
 
 /-- Given a point $A$ and a nondegenerate segment $seg_nd$, this function returns whether $A$ lies in the interior of $seg_nd$, namely, whether it lies in the interior of the corresponding segment. -/
-protected def IsInt (a : P) (seg_nd : Seg_nd P) : Prop := Seg.IsInt a seg_nd.1
+protected def IsInt (X : P) (seg_nd : Seg_nd P) : Prop := Seg.IsInt X seg_nd.1
 
 /-- Given a nondegenerate segment, this function returns the set of points that lie on the segment. -/
-protected def carrier (seg_nd : Seg_nd P) : Set P := { p : P | Seg_nd.IsOn p seg_nd }
+protected def carrier (seg_nd : Seg_nd P) : Set P := { X : P | Seg_nd.IsOn X seg_nd }
 
 /-- Given a nondegenerate segment, this function returns the set of points that lie in the interior of the segment. -/
-protected def interior (seg_nd : Seg_nd P) : Set P := { p : P | Seg.IsInt p seg_nd }
+protected def interior (seg_nd : Seg_nd P) : Set P := { X : P | Seg.IsInt X seg_nd }
 
 /-- This is to register that a nondegenerate segment is an instance of a class of objects that we may speak of both carrier and interior (and that the interior is a subset of the carrier). -/
 instance : IntFig Seg_nd where
@@ -227,9 +227,8 @@ theorem Seg_nd.toRay_toProj_eq_toProj {seg_nd : Seg_nd P} : seg_nd.toRay.toProj 
 theorem seg_toVec_eq_vec (A B : P) : (SEG A B).toVec = VEC A B := rfl
 
 /-- Given a segment $AB$, $A$ is same as $B$ if and only if vector $\overrightarrow{AB}$ is zero  -/
-theorem toVec_eq_zero_of_deg (l : Seg P) : (l.target = l.source) ↔ l.toVec = 0 := by
+theorem toVec_eq_zero_of_deg (seg : Seg P) : (seg.target = seg.source) ↔ seg.toVec = 0 := by
   rw [Seg.toVec, Vec.mk_pt_pt, vsub_eq_zero_iff_eq]
-
 
 end coersion_compatibility
 
@@ -237,19 +236,61 @@ end coersion_compatibility
 
 section lieson_compatibility
 
-/-- Given a ray, the source of the ray lies on the ray. -/
-theorem Ray.source_lies_on {ray : Ray P} : ray.source LiesOn ray := ⟨0, by rfl, by rw [vec_same_eq_zero, zero_smul]⟩
+/-- Given a ray, a point $X$ lies in the interior of the ray if and only if the vector from the source of the ray to $X$ is a positive multiple of the direction of ray. -/
+theorem Ray.lies_int_iff (X : P) (ray : Ray P): X LiesInt ray ↔ ∃ (t : ℝ) , 0 < t ∧ VEC ray.source X = t • ray.toDir.toVec := by
+  constructor
+  intro ⟨⟨t, tnonneg, ht⟩, ns⟩
+  · use t
+    constructor
+    · contrapose! ns
+      have : t = 0 := by linarith
+      rw [eq_iff_vec_eq_zero, ht, this, zero_smul]
+    · exact ht
+  · intro ⟨t, tpos, ht⟩
+    constructor
+    · exact ⟨t, by linarith, ht⟩
+    · rw [ne_iff_vec_ne_zero, ht, smul_ne_zero_iff]
+      exact ⟨by linarith, Dir.tovec_ne_zero ray.toDir⟩
 
-/-- Given two distinct points $A$ and $B$, $B$ lies on the ray $AB$. -/
-theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
-  show B LiesOn (SEG_nd A B h).toRay
-  exact Seg_nd.lies_on_toRay_of_lies_on Seg.target_lies_on
 
-/-- Given a ray, the source of the ray does not lie in the interior of the ray. -/
-theorem Ray.source_not_lies_int {ray : Ray P} : ¬ ray.source LiesInt ray := fun h ↦ h.2 rfl
+/-- For a segment $AB$, a point $X$ lies in the interior of $AB$ if and only if there exist a real number $t$ strictly between 0 and 1 satisfying the vector $\overrightarrow{AX}$ is same as $t \cdot \overrightarrow{AB}$. -/
+theorem Seg_nd.lies_int_iff (X : P) (seg_nd : Seg_nd P): X LiesInt seg_nd ↔ ∃ (t : ℝ) , 0 < t ∧ t < 1 ∧ VEC seg_nd.source X = t • seg_nd.toVec_nd.1 := by
+  constructor
+  · intro ⟨⟨t, tnonneg, tle1, ht⟩, ns, nt⟩
+    rw [ne_iff_vec_ne_zero] at ns nt
+    use t
+    constructor
+    · contrapose! ns
+      have : t = 0 := by linarith
+      rw [ht, this, zero_smul]
+    · constructor
+      · contrapose! nt
+        have : t = 1 := by linarith
+        simp [this] at ht
+        rw [← vec_sub_vec seg_nd.source]
+        exact sub_eq_zero_of_eq ht
+      · exact ht
+  · intro ⟨t, tpos, tlt1, ht⟩
+    constructor
+    · exact ⟨t, by linarith, by linarith, ht⟩
+    · constructor
+      · rw [ne_iff_vec_ne_zero]
 
-/-- For a ray, every point of the interior of the ray lies on the ray. -/
-theorem Ray.lies_on_of_lies_int {p : P} {ray : Ray P} (h : p LiesInt ray) : p LiesOn ray := h.1
+        ht, smul_ne_zero_iff]
+        constructor
+        · linarith
+        · rw [Seg.toVec, ← ne_iff_vec_ne_zero]
+          exact nd
+      · have : t • VEC seg_nd.source seg_nd.target - VEC seg_nd.source seg_nd.target = (t - 1) • VEC seg_nd.source seg_nd.target := by rw [sub_smul, one_smul]
+        rw [ne_iff_vec_ne_zero, ← vec_sub_vec seg_nd.source, ht, toVec, this, smul_ne_zero_iff]
+        constructor
+        · linarith
+        · simp only [Seg.toVec, ← ne_iff_vec_ne_zero]
+          exact nd
+
+
+theorem Seg.is_nd_of_pt_liesint {seg : Seg P} {X : P} (h : X LiesInt seg) : seg.is_nd := by sorry
+
 
 /-- Given a segment $AB$, the source $A$ of the segment lies on the segment. -/
 theorem Seg.source_lies_on {seg : Seg P} : seg.source LiesOn seg :=
@@ -265,85 +306,39 @@ theorem Seg.source_not_lies_int {seg : Seg P} : ¬ seg.source LiesInt seg := fun
 theorem Seg.target_not_lies_int {seg : Seg P} : ¬ seg.target LiesInt seg := fun h ↦ h.2.2 rfl
 
 /-- For a segment $AB$, every point of the interior of $AB$ lies on the segment $AB$. -/
-theorem Seg.lies_on_of_lies_int {p : P} (h : p LiesInt seg) : p LiesOn seg := h.1
+theorem Seg.lies_on_of_lies_int {X : P} {seg : Seg P} (h : X LiesInt seg) : X LiesOn seg := h.1
 
-theorem Seg_nd.source_lies_on : seg_nd.source LiesOn seg_nd := by
-  exact seg_nd.1.source_lies_on
+/-- Given a nondegenerate segment $AB$, the source $A$ of the segment lies on the segment. -/
+theorem Seg_nd.source_lies_on (seg_nd : Seg_nd P) : seg_nd.source LiesOn seg_nd := seg_nd.1.source_lies_on
 
-theorem Seg_nd.target_lies_on : seg_nd.target LiesOn seg_nd := by
-  exact seg_nd.1.target_lies_on
+/-- Given a nondegenerate segment $AB$, the target $B$ lies on the segment $AB$. -/
+theorem Seg_nd.target_lies_on (seg_nd : Seg_nd P) : seg_nd.target LiesOn seg_nd := seg_nd.1.target_lies_on
 
-theorem Seg_nd.source_not_lies_int : ¬ seg_nd.source LiesInt seg_nd := fun h ↦ h.2.1 rfl
+/-- Given a nondegenerate segment $AB$, the source $A$ does not belong to the interior of $AB$. -/
+theorem Seg_nd.source_not_lies_int (seg_nd : Seg_nd P) : ¬ seg_nd.source LiesInt seg_nd := fun h ↦ h.2.1 rfl
 
-theorem Seg_nd.target_not_lies_int : ¬ seg_nd.target LiesInt seg_nd := fun h ↦ h.2.2 rfl
+/-- Given a nondegenerate segment $AB$, the target $B$ does not belong to the interior of $AB$. -/
+theorem Seg_nd.target_not_lies_int (seg_nd : Seg_nd P) : ¬ seg_nd.target LiesInt seg_nd := fun h ↦ h.2.2 rfl
 
-theorem Seg_nd.lies_on_of_lies_int {p : P} (h : p LiesInt seg_nd) : p LiesOn seg_nd := h.1
+/-- For a nondegenerate segment $AB$, every point of the interior of $AB$ lies on the segment $AB$. -/
+theorem Seg_nd.lies_on_of_lies_int {p : P} {seg_nd : Seg_nd P} (h : p LiesInt seg_nd) : p LiesOn seg_nd := h.1
 
-/-- For a segment $AB$, a point P lies in the interior of $AB$ if and only if there exist a real number between 0 and 1 satisfying the vector $\overrightarrow{AP}$ is same as $t\overrightarrow{AB}$. -/
-theorem Seg.lies_int_iff (p : P) : p LiesInt seg ↔ seg.is_nd ∧ ∃ (t : ℝ) , 0 < t ∧ t < 1 ∧ VEC seg.1 p = t • seg.toVec := by
-  constructor
-  · intro ⟨⟨t, tnonneg, tle1, ht⟩, ns, nt⟩
-    rw [ne_iff_vec_ne_zero] at ns nt
-    constructor
-    · rw [Seg.is_nd]
-      contrapose! ns
-      rw [ns, vec_same_eq_zero,smul_zero] at ht
-      rw [ht]
-    · use t
-      constructor
-      · contrapose! ns
-        have : t = 0 := by linarith
-        rw [ht, this, zero_smul]
-      · constructor
-        · contrapose! nt
-          have : t = 1 := by linarith
-          rw [← vec_sub_vec seg.source, ht, this, one_smul, sub_self]
-        · exact ht
-  · intro ⟨nd, t, tpos, tlt1, ht⟩
-    constructor
-    · exact ⟨t, by linarith, by linarith, ht⟩
-    · constructor
-      · rw [ne_iff_vec_ne_zero,ht, smul_ne_zero_iff]
-        constructor
-        · linarith
-        · rw [Seg.toVec, ← ne_iff_vec_ne_zero]
-          exact nd
-      · have : t • VEC seg.source seg.target - VEC seg.source seg.target = (t - 1) • VEC seg.source seg.target := by rw [sub_smul, one_smul]
-        rw [ne_iff_vec_ne_zero, ← vec_sub_vec seg.source, ht, toVec, this, smul_ne_zero_iff]
-        constructor
-        · linarith
-        · simp only [Seg.toVec, ← ne_iff_vec_ne_zero]
-          exact nd
+/-- Given a ray, the source of the ray lies on the ray. -/
+theorem Ray.source_lies_on {ray : Ray P} : ray.source LiesOn ray := ⟨0, by rfl, by rw [vec_same_eq_zero, zero_smul]⟩
 
-theorem Seg_nd.lies_int_iff (p : P) : p LiesInt seg_nd ↔ seg_nd.1.is_nd ∧ ∃ (t : ℝ) , 0 < t ∧ t < 1 ∧ VEC seg_nd.source p = t • seg_nd.toVec_nd.1 := by
-  exact seg_nd.1.lies_int_iff p
-
-
+/-- Given a ray, the source of the ray does not lie in the interior of the ray. -/
+theorem Ray.source_not_lies_int {ray : Ray P} : ¬ ray.source LiesInt ray := fun h ↦ h.2 rfl
 
 /-- For a ray, every point of the interior of the ray lies on the ray. -/
-theorem Ray.lies_on_of_lies_int {p : P} (h : p LiesInt ray) : p LiesOn ray := h.1
+theorem Ray.lies_on_of_lies_int {A : P} {ray : Ray P} (h : A LiesInt ray) : A LiesOn ray := h.1
 
-/-- Given a ray, a point $A$ lies in the interior of the ray if and only if the vector from the source of the ray to $A$ is a positive multiple of the direction of ray. -/
-theorem Ray.lies_int_iff (p : P) : p LiesInt ray ↔ ∃ (t : ℝ) , 0 < t ∧ VEC ray.source p = t • ray.toDir.toVec := by
-  constructor
-  intro ⟨⟨t, tnonneg, ht⟩, ns⟩
-  · use t
-    constructor
-    · contrapose! ns
-      have : t = 0 := by linarith
-      rw [eq_iff_vec_eq_zero, ht, this, zero_smul]
-    · exact ht
-  · intro ⟨t, tpos, ht⟩
-    constructor
-    · exact ⟨t, by linarith, ht⟩
-    · rw [ne_iff_vec_ne_zero, ht, smul_ne_zero_iff]
-      exact ⟨by linarith, Dir.tovec_ne_zero ray.toDir⟩
 
 /-- Given a ray, a point lies in the interior of the ray if and only if it lies on the ray and is different from the source of ray -/
-theorem Ray.lies_int_def {p : P} : p LiesInt ray ↔ p LiesOn ray ∧ p ≠ ray.source := Iff.rfl
+theorem Ray.lies_int_def {p : P} {ray : Ray P} : p LiesInt ray ↔ p LiesOn ray ∧ p ≠ ray.source := Iff.rfl
+
 
 /-- For a nondegenerate segment $AB$, every point of the segment $AB$ lies on the ray associated to $AB$.  -/
-theorem Seg_nd.lies_on_toray_of_lies_on {p : P} (h : p LiesOn seg_nd) : p LiesOn seg_nd.toRay := by
+theorem Seg_nd.lies_on_toray_of_lies_on {X : P} {seg_nd : Seg_nd P} (h : X LiesOn seg_nd) : X LiesOn seg_nd.toRay := by
   rcases h with ⟨t, ht0, _, h⟩
   refine' ⟨t * Vec.norm (VEC seg_nd.source seg_nd.target),
     mul_nonneg ht0 (Vec.norm_nonnegative (VEC seg_nd.source seg_nd.target)), _⟩
@@ -353,6 +348,19 @@ theorem Seg_nd.lies_on_toray_of_lies_on {p : P} (h : p LiesOn seg_nd) : p LiesOn
 /-- For a nondegenerate segment $segnd$, every point of the interior of the $segnd$ lies in the interior of the ray associated to the $segnd$. -/
 theorem Seg_nd.lies_int_toray_of_lies_int {p : P} (h : p LiesInt seg_nd) : p LiesInt seg_nd.toRay :=
   ⟨Seg_nd.lies_on_toray_of_lies_on h.1, h.2.1⟩
+
+/-- Given two distinct points $A$ and $B$, $B$ lies on the ray $AB$. -/
+theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
+  show B LiesOn (SEG_nd A B h).toRay
+  exact Seg_nd.lies_on_toRay_of_lies_on Seg.target_lies_on
+
+
+/-- For a ray, every point of the interior of the ray lies on the ray. -/
+theorem Ray.lies_on_of_lies_int {p : P} {ray : Ray P} (h : p LiesInt ray) : p LiesOn ray := h.1
+
+
+
+
 
 /-- Given two distinct points $A$ and $B$, $B$ lies on the ray $AB$. -/
 theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
