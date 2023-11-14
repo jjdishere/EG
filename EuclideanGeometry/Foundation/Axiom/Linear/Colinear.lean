@@ -67,6 +67,7 @@ theorem colinear_iff_eq_smul_vec_of_ne {A B C : P} (g : B ≠ A) : colinear A B 
   · intro ⟨_, e⟩
     exact colinear_of_vec_eq_smul_vec e
 
+
 -- Please rewrite this part, use minimal theorems, but create a tactic called `colinearity`
 /-- For any two points $A$ and $C$, the points $A$, $A$, $C$ are colinear. -/
 theorem triv_colinear (A C : P) : (colinear A A C) := by
