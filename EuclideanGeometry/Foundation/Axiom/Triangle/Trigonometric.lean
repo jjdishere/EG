@@ -93,6 +93,8 @@ theorem Pythagoras_of_right_triangle_non_trivial (A B C : P) {hnd : ¬ colinear 
   rw [h] at eq
   linarith
 
+theorem Pythagoras_of_tr_nd (tr_nd : Triangle_nd P) (h : tr_nd.angle₁.value = π / 2 ∨ tr_nd.angle₁.value =- π /2) : tr_nd.edge₂.length ^ 2 + tr_nd.edge₃.length ^ 2 = tr_nd.edge₁.length ^2 := sorry
+
 end Pythagoras
 
 end EuclidGeom
