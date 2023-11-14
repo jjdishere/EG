@@ -58,7 +58,7 @@ class DirObj (β : Type _) extends ProjObj β where
   toDir : β → Dir
   todir_toproj_eq_toproj : ∀ {G : β}, (toDir G).toProj = toProj G
 
-class DirFig (α : (P : Type _) → [ EuclideanPlane P] → Type _) extends ProjFig α where
+class DirFig (α : (P : Type _) → [EuclideanPlane P] → Type _) extends ProjFig α where
   toDir' : {P : Type _} → [EuclideanPlane P] → α P → Dir
   toDirLine : {P : Type _} → [EuclideanPlane P] → α P → DirLine P
   todir_toproj_eq_toproj : ∀ {P : Type _} [EuclideanPlane P] {F : α P}, (toDir' F).toProj = toProj' F
