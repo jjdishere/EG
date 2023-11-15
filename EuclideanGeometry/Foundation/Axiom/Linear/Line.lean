@@ -570,7 +570,7 @@ theorem ray_subset_line {r : Ray P} {l : Line P} (h : r.toLine = l) : r.carrier 
   rw [← h]
   exact r.subset_toline
 
-theorem seg_lies_on_line {s : Seg_nd P} {A : P} (h : A LiesOn s.1) : A LiesOn s.toLine :=
+theorem seg_lies_on_line {s : Seg_nd P} {A : P} (h : A LiesOn s) : A LiesOn s.toLine :=
   Set.mem_of_subset_of_mem (ray_subset_line rfl) (Seg_nd.lies_on_toray_of_lies_on h)
 
 theorem Seg_nd.subset_toline : s.carrier ⊆ s.toLine.carrier := fun _ ↦ seg_lies_on_line
@@ -781,7 +781,7 @@ theorem pt_pt_maximal {A B C : P} (h : B ≠ A) (Co : colinear A B C) : C LiesOn
     rw [hcb]
     exact snd_pt_lies_on_mk_pt_pt h
   else (lies_on_iff_eq_toproj_of_lies_on hcb (snd_pt_lies_on_mk_pt_pt h)).mpr <|
-    (toProj_eq_of_colinear hcb h.symm (perm_colinear Co)).trans <|
+    (toProj_eq_of_colinear hcb h.symm (perm_colinear_snd_trd_fst Co)).trans <|
       congrArg Line.toProj (line_of_pt_pt_eq_rev h).symm
 
 theorem maximal {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h : B ≠ A) (Co : colinear A B C) : C LiesOn l := by

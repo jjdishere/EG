@@ -114,13 +114,14 @@ theorem flip_colinear_fst_snd {A B C : P} (c : colinear A B C) : colinear B A C 
       rw [← vec_sub_vec A B C, e, ← neg_vec A B, smul_neg, sub_smul, neg_sub, one_smul]
     exact colinear_of_vec_eq_smul_vec e'
 
-theorem perm_colinear {A B C : P} (h : colinear A B C) : colinear B C A :=
+theorem perm_colinear_snd_trd_fst {A B C : P} (h : colinear A B C) : colinear B C A :=
   flip_colinear_snd_trd (flip_colinear_fst_snd h)
 
-theorem perm_colinear' {A B C : P} (h : colinear A B C) : colinear C A B := perm_colinear (perm_colinear h)
+theorem perm_colinear_trd_fst_snd {A B C : P} (h : colinear A B C) : colinear C A B :=
+  perm_colinear_snd_trd_fst (perm_colinear_snd_trd_fst h)
 
 theorem flip_colinear_fst_trd {A B C : P} (h : colinear A B C) : colinear C B A :=
-  perm_colinear (flip_colinear_snd_trd h)
+  perm_colinear_snd_trd_fst (flip_colinear_snd_trd h)
 
 -- the proof of this theorem using def of line seems to be easier
 /-- Given four points $A$, $B$, $C$, $D$ with $B \neq A$, if $A$, $B$, $C$ are colinear, and if $A$, $B$, $D$ are colinear, then $A$, $C$, $D$ are colinear. -/
