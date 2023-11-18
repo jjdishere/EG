@@ -58,7 +58,7 @@ class DirObj (β : Type _) extends ProjObj β where
   toDir : β → Dir
   todir_toproj_eq_toproj : ∀ {G : β}, (toDir G).toProj = toProj G
 
-class DirFig (α : (P : Type _) → [ EuclideanPlane P] → Type _) extends ProjFig α where
+class DirFig (α : (P : Type _) → [EuclideanPlane P] → Type _) extends ProjFig α where
   toDir' : {P : Type _} → [EuclideanPlane P] → α P → Dir
   toDirLine : {P : Type _} → [EuclideanPlane P] → α P → DirLine P
   todir_toproj_eq_toproj : ∀ {P : Type _} [EuclideanPlane P] {F : α P}, (toDir' F).toProj = toProj' F
@@ -98,14 +98,14 @@ instance : ProjObj Proj where
   toProj := id
 
 instance : LinFig Seg where
-  colinear' := sorry
+  colinear' := Seg.colinear_of_lies_on
 
 instance : DirFig Seg_nd where
-  carrier := fun s => s.1.carrier -- can be rewrite to `Seg_nd.carrier` soon
-  colinear' := sorry
+  carrier s := s.carrier
+  colinear' := Seg.colinear_of_lies_on
   toProj' := Seg_nd.toProj
   toLine := Seg_nd.toLine
-  carrier_subset_toline := sorry
+  carrier_subset_toline _ _ {s} := s.subset_toline
   toline_toproj_eq_toproj := rfl
   toDir' := Seg_nd.toDir
   toDirLine := Seg_nd.toDirLine
@@ -114,7 +114,7 @@ instance : DirFig Seg_nd where
 
 instance : DirFig Ray where
   carrier := Ray.carrier
-  colinear' := sorry
+  colinear' := Ray.colinear_of_lies_on
   toProj' := Ray.toProj
   toLine := Ray.toLine
   carrier_subset_toline := Or.inl
@@ -148,9 +148,13 @@ end instances
 
 section theorems
 
-theorem carrier_toproj_eq_toproj {P : Type _} [EuclideanPlane P] {A B : P} [ProjFig α] {F : α P} (h : B ≠ A) : A LiesOn F → B LiesOn F → (SEG_nd A B h).toProj = toProj' F := sorry
+open Line
 
-theorem line_of_pt_toproj_eq_to_line {P : Type _} [EuclideanPlane P] {A : P} [ProjFig α] {F : α P} (h : A LiesOn F) : Line.mk_pt_proj A (toProj F) = toLine F := sorry
+theorem carrier_toproj_eq_toproj {P : Type _} [EuclideanPlane P] {A B : P} [ProjFig α] {F : α P} (h : B ≠ A) (ha : A LiesOn F) (hb : B LiesOn F) : (SEG_nd A B h).toProj = toProj' F :=
+  (toproj_eq_seg_nd_toproj_of_lies_on (carrier_subset_toline ha) (carrier_subset_toline hb) h).trans toline_toproj_eq_toproj
+
+theorem line_of_pt_toproj_eq_to_line {P : Type _} [EuclideanPlane P] {A : P} [ProjFig α] {F : α P} (h : A LiesOn F) : Line.mk_pt_proj A (toProj F) = toLine F :=
+  mk_pt_proj_eq_of_eq_toproj (carrier_subset_toline h) toline_toproj_eq_toproj.symm
 
 end theorems
 

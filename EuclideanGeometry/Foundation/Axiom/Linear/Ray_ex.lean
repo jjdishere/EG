@@ -273,6 +273,10 @@ theorem lies_int_iff_lies_int_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.t
   fun ⟨hl, ne⟩ ↦ ⟨(lies_on_iff_lies_on_of_neg_todir h).mp hl, ne.symm⟩,
   fun ⟨hl, ne⟩ ↦ ⟨(lies_on_iff_lies_on_of_neg_todir h).mpr hl, ne.symm⟩⟩
 
+theorem Ray.lies_on_or_lies_on_rev_iff {A : P} {r : Ray P} : A LiesOn r ∨ A LiesOn r.reverse ↔ A LiesOn r.reverse ∨ A LiesOn r.reverse.reverse := by
+  rw [r.rev_rev_eq_self]
+  exact or_comm
+
 -- reversing the toDir does not change the length
 theorem length_eq_length_of_rev (seg : Seg P) : seg.length = seg.reverse.length := by
   unfold Seg.length
@@ -314,8 +318,7 @@ theorem ray_toproj_eq_mk_pt_pt_toproj {A B : P} {ray : Ray P} (h : B ≠ A) (ha 
     _ = ray.2.toVec_nd.toProj := congrArg Dir.toProj (Dir.dir_tovec_nd_todir_eq_self ray.2).symm
     _ = _ := eq_toproj_of_smul ray.2.toVec_nd ⟨VEC A B, (vsub_ne_zero.mpr h)⟩ heq
 
-theorem Ray.in_carrier_iff_lies_on {p : P} {r : Ray P} : p ∈ r.carrier ↔ p LiesOn r := by
-  rfl
+theorem Ray.in_carrier_iff_lies_on {p : P} {r : Ray P} : p ∈ r.carrier ↔ p LiesOn r := Iff.rfl
 
 theorem pt_lies_on_ray_iff_vec_same_dir {p : P} {r : Ray P} : p LiesOn r ↔ ∃t : ℝ, (t ≥ 0) ∧ VEC r.source p = t • r.toDir.toVec := by
   rw [← Ray.in_carrier_iff_lies_on, Ray.carrier, Set.mem_setOf, Ray.IsOn]

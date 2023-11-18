@@ -1,6 +1,7 @@
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
+import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence'
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
 import Mathlib.Data.Real.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
@@ -25,24 +26,22 @@ rcases Triangle_nd.edge_eq_edge_of_flip_vertices tri_nd with ⟨a, b, c⟩
 rcases Triangle_nd.angle_eq_neg_angle_of_flip_vertices tri_nd with ⟨x, y, z⟩
 constructor
 intro h0
-have h1 : tri_nd.1.edge₂.length = tri_nd.1.edge₃.length := by
+have h1 : tri_nd.edge₂.length = tri_nd.edge₃.length := by
   exact h0
-have h2 : tri_nd.1 IsACongrTo tri_nd.flip_vertices.1 := by
-  apply acongr_of_SAS
+have h2 : tri_nd ≅ₐ tri_nd.flip_vertices := by
+  apply Triangle_nd.acongr_of_SAS
   rw [← c, h1]
   rw [x]
   rw [← b, ← h1]
-rw [IsACongr.angle₂.value tri_nd tri_nd.flip_vertices,<-z]
-exact h2
+rw [h2.5,<-z]
 intro k0
-have k1 : tri_nd.1 IsACongrTo tri_nd.flip_vertices.1 := by
-  apply acongr_of_ASA
+have k1 : tri_nd ≅ₐ tri_nd.flip_vertices  := by
+  apply Triangle_nd.acongr_of_ASA
   rw [k0, z]
   exact a
   rw [← k0, y]
-have k2 := IsACongr.edge₂ tri_nd.1 tri_nd.flip_vertices.1
+have k2 := k1.2
 rw [← c] at k2
-specialize k2 k1
 exact k2
 
 namespace Triangle
@@ -114,14 +113,18 @@ have perm_isisocele₂ : tri_nd.perm_vertices.1.IsIsoceles := by
   apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mpr
   rw [a1, a2] at k1
   exact k1
-have k3 : tri_nd.1.edge₁.length = tri_nd.1.edge₂.length := by
+have k3 : tri_nd.edge₁.length = tri_nd.edge₂.length := by
   rw [b1, b2]
   exact perm_isisocele₂
 constructor
-exact k3
-rw [k3]
-apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mpr
-rw [← k1, ← k2]
+. exact k3
+have := Triangle.sine_rule₂ tri_nd
+rw [<-k2] at this
+simp only [mul_eq_mul_right_iff] at this
+rcases this with k4 | k5
+. exact k4
+. have nd := sine_ne_zero_of_nd tri_nd
+  exact b1
 
 -- An clockwise regular triangle has all angles being π/3
 
