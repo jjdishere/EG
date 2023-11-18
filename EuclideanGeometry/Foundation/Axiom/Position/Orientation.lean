@@ -162,6 +162,8 @@ def odist (A : P) [DirFig α] (l : α P) : ℝ := odist'' A (toDirLine l)
 
 theorem odist'_eq_odist (A : P) (ray : Ray P) : odist' A ray = odist A ray := sorry
 
+theorem odist''_reverse_eq_neg_odist'' (A : P) (dl : DirLine P) : odist'' A dl.reverse = - odist'' A dl := sorry
+
 end oriented_distance
 
 /- Positions of points on a line, ray, oriented segments. -/
