@@ -179,6 +179,23 @@ theorem DirLine.not_para_iff_not_para_toline (dirline dirline' : DirLine P) : ¬
 
 end parallel_iff_coercion_parallel
 
+section reverse
+
+variable {α β : (P : Type _) → [EuclideanPlane P] → Type _} [DirFig α] [DirFig β] {l₁ : α P} {l₂ : β P}
+
+theorem DirFig.para_rev_of_para (h : l₁ ∥ l₂) : l₁ ∥ reverse l₂ := sorry
+
+theorem DirFig.not_para_rev_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ l₁ ∥ reverse l₂ :=
+  fun hn ↦ h ((para_rev_of_para hn).trans (congrArg ProjObj.toProj (rev_rev l₂)))
+
+theorem Seg_nd.para_rev_of_para {s s' : Seg_nd P} (h : s ∥ s') :  s ∥ s'.reverse :=
+  DirFig.para_rev_of_para h
+
+theorem Seg_nd.not_para_rev_of_not_para {s s' : Seg_nd P} (h : ¬ s ∥ s') :  ¬ s ∥ s'.reverse :=
+  DirFig.not_para_rev_of_not_para h
+
+end reverse
+
 end coercion_theorem
 
 section intersection_of_line

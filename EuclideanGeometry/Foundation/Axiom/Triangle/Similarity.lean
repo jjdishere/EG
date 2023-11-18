@@ -54,7 +54,7 @@ theorem ratio₃ : h.ratio = tr₁.edge₃.length / tr₂.edge₃.length := sorr
 
 theorem ratio₂₃ : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length := sorry
 
-theorem ratio₃₂ : tr₁.edge₃.length / tr₁.edge₁.length = tr₂.edge₃.length / tr₂.edge₁.length := sorry
+theorem ratio₃₁ : tr₁.edge₃.length / tr₁.edge₁.length = tr₂.edge₃.length / tr₂.edge₁.length := sorry
 
 theorem ratio₁₂ : tr₁.edge₁.length / tr₁.edge₂.length = tr₂.edge₁.length / tr₂.edge₂.length := sorry
 
@@ -85,7 +85,7 @@ theorem ratio₃ : h.ratio = tr₁.edge₃.length / tr₂.edge₃.length := sorr
 
 theorem ratio₂₃ : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length := sorry
 
-theorem ratio₃₂ : tr₁.edge₃.length / tr₁.edge₁.length = tr₂.edge₃.length / tr₂.edge₁.length := sorry
+theorem ratio₃₁ : tr₁.edge₃.length / tr₁.edge₁.length = tr₂.edge₃.length / tr₂.edge₁.length := sorry
 
 theorem ratio₁₂ : tr₁.edge₁.length / tr₁.edge₂.length = tr₂.edge₁.length / tr₂.edge₂.length := sorry
 
