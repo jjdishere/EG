@@ -238,6 +238,24 @@ end oriented_area
 
 section cooperation_with_parallel
 
+theorem odist_eq_odist_of_parallel' (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (SEG_nd A B bnea) ray) : odist A ray =odist B ray := by
+  unfold odist
+  have h1 : det ray.2.1 (VEC ray.1 B) = det ray.2.1 (VEC ray.1 A) + det ray.2.1 (VEC A B) := by
+    rw [←vec_add_vec ray.1 A B]
+    rw [det_add_right_eq_add_det]
+  have h2 : det ray.2.1 (VEC A B) = 0 := by
+    unfold parallel at para
+    have h3 : Dir.toProj ray.2 = Vec_nd.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) := para.symm
+    have h4 : Vec_nd.toProj ray.2.toVec_nd = Vec_nd.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) := by
+      rw [← h3]
+      exact dir_toVec_nd_toProj_eq_dir_toProj ray.2
+    exact det_eq_zero_of_toProj_eq (⟨ray.2.1 , Dir.tovec_ne_zero ray.2⟩ : Vec_nd) (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) h4
+  rw [h2] at h1
+  rw [add_zero] at h1
+  exact h1.symm
+
+theorem odist_eq_odist_of_parallel (A B : P) [DirFig α] (df : α P) (bnea : B ≠ A) (para : parallel (Seg_nd.mk A B bnea) df) : odist A df = odist B df := sorry
+
 theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (Seg_nd.mk A B bnea) (Seg_nd.mk C D dnec)) ↔ wedge A B C = wedge A B D := sorry
 
 theorem odist_eq_odist_iff_parallel_ne (A B : P) [DirFig α] (df : α P) (bnea : B ≠ A) : (parallel (Seg_nd.mk A B bnea) df) ↔ odist A df = odist B df := sorry
@@ -252,23 +270,8 @@ scoped infix : 50 "LiesOnRight" => IsOnRightSide
 section handside
 
 theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (RAY A B bnea)  ray) : odist_sign A ray = odist_sign B ray := by
-  have h0 : odist A ray = odist B ray := by
-    unfold odist
-    have h1 : det ray.2.1 (VEC ray.1 B) = det ray.2.1 (VEC ray.1 A) + det ray.2.1 (VEC A B) := by
-      rw [←vec_add_vec ray.1 A B]
-      rw [det_add_right_eq_add_det]
-    have h2 : det ray.2.1 (VEC A B) = 0 := by
-      unfold parallel at para
-      have h3 : Dir.toProj ray.2 = Vec_nd.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) := para.symm
-      have h4 : Vec_nd.toProj ray.2.toVec_nd = Vec_nd.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) := by
-        rw [← h3]
-        exact dir_toVec_nd_toProj_eq_dir_toProj ray.2
-      exact det_eq_zero_of_toProj_eq (⟨ray.2.1 , Dir.tovec_ne_zero ray.2⟩ : Vec_nd) (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) h4
-    rw [h2] at h1
-    rw [add_zero] at h1
-    exact h1.symm
   unfold odist_sign
-  rw [h0]
+  rw [odist_eq_odist_of_parallel' A B ray bnea para]
 
 theorem same_odist_sign_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l = odist_sign B l) : ∀ (C : P) , Seg.IsOn C (SEG A B) → odist_sign C l = odist_sign A l := sorry
 
