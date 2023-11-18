@@ -63,6 +63,9 @@ class DirFig (α : (P : Type _) → [EuclideanPlane P] → Type _) extends ProjF
   toDirLine : {P : Type _} → [EuclideanPlane P] → α P → DirLine P
   todir_toproj_eq_toproj : ∀ {P : Type _} [EuclideanPlane P] {F : α P}, (toDir' F).toProj = toProj' F
   todirline_toline_eq_toline :  ∀ {P : Type _} [EuclideanPlane P] {F : α P}, (toDirLine F).toLine = toLine F
+  reverse : {P : Type _} → [EuclideanPlane P] → α P → α P
+  rev_rev : {P : Type _} → [EuclideanPlane P] → (F : α P) → (reverse (reverse F) = F)
+  todirline_rev_eq_to_rev_dirline : {P : Type _} → [EuclideanPlane P] → (F : α P) → ((toDirLine F).reverse = toDirLine (reverse F))
 
 section fig_to_obj
 variable {P : Type _} [EuclideanPlane P]
@@ -111,6 +114,9 @@ instance : DirFig Seg_nd where
   toDirLine := Seg_nd.toDirLine
   todir_toproj_eq_toproj := rfl
   todirline_toline_eq_toline := rfl
+  reverse := Seg_nd.reverse
+  rev_rev := Seg_nd.rev_rev_eq_self
+  todirline_rev_eq_to_rev_dirline := Seg_nd.todirline_rev_eq_rev_toline
 
 instance : DirFig Ray where
   carrier := Ray.carrier
@@ -123,6 +129,9 @@ instance : DirFig Ray where
   toDirLine := Ray.toDirLine
   todir_toproj_eq_toproj := rfl
   todirline_toline_eq_toline := rfl
+  reverse := Ray.reverse
+  rev_rev := Ray.rev_rev_eq_self
+  todirline_rev_eq_to_rev_dirline := Ray.todirline_rev_eq_rev_toline
 
 instance : DirFig DirLine where
   carrier := DirLine.carrier
@@ -135,6 +144,9 @@ instance : DirFig DirLine where
   toDirLine := id
   todir_toproj_eq_toproj := rfl
   todirline_toline_eq_toline := rfl
+  reverse := DirLine.reverse
+  rev_rev := DirLine.rev_rev_eq_self
+  todirline_rev_eq_to_rev_dirline := by simp only [id_eq, implies_true, forall_const]
 
 instance : ProjFig Line where
   carrier := Line.carrier
