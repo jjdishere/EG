@@ -259,7 +259,6 @@ theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : p
       rw [det_add_right_eq_add_det]
     have h2 : det ray.2.1 (VEC A B) = 0 := by
       unfold parallel at para
-      --unfold ProjObj.toProj at para
       have h3 : Dir.toProj ray.2 = Vec_nd.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) := para.symm
       have h4 : Vec_nd.toProj ray.2.toVec_nd = Vec_nd.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) := by
         rw [← h3]
@@ -270,6 +269,12 @@ theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : p
     exact h1.symm
   unfold odist_sign
   rw [h0]
+
+theorem same_odist_sign_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l = odist_sign B l) : ∀ (C : P) , Seg.IsOn C (SEG A B) → odist_sign C l = odist_sign A l := sorry
+
+theorem no_intersect_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l * odist_sign B l = 1) : ∀ (C : P) , Seg.IsOn C (SEG A B) → ¬ Line.IsOn C l := sorry
+
+theorem intersect_of_diff_odist_sign (A B : P) (l : DirLine P) (signdiff : odist_sign A l * odist_sign B l = -1) : ∃ (C : P), Seg.IsOn C (SEG A B) ∧ Line.IsOn C l := sorry
 
 end handside
 
