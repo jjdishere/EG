@@ -160,13 +160,15 @@ def odist'' (A : P) (dirline : DirLine P) : ℝ := Quotient.lift (s := same_dir_
 
 def odist (A : P) [DirFig α] (l : α P) : ℝ := odist'' A (toDirLine l)
 
+theorem odist'_eq_odist (A : P) (ray : Ray P) : odist' A ray = odist A ray := sorry
+
 end oriented_distance
 
 /- Positions of points on a line, ray, oriented segments. -/
 
 section point_toray
 
-def DirFig.sign (A : P) [DirFig α] (df : α P) : ℝ := by
+def odist_sign (A : P) [DirFig α] (df : α P) : ℝ := by
   by_cases 0 < odist A df
   · exact 1
   by_cases odist A df < 0
@@ -221,7 +223,7 @@ scoped infix : 50 "LiesOnRight" => IsOnRightSide
 
 section handside
 
-theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (RAY A B bnea)  ray) : DirFig.sign A ray = DirFig.sign B ray := by
+theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (RAY A B bnea)  ray) : odist_sign A ray = odist_sign B ray := by
   have h0 : odist A ray = odist B ray := by
     unfold odist
     have h1 : det ray.2.1 (VEC ray.1 B) = det ray.2.1 (VEC ray.1 A) + det ray.2.1 (VEC A B) := by
@@ -238,7 +240,7 @@ theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : p
     rw [h2] at h1
     rw [add_zero] at h1
     exact h1.symm
-  unfold DirFig.sign
+  unfold odist_sign
   rw [h0]
 
 end handside
