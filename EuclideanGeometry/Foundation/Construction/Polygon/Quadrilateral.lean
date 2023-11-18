@@ -134,6 +134,22 @@ theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := by
 /-- The intersection point of two diagonals -/
 def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.toLine qdr_cvx.diag_not_para
 
+/-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is convex. -/
+theorem permute_is_convex : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁) IsConvex := by
+  let permute := (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁)
+  unfold Quadrilateral.IsConvex
+  have h : qdr_cvx.point₂ ≠ qdr_cvx.point₄ ∧ qdr_cvx.point₃ ≠ qdr_cvx.point₁ := ⟨qdr_cvx.nd₂₄.symm, qdr_cvx.nd₁₃⟩
+  simp only [ne_eq, h, not_false_eq_true, and_self, dite_true]
+  have g: ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := qdr_cvx.diag_not_para
+  rw [diag_nd₁₃, diag_nd₂₄] at g
+  have g': ¬ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) ∥ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) := by
+    -- apply (Seg_nd.not_para_rev_of_not_para (seg_nd := (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ _)))
+    sorry
+  sorry
+
+  -- apply para_rev_of_para at g
+  -- simp only [g, dite_true]
+
 /-- The interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals. -/
 theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄.1
 := by
@@ -169,13 +185,25 @@ theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := by
   exact point₁_not_lies_int_diag_nd₁₃ point₁_lies_int_diag_nd₁₃
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 2nd point to the 3rd point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₂₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := by sorry
+theorem nd₂₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := by
+  let permute := (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁)
+  have h : permute IsConvex := permute_is_convex qdr_cvx
+  let permute_convex := mk_is_convex h
+  exact permute_convex.nd₁₂
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 3rd point to the 4th point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₃₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₃ := by sorry
+theorem nd₃₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₃ := by
+  let permute := (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁)
+  have h : permute IsConvex := permute_is_convex qdr_cvx
+  let permute_convex := mk_is_convex h
+  exact permute_convex.nd₂₃
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 1st point to the 4th point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₁₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₁ := by sorry
+theorem nd₁₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₁ := by
+  let permute := (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁)
+  have h : permute IsConvex := permute_is_convex qdr_cvx
+  let permute_convex := mk_is_convex h
+  exact permute_convex.nd₃₄.symm
 
 /-- The edge from the first point to the second point of a quadrilateral -/
 def edge_nd₁₂ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ (qdr_cvx.nd₁₂)
