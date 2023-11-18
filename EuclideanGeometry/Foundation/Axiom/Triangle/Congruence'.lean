@@ -105,7 +105,10 @@ instance instHasCongr : HasCongr (Triangle P) where
   symm := IsCongr.symm
   trans := IsCongr.trans
 
-theorem congr_iff_perm_congr (tr₁ tr₂ : Triangle P) : tr₁.IsCongr tr₂ ↔ (perm_vertices tr₁).IsCongr (perm_vertices tr₂) := by sorry
+theorem perm_congr {tr₁ tr₂ : Triangle P} (h : tr₁.IsCongr tr₂) : (perm_vertices tr₁).IsCongr (perm_vertices tr₂) := sorry
+
+theorem congr_iff_perm_congr (tr₁ tr₂ : Triangle P) : tr₁.IsCongr tr₂ ↔ (perm_vertices tr₁).IsCongr (perm_vertices tr₂) :=
+  ⟨fun h ↦ h.perm_congr, fun h ↦ h.perm_congr.perm_congr⟩
 
 -- The proof of this theorem will need to wait until the definition of area is completed.
 theorem area (h : tr₁.IsCongr tr₂) : tr₁.area = tr₂.area := sorry
@@ -200,7 +203,10 @@ instance instHasACongr : HasACongr (Triangle P) where
   acongr := IsACongr
   symm := IsACongr.symm
 
-theorem acongr_iff_perm_acongr (tr₁ tr₂ : Triangle P) : tr₁ ≅ₐ tr₂ ↔ perm_vertices tr₁ ≅ₐ perm_vertices tr₂ := by sorry
+theorem perm_acongr {tr₁ tr₂ : Triangle P} (h : tr₁.IsACongr tr₂) : (perm_vertices tr₁).IsACongr (perm_vertices tr₂) := sorry
+
+theorem acongr_iff_perm_acongr (tr₁ tr₂ : Triangle P) : tr₁.IsACongr tr₂ ↔ (perm_vertices tr₁).IsACongr (perm_vertices tr₂) :=
+  ⟨fun h ↦ h.perm_acongr, fun h ↦ h.perm_acongr.perm_acongr⟩
 
 end IsACongr
 
@@ -257,7 +263,10 @@ theorem is_cclock_of_cclock (h : tr_nd₁.IsCongr tr_nd₂) (cc : tr_nd₁.is_cc
 
 theorem area (h : tr_nd₁.IsCongr tr_nd₂) : tr_nd₁.area = tr_nd₂.area := sorry
 
-theorem congr_iff_perm_congr (tr_nd₁ tr_nd₂ : Triangle_nd P) : tr_nd₁ ≅ tr_nd₂ ↔ perm_vertices tr_nd₁ ≅ perm_vertices tr_nd₂ := by sorry
+theorem perm_congr {tr_nd₁ tr_nd₂ : Triangle_nd P} (h : tr_nd₁.IsCongr tr_nd₂) : (perm_vertices tr_nd₁).IsCongr (perm_vertices tr_nd₂) := sorry
+
+theorem congr_iff_perm_congr (tr_nd₁ tr_nd₂ : Triangle_nd P) : tr_nd₁ ≅ tr_nd₂ ↔ perm_vertices tr_nd₁ ≅ perm_vertices tr_nd₂ :=
+  ⟨fun h ↦ h.perm_congr, fun h ↦ h.perm_congr.perm_congr⟩
 
 end IsCongr
 
@@ -298,6 +307,11 @@ instance instHasACongr : HasACongr (Triangle_nd P) where
   acongr := IsACongr
   symm := IsACongr.symm
 
+theorem perm_acongr {tr_nd₁ tr_nd₂ : Triangle_nd P} (h : tr_nd₁.IsACongr tr_nd₂) : (perm_vertices tr_nd₁).IsACongr (perm_vertices tr_nd₂) := sorry
+
+theorem acongr_iff_perm_acongr (tr_nd₁ tr_nd₂ : Triangle_nd P) : tr_nd₁.IsACongr tr_nd₂ ↔ (perm_vertices tr_nd₁).IsACongr (perm_vertices tr_nd₂) :=
+  ⟨fun h ↦ h.perm_acongr, fun h ↦ h.perm_acongr.perm_acongr⟩
+
 end IsACongr
 
 theorem congr_of_acongr_acongr (h₁ : tr_nd₁.IsACongr tr_nd₂) (h₂ : tr_nd₂.IsACongr tr_nd₃) : tr_nd₁ ≅ tr_nd₃ := by
@@ -321,7 +335,6 @@ theorem acongr_of_acongr_congr (h₁ : tr_nd₁.IsACongr tr_nd₂) (h₂ : tr_nd
   simp only [h₁.5, h₂.5, neg_neg]
   simp only [h₁.6, h₂.6, neg_neg]
 
-theorem acongr_iff_perm_acongr (tr_nd₁ tr_nd₂ : Triangle_nd P) : tr_nd₁ ≅ₐ tr_nd₂ ↔ perm_vertices tr_nd₁ ≅ₐ perm_vertices tr_nd₂ := by sorry
 end Triangle_nd
 
 section compatibility
@@ -644,8 +657,8 @@ theorem acongr_of_ASA (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.valu
     . exact eq.symm
     have ne := sine_ne_zero_of_nd tr_nd₂
     exact (ne triv).elim
-  apply (acongr_iff_perm_acongr tr_nd₁ tr_nd₂).mpr
-  apply (acongr_iff_perm_acongr (perm_vertices tr_nd₁) (perm_vertices tr_nd₂)).mpr
+  apply (IsACongr.acongr_iff_perm_acongr tr_nd₁ tr_nd₂).mpr
+  apply (IsACongr.acongr_iff_perm_acongr (perm_vertices tr_nd₁) (perm_vertices tr_nd₂)).mpr
   apply acongr_of_SAS
   rw [<-(edge_eq_edge_of_perm_vertices (perm_vertices tr_nd₁)).1,<-(edge_eq_edge_of_perm_vertices tr_nd₁).2.2,<-(edge_eq_edge_of_perm_vertices (perm_vertices tr_nd₂)).1,<-(edge_eq_edge_of_perm_vertices tr_nd₂).2.2]
   exact e₃
@@ -666,7 +679,7 @@ theorem congr_of_AAS (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) 
   exact a₂
 
 theorem acongr_of_AAS (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁ ≅ₐ tr_nd₂ := by
-  apply (acongr_iff_perm_acongr tr_nd₁ tr_nd₂).mpr
+  apply (IsACongr.acongr_iff_perm_acongr tr_nd₁ tr_nd₂).mpr
   apply acongr_of_ASA
   rw [<-(angle_eq_angle_of_perm_vertices tr_nd₁).1,<-(angle_eq_angle_of_perm_vertices tr_nd₂).1]
   exact a₁

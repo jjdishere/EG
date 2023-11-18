@@ -14,15 +14,15 @@ variable {P : Type _} [EuclideanPlane P]
 section colinear
 
 /-- Given three distinct (ordered) points $A$, $B$, $C$, this function returns whether they are colinear, i.e. whether the projective direction of the vector $\overrightarrow{AB}$ is the same as the projective direction of the vector $\overrightarrow{AC}$. -/
-def colinear_of_nd {A B C : P} (h : ¬((C = B) ∨ (A = C) ∨ (B = A))): Prop := by
-  push_neg at h
-  exact Vec_nd.toProj ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp h.2.2⟩ = Vec_nd.toProj ⟨VEC A C, (ne_iff_vec_ne_zero _ _).mp h.2.1.symm⟩
+def colinear_of_nd {A B C : P} (hac : A ≠ C) (hba : B ≠ A) : Prop :=
+  Vec_nd.toProj ⟨VEC A B, (ne_iff_vec_ne_zero _ _).mp hba⟩ = Vec_nd.toProj ⟨VEC A C, (ne_iff_vec_ne_zero _ _).mp hac.symm⟩
 
 /-- Given three points $A$, $B$, $C$, return whether they are colinear: if at least two of them are equal, then they are considered colinear; if the three points are distinct, we use the earlier definition of colinarity for distinct points. -/
-def colinear (A B C : P) : Prop := by
-  by_cases (C = B) ∨ (A = C) ∨ (B = A)
-  · exact True
-  · exact colinear_of_nd h
+def colinear (A B C : P) : Prop :=
+  if h : (C = B) ∨ (A = C) ∨ (B = A) then True
+  else by
+    push_neg at h
+    exact colinear_of_nd h.2.1 h.2.2
 
 -- The definition of colinear now includes two cases: the degenerate case and the nondegenerate case. We use to_dir' to avoid problems involving using conditions of an "if" in its "then" and "else". And we only use VEC to define colinear.
 

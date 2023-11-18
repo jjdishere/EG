@@ -11,6 +11,8 @@ In this file, we define classes that will be used in Euclidean geometry. In this
 * `Interior` : The class of plane figures with interior, further equipped with a interior set.
 * `HasCongr` : The carrying class of the equivalent relation congruence.
 * `HasACongr` : The carrying class of the symmetric relation anti-congruence.
+* `HasSim` : The carrying class of the equivalent relation similarity.
+* `HasASimr` : The carrying class of the symmetric relation anti-similarity.
 
 ## Notations
 
@@ -20,12 +22,13 @@ In this file, we define classes that will be used in Euclidean geometry. In this
 * `InxWith` : The carriers of two figures have a common point.
 * `IsCongrTo`, `≅` : the notation for congruence relation
 * `IsACongrTo`, `≅ₐ` : the notation for anti-congruence relation
+* `IsSimTo`, `∼` : the notation for similarity relation
+* `IsASimTo`, `∼ₐ` : the notation for anti-similarity relation
 
 
 ## Further Works
 1. The property `concurrent` (maybe we should extend to an arbitary number of figures version), the class `Convex_2D` is defined, but not actually in use.
 2. Make `HasACongr` extends `HasCongr`, and requires transitivity relations between them in the class.
-3. Now `HasSim` `HasASim` `IsSimTo` `∼` `IsASimTo` `∼` are all defined in file Similarity. Bring them here and use classes.
 
 -/
 
@@ -124,5 +127,35 @@ instance (α : Type*) [HasACongr α] : IsSymm α HasACongr.acongr where
 scoped infix : 50 "≅ₐ" => HasACongr.acongr
 
 scoped infix : 50 "IsACongrTo" => HasACongr.acongr
+
+class HasSim (α : Type*) where
+  sim : α → α → Prop
+  refl : ∀ (a : α), sim a a
+  trans : ∀ {a b c : α}, sim a b → sim b c → sim a c
+  symm : ∀ {a b : α}, sim a b → sim b a
+
+instance (α : Type*) [HasSim α] : IsEquiv α HasSim.sim where
+  refl := HasSim.refl
+  trans _ _ _ := HasSim.trans
+  symm _ _ := HasSim.symm
+
+/-- The similarity relation is denoted by infix $\sim$.-/
+scoped infix : 50 "∼" => HasSim.sim
+
+/-- The similarity relation is denoted by infix "IsSimTo".-/
+scoped infix : 50 "IsSimTo" => HasSim.sim
+
+class HasASim (α : Type*) where
+  asim : α → α → Prop
+  symm : ∀ {a b : α}, asim a b → asim b a
+
+instance (α : Type*) [HasACongr α] : IsSymm α HasACongr.acongr where
+  symm _ _ := HasACongr.symm
+
+/-- The anti-similarity relation is denoted by infix $\sim_a$.-/
+scoped infix : 50 "∼ₐ" => HasASim.asim
+
+/-- The anti-similarity relation is denoted by infix "IsASimTo".-/
+scoped infix : 50 "IsASimTo" => HasASim.asim
 
 end EuclidGeom

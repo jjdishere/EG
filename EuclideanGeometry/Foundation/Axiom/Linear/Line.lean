@@ -891,4 +891,43 @@ end DirLine
 
 end Archimedean_property
 
+section dist
+
+namespace DirLine
+
+instance (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
+  vadd := sorry
+  zero_vadd := sorry
+  add_vadd := sorry
+  vsub := sorry
+  Nonempty := sorry
+  vsub_vadd' := sorry
+  vadd_vsub' := sorry
+  dist_eq_norm' := sorry
+
+def ddist {l : DirLine P} {A : P} {B : P} (ha : A LiesOn l) (hb : B LiesOn l) : ℝ :=
+  (⟨B, hb⟩ : l.carrier.Elem) -ᵥ ⟨A, ha⟩
+
+instance (l : DirLine P) : LinearOrder l.carrier.Elem where
+  le := sorry
+  lt := sorry
+  le_refl := sorry
+  le_trans := sorry
+  lt_iff_le_not_le := sorry
+  le_antisymm := sorry
+  min := sorry
+  max := sorry
+  compare := sorry
+  le_total := sorry
+  decidableLE := sorry
+  decidableEq := sorry
+  decidableLT := sorry
+  min_def := sorry
+  max_def := sorry
+  compare_eq_compareOfLessAndEq := sorry
+
+end DirLine
+
+end dist
+
 end EuclidGeom

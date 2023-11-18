@@ -68,6 +68,7 @@ class DirFig (α : (P : Type _) → [EuclideanPlane P] → Type _) extends ProjF
   todirline_rev_eq_to_rev_dirline : {P : Type _} → [EuclideanPlane P] → (F : α P) → ((toDirLine F).reverse = toDirLine (reverse F))
 
 section fig_to_obj
+
 variable {P : Type _} [EuclideanPlane P]
 
 instance [ProjFig α] : ProjObj (α P) where
