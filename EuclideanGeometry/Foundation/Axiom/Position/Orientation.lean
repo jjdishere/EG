@@ -131,18 +131,30 @@ theorem odist'_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) :
 
 theorem wedge_eq_odist'_mul_length (A B C : P) (aneb : B ≠ A) : (wedge A B C) = ((odist' C (RAY A B aneb)) * (SEG A B).length) := by
   by_cases p : C ≠ A
-  rw [wedge_eq_sine_mul_length_mul_length A B C aneb p,odist'_eq_sine_mul_length C (RAY A B aneb)]
-  rw [mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B aneb) C p).value)) ((SEG (RAY A B aneb).source C).length) ((SEG A B).length),mul_comm ((SEG (RAY A B aneb).source C).length) ((SEG A B).length),←mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B aneb) C p).value)) ((SEG A B).length) ((SEG (RAY A B aneb).source C).length)]
+  rw [wedge_eq_sine_mul_length_mul_length A B C aneb p,odist'_eq_sine_mul_length C (RAY A B aneb),mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B aneb) C p).value)) ((SEG (RAY A B aneb).source C).length) ((SEG A B).length),mul_comm ((SEG (RAY A B aneb).source C).length) ((SEG A B).length),←mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B aneb) C p).value)) ((SEG A B).length) ((SEG (RAY A B aneb).source C).length)]
   congr
   simp at p
-  have vecac0 : VEC A C = 0 := by
-    exact (eq_iff_vec_eq_zero A C).mp p
-  have vecrayc0 : VEC (RAY A B aneb).source C = 0 := by
-    exact vecac0
+  have vecac0 : VEC A C = 0 := (eq_iff_vec_eq_zero A C).mp p
+  have vecrayc0 : VEC (RAY A B aneb).source C = 0 := (eq_iff_vec_eq_zero A C).mp p
   dsimp only [wedge,odist',det]
   field_simp [vecac0,vecrayc0]
 
-theorem odist'_eq_odist'_of_to_dirline_eq_to_dirline (A : P) (ray ray' : Ray P) (h : same_dir_line ray ray') : odist' A ray = odist' A ray' := sorry
+theorem odist'_eq_odist'_of_to_dirline_eq_to_dirline (A : P) (ray ray' : Ray P) (h : same_dir_line ray ray') : odist' A ray = odist' A ray' := by
+  have h₁ : ray.2.1 =ray'.2.1 := by
+    congr 1
+    exact h.1
+  have h₂ : ∃ t : ℝ, VEC ray.1 ray'.1 = t • ray.2.1 := exist_real_vec_eq_smul_of_lies_on_or_rev h.2
+  have h₃ : ∃ t : ℝ, VEC ray.1 A = t • ray.2.1 + VEC ray'.1 A := by
+    rw [←vec_add_vec ray.1 ray'.1 A]
+    choose t₁ ht using h₂
+    use t₁
+    congr
+  dsimp only [odist']
+  choose t₂ kt using h₃
+  rw [kt,det_add_right_eq_add_det ray.2.1 (t₂ • ray.2.1) (VEC ray'.1 A)]
+  rw [(det_eq_zero_iff_eq_smul ray.2.1 (t₂ • ray.2.1) (Dir.tovec_ne_zero ray.2)).mpr _]
+  field_simp[h₁]
+  use t₂
 
 def odist'' (A : P) (dirline : DirLine P) : ℝ := Quotient.lift (s := same_dir_line.setoid) (fun ray => odist' A ray) (odist'_eq_odist'_of_to_dirline_eq_to_dirline A) dirline
 
@@ -187,10 +199,7 @@ theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A r
   · simp
     constructor
     intro
-    dsimp only [Line.IsOn]
-    have q : ∃ t : ℝ, VEC ray.1 A = t • ray.2.1 := by exact (odist'_eq_zero_iff_exist_real_vec_eq_smul A ray).mp h
-    have p : A ∈ ray.carrier ∨ A ∈ ray.reverse.carrier := by exact lies_on_or_rev_of_exist_real_vec_eq_smul q
-    exact p
+    exact lies_on_or_rev_of_exist_real_vec_eq_smul ((odist'_eq_zero_iff_exist_real_vec_eq_smul A ray).mp h)
     intro
     exact h
   simp
@@ -201,8 +210,7 @@ theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A r
   dsimp only [Line.IsOn]
   intro p
   rw [Ray.toline_carrier_eq_ray_carrier_union_rev_carrier ray] at p
-  have q : ∃ t : ℝ, VEC ray.source A = t • ray.2.1 := by exact exist_real_vec_eq_smul_of_lies_on_or_rev p
-  exact (odist'_eq_zero_iff_exist_real_vec_eq_smul A ray).mpr q
+  exact (odist'_eq_zero_iff_exist_real_vec_eq_smul A ray).mpr (exist_real_vec_eq_smul_of_lies_on_or_rev p)
 
 /- Relation of position of points on a ray and directed distance-/
 
