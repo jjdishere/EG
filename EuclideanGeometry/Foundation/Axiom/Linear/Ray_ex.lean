@@ -190,7 +190,7 @@ theorem lies_on_iff_lies_on_toray_and_rev_toray {A : P} {seg_nd : Seg_nd P} : A 
   simp only [Seg_nd.reverse,Seg.reverse] at h'
   have asumbvec : (a + b) • seg_nd.toDir.toVec_nd.1 = seg_nd.toVec_nd.1 := by
     simp only [Seg_nd.toVec_nd, Dir.toVec_nd]
-    rw[add_smul, ← h, ← vec_add_vec seg_nd.1.source A seg_nd.1.target, ← neg_vec seg_nd.1.target A, h', neg_neg]
+    rw[add_smul, ← h, ← vec_add_vec seg_nd.source A seg_nd.target, ← neg_vec seg_nd.target A, Seg_nd.source, Seg_nd.target, h', neg_neg]
   have asumbeqnorm : a + b = (Vec_nd.norm seg_nd.toVec_nd):=by
     rw [← Vec_nd.norm_smul_todir_eq_self seg_nd.toVec_nd] at asumbvec
     apply eq_of_smul_Vec_nd_eq_smul_Vec_nd asumbvec
@@ -273,6 +273,10 @@ theorem lies_int_iff_lies_int_of_neg_todir {ray₁ ray₂ : Ray P} (h : ray₁.t
   fun ⟨hl, ne⟩ ↦ ⟨(lies_on_iff_lies_on_of_neg_todir h).mp hl, ne.symm⟩,
   fun ⟨hl, ne⟩ ↦ ⟨(lies_on_iff_lies_on_of_neg_todir h).mpr hl, ne.symm⟩⟩
 
+theorem Ray.lies_on_or_lies_on_rev_iff {A : P} {r : Ray P} : A LiesOn r ∨ A LiesOn r.reverse ↔ A LiesOn r.reverse ∨ A LiesOn r.reverse.reverse := by
+  rw [r.rev_rev_eq_self]
+  exact or_comm
+
 -- reversing the toDir does not change the length
 theorem length_eq_length_of_rev (seg : Seg P) : seg.length = seg.reverse.length := by
   unfold Seg.length
@@ -292,6 +296,20 @@ theorem exist_real_vec_eq_smul_of_lies_on_or_rev {A : P} {ray : Ray P} (h : A Li
     rw [Dir.tovec_neg_eq_neg_tovec, smul_neg, ← neg_smul] at eq
     exact eq
 
+theorem lies_on_or_rev_of_exist_real_vec_eq_smul {A : P} {ray : Ray P} (h : ∃ t : ℝ, VEC ray.source A = t • ray.2.1) : A LiesOn ray ∨ A LiesOn ray.reverse := by
+  choose t ht using h
+  by_cases k : (0 ≤ t)
+  · left
+    exact ⟨t,k,ht⟩
+  right
+  let u := -t
+  simp at k
+  have l : 0 ≤ u := sorry
+  have hu : VEC ray.reverse.1 A = u • ray.reverse.2.1 := by
+    simp
+    exact ht
+  exact ⟨u,l,hu⟩
+
 theorem ray_toproj_eq_mk_pt_pt_toproj {A B : P} {ray : Ray P} (h : B ≠ A) (ha : A LiesOn ray ∨ A LiesOn ray.reverse) (hb : B LiesOn ray ∨ B LiesOn ray.reverse) : ray.toProj = (RAY A B h).toProj := by
   rcases exist_real_vec_eq_smul_of_lies_on_or_rev ha with ⟨ta, eqa⟩
   rcases exist_real_vec_eq_smul_of_lies_on_or_rev hb with ⟨tb, eqb⟩
@@ -300,8 +318,7 @@ theorem ray_toproj_eq_mk_pt_pt_toproj {A B : P} {ray : Ray P} (h : B ≠ A) (ha 
     _ = ray.2.toVec_nd.toProj := congrArg Dir.toProj (Dir.dir_tovec_nd_todir_eq_self ray.2).symm
     _ = _ := eq_toproj_of_smul ray.2.toVec_nd ⟨VEC A B, (vsub_ne_zero.mpr h)⟩ heq
 
-theorem Ray.in_carrier_iff_lies_on {p : P} {r : Ray P} : p ∈ r.carrier ↔ p LiesOn r := by
-  rfl
+theorem Ray.in_carrier_iff_lies_on {p : P} {r : Ray P} : p ∈ r.carrier ↔ p LiesOn r := Iff.rfl
 
 theorem pt_lies_on_ray_iff_vec_same_dir {p : P} {r : Ray P} : p LiesOn r ↔ ∃t : ℝ, (t ≥ 0) ∧ VEC r.source p = t • r.toDir.toVec := by
   rw [← Ray.in_carrier_iff_lies_on, Ray.carrier, Set.mem_setOf, Ray.IsOn]

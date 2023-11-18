@@ -1,6 +1,7 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
+import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 
 /- This file discuss the relative positions of points and rays on a plane. -/
 noncomputable section
@@ -61,70 +62,193 @@ theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (wedge A B
 
 end wedge
 
-/- Directed distance-/
+/- Oriented distance-/
 section oriented_distance
 
-def odist (A : P) (ray : Ray P) : ℝ := det ray.2.1 (VEC ray.1 A)
+def odist' (A : P) (ray : Ray P) : ℝ := det ray.2.1 (VEC ray.1 A)
 
-/- may insert some theorems relating colinearity and zero directed distance, which might take some efforts-/
+theorem odist'_eq_zero_iff_exist_real_vec_eq_smul (A : P) (ray : Ray P) : odist' A ray = 0 ↔ (∃ t : ℝ, VEC ray.1 A = t • ray.2.1) := by
+  constructor
+  intro k
+  dsimp only [odist'] at k
+  apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) (Dir.tovec_ne_zero ray.2)).mp
+  exact k
+  intro e
+  apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) (Dir.tovec_ne_zero ray.2)).mpr
+  exact e
 
-theorem odist_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist A ray = Real.sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by
-  rw [odist,Angle.value]
-  have h0 : (Angle.mk_ray_pt ray A h).value = Vec_nd.angle ray.2.toVec_nd (VEC_nd ray.source A h) := by sorry
+theorem odist'_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist' A ray = Real.sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by
+  rw [odist',Angle.value]
+  have h0 : (Angle.mk_ray_pt ray A h).value = Vec_nd.angle ray.2.toVec_nd (VEC_nd ray.source A h) := angle_value_eq_angle A ray h
   have h1 : ray.2.toVec_nd.1 = ray.2.1 := rfl
   have h2 : (VEC_nd ray.source A h).1=VEC ray.source A := rfl
   have h3 : Vec.norm (Dir.toVec_nd (ray.toDir)) = 1 := by apply Dir.norm_of_dir_tovec_eq_one
   have h4 : (SEG ray.source A).length = Vec.norm (VEC_nd ray.source A h) := rfl
   rw [← h1, ← h2, det_eq_sin_mul_norm_mul_norm ray.2.toVec_nd (VEC_nd ray.source A h),h3,h4,← h0]
-  ring
+  ring_nf
   rw [mul_comm]
   rfl
 
-theorem wedge_eq_odist_mul_length (A B C : P) (aneb : B ≠ A) : (wedge A B C) = ((odist C (RAY A B aneb)) * (SEG A B).length) := by sorry
+theorem wedge_eq_odist'_mul_length (A B C : P) (aneb : B ≠ A) : (wedge A B C) = ((odist' C (RAY A B aneb)) * (SEG A B).length) := by
+  by_cases p : C ≠ A
+  rw [wedge_eq_sine_mul_length_mul_length A B C aneb p,odist'_eq_sine_mul_length C (RAY A B aneb),mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B aneb) C p).value)) ((SEG (RAY A B aneb).source C).length) ((SEG A B).length),mul_comm ((SEG (RAY A B aneb).source C).length) ((SEG A B).length),←mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B aneb) C p).value)) ((SEG A B).length) ((SEG (RAY A B aneb).source C).length)]
+  congr
+  simp at p
+  have vecac0 : VEC A C = 0 := (eq_iff_vec_eq_zero A C).mp p
+  have vecrayc0 : VEC (RAY A B aneb).source C = 0 := (eq_iff_vec_eq_zero A C).mp p
+  dsimp only [wedge,odist',det]
+  field_simp [vecac0,vecrayc0]
+
+theorem odist'_eq_odist'_of_to_dirline_eq_to_dirline (A : P) (ray ray' : Ray P) (h : same_dir_line ray ray') : odist' A ray = odist' A ray' := by
+  have h₁ : ray.2.1 =ray'.2.1 := by
+    congr 1
+    exact h.1
+  have h₂ : ∃ t : ℝ, VEC ray.1 ray'.1 = t • ray.2.1 := exist_real_vec_eq_smul_of_lies_on_or_rev h.2
+  have h₃ : ∃ t : ℝ, VEC ray.1 A = t • ray.2.1 + VEC ray'.1 A := by
+    rw [←vec_add_vec ray.1 ray'.1 A]
+    choose t₁ ht using h₂
+    use t₁
+    congr
+  dsimp only [odist']
+  choose t₂ kt using h₃
+  rw [kt,det_add_right_eq_add_det ray.2.1 (t₂ • ray.2.1) (VEC ray'.1 A)]
+  rw [(det_eq_zero_iff_eq_smul ray.2.1 (t₂ • ray.2.1) (Dir.tovec_ne_zero ray.2)).mpr _]
+  field_simp[h₁]
+  use t₂
+
+def odist (A : P) [DirFig α] (l : α P) : ℝ := Quotient.lift (s := same_dir_line.setoid) (fun ray => odist' A ray) (odist'_eq_odist'_of_to_dirline_eq_to_dirline A) (toDirLine l)
+
+theorem odist_reverse_eq_neg_odist (A : P) [DirFig α] (dl : α P) : odist A (DirFig.reverse dl) = - odist A dl := sorry
+
+theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (Seg_nd.mk A B bnea) = odist D (Seg_nd.mk A B bnea)) ↔ (wedge A B C = wedge A B D) := sorry
+
 end oriented_distance
 
 /- Positions of points on a line, ray, oriented segments. -/
 
 section point_to_ray
 
-def Ray.sign (A : P) (ray : Ray P) : ℝ := Real.sign (odist A ray)
+def odist_sign (A : P) [DirFig α] (df : α P) : ℝ := by
+  by_cases 0 < odist A df
+  · exact 1
+  by_cases odist A df < 0
+  · exact -1
+  exact 0
 
-def IsOnLeftSide (A : P) (ray : Ray P) : Prop := by
-  by_cases 0 < odist A ray
+def IsOnLeftSide (A : P) [DirFig α] (df : α P) : Prop := by
+  by_cases 0 < odist A df
   · exact True
   · exact False
 
-def IsOnRightSide (A : P) (ray : Ray P) : Prop := by
-  by_cases odist A ray < 0
+def IsOnRightSide (A : P) [DirFig α] (df : α P) : Prop := by
+  by_cases odist A df < 0
   · exact True
   · exact False
 
-def OnLine (A : P) (ray : Ray P) : Prop := by
-  by_cases odist A ray = 0
+def OnLine (A : P) [DirFig α] (df : α P) : Prop := by
+  by_cases odist A df = 0
   · exact True
   · exact False
 
-def OffLine (A : P) (ray : Ray P) : Prop := by
-  by_cases odist A ray = 0
+def OffLine (A : P) [DirFig α] (df : α P) : Prop := by
+  by_cases odist A df = 0
   · exact False
   · exact True
 
-theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A ray.toLine := sorry
+theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A ray.toLine := by
+  dsimp only [OnLine]
+  by_cases h : odist' A ray = 0
+  · simp
+    constructor
+    intro
+    exact lies_on_or_rev_of_exist_real_vec_eq_smul ((odist'_eq_zero_iff_exist_real_vec_eq_smul A ray).mp h)
+    intro
+    exact h
+  simp
+  constructor
+  intro k
+  absurd h k
+  exact (h k).elim
+  dsimp only [Line.IsOn]
+  intro p
+  rw [Ray.toline_carrier_eq_ray_carrier_union_rev_carrier ray] at p
+  exact (odist'_eq_zero_iff_exist_real_vec_eq_smul A ray).mpr (exist_real_vec_eq_smul_of_lies_on_or_rev p)
+
+theorem online_iff_lies_on_line (A : P) [DirFig α] (df : α P) : Line.IsOn A (toLine df) ↔ odist A df = 0 := sorry
+
+theorem off_line_iff_not_online (A : P) [DirFig α] (df : α P) : OffLine A df ↔ ¬OnLine A df := sorry
 
 /- Relation of position of points on a ray and directed distance-/
 
 end point_to_ray
+
+section oriented_area
+
+theorem oarea_eq_length_mul_odist_div_2 (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (Seg_nd.mk A B bnea)) * (SEG A B).length) / 2:= by
+  unfold oarea
+  rw [wedge_eq_odist'_mul_length A B C bnea]
+  have h0 : toDirLine (SEG_nd A B bnea) = toDirLine (RAY A B bnea) := sorry
+  have h1 : odist C (RAY A B bnea) = odist C (SEG_nd A B bnea) := by
+    unfold odist
+    rw[h0]
+  have h2 : odist C (RAY A B bnea) = odist' C (RAY A B bnea) := rfl
+  rw [h2] at h1
+  rw[h1]
+
+theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (Seg_nd.mk A B bnea) = odist D (Seg_nd.mk A B bnea)) ↔ oarea A B C = oarea A B D := sorry
+
+theorem oarea_eq_sine_mul_length_mul_length_div_2 (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : oarea A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) / 2 := by
+  unfold oarea
+  sorry
+
+theorem oarea_eq_zero_of_colinear (A B C : P) : oarea A B C = 0 ↔ colinear A B C := sorry
+
+theorem oarea_tri_nd_ne_zero (A B C : P) (trind : ¬ colinear A B C) : oarea A B C ≠ 0 := sorry
+
+end oriented_area
+
+section cooperation_with_parallel
+
+theorem odist_eq_odist_of_parallel' (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (SEG_nd A B bnea) ray) : odist A ray =odist B ray := by
+  unfold odist
+  have h1 : det ray.2.1 (VEC ray.1 B) = det ray.2.1 (VEC ray.1 A) + det ray.2.1 (VEC A B) := by
+    rw [←vec_add_vec ray.1 A B]
+    rw [det_add_right_eq_add_det]
+  have h2 : det ray.2.1 (VEC A B) = 0 := by
+    unfold parallel at para
+    have h3 : Dir.toProj ray.2 = Vec_nd.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) := para.symm
+    have h4 : Vec_nd.toProj ray.2.toVec_nd = Vec_nd.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) := by
+      rw [← h3]
+      exact dir_toVec_nd_toProj_eq_dir_toProj ray.2
+    exact det_eq_zero_of_toProj_eq (⟨ray.2.1 , Dir.tovec_ne_zero ray.2⟩ : Vec_nd) (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) h4
+  rw [h2] at h1
+  rw [add_zero] at h1
+  exact h1.symm
+
+theorem odist_eq_odist_of_parallel (A B : P) [DirFig α] (df : α P) (bnea : B ≠ A) (para : parallel (Seg_nd.mk A B bnea) df) : odist A df = odist B df := sorry
+
+theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (Seg_nd.mk A B bnea) (Seg_nd.mk C D dnec)) ↔ wedge A B C = wedge A B D := sorry
+
+theorem odist_eq_odist_iff_parallel_ne (A B : P) [DirFig α] (df : α P) (bnea : B ≠ A) : (parallel (Seg_nd.mk A B bnea) df) ↔ odist A df = odist B df := sorry
+
+theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (Seg_nd.mk A B bnea) (Seg_nd.mk C D dnec)) ↔ oarea A B C = oarea A B D := sorry
+
+end cooperation_with_parallel
 
 scoped infix : 50 "LiesOnLeft" => IsOnLeftSide
 scoped infix : 50 "LiesOnRight" => IsOnRightSide
 
 section handside
 
-theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (RAY A B bnea)  ray) : ray.sign A = ray.sign B := sorry
+theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (RAY A B bnea)  ray) : odist_sign A ray = odist_sign B ray := by
+  unfold odist_sign
+  rw [odist_eq_odist_of_parallel' A B ray bnea para]
 
-theorem no_intersect_of_same_sign (A B : P) (ray : Ray P) (signeq : (ray.sign A) * (ray.sign B) = 1) : ¬∃ (C : P), (Seg.IsOn C (SEG A B)) ∧ (Line.IsOn C ray.toLine) := sorry
+theorem same_odist_sign_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l = odist_sign B l) : ∀ (C : P) , Seg.IsOn C (SEG A B) → odist_sign C l = odist_sign A l := sorry
 
-theorem intersect_of_diff_sign (A B : P) (ray : Ray P) (signdiff : ¬ (ray.sign A) * (ray.sign B) = 1) : ∃ (C : P), (Seg.IsOn C (SEG A B)) ∧ (Line.IsOn C ray.toLine) := sorry
+theorem no_intersect_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l * odist_sign B l = 1) : ∀ (C : P) , Seg.IsOn C (SEG A B) → ¬ Line.IsOn C l := sorry
+
+theorem intersect_of_diff_odist_sign (A B : P) (l : DirLine P) (signdiff : odist_sign A l * odist_sign B l = -1) : ∃ (C : P), Seg.IsOn C (SEG A B) ∧ Line.IsOn C l := sorry
 
 end handside
 
