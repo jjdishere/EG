@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
+import EuclideanGeometry.Foundation.Axiom.Basic.Angle
 
 noncomputable section
 namespace EuclidGeom
@@ -29,7 +30,7 @@ def mk_dirline_dirline (l₁ l₂ : DirLine P) (h : ¬ l₁ ∥ l₂) : Angle P 
   end_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toline_of_not_para _ _ h) ) l₂ (Line.inx_lies_on_snd (DirLine.not_para_toline_of_not_para _ _ h))
   source_eq_source := rfl
 
-def value (A : Angle P): ℝ := Dir.angle (A.start_ray.toDir) (A.end_ray.toDir)
+def value (A : Angle P): AngValue := Dir.toAngValue ( (A.end_ray.toDir) * (A.start_ray.toDir)⁻¹ )
 
 def is_nd (ang : Angle P) : Prop := ang.value ≠ 0 ∧ ang.value ≠ π
 
@@ -39,10 +40,10 @@ end Angle
 
 theorem angle_value_eq_dir_angle (r r' : Ray P) (h : r.source = r'.source) : (Angle.mk r r' h).value = Dir.angle r.toDir r'.toDir := rfl
 
-def value_of_angle_of_three_point_nd (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): ℝ :=
+def value_of_angle_of_three_point_nd (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): AngValue :=
 (Angle.mk_pt_pt_pt _ _ _ h₁ h₂).value
 
-def value_of_angle_of_two_ray_of_eq_source (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : ℝ := (Angle.mk start_ray end_ray h).value
+def value_of_angle_of_two_ray_of_eq_source (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : AngValue := (Angle.mk start_ray end_ray h).value
 
 scoped notation "ANG" => Angle.mk_pt_pt_pt
 
@@ -59,7 +60,7 @@ protected def IsOn (p : P) (ang : Angle P) : Prop := by
   · let ray := Ray.mk_pt_pt ang.source p h
     let o₁ := Angle.mk ang.start_ray ray rfl
     let o₂ := Angle.mk ray ang.end_ray (ang.3)
-    exact if ang.value ≥ 0 then (o₁.value ≥ 0 ∧ o₂.value ≥ 0) else (o₁.value ≤ 0 ∧ o₂.value ≤ 0)
+    exact if ang.value.toReal ≥ 0 then (o₁.value.toReal ≥ 0 ∧ o₂.value.toReal ≥ 0) else (o₁.value.toReal ≤ 0 ∧ o₂.value.toReal ≤ 0)
 
 protected def IsInt (p : P) (ang : Angle P) : Prop := by
   by_cases p = ang.source
@@ -67,7 +68,7 @@ protected def IsInt (p : P) (ang : Angle P) : Prop := by
   · let ray := Ray.mk_pt_pt ang.source p h
     let o₁ := Angle.mk ang.start_ray ray rfl
     let o₂ := Angle.mk ray ang.end_ray (ang.3)
-    exact if ang.value ≥ 0 then (o₁.value > 0 ∧ o₂.value > 0) else (o₁.value < 0 ∧ o₂.value < 0)
+    exact if ang.value.toReal ≥ 0 then (o₁.value.toReal > 0 ∧ o₂.value.toReal > 0) else (o₁.value.toReal < 0 ∧ o₂.value.toReal < 0)
 
 protected theorem ison_of_isint {A : P} {ang : Angle P} : Angle.IsInt A ang → Angle.IsOn A ang := by
   unfold Angle.IsOn Angle.IsInt
@@ -76,7 +77,7 @@ protected theorem ison_of_isint {A : P} {ang : Angle P} : Angle.IsInt A ang → 
   · simp only [h, ge_iff_le, dite_true]
   · simp only [h, ge_iff_le, dite_false]
     simp only [h, ge_iff_le, gt_iff_lt, dite_false] at g
-    by_cases f : 0 ≤ ang.value
+    by_cases f : 0 ≤ ang.value.toReal
     simp only [f, ite_true] at *
     constructor <;> linarith
     simp only [f, ite_false, not_false_eq_true] at *

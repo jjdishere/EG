@@ -21,16 +21,27 @@ def AngValue := Real.Angle
 
 instance : NormedAddCommGroup AngValue := inferInstanceAs (NormedAddCommGroup (AddCircle (2*π)))
 
-def Real.toAngValue : ℝ → AngValue := Real.Angle.coe
+instance : CircularOrder AngValue := inferInstanceAs (CircularOrder Real.Angle)
 
+end angvalue
+end EuclidGeom
+
+def Real.toAngValue : ℝ → EuclidGeom.AngValue := Real.Angle.coe
+
+namespace EuclidGeom
+section angvalue
 instance : Coe Real AngValue where
   coe := Real.toAngValue
 
-def IsPos (θ : Real.Angle) : Prop := sbtw 0 θ π
+--coe of Pos and toReal is pos
+def AngValue.IsPos (θ : AngValue) : Prop := sbtw 0 θ π
 
-def IsNeg (θ : Real.Angle) : Prop := sbtw (π: Real.Angle) θ 0
+def AngValue.IsNeg (θ : AngValue) : Prop := sbtw (π: Real.Angle) θ 0
 
-def AngValue.toReal : Real.Angle → ℝ := Real.Angle.toReal
+def AngValue.toReal : AngValue → ℝ := Real.Angle.toReal
+
+@[simp]
+theorem toreal_toangvalue_eq_self (r : AngValue):  (r.toReal).toAngValue = r := by sorry
 
 -- should be isomorphism
 def AddDir.toAngValue : Additive Dir →+ AngValue where

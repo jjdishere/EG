@@ -1,6 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
-import EuclideanGeometry.Foundation.Axiom.Position.Convex
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 
 noncomputable section
