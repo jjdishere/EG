@@ -134,22 +134,6 @@ theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := by
 /-- The intersection point of two diagonals -/
 def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.toLine qdr_cvx.diag_not_para
 
-/-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is convex. -/
-theorem permute_is_convex : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁) IsConvex := by
-  let permute := (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁)
-  unfold Quadrilateral.IsConvex
-  have h : qdr_cvx.point₂ ≠ qdr_cvx.point₄ ∧ qdr_cvx.point₃ ≠ qdr_cvx.point₁ := ⟨qdr_cvx.nd₂₄.symm, qdr_cvx.nd₁₃⟩
-  simp only [ne_eq, h, not_false_eq_true, and_self, dite_true]
-  have g: ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := qdr_cvx.diag_not_para
-  rw [diag_nd₁₃, diag_nd₂₄] at g
-  have g': ¬ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) ∥ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) := by
-    -- apply (Seg_nd.not_para_rev_of_not_para (seg_nd := (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ _)))
-    sorry
-  sorry
-
-  -- apply para_rev_of_para at g
-  -- simp only [g, dite_true]
-
 /-- The interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals. -/
 theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄.1
 := by
@@ -161,6 +145,28 @@ theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧
   rw [diag_nd₁₃, diag_nd₂₄] at g
   simp only [g, dite_true] at k
   exact k
+
+/-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is convex. -/
+theorem permute_is_convex : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁) IsConvex := by
+  let permute := (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁)
+  unfold Quadrilateral.IsConvex
+  have h : qdr_cvx.point₂ ≠ qdr_cvx.point₄ ∧ qdr_cvx.point₃ ≠ qdr_cvx.point₁ := ⟨qdr_cvx.nd₂₄.symm, qdr_cvx.nd₁₃⟩
+  simp only [ne_eq, h, not_false_eq_true, and_self, dite_true]
+  have g: ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := qdr_cvx.diag_not_para
+  rw [diag_nd₁₃, diag_nd₂₄] at g
+  have g': ¬ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) ∥ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) := by
+    apply Ne.symm
+    apply Seg_nd.not_para_rev_of_not_para (seg_nd := (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm)) (seg_nd' := (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ h.2))
+    exact Ne.symm g
+  simp only [g', not_false_eq_true, dite_true]
+  have inx_eq : qdr_cvx.diag_inx = Line.inx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine (Ne.symm qdr_cvx.diag_not_para) := Eq.symm (Line.inx.symm (Seg_nd.not_para_toline_of_not_para qdr_cvx.diag_nd₁₃ qdr_cvx.diag_nd₂₄ qdr_cvx.diag_not_para))
+  have inx_eq' : qdr_cvx.diag_inx = Line.inx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine (Ne.symm g') := by
+    rw [inx_eq]
+    sorry
+  rcases qdr_cvx.diag_inx_lies_int with ⟨a, b⟩
+  constructor
+  sorry
+  sorry
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
 theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := by
