@@ -84,12 +84,13 @@ theorem is_inside_of_is_inside_flip_vertices (tr : Triangle P) (p : P) (inside :
 
 namespace Triangle
 
--- I think these 3 theorems are not true for all triangles?
+/-
 theorem ne_vertex_of_lies_int_fst_edge (tr : Triangle P) {A : P} (h : A LiesInt tr.edge₁) : A ≠ tr.point₁ ∧  A ≠ tr.point₂ ∧ A ≠ tr.point₃ := sorry
 
 theorem ne_vertex_of_lies_int_snd_edge (tr : Triangle P) {A : P} (h : A LiesInt tr.edge₂) : A ≠ tr.point₁ ∧  A ≠ tr.point₂ ∧ A ≠ tr.point₃ := sorry
 
 theorem ne_vertex_of_lies_int_trd_edge (tr : Triangle P) {A : P} (h : A LiesInt tr.edge₃) : A ≠ tr.point₁ ∧  A ≠ tr.point₂ ∧ A ≠ tr.point₃ := sorry
+-/
 
 theorem lie_on_snd_and_trd_edge_of_fst_vertex (tr : Triangle P) : tr.point₁ LiesOn tr.edge₂ ∧ tr.point₁ LiesOn tr.edge₃ := sorry
 
@@ -100,6 +101,12 @@ theorem lie_on_fst_and_snd_edge_of_trd_vertex (tr : Triangle P) : tr.point₁ Li
 end Triangle
 
 namespace Triangle_nd
+
+theorem ne_vertex_of_lies_int_fst_edge (tr_nd : Triangle_nd P) {A : P} (h : A LiesInt tr_nd.edge₁) : A ≠ tr_nd.point₁ ∧  A ≠ tr_nd.point₂ ∧ A ≠ tr_nd.point₃ := sorry
+
+theorem ne_vertex_of_lies_int_snd_edge (tr_nd : Triangle_nd P) {A : P} (h : A LiesInt tr_nd.edge₂) : A ≠ tr_nd.point₁ ∧  A ≠ tr_nd.point₂ ∧ A ≠ tr_nd.point₃ := sorry
+
+theorem ne_vertex_of_lies_int_trd_edge (tr_nd : Triangle_nd P) {A : P} (h : A LiesInt tr_nd.edge₃) : A ≠ tr_nd.point₁ ∧  A ≠ tr_nd.point₂ ∧ A ≠ tr_nd.point₃ := sorry
 
 theorem lie_on_snd_and_trd_edge_of_fst_vertex (tr_nd : Triangle P) : tr_nd.point₁ LiesOn tr_nd.edge₂ ∧ tr_nd.point₁ LiesOn tr_nd.edge₃ := by sorry
 
