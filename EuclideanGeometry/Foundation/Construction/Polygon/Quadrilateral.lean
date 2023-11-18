@@ -247,6 +247,22 @@ def angle₃ : Angle P := ANG qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄
 /--angle at point₄ of qdr_cvx-/
 def angle₄ : Angle P := ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₃₄.symm qdr_cvx.nd₁₄.symm
 
+/--triangle point₄ point₁ point₂-/
+def triangle₁ : Triangle_nd P := TRI_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.not_colinear₄₁₂
+
+/--triangle point₁ point₂ point₃-/
+def triangle₂ : Triangle_nd P := TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃
+
+/--triangle point₂ point₃ point₄-/
+def triangle₃ : Triangle_nd P := TRI_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.not_colinear₂₃₄
+
+/--triangle point₃ point₄ point₁-/
+def triangle₄ : Triangle_nd P := TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁
+
+theorem cclock_eq : qdr_cvx.triangle₁.is_cclock ↔ qdr_cvx.triangle₃.is_cclock := sorry
+
+theorem cclock_eq' : qdr_cvx.triangle₂.is_cclock ↔ qdr_cvx.triangle₄.is_cclock := sorry
+
 end property
 
 end Quadrilateral_cvx
