@@ -99,15 +99,13 @@ theorem is_prg_of_eq_length_eq_length (h₁ : (qdr_cvx.edge_nd₁₂).1.length =
     rw [K, joker, JOKER, SpadeA]
     simp only [neg_neg]
   have prepa₄: qdr_cvx.triangle₁.angle₁.end_ray.toDir = qdr_cvx.triangle₃.angle₁.end_ray.reverse.toDir := by
-    --qdr_cvx.triangle₁.angle₁.end_ray.toDir = qdr_cvx.triangle₃.angle₁.end_ray.reverse.toDir
-    have JOKER: 1 = 1 := sorry
-    rw [J, Q]--, JOKER, SpadeA]
-    --simp only [neg_neg]
-    sorry
+    --qdr_cvx.diag_nd₂₄.reverse.toRay.toDir = qdr_cvx.diag_nd₂₄.toRay.reverse.toDir
+    have JOKER: qdr_cvx.diag_nd₂₄.reverse.toRay.toDir = - qdr_cvx.diag_nd₂₄.toRay.toDir := qdr_cvx.diag_nd₂₄.todir_of_rev_eq_neg_todir
+    have SpadeA: qdr_cvx.diag_nd₂₄.toRay.reverse.toDir = -qdr_cvx.diag_nd₂₄.toRay.toDir := qdr_cvx.diag_nd₂₄.toRay.todir_of_rev_eq_neg_todir
+    rw [J, Q, JOKER, SpadeA]
   have prepar: qdr_cvx.triangle₁.angle₁.start_ray.toDir = (qdr_cvx.triangle₃.angle₁.start_ray).reverse.toDir := start_ray_todir_rev_todir_of_ang_rev_ang prepa₄ prepa₁
   have prepar': qdr_cvx.triangle₁.angle₃.end_ray.toDir = (qdr_cvx.triangle₃.angle₃.end_ray).reverse.toDir := end_ray_todir_rev_todir_of_ang_rev_ang prepa₃ prepa₂
-  -- angle 124 = angle 342
-  --theorem end_ray_todir_rev_todir_of_ang_rev_ang {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = (ang₂.start_ray).reverse.toDir) (h : ang₁.value = ang₂.value) : ang₁.end_ray.toDir = (ang₂.end_ray).reverse.toDir := sorry
+
   sorry
   sorry
 
