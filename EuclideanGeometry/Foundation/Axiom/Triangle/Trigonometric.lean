@@ -13,12 +13,11 @@ theorem cosine_rule' (A B C : P) (hab : B ≠ A) (hac : C ≠ A) : 2 * (Vec.norm
   rw [norm_mul_norm_mul_cos_angle_eq_inner_of_Vec_nd, length_sq_eq_inner_tovec_tovec, length_sq_eq_inner_tovec_tovec, length_sq_eq_inner_tovec_tovec, seg_tovec_eq_vec, seg_tovec_eq_vec, seg_tovec_eq_vec, ← vec_sub_vec A B C, inner_sub_sub_self, ← InnerProductSpace.Core.conj_symm (@InnerProductSpace.toCore _ _ _ _ InnerProductSpace.complexToReal) (VEC A B) (VEC A C), IsROrC.conj_to_real]
   ring
 
-theorem cosine_rule (tr_nd : Triangle_nd P) : 2 * (tr_nd.1.edge₃.length * tr_nd.1.edge₂.length * Real.cos tr_nd.angle₁.value) = tr_nd.1.edge₃.length ^ 2 + tr_nd.1.edge₂.length ^ 2 - tr_nd.1.edge₁.length ^ 2 := by
+theorem cosine_rule (tr_nd : Triangle_nd P) : 2 * (tr_nd.edge₃.length * tr_nd.edge₂.length * Real.cos tr_nd.angle₁.value) = tr_nd.edge₃.length ^ 2 + tr_nd.edge₂.length ^ 2 - tr_nd.edge₁.length ^ 2 := by
   let A := tr_nd.1.point₁
   let B := tr_nd.1.point₂
   let C := tr_nd.1.point₃
   dsimp only [Seg.length]
-  unfold edge₃; unfold edge₂; unfold edge₁
   simp
   have h : ¬colinear A B C := (tr_nd).2
   have h0 : B ≠ A := by
@@ -56,12 +55,17 @@ theorem cosine_rule (tr_nd : Triangle_nd P) : 2 * (tr_nd.1.edge₃.length * tr_n
   rw [h5] at h3; unfold Seg.length at h3; simp at h3
   exact h3
 
+theorem cosine_rule'' (tr_nd : Triangle_nd P) : tr_nd.edge₁.length = (tr_nd.edge₃.length ^ 2 + tr_nd.edge₂.length ^ 2 -  2 * (tr_nd.edge₃.length * tr_nd.edge₂.length * Real.cos tr_nd.angle₁.value)) ^ (1/2) := by sorry
+
 -- Sine rule (but only for counterclockwise triangle here, or we need some absolute values)
 -- Should we reformulate it without circle?
 -- theorem side_eq_cradius_times_sine_angle (tr_nd : Triangle_nd P) (cclock : tr_nd.is_cclock) : tr_nd.1.edge₁.length = 2 * (tr_nd.toCir).radius * Real.sin (tr_nd.angle₁.value) ∧ tr_nd.1.edge₂.length = 2 * (tr_nd.toCir).radius * Real.sin (tr_nd.angle₂.value) ∧ tr_nd.1.edge₃.length = 2 * (tr_nd.toCir).radius * Real.sin (tr_nd.angle₃.value):= sorry
 
-theorem sine_rule (tr_nd : Triangle_nd P) : tr_nd.1.edge₂.length * Real.sin tr_nd.angle₃.value = tr_nd.1.edge₃.length * Real.sin tr_nd.angle₂.value := sorry
+theorem sine_rule₁ (tr_nd : Triangle_nd P) : tr_nd.edge₂.length * Real.sin tr_nd.angle₃.value = tr_nd.edge₃.length * Real.sin tr_nd.angle₂.value := sorry
 
+theorem sine_rule₂ (tr_nd : Triangle_nd P) : tr_nd.edge₁.length * Real.sin tr_nd.angle₃.value = tr_nd.edge₃.length * Real.sin tr_nd.angle₁.value := sorry
+
+theorem sine_rule₃ (tr_nd : Triangle_nd P) : tr_nd.edge₂.length * Real.sin tr_nd.angle₁.value = tr_nd.edge₁.length * Real.sin tr_nd.angle₂.value := sorry
 end Triangle
 
 section Pythagoras
@@ -88,6 +92,8 @@ theorem Pythagoras_of_right_triangle_non_trivial (A B C : P) {hnd : ¬ colinear 
     sorry
   rw [h] at eq
   linarith
+
+theorem Pythagoras_of_tr_nd (tr_nd : Triangle_nd P) (h : tr_nd.angle₁.value = π / 2 ∨ tr_nd.angle₁.value =- π /2) : tr_nd.edge₂.length ^ 2 + tr_nd.edge₃.length ^ 2 = tr_nd.edge₁.length ^2 := sorry
 
 end Pythagoras
 

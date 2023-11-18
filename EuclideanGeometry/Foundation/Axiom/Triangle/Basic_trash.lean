@@ -22,6 +22,10 @@ theorem angle_eq_of_cosine_eq_of_cclock (cclock : tr_nd₁.is_cclock ↔ tr_nd�
     have y₂ : (-π < tr_nd₂.angle₁.value) ∧ (tr_nd₂.angle₁.value < 0) := sorry
     exact (Dir.neg_angle_eq_angle_iff_cos_eq_cos tr_nd₁.angle₁.value tr_nd₂.angle₁.value y₁ y₂).mp cosine
 
+theorem angle_eq_neg_of_cosine_eq_of_clock (clock : tr_nd₁.is_cclock ↔ ¬ tr_nd₂.is_cclock) (cosine : Real.cos tr_nd₁.angle₁.value = Real.cos tr_nd₂.angle₁.value) : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value := by sorry
+
+theorem sine_ne_zero_of_nd (tr_nd : Triangle_nd P) : Real.sin (tr_nd.angle₁.value)  ≠ 0 := by sorry
+
 namespace Triangle_nd
 
 theorem edge_eq_edge_of_perm_vertices_two_times (tr_nd : Triangle_nd P) : tr_nd.1.edge₁.length = tr_nd.perm_vertices.perm_vertices.1.edge₃.length ∧ tr_nd.1.edge₂.length = tr_nd.perm_vertices.perm_vertices.1.edge₁.length ∧ tr_nd.1.edge₃.length = tr_nd.perm_vertices.perm_vertices.1.edge₂.length := sorry
