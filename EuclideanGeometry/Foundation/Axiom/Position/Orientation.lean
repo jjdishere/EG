@@ -11,7 +11,7 @@ open Classical
 
 variable {P : Type _} [EuclideanPlane P]
 
-/- Definition of the area of a triangle, could be used to develop orientation of triangles.-/
+/- Definition of the wedge of three points.-/
 
 section wedge
 
@@ -44,7 +44,7 @@ theorem wedge231 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge312, wed
 
 theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, wedge231]
 
-theorem area_eq_sine_mul_length_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) := by
+theorem wedge_eq_sine_mul_length_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) := by
   dsimp only [wedge]
   have vecabnd : VEC A B ≠ 0 := by
    exact (ne_iff_vec_ne_zero A B).mp aneb
@@ -56,9 +56,49 @@ theorem area_eq_sine_mul_length_mul_length (A B C : P) (aneb : B ≠ A) (anec : 
   rw [h0]
   apply det_eq_sin_mul_norm_mul_norm ⟨VEC A B , vecabnd⟩ ⟨VEC A C, vecacnd⟩
 
-theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B C = 0) := sorry
+theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B C = 0) := by
+  dsimp only [wedge]
+  by_cases B ≠ A
+  have vecabnd : VEC A B ≠ 0 := by
+    exact (ne_iff_vec_ne_zero A B).mp h
+  constructor
+  intro k
+  apply (det_eq_zero_iff_eq_smul (VEC A B) (VEC A C) vecabnd).mpr
+  exact (colinear_iff_eq_smul_vec_of_ne h).mp k
+  intro k
+  apply (det_eq_zero_iff_eq_smul (VEC A B) (VEC A C) vecabnd).mp at k
+  exact (colinear_iff_eq_smul_vec_of_ne h).mpr k
+  simp at h
+  have vecab0 : VEC A B = 0 := by
+    exact (eq_iff_vec_eq_zero A B).mp h
+  constructor
+  intro
+  dsimp only [det]
+  field_simp [vecab0]
+  intro
+  rw [h]
+  exact triv_colinear A C
 
-theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (wedge A B C > 0) ↔ ((Angle.mk_pt_pt_pt B A C (sorry) (sorry)).value > 0) := sorry
+theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge A B C) ↔ (0 < (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value ∧ (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value < π) := by
+  have h1 : 0 < (SEG A B).length := by
+      have abnd : (SEG A B).is_nd := (ne_of_not_colinear nd).2.2
+      exact length_pos_iff_nd.mpr (abnd)
+  have h2 : 0 < (SEG A C).length := by
+      have acnd : (SEG A C).is_nd := (ne_of_not_colinear nd).2.1.symm
+      exact length_pos_iff_nd.mpr (acnd)
+  constructor
+  · intro h0
+    rw[wedge_eq_sine_mul_length_mul_length A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm] at h0
+    have h3 : 0 < Real.sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := by
+      field_simp at h0
+      exact h0
+    rw [sin_pos_iff_angle_pos] at h3
+    exact h3
+  rw[wedge_eq_sine_mul_length_mul_length A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm]
+  intro h0
+  have h3 : 0 < Real.sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_angle_pos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
+  field_simp
+  exact h2
 
 end wedge
 
@@ -126,7 +166,7 @@ end oriented_distance
 
 /- Positions of points on a line, ray, oriented segments. -/
 
-section point_to_ray
+section point_toray
 
 def odist_sign (A : P) [DirFig α] (df : α P) : ℝ := by
   by_cases 0 < odist A df
@@ -180,7 +220,7 @@ theorem off_line_iff_not_online (A : P) [DirFig α] (df : α P) : OffLine A df �
 
 /- Relation of position of points on a ray and directed distance-/
 
-end point_to_ray
+end point_toray
 
 section oriented_area
 
@@ -253,12 +293,12 @@ theorem intersect_of_diff_odist_sign (A B : P) (l : DirLine P) (signdiff : odist
 end handside
 
 /- Position of two rays -/
-section ray_to_ray
+section ray_toray
 
 /- Statement of his theorem should change, since ray₀.source ≠ ray₂.source. -/
 theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < value_of_angle_of_two_ray_of_eq_source ray₀ ray₁ rfl) ∧ (value_of_angle_of_two_ray_of_eq_source ray₀ ray₁ rfl < value_of_angle_of_two_ray_of_eq_source ray₀ ray₂ sorry) ∧ (value_of_angle_of_two_ray_of_eq_source ray₀ ray₂ sorry < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
 
-end ray_to_ray
+end ray_toray
 
 
 
