@@ -134,3 +134,47 @@ lemma f_ne_e : F ≠ E := sorry
 theorem Shan_Problem_2_38 : (SEG_nd E F f_ne_e) ∥ (SEG_nd B C b_ne_c.symm) := sorry
 
 end Shan_Problem_2_38
+
+namespace Shan_Problem_2_42
+/- In $\triangle ABC$, $D$ is the midpoint of $AB$,
+$E$ lies on $AC$ such that $AE = 2 CE$,
+$CD,BE$ intersects at $O$
+Prove that $OE = \frac{1}{4} BE$-/
+
+-- We have triangle $\triangle ABC$
+variable {A B C : P} {hnd : ¬ colinear A B C}
+-- $D$ is midpoint of $AB$
+variable {D : P} {hd : D = (SEG A B).midpoint}
+-- $E$ lies on $AC$ such that $AE = 2 CE$,
+variable {E : P} {he : E LiesInt (SEG A C) ∧ (SEG A E).length = 2 * (SEG C E).length}
+-- $CD,BE$ intersects at $O$
+variable {O : P} {ho : is_inx O (SEG C D) (SEG B E)}
+
+theorem Shan_Problem_2_42 : (SEG O E).length = (1 / 4) * (SEG B E).length := sorry
+
+end Shan_Problem_2_42
+
+namespace Shan_Problem_2_43
+/- In $\triangle ABC$, $E,F$ lies on $AB$ such that $AE = FB$,
+The parallel line to $AC$ of $E,F$ intersect $BC$ at $G,H$ respectively,
+Prove that $EG + FH = AC$-/
+
+-- We have triangle $\triangle ABC$
+variable {A B C : P} {hnd : ¬ colinear A B C}
+-- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
+lemma a_ne_b : A ≠ B := sorry
+lemma b_ne_c : B ≠ C := sorry
+lemma c_ne_a : C ≠ A := sorry
+-- $E,F$ lies on $AB$ such that $AE = FB$
+variable {E F : P} {he : E LiesInt (SEG A B)} {hf : F LiesInt (SEG A B)} {hef : (SEG A E).length = (SEG F B).length}
+-- $G,H$ lies on $BC$
+variable {G H : P} {hg : G LiesInt (SEG B C)} {hh : H LiesInt (SEG B C)}
+-- Claim : $G \ne E$ and $H \ne F$
+lemma g_ne_e : G ≠ E := sorry
+lemma h_ne_f : H ≠ F := sorry
+-- $EG \parallel AC$ and $FH \parallel AC$
+variable {para₁ : (SEG_nd E G g_ne_e) ∥ (SEG_nd A C c_ne_a)} {para₂ : (SEG_nd F H h_ne_f) ∥ (SEG_nd A C c_ne_a)}
+
+theorem Shan_Problem_2_43 :(SEG E G).length + (SEG F H).length = (SEG A C).length := sorry
+
+end Shan_Problem_2_43

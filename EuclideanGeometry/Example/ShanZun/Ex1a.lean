@@ -20,7 +20,7 @@ lemma a_ne_b : A ≠ B := sorry
 lemma b_ne_c : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $D$ is a point in the extension of $AB$
-variable {D : P} {hd_1 : D LiesInt (SEG_nd A B (b_ne_a (hnd := hnd))).extension}
+variable {D : P} {hd_1 : D LiesInt (SEG_nd A B a_ne_b).extension}
 -- We have $BD=AB$
 {hd_2 : (SEG B D).length = (SEG A B).length}
 -- $E$ is the midpoint of $AB$
