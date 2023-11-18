@@ -267,8 +267,6 @@ theorem Seg.lies_int_iff (p : P) : p LiesInt seg ↔ seg.is_nd ∧ ∃ (t : ℝ)
 theorem Seg_nd.lies_int_iff (p : P) : p LiesInt seg_nd ↔ seg_nd.1.is_nd ∧ ∃ (t : ℝ) , 0 < t ∧ t < 1 ∧ VEC seg_nd.source p = t • seg_nd.toVec_nd.1 := by
   exact seg_nd.1.lies_int_iff p
 
-
-
 /-- For a ray, every point of the interior of the ray lies on the ray. -/
 theorem Ray.lies_on_of_lies_int {p : P} (h : p LiesInt ray) : p LiesOn ray := h.1
 

@@ -250,10 +250,10 @@ instance instHasCongr : HasCongr (Triangle_nd P) where
   trans := IsCongr.trans
 
 theorem is_cclock_of_cclock (h : tr_nd₁.IsCongr tr_nd₂) (cc : tr_nd₁.is_cclock) : tr_nd₂.is_cclock := by
-  apply Triangle.cclock_of_pos_angle
+  apply Triangle_nd.cclock_of_pos_angle
   left
   rw [<-h.4]
-  exact (Triangle.angle_pos_of_cclock tr_nd₁ cc).1
+  exact (Triangle_nd.angle_pos_of_cclock tr_nd₁ cc).1
 
 theorem area (h : tr_nd₁.IsCongr tr_nd₂) : tr_nd₁.area = tr_nd₂.area := sorry
 
@@ -272,10 +272,10 @@ structure IsACongr (tr_nd₁ tr_nd₂: Triangle_nd P) : Prop where intro ::
 namespace IsACongr
 
 theorem not_cclock_of_cclock (h : tr_nd₁.IsACongr tr_nd₂) (cc : tr_nd₁.is_cclock) : ¬ tr_nd₂.is_cclock := by
-  apply Triangle.clock_of_neg_angle
+  apply Triangle_nd.clock_of_neg_angle
   left
   have : - tr_nd₁.angle₁.value = tr_nd₂.angle₁.value := by simp only [h.4, neg_neg]
-  simp only [<-this,Left.neg_neg_iff, (Triangle.angle_pos_of_cclock tr_nd₁ cc).1]
+  simp only [<-this,Left.neg_neg_iff, (tr_nd₁.angle_pos_of_cclock cc).1]
 
 protected theorem symm (h : tr_nd₁.IsACongr tr_nd₂) : tr_nd₂.IsACongr tr_nd₁ where
   edge₁ := h.1.symm
@@ -551,12 +551,12 @@ theorem congr_of_SAS (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) 
   have cosn₂ := Triangle.cosine_rule'' tr_nd₂
   rw [e₂,e₃,a₁,<-cosn₂] at cosn₁
   have c : tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock := by
-    apply Triangle.pos_pos_or_neg_neg_of_iff_cclock.mpr
+    apply Triangle_nd.pos_pos_or_neg_neg_of_iff_cclock.mpr
     by_cases cc: tr_nd₁.is_cclock
-    . have pos : 0 < Angle.value (angle₁ tr_nd₁) := (Triangle.angle_pos_of_cclock tr_nd₁ cc).1
+    . have pos : 0 < Angle.value (angle₁ tr_nd₁) := (tr_nd₁.angle_pos_of_cclock cc).1
       have pos' : 0 < Angle.value (angle₁ tr_nd₂) := by rw [<-a₁] ; exact pos
       exact .inl ⟨pos, pos'⟩
-    . have neg : Angle.value (angle₁ tr_nd₁) < 0 := (Triangle.angle_neg_of_clock tr_nd₁ cc).1
+    . have neg : Angle.value (angle₁ tr_nd₁) < 0 := (tr_nd₁.angle_neg_of_clock cc).1
       have neg' : Angle.value (angle₁ tr_nd₂) < 0 := by rw [<-a₁] ; exact neg
       exact .inr ⟨neg, neg'⟩
   exact congr_of_SSS_of_eq_orientation cosn₁ e₂ e₃ c
@@ -570,34 +570,34 @@ theorem acongr_of_SAS (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length)
     simp only [eq_iff_iff]
     constructor
     . intro cc
-      have pos : 0 < Angle.value (angle₁ tr_nd₁) := (Triangle.angle_pos_of_cclock tr_nd₁ cc).1
+      have pos : 0 < Angle.value (angle₁ tr_nd₁) := (tr_nd₁.angle_pos_of_cclock cc).1
       have pos' : Angle.value (angle₁ tr_nd₂) < 0 := by rw [a₁] at pos ; exact neg_pos.mp pos
-      exact Triangle.clock_of_neg_angle tr_nd₂ (.inl pos')
+      exact tr_nd₂.clock_of_neg_angle (.inl pos')
     intro c
-    have neg : Angle.value (angle₁ tr_nd₂) < 0 := (Triangle.angle_neg_of_clock tr_nd₂ c).1
+    have neg : Angle.value (angle₁ tr_nd₂) < 0 := (tr_nd₂.angle_neg_of_clock c).1
     have neg' : 0 < Angle.value (angle₁ tr_nd₁) := by rw [a₁] ; exact neg_pos.mpr neg
-    exact Triangle.cclock_of_pos_angle tr_nd₁ (.inl neg')
+    exact tr_nd₁.cclock_of_pos_angle (.inl neg')
   exact acongr_of_SSS_of_ne_orientation cosn₁ e₂ e₃ c
 
 /- ASA -/
 theorem congr_of_ASA (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (a₃ : tr_nd₁.angle₃.value = tr_nd₂.angle₃.value) : tr_nd₁ ≅ tr_nd₂ := by
   have a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value := by
     by_cases c : tr_nd₁.is_cclock
-    . have a := Triangle.angle_sum_eq_pi_of_cclock tr_nd₁ c
+    . have a := tr_nd₁.angle_sum_eq_pi_of_cclock c
       have c₂ : tr_nd₂.is_cclock := by
-        apply Triangle.cclock_of_pos_angle
+        apply Triangle_nd.cclock_of_pos_angle
         right ; left
         rw [<-a₂]
-        exact (Triangle.angle_pos_of_cclock tr_nd₁ c).2.1
-      simp only [a₂, a₃, <- Triangle.angle_sum_eq_pi_of_cclock tr_nd₂ c₂, add_left_inj] at a
+        exact (tr_nd₁.angle_pos_of_cclock c).2.1
+      simp only [a₂, a₃, <- tr_nd₂.angle_sum_eq_pi_of_cclock c₂, add_left_inj] at a
       exact a
-    . have a := Triangle.angle_sum_eq_neg_pi_of_clock tr_nd₁ c
+    . have a := tr_nd₁.angle_sum_eq_neg_pi_of_clock c
       have c₂ : ¬  tr_nd₂.is_cclock := by
-        apply Triangle.clock_of_neg_angle
+        apply Triangle_nd.clock_of_neg_angle
         right ; left
         rw [<-a₂]
-        exact (Triangle.angle_neg_of_clock tr_nd₁ c).2.1
-      simp only [a₂, a₃, <- Triangle.angle_sum_eq_neg_pi_of_clock tr_nd₂ c₂, add_left_inj] at a
+        exact (tr_nd₁.angle_neg_of_clock c).2.1
+      simp only [a₂, a₃, <- tr_nd₂.angle_sum_eq_neg_pi_of_clock c₂, add_left_inj] at a
       exact a
   have e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length := by
     have sin := Triangle.sine_rule₂ tr_nd₁
@@ -620,21 +620,21 @@ theorem congr_of_ASA (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value) 
 theorem acongr_of_ASA (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (a₃ : tr_nd₁.angle₃.value = - tr_nd₂.angle₃.value) : tr_nd₁ ≅ₐ tr_nd₂ := by
   have a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value := by
     by_cases c : tr_nd₁.is_cclock
-    . have a := Triangle.angle_sum_eq_pi_of_cclock tr_nd₁ c
+    . have a := tr_nd₁.angle_sum_eq_pi_of_cclock c
       have c₂ : ¬ tr_nd₂.is_cclock := by
-        have temp := (Triangle.angle_pos_of_cclock tr_nd₁ c).2.1
+        have temp := (tr_nd₁.angle_pos_of_cclock c).2.1
         simp only [a₂, Left.neg_pos_iff] at temp
-        exact Triangle.clock_of_neg_angle _ (.inr (.inl temp))
+        exact Triangle_nd.clock_of_neg_angle _ (.inr (.inl temp))
       simp only [a₂, a₃] at a
-      have b := Triangle.angle_sum_eq_neg_pi_of_clock tr_nd₂ c₂
+      have b := tr_nd₂.angle_sum_eq_neg_pi_of_clock c₂
       linarith
-    . have a := Triangle.angle_sum_eq_neg_pi_of_clock tr_nd₁ c
+    . have a := tr_nd₁.angle_sum_eq_neg_pi_of_clock c
       have c₂ : tr_nd₂.is_cclock := by
-        have temp := (Triangle.angle_neg_of_clock tr_nd₁ c).2.1
+        have temp := (tr_nd₁.angle_neg_of_clock c).2.1
         simp only [a₂, Left.neg_neg_iff] at temp
-        exact Triangle.cclock_of_pos_angle _ (.inr (.inl temp))
+        exact Triangle_nd.cclock_of_pos_angle _ (.inr (.inl temp))
       simp only [a₂, a₃] at a
-      have b := Triangle.angle_sum_eq_pi_of_cclock tr_nd₂ c₂
+      have b := tr_nd₂.angle_sum_eq_pi_of_cclock c₂
       linarith
   have e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length := by
     have sin := Triangle.sine_rule₂ tr_nd₁
