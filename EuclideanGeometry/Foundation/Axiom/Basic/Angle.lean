@@ -32,6 +32,7 @@ def IsNeg (θ : Real.Angle) : Prop := sbtw (π: Real.Angle) θ 0
 
 def AngValue.toReal : Real.Angle → ℝ := Real.Angle.toReal
 
+-- should be isomorphism
 def AddDir.toAngValue : Additive Dir →+ AngValue where
   toFun := fun d => (Complex.arg (d : Dir).1 : Real.Angle)
   map_zero' := by simp only [Dir.one_eq_one_toComplex, Complex.arg_one, Real.Angle.coe_zero]
@@ -67,6 +68,7 @@ def AddDir.toAngDValue : Additive Dir →+ AngDValue where
 
 def Dir.toAngDValue : Dir → AngDValue := fun d => AddDir.toAngDValue d
 
+-- should be isomorphism
 def AddProj.toAngDValue : Additive Proj →+ AngDValue where
   toFun := Quotient.lift (fun p => AngValue.toAngDValue (Complex.arg (p : Dir).1 : Real.Angle)) sorry
   map_zero' := sorry
