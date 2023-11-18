@@ -308,6 +308,20 @@ theorem exist_real_vec_eq_smul_of_lies_on_or_rev {A : P} {ray : Ray P} (h : A Li
     rw [Dir.tovec_neg_eq_neg_tovec, smul_neg, ← neg_smul] at eq
     exact eq
 
+theorem lies_on_or_rev_of_exist_real_vec_eq_smul {A : P} {ray : Ray P} (h : ∃ t : ℝ, VEC ray.source A = t • ray.2.1) : A LiesOn ray ∨ A LiesOn ray.reverse := by
+  choose t ht using h
+  by_cases k : (0 ≤ t)
+  · left
+    exact ⟨t,k,ht⟩
+  right
+  let u := -t
+  simp at k
+  have l : 0 ≤ u := sorry
+  have hu : VEC ray.reverse.1 A = u • ray.reverse.2.1 := by
+    simp
+    exact ht
+  exact ⟨u,l,hu⟩
+
 theorem ray_toproj_eq_mk_pt_pt_toproj {A B : P} {ray : Ray P} (h : B ≠ A) (ha : A LiesOn ray ∨ A LiesOn ray.reverse) (hb : B LiesOn ray ∨ B LiesOn ray.reverse) : ray.toProj = (RAY A B h).toProj := by
   rcases exist_real_vec_eq_smul_of_lies_on_or_rev ha with ⟨ta, eqa⟩
   rcases exist_real_vec_eq_smul_of_lies_on_or_rev hb with ⟨tb, eqb⟩
