@@ -31,20 +31,25 @@ theorem DirLC_disjoint_pt_liesout_circle {l : DirLine P} {ω : Circle P} {A : P}
 
 theorem DirLC_intersect_iff_tangent_or_secant {l : DirLine P} {ω : Circle P} : (DirLine.IsIntersected l ω) ↔ (l Tangent ω) ∨ (l Secant ω) := sorry
 
+theorem DirLC_inxwith_iff_intersect {l : DirLine P} {ω : Circle P} : l InxWith ω ↔ DirLine.IsIntersected l ω := sorry
+
+theorem DirLC_inxwith_iff_tangent_or_secant {l : DirLine P} {ω : Circle P} : l InxWith ω ↔ (l Tangent ω) ∨ (l Secant ω) := Iff.trans DirLC_inxwith_iff_intersect DirLC_intersect_iff_tangent_or_secant
+
+
 @[ext]
 structure DirLCInxpts (P : Type _) [EuclideanPlane P] where
   front : P
   back : P
 
-def DirLC_Intersected_pts {l : DirLine P} {ω : Circle P} (h : DirLine.IsIntersected l ω) : DirLCInxpts P where
-  front := sorry
-  back := sorry
+def DirLC_Intersected_pts {l : DirLine P} {ω : Circle P} (h : l InxWith ω) : DirLCInxpts P where
+  front := ((Real.sqrt (ω.radius ^ 2 - (dist_pt_line ω.center l.toLine) ^ 2)) • l.toDir.1) +ᵥ (perp_foot ω.center l.toLine)
+  back := (- (Real.sqrt (ω.radius ^ 2 - (dist_pt_line ω.center l.toLine) ^ 2)) • l.toDir.1) +ᵥ (perp_foot ω.center l.toLine)
 
-theorem DirLC_inx_pts_lieson_circle {l : DirLine P} {ω : Circle P} (h : DirLine.IsIntersected l ω) : ((DirLC_Intersected_pts h).front LiesOn ω) ∧ ((DirLC_Intersected_pts h).back LiesOn ω) := sorry
+theorem DirLC_inx_pts_lieson_circle {l : DirLine P} {ω : Circle P} (h : l InxWith ω) : ((DirLC_Intersected_pts h).front LiesOn ω) ∧ ((DirLC_Intersected_pts h).back LiesOn ω) := sorry
 
-theorem DirLC_inx_pts_same_iff_tangent {l : DirLine P} {ω : Circle P} (h : DirLine.IsIntersected l ω) : (DirLC_Intersected_pts h).front = (DirLC_Intersected_pts h).back ↔ (l Tangent ω) := sorry
+theorem DirLC_inx_pts_same_iff_tangent {l : DirLine P} {ω : Circle P} (h : l InxWith ω) : (DirLC_Intersected_pts h).front = (DirLC_Intersected_pts h).back ↔ (l Tangent ω) := sorry
 
-def DirLC_Tangent_pt {l : DirLine P} {ω : Circle P} (h : l Tangent ω) : P := (DirLC_Intersected_pts (DirLC_intersect_iff_tangent_or_secant.mpr (Or.inl h))).front
+def DirLC_Tangent_pt {l : DirLine P} {ω : Circle P} (h : l Tangent ω) : P := (DirLC_Intersected_pts (DirLC_inxwith_iff_tangent_or_secant.mpr (Or.inl h))).front
 
 lemma DirLC_tangent_pt_ne_center {l : DirLine P} {ω : Circle P} (h : l Tangent ω) : DirLC_Tangent_pt h ≠ ω.center := sorry
 
@@ -52,7 +57,7 @@ theorem DirLC_tangent_pt_center_perp_line {l : DirLine P} {ω : Circle P} (h : l
 
 /- DirLine and circle have at most two intersections. -/
 /- maybe not need -/
-theorem DirLC_intersection_eq_inxpts {l : DirLine P} {ω : Circle P} {A : P} (h : DirLine.IsIntersected l ω) (h₁ : A LiesOn l.toLine) (h₂ : A LiesOn ω) : (A = (DirLC_Intersected_pts h).front) ∨ (A = (DirLC_Intersected_pts h).back) := sorry
+theorem DirLC_intersection_eq_inxpts {l : DirLine P} {ω : Circle P} {A : P} (h : l InxWith ω) (h₁ : A LiesOn l.toLine) (h₂ : A LiesOn ω) : (A = (DirLC_Intersected_pts h).front) ∨ (A = (DirLC_Intersected_pts h).back) := sorry
 
 end Circle
 

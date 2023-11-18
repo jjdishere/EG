@@ -527,15 +527,15 @@ theorem congr_of_SSS_of_eq_orientation (e₁ : tr_nd₁.1.edge₁.length = tr_nd
   have a₃ : tr_nd₁.angle₃.value = tr_nd₂.angle₃.value := by
     let ptr_nd₁ := tr_nd₁.perm_vertices
     let ptr_nd₂ := tr_nd₂.perm_vertices
-    have pe₁ : ptr_nd₁.1.edge₁.length = ptr_nd₂.1.edge₁.length := by
+    have pe₁ : ptr_nd₁.edge₁.length = ptr_nd₂.edge₁.length := by
       simp
       rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₁).2.2,←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₂).2.2]
       exact e₃
-    have pe₂ : ptr_nd₁.1.edge₂.length = ptr_nd₂.1.edge₂.length := by
+    have pe₂ : ptr_nd₁.edge₂.length = ptr_nd₂.edge₂.length := by
       simp
       rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₁).1,←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₂).1]
       exact e₁
-    have pe₃ : ptr_nd₁.1.edge₃.length = ptr_nd₂.1.edge₃.length := by
+    have pe₃ : ptr_nd₁.edge₃.length = ptr_nd₂.edge₃.length := by
       simp
       rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₁).2.1,←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₂).2.1]
       exact e₂
