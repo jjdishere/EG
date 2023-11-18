@@ -166,30 +166,30 @@ end oriented_distance
 
 section point_toray
 
-def Ray.sign (A : P) (ray : Ray P) : ℝ := by
-  by_cases 0 < odist' A ray
+def DirFig.sign (A : P) [DirFig α] (df : α P) : ℝ := by
+  by_cases 0 < odist A df
   · exact 1
-  by_cases odist' A ray < 0
+  by_cases odist A df < 0
   · exact -1
   exact 0
 
-def IsOnLeftSide (A : P) (ray : Ray P) : Prop := by
-  by_cases 0 < odist' A ray
+def IsOnLeftSide (A : P) [DirFig α] (df : α P) : Prop := by
+  by_cases 0 < odist A df
   · exact True
   · exact False
 
-def IsOnRightSide (A : P) (ray : Ray P) : Prop := by
-  by_cases odist' A ray < 0
+def IsOnRightSide (A : P) [DirFig α] (df : α P) : Prop := by
+  by_cases odist A df < 0
   · exact True
   · exact False
 
-def OnLine (A : P) (ray : Ray P) : Prop := by
-  by_cases odist' A ray = 0
+def OnLine (A : P) [DirFig α] (df : α P) : Prop := by
+  by_cases odist A df = 0
   · exact True
   · exact False
 
-def OffLine (A : P) (ray : Ray P) : Prop := by
-  by_cases odist' A ray = 0
+def OffLine (A : P) [DirFig α] (df : α P) : Prop := by
+  by_cases odist A df = 0
   · exact False
   · exact True
 
@@ -221,9 +221,9 @@ scoped infix : 50 "LiesOnRight" => IsOnRightSide
 
 section handside
 
-theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (RAY A B bnea)  ray) : ray.sign A = ray.sign B := by
-  have h0 : odist' A ray = odist' B ray := by
-    unfold odist'
+theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : parallel (RAY A B bnea)  ray) : DirFig.sign A ray = DirFig.sign B ray := by
+  have h0 : odist A ray = odist B ray := by
+    unfold odist
     have h1 : det ray.2.1 (VEC ray.1 B) = det ray.2.1 (VEC ray.1 A) + det ray.2.1 (VEC A B) := by
       rw [←vec_add_vec ray.1 A B]
       rw [det_add_right_eq_add_det]
@@ -238,12 +238,8 @@ theorem same_sign_of_parallel (A B : P) (ray : Ray P) (bnea : B ≠ A) (para : p
     rw [h2] at h1
     rw [add_zero] at h1
     exact h1.symm
-  unfold Ray.sign
+  unfold DirFig.sign
   rw [h0]
-
-theorem no_intersect_of_same_sign (A B : P) (ray : Ray P) (signeq : ((ray.sign A = 1) ∧ (ray.sign B = 1)) ∨ ((ray.sign A = -1) ∧ (ray.sign B = -1))) : ¬∃ (C : P), (Seg.IsOn C (SEG A B)) ∧ (Line.IsOn C ray.toLine) := sorry
-
-theorem intersect_of_diff_sign (A B : P) (ray : Ray P) (signdiff : ((ray.sign A = 1) ∧ (ray.sign B = -1)) ∨ ((ray.sign A = -1) ∧ (ray.sign B = 1))) : ∃ (C : P), (Seg.IsOn C (SEG A B)) ∧ (Line.IsOn C ray.toLine) := sorry
 
 end handside
 
