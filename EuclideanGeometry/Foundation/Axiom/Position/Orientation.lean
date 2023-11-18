@@ -224,11 +224,22 @@ end point_toray
 
 section oriented_area
 
-theorem oarea_eq_length_mul_odist_div_2 (A B C : P) (aneb : B ≠ A) : (oarea A B C) = ((odist C (Seg_nd.mk A B aneb)) * (SEG A B).length) / 2:= sorry
+theorem oarea_eq_length_mul_odist_div_2 (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (Seg_nd.mk A B bnea)) * (SEG A B).length) / 2:= by
+  unfold oarea
+  rw [wedge_eq_odist'_mul_length A B C bnea]
+  have h0 : toDirLine (SEG_nd A B bnea) = toDirLine (RAY A B bnea) := sorry
+  have h1 : odist C (RAY A B bnea) = odist C (SEG_nd A B bnea) := by
+    unfold odist
+    rw[h0]
+  have h2 : odist C (RAY A B bnea) = odist' C (RAY A B bnea) := rfl
+  rw [h2] at h1
+  rw[h1]
 
 theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (Seg_nd.mk A B bnea) = odist D (Seg_nd.mk A B bnea)) ↔ oarea A B C = oarea A B D := sorry
 
-theorem oarea_eq_sine_mul_length_mul_length_div_2 (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : oarea A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) / 2 := sorry
+theorem oarea_eq_sine_mul_length_mul_length_div_2 (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : oarea A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) / 2 := by
+  unfold oarea
+  sorry
 
 theorem oarea_eq_zero_of_colinear (A B C : P) : oarea A B C = 0 ↔ colinear A B C := sorry
 
