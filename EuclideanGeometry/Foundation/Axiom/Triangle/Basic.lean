@@ -81,8 +81,10 @@ variable {P : Type u} [EuclideanPlane P]
 
 namespace Triangle
 
+-- When we have DirFig, rewrite this definition.
 protected def IsInt (A : P) (tr : Triangle P) : Prop := by
   by_cases colinear tr.1 tr.2 tr.3
+  -- why not using ¬ tr.is_nd?
   · exact False
   · let tr_nd : Triangle_nd P := ⟨tr, h⟩
     exact (if tr_nd.is_cclock then A LiesOnLeft Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩ else A LiesOnRight Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩)
@@ -182,7 +184,10 @@ theorem angle_sum_eq_pi_of_cclock (cclock : tr_nd.is_cclock): tr_nd.angle₁.val
 
 theorem angle_sum_eq_neg_pi_of_clock (clock : ¬ tr_nd.is_cclock): tr_nd.angle₁.value + tr_nd.angle₂.value + tr_nd.angle₃.value = - π := sorry
 -/
-theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.length := sorry
+theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.length := by
+  have l₃ : tr.edge₃.length = norm (VEC tr.point₁ tr.point₂) := rfl
+  rw [l₃, ← neg_vec point₂ _, norm_neg, ← vec_add_vec point₂ point₃ point₁]
+  exact norm_add_le _ _
 
 theorem triangle_ineq' (nontriv : tr.is_nd) : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length := sorry
 
