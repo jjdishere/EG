@@ -20,25 +20,14 @@ def wedge (A B C : P) : ℝ := det (VEC A B) (VEC A C)
 def oarea (A B C : P) : ℝ := wedge A B C / 2
 
 theorem wedge213 (A B C : P) : wedge B A C = - wedge A B C := by
-  dsimp only [wedge]
-  have h1 : VEC B A = (-1 : ℝ) • VEC A B := by
-    dsimp only [Vec.mk_pt_pt]
-    rw[Complex.real_smul]
-    field_simp
-  rw [h1, det_smul_left_eq_mul_det, det_eq_neg_det, det_eq_neg_det (VEC A B) _]
-  field_simp
-  have h2 : VEC B C = VEC A C - VEC A B := by
-    dsimp only [Vec.mk_pt_pt]
-    exact Eq.symm (vsub_sub_vsub_cancel_right C B A)
-  rw [h2, det_sub_eq_det]
+  unfold wedge
+  rw [← neg_vec A B, ← neg_one_smul ℝ, det_smul_left_eq_mul_det, det_eq_neg_det, det_eq_neg_det (VEC A B) _, neg_one_mul, neg_neg, neg_neg, ← vec_sub_vec A B C, det_sub_eq_det]
 
 theorem wedge132 (A B C : P) : wedge A C B = - wedge A B C := by
-  dsimp only [wedge]
   apply det_symm
 
 theorem wedge312 (A B C : P) : wedge C A B = wedge A B C := by
-  rw [wedge213, wedge132]
-  ring
+  rw [wedge213, wedge132, neg_neg]
 
 theorem wedge231 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge312, wedge312]
 
