@@ -553,6 +553,8 @@ theorem Dir.eq_toproj_iff (x y : Dir) : x.toProj = y.toProj ↔ x = y ∨ x = -y
 
 theorem Dir.eq_toproj_iff' {x y : Dir} : x.toProj = y.toProj ↔ PM x y := by rw [Dir.eq_toproj_iff, PM]
 
+theorem Dir.neg_toproj_eq {x : Dir} : (- x).toProj = x.toProj := (Dir.eq_toproj_iff (-x) x).mpr (.inr rfl)
+
 def Vec_nd.toProj (v : Vec_nd) : Proj := (Vec_nd.toDir v : Proj)
 
 theorem dir_toVec_nd_toProj_eq_dir_toProj (u : Dir) : u.toVec_nd.toProj = u.toProj := by

@@ -183,16 +183,39 @@ section reverse
 
 variable {α β : (P : Type _) → [EuclideanPlane P] → Type _} [DirFig α] [DirFig β] {l₁ : α P} {l₂ : β P}
 
-theorem DirFig.para_rev_of_para (h : l₁ ∥ l₂) : l₁ ∥ reverse l₂ := sorry
+theorem DirFig.para_rev_of_para (h : l₁ ∥ l₂) : l₁ ∥ reverse l₂ :=
+  h.trans (rev_toProj_eq_toProj l₂).symm
 
 theorem DirFig.not_para_rev_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ l₁ ∥ reverse l₂ :=
   fun hn ↦ h ((para_rev_of_para hn).trans (congrArg ProjObj.toProj (rev_rev l₂)))
 
-theorem Seg_nd.para_rev_of_para {s s' : Seg_nd P} (h : s ∥ s') :  s ∥ s'.reverse :=
+theorem Seg_nd.para_rev_of_para {s s' : Seg_nd P} (h : s ∥ s') : s ∥ s'.reverse :=
   DirFig.para_rev_of_para h
 
-theorem Seg_nd.not_para_rev_of_not_para {s s' : Seg_nd P} (h : ¬ s ∥ s') :  ¬ s ∥ s'.reverse :=
+theorem Seg_nd.not_para_rev_of_not_para {s s' : Seg_nd P} (h : ¬ s ∥ s') : ¬ s ∥ s'.reverse :=
   DirFig.not_para_rev_of_not_para h
+
+theorem Ray.para_rev_of_para {r r' : Ray P} (h : r ∥ r') : r ∥ r'.reverse :=
+  DirFig.para_rev_of_para h
+
+theorem Ray.not_para_rev_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r ∥ r'.reverse :=
+  DirFig.not_para_rev_of_not_para h
+
+theorem DirLine.para_rev_of_para {l l' : DirLine P} (h : l ∥ l') : l ∥ l'.reverse :=
+  DirFig.para_rev_of_para h
+
+theorem DirLine.not_para_rev_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l ∥ l'.reverse :=
+  DirFig.not_para_rev_of_not_para h
+
+theorem DirFig.rev_para_of_para (h : l₁ ∥ l₂) : reverse l₁ ∥ l₂ := sorry
+
+theorem DirFig.not_rev_para_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ l₂ := sorry
+
+theorem DirFig.rev_para_rev_of_para (h : l₁ ∥ l₂) : reverse l₁ ∥ reverse l₂ :=
+  rev_para_of_para (para_rev_of_para h)
+
+theorem DirFig.not_rev_para_rev_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ reverse l₂ :=
+  not_rev_para_of_not_para (not_para_rev_of_not_para h)
 
 end reverse
 
