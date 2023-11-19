@@ -863,7 +863,12 @@ theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : det u v = 0 ↔ (�
     rcases e
     ring
 
-theorem det_eq_zero_of_toProj_eq (u v : Vec_nd) (toprojeq : Vec_nd.toProj u = v.toProj) : det u v = 0 := ((det_eq_zero_iff_eq_smul u.1 v.1 u.2).2) (smul_of_eq_toproj u v toprojeq)
+-- det theorems for Vec_nd
+theorem det_eq_zero_of_toProj_eq (u v : Vec_nd) (toprojeq : u.toProj = v.toProj) : det u v = 0 := ((det_eq_zero_iff_eq_smul u.1 v.1 u.2).2) (smul_of_eq_toproj u v toprojeq)
+
+theorem toProj_eq_of_det_eq_zero (u v : Vec_nd) (det_eq_zero : det u v = 0) : u.toProj = v.toProj := (Vec_nd.eq_toproj_iff u v).mpr ((det_eq_zero_iff_eq_smul u.1 v.1 u.2).1 det_eq_zero)
+
+theorem det_eq_zero_iff_toProj_eq (u v : Vec_nd) : det u v = 0 ↔ u.toProj = v.toProj := ⟨fun z => ((Vec_nd.eq_toproj_iff u v).mpr ((det_eq_zero_iff_eq_smul u.1 v.1 u.2).1 z)), fun z => (((det_eq_zero_iff_eq_smul u.1 v.1 u.2).2) (smul_of_eq_toproj u v z))⟩
 
 theorem det'_ne_zero_of_not_colinear {u v : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : det' u v ≠ 0 := by
   unfold det'
