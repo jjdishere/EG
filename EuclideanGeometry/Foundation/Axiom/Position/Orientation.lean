@@ -33,17 +33,11 @@ theorem wedge231 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge312, wed
 
 theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, wedge231]
 
-theorem wedge_eq_sine_mul_length_mul_length (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) := by
-  dsimp only [wedge]
-  have vecabnd : VEC A B ≠ 0 := by
-   exact (ne_iff_vec_ne_zero A B).mp aneb
-  have vecacnd : VEC A C ≠ 0 := by
-   exact (ne_iff_vec_ne_zero A C).mp anec
-  have h0 : (Angle.mk_pt_pt_pt B A C aneb anec).value = Vec_nd.angle ⟨VEC A B , vecabnd⟩ ⟨VEC A C, vecacnd⟩ := by
-   dsimp only [Angle.mk_pt_pt_pt,Vec_nd.angle,angle_value_eq_dir_angle]
-   rfl
+theorem wedge_eq_sine_mul_length_mul_length (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) := by
+  unfold wedge
+  have h0 : (Angle.mk_pt_pt_pt B A C bnea cnea).value = Vec_nd.angle (VEC_nd A B bnea) (VEC_nd A C cnea)  := rfl
   rw [h0]
-  apply det_eq_sin_mul_norm_mul_norm ⟨VEC A B , vecabnd⟩ ⟨VEC A C, vecacnd⟩
+  apply det_eq_sin_mul_norm_mul_norm (VEC_nd A B bnea) (VEC_nd A C cnea)
 
 theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B C = 0) := by
   dsimp only [wedge]
@@ -118,15 +112,13 @@ theorem odist'_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) :
   rw [mul_comm]
   rfl
 
-theorem wedge_eq_odist'_mul_length (A B C : P) (aneb : B ≠ A) : (wedge A B C) = ((odist' C (RAY A B aneb)) * (SEG A B).length) := by
+theorem wedge_eq_odist'_mul_length (A B C : P) (bnea : B ≠ A) : (wedge A B C) = ((odist' C (RAY A B bnea)) * (SEG A B).length) := by
   by_cases p : C ≠ A
-  rw [wedge_eq_sine_mul_length_mul_length A B C aneb p,odist'_eq_sine_mul_length C (RAY A B aneb),mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B aneb) C p).value)) ((SEG (RAY A B aneb).source C).length) ((SEG A B).length),mul_comm ((SEG (RAY A B aneb).source C).length) ((SEG A B).length),←mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B aneb) C p).value)) ((SEG A B).length) ((SEG (RAY A B aneb).source C).length)]
+  rw [wedge_eq_sine_mul_length_mul_length A B C bnea p,odist'_eq_sine_mul_length C (RAY A B bnea),mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B bnea) C p).value)) ((SEG (RAY A B bnea).source C).length) ((SEG A B).length),mul_comm ((SEG (RAY A B bnea).source C).length) ((SEG A B).length),←mul_assoc (Real.sin ((Angle.mk_ray_pt (RAY A B bnea) C p).value)) ((SEG A B).length) ((SEG (RAY A B bnea).source C).length)]
   congr
-  simp at p
-  have vecac0 : VEC A C = 0 := (eq_iff_vec_eq_zero A C).mp p
-  have vecrayc0 : VEC (RAY A B aneb).source C = 0 := (eq_iff_vec_eq_zero A C).mp p
-  dsimp only [wedge,odist',det]
-  field_simp [vecac0,vecrayc0]
+  have vecrayc0 : VEC (RAY A B bnea).source C = 0 := (eq_iff_vec_eq_zero A C).mp (not_not.1 p)
+  dsimp only [wedge, odist', det]
+  field_simp [(eq_iff_vec_eq_zero A C).mp (not_not.1 p), vecrayc0]
 
 theorem odist'_eq_odist'_of_to_dirline_eq_to_dirline (A : P) (ray ray' : Ray P) (h : same_dir_line ray ray') : odist' A ray = odist' A ray' := by
   have h₁ : ray.2.1 =ray'.2.1 := by
@@ -213,11 +205,11 @@ end point_toray
 
 section oriented_area
 
-theorem oarea_eq_length_mul_odist_div_2 (A B C : P) (aneb : B ≠ A) : (oarea A B C) = ((odist C (Seg_nd.mk A B aneb)) * (SEG A B).length) / 2:= sorry
+theorem oarea_eq_length_mul_odist_div_2 (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (Seg_nd.mk A B bnea)) * (SEG A B).length) / 2:= sorry
 
 theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (Seg_nd.mk A B bnea) = odist D (Seg_nd.mk A B bnea)) ↔ oarea A B C = oarea A B D := sorry
 
-theorem oarea_eq_sine_mul_length_mul_length_div_2 (A B C : P) (aneb : B ≠ A) (anec : C ≠ A) : oarea A B C = (Real.sin (Angle.mk_pt_pt_pt B A C aneb anec).value * (SEG A B).length *(SEG A C).length) / 2 := sorry
+theorem oarea_eq_sine_mul_length_mul_length_div_2 (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : oarea A B C = (Real.sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) / 2 := sorry
 
 theorem oarea_eq_zero_of_colinear (A B C : P) : oarea A B C = 0 ↔ colinear A B C := sorry
 
