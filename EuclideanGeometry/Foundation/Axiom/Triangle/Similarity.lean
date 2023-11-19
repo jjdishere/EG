@@ -70,10 +70,10 @@ instance instHasASim : HasASim (Triangle_nd P) where
   asim := IsASim
   symm := IsASim.symm
 
-variable (h : IsSim tr₁ tr₂)
+variable (h : IsASim tr₁ tr₂)
 
 /- If $tr_1 ∼ tr_2$, then ... -/
-def ratio (h : IsSim tr₁ tr₂) : ℝ := tr₁.edge₁.length / tr₂.edge₁.length
+def ratio (h : IsASim tr₁ tr₂) : ℝ := tr₁.edge₁.length / tr₂.edge₁.length
 
 variable (h : IsSim tr₁ tr₂)
 

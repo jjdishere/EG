@@ -118,8 +118,8 @@ instance : DirFig Seg_nd where
   todir_toproj_eq_toproj := rfl
   todirline_toline_eq_toline := rfl
   reverse := Seg_nd.reverse
-  rev_rev := Seg_nd.rev_rev_eq_self
-  todirline_rev_eq_to_rev_dirline := Seg_nd.todirline_rev_eq_rev_toline
+  rev_rev _ := Seg_nd.rev_rev_eq_self
+  todirline_rev_eq_to_rev_dirline _ := Seg_nd.todirline_rev_eq_rev_toline
 
 instance : DirFig Ray where
   carrier := Ray.carrier
@@ -134,8 +134,8 @@ instance : DirFig Ray where
   todir_toproj_eq_toproj := rfl
   todirline_toline_eq_toline := rfl
   reverse := Ray.reverse
-  rev_rev := Ray.rev_rev_eq_self
-  todirline_rev_eq_to_rev_dirline := Ray.todirline_rev_eq_rev_toline
+  rev_rev _ := Ray.rev_rev_eq_self
+  todirline_rev_eq_to_rev_dirline _ := Ray.todirline_rev_eq_rev_toline
 
 instance : DirFig DirLine where
   carrier := DirLine.carrier
