@@ -86,6 +86,10 @@ theorem Seg.target_lies_on_rev (seg : Seg P) : seg.target LiesOn seg.reverse := 
 
 theorem Seg.source_lies_on_rev (seg : Seg P) : seg.source LiesOn seg.reverse := target_lies_on
 
+theorem Seg_nd.target_lies_on_rev (seg_nd : Seg_nd P) : seg_nd.target LiesOn seg_nd.reverse := source_lies_on
+
+theorem Seg_nd.source_lies_on_rev (seg_nd : Seg_nd P) : seg_nd.source LiesOn seg_nd.reverse := target_lies_on
+
 /-- Given a segment and a point, the point lies on the segment if and only if it lies on the reverse of the segment. -/
 theorem Seg.lies_on_iff_lies_on_rev {A : P} {seg : Seg P} : A LiesOn seg ↔ A LiesOn seg.reverse := by
   unfold lies_on Fig.carrier instIntFigSeg
@@ -122,6 +126,12 @@ theorem Seg.lies_int_iff_lies_int_rev {A : P} {seg : Seg P} : A LiesInt seg ↔ 
   exact ⟨Seg.lies_on_iff_lies_on_rev.mp ha,⟨nontarget,nonsource⟩⟩
   rintro ⟨ha,⟨nonrevsource,nonrevtarget⟩⟩
   exact ⟨Seg.lies_on_iff_lies_on_rev.mpr ha,⟨nonrevtarget,nonrevsource⟩⟩
+
+/-- Given a nondegenerate segment and a point, the point lies on the segment if and only if it lies on the reverse of the segment. -/
+theorem Seg_nd.lies_on_iff_lies_on_rev {A : P} {seg_nd : Seg_nd P} : A LiesOn seg_nd ↔ A LiesOn seg_nd.reverse := seg_nd.1.lies_on_iff_lies_on_rev
+
+/-- Given a nondegenerate segment and a point, the point lies in the interior of the segment if and only if it lies in the interior of the reverse of the segment. -/
+theorem Seg_nd.lies_int_iff_lies_int_rev {A : P} {seg_nd : Seg_nd P} : A LiesInt seg_nd ↔ A LiesInt seg_nd.reverse := seg_nd.1.lies_int_iff_lies_int_rev
 
 /-- Given a ray and a point, the point is equal to the source of the ray if and only if it lies on the ray and it lies on the reverse of the ray. -/
 theorem Ray.eq_source_iff_lies_on_and_lies_on_rev {A : P} {ray : Ray P} : A = ray.source ↔ (A LiesOn ray) ∧ (A LiesOn ray.reverse) := by
@@ -285,12 +295,28 @@ theorem length_eq_length_of_rev (seg : Seg P) : seg.length = seg.reverse.length 
   simp only [Vec.norm]
   norm_num
 
+theorem nd_length_eq_length_of_rev (seg_nd : Seg_nd P) : seg_nd.length = seg_nd.reverse.length := length_eq_length_of_rev seg_nd.1
+
 theorem exist_real_vec_eq_smul_of_lies_on_or_rev {A : P} {ray : Ray P} (h : A LiesOn ray ∨ A LiesOn ray.reverse) : ∃ t : ℝ, VEC ray.source A = t • ray.2.1 := by
   rcases h with ⟨t, _, eq⟩ | ⟨t, _, eq⟩
   · use t, eq
   · use - t
     rw [Dir.tovec_neg_eq_neg_tovec, smul_neg, ← neg_smul] at eq
     exact eq
+
+theorem lies_on_or_rev_of_exist_real_vec_eq_smul {A : P} {ray : Ray P} (h : ∃ t : ℝ, VEC ray.source A = t • ray.2.1) : A LiesOn ray ∨ A LiesOn ray.reverse := by
+  choose t ht using h
+  by_cases k : (0 ≤ t)
+  · left
+    exact ⟨t,k,ht⟩
+  right
+  let u := -t
+  simp at k
+  have l : 0 ≤ u := sorry
+  have hu : VEC ray.reverse.1 A = u • ray.reverse.2.1 := by
+    simp
+    exact ht
+  exact ⟨u,l,hu⟩
 
 theorem ray_toproj_eq_mk_pt_pt_toproj {A B : P} {ray : Ray P} (h : B ≠ A) (ha : A LiesOn ray ∨ A LiesOn ray.reverse) (hb : B LiesOn ray ∨ B LiesOn ray.reverse) : ray.toProj = (RAY A B h).toProj := by
   rcases exist_real_vec_eq_smul_of_lies_on_or_rev ha with ⟨ta, eqa⟩

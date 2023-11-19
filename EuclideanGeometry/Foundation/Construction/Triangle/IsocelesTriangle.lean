@@ -131,7 +131,7 @@ rcases this with k4 | k5
 theorem ang_eq_sixty_deg_of_cclock_regular_tri (tri_nd : Triangle_nd P) (cclock : tri_nd.is_cclock)(h : tri_nd.1.IsRegular) : tri_nd.angle₁.value= (π / 3) ∧ tri_nd.angle₂.value = π / 3 ∧ tri_nd.angle₃.value = π / 3 := by
 rw [regular_tri_iff_eq_angle_of_nd_tri] at h
 rcases h with ⟨h1, h2⟩
-have h3 := Triangle.angle_sum_eq_pi_of_cclock tri_nd cclock
+have h3 := Triangle_nd.angle_sum_eq_pi_of_cclock tri_nd cclock
 rw [← h1, ← h2, ← mul_one tri_nd.angle₁.value , ← mul_add, ← mul_add] at h3
 norm_num at h3
 rw [← eq_div_iff] at h3
@@ -147,7 +147,7 @@ norm_num
 theorem ang_eq_sixty_deg_of_acclock_regular_tri (tri_nd : Triangle_nd P) (acclock : ¬ tri_nd.is_cclock)(h : tri_nd.1.IsRegular) : tri_nd.angle₁.value= - π / 3 ∧ tri_nd.angle₂.value = - π / 3 ∧ tri_nd.angle₃.value = - π / 3 := by
 rw [regular_tri_iff_eq_angle_of_nd_tri] at h
 rcases h with ⟨h1, h2⟩
-have h3 := Triangle.angle_sum_eq_neg_pi_of_clock tri_nd acclock
+have h3 := Triangle_nd.angle_sum_eq_neg_pi_of_clock tri_nd acclock
 rw [← h1, ← h2, ← mul_one tri_nd.angle₁.value , ← mul_add, ← mul_add] at h3
 norm_num at h3
 rw [← eq_div_iff] at h3
@@ -163,11 +163,11 @@ norm_num
 theorem regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg(tri_nd : Triangle_nd P) (h : tri_nd.angle₁.value = π /3 ∨ tri_nd.angle₁.value = - π / 3)(h1 : tri_nd.1.IsIsoceles) : tri_nd.1.IsRegular := by
 rcases h with (p1 | p2)
 have cclock : tri_nd.is_cclock := by
-  apply Triangle.cclock_of_pos_angle
+  apply Triangle_nd.cclock_of_pos_angle
   left
   rw [p1]
   linarith [Real.pi_pos]
-have sum₁ := Triangle.angle_sum_eq_pi_of_cclock tri_nd cclock
+have sum₁ := Triangle_nd.angle_sum_eq_pi_of_cclock tri_nd cclock
 have h2 : tri_nd.angle₂.value = π / 3 := by
   rw [← is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp h1] at sum₁
   linarith [sum₁]
@@ -178,11 +178,11 @@ constructor
 rw [p1, h2]
 rw [p1, h3]
 have clock : ¬ tri_nd.is_cclock := by
-  apply Triangle.clock_of_neg_angle
+  apply Triangle_nd.clock_of_neg_angle
   left
   rw [p2]
   linarith [Real.pi_pos]
-have sum₂ := Triangle.angle_sum_eq_neg_pi_of_clock tri_nd clock
+have sum₂ := Triangle_nd.angle_sum_eq_neg_pi_of_clock tri_nd clock
 have f4 : tri_nd.angle₂.value = -π / 3 := by
   rw [← is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp h1, p2] at sum₂
   linarith [sum₂]
@@ -200,22 +200,22 @@ apply regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg
 rcases h with (p1 | p2)
 left
 have h2 : tri_nd.is_cclock := by
-  apply Triangle.cclock_of_pos_angle
+  apply Triangle_nd.cclock_of_pos_angle
   right
   left
   rw [p1]
   linarith [Real.pi_pos]
-have h3 := Triangle.angle_sum_eq_pi_of_cclock tri_nd h2
+have h3 := Triangle_nd.angle_sum_eq_pi_of_cclock tri_nd h2
 rw [← is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp h1, p1] at h3
 linarith [h3]
 right
 have f3 : ¬ tri_nd.is_cclock := by
-  apply Triangle.clock_of_neg_angle
+  apply Triangle_nd.clock_of_neg_angle
   right
   left
   rw [p2]
   linarith [Real.pi_pos]
-have f3 := Triangle.angle_sum_eq_neg_pi_of_clock tri_nd f3
+have f3 := Triangle_nd.angle_sum_eq_neg_pi_of_clock tri_nd f3
 rw [← is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp h1, p2] at f3
 linarith [f3]
 exact h1
@@ -225,22 +225,22 @@ apply regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg
 rcases h with (p1 | p2)
 left
 have h2 : tri_nd.is_cclock := by
-  apply Triangle.cclock_of_pos_angle
+  apply Triangle_nd.cclock_of_pos_angle
   right
   right
   rw [p1]
   linarith [Real.pi_pos]
-have h3 := Triangle.angle_sum_eq_pi_of_cclock tri_nd h2
+have h3 := Triangle_nd.angle_sum_eq_pi_of_cclock tri_nd h2
 rw [is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp h1, p1] at h3
 linarith [h3]
 right
 have f2 : ¬ tri_nd.is_cclock := by
-  apply Triangle.clock_of_neg_angle
+  apply Triangle_nd.clock_of_neg_angle
   right
   right
   rw [p2]
   linarith [Real.pi_pos]
-have f3 := Triangle.angle_sum_eq_neg_pi_of_clock tri_nd f2
+have f3 := Triangle_nd.angle_sum_eq_neg_pi_of_clock tri_nd f2
 rw [is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp h1, p2] at f3
 linarith [f3]
 exact h1
