@@ -74,7 +74,7 @@ theorem Vec.norm_smul_eq_mul_norm {x : ℝ} (x_nonneg : 0 ≤ x) (u : Vec) : Vec
   tauto
 
 @[simp]
-theorem norm_neg_Vec_eq_norm_Vec (z : Vec) : Vec.norm (-z) = Vec.norm z := by
+theorem neg_Vec_norm_eq_Vec_norm (z : Vec) : Vec.norm (-z) = Vec.norm z := by
   have h : Complex.abs (-z) = Complex.abs (z) := by
     simp only [map_neg_eq_map]
   unfold Vec.norm
@@ -111,8 +111,8 @@ theorem fst_of_mul_eq_fst_mul_fst (z w : Vec_nd) : (z * w).1 = z.1 * w.1 := by r
 theorem norm_of_Vec_nd_eq_norm_of_Vec_nd_fst (z : Vec_nd) : Vec_nd.norm z = Vec.norm z := rfl
 
 @[simp]
-theorem neg_norm_eq_norm (x : Vec_nd) : (-x).norm = x.norm := by
-  simp only [ne_eq, fst_neg_Vec_nd_is_neg_fst_Vec_nd, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, norm_neg_Vec_eq_norm_Vec]
+theorem neg_Vec_nd_norm_eq_Vec_nd_norm (x : Vec_nd) : (-x).norm = x.norm := by
+  simp only [ne_eq, fst_neg_Vec_nd_is_neg_fst_Vec_nd, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, neg_Vec_norm_eq_Vec_norm]
 
 @[ext]
 class Dir where

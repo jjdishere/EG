@@ -21,7 +21,7 @@ theorem cosine_rule (tr_nd : Triangle_nd P) : 2 * (tr_nd.edge₃.length * tr_nd.
   have h₄ : Vec.norm (⟨VEC A C, (ne_iff_vec_ne_zero A C).mp (Ne.symm tr_nd.nontriv₂)⟩ : Vec_nd) = Vec.norm (⟨VEC C A, (ne_iff_vec_ne_zero C A).mp (tr_nd.nontriv₂)⟩ : Vec_nd) := by
     simp only [ne_eq]
     rw [← neg_vec A C]
-    simp only [norm_neg_Vec_eq_norm_Vec]
+    simp only [neg_Vec_norm_eq_Vec_norm]
   have h₅ : Seg.length (SEG A C) = Seg.length (SEG C A) := by
     unfold Seg.length Seg.toVec
     rw [← neg_vec (SEG A C).target (SEG A C).source]
