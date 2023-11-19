@@ -17,43 +17,18 @@ theorem cosine_rule (tr_nd : Triangle_nd P) : 2 * (tr_nd.edge₃.length * tr_nd.
   let A := tr_nd.1.point₁
   let B := tr_nd.1.point₂
   let C := tr_nd.1.point₃
-  dsimp only [Seg.length]
-  simp
-  have h : ¬colinear A B C := (tr_nd).2
-  have h0 : B ≠ A := by
-    intro k
-    rw [←k] at h
-    exact h (triv_colinear B C)
-  have h1 : C ≠ A := by
-    intro k
-    rw [←k] at h
-    have p : ¬colinear C C B := by
-     intro k
-     exact h (flip_colinear_snd_trd k)
-    exact p (triv_colinear C B)
-  have h2 : A ≠ C := Ne.symm h1
-  have h3 : 2 * (Vec.norm (⟨VEC A B,(ne_iff_vec_ne_zero A B).mp h0⟩ : Vec_nd) * Vec.norm (⟨VEC A C,(ne_iff_vec_ne_zero A C).mp h1⟩ : Vec_nd) * Real.cos (Vec_nd.angle ⟨VEC A B,(ne_iff_vec_ne_zero A B).mp h0⟩ ⟨VEC A C,(ne_iff_vec_ne_zero A C).mp h1⟩)) = Seg.length (SEG A B) ^ 2 + Seg.length (SEG A C) ^ 2 - Seg.length (SEG B C) ^ 2 := cosine_rule' A B C h0 h1
-  have h4 : Vec.norm (⟨VEC A C,(ne_iff_vec_ne_zero A C).mp h1⟩ : Vec_nd) = Vec.norm (⟨VEC C A,(ne_iff_vec_ne_zero C A).mp h2⟩ : Vec_nd) := by
-    unfold Vec.norm; simp; unfold Vec.mk_pt_pt
-    have l0 : A -ᵥ C = -1 * (C -ᵥ A) := by
-      rw [neg_one_mul]
-      simp
-    rw [l0,map_mul Complex.abs (-1) (C -ᵥ A)]
-    have l1: Complex.abs (-1)=1 := by simp
-    rw [l1,one_mul]
-  have h5 : Seg.length (SEG A C)=Seg.length (SEG C A) := by
-    unfold Seg.length
-    simp; unfold Vec.mk_pt_pt
-    have l0 : A -ᵥ C = -1 * (C -ᵥ A) := by
-      rw [neg_one_mul]
-      simp
-    rw [l0,map_mul Complex.abs (-1) (C -ᵥ A)]
-    have l1 : Complex.abs (-1) = 1 := by simp
-    rw [l1,one_mul]
-  rw [h4] at h3
-  unfold Vec.norm at h3;
-  rw [h5] at h3; unfold Seg.length at h3; simp at h3
-  exact h3
+  let h₃ := cosine_rule' A B C (tr_nd.nontriv₃) (Ne.symm tr_nd.nontriv₂)
+  have h₄ : Vec.norm (⟨VEC A C, (ne_iff_vec_ne_zero A C).mp (Ne.symm tr_nd.nontriv₂)⟩ : Vec_nd) = Vec.norm (⟨VEC C A, (ne_iff_vec_ne_zero C A).mp (tr_nd.nontriv₂)⟩ : Vec_nd) := by
+    simp only [ne_eq]
+    rw [← neg_vec A C]
+    simp only [norm_neg_Vec_eq_norm_Vec]
+  have h₅ : Seg.length (SEG A C) = Seg.length (SEG C A) := by
+    unfold Seg.length Seg.toVec
+    rw [← neg_vec (SEG A C).target (SEG A C).source]
+    simp only [norm_neg, Complex.norm_eq_abs]
+  rw [h₄, h₅] at h₃
+  simp only [ne_eq, Nat.cast_ofNat] at h₃
+  exact h₃
 
 theorem cosine_rule'' (tr_nd : Triangle_nd P) : tr_nd.edge₁.length = (tr_nd.edge₃.length ^ 2 + tr_nd.edge₂.length ^ 2 -  2 * (tr_nd.edge₃.length * tr_nd.edge₂.length * Real.cos tr_nd.angle₁.value)) ^ (1/2) := by sorry
 
@@ -99,6 +74,8 @@ end Pythagoras
 
 section Non_trivial_triangle_inequalities
 
+namespace Triangle
+
 theorem triangle_ineq' (tr_nd : Triangle_nd P) : tr_nd.edge₁.length + tr_nd.edge₂.length > tr_nd.edge₃.length := sorry
 
 theorem trivial_of_edge_sum_eq_edge (tr : Triangle P) : tr.edge₁.length + tr.edge₂.length = tr.edge₃.length → ¬ tr.is_nd  := sorry
@@ -110,6 +87,8 @@ theorem nontrivial_of_edge_sum_gt_edge (tr : Triangle P) : tr.edge₁.length + t
 
 theorem edge_sum_eq_edge_iff_colinear (tr : Triangle P) :  colinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry
 /- area ≥ 0, nontrivial → >0, =0 → trivial -/
+
+end Triangle
 
 end Non_trivial_triangle_inequalities
 
