@@ -70,4 +70,5 @@ theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
     · exact ang2
     · exact seg1
   exact h.edge₂
+
 end Problem1_2_
