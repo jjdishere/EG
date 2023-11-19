@@ -30,6 +30,6 @@ variable {P : Plane} {hd : P = perp_foot D (LIN B C b_ne_c.symm)}
 -- Let $Q$ be the foot of perpendicular from $E$ to $BC$.
 variable {Q : Plane} {hd : Q = perp_foot E (LIN B C b_ne_c.symm)}
 -- Prove that $DP = EQ$.
-theorem Problem1_2_ : (SEG D M).length = (SEG E M).length := by sorry
+theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by sorry
 
 end Problem1_2_
