@@ -250,7 +250,7 @@ theorem online_iff_lies_on_line (A : P) [DirFig α] (df : α P) : Line.IsOn A (t
   exact online_iff_lies_on_line' A (toDirLine df)
 
 theorem off_line_iff_not_online (A : P) [DirFig α] (df : α P) : OffLine A df ↔ ¬OnLine A df := by
-  sorry
+  rfl
 
 /- Relation of position of points on a ray and directed distance-/
 
@@ -258,7 +258,7 @@ end point_toray
 
 section oriented_area
 
-theorem oarea_eq_length_mul_odist_div_2 (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (Seg_nd.mk A B bnea)) * (SEG A B).length) / 2:= by
+theorem oarea_eq_length_mul_odist_div_two (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (Seg_nd.mk A B bnea)) * (SEG A B).length) / 2:= by
   unfold oarea
   rw [wedge_eq_odist'_mul_length A B C bnea]
   have h0 : toDirLine (SEG_nd A B bnea) = toDirLine (RAY A B bnea) := rfl
@@ -269,15 +269,23 @@ theorem oarea_eq_length_mul_odist_div_2 (A B C : P) (bnea : B ≠ A) : (oarea A 
   rw [h2] at h1
   rw[h1]
 
-theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (Seg_nd.mk A B bnea) = odist D (Seg_nd.mk A B bnea)) ↔ oarea A B C = oarea A B D := sorry
+theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (Seg_nd.mk A B bnea) = odist D (Seg_nd.mk A B bnea)) ↔ oarea A B C = oarea A B D := by
+  unfold oarea
+  field_simp
+  exact wedge_eq_wedge_iff_odist_eq_odist_of_ne A B C D bnea
 
-theorem oarea_eq_sine_mul_length_mul_length_div_2 (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : oarea A B C = (Real.sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) / 2 := by
+theorem oarea_eq_sine_mul_length_mul_length_div_two (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : oarea A B C = (Real.sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) / 2 := by
   unfold oarea
   rw[wedge_eq_sine_mul_length_mul_length A B C bnea cnea]
 
-theorem oarea_eq_zero_of_colinear (A B C : P) : oarea A B C = 0 ↔ colinear A B C := sorry
+theorem oarea_eq_zero_iff_colinear (A B C : P) : oarea A B C = 0 ↔ colinear A B C := by
+  unfold oarea
+  field_simp
+  exact (colinear_iff_wedge_eq_zero A B C).symm
 
-theorem oarea_tri_nd_ne_zero (A B C : P) (trind : ¬ colinear A B C) : oarea A B C ≠ 0 := sorry
+theorem oarea_tri_nd_ne_zero (A B C : P) (trind : ¬ colinear A B C) : oarea A B C ≠ 0 := by
+  rw[← oarea_eq_zero_iff_colinear A B C] at trind
+  tauto
 
 end oriented_area
 
