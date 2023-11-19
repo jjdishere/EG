@@ -894,11 +894,21 @@ section dist
 namespace DirLine
 
 instance (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
-  vadd := sorry
-  zero_vadd := sorry
-  add_vadd := sorry
-  vsub := sorry
-  Nonempty := sorry
+  vadd := fun x ⟨A, ha⟩ ↦ ⟨x • l.toDir.1 +ᵥ A, lies_on_of_exist_real_vec_eq_smul_toDir ha (vadd_vsub _ A)⟩
+  zero_vadd := by
+    intro ⟨A, ha⟩
+    apply Subtype.val_inj.mp
+    show (0 : ℝ) • l.toDir.1 +ᵥ A = A
+    rw [zero_smul, zero_vadd]
+  add_vadd := by
+    intro x y ⟨A, ha⟩
+    apply Subtype.val_inj.mp
+    show (x + y) • l.toDir.1 +ᵥ A = x • l.toDir.1 +ᵥ (y • l.toDir.1 +ᵥ A)
+    rw [add_smul, add_vadd]
+  vsub := fun ⟨A, ha⟩ ⟨B, hb⟩ ↦ inner (A -ᵥ B) l.toDir.1
+  Nonempty := by
+    rcases l.nontriv with ⟨A, _, ha, _⟩
+    exact ⟨A, ha⟩
   vsub_vadd' := sorry
   vadd_vsub' := sorry
   dist_eq_norm' := sorry
@@ -907,9 +917,9 @@ def ddist {l : DirLine P} {A : P} {B : P} (ha : A LiesOn l) (hb : B LiesOn l) : 
   (⟨B, hb⟩ : l.carrier.Elem) -ᵥ ⟨A, ha⟩
 
 instance (l : DirLine P) : LinearOrder l.carrier.Elem where
-  le := sorry
-  lt := sorry
-  le_refl := sorry
+  le A B := A -ᵥ B ≤ 0
+  lt A B := A -ᵥ B < 0
+  le_refl A := by simp only [vsub_self, le_refl]
   le_trans := sorry
   lt_iff_le_not_le := sorry
   le_antisymm := sorry
@@ -917,9 +927,9 @@ instance (l : DirLine P) : LinearOrder l.carrier.Elem where
   max := sorry
   compare := sorry
   le_total := sorry
-  decidableLE := sorry
-  decidableEq := sorry
-  decidableLT := sorry
+  decidableLE := decRel fun _ ↦ _
+  decidableEq := decRel fun _ ↦ _
+  decidableLT := decRel fun _ ↦ _
   min_def := sorry
   max_def := sorry
   compare_eq_compareOfLessAndEq := sorry
