@@ -24,6 +24,7 @@ variable {D E : P} {hd : D LiesOn (SEG_nd B A a_ne_b).extension} {he : E LiesOn 
 -- We have $AE = BD$
 variable {h : (SEG A E).length = (SEG A E).length}
 
+-- Theorem : $CE = DE$
 theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := sorry
 
 end Shan_Problem_2_11
@@ -50,6 +51,7 @@ lemma g_ne_e : G ≠ E := sorry
 -- $H$ is the intersection of line $DF$ and $EG$
 variable {H : P} {hh : is_inx H (LIN D F f_ne_d) (LIN E G g_ne_e)}
 
+-- Theorem : quadrilateral $ABCH$ is parallelogram
 theorem Shan_Problem_2_22 : QDR A B C H IsPRG := sorry
 
 end Shan_Problem_2_22
@@ -82,6 +84,7 @@ variable {hpara : (SEG_nd A F f_ne_a) ∥ (SEG_nd B E e_ne_b)}
 lemma g_ne_a : G ≠ A := sorry
 lemma d_ne_c : D ≠ C := sorry
 
+-- Theorem : $AG \parallel DC$
 theorem Shan_Problem_2_36 : (SEG_nd A G g_ne_a) ∥ (SEG_nd C D d_ne_c) := sorry
 
 end Shan_Problem_2_36
@@ -106,6 +109,7 @@ variable {E F : P} {he : E = perp_foot B (LIN A C c_ne_a)} {hf : F = perp_foot C
 -- We have $AE = 2 EC$
 variable {h : (SEG A E).length = 2 * (SEG E C).length}
 
+-- Theorem : $AF = 3 FB$
 theorem Shan_Problem_2_37 : (SEG A F).length = 3 * (SEG F B).length := sorry
 
 end Shan_Problem_2_37
@@ -131,6 +135,8 @@ lemma c_ne_d : C ≠ D := sorry
 variable {E F : P} {he : is_inx E (ANG A D B a_ne_d b_ne_d).AngBis (SEG A B)} {hf : is_inx F (ANG A D C a_ne_d c_ne_d).AngBis (SEG A C)}
 -- Claim: $F \ne E$
 lemma f_ne_e : F ≠ E := sorry
+
+-- Theorem : $EF \parallel BC$
 theorem Shan_Problem_2_38 : (SEG_nd E F f_ne_e) ∥ (SEG_nd B C b_ne_c.symm) := sorry
 
 end Shan_Problem_2_38
@@ -150,6 +156,7 @@ variable {E : P} {he : E LiesInt (SEG A C) ∧ (SEG A E).length = 2 * (SEG C E).
 -- $CD,BE$ intersects at $O$
 variable {O : P} {ho : is_inx O (SEG C D) (SEG B E)}
 
+-- Theorem : $OE = \frac{1}{4} BE$
 theorem Shan_Problem_2_42 : (SEG O E).length = (1 / 4) * (SEG B E).length := sorry
 
 end Shan_Problem_2_42
@@ -167,14 +174,46 @@ lemma b_ne_c : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $E,F$ lies on $AB$ such that $AE = FB$
 variable {E F : P} {he : E LiesInt (SEG A B)} {hf : F LiesInt (SEG A B)} {hef : (SEG A E).length = (SEG F B).length}
--- $G,H$ lies on $BC$
-variable {G H : P} {hg : G LiesInt (SEG B C)} {hh : H LiesInt (SEG B C)}
--- Claim : $G \ne E$ and $H \ne F$
-lemma g_ne_e : G ≠ E := sorry
-lemma h_ne_f : H ≠ F := sorry
--- $EG \parallel AC$ and $FH \parallel AC$
-variable {para₁ : (SEG_nd E G g_ne_e) ∥ (SEG_nd A C c_ne_a)} {para₂ : (SEG_nd F H h_ne_f) ∥ (SEG_nd A C c_ne_a)}
+-- 此处以后可能会专门加上过一个点做平行线的定义,从而更改条件的叙述
+-- $l_1,l_2$ are parallel lines to $AC$ of $E,F$ respectively
+variable {l₁ l₂ : Line P} {hl₁ : l₁ ∥ (SEG_nd A C c_ne_a) ∧ E LiesOn l₁} {hl₂ : l₂ ∥ (SEG_nd A C c_ne_a) ∧ F LiesOn l₂}
+-- $l_1,l_2$ intersect $BC$ at $G,H$ respectively
+variable {G H : P} {hg : is_inx G l₁ (SEG B C)} {hh : is_inx H l₂ (SEG B C)}
 
+-- Theorem : $EG + FH = AC$
 theorem Shan_Problem_2_43 :(SEG E G).length + (SEG F H).length = (SEG A C).length := sorry
 
 end Shan_Problem_2_43
+
+namespace Shan_Problem_2_44
+/- $A,B,C$ are points on line $l$ such that $\frac{AB}{BC} = \frac{m}{n}$,
+$A₁,B₁,C₁$ are points on line $l₁$ such that $AA₁ \parallel BB₁ \parallel CC₁$.
+Prove that $BB₁ = \frac{n}{m+n} AA₁ + \frac{m}{m+n} CC₁$-/
+
+-- We have line $l$ and points $A,B,C$ lies on $l$
+variable {l : Line P} {A B C : P} {ha : A LiesOn l} {hb : B LiesOn l} {hc : C LiesOn l}
+-- We have $\frac{AB}{BC} = \frac{m}{n}$
+variable {m n : ℝ} {hpos : m > 0 ∧ n > 0} {hratio : (SEG A B).length / (SEG B C).length = m / n}
+-- We have line $l₁$ and points $A₁,B₁,C₁$ lies on $l₁$
+variable {l₁ : Line P} {A₁ B₁ C₁ : P} {ha₁ : A₁ LiesOn l₁} {hb₁ : B₁ LiesOn l₁} {hc₁ : C₁ LiesOn l₁}
+-- We have $A \ne A₁$, $B \ne B₁$, $C \ne C₁$ and $AA₁ \parallel BB₁ \parallel CC₁$
+variable {nea : A₁ ≠ A} {neb : B₁ ≠ B} {nec : C₁ ≠ C} {hpara₁ : (SEG_nd A A₁ nea) ∥ (SEG_nd B B₁ neb)} {hpara₂ : (SEG_nd B B₁ neb) ∥ (SEG_nd C C₁ nec)}
+
+-- Theorem : $BB₁ = \frac{n}{m+n} AA₁ + \frac{m}{m+n} CC₁$
+theorem Shan_Problem_2_44 : (SEG B B₁).length = (n / (m+n)) * (SEG A A₁).length + (m/(m+n)) * (SEG C C₁).length := sorry
+
+end Shan_Problem_2_44
+
+namespace Shan_Problem_2_48
+/- $ABCD$ are convex quadrilateral, $AC$ and $BD$ intersect at $E$,
+Prove that area of $\triangle ABD$ : area of $\triangle CBD = AE : CE$  -/
+
+-- We have convex quadrilateral $ABCD$
+variable {A B C D : P} {hcvx : (QDR A B C D) IsConvex}
+-- $AD$ and $BC$ intersect at $E$
+variable {E : P} {he : is_inx E (SEG A D) (SEG B C)}
+
+-- Theorem : area of $\triangle ABC :$ area of $\triangle DBC = AE : DE$
+theorem Shan_Problem_2_48 : Triangle.area (▵ A B D) / Triangle.area (▵ C B D) = (SEG A E).length / (SEG D E).length := sorry
+
+end Shan_Problem_2_48

@@ -26,7 +26,9 @@ variable {D : P} {hd_1 : D LiesInt (SEG_nd A B a_ne_b).extension}
 -- $E$ is the midpoint of $AB$
 variable {E : P} {he : E = (SEG A B).midpoint}
 
+-- Theorem : $CD = 2 \cdot CE$
 theorem Shan_Problem_1_3 : (SEG C D).length = 2 * (SEG C E).length := sorry
+
 end Shan_Problem_1_3
 
 namespace Shan_Problem_1_4
@@ -45,6 +47,7 @@ variable {hang : ∠ B C A b_ne_c c_ne_a.symm = 2 * ∠ C B A b_ne_c.symm a_ne_b
 -- $AD$ is the height of $\triangle ABC$
 variable {D : P} {hd : D = perp_foot A (LIN B C b_ne_c.symm)}
 
+-- Theorem : $BD = AC + CD$
 theorem Shan_Problem_1_4 : (SEG B D).length = (SEG A C).length + (SEG C D).length := sorry
 
 end Shan_Problem_1_4

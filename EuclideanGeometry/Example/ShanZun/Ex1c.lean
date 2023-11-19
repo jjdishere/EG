@@ -193,6 +193,7 @@ lemma ad_eq_cd: (SEG A D).length = (SEG C D).length  := by
     simp only
     exact he
 
+-- Theorem : $CD = AB / 2$
 theorem Shan_Problem_1_7 : (SEG C D).length = (SEG A B).length/2 := by
   rw[←ad_eq_cd]
   apply midpt_half_length
@@ -221,6 +222,7 @@ lemma e_ne_d: E ≠ D := sorry
 lemma g_ne_f: G ≠ F := sorry
 --Failed to use the notation ⟂
 
+-- Theorem : $FG \perp DE$
 theorem Shan_Problem_1_8 : (SEG_nd F G g_ne_f) ⟂ (SEG_nd D E e_ne_d) := sorry
 
 end Shan_Problem_1_8
