@@ -107,7 +107,7 @@ section oriented_distance
 
 def odist' (A : P) (ray : Ray P) : ℝ := det ray.2.1 (VEC ray.1 A)
 
-theorem odist'_eq_zero_iff_exist_real_vec_eq_smul (A : P) (ray : Ray P) : odist' A ray = 0 ↔ (∃ t : ℝ, VEC ray.1 A = t • ray.2.1) := by
+theorem odist'_eq_zero_iff_exist_real_vec_eq_smul {A : P} {ray : Ray P} : odist' A ray = 0 ↔ (∃ t : ℝ, VEC ray.1 A = t • ray.2.1) := by
   constructor
   intro k
   dsimp only [odist'] at k
@@ -143,7 +143,7 @@ theorem odist'_eq_odist'_of_to_dirline_eq_to_dirline (A : P) (ray ray' : Ray P) 
   have h₁ : ray.2.1 =ray'.2.1 := by
     congr 1
     exact h.1
-  have h₂ : ∃ t : ℝ, VEC ray.1 ray'.1 = t • ray.2.1 := exist_real_vec_eq_smul_of_lies_on_or_rev h.2
+  have h₂ : ∃ t : ℝ, VEC ray.1 ray'.1 = t • ray.2.1 := lies_on_or_rev_iff_exist_real_vec_eq_smul.mp h.2
   have h₃ : ∃ t : ℝ, VEC ray.1 A = t • ray.2.1 + VEC ray'.1 A := by
     rw [←vec_add_vec ray.1 ray'.1 A]
     choose t₁ ht using h₂
@@ -201,7 +201,7 @@ theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A r
   · simp
     constructor
     intro
-    exact lies_on_or_rev_of_exist_real_vec_eq_smul ((odist'_eq_zero_iff_exist_real_vec_eq_smul A ray).mp h)
+    exact lies_on_or_rev_iff_exist_real_vec_eq_smul.mpr (odist'_eq_zero_iff_exist_real_vec_eq_smul.mp h)
     intro
     exact h
   simp
@@ -212,7 +212,7 @@ theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A r
   dsimp only [Line.IsOn]
   intro p
   rw [Ray.toline_carrier_eq_ray_carrier_union_rev_carrier ray] at p
-  exact (odist'_eq_zero_iff_exist_real_vec_eq_smul A ray).mpr (exist_real_vec_eq_smul_of_lies_on_or_rev p)
+  exact (odist'_eq_zero_iff_exist_real_vec_eq_smul).mpr (lies_on_or_rev_iff_exist_real_vec_eq_smul.mp p)
 
 theorem online_iff_lies_on_line (A : P) [DirFig α] (df : α P) : Line.IsOn A (toLine df) ↔ odist A df = 0 := sorry
 
