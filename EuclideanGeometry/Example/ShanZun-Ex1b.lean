@@ -9,7 +9,7 @@ namespace EuclidGeom
 variable {P : Type _} [EuclideanPlane P]
 
 namespace Shan_Problem_1_5
-/- In $\triangle ABC$, let $AD$ be the median.  Let $E$ be a point on $AD$ such that $BE = AC$. The line $BE$ intersects $AC$ at $F$. 
+/- In $\triangle ABC$, let $AD$ be the median.  Let $E$ be a point on $AD$ such that $BE = AC$. The line $BE$ intersects $AC$ at $F$.
 
 Prove that $AF = EF$. -/
 
@@ -26,7 +26,7 @@ Prove that $AF = EF$. -/
 end Shan_Problem_1_5
 
 namespace Shan_Problem_1_6
-/- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$. 
+/- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
 
 Prove that For any point $D$ on the base $BC$, the sum of the the distance of $D$ to $AB$ and to $AC$ is independent of $D$. -/
   -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
@@ -35,10 +35,11 @@ Prove that For any point $D$ on the base $BC$, the sum of the the distance of $D
   lemma b_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
   lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
   -- Claim: For any point $D$ on the interior of the segment of $BC$, $D ≠ B$ and $D ≠ C$. This is because: $D$ is an interior point of an edge of a triangle, so it is not equal to the vertexs $B$ and $C$ of the triangle.
-  lemma d_ne_b {D : P} {hd : D LiesInt (SEG B C)} : D ≠ B := ((▵ A B C).ne_vertex_of_lies_int_fst_edge hd).2.1
-  lemma d_ne_c {D : P} {hd : D LiesInt (SEG B C)} : D ≠ C := ((▵ A B C).ne_vertex_of_lies_int_fst_edge hd).2.2
+  variable {D : P}{hd : D LiesInt (SEG B C)}
+  lemma d_ne_b {D : P} {hd : D LiesInt (SEG B C)} : D ≠ B := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_fst_edge hd).2.1
+  lemma d_ne_c {D : P} {hd : D LiesInt (SEG B C)} : D ≠ C := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_fst_edge hd).2.2
 
-  theorem Shan_Problem_1_6 : ∃ (const : ℝ) , ∀ D : P , (hd : D LiesInt (SEG B C)) → 
+  theorem Shan_Problem_1_6 : ∃ (const : ℝ) , ∀ D : P , (hd : D LiesInt (SEG B C)) →
     dist_pt_line D (LIN A B (b_ne_a (hnd := hnd))) + dist_pt_line D (LIN A C (c_ne_a (hnd := hnd))) = const := by
     sorry
 
