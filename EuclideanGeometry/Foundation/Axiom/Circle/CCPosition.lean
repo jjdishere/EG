@@ -294,16 +294,127 @@ theorem CC_inx_pts_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Int
   apply Dir.tovec_ne_zero
 
 theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : ((CC_Intersected_pts h).left LiesOn ω₁) ∧ ((CC_Intersected_pts h).left LiesOn ω₂) ∧ ((CC_Intersected_pts h).right LiesOn ω₁) ∧ ((CC_Intersected_pts h).right LiesOn ω₂) := by
+  have hd : Complex.abs ((VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec) = 1 := by apply Dir.norm_of_dir_tovec_eq_one
+  have dpos : 0 < dist ω₁.center ω₂.center := by apply dist_pos.mpr (CC_intersected_centers_distinct h)
+  have hlt : (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2 < ω₁.radius ^ 2 := by
+    apply sq_lt_sq.mpr
+    rw [abs_of_pos ω₁.rad_pos]
+    exact radical_axis_dist_lt_radius h
+  have heq : ω₂.center -ᵥ ω₁.center = (dist ω₁.center ω₂.center) * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec := by
+    have : (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec = (Vec.norm (VEC ω₁.center ω₂.center))⁻¹ * (VEC ω₁.center ω₂.center) := rfl
+    calc
+      _ = VEC ω₁.center ω₂.center := rfl
+      _ = (Vec.norm (VEC ω₁.center ω₂.center)) * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec := by
+        rw [this, ← mul_assoc, Complex.ofReal_inv, mul_inv_cancel, one_mul]
+        apply Complex.ofReal_ne_zero.mpr
+        show ‖VEC ω₁.center ω₂.center‖ ≠ 0
+        apply norm_ne_zero_iff.mpr
+        apply (ne_iff_vec_ne_zero _ _).mp (CC_intersected_centers_distinct h).symm
+      _ = (dist ω₁.center ω₂.center) * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec := by
+        congr
+        rw [dist_comm, NormedAddTorsor.dist_eq_norm']
+        rfl
   constructor
   · show dist ω₁.center (CC_Intersected_pts h).left = ω₁.radius
     apply (sq_eq_sq _ _).mp
-    sorry
+    rw [NormedAddTorsor.dist_eq_norm']
+    unfold CC_Intersected_pts
+    simp
+    rw [vsub_vadd_eq_vsub_sub, vsub_vadd_eq_vsub_sub, vsub_self, sub_sub, zero_sub, AbsoluteValue.map_neg Complex.abs _, ← mul_assoc, ← add_mul, AbsoluteValue.map_mul Complex.abs, hd, mul_one, Complex.sq_abs, Complex.normSq_add_mul_I, Real.sq_sqrt]
+    linarith
+    linarith
     apply dist_nonneg
     apply le_iff_lt_or_eq.mpr
     left; exact ω₁.rad_pos
-  sorry
+  constructor
+  · show dist ω₂.center (CC_Intersected_pts h).left = ω₂.radius
+    apply (sq_eq_sq _ _).mp
+    rw [NormedAddTorsor.dist_eq_norm']
+    unfold CC_Intersected_pts
+    simp
+    rw [vsub_vadd_eq_vsub_sub, vsub_vadd_eq_vsub_sub, sub_sub, ← mul_assoc, ← add_mul, heq, ← sub_mul, AbsoluteValue.map_mul Complex.abs, hd, mul_one, ← neg_sub, AbsoluteValue.map_neg Complex.abs, ← sub_add_eq_add_sub, Complex.sq_abs, ← Complex.ofReal_sub, Complex.normSq_add_mul_I, Real.sq_sqrt, sub_sq]
+    calc
+      _ = (dist ω₁.center ω₂.center) ^ 2 + (ω₁.radius) ^ 2 - 2 * (radical_axis_dist_to_the_first ω₁ ω₂) * (dist ω₁.center ω₂.center) := by ring
+      _ = ω₂.radius ^ 2 := by
+        rw [mul_right_comm]
+        unfold radical_axis_dist_to_the_first
+        rw [mul_div_cancel']
+        ring
+        apply mul_ne_zero
+        norm_num; linarith
+    linarith
+    apply dist_nonneg
+    apply le_iff_lt_or_eq.mpr
+    left; exact ω₂.rad_pos
+  constructor
+  · show dist ω₁.center (CC_Intersected_pts h).right = ω₁.radius
+    apply (sq_eq_sq _ _).mp
+    rw [NormedAddTorsor.dist_eq_norm']
+    unfold CC_Intersected_pts
+    simp
+    rw [vsub_vadd_eq_vsub_sub, vsub_vadd_eq_vsub_sub, vsub_self, sub_neg_eq_add, zero_sub, ← mul_assoc, neg_mul_eq_neg_mul, ← add_mul, AbsoluteValue.map_mul Complex.abs, hd, mul_one, Complex.sq_abs, ← Complex.ofReal_neg, Complex.normSq_add_mul_I, Real.sq_sqrt]
+    linarith
+    linarith
+    apply dist_nonneg
+    apply le_iff_lt_or_eq.mpr
+    left; exact ω₁.rad_pos
+  show dist ω₂.center (CC_Intersected_pts h).right = ω₂.radius
+  apply (sq_eq_sq _ _).mp
+  rw [NormedAddTorsor.dist_eq_norm']
+  unfold CC_Intersected_pts
+  simp
+  rw [vsub_vadd_eq_vsub_sub, vsub_vadd_eq_vsub_sub, sub_neg_eq_add, sub_add, ← mul_assoc, ← sub_mul, heq, ← sub_mul, AbsoluteValue.map_mul Complex.abs, hd, mul_one, ← sub_add, Complex.sq_abs, ← Complex.ofReal_sub, Complex.normSq_add_mul_I, Real.sq_sqrt, sub_sq]
+  calc
+    _ = (dist ω₁.center ω₂.center) ^ 2 + (ω₁.radius) ^ 2 - 2 * (radical_axis_dist_to_the_first ω₁ ω₂) * (dist ω₁.center ω₂.center) := by ring
+    _ = ω₂.radius ^ 2 := by
+      rw [mul_right_comm]
+      unfold radical_axis_dist_to_the_first
+      rw [mul_div_cancel']
+      ring
+      apply mul_ne_zero
+      norm_num; linarith
+  linarith
+  apply dist_nonneg
+  apply le_iff_lt_or_eq.mpr
+  left; exact ω₂.rad_pos
 
-theorem CC_inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (LIN (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm) ⟂ (LIN ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm) := sorry
+theorem CC_inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (LIN (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm) ⟂ (LIN ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm) := by
+  show (LIN (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm).toProj = Dir.I.toProj * (LIN ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toProj
+  have hd : Complex.abs ((VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec) = 1 := by apply Dir.norm_of_dir_tovec_eq_one
+  have hn : Vec.norm (VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right) = 2 * (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2)) := by
+    unfold Vec.mk_pt_pt CC_Intersected_pts
+    simp
+    rw [vadd_vsub_assoc, vsub_vadd_eq_vsub_sub, vsub_self, add_zero_sub, Complex.ofReal_neg, neg_mul, neg_sub_left, ← two_mul, ← mul_assoc, ← mul_assoc]
+    unfold Vec.norm
+    rw [AbsoluteValue.map_neg Complex.abs, AbsoluteValue.map_mul Complex.abs, hd, mul_one, AbsoluteValue.map_mul Complex.abs, Complex.abs_I, mul_one]
+    calc
+      _ = Complex.abs (Complex.ofReal (2 * (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2)))) := by simp
+      _ = 2 * (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2)) := by
+        apply Complex.abs_of_nonneg
+        apply mul_nonneg (by norm_num) (Real.sqrt_nonneg _)
+  have : (VEC_nd (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm).toDir.1 = (- (Dir.I * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir)).1 := by
+    calc
+      _ = (Vec.norm (VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right))⁻¹ • (VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right) := rfl
+      _ = (- (Vec.norm (VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right))⁻¹ * (2 * Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2))) • (Complex.I * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec) := by
+        unfold CC_Intersected_pts Vec.mk_pt_pt
+        simp
+        rw [neg_sub_left, ← two_mul]
+        ring
+      _ = - (Dir.I * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir).1 := by
+        rw [hn, neg_mul, inv_mul_cancel, neg_one_smul]
+        rfl
+        rw [← hn]
+        show ‖VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right‖ ≠ 0
+        apply norm_ne_zero_iff.mpr
+        apply (ne_iff_vec_ne_zero _ _).mp (CC_inx_pts_distinct h).symm
+  have hdir: (VEC_nd (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm).toDir = - (Dir.I * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir) := by
+    ext; rw [this]; rw [this]
+  calc
+    _ = (VEC_nd (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm).toDir.toProj := rfl
+    _ = (Dir.I * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir).toProj := by
+      apply (Dir.eq_toproj_iff _ _).mpr
+      right; exact hdir
+
 
 /- different circles have at most two intersections -/
 lemma CC_inx_pt_not_lieson_center_line {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) : ¬(A LiesOn (LIN ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm)) := sorry
