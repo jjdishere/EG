@@ -68,7 +68,7 @@ theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on {A : P} {l : Line P} 
   eq_line_of_pt_pt_of_ne ((perp_foot_eq_self_iff_lies_on A l).mp.mt h) (pt_lies_on_of_mk_pt_proj A l.toProj.perp) (Line.inx_is_inx (perp_foot_preparation A l)).2
 
 theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l :=
-  triv_iff_length_eq_zero.symm.trans ((Eq.congr rfl rfl).trans (perp_foot_eq_self_iff_lies_on A l))
+  length_eq_zero_iff_deg.trans ((Eq.congr rfl rfl).trans (perp_foot_eq_self_iff_lies_on A l))
 
 end Perpendicular_constructions
 
