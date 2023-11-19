@@ -97,4 +97,20 @@ theorem Pythagoras_of_tr_nd (tr_nd : Triangle_nd P) (h : tr_nd.angle₁.value = 
 
 end Pythagoras
 
+section Non_trivial_triangle_inequalities
+
+theorem triangle_ineq' (tr_nd : Triangle_nd P) : tr_nd.edge₁.length + tr_nd.edge₂.length > tr_nd.edge₃.length := sorry
+
+theorem trivial_of_edge_sum_eq_edge (tr : Triangle P) : tr.edge₁.length + tr.edge₂.length = tr.edge₃.length → ¬ tr.is_nd  := sorry
+
+-- should this theorem stated as ≠, or as > ???
+theorem nontrivial_of_edge_sum_ne_edge (tr : Triangle P) : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length → tr.is_nd  := sorry
+
+theorem nontrivial_of_edge_sum_gt_edge (tr : Triangle P) : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length → tr.is_nd  := sorry
+
+theorem edge_sum_eq_edge_iff_colinear (tr : Triangle P) :  colinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry
+/- area ≥ 0, nontrivial → >0, =0 → trivial -/
+
+end Non_trivial_triangle_inequalities
+
 end EuclidGeom

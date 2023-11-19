@@ -189,11 +189,15 @@ theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.len
   rw [l₃, ← neg_vec point₂ _, norm_neg, ← vec_add_vec point₂ point₃ point₁]
   exact norm_add_le _ _
 
+-- The following theorems are corollaries of the sine and cosine theorems of the triangle
 theorem triangle_ineq' (nontriv : tr.is_nd) : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length := sorry
 
 theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr.edge₃.length → ¬ tr.is_nd  := sorry
 
-theorem nontrivial_of_edge_sum_ne_edge : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length → tr.is_nd  := sorry -- should this theorem stated as ≠, or as > ???
+-- should this theorem stated as ≠, or as > ???
+theorem nontrivial_of_edge_sum_ne_edge : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length → tr.is_nd  := sorry
+
+theorem nontrivial_of_edge_sum_gt_edge : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length → tr.is_nd  := sorry
 
 theorem edge_sum_eq_edge_iff_colinear :  colinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry
 /- area ≥ 0, nontrivial → >0, =0 → trivial -/
