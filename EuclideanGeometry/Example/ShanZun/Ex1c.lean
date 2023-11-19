@@ -130,7 +130,7 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   have tr21: (TRI A B C).point₁ =A:= rfl
   have tr12: (TRI A D E).point₂=D:= rfl
   have tr22: (TRI A B C).point₂ =B := rfl
-  rw[tr13,tr12,tr11,tr23,tr22,tr21,Seg.length_of_rev_eq_length.symm,(Seg.length_of_rev_eq_length (seg := SEG C A)).symm]
+  rw[tr13, tr12, tr11, tr23, tr22, tr21, ← Seg.length_of_rev_eq_length, ← (SEG C A).length_of_rev_eq_length]
   simp only [Seg.reverse]
   rw[ae_ratio,ad_ratio]
   use C
