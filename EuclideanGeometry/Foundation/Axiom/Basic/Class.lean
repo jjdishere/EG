@@ -62,6 +62,9 @@ scoped infix : 50 "LiesOn" => lies_on -- to make it work compatible with `∧`, 
 scoped infix : 50 "LiesInt" => lies_int
 -- scoped infix : 50 "LiesIn" => lies_in
 
+instance {P : Type _} [EuclideanPlane P] [IntFig α] (A : P) (F : α P) : Coe (A LiesInt F) (A LiesOn F) where
+  coe h := (IntFig.interior_subset_carrier F) h
+
 def is_inx {P : Type _} [EuclideanPlane P] [Fig α] [Fig β] (A : P) (F : α P) (G : β P) : Prop := A LiesOn F ∧ A LiesOn G
 
 scoped notation:50 A:max "IsInxOf" F:max G:max => (is_inx A F G)
