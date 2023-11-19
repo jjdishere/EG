@@ -26,7 +26,7 @@ def seg_nd_bc : Seg_nd P := ⟨(SEG B C), Ne.symm (b_ne_c (hnd := hnd) ) ⟩
 variable {D : P} {d_mid : D = (SEG B C).midpoint}
 -- $D$ Liesin $BC$. This is because $BC$ is non degenerate.
 lemma d_int_bc : D LiesInt (SEG B C) := by rw [d_mid]; exact Seg_nd.midpt_lies_int (seg_nd_bc (hnd := hnd) )
-lemma a_ne_d : A ≠ D := ((▵ A B C).ne_vertex_of_lies_int_fst_edge (d_int_bc (hnd := hnd) (d_mid := d_mid))).1.symm
+lemma a_ne_d : A ≠ D := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_fst_edge (d_int_bc (hnd := hnd) (d_mid := d_mid))).1.symm
 def line_ad : Line P := LIN A D (a_ne_d (hnd := hnd) (d_mid := d_mid)).symm
 variable {E : P} {he : E LiesOn (line_ad (hnd := hnd) (d_mid := d_mid))}
 variable {be_eq_ac : (SEG B E).length = (SEG A C).length}

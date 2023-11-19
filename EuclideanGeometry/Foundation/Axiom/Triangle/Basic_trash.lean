@@ -50,7 +50,7 @@ theorem edge_toline_not_para_of_not_colinear {A B C : P} (h : ¬ colinear A B C)
 
 theorem angle_eq_of_cosine_eq_of_cclock (cclock : tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) (cosine : Real.cos tr_nd₁.angle₁.value = Real.cos tr_nd₂.angle₁.value) : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value := by
   have g : (0 < tr_nd₁.angle₁.value ∧ 0 < tr_nd₂.angle₁.value) ∨ (tr_nd₁.angle₁.value < 0 ∧ tr_nd₂.angle₁.value < 0) := by
-      exact (Triangle.pos_pos_or_neg_neg_of_iff_cclock).mp cclock
+      exact (Triangle_nd.pos_pos_or_neg_neg_of_iff_cclock).mp cclock
   rcases g with x | y
   · have x₁ : (0 < tr_nd₁.angle₁.value) ∧ (tr_nd₁.angle₁.value < π) := sorry
     have x₂ : (0 < tr_nd₂.angle₁.value) ∧ (tr_nd₂.angle₁.value < π) := sorry
