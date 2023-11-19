@@ -950,6 +950,12 @@ theorem det_smul_right_eq_mul_det (u v : Vec) (x : ℝ) : det u (x • v) = x * 
   rw[Complex.real_smul, Complex.ofReal_mul_re, Complex.ofReal_mul_im]
   ring
 
+theorem det_neg_eq_neg_det (u v : Vec) : det (- u) v = - det u v := by
+  have h0 : - u = (-1 : ℝ) • u := (neg_one_smul ℝ u).symm
+  rw [h0]
+  rw [det_smul_left_eq_mul_det u v (-1 : ℝ)]
+  ring
+
 --antisymmetricity of det
 theorem det_eq_neg_det (u v : Vec) : det u v = -det v u := by
   unfold det
