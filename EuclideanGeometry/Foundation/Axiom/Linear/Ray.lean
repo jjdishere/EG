@@ -755,6 +755,10 @@ theorem Seg_nd.source_lies_on_rev {seg_nd : Seg_nd P} : seg_nd.source LiesOn seg
 /-- The target of a nondegenerate segment lies on the reverse of the segment.-/
 theorem Seg_nd.target_lies_on_rev {seg_nd : Seg_nd P} : seg_nd.target LiesOn seg_nd.reverse := source_lies_on
 
+/-- Given a ray, a point $X$ lies on the ray or its reverse if and only if $X$ lies on the reverse ray or the reverse of reverse ray. -/
+theorem Ray.lies_on_rev_or_lies_on_iff {X : P} {ray : Ray P} : X LiesOn ray ∨ X LiesOn ray.reverse ↔ X LiesOn ray.reverse ∨ X LiesOn ray.reverse.reverse := by
+  simp only [Ray.rev_rev_eq_self]
+  exact ⟨ Or.symm, Or.symm ⟩
 
 /-- If a point lies on a segment, then it lies on the reversed segment. -/
 theorem Seg.lies_on_rev_of_lies_on {A : P} {seg : Seg P} : A LiesOn seg → A LiesOn seg.reverse := by
@@ -976,24 +980,38 @@ theorem lies_int_rev_iff_lies_int_rev_of_neg_todir {ray₁ ray₂ : Ray P} (h : 
   fun ⟨hl, ne⟩ ↦ ⟨(lies_on_rev_iff_lies_on_rev_of_neg_todir h).mp hl, ne.symm⟩,
   fun ⟨hl, ne⟩ ↦ ⟨(lies_on_rev_iff_lies_on_rev_of_neg_todir h).mpr hl, ne.symm⟩⟩
 
-/-- If a point $A$ lies on a ray or its reverse ray, then there exists a real number $t$ such that the vector from the source of the ray to $A$ is $t$ times the direction of the ray. -/
-theorem exist_real_vec_eq_smul_of_lies_on_or_rev {A : P} {ray : Ray P} (h : A LiesOn ray ∨ A LiesOn ray.reverse) : ∃ t : ℝ, VEC ray.source A = t • ray.2.1 := by
-  rcases h with ⟨t, _, eq⟩ | ⟨t, _, eq⟩
-  · use t, eq
-  · use - t
-    rw [Dir.tovec_neg_eq_neg_tovec, smul_neg, ← neg_smul] at eq
-    exact eq
+/-- Given a ray, a point $A$ lies on the ray or its reverse ray if and only if there exists a real number $t$ such that the vector from the source of the ray to $A$ is $t$ times the direction of the ray. -/
+theorem lies_on_or_rev_iff_exist_real_vec_eq_smul {A : P} {ray : Ray P} : (A LiesOn ray ∨ A LiesOn ray.reverse) ↔ ∃ t : ℝ, VEC ray.source A = t • ray.2.1 := by
+  constructor
+  · intro h
+    rcases h with ⟨t, _, eq⟩ | ⟨t, _, eq⟩
+    · use t, eq
+    · use - t
+      rw [Dir.tovec_neg_eq_neg_tovec, smul_neg, ← neg_smul] at eq
+      exact eq
+  · intro h
+    choose t ht using h
+    by_cases k : (0 ≤ t)
+    · left
+      exact ⟨t,k,ht⟩
+    right
+    let u := -t
+    simp at k
+    have l : 0 ≤ u := sorry
+    have hu : VEC ray.reverse.1 A = u • ray.reverse.2.1 := by
+      simp
+      exact ht
+    exact ⟨u,l,hu⟩
 
 /-- Given two distinct points $A$ and $B$ and a ray, if both $A$ and $B$ lies on the ray or its reversed ray, then the projective direction of the ray is the same as the projective direction of the ray $AB$. -/
 theorem ray_toproj_eq_mk_pt_pt_toproj {A B : P} {ray : Ray P} (h : B ≠ A) (ha : A LiesOn ray ∨ A LiesOn ray.reverse) (hb : B LiesOn ray ∨ B LiesOn ray.reverse) : ray.toProj = (RAY A B h).toProj := by
-  rcases exist_real_vec_eq_smul_of_lies_on_or_rev ha with ⟨ta, eqa⟩
-  rcases exist_real_vec_eq_smul_of_lies_on_or_rev hb with ⟨tb, eqb⟩
+  rcases lies_on_or_rev_iff_exist_real_vec_eq_smul.mp ha with ⟨ta, eqa⟩
+  rcases lies_on_or_rev_iff_exist_real_vec_eq_smul.mp hb with ⟨tb, eqb⟩
   have heq : VEC A B = (tb - ta) • ray.2.1 := by rw [← vec_sub_vec _ A B, eqa, eqb, sub_smul]
   calc
     _ = ray.2.toVec_nd.toProj := congrArg Dir.toProj (Dir.dir_tovec_nd_todir_eq_self ray.2).symm
     _ = _ := eq_toproj_of_smul ray.2.toVec_nd ⟨VEC A B, (vsub_ne_zero.mpr h)⟩ heq
 
-theorem Ray.lies_on_rev_or_lies_on_iff {X : P} {ray : Ray P} : X LiesOn ray ∨ X LiesOn ray.reverse ↔ X LiesOn ray.reverse ∨ X LiesOn ray.reverse.reverse := by sorry
 
 end reverse
 
@@ -1011,6 +1029,14 @@ theorem extn_eq_rev_toray_rev {seg_nd : Seg_nd P} : seg_nd.extension = seg_nd.re
   · rfl
   · simp only [Ray.todir_of_rev_eq_neg_todir, Seg_nd.toray_todir_eq_todir, Seg_nd.todir_of_rev_eq_neg_todir, neg_neg]
     rfl
+
+/-- The direction of the extension ray of a nondegenerate segment is the same as the direction of the segment. -/
+@[simp]
+theorem Seg_nd.extn_todir {seg_nd : Seg_nd P} : seg_nd.extension.toDir = seg_nd.toDir := by rfl
+
+/-- The projective direction of the extension ray of a nondegenerate segment is the same as the projective direction of the segment. -/
+@[simp]
+theorem Seg_nd.extn_toproj {seg_nd : Seg_nd P} : seg_nd.extension.toProj = seg_nd.toProj := by rfl
 
 /-- Given a nondegenerate segment, a point is equal to its target if and only if it lies on the segment and its extension ray. -/
 theorem eq_target_iff_lies_on_lies_on_extn {A : P} {seg_nd : Seg_nd P} : (A LiesOn seg_nd) ∧ (A LiesOn seg_nd.extension) ↔ A = seg_nd.target := by
@@ -1140,7 +1166,7 @@ theorem Seg.length_of_rev_eq_length {seg : Seg P} : seg.reverse.length = seg.len
 
 /-- Reversing a segment does not change its length. -/
 @[simp]
-theorem Seg_nd.length_eq_length_of_rev {seg_nd : Seg_nd P} : seg_nd.reverse.length = seg_nd.length := by
+theorem Seg_nd.length_of_rev_eq_length {seg_nd : Seg_nd P} : seg_nd.reverse.length = seg_nd.length := by
   unfold Seg_nd.length
   simp only [rev_toseg_eq_toseg_rev, Seg.length_of_rev_eq_length]
 
