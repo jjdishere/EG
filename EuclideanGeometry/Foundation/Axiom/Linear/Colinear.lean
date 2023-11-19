@@ -1,5 +1,4 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
-import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 
 /-
 This file discuss the relative positions of points and rays on a plane.
