@@ -1,6 +1,7 @@
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
+import Mathlib.Analysis.Complex.Arg
 import Mathlib.Data.Real.Sign
 /-!
 # Standard Vector Space
@@ -464,6 +465,27 @@ theorem mk_angle_neg_pi_div_two_eq_neg_I' : mk_angle ((-π) / 2) = -I := by
   simp only [mk_angle_neg_pi_div_two_eq_neg_I]
 
 end Make_angle_theorems
+
+-- Here is a small section which would not be used later. We just compare our definitions to the standard sameRay definitions.
+section sameRay_theorems
+
+theorem sameRay_iff_eq (a b : Dir) : SameRay ℝ a.1 b.1 ↔ a = b := by
+  rw [Complex.sameRay_iff]
+  constructor
+  · simp only [tovec_ne_zero, false_or]
+    intro h
+    let g := congrArg (fun z => mk_angle z) h
+    simp only [mk_angle_arg_toComplex_of_Dir_eq_self] at g
+    exact g
+  · tauto
+
+theorem sameRay_Vec_nd_toDir (z : Vec_nd) : SameRay ℝ z.1 z.toDir.1 := by
+  rw [Complex.sameRay_iff_arg_div_eq_zero, Vec_nd.self_eq_norm_smul_todir z, Complex.real_smul, ← mul_div, div_self (tovec_ne_zero (Vec_nd.toDir z)), mul_one, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst]
+  exact Complex.arg_ofReal_of_nonneg (Vec.norm_nonnegative z)
+
+theorem toDir_eq_toDir_of_sameRay (z₁ z₂ : Vec_nd) : SameRay ℝ z₁.1 z₂.1 → z₁.toDir = z₂.toDir := fun h => (sameRay_iff_eq z₁.toDir z₂.toDir).1 (SameRay.symm (SameRay.trans (SameRay.symm (SameRay.trans h (sameRay_Vec_nd_toDir z₂) (by simp only [ne_eq, ne_zero_of_Vec_nd, false_or, IsEmpty.forall_iff]))) (sameRay_Vec_nd_toDir z₁) (by simp only [ne_eq, ne_zero_of_Vec_nd, false_or, IsEmpty.forall_iff])))
+
+end sameRay_theorems
 
 instance : SMul Dir Vec where
   smul := fun d v => d.1 * v
