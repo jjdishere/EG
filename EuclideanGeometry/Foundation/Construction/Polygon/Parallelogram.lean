@@ -207,7 +207,7 @@ theorem nd₁₃_of_is_prg (h : qdr.IsParallelogram) : qdr.point₃ ≠ qdr.poin
   by_cases j: qdr.point₃ ≠ qdr.point₁
   · simp only [ne_eq, j, not_false_eq_true]
   simp at j
-  · simp only [ne_eq, j, false_and, dite_false] at s
+  · simp only [j, ne_eq, not_true_eq_false, false_and, dite_not, dite_false] at s
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG, C ≠ A. -/
 theorem nd₁₃_of_is_prg_variant (h : QDR A B C D IsPRG) : C ≠ A := by
@@ -216,7 +216,7 @@ theorem nd₁₃_of_is_prg_variant (h : QDR A B C D IsPRG) : C ≠ A := by
   by_cases j: C ≠ A
   · simp only [ne_eq, j, not_false_eq_true]
   simp at j
-  · simp only [ne_eq, j, false_and, dite_false] at s
+  · simp only [j, ne_eq, not_true_eq_false, false_and, dite_not, dite_false] at s
 
 /-- Given Quadrilateral qdr IsPRG, qdr.point₄ ≠ qdr.point₂. -/
 theorem nd₂₄_of_is_prg (h : qdr.IsParallelogram) : qdr.point₄ ≠ qdr.point₂ := by
@@ -225,7 +225,7 @@ theorem nd₂₄_of_is_prg (h : qdr.IsParallelogram) : qdr.point₄ ≠ qdr.poin
   by_cases j: qdr.point₄ ≠ qdr.point₂
   · simp only [ne_eq, j, not_false_eq_true]
   simp at j
-  · simp only [ne_eq, j, and_false, dite_false] at s
+  · simp only [ne_eq, j, not_true_eq_false, and_false, dite_not, dite_false] at s
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG, D ≠ B. -/
 theorem nd₂₄_of_is_prg_variant (h : QDR A B C D IsPRG) : D ≠ B := by
@@ -234,7 +234,7 @@ theorem nd₂₄_of_is_prg_variant (h : QDR A B C D IsPRG) : D ≠ B := by
   by_cases j: D ≠ B
   · simp only [ne_eq, j, not_false_eq_true]
   simp at j
-  · simp only [ne_eq, j, and_false, dite_false] at s
+  · simp only [ne_eq, j, not_true_eq_false, and_false, dite_not, dite_false] at s
 
 /-- Given Quadrilateral qdr IsPRG, qdr.point₂ ≠ qdr.point₁. -/
 theorem nd₁₂_of_is_prg (h : qdr.IsParallelogram) : qdr.point₂ ≠ qdr.point₁ := by
