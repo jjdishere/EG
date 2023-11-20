@@ -108,9 +108,10 @@ class Dir where
   toVec : Vec
   unit : @inner ℝ _ _ toVec toVec = 1
 
-attribute [pp_dot] Dir.toVec
+def Dir.toVec' {x : Dir} : Vec := x.toVec
+-- attribute [pp_dot] Dir.toVec'
 variable (x : Dir)
-#check x.toVec
+#check x.toVec'
 @[simp]
 theorem dir_tovec_fst_mul_fst_plus_snd_mul_snd_eq_one (x : Dir) : x.1.1 * x.1.1 + x.1.2 * x.1.2 = 1 := by
   rw [← x.2]
