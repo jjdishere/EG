@@ -641,9 +641,13 @@ theorem Line.lies_on_of_exist_real_vec_eq_smul {A B : P} {dir : Dir} {t : ℝ} (
   (@pt_lies_on_line_from_ray_iff_vec_parallel P _ B ⟨A, dir⟩).mpr ⟨t, h⟩
 
 theorem Line.lies_on_of_exist_real_vec_eq_smul_vec {A B : P} {v : Vec_nd} {t : ℝ} (h : VEC A B = t • v.1) : B LiesOn (mk_pt_vec_nd A v) :=
-  have h : VEC A B = (t * v.norm) • v.toDir.1 := by
-    simp only [h, v.self_eq_norm_smul_todir, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, Complex.real_smul, Complex.ofReal_mul, mul_assoc]
-  lies_on_of_exist_real_vec_eq_smul h
+  have h' : VEC A B = (t * v.norm) • v.toDir.1 := by
+    simp only [h]
+    simp only [ne_eq, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst]
+    rw [mul_smul]
+    congr
+    exact Vec_nd.self_eq_norm_smul_todir _
+  lies_on_of_exist_real_vec_eq_smul h'
 
 theorem Line.lies_on_of_exist_real_of_pt_pt {A B C : P} (h : B ≠ A) {t : ℝ} (ht : VEC A C = t • VEC A B) : C LiesOn (LIN A B h) :=
   @lies_on_of_exist_real_vec_eq_smul_vec P _ A C (SEG_nd A B h).toVec_nd t ht

@@ -556,6 +556,7 @@ theorem congr_or_acongr_of_SSS (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge�
     rcases c with x|y
     . simp only [x.1, x.2, not_false_eq_true]
     . simp only [y.1, y.2, not_false_eq_true]
+      simp only [not_true_eq_false]
   exact acongr_of_SSS_of_ne_orientation e₁ e₂ e₃ c'
 
 /- SAS -/
