@@ -1,6 +1,4 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
-import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
-import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex2
 
 namespace EuclidGeom
 
