@@ -1,6 +1,7 @@
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Arg
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Complex
+import Mathlib.Analysis.Complex.Arg
 import Mathlib.Data.Real.Sign
 /-!
 # Standard Vector Space
@@ -72,6 +73,13 @@ theorem Vec.norm_smul_eq_mul_norm {x : ℝ} (x_nonneg : 0 ≤ x) (u : Vec) : Vec
   simp only [Complex.real_smul, map_mul, Complex.abs_ofReal, mul_eq_mul_right_iff, abs_eq_self, map_eq_zero]
   tauto
 
+@[simp]
+theorem neg_Vec_norm_eq_Vec_norm (z : Vec) : Vec.norm (-z) = Vec.norm z := by
+  have h : Complex.abs (-z) = Complex.abs (z) := by
+    simp only [map_neg_eq_map]
+  unfold Vec.norm
+  rw [h]
+
 -- norm is nonnegetive
 theorem Vec.norm_nonnegative (u : Vec) : 0 ≤ Vec.norm u := Real.sqrt_nonneg _
 
@@ -101,6 +109,10 @@ theorem fst_of_mul_eq_fst_mul_fst (z w : Vec_nd) : (z * w).1 = z.1 * w.1 := by r
 
 @[simp]
 theorem norm_of_Vec_nd_eq_norm_of_Vec_nd_fst (z : Vec_nd) : Vec_nd.norm z = Vec.norm z := rfl
+
+@[simp]
+theorem neg_Vec_nd_norm_eq_Vec_nd_norm (x : Vec_nd) : (-x).norm = x.norm := by
+  simp only [ne_eq, fst_neg_Vec_nd_is_neg_fst_Vec_nd, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, neg_Vec_norm_eq_Vec_norm]
 
 @[ext]
 class Dir where
@@ -453,6 +465,27 @@ theorem mk_angle_neg_pi_div_two_eq_neg_I' : mk_angle ((-π) / 2) = -I := by
   simp only [mk_angle_neg_pi_div_two_eq_neg_I]
 
 end Make_angle_theorems
+
+-- Here is a small section which would not be used later. We just compare our definitions to the standard sameRay definitions.
+section sameRay_theorems
+
+theorem sameRay_iff_eq (a b : Dir) : SameRay ℝ a.1 b.1 ↔ a = b := by
+  rw [Complex.sameRay_iff]
+  constructor
+  · simp only [tovec_ne_zero, false_or]
+    intro h
+    let g := congrArg (fun z => mk_angle z) h
+    simp only [mk_angle_arg_toComplex_of_Dir_eq_self] at g
+    exact g
+  · tauto
+
+theorem sameRay_Vec_nd_toDir (z : Vec_nd) : SameRay ℝ z.1 z.toDir.1 := by
+  rw [Complex.sameRay_iff_arg_div_eq_zero, Vec_nd.self_eq_norm_smul_todir z, Complex.real_smul, ← mul_div, div_self (tovec_ne_zero (Vec_nd.toDir z)), mul_one, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst]
+  exact Complex.arg_ofReal_of_nonneg (Vec.norm_nonnegative z)
+
+theorem toDir_eq_toDir_of_sameRay (z₁ z₂ : Vec_nd) : SameRay ℝ z₁.1 z₂.1 → z₁.toDir = z₂.toDir := fun h => (sameRay_iff_eq z₁.toDir z₂.toDir).1 (SameRay.symm (SameRay.trans (SameRay.symm (SameRay.trans h (sameRay_Vec_nd_toDir z₂) (by simp only [ne_eq, ne_zero_of_Vec_nd, false_or, IsEmpty.forall_iff]))) (sameRay_Vec_nd_toDir z₁) (by simp only [ne_eq, ne_zero_of_Vec_nd, false_or, IsEmpty.forall_iff])))
+
+end sameRay_theorems
 
 instance : SMul Dir Vec where
   smul := fun d v => d.1 * v
@@ -865,7 +898,12 @@ theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : det u v = 0 ↔ (�
     rcases e
     ring
 
-theorem det_eq_zero_of_toProj_eq (u v : Vec_nd) (toprojeq : Vec_nd.toProj u = v.toProj) : det u v = 0 := ((det_eq_zero_iff_eq_smul u.1 v.1 u.2).2) (smul_of_eq_toproj u v toprojeq)
+-- det theorems for Vec_nd
+theorem det_eq_zero_of_toProj_eq (u v : Vec_nd) (toprojeq : u.toProj = v.toProj) : det u v = 0 := ((det_eq_zero_iff_eq_smul u.1 v.1 u.2).2) (smul_of_eq_toproj u v toprojeq)
+
+theorem toProj_eq_of_det_eq_zero (u v : Vec_nd) (det_eq_zero : det u v = 0) : u.toProj = v.toProj := (Vec_nd.eq_toproj_iff u v).mpr ((det_eq_zero_iff_eq_smul u.1 v.1 u.2).1 det_eq_zero)
+
+theorem det_eq_zero_iff_toProj_eq (u v : Vec_nd) : det u v = 0 ↔ u.toProj = v.toProj := ⟨fun z => ((Vec_nd.eq_toproj_iff u v).mpr ((det_eq_zero_iff_eq_smul u.1 v.1 u.2).1 z)), fun z => (((det_eq_zero_iff_eq_smul u.1 v.1 u.2).2) (smul_of_eq_toproj u v z))⟩
 
 theorem det'_ne_zero_of_not_colinear {u v : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : det' u v ≠ 0 := by
   unfold det'

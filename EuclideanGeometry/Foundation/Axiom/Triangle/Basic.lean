@@ -81,8 +81,10 @@ variable {P : Type u} [EuclideanPlane P]
 
 namespace Triangle
 
+-- When we have DirFig, rewrite this definition.
 protected def IsInt (A : P) (tr : Triangle P) : Prop := by
   by_cases colinear tr.1 tr.2 tr.3
+  -- why not using ¬ tr.is_nd?
   · exact False
   · let tr_nd : Triangle_nd P := ⟨tr, h⟩
     exact (if tr_nd.is_cclock then A LiesOnLeft Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩ else A LiesOnRight Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩)
@@ -182,13 +184,48 @@ theorem angle_sum_eq_pi_of_cclock (cclock : tr_nd.is_cclock): tr_nd.angle₁.val
 
 theorem angle_sum_eq_neg_pi_of_clock (clock : ¬ tr_nd.is_cclock): tr_nd.angle₁.value + tr_nd.angle₂.value + tr_nd.angle₃.value = - π := sorry
 -/
-theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.length := sorry
+theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.length := by
+  have l₃ : tr.edge₃.length = norm (VEC tr.point₁ tr.point₂) := rfl
+  rw [l₃, ← neg_vec point₂ _, norm_neg, ← vec_add_vec point₂ point₃ point₁]
+  exact norm_add_le _ _
 
-theorem triangle_ineq' (nontriv : tr.is_nd) : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length := sorry
+theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr.edge₃.length → ¬ tr.is_nd  := by
+  let A := tr.point₁
+  let B := tr.point₂
+  let C := tr.point₃
+  have l₃ : tr.edge₃.length = norm (VEC A B) := rfl
+  rw [l₃, ← neg_vec B _, norm_neg, ← vec_add_vec B C A]
+  intro eq
+  unfold is_nd
+  let g := Complex.sameRay_iff.2 ((Complex.abs_add_eq_iff).1 eq.symm)
+  by_cases h₁ : VEC B C = 0
+  · simp only [(eq_iff_vec_eq_zero B C).2 h₁, not_not]
+    apply flip_colinear_fst_trd
+    exact triv_colinear _ _
+  · by_cases h₂ : VEC C A = 0
+    · simp only [(eq_iff_vec_eq_zero C A).2 h₂, not_not]
+      apply flip_colinear_snd_trd
+      exact triv_colinear _ _
+    · rcases SameRay.exists_pos g h₁ h₂ with ⟨_, ⟨_, ⟨_, ⟨_, g⟩⟩⟩⟩
+      rw [← neg_vec C B, ← neg_one_smul ℝ, ← mul_smul, mul_neg_one, ← eq_inv_smul_iff₀ (by linarith), ← mul_smul] at g
+      exact not_not.2 (perm_colinear_snd_trd_fst (colinear_of_vec_eq_smul_vec g))
 
-theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr.edge₃.length → ¬ tr.is_nd  := sorry
+theorem triangle_ineq' (nontriv : tr.is_nd) : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length := by
+  have ne : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length := by
+    by_contra h
+    let g := trivial_of_edge_sum_eq_edge tr h
+    tauto
+  by_contra h
+  let g := eq_of_le_of_not_lt (triangle_ineq tr) h
+  tauto
 
-theorem nontrivial_of_edge_sum_ne_edge : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length → tr.is_nd  := sorry -- should this theorem stated as ≠, or as > ???
+/- The following two theorems are totally wrong:
+
+theorem nontrivial_of_edge_sum_ne_edge : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length → tr.is_nd  := by
+
+theorem nontrivial_of_edge_sum_gt_edge : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length → tr.is_nd  := sorry
+
+So funny. Can you get it? -/
 
 theorem edge_sum_eq_edge_iff_colinear :  colinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry
 /- area ≥ 0, nontrivial → >0, =0 → trivial -/
