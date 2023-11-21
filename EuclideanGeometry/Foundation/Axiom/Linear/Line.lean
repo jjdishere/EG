@@ -913,8 +913,19 @@ instance (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
   Nonempty := by
     rcases l.nontriv with ⟨A, _, ha, _⟩
     exact ⟨A, ha⟩
-  vsub_vadd' := sorry
-  vadd_vsub' := sorry
+  vsub_vadd' := by
+    intro ⟨A, ha⟩ ⟨B, hb⟩
+    apply Subtype.val_inj.mp
+    show inner (VEC B A) l.toDir.1 • l.toDir.1 +ᵥ B = A
+    have h : @inner ℝ _ _ (VEC B A) l.toDir.1 • l.toDir.1 = VEC B A := by
+      rcases exist_real_vec_eq_smul_toDir_of_lies_on hb ha with ⟨t, h⟩
+      rw [h, real_inner_smul_left l.toDir.1 l.toDir.1 t, l.toDir.2, mul_one]
+    rw [h]
+    exact vsub_vadd A B
+  vadd_vsub' := by
+    intro x ⟨A, ha⟩
+    show inner (x • l.toDir.1 +ᵥ A -ᵥ A) l.toDir.1 = x
+    rw [vadd_vsub, real_inner_smul_left l.toDir.1 l.toDir.1 x, l.toDir.2, mul_one]
   dist_eq_norm' := sorry
 
 def ddist {l : DirLine P} {A : P} {B : P} (ha : A LiesOn l) (hb : B LiesOn l) : ℝ :=
