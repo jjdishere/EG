@@ -5,6 +5,7 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Plane
 import EuclideanGeometry.Foundation.Axiom.Basic.Class
 /- Axiom.Linear -/
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Line
 import EuclideanGeometry.Foundation.Axiom.Linear.Class
