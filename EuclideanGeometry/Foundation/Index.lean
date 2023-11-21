@@ -5,6 +5,7 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Plane
 import EuclideanGeometry.Foundation.Axiom.Basic.Class
 /- Axiom.Linear -/
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Line
 import EuclideanGeometry.Foundation.Axiom.Linear.Class
@@ -21,6 +22,7 @@ import EuclideanGeometry.Foundation.Axiom.Isometry.Rotation
 import EuclideanGeometry.Foundation.Axiom.Isometry.Translation_ex
 /- Axiom.Triangle -/
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
+import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_trash
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence' -- `to avoid ambiguous notation, use notation ≅, ≅ₐ`
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex

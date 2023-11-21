@@ -193,6 +193,7 @@ lemma ad_eq_cd: (SEG A D).length = (SEG C D).length  := by
     simp only
     exact he
 
+-- Theorem : $CD = AB / 2$
 theorem Shan_Problem_1_7 : (SEG C D).length = (SEG A B).length/2 := by
   rw[←ad_eq_cd]
   apply midpt_half_length
@@ -209,15 +210,19 @@ namespace Shan_Problem_1_8
 
 Prove that $FG \perp DE$. -/
 variable {A B C : P} {hnd : ¬ colinear A B C}
-lemma b_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
-lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
-lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
+-- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
+lemma a_ne_b : A ≠ B := sorry
+lemma b_ne_c : B ≠ C := sorry
+lemma c_ne_a : C ≠ A := sorry
 --introduce the perps
-variable {D : P} {hd : D = perp_foot B (SEG_nd A C c_ne_a).toLine}
-variable {E : P} {he : E = perp_foot C (SEG_nd A B b_ne_a).toLine}
+variable {D : P} {hd : D = perp_foot B (LIN A C c_ne_a)}
+variable {E : P} {he : E = perp_foot C (LIN A B a_ne_b.symm)}
 variable {F G: P} {hf : F = (SEG B C).midpoint} {hg : G = (SEG D E).midpoint}
 lemma e_ne_d: E ≠ D := sorry
 lemma g_ne_f: G ≠ F := sorry
 --Failed to use the notation ⟂
-theorem Shan_Problem_1_8:(SEG_nd F G g_ne_f).toLine.toProj = (SEG_nd D E e_ne_d).toLine.toProj.perp := sorry
+
+-- Theorem : $FG \perp DE$
+theorem Shan_Problem_1_8 : (SEG_nd F G g_ne_f) ⟂ (SEG_nd D E e_ne_d) := sorry
+
 end Shan_Problem_1_8

@@ -26,6 +26,7 @@ variable {D : P} {hd : D = perp_foot A (LIN B C b_ne_c.symm)}
 -- $AE$ is the median
 variable {E : P} {he : E = (SEG B C).midpoint}
 
+-- Theorem : $AB = 2\cdot DE$
 theorem Shan_Problem_1_9 : (SEG A B).length = 2 * (SEG D E).length := sorry
 
 end Shan_Problem_1_9
@@ -48,6 +49,7 @@ variable {E : P} {he₁ : E LiesInt (SEG_nd A C c_ne_a).extension} {he₂ : (SEG
 -- $D$ is the midpoint of $BE$
 variable {D : P} {hd : D = (SEG B E).midpoint}
 
+-- Theorem : $AD = DC$
 theorem Shan_Problem_1_10 : (SEG A D).length = (SEG D C).length := sorry
 
 end Shan_Problem_1_10

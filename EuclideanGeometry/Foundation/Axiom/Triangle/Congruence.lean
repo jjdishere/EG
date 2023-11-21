@@ -25,7 +25,7 @@ def IsCongr (tr₁ tr₂: Triangle P) : Prop := by
 
 scoped infix : 50 "IsCongrTo" => IsCongr
 
-scoped infix : 50 "≅" => IsCongr --do we need?
+-- scoped infix : 50 "≅" => IsCongr --do we need?
 
 namespace IsCongr
 
