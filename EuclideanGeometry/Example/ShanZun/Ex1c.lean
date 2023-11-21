@@ -123,14 +123,14 @@ lemma hnd'' : ¬ colinear C D E := by
   apply hnd this
 lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C hnd := by
   apply sim_of_SAS
-  simp only [Triangle.edge₂,Triangle.edge₃]
-  have tr13: (TRI_nd A D E(@hnd' P _ A B C hnd D hd E he)).1.point₃=E:= rfl
-  have tr23: (TRI_nd A B C hnd).1.point₃ =C:= rfl
-  have tr11: (TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).1.point₁=A:= rfl
-  have tr21: (TRI_nd A B C hnd).1.point₁ =A:= rfl
-  have tr12: (TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).1.point₂=D:= rfl
-  have tr22: (TRI_nd A B C hnd).1.point₂ =B := rfl
-  rw[tr13,tr12,tr11,tr23,tr22,tr21,Seg.length_of_rev_eq_length.symm,(Seg.length_of_rev_eq_length (seg := SEG C A)).symm]
+  simp only [Triangle_nd.edge₂,Triangle_nd.edge₃, Triangle.edge₂,Triangle.edge₃]
+  have tr13: (TRI A D E).point₃=E:= rfl
+  have tr23: (TRI A B C).point₃ =C:= rfl
+  have tr11: (TRI A D E).point₁=A:= rfl
+  have tr21: (TRI A B C).point₁ =A:= rfl
+  have tr12: (TRI A D E).point₂=D:= rfl
+  have tr22: (TRI A B C).point₂ =B := rfl
+  rw[tr13, tr12, tr11, tr23, tr22, tr21, ← Seg.length_of_rev_eq_length, ← (SEG C A).length_of_rev_eq_length]
   simp only [Seg.reverse]
   rw[ae_ratio,ad_ratio]
   use C

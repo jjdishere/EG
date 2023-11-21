@@ -893,4 +893,64 @@ end DirLine
 
 end Archimedean_property
 
+section dist
+
+namespace DirLine
+
+instance (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
+  vadd := fun x ⟨A, ha⟩ ↦ ⟨x • l.toDir.1 +ᵥ A, lies_on_of_exist_real_vec_eq_smul_toDir ha (vadd_vsub _ A)⟩
+  zero_vadd := by
+    intro ⟨A, ha⟩
+    apply Subtype.val_inj.mp
+    show (0 : ℝ) • l.toDir.1 +ᵥ A = A
+    rw [zero_smul, zero_vadd]
+  add_vadd := by
+    intro x y ⟨A, ha⟩
+    apply Subtype.val_inj.mp
+    show (x + y) • l.toDir.1 +ᵥ A = x • l.toDir.1 +ᵥ (y • l.toDir.1 +ᵥ A)
+    rw [add_smul, add_vadd]
+  vsub := fun ⟨A, ha⟩ ⟨B, hb⟩ ↦ inner (A -ᵥ B) l.toDir.1
+  Nonempty := by
+    rcases l.nontriv with ⟨A, _, ha, _⟩
+    exact ⟨A, ha⟩
+  vsub_vadd' := by
+    intro ⟨A, ha⟩ ⟨B, hb⟩
+    apply Subtype.val_inj.mp
+    show inner (VEC B A) l.toDir.1 • l.toDir.1 +ᵥ B = A
+    have h : @inner ℝ _ _ (VEC B A) l.toDir.1 • l.toDir.1 = VEC B A := by
+      rcases exist_real_vec_eq_smul_toDir_of_lies_on hb ha with ⟨t, h⟩
+      rw [h, real_inner_smul_left l.toDir.1 l.toDir.1 t, l.toDir.2, mul_one]
+    rw [h]
+    exact vsub_vadd A B
+  vadd_vsub' := by
+    intro x ⟨A, ha⟩
+    show inner (x • l.toDir.1 +ᵥ A -ᵥ A) l.toDir.1 = x
+    rw [vadd_vsub, real_inner_smul_left l.toDir.1 l.toDir.1 x, l.toDir.2, mul_one]
+  dist_eq_norm' := sorry
+
+def ddist {l : DirLine P} {A : P} {B : P} (ha : A LiesOn l) (hb : B LiesOn l) : ℝ :=
+  (⟨B, hb⟩ : l.carrier.Elem) -ᵥ ⟨A, ha⟩
+
+instance (l : DirLine P) : LinearOrder l.carrier.Elem where
+  le A B := A -ᵥ B ≤ 0
+  lt A B := A -ᵥ B < 0
+  le_refl A := by simp only [vsub_self, le_refl]
+  le_trans := sorry
+  lt_iff_le_not_le := sorry
+  le_antisymm := sorry
+  min := sorry
+  max := sorry
+  compare := sorry
+  le_total := sorry
+  decidableLE := decRel fun _ ↦ _
+  decidableEq := decRel fun _ ↦ _
+  decidableLT := decRel fun _ ↦ _
+  min_def := sorry
+  max_def := sorry
+  compare_eq_compareOfLessAndEq := sorry
+
+end DirLine
+
+end dist
+
 end EuclidGeom
