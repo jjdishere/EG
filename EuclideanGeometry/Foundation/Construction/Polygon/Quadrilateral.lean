@@ -155,9 +155,7 @@ theorem permute_is_convex : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point
   have g: ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := qdr_cvx.diag_not_para
   rw [diag_nd₁₃, diag_nd₂₄] at g
   have g': ¬ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) ∥ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) := by
-    apply Ne.symm
-    apply Seg_nd.not_para_rev_of_not_para (seg_nd := (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm)) (seg_nd' := (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ h.2))
-    exact Ne.symm g
+    apply Ne.symm (Seg_nd.not_para_rev_of_not_para (Ne.symm g))
   simp only [g', not_false_eq_true, dite_true]
   have inx_eq : qdr_cvx.diag_inx = Line.inx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine (Ne.symm qdr_cvx.diag_not_para) := Eq.symm (Line.inx.symm (Seg_nd.not_para_toline_of_not_para qdr_cvx.diag_nd₁₃ qdr_cvx.diag_nd₂₄ qdr_cvx.diag_not_para))
   have inx_eq' : qdr_cvx.diag_inx = Line.inx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine (Ne.symm g') := by
