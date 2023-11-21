@@ -32,6 +32,7 @@ def Real.toAngValue : ℝ → EuclidGeom.AngValue := Real.Angle.coe
 
 namespace EuclidGeom
 section angvalue
+
 instance : Coe Real AngValue where
   coe := Real.toAngValue
 
@@ -40,10 +41,26 @@ def AngValue.toReal : AngValue → ℝ := Real.Angle.toReal
 instance : Coe AngValue ℝ where
   coe := AngValue.toReal
 
-@[simp]
-theorem toreal_toangvalue_eq_self (r : AngValue):  (r.toReal).toAngValue = r := by sorry
+section real_angvalue_compatibility
 
---coe of Pos and toReal is pos
+@[simp]
+theorem toreal_toangvalue_eq_self {θ : AngValue}:  (θ.toReal).toAngValue = θ := by sorry
+
+theorem toreal_le_pi {θ : AngValue} : θ.toReal ≤ pi := sorry
+
+theorem toreal_neg_pi_le {θ : AngValue} : -pi < θ.toReal := sorry
+
+theorem toangvalue_toreal_eq_self_of_neg_pi_lt_le_pi {r : ℝ} (h₁ : -π < r) (h₂ : r ≤ π) : r.toAngValue.toReal = r := sorry
+
+theorem toangvalue_toreal_eq_self_add_two_mul_int_mul_pi (r : ℝ) : ∃ k : ℤ, r.toAngValue.toReal = r + 2 * k * π := sorry
+
+theorem toangvalue_eq_of_add_two_mul_int_mul_pi {r₁ r₂ : ℝ} (k : ℤ) (h : r₁ = r₂ + 2 * k * π) : r₁.toAngValue = r₂.toAngValue := sorry
+
+
+end real_angvalue_compatibility
+
+section pos_neg_isnd
+
 def AngValue.IsPos (θ : AngValue) : Prop := sbtw 0 θ π
 
 def AngValue.IsNeg (θ : AngValue) : Prop := sbtw (π: Real.Angle) θ 0
@@ -51,6 +68,8 @@ def AngValue.IsNeg (θ : AngValue) : Prop := sbtw (π: Real.Angle) θ 0
 def AngValue.IsND (θ : AngValue) : Prop := ¬ (θ = 0 ∨ θ = π)
 
 -- is pos implies not is neg, ... neg pos is neg, neg neg is pos neg triv is triv
+section trichotomy
+
 theorem not_isneg_of_ispos {θ : AngValue} : θ.IsPos → ¬ θ.IsNeg := sorry
 
 theorem isnd_of_ispos {θ : AngValue} : θ.IsPos → θ.IsND := sorry
@@ -65,19 +84,31 @@ theorem not_isneg_of_isnd {θ : AngValue} : θ.IsND → ¬ θ.IsNeg := sorry
 
 theorem ispos_or_isneg_or_not_isnd {θ : AngValue} : θ.IsPos ∨ θ.IsNeg ∨ ¬ θ.IsND := sorry
 
+end trichotomy
+
+section neg
+
 theorem neg_isneg_of_ispos {θ : AngValue} : θ.IsPos → (-θ).IsNeg := sorry
 
 theorem neg_ispos_of_isneg {θ : AngValue} : θ.IsNeg → (-θ).IsPos := sorry
 
 theorem neg_isnd_of_isnd {θ : AngValue} : θ.IsND → (-θ).IsND := sorry
 
+end neg
+
+theorem not_is_nd_iff {θ : AngValue} : ¬ θ.IsND ↔ (θ = 0 ∨ θ = π) := sorry
+
+section toreal
+
 theorem ispos_iff' {θ : AngValue} : θ.IsPos ↔ (0 < (θ : ℝ) ∧ ((θ : ℝ) < π)) := sorry
 
 theorem isneg_iff' {θ : AngValue} : θ.IsNeg ↔ (-π < (θ : ℝ) ∧ ((θ : ℝ) < 0)) := sorry
 
-theorem not_is_nd_iff {θ : AngValue} : ¬ θ.IsND ↔ (θ = 0 ∨ θ = π) := sorry
-
 theorem not_is_nd_iff' {θ : AngValue} : ¬ θ.IsND ↔ ((θ : ℝ) = 0 ∨ (θ : ℝ) = π) := sorry
+
+end toreal
+
+end pos_neg_isnd
 
 def AngValue.toDir (θ : AngValue) : Dir where
   toVec := ⟨cos θ, sin θ⟩
@@ -87,12 +118,17 @@ def AngValue.toDir (θ : AngValue) : Dir where
     rw [pow_two, pow_two]
     simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
 
+-- `not reall useful, fields and corollories are really useful, should write out explicitly`
 def AddDir.toAngValue : Additive Dir ≃+ AngValue where
   toFun := fun d => (Complex.arg (d : Dir).1 : Real.Angle)
   invFun := fun θ => AngValue.toDir θ
   left_inv := sorry
   right_inv := sorry
   map_add' _ _:= Complex.arg_mul_coe_angle (Dir.tovec_ne_zero _) (Dir.tovec_ne_zero _)
+
+-- example (r : Real) : - (r.toAngValue) = (-r).toAngValue := by exact rfl
+-- example (a b : ℝ) : (a + b).toAngValue = a.toAngValue + b := rfl
+-- `we should put a direction into simp?`
 
 def Dir.toAngValue (d : Dir) : AngValue := AddDir.toAngValue d
 
@@ -104,6 +140,8 @@ def AngDValue := AddCircle π
 
 instance : NormedAddCommGroup AngDValue := inferInstanceAs (NormedAddCommGroup (AddCircle π))
 
+-- `structure not really usefu?`
+-- `can we use < of setoid to define this map? does this create more rfl?`
 def AngValue.toAngDValue : AngValue →+ AngDValue where
   toFun := Quotient.lift (fun x : ℝ => (x : AddCircle π)) sorry
   map_zero' := sorry
@@ -390,5 +428,26 @@ theorem det_eq_sin_mul_norm_mul_norm (u v : Vec_nd): det u v = sin (Vec_nd.angle
   ring
 
 end Linear_Algebra
+
+-- Here is a small section which would not be used later. We just compare our definitions to the standard sameRay definitions.
+section sameRay_theorems
+
+theorem sameRay_iff_eq (a b : Dir) : SameRay ℝ a.1 b.1 ↔ a = b := by
+  rw [Complex.sameRay_iff]
+  constructor
+  · simp only [tovec_ne_zero, false_or]
+    intro h
+    let g := congrArg (fun z => mk_angle z) h
+    simp only [mk_angle_arg_toComplex_of_Dir_eq_self] at g
+    exact g
+  · tauto
+
+theorem sameRay_Vec_nd_toDir (z : Vec_nd) : SameRay ℝ z.1 z.toDir.1 := by
+  rw [Complex.sameRay_iff_arg_div_eq_zero, Vec_nd.self_eq_norm_smul_todir z, Complex.real_smul, ← mul_div, div_self (tovec_ne_zero (Vec_nd.toDir z)), mul_one, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst]
+  exact Complex.arg_ofReal_of_nonneg (Vec.norm_nonnegative z)
+
+theorem toDir_eq_toDir_of_sameRay (z₁ z₂ : Vec_nd) : SameRay ℝ z₁.1 z₂.1 → z₁.toDir = z₂.toDir := fun h => (sameRay_iff_eq z₁.toDir z₂.toDir).1 (SameRay.symm (SameRay.trans (SameRay.symm (SameRay.trans h (sameRay_Vec_nd_toDir z₂) (by simp only [ne_eq, ne_zero_of_Vec_nd, false_or, IsEmpty.forall_iff]))) (sameRay_Vec_nd_toDir z₁) (by simp only [ne_eq, ne_zero_of_Vec_nd, false_or, IsEmpty.forall_iff])))
+
+end sameRay_theorems
 
 end EuclidGeom
