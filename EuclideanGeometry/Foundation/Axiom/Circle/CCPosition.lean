@@ -383,15 +383,14 @@ theorem CC_inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (
   have hd : Complex.abs ((VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec) = 1 := by apply Dir.norm_of_dir_tovec_eq_one
   have hn : Vec.norm (VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right) = 2 * (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2)) := by
     unfold Vec.mk_pt_pt CC_Intersected_pts
-    simp
-    rw [vadd_vsub_assoc, vsub_vadd_eq_vsub_sub, vsub_self, add_zero_sub, Complex.ofReal_neg, neg_mul, neg_sub_left, ← two_mul, ← mul_assoc, ← mul_assoc]
+    simp only
+    rw [vadd_vsub_assoc, vsub_vadd_eq_vsub_sub, vsub_self, add_zero_sub]
+    simp only [neg_smul, Complex.real_smul, ← mul_assoc, neg_sub_left, ← two_mul,
+      neg_Vec_norm_eq_Vec_norm, Nat.cast_ofNat]
     unfold Vec.norm
-    rw [AbsoluteValue.map_neg Complex.abs, AbsoluteValue.map_mul Complex.abs, hd, mul_one, AbsoluteValue.map_mul Complex.abs, Complex.abs_I, mul_one]
-    calc
-      _ = Complex.abs (Complex.ofReal (2 * (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2)))) := by simp
-      _ = 2 * (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2)) := by
-        apply Complex.abs_of_nonneg
-        apply mul_nonneg (by norm_num) (Real.sqrt_nonneg _)
+    simp only [map_mul, Complex.abs_ofNat, Complex.abs_ofReal, Complex.abs_I, mul_one, hd]
+    congr
+    exact abs_of_nonneg (Real.sqrt_nonneg _)
   have : (VEC_nd (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm).toDir.1 = (- (Dir.I * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir)).1 := by
     calc
       _ = (Vec.norm (VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right))⁻¹ • (VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right) := rfl
