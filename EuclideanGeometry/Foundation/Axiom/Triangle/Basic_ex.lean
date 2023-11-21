@@ -15,7 +15,7 @@ def perm_vertices : (Triangle P) where
 -- We decide not to define reverse permutation of triangles, just do composition twice.
 
 -- Permuting three times returns to the original triangle.
-theorem eq_self_of_perm_vertices_three_times : tr.perm_vertices.perm_vertices.perm_vertices = tr := by sorry
+theorem eq_self_of_perm_vertices_three_times : tr.perm_vertices.perm_vertices.perm_vertices = tr := rfl
 
 -- flip vertices for triangles means to flip the second and the third vertices.
 
@@ -24,14 +24,16 @@ def flip_vertices : (Triangle P) where
   point₂ := tr.point₃
   point₃ := tr.point₂
 
-theorem eq_self_of_flip_vertices_twice : tr.flip_vertices.flip_vertices = tr := by sorry
+theorem eq_self_of_flip_vertices_twice : tr.flip_vertices.flip_vertices = tr := rfl
 
 -- Not sure this is the best theorem to p
-theorem eq_flip_of_perm_twice_of_perm_flip_vertices : tr.flip_vertices.perm_vertices.perm_vertices = tr.perm_vertices.flip_vertices := by sorry
+theorem eq_flip_of_perm_twice_of_perm_flip_vertices : tr.flip_vertices.perm_vertices.perm_vertices = tr.perm_vertices.flip_vertices := rfl
 
-theorem is_inside_of_is_inside_perm_vertices (tr : Triangle P) (p : P) (inside : p LiesInt tr) : p LiesInt tr.perm_vertices := by sorry
+theorem is_inside_of_is_inside_perm_vertices (tr : Triangle P) (p : P) (inside : p LiesInt tr) : p LiesInt tr.perm_vertices := by
+  sorry
 
-theorem is_inside_of_is_inside_flip_vertices (tr : Triangle P) (p : P) (inside : p LiesInt tr) : p LiesInt tr.flip_vertices := by sorry
+theorem is_inside_of_is_inside_flip_vertices (tr : Triangle P) (p : P) (inside : p LiesInt tr) : p LiesInt tr.flip_vertices := by
+  sorry
 
 end Triangle
 
@@ -41,12 +43,12 @@ def perm_vertices : (Triangle_nd P) := ⟨tr_nd.1.perm_vertices, flip_colinear_s
 
 def flip_vertices : (Triangle_nd P) := ⟨tr_nd.1.flip_vertices, flip_colinear_snd_trd.mt tr_nd.2⟩
 
-theorem eq_self_of_perm_vertices_three_times : tr_nd.perm_vertices.perm_vertices.perm_vertices = tr_nd := by sorry
+theorem eq_self_of_perm_vertices_three_times : tr_nd.perm_vertices.perm_vertices.perm_vertices = tr_nd := rfl
   --exact tr_nd.1.eq_self_of_perm_vertices_three_times
 
-theorem eq_self_of_flip_vertices_twice : tr_nd.flip_vertices.flip_vertices = tr_nd := by sorry
+theorem eq_self_of_flip_vertices_twice : tr_nd.flip_vertices.flip_vertices = tr_nd := rfl
 
-theorem eq_flip_of_perm_twice_of_perm_flip_vertices : tr_nd.flip_vertices.perm_vertices.perm_vertices = tr_nd.perm_vertices.flip_vertices := by sorry
+theorem eq_flip_of_perm_twice_of_perm_flip_vertices : tr_nd.flip_vertices.perm_vertices.perm_vertices = tr_nd.perm_vertices.flip_vertices := rfl
 
 -- compatibility of permutation/flip of vertices with orientation of the triangle
 
