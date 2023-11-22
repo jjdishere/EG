@@ -870,21 +870,19 @@ end Archimedean_property
 
 section dist
 
-namespace DirLine
-
-instance (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
+instance DirLine.instRealNormedAddTorsor (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
   vadd := fun x ⟨A, ha⟩ ↦ ⟨x • l.toDir.1 +ᵥ A, lies_on_of_exist_real_vec_eq_smul_toDir ha (vadd_vsub _ A)⟩
   zero_vadd := by
-    intro ⟨A, ha⟩
+    intro ⟨A, _⟩
     apply Subtype.val_inj.mp
     show (0 : ℝ) • l.toDir.1 +ᵥ A = A
     rw [zero_smul, zero_vadd]
   add_vadd := by
-    intro x y ⟨A, ha⟩
+    intro x y ⟨A, _⟩
     apply Subtype.val_inj.mp
     show (x + y) • l.toDir.1 +ᵥ A = x • l.toDir.1 +ᵥ (y • l.toDir.1 +ᵥ A)
     rw [add_smul, add_vadd]
-  vsub := fun ⟨A, ha⟩ ⟨B, hb⟩ ↦ inner (A -ᵥ B) l.toDir.1
+  vsub := fun ⟨A, _⟩ ⟨B, _⟩ ↦ inner (A -ᵥ B) l.toDir.1
   Nonempty := by
     rcases l.nontriv with ⟨A, _, ha, _⟩
     exact ⟨A, ha⟩
@@ -898,33 +896,62 @@ instance (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
     rw [h]
     exact vsub_vadd A B
   vadd_vsub' := by
-    intro x ⟨A, ha⟩
+    intro x ⟨A, _⟩
     show inner (x • l.toDir.1 +ᵥ A -ᵥ A) l.toDir.1 = x
     rw [vadd_vsub, real_inner_smul_left l.toDir.1 l.toDir.1 x, l.toDir.2, mul_one]
-  dist_eq_norm' := sorry
+  dist_eq_norm' := by
+    intro ⟨A, ha⟩ ⟨B, hb⟩
+    refine' (dist_eq_norm_vsub ℂ A B).trans _
+    rcases exist_real_vec_eq_smul_toDir_of_lies_on hb ha with ⟨t, h⟩
+    show ‖VEC B A‖ = ‖@inner ℝ _ _ (VEC B A) l.toDir.1‖
+    rw [h, real_inner_smul_left, l.toDir.2, Complex.real_smul, norm_mul, norm_mul, norm_one]
+    exact Mathlib.Tactic.LinearCombination.mul_pf (Complex.norm_real t) l.toDir.norm_of_dir_tovec_eq_one
 
-def ddist {l : DirLine P} {A : P} {B : P} (ha : A LiesOn l) (hb : B LiesOn l) : ℝ :=
+def DirLine.ddist {l : DirLine P} {A : P} {B : P} (ha : A LiesOn l) (hb : B LiesOn l) : ℝ :=
   (⟨B, hb⟩ : l.carrier.Elem) -ᵥ ⟨A, ha⟩
 
-instance (l : DirLine P) : LinearOrder l.carrier.Elem where
-  le A B := A -ᵥ B ≤ 0
-  lt A B := A -ᵥ B < 0
-  le_refl A := by simp only [vsub_self, le_refl]
-  le_trans := sorry
-  lt_iff_le_not_le := sorry
-  le_antisymm := sorry
-  min := sorry
-  max := sorry
-  compare := sorry
-  le_total := sorry
+variable {V : outParam Type*} {L : Type*} [outParam (AddCommGroup V)] [AddTorsor V L] [LinearOrder V]
+  [CovariantClass V V (fun x y ↦ x + y) (fun x y ↦ x ≤ y)]
+
+theorem zero_le_iff_neg_le_zero (a b : L) : 0 ≤ a -ᵥ b ↔ b -ᵥ a ≤ 0 :=
+  Iff.trans (by rw [vsub_add_vsub_cancel, vsub_self, zero_add]) (add_le_add_iff_right (a -ᵥ b))
+
+instance PartialOrder_of_AddTorsor : PartialOrder L where
+  le a b := a -ᵥ b ≤ 0
+  lt a b := a -ᵥ b < 0
+  le_refl _ := by simp only [vsub_self, le_refl]
+  le_trans a b c hab hbc := (vsub_add_vsub_cancel a b c).symm.trans_le (add_nonpos hab hbc)
+  lt_iff_le_not_le a b := by
+    have hv : a -ᵥ b < 0 ↔ a -ᵥ b ≤ 0 ∧ ¬ 0 ≤ a -ᵥ b := Preorder.lt_iff_le_not_le (a -ᵥ b) 0
+    exact ⟨fun hab ↦ ⟨(hv.mp hab).1, (zero_le_iff_neg_le_zero a b).not.mp (hv.mp hab).2⟩,
+      fun ⟨hab, hba⟩ ↦ hv.mpr ⟨hab, (zero_le_iff_neg_le_zero a b).not.mpr hba⟩⟩
+  le_antisymm a b hab hba :=
+    eq_of_vsub_eq_zero (PartialOrder.le_antisymm (a -ᵥ b) 0 hab ((zero_le_iff_neg_le_zero a b).mpr hba))
+
+instance LinearOrder_of_AddTorsor : LinearOrder L := {
+  PartialOrder_of_AddTorsor with
+  min := fun a b ↦ if a ≤ b then a else b
+  max := fun a b ↦ if a ≤ b then b else a
   decidableLE := decRel fun _ ↦ _
   decidableEq := decRel fun _ ↦ _
   decidableLT := decRel fun _ ↦ _
-  min_def := sorry
-  max_def := sorry
-  compare_eq_compareOfLessAndEq := sorry
+  min_def := by
+    intros
+    simp only [min]
+    congr
+  max_def := by
+    intros
+    simp only [min]
+    congr
+  le_total := fun a b ↦
+    (or_congr_right (zero_le_iff_neg_le_zero a b).symm).mpr (LinearOrder.le_total (a -ᵥ b) 0)
+  compare := fun a b ↦ compareOfLessAndEq a b
+  compare_eq_compareOfLessAndEq := by
+    compareOfLessAndEq_rfl
+}
 
-end DirLine
+instance DirLine.instLinearOrder (l : DirLine P) : LinearOrder l.carrier.Elem :=
+  LinearOrder_of_AddTorsor
 
 end dist
 
