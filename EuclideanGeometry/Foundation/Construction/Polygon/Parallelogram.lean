@@ -4,6 +4,7 @@ import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex
+import EuclideanGeometry.Foundation.Axiom.Linear.Parallel_trash
 
 /-!
 
@@ -92,12 +93,12 @@ theorem is_prg_nd_of_eq_length_eq_length (h₁ : (qdr_cvx.edge_nd₁₂).1.lengt
   have prepa₁: qdr_cvx.triangle₁.angle₁.value = qdr_cvx.triangle₃.angle₁.value := by
     unfold IsCongr at u
     simp only [A, dite_true] at u
-    rcases u with ⟨propa,propb,propc,propd,prope,propf⟩
+    rcases u with ⟨_, _, _, propd, _, _⟩
     exact propd
   have prepa₂: qdr_cvx.triangle₁.angle₃.value = qdr_cvx.triangle₃.angle₃.value := by
     unfold IsCongr at u
     simp only [A, dite_true] at u
-    rcases u with ⟨propa,propb,propc,propd,prope,propf⟩
+    rcases u with ⟨_, _, _, _, _, propf⟩
     exact propf
   have J: qdr_cvx.triangle₁.angle₁.end_ray = qdr_cvx.diag_nd₂₄.reverse.toRay := by rfl
   have K: qdr_cvx.triangle₁.angle₃.start_ray = qdr_cvx.diag_nd₂₄.toRay := by rfl
@@ -209,7 +210,7 @@ theorem is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.ed
   -- Use IsCongrTo to prove angle eq
   have prepa₁: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_colinear₁₂₄).angle₃.value = (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).angle₃.value := by
     simp only [A, dite_true] at IsCongrTo₁₄
-    rcases IsCongrTo₁₄ with ⟨propa,propb,propc,propd,prope,propf⟩
+    rcases IsCongrTo₁₄ with ⟨_, _, _, _, _, propf⟩
     exact propf.symm
   -- Use angle_eq to prove two diag para.
   have prepa₂: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).angle₃.start_ray.reverse.toDir = (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_colinear₁₂₄).angle₃.start_ray.toDir := by
@@ -233,7 +234,6 @@ theorem is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.ed
   have final: qdr_cvx.diag_nd₁₃.toProj = qdr_cvx.diag_nd₂₄.toProj := prepa₆
   -- Two diags para, not allowed in a qdr_cvx
   contradiction
-  -- .start_ray.reverse.toDir
   -- Case that is convex, using para to prove angle eq
   have angle₁_eq_angle₃: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).angle₁.value = (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).angle₁.value := by
     apply ang_eq_ang_of_todir_rev_todir
@@ -255,7 +255,7 @@ theorem is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.ed
   -- Use IsCongrTo to prove angle eq
   have pr₁: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).angle₃.value = (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).angle₃.value := by
     simp only [A, dite_true] at IsCongrTo₁₃
-    rcases IsCongrTo₁₃ with ⟨propa,propb,propc,propd,prope,propf⟩
+    rcases IsCongrTo₁₃ with ⟨_, _, _, _, _, propf⟩
     exact propf
   -- Use angle eq to prove para, hope qdr_cvx becomes prg
   have pr₂: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).angle₃.start_ray.toDir = (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).angle₃.start_ray.reverse.toDir := by
@@ -294,7 +294,38 @@ theorem is_prg_nd_of_para_eq_length_variant (h₁ : (SEG_nd A B (Quadrilateral_c
 
 /-- Given Quadrilateral_cvx qdr_cvx, and qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.edge_nd₂₃ and (qdr_cvx.edge_nd₁₄).1.length = (qdr_cvx.edge_nd₂₃).1.length, qdr_cvx is a Parallelogram_nd. -/
 theorem is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.edge_nd₂₃) (h₂ : qdr_cvx.edge_nd₁₄.1.length = qdr_cvx.edge_nd₂₃.1.length) : qdr_cvx.IsParallelogram_nd := by
-  sorry
+  let permute := (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁)
+  have h: permute IsConvex := qdr_cvx.permute_is_convex
+  let permute_convex := Quadrilateral_cvx.mk_is_convex h
+  have K₁: permute_convex.edge_nd₁₂.toProj = qdr_cvx.edge_nd₂₃.toProj := by rfl
+  have K₂: permute_convex.edge_nd₁₂.1.length = qdr_cvx.edge_nd₂₃.1.length := by rfl
+  have j₂: permute_convex.edge_nd₃₄ = qdr_cvx.edge_nd₁₄.reverse := by rfl
+  have K₃: permute_convex.edge_nd₃₄.toProj = qdr_cvx.edge_nd₁₄.toProj := by
+    rw [j₂]
+    apply Seg_nd.toproj_of_rev_eq_toproj
+  have K₄: permute_convex.edge_nd₃₄.1.length = qdr_cvx.edge_nd₁₄.1.length := by
+    rw [j₂]
+    apply Seg_nd.length_of_rev_eq_length
+  have H₁: permute_convex.edge_nd₁₂.toProj = permute_convex.edge_nd₃₄.toProj := by
+    rw [K₁, K₃]
+    unfold parallel at h₁
+    exact h₁.symm
+  have H₂: permute_convex.edge_nd₁₂.1.length = permute_convex.edge_nd₃₄.1.length := by
+    rw [K₂, K₄]
+    exact h₂.symm
+  have H: permute_convex.IsParallelogram_nd := is_prg_nd_of_para_eq_length permute_convex H₁ H₂
+  unfold Quadrilateral_cvx.IsParallelogram_nd
+  unfold Quadrilateral_cvx.IsParallelogram_nd at H
+  rcases H with ⟨_,b⟩
+  constructor
+  have P₁: permute_convex.edge_nd₂₃ = qdr_cvx.edge_nd₃₄ := by rfl
+  have p₂: permute_convex.edge_nd₁₄ = qdr_cvx.edge_nd₁₂.reverse := by rfl
+  have p₃: permute_convex.edge_nd₃₄ = qdr_cvx.edge_nd₁₄.reverse := by rfl
+  have P₂: permute_convex.edge_nd₁₄.reverse.toProj = permute_convex.edge_nd₁₄.toProj := by apply permute_convex.edge_nd₁₄.toproj_of_rev_eq_toproj
+  rw [P₁, p₂] at b
+  apply Seg_nd._para_rev_of_para' at b
+  exact b
+  exact h₁
 
 /-- Given four points ABCD and Quadrilateral ABCD IsConvex, and AD ∥ BC and AD = BC, Quadrilateral ABCD is a Parallelogram_nd. -/
 theorem is_prg_nd_of_para_eq_length'_variant (h₁ : (SEG_nd A D (Quadrilateral_cvx.nd₁₄ (Quadrilateral_cvx.mk_is_convex h))) ∥ (SEG_nd B C (Quadrilateral_cvx.nd₂₃ (Quadrilateral_cvx.mk_is_convex h)))) (h₂ : (SEG A D).length = (SEG B C).length) : QDR A B C D IsPRG_nd := by
