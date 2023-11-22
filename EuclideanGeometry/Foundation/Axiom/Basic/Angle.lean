@@ -42,20 +42,55 @@ instance : Coe AngValue ℝ where
   coe := AngValue.toReal
 
 section real_angvalue_compatibility
-
-@[simp]
-theorem toreal_toangvalue_eq_self {θ : AngValue}:  (θ.toReal).toAngValue = θ := by sorry
+-- this section is partially intended to be not so complete, we disencouage using real to denote the angle. for more involved use of real angvalue compatibility, please use theorems in Real.AddCircle.
 
 theorem toreal_le_pi {θ : AngValue} : θ.toReal ≤ pi := sorry
 
 theorem toreal_neg_pi_le {θ : AngValue} : -pi < θ.toReal := sorry
 
+section composite
+
+@[simp]
+theorem toreal_toangvalue_eq_self {θ : AngValue}:  (θ.toReal).toAngValue = θ := by sorry
+
 theorem toangvalue_toreal_eq_self_of_neg_pi_lt_le_pi {r : ℝ} (h₁ : -π < r) (h₂ : r ≤ π) : r.toAngValue.toReal = r := sorry
 
-theorem toangvalue_toreal_eq_self_add_two_mul_int_mul_pi (r : ℝ) : ∃ k : ℤ, r.toAngValue.toReal = r + 2 * k * π := sorry
+theorem toangvalue_toreal_eq_self_add_two_mul_int_mul_pi (r : ℝ) : ∃ k : ℤ, r.toAngValue.toReal = r + k * (2 * π) := sorry
 
-theorem toangvalue_eq_of_add_two_mul_int_mul_pi {r₁ r₂ : ℝ} (k : ℤ) (h : r₁ = r₂ + 2 * k * π) : r₁.toAngValue = r₂.toAngValue := sorry
+theorem toangvalue_eq_of_add_two_mul_int_mul_pi {r₁ r₂ : ℝ} (k : ℤ) (h : r₁ = r₂ + k *(2 * π)) : r₁.toAngValue = r₂.toAngValue := sorry
 
+end composite
+
+section special_value
+--special values -pi 0 pi 2pi -2pi `To be added`
+@[simp]
+theorem AngValue.coe_zero : ((0 : Real) : AngValue) = (0 : AngValue) := rfl
+
+@[simp]
+theorem AngValue.coe_two_pi : ((2 * π : Real) : AngValue) = (0 : AngValue) := Real.Angle.coe_two_pi
+
+@[simp]
+theorem AngValue.neg_coe_pi : (-π :AngValue) = (π : AngValue)  := Real.Angle.neg_coe_pi
+
+
+end special_value
+
+section group_hom
+--`add sub neg smul` `to be added`
+-- `the current direction of simp is turn every thing into Real, is this good?`
+@[simp]
+theorem AngValue.add_coe (x y: ℝ) : (x : AngValue) + (y : AngValue) = (((x + y) : Real) : AngValue) := rfl
+
+@[simp]
+theorem AngValue.sub_coe (x y: ℝ) : (x : AngValue) - (y : AngValue) = (((x - y) : Real) : AngValue)  := rfl
+
+@[simp]
+theorem AngValue.nat_mul_coe (n : ℕ) (x : ℝ) : n • (x : AngValue) = ((n * x: Real) : AngValue) := (nsmul_eq_mul _ x) ▸ Eq.refl _
+
+@[simp]
+theorem AngValue.neg_coe (x : ℝ): -(x : AngValue) = (((-x): Real) : AngValue) := rfl
+
+end group_hom
 
 end real_angvalue_compatibility
 
@@ -67,7 +102,6 @@ def AngValue.IsNeg (θ : AngValue) : Prop := sbtw (π: Real.Angle) θ 0
 
 def AngValue.IsND (θ : AngValue) : Prop := ¬ (θ = 0 ∨ θ = π)
 
--- is pos implies not is neg, ... neg pos is neg, neg neg is pos neg triv is triv
 section trichotomy
 
 theorem not_isneg_of_ispos {θ : AngValue} : θ.IsPos → ¬ θ.IsNeg := sorry
@@ -99,7 +133,7 @@ end neg
 theorem not_is_nd_iff {θ : AngValue} : ¬ θ.IsND ↔ (θ = 0 ∨ θ = π) := sorry
 
 section toreal
-
+-- expand this section, add θ.IsPos → (0 < (θ : ℝ)), ...
 theorem ispos_iff' {θ : AngValue} : θ.IsPos ↔ (0 < (θ : ℝ) ∧ ((θ : ℝ) < π)) := sorry
 
 theorem isneg_iff' {θ : AngValue} : θ.IsNeg ↔ (-π < (θ : ℝ) ∧ ((θ : ℝ) < 0)) := sorry
@@ -110,6 +144,10 @@ end toreal
 
 end pos_neg_isnd
 
+-- `Do we prepare is acute, is right, ... here?`
+
+-- `a section discussing cos sin, uniqueness with pos neg`
+
 def AngValue.toDir (θ : AngValue) : Dir where
   toVec := ⟨cos θ, sin θ⟩
   unit := by
@@ -118,7 +156,7 @@ def AngValue.toDir (θ : AngValue) : Dir where
     rw [pow_two, pow_two]
     simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
 
--- `not reall useful, fields and corollories are really useful, should write out explicitly`
+-- `not reall useful, fields and corollories are really useful, should write out explicitly` `Avoid AddDir`
 def AddDir.toAngValue : Additive Dir ≃+ AngValue where
   toFun := fun d => (Complex.arg (d : Dir).1 : Real.Angle)
   invFun := fun θ => AngValue.toDir θ
