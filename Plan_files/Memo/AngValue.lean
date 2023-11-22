@@ -47,6 +47,7 @@ File Basic.Angle :
       section trichotomy
       section neg
       section toreal
+    -- `Do we prepare is acute, is right, ... here?`
     section trignometric
     section dir_angvalue_compatibility
       section special_value
@@ -71,10 +72,7 @@ File Position.Angle :
 
 
 
-
-
-
 ### ToDo List
-
+* Should distinguish `Real.pi` and `AngValue.pi` do we need?  what about `AngValue.pi_div_two`?
 
 -/

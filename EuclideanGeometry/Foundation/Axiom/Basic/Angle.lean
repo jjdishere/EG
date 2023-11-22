@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Basic.Vector
 import Mathlib.Analysis.Normed.Group.AddCircle
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 /-!
 # Angle Conversions
 
@@ -21,7 +22,7 @@ namespace EuclidGeom
 section angvalue
 def AngValue := Real.Angle
 
-instance : NormedAddCommGroup AngValue := inferInstanceAs (NormedAddCommGroup (AddCircle (2*π)))
+instance : NormedAddCommGroup AngValue := inferInstanceAs (NormedAddCommGroup Real.Angle)
 
 instance : CircularOrder AngValue := inferInstanceAs (CircularOrder Real.Angle)
 
@@ -146,7 +147,30 @@ end pos_neg_isnd
 
 -- `Do we prepare is acute, is right, ... here?`
 
--- `a section discussing cos sin, uniqueness with pos neg`
+section trignometric
+-- `a section discussing cos sin, uniqueness with pos neg
+
+theorem pos_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : AngValue) (hang₁ : ang₁.IsPos) (hang₂ : ang₂.IsPos) : cos ang₁ = cos ang₂ ↔ ang₁ = ang₂ := by
+  rw [Real.Angle.cos_eq_iff_eq_or_eq_neg]
+  constructor
+  intro e
+  rcases e with e₁ | e₂
+  · exact e₁
+  · exfalso
+    exact not_isneg_of_ispos hang₁ (e₂ ▸ neg_isneg_of_ispos hang₂)
+  exact Or.inl
+
+theorem neg_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : AngValue) (hang₁ : ang₁.IsNeg) (hang₂ : ang₂.IsNeg) : cos ang₁ = cos ang₂ ↔ ang₁ = ang₂ := by
+  rw [Real.Angle.cos_eq_iff_eq_or_eq_neg]
+  constructor
+  intro e
+  rcases e with e₁ | e₂
+  · exact e₁
+  · exfalso
+    exact not_ispos_of_isneg hang₁ (e₂ ▸ neg_ispos_of_isneg hang₂)
+  exact Or.inl
+
+end trignometric
 
 def AngValue.toDir (θ : AngValue) : Dir where
   toVec := ⟨cos θ, sin θ⟩
@@ -234,44 +258,7 @@ def AngValue.toDir (θ : ℝ) : Dir where
     rw [pow_two, pow_two]
     simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
 -/
-/-
-theorem pos_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : ℝ) (hang₁ : (0 < ang₁) ∧ (ang₁ < π)) (hang₂ : (0 < ang₂) ∧ (ang₂ < π)) : cos ang₁ = cos ang₂ ↔ ang₁ = ang₂ := by
-  constructor
-  rw [Real.Angle.cos_eq_iff_eq_or_eq_neg]
-  intro ⟨k, e⟩
-  rcases e with e₁ | e₂
-  -- First Case
-  have i₀ : (2 * π) * k > (2 * π) * (-1) := by linarith [Real.pi_pos]
-  have i₁ : (2 * π) * k < (2 * π) * 1 := by linarith [Real.pi_pos]
-  have tst₂ : k = 0 := by linarith [(@Int.cast_lt ℝ _ _ (-1 : ℤ) k).1 (Eq.trans_lt (by norm_num) ((mul_lt_mul_left (Right.mul_pos zero_lt_two Real.pi_pos)).1 i₀)), (@Int.cast_lt ℝ _ _ k (1 : ℤ)).1 (Eq.trans_gt (id (Eq.symm (by norm_num))) ((mul_lt_mul_left (Right.mul_pos zero_lt_two Real.pi_pos)).1 i₁))]
-  simp only [e₁, tst₂, Int.cast_zero, mul_zero, zero_mul, zero_add]
-  -- Second Case
-  have i₂ : (2 * π) * k > (2 * π) * 0 := by linarith [Real.pi_pos]
-  have i₁ : (2 * π) * k < (2 * π) * 1 := by linarith [Real.pi_pos]
-  linarith [(@Int.cast_lt ℝ _ _ (0 : ℤ) k).1 (Eq.trans_lt (by norm_num) ((mul_lt_mul_left (Right.mul_pos zero_lt_two Real.pi_pos)).1 i₂)), (@Int.cast_lt ℝ _ _ k (1 : ℤ)).1 (Eq.trans_gt (id (Eq.symm (by norm_num))) ((mul_lt_mul_left (Right.mul_pos zero_lt_two Real.pi_pos)).1 i₁))]
-  exact fun a => congrArg cos a
--/
-
-theorem pos_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : AngValue) (hang₁ : ang₁.IsPos) (hang₂ : ang₂.IsPos) : cos ang₁ = cos ang₂ ↔ ang₁ = ang₂ := by
-  rw [Real.Angle.cos_eq_iff_eq_or_eq_neg]
-  constructor
-  intro e
-  rcases e with e₁ | e₂
-  · exact e₁
-  · exfalso
-    exact not_isneg_of_ispos hang₁ (e₂ ▸ neg_isneg_of_ispos hang₂)
-  exact Or.inl
-
-theorem neg_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : AngValue) (hang₁ : ang₁.IsNeg) (hang₂ : ang₂.IsNeg) : cos ang₁ = cos ang₂ ↔ ang₁ = ang₂ := by
-  rw [Real.Angle.cos_eq_iff_eq_or_eq_neg]
-  constructor
-  intro e
-  rcases e with e₁ | e₂
-  · exact e₁
-  · exfalso
-    exact not_ispos_of_isneg hang₁ (e₂ ▸ neg_ispos_of_isneg hang₂)
-  exact Or.inl
-
+--`should remove Complex.arg, we use Dir.toAngValue now`
 section Make_angle_theorems
 
 @[simp]
