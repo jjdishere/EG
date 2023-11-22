@@ -152,20 +152,28 @@ end make
 
 section coercion
 
+@[pp_dot]
 def DirLine.toDir (l : DirLine P) : Dir := Quotient.lift (s := same_dir_line.setoid) (fun ray => ray.toDir) (fun _ _ h => h.left) l
 
+@[pp_dot]
 def DirLine.toProj (l : DirLine P) : Proj := l.toDir.toProj
 
+@[pp_dot]
 def DirLine.toLine (l : DirLine P) : Line P := Quotient.lift (⟦·⟧) (fun _ _ h => Quotient.sound $ same_dir_line_le_same_extn_line h) l
 
+@[pp_dot]
 def Ray.toDirLine (ray : Ray P) : DirLine P := ⟦ray⟧
 
+@[pp_dot]
 def Seg_nd.toDirLine (seg_nd : Seg_nd P) : DirLine P := seg_nd.toRay.toDirLine
 
+@[pp_dot]
 def Line.toProj (l : Line P) : Proj := Quotient.lift (s := same_extn_line.setoid) (fun ray : Ray P => ray.toProj) (fun _ _ h => h.left) l
 
+@[pp_dot]
 def Ray.toLine (ray : Ray P) : Line P := ⟦ray⟧
 
+@[pp_dot]
 def Seg_nd.toLine (seg_nd : Seg_nd P) : Line P := ⟦seg_nd.toRay⟧
 
 end coercion
@@ -186,40 +194,6 @@ instance : Coe (Ray P) (Line P) where
   coe := Ray.toLine
 
 end coercion_compatibility
-
-/-
-section ClassDirFig
-
-variable (P : Type _) [EuclideanPlane P]
-
-class DirFig (α : Type*) where
-  toDirLine : α → DirLine P
-
-instance DirLine.instDirFig : DirFig P (DirLine P) where
-  toDirLine l := l
-
-instance Ray.instDirFig : DirFig P (Ray P) where
-  toDirLine := Quotient.mk (@same_dir_line.setoid P _)
-
-instance Seg_nd.instDirFig : DirFig P (Seg_nd P) where
-  toDirLine s := Quotient.mk (@same_dir_line.setoid P _) s.toRay
-
-section DirFig
-
-variable {P : Type _} [EuclideanPlane P] {α : Type _} [DirFig P α] (l : α)
-
-def toDir : Dir := (@DirFig.toDirLine P _ _ _ l).toDir
-
-def toProj : Proj := (@DirFig.toDirLine P _ _ _ l).toDir.toProj
-
-def toLine : Line P := (@DirFig.toDirLine P _ _ _ l).toLine
-
--- And other definitions, such as IsLeft, IsRight, OnLine, odist, sign, and so on.
-
-end DirFig
-
-end ClassDirFig
--/
 
 open Classical
 
@@ -310,6 +284,7 @@ end dirline_toray
 
 section reverse
 
+@[pp_dot]
 def DirLine.reverse (l : DirLine P) : DirLine P := by
   refine' Quotient.lift (⟦·.reverse⟧) (fun a b h ↦ _) l
   exact (@Quotient.eq _ same_dir_line.setoid _ _).mpr ⟨neg_inj.mpr h.left, Ray.lies_on_rev_or_lies_on_iff.mp h.2⟩
@@ -583,8 +558,8 @@ theorem Line.nontriv (l : Line P) : ∃ (A B : P), A LiesOn l ∧ B LiesOn l ∧
 theorem Ray.lies_on_ray_or_lies_on_ray_rev_iff : A LiesOn r ∧ A ≠ r.source ∨ A LiesOn r.reverse ∧ A ≠ r.source ∨ A = r.source ↔ A LiesOn r ∨ A LiesOn r.reverse := ⟨
   fun | .inl h => .inl h.1
       | .inr h => .casesOn h (fun h => .inr h.1) (fun h => .inr (by rw[h]; exact source_lies_on)),
-  fun | .inl h => if g : A = source then .inr (.inr g) else .inl ⟨h, g⟩
-      | .inr h => if g : A = source then .inr (.inr g) else .inr (.inl ⟨h, g⟩)⟩
+  fun | .inl h => if g : A = r.source then .inr (.inr g) else .inl ⟨h, g⟩
+      | .inr h => if g : A = r.source then .inr (.inr g) else .inr (.inl ⟨h, g⟩)⟩
 
 theorem Ray.lies_on_toline_iff_lies_int_or_lies_int_rev_or_eq_source {r : Ray P} : (A LiesOn r.toLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) := by
   rw [lies_int_def, lies_int_def, source_of_rev_eq_source, lies_on_ray_or_lies_on_ray_rev_iff, lies_on_toline_iff_lies_on_or_lies_on_rev]
@@ -747,7 +722,7 @@ theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
           exact a
         have b' : B ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev b a'
         have c' : C ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev c a'
-        exact Ray.colinear_of_lies_on (Ray.source_lies_on) b' c'
+        exact Ray.colinear_of_lies_on (ray'.source_lies_on) b' c'
   | inr a =>
     cases b with
     | inl b =>
@@ -756,7 +731,7 @@ theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
         let ray' := Ray.mk A ray.toDir
         have b' : B ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev b a
         have c' : C ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev c a
-        exact Ray.colinear_of_lies_on (Ray.source_lies_on) b' c'
+        exact Ray.colinear_of_lies_on (ray'.source_lies_on) b' c'
       | inr c =>
         let ray' := Ray.mk B ray.reverse.toDir
         have b' : B LiesOn ray.reverse.reverse := by

@@ -5,7 +5,7 @@ namespace EuclidGeom
 /- Define values of oriented angles, in (-π, π], modulo 2 π. -/
 /- Define oriented angles, ONLY taking in two rays starting at one point!  And define ways to construct oriented angles, by given three points on the plane, and etc.  -/
 @[ext]
-class Angle (P : Type _) [EuclideanPlane P] where
+structure Angle (P : Type _) [EuclideanPlane P] where
   start_ray : Ray P
   end_ray : Ray P
   source_eq_source : start_ray.source = end_ray.source

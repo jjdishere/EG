@@ -11,11 +11,14 @@ noncomputable section
 namespace EuclidGeom
 
 -- `Add class parallelogram and state every theorem in structure`
-class Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
+@[ext]
+structure Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
 --  `to be added`
 
+@[pp_dot]
 def Quadrilateral_cvx.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := ( qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (qdr_cvx.edge_nd₁₄ ∥ (qdr_cvx.edge_nd₂₃))
 
+@[pp_dot]
 def Quadrilateral.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases qdr IsConvex
   · exact (Quadrilateral_cvx.mk_is_convex h).IsParallelogram

@@ -56,7 +56,7 @@ section definition
 
 /-- A \emph{ray} consists of a pair of a point $P$ and a direction; it is the ray that starts at the point and extends in the given direction. -/
 @[ext]
-class Ray (P : Type _) [EuclideanPlane P] where
+structure Ray (P : Type _) [EuclideanPlane P] where
   /-- returns the source of the ray. -/
   source : P
   /-- returns the direction of the ray. -/
@@ -64,7 +64,7 @@ class Ray (P : Type _) [EuclideanPlane P] where
 
 /-- A \emph{Segment} consists of a pair of points: the source and the target; it is the segment from the source to the target. (We allow the source and the target to be the same.) -/
 @[ext]
-class Seg (P : Type _) [EuclideanPlane P] where
+structure Seg (P : Type _) [EuclideanPlane P] where
   /-- returns the source of the segment. -/
   source : P
   /-- returns the target of the segment. -/
@@ -171,25 +171,29 @@ instance : Coe (Seg_nd P) (Seg P) where
   coe := fun x => x.1
 
 /-- Given a nondegenerate segment, this function returns the source of the segment. -/
-@[simp]
+@[simp, pp_dot]
 def source (seg_nd : Seg_nd P) : P := seg_nd.1.source
 
 /-- Given a nondegenerate segment, this function returns the target of the segment. -/
-@[simp]
+@[simp, pp_dot]
 def target (seg_nd : Seg_nd P) : P := seg_nd.1.target
 
 /-- Given a nondegenerate segment $AB$, this function returns the nondegenerate vector $\overrightarrow{AB}$. -/
+@[pp_dot]
 def toVec_nd (seg_nd : Seg_nd P) : Vec_nd := ⟨VEC seg_nd.source seg_nd.target, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩
 
 /-- Given a nondegenerate segment $AB$, this function returns the direction associated to the segment, defined by normalizing the nondegenerate vector $\overrightarrow{AB}$. -/
+@[pp_dot]
 def toDir (seg_nd : Seg_nd P) : Dir := Vec_nd.toDir seg_nd.toVec_nd
 
 /-- Given a nondegenerate segment $AB$, this function returns the ray $AB$, whose source is $A$ in the direction of $B$. -/
+@[pp_dot]
 def toRay (seg_nd : Seg_nd P) : Ray P where
   source := seg_nd.1.source
   toDir := seg_nd.toDir
 
 /-- Given a nondegenerate segment $AB$, this function returns the projective direction  of $AB$, defined as the projective direction of the nondegenerate vector $\overrightarrow{AB}$.  -/
+@[pp_dot]
 def toProj (seg_nd : Seg_nd P) : Proj := (seg_nd.toVec_nd.toProj : Proj)
 
 /-- Given a point $A$ and a nondegenerate segment $seg_nd$, this function returns whether $A$ lies on $seg_nd$, namely, whether it lies on the corresponding segment.-/
@@ -654,11 +658,13 @@ end lieson_compatibility
 section reverse
 
 /-- Given a ray, this function returns the ray with the same source but with reversed direction. -/
+@[pp_dot]
 def Ray.reverse (ray : Ray P): Ray P where
   source := ray.source
   toDir := - ray.toDir
 
 /-- Given a segment $AB$, this function returns its reverse, i.e. the segment $BA$. -/
+@[pp_dot]
 def Seg.reverse (seg : Seg P): Seg P where
   source := seg.target
   target := seg.source
@@ -880,7 +886,7 @@ theorem Ray.not_lies_on_of_lies_int_rev {A : P} {ray : Ray P} (liesint : A LiesI
 theorem Ray.not_lies_int_of_lies_on_rev {A : P} {ray : Ray P} (liesint : A LiesOn ray.reverse) : ¬ A LiesInt ray := by
   by_contra h
   rw [← Ray.rev_rev_eq_self (ray:=ray)] at h
-  have:¬A LiesOn ray.reverse:=by
+  have : ¬ (A LiesOn ray.reverse) := by
     apply not_lies_on_of_lies_int_rev
     exact h
   trivial
@@ -920,7 +926,8 @@ theorem lies_on_iff_lies_on_toray_and_rev_toray {X : P} {seg_nd : Seg_nd P} : X 
   simp only[inv_nonneg]
   linarith
   linarith
-  rw[h, mul_smul, this, ← Vec_nd.norm_smul_todir_eq_self seg_nd.toVec_nd, smul_smul, smul_smul, mul_assoc, ← norm_of_Vec_nd_eq_norm_of_Vec_nd_fst,inv_mul_cancel (Vec_nd.norm_ne_zero seg_nd.toVec_nd),mul_one]
+  rw [h, mul_smul, this, ← Vec_nd.norm_smul_todir_eq_self seg_nd.toVec_nd, smul_smul, smul_smul, mul_assoc, ← norm_of_Vec_nd_eq_norm_of_Vec_nd_fst,inv_mul_cancel (Vec_nd.norm_ne_zero seg_nd.toVec_nd),mul_one]
+  rfl
 
 -- `This theorem really concerns about the total order on a line`
 /-- Let $ray$ be a ray, and let $A$ be a point on $ray$, and $B$ a point on the reverse of $ray$. Then $A$ lies on the ray starting at $B$ in the same direction of $\ray$. -/
@@ -932,18 +939,23 @@ theorem lies_on_pt_todir_of_pt_lies_on_rev {A B : P} {ray : Ray P} (hA : A LiesO
   constructor
   linarith
   simp only
-  rw [add_smul, ← vec_sub_vec ray.source, ha, hb, sub_neg_eq_add]
+  rw [add_smul, ← vec_sub_vec ray.source, ha, hb]
+  simp only [Complex.real_smul, Dir.tovec_neg_eq_neg_tovec, smul_neg, sub_neg_eq_add]
 
 /-- Given two rays $ray_1$ and $ray_2$ in same direction, the source of $ray_1$ lies on $ray_2$ if and only if the source of $ray_2$ lies on the reverse of $ray_1$. -/
 theorem lies_on_iff_lies_on_rev_of_same_todir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = ray₂.toDir) : ray₁.source LiesOn ray₂ ↔ ray₂.source LiesOn ray₁.reverse := by
   constructor
   · intro ⟨t, ht, eq⟩
     refine' ⟨t, ht, _⟩
-    rw [Dir.tovec_neg_eq_neg_tovec, smul_neg, h, ← eq]
+    simp only [Ray.source_of_rev_eq_source, Ray.todir_of_rev_eq_neg_todir,
+      Dir.tovec_neg_eq_neg_tovec, smul_neg, h]
+    rw [← eq]
     exact (neg_vec ray₂.source ray₁.source).symm
   · intro ⟨t, ht, eq⟩
     refine' ⟨t, ht, _⟩
-    rw [Dir.tovec_neg_eq_neg_tovec, smul_neg, ← neg_vec, h] at eq
+    simp only [Ray.source_of_rev_eq_source, Ray.todir_of_rev_eq_neg_todir,
+      Dir.tovec_neg_eq_neg_tovec, smul_neg] at eq
+    rw [← neg_vec, h] at eq
     exact neg_inj.mp eq
 
 /-- Given two rays $ray_1$ and $ray_2$ in same direction, the source of $ray_1$ lies in the interior of $ray_2$ if and only if the source of $ray_2$ lies in the interior of the reverse of $ray_1$. -/
@@ -987,7 +999,9 @@ theorem lies_on_or_rev_iff_exist_real_vec_eq_smul {A : P} {ray : Ray P} : (A Lie
     rcases h with ⟨t, _, eq⟩ | ⟨t, _, eq⟩
     · use t, eq
     · use - t
-      rw [Dir.tovec_neg_eq_neg_tovec, smul_neg, ← neg_smul] at eq
+      simp only [Ray.source_of_rev_eq_source, Ray.todir_of_rev_eq_neg_todir,
+        Dir.tovec_neg_eq_neg_tovec, smul_neg] at eq
+      rw [← neg_smul] at eq
       exact eq
   · intro h
     choose t ht using h
@@ -1019,6 +1033,7 @@ end reverse
 section extension
 
 /-- Define the extension ray of a nondegenerate segment to be the ray whose origin is the target of the segment whose direction is the same as that of the segment. -/
+@[pp_dot]
 def Seg_nd.extension (seg_nd : Seg_nd P) : Ray P where
   source := seg_nd.target
   toDir := seg_nd.toDir
@@ -1116,7 +1131,10 @@ theorem lies_on_seg_nd_or_extension_of_lies_on_toray {seg_nd : Seg_nd P} {A : P}
   let v : Vec_nd := ⟨VEC seg_nd.1.1 seg_nd.1.2, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩
   by_cases h : t > ‖v.1‖
   · refine' Or.inr ⟨t - ‖v.1‖, sub_nonneg.mpr (le_of_lt h), _⟩
-    rw [sub_smul, ← eq]
+    simp only [Seg_nd.toray_todir_eq_todir] at eq
+    rw [sub_smul]
+    simp only [Seg_nd.extn_todir]
+    rw [← eq]
     refine' eq_sub_of_add_eq (add_eq_of_eq_sub' _)
     rw [vec_sub_vec']
     exact v.norm_smul_todir_eq_self
@@ -1131,9 +1149,11 @@ end extension
 section length
 
 /-- This function gives the length of a given segment, which is the norm of the vector associated to the segment. -/
+@[pp_dot]
 def Seg.length (seg : Seg P) : ℝ := norm (seg.toVec)
 
 /-- This function defines the length of a nondegenerate segment, which is just the length of the segment. -/
+@[pp_dot]
 def Seg_nd.length (seg_nd : Seg_nd P) : ℝ := seg_nd.1.length
 
 /-- Every segment has nonnegative length. -/
@@ -1194,8 +1214,10 @@ end length
 section midpoint
 
 /-- Given a segment $AB$, this function returns the midpoint of $AB$, defined as moving from $A$ by the vector $\overrightarrow{AB}/2$. -/
+@[pp_dot]
 def Seg.midpoint (seg : Seg P): P := (1 / 2 : ℝ) • seg.toVec +ᵥ seg.source
 
+@[pp_dot]
 def Seg_nd.midpoint (seg_nd : Seg_nd P): P := seg_nd.1.midpoint
 
 theorem Seg.vec_source_midpt {seg : Seg P} : VEC seg.1 seg.midpoint = 1 / 2 * VEC seg.1 seg.2 := by
@@ -1346,7 +1368,7 @@ theorem Seg_nd.exist_pt_beyond_pt (l : Seg_nd P) : (∃ q : P, l.target LiesInt 
     If a segment contains an interior point, then it is nondegenerate-/
 theorem Seg.nd_of_exist_int_pt {X : P} {seg : Seg P} (h : X LiesInt seg) : seg.is_nd := by
   rcases h with ⟨⟨_, ⟨_, _, e⟩⟩, ⟨p_ne_s, _⟩⟩
-  have t : VEC Seg.source X ≠ 0 := (ne_iff_vec_ne_zero Seg.source X).mp p_ne_s
+  have t : VEC seg.source X ≠ 0 := (ne_iff_vec_ne_zero seg.source X).mp p_ne_s
   rw [e] at t
   exact Iff.mp vsub_ne_zero (right_ne_zero_of_smul t)
 
