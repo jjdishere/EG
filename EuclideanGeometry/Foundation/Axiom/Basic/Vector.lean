@@ -115,7 +115,7 @@ theorem neg_Vec_nd_norm_eq_Vec_nd_norm (x : Vec_nd) : (-x).norm = x.norm := by
   simp only [ne_eq, fst_neg_Vec_nd_is_neg_fst_Vec_nd, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst, neg_Vec_norm_eq_Vec_norm]
 
 @[ext]
-class Dir where
+structure Dir where
   toVec : Vec
   unit : @inner ℝ _ _ toVec toVec = 1
 
@@ -208,12 +208,10 @@ instance : Monoid Dir where
     ext : 1
     unfold toVec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
     simp only [Dir.one_eq_one_toComplex, one_mul]
-    rfl
   mul_one := fun _ => by
     ext : 1
     unfold toVec HMul.hMul instHMul Mul.mul Semigroup.toMul instSemigroupDir instMulDir
     simp only [Dir.one_eq_one_toComplex, mul_one]
-    rfl
 
 instance : CommGroup Dir where
   inv := fun x => {
