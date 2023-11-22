@@ -243,6 +243,9 @@ end angdvalue
 
 
 -- def angle (x y : Dir) := Complex.arg ( (y * (x⁻¹)).1)
+--`should change to`
+-- def Dir.Angle_diff (x y : Dir) := (y * (x⁻¹)).toAngValue
+--`All following theorems needs to change`
 
 theorem fst_of_angle_tovec (x y : Dir) : (y * (x⁻¹)).1.1 = x.1.1 * y.1.1 + x.1.2 * y.1.2 := by
   have h : x.1.1 * y.1.1 + x.1.2 * y.1.2 = y.1.1 * x.1.1 - y.1.2 * (-x.1.2) := by ring
