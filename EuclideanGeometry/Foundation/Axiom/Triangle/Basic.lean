@@ -10,7 +10,7 @@ open Classical
 
 /- Class of generalized triangles -/
 @[ext]
-class Triangle (P : Type u) [EuclideanPlane P] where
+structure Triangle (P : Type u) [EuclideanPlane P] where
   point₁ : P
   point₂ : P
   point₃ : P
@@ -21,15 +21,19 @@ variable {P : Type u} [EuclideanPlane P]
 --implies  1 left of 23, 2 left of 31
 
 -- not is_cclock implies 1 right of 23, ..., ...
-
+@[pp_dot]
 def edge₁ (tr : Triangle P) : Seg P := Seg.mk tr.2 tr.3
 
+@[pp_dot]
 def edge₂ (tr : Triangle P) : Seg P := Seg.mk tr.3 tr.1
 
+@[pp_dot]
 def edge₃ (tr : Triangle P) : Seg P := Seg.mk tr.1 tr.2
 
+@[pp_dot]
 def area (tr : Triangle P) : ℝ := sorry
 
+@[pp_dot]
 def is_nd (tr : Triangle P) : Prop := ¬ colinear tr.1 tr.2 tr.3
 
 end Triangle
@@ -40,10 +44,13 @@ namespace Triangle_nd
 
 variable {P : Type u} [EuclideanPlane P] (tr_nd : Triangle_nd P)
 
+@[pp_dot]
 def point₁ : P := tr_nd.1.1
 
+@[pp_dot]
 def point₂ : P := tr_nd.1.2
 
+@[pp_dot]
 def point₃ : P := tr_nd.1.3
 
 def nontriv₁ : tr_nd.point₃ ≠ tr_nd.point₂ := (ne_of_not_colinear tr_nd.2).1
@@ -52,27 +59,38 @@ def nontriv₂ : tr_nd.point₁ ≠ tr_nd.point₃ := (ne_of_not_colinear tr_nd.
 
 def nontriv₃ : tr_nd.point₂ ≠ tr_nd.point₁ := (ne_of_not_colinear tr_nd.2).2.2
 
+@[pp_dot]
 def edge₁ : Seg P := tr_nd.1.edge₁
 
+@[pp_dot]
 def edge₂ : Seg P := tr_nd.1.edge₂
 
+@[pp_dot]
 def edge₃ : Seg P := tr_nd.1.edge₃
 
+@[pp_dot]
 def edge_nd₁ : Seg_nd P := ⟨tr_nd.1.edge₁, tr_nd.nontriv₁⟩
 
+@[pp_dot]
 def edge_nd₂ : Seg_nd P := ⟨tr_nd.1.edge₂, tr_nd.nontriv₂⟩
 
+@[pp_dot]
 def edge_nd₃ : Seg_nd P := ⟨tr_nd.1.edge₃, tr_nd.nontriv₃⟩
 
+@[pp_dot]
 def area : ℝ := tr_nd.1.area
 
 /- Only nondegenerate triangles can talk about orientation -/
+@[pp_dot]
 def is_cclock : Prop := tr_nd.1.3 LiesOnLeft (Ray.mk_pt_pt tr_nd.1.1 tr_nd.1.2 (tr_nd.nontriv₃))
 
+@[pp_dot]
 def angle₁ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₃) (tr_nd.nontriv₂).symm
 
+@[pp_dot]
 def angle₂ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₁) (tr_nd.nontriv₃).symm
 
+@[pp_dot]
 def angle₃ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₂) (tr_nd.nontriv₁).symm
 
 end Triangle_nd
@@ -186,7 +204,7 @@ theorem angle_sum_eq_neg_pi_of_clock (clock : ¬ tr_nd.is_cclock): tr_nd.angle�
 -/
 theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.length := by
   have l₃ : tr.edge₃.length = norm (VEC tr.point₁ tr.point₂) := rfl
-  rw [l₃, ← neg_vec point₂ _, norm_neg, ← vec_add_vec point₂ point₃ point₁]
+  rw [l₃, ← neg_vec tr.point₂ _, norm_neg, ← vec_add_vec tr.point₂ tr.point₃ tr.point₁]
   exact norm_add_le _ _
 
 theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr.edge₃.length → ¬ tr.is_nd  := by

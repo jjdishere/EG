@@ -161,7 +161,7 @@ theorem CC_inscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (
         congr
         unfold Dir.toVec Vec_nd.toDir Vec_nd.mk_pt_pt
         simp
-        nth_rw 4 [← neg_vec]
+        nth_rw 5 [← neg_vec]
         rw [mul_neg, mul_neg, neg_vec_norm_eq]; rfl
       _ = Vec.norm ((Vec_nd.norm (VEC_nd ω₁.center ω₂.center h.2.symm) + ω₁.radius) • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.1) := by
         rw [add_smul, Vec_nd.self_eq_norm_smul_todir]
@@ -190,8 +190,9 @@ theorem CC_inscribe_point_centers_colinear {ω₁ : Circle P} {ω₂ : Circle P}
         congr
         unfold Dir.toVec Vec_nd.toDir Vec_nd.mk_pt_pt
         simp
-        nth_rw 2 [← neg_vec]
+        nth_rw 3 [← neg_vec]
         rw [← mul_neg, neg_vec_norm_eq]
+        simp only [neg_neg]
       _ = - ω₁.radius • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.1 := by
         rw [smul_neg, neg_smul]
       _ = (- ω₁.radius) • ((Vec.norm (VEC ω₁.center ω₂.center))⁻¹ • (VEC ω₁.center ω₂.center)) := rfl
