@@ -6,7 +6,7 @@ namespace EuclidGeom
 
 /- Class of Circles-/
 @[ext]
-class Circle (P : Type _) [EuclideanPlane P] where
+structure Circle (P : Type _) [EuclideanPlane P] where
   center : P
   radius : ℝ
   rad_pos : 0 < radius
@@ -17,8 +17,8 @@ namespace Circle
 
 def mk_pt_pt (O A : P) (h : A ≠ O) : Circle P where
   center := O
-  radius := (SEG O A).length
-  rad_pos := (length_pos_iff_nd).mpr h
+  radius := dist O A
+  rad_pos := dist_pos.mpr h.symm
 
 def mk_pt_pt_pt (A B C: P) (h : ¬ colinear A B C) : Circle P := sorry
 
@@ -42,16 +42,16 @@ namespace Circle
 
 -- Define the power of a point P relative to a circle ω with center O and radius r to be OP ^ 2 - r ^ 2
 
-def power (ω : Circle P) (p : P) : ℝ := (SEG ω.center p).length ^ 2 - ω.radius ^ 2
+def power (ω : Circle P) (p : P) : ℝ := dist ω.center p ^ 2 - ω.radius ^ 2
 
 /- `One seldom uses Inside a circle in reality.` Should we delete this? Int On Out is enough-/
-protected def IsInside (p : P) (ω : Circle P) : Prop := (SEG ω.center p).length ≤  ω.radius
+protected def IsInside (p : P) (ω : Circle P) : Prop := dist ω.center p ≤  ω.radius
 
-protected def IsOn (p : P) (ω : Circle P) : Prop := (SEG ω.center p).length = ω.radius
+protected def IsOn (p : P) (ω : Circle P) : Prop := dist ω.center p = ω.radius
 
-protected def IsInt (p : P) (ω : Circle P) : Prop := (SEG ω.center p).length < ω.radius
+protected def IsInt (p : P) (ω : Circle P) : Prop := dist ω.center p < ω.radius
 
-def IsOutside (p : P) (ω : Circle P) : Prop := ω.radius < (SEG ω.center p).length
+def IsOutside (p : P) (ω : Circle P) : Prop := ω.radius < dist ω.center p
 
 protected def carrier (ω : Circle P) : Set P := { p : P | Circle.IsOn p ω }
 

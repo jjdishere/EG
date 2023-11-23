@@ -22,8 +22,8 @@ lemma a_ne_c : A ≠ C := (ne_of_not_colinear hnd).2.1
 -- Let $X$ and $Y$ be points on the interior of the segments of $AC$ and $AB$, respectively.
 variable {X Y : P} {hx : X LiesInt (SEG A C)} {hy : Y LiesInt (SEG A B)}
 -- Claim: $X \neq B$ and $Y \neq C$. This is because: $X$ is an interior point of an edge of a triangle, so it is not equal to a vertex $B$ of the triangle; similarly, $Y$ is an interior point of an edge of a triangle, so it is not equal to a vertex $C$ of the triangle.
-lemma x_ne_b : X ≠ B := ((▵ A B C).ne_vertex_of_lies_int_snd_edge (Seg.lies_int_iff_lies_int_rev.mp hx)).2.1
-lemma y_ne_c : Y ≠ C := ((▵ A B C).ne_vertex_of_lies_int_trd_edge hy).2.2
+lemma x_ne_b : X ≠ B := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_snd_edge (Seg.lies_int_rev_iff_lies_int.mp hx)).2.1
+lemma y_ne_c : Y ≠ C := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_trd_edge hy).2.2
 -- We have $\angle XBA = \angle ACY$.
 variable (hang : ∠ X B A x_ne_b a_ne_b = - ∠ A C Y a_ne_c y_ne_c)
 

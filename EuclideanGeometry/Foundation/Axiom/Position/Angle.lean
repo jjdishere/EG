@@ -5,7 +5,7 @@ namespace EuclidGeom
 /- Define values of oriented angles, in (-π, π], modulo 2 π. -/
 /- Define oriented angles, ONLY taking in two rays starting at one point!  And define ways to construct oriented angles, by given three points on the plane, and etc.  -/
 @[ext]
-class Angle (P : Type _) [EuclideanPlane P] where
+structure Angle (P : Type _) [EuclideanPlane P] where
   start_ray : Ray P
   end_ray : Ray P
   source_eq_source : start_ray.source = end_ray.source
@@ -98,7 +98,13 @@ instance : IntFig Angle where
 
 end Angle
 
-theorem eq_end_ray_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁.end_ray = ang₂.end_ray := sorry
+theorem eq_end_ray_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁.end_ray = ang₂.end_ray := by
+  ext : 1
+  rw [← ang₁.source_eq_source, ← ang₂.source_eq_source, (congrArg (fun z => z.source)) h]
+  let g := (congrArg (fun z => Dir.mk_angle z)) v
+  unfold Angle.value Dir.angle at g
+  simp only [Dir.mk_angle_arg_toComplex_of_Dir_eq_self, (congrArg (fun z => z.toDir)) h, eq_mul_inv_iff_mul_eq, mul_assoc, inv_mul_self, mul_one] at g
+  exact g
 
 theorem eq_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁ = ang₂ := Angle.ext ang₁ ang₂ h (eq_end_ray_of_eq_value_eq_start_ray h v)
 
