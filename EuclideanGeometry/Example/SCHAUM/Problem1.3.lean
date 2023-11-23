@@ -60,4 +60,10 @@ theorem Problem1_3_ : ∠ D A B (d_ne_a) (b_ne_a (hnd := hnd))= ∠ C A E (c_ne_
     · exact h₁
     · exact h₂
     · exact h₀
+  have h₄ : ∠ D A B (d_ne_a) (b_ne_a (hnd := hnd))= -∠ E A C (e_ne_a) (c_ne_a (hnd := hnd)) := by
+    exact h₃.angle₂
+  rw[h₄]
+  have h₅ : ∠ C A E (c_ne_a (hnd := hnd)) (e_ne_a) = -∠ E A C (e_ne_a) (c_ne_a (hnd := hnd)) := by
+    exact neg_value_of_rev_ang (c_ne_a (hnd := hnd)) (e_ne_a)
+  rw[h₅]
 end Problem1_3_
