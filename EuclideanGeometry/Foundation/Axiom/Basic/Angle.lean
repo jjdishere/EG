@@ -548,7 +548,7 @@ theorem sameRay_iff_eq (a b : Dir) : SameRay ℝ a.1 b.1 ↔ a = b := by
   · simp only [Dir.tovec_ne_zero, false_or]
     intro h
     let g := congrArg (fun (z : Real) => z.toAngValue.toDir) h
-    simp only at g
+    simp only [Dir.mk_angle_arg_toComplex_of_Dir_eq_self] at g
     exact g
   · tauto
 
