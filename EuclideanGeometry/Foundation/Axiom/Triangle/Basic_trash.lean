@@ -7,7 +7,7 @@ variable {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : Triangle_nd P}
 
 theorem angle_eq_of_cosine_eq_of_cclock (cclock : tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) (cosine : Real.cos tr_nd₁.angle₁.value = Real.cos tr_nd₂.angle₁.value) : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value := by
   have g : (0 < tr_nd₁.angle₁.value ∧ 0 < tr_nd₂.angle₁.value) ∨ (tr_nd₁.angle₁.value < 0 ∧ tr_nd₂.angle₁.value < 0) := by
-      exact (Triangle.pos_pos_or_neg_neg_of_iff_cclock).mp cclock
+      exact (Triangle_nd.pos_pos_or_neg_neg_of_iff_cclock).mp cclock
   rcases g with x | y
   · have x₁ : (0 < tr_nd₁.angle₁.value) ∧ (tr_nd₁.angle₁.value < π) := sorry
     have x₂ : (0 < tr_nd₂.angle₁.value) ∧ (tr_nd₂.angle₁.value < π) := sorry
@@ -15,6 +15,10 @@ theorem angle_eq_of_cosine_eq_of_cclock (cclock : tr_nd₁.is_cclock ↔ tr_nd�
   · have y₁ : (-π < tr_nd₁.angle₁.value) ∧ (tr_nd₁.angle₁.value < 0) := sorry
     have y₂ : (-π < tr_nd₂.angle₁.value) ∧ (tr_nd₂.angle₁.value < 0) := sorry
     exact (Dir.neg_angle_eq_angle_iff_cos_eq_cos tr_nd₁.angle₁.value tr_nd₂.angle₁.value y₁ y₂).mp cosine
+
+theorem angle_eq_neg_of_cosine_eq_of_clock (clock : tr_nd₁.is_cclock ↔ ¬ tr_nd₂.is_cclock) (cosine : Real.cos tr_nd₁.angle₁.value = Real.cos tr_nd₂.angle₁.value) : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value := by sorry
+
+theorem sine_ne_zero_of_nd (tr_nd : Triangle_nd P) : Real.sin (tr_nd.angle₁.value)  ≠ 0 := by sorry
 
 namespace Triangle_nd
 

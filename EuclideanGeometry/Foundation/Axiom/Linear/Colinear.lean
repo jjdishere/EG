@@ -1,5 +1,4 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
-import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 
 /-
 This file discuss the relative positions of points and rays on a plane.
@@ -25,6 +24,12 @@ def colinear (A B C : P) : Prop := by
   · exact colinear_of_nd h
 
 -- The definition of colinear now includes two cases: the degenerate case and the nondegenerate case. We use to_dir' to avoid problems involving using conditions of an "if" in its "then" and "else". And we only use VEC to define colinear.
+
+theorem toProj_eq_of_colinear {A B C : P} (hba : B ≠ A) (hca : C ≠ A) (h : colinear A B C) : (SEG_nd A B hba).toProj = (SEG_nd A C hca).toProj :=
+  if hbc : B = C then by congr
+  else ((dite_prop_iff_and _).mp h).2 <| by
+    push_neg
+    exact ⟨Ne.symm hbc, hca.symm, hba⟩
 
 /-- Given three points $A$, $B$, $C$ and a real number $t$, if the vector $\overrightarrow{AC}$ is $t$ times the vector $\overrightarrow{AB}$, then $A$, $B$, and $C$ are colinear. -/
 theorem colinear_of_vec_eq_smul_vec {A B C : P} {t : ℝ} (e : VEC A C = t • VEC A B) : colinear A B C := by
@@ -67,6 +72,7 @@ theorem colinear_iff_eq_smul_vec_of_ne {A B C : P} (g : B ≠ A) : colinear A B 
   · intro ⟨_, e⟩
     exact colinear_of_vec_eq_smul_vec e
 
+
 -- Please rewrite this part, use minimal theorems, but create a tactic called `colinearity`
 /-- For any two points $A$ and $C$, the points $A$, $A$, $C$ are colinear. -/
 theorem triv_colinear (A C : P) : (colinear A A C) := by
@@ -79,7 +85,7 @@ theorem triv_colinear (A C : P) : (colinear A A C) := by
   exact h.2.2 rfl
 
 /-- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are colinear (in that order), then $A$, $C$, $B$ are colinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity. -/
-theorem flip_colinear_snd_trd {A B C : P} (c : colinear A B C) : (colinear A C B) := by
+theorem flip_colinear_snd_trd {A B C : P} (c : colinear A B C) : colinear A C B := by
   by_cases (B ≠ A) ∧ (C ≠ A)
   · rcases (colinear_iff_eq_smul_vec_of_ne h.1).1 c with ⟨t, e⟩
     have ht : t ≠ 0 := by
@@ -97,7 +103,7 @@ theorem flip_colinear_snd_trd {A B C : P} (c : colinear A B C) : (colinear A C B
     exact g.2.2 $ h g.2.1.symm
 
 /-- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are colinear (in that order), then $B$, $A$, $C$ are colinear (in that order); in other words, in the definition of colinarity, swapping the first two of the three points does not change property of the three points being colinear. -/
-theorem flip_colinear_fst_snd {A B C : P} (c : colinear A B C) : (colinear B A C) := by
+theorem flip_colinear_fst_snd {A B C : P} (c : colinear A B C) : colinear B A C := by
   by_cases B = A
   · rw [h]
     exact triv_colinear _ _
@@ -106,6 +112,15 @@ theorem flip_colinear_fst_snd {A B C : P} (c : colinear A B C) : (colinear B A C
     have e' : VEC B C = (1 - r) • VEC B A := by
       rw [← vec_sub_vec A B C, e, ← neg_vec A B, smul_neg, sub_smul, neg_sub, one_smul]
     exact colinear_of_vec_eq_smul_vec e'
+
+theorem perm_colinear_snd_trd_fst {A B C : P} (h : colinear A B C) : colinear B C A :=
+  flip_colinear_snd_trd (flip_colinear_fst_snd h)
+
+theorem perm_colinear_trd_fst_snd {A B C : P} (h : colinear A B C) : colinear C A B :=
+  perm_colinear_snd_trd_fst (perm_colinear_snd_trd_fst h)
+
+theorem flip_colinear_fst_trd {A B C : P} (h : colinear A B C) : colinear C B A :=
+  perm_colinear_snd_trd_fst (flip_colinear_snd_trd h)
 
 -- the proof of this theorem using def of line seems to be easier
 /-- Given four points $A$, $B$, $C$, $D$ with $B \neq A$, if $A$, $B$, $C$ are colinear, and if $A$, $B$, $D$ are colinear, then $A$, $C$, $D$ are colinear. -/
@@ -221,6 +236,5 @@ theorem nontriv_of_plane {H : Type _} [h : EuclideanPlane H] : ∃ A B C : H, ¬
   rw [<-eq, Complex.I_im] at this
   linarith
   simp only [Dir.one_eq_one_toComplex, ne_eq, vadd_eq_self_iff_vec_eq_zero, one_ne_zero, not_false_eq_true]
-
 
 end EuclidGeom

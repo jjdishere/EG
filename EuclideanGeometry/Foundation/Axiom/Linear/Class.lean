@@ -63,6 +63,9 @@ class DirFig (α : (P : Type _) → [EuclideanPlane P] → Type _) extends ProjF
   toDirLine : {P : Type _} → [EuclideanPlane P] → α P → DirLine P
   todir_toproj_eq_toproj : ∀ {P : Type _} [EuclideanPlane P] {F : α P}, (toDir' F).toProj = toProj' F
   todirline_toline_eq_toline :  ∀ {P : Type _} [EuclideanPlane P] {F : α P}, (toDirLine F).toLine = toLine F
+  reverse : {P : Type _} → [EuclideanPlane P] → α P → α P
+  rev_rev : {P : Type _} → [EuclideanPlane P] → (F : α P) → (reverse (reverse F) = F)
+  todirline_rev_eq_to_rev_dirline : {P : Type _} → [EuclideanPlane P] → (F : α P) → ((toDirLine F).reverse = toDirLine (reverse F))
 
 section fig_to_obj
 variable {P : Type _} [EuclideanPlane P]
@@ -98,23 +101,26 @@ instance : ProjObj Proj where
   toProj := id
 
 instance : LinFig Seg where
-  colinear' := sorry
+  colinear' := Seg.colinear_of_lies_on
 
 instance : DirFig Seg_nd where
-  carrier := fun s => s.1.carrier -- can be rewrite to `Seg_nd.carrier` soon
-  colinear' := sorry
+  carrier s := s.carrier
+  colinear' := Seg.colinear_of_lies_on
   toProj' := Seg_nd.toProj
   toLine := Seg_nd.toLine
-  carrier_subset_toline := sorry
+  carrier_subset_toline _ _ {s} := s.subset_toline
   toline_toproj_eq_toproj := rfl
   toDir' := Seg_nd.toDir
   toDirLine := Seg_nd.toDirLine
   todir_toproj_eq_toproj := rfl
   todirline_toline_eq_toline := rfl
+  reverse := Seg_nd.reverse
+  rev_rev _ := Seg_nd.rev_rev_eq_self
+  todirline_rev_eq_to_rev_dirline _ := Seg_nd.todirline_rev_eq_rev_toline
 
 instance : DirFig Ray where
   carrier := Ray.carrier
-  colinear' := sorry
+  colinear' := Ray.colinear_of_lies_on
   toProj' := Ray.toProj
   toLine := Ray.toLine
   carrier_subset_toline := Or.inl
@@ -123,6 +129,9 @@ instance : DirFig Ray where
   toDirLine := Ray.toDirLine
   todir_toproj_eq_toproj := rfl
   todirline_toline_eq_toline := rfl
+  reverse := Ray.reverse
+  rev_rev _ := Ray.rev_rev_eq_self
+  todirline_rev_eq_to_rev_dirline _ := Ray.todirline_rev_eq_rev_toline
 
 instance : DirFig DirLine where
   carrier := DirLine.carrier
@@ -135,6 +144,9 @@ instance : DirFig DirLine where
   toDirLine := id
   todir_toproj_eq_toproj := rfl
   todirline_toline_eq_toline := rfl
+  reverse := DirLine.reverse
+  rev_rev := DirLine.rev_rev_eq_self
+  todirline_rev_eq_to_rev_dirline := by simp only [id_eq, implies_true, forall_const]
 
 instance : ProjFig Line where
   carrier := Line.carrier
@@ -148,9 +160,13 @@ end instances
 
 section theorems
 
-theorem carrier_toproj_eq_toproj {P : Type _} [EuclideanPlane P] {A B : P} [ProjFig α] {F : α P} (h : B ≠ A) : A LiesOn F → B LiesOn F → (SEG_nd A B h).toProj = toProj' F := sorry
+open Line
 
-theorem line_of_pt_toproj_eq_to_line {P : Type _} [EuclideanPlane P] {A : P} [ProjFig α] {F : α P} (h : A LiesOn F) : Line.mk_pt_proj A (toProj F) = toLine F := sorry
+theorem carrier_toproj_eq_toproj {P : Type _} [EuclideanPlane P] {A B : P} [ProjFig α] {F : α P} (h : B ≠ A) (ha : A LiesOn F) (hb : B LiesOn F) : (SEG_nd A B h).toProj = toProj' F :=
+  (toproj_eq_seg_nd_toproj_of_lies_on (carrier_subset_toline ha) (carrier_subset_toline hb) h).trans toline_toproj_eq_toproj
+
+theorem line_of_pt_toproj_eq_to_line {P : Type _} [EuclideanPlane P] {A : P} [ProjFig α] {F : α P} (h : A LiesOn F) : Line.mk_pt_proj A (toProj F) = toLine F :=
+  mk_pt_proj_eq_of_eq_toproj (carrier_subset_toline h) toline_toproj_eq_toproj.symm
 
 end theorems
 

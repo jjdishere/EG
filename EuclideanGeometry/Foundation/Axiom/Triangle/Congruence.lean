@@ -137,15 +137,15 @@ theorem is_cclock : tr_nd₁.is_cclock = tr_nd₂.is_cclock := by
   simp [tr_nd₁.2,tr_nd₂.2] at h
   rcases h with ⟨_,_,_,a₁,a₂,a₃⟩
   by_cases cclock₁ : Triangle_nd.is_cclock tr_nd₁
-  · have a := Triangle.angle_pos_of_cclock tr_nd₁ cclock₁
+  · have a := tr_nd₁.angle_pos_of_cclock cclock₁
     simp only [a₁,a₂,a₃] at a
-    have b := Triangle.cclock_of_pos_angle tr_nd₂
+    have b := tr_nd₂.cclock_of_pos_angle
     rcases a with ⟨nonneg_a₁,_,_⟩
     simp only [cclock₁,eq_iff_iff, true_iff]
     apply b ; left ; exact nonneg_a₁
-  · have a := Triangle.angle_neg_of_clock tr_nd₁ cclock₁
+  · have a := tr_nd₁.angle_neg_of_clock cclock₁
     simp only [a₁,a₂,a₃] at a
-    have b := Triangle.clock_of_neg_angle tr_nd₂
+    have b := tr_nd₂.clock_of_neg_angle
     rcases a with ⟨neg_a₁,_,_⟩
     simp only [cclock₁ , eq_iff_iff ,false_iff]
     apply b
@@ -348,15 +348,15 @@ theorem is_cclock : tr_nd₁.is_cclock = ¬ tr_nd₂.is_cclock := by
   simp [tr_nd₁.2,tr_nd₂.2] at h
   rcases h with ⟨_,_,_,a₁,a₂,a₃⟩
   by_cases cclock₁ : Triangle_nd.is_cclock tr_nd₁
-  . have a := Triangle.angle_pos_of_cclock tr_nd₁ cclock₁
+  . have a := tr_nd₁.angle_pos_of_cclock cclock₁
     simp only [a₁,a₂,a₃] at a
-    have b := Triangle.clock_of_neg_angle tr_nd₂
+    have b := tr_nd₂.clock_of_neg_angle
     rcases a with ⟨nonneg_a₁,_,_⟩
     simp only [cclock₁,eq_iff_iff, true_iff]
     apply b ; left ; simp only [Left.neg_pos_iff] at nonneg_a₁ ;exact nonneg_a₁
-  . have a := Triangle.angle_neg_of_clock tr_nd₁ cclock₁
+  . have a := tr_nd₁.angle_neg_of_clock cclock₁
     simp only [a₁,a₂,a₃] at a
-    have b := Triangle.cclock_of_pos_angle tr_nd₂
+    have b := tr_nd₂.cclock_of_pos_angle
     rcases a with ⟨neg_a₁,_,_⟩
     simp only [cclock₁ , eq_iff_iff ,false_iff]
     push_neg
@@ -476,9 +476,9 @@ theorem acongr_of_ASA (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.valu
 
 /- AAS -/
 @[congr_sa]
-theorem congr_of_AAS (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) : tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
+theorem congr_of_AAS (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value) (e₃ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) : tr_nd₁.1 IsCongrTo tr_nd₂.1 := sorry
 
-theorem acongr_of_AAS (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length) : tr_nd₁.1 IsACongrTo tr_nd₂.1 := sorry
+theorem acongr_of_AAS (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) (e₃ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length) : tr_nd₁.1 IsACongrTo tr_nd₂.1 := sorry
 
 /- SSS -/
 /- cannot decide orientation -/
@@ -518,7 +518,7 @@ theorem congr_of_SSS_of_eq_orientation (e₁ : tr_nd₁.1.edge₁.length = tr_nd
       rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices_two_times tr_nd₁).1,←(Triangle_nd.edge_eq_edge_of_perm_vertices_two_times tr_nd₂).1]
       exact e₁
     have ppc : pptr_nd₁.is_cclock ↔ pptr_nd₂.is_cclock := by
-      rw [←same_orient_of_perm_vertices,←same_orient_of_perm_vertices,←same_orient_of_perm_vertices,←same_orient_of_perm_vertices]
+      rw [←Triangle_nd.same_orient_of_perm_vertices,←Triangle_nd.same_orient_of_perm_vertices,←Triangle_nd.same_orient_of_perm_vertices,←Triangle_nd.same_orient_of_perm_vertices]
       exact c
     have ppa₁ : pptr_nd₁.angle₁.value = pptr_nd₂.angle₁.value := by
       exact angle_eq_of_cosine_eq_of_cclock ppc (cosine_eq_of_SSS ppe₁ ppe₂ ppe₃)
@@ -527,20 +527,20 @@ theorem congr_of_SSS_of_eq_orientation (e₁ : tr_nd₁.1.edge₁.length = tr_nd
   have a₃ : tr_nd₁.angle₃.value = tr_nd₂.angle₃.value := by
     let ptr_nd₁ := tr_nd₁.perm_vertices
     let ptr_nd₂ := tr_nd₂.perm_vertices
-    have pe₁ : ptr_nd₁.1.edge₁.length = ptr_nd₂.1.edge₁.length := by
+    have pe₁ : ptr_nd₁.edge₁.length = ptr_nd₂.edge₁.length := by
       simp
       rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₁).2.2,←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₂).2.2]
       exact e₃
-    have pe₂ : ptr_nd₁.1.edge₂.length = ptr_nd₂.1.edge₂.length := by
+    have pe₂ : ptr_nd₁.edge₂.length = ptr_nd₂.edge₂.length := by
       simp
       rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₁).1,←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₂).1]
       exact e₁
-    have pe₃ : ptr_nd₁.1.edge₃.length = ptr_nd₂.1.edge₃.length := by
+    have pe₃ : ptr_nd₁.edge₃.length = ptr_nd₂.edge₃.length := by
       simp
       rw [←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₁).2.1,←(Triangle_nd.edge_eq_edge_of_perm_vertices tr_nd₂).2.1]
       exact e₂
     have pc : ptr_nd₁.is_cclock ↔ ptr_nd₂.is_cclock := by
-      rw [←same_orient_of_perm_vertices,←same_orient_of_perm_vertices]
+      rw [←Triangle_nd.same_orient_of_perm_vertices,←Triangle_nd.same_orient_of_perm_vertices]
       exact c
     have pa₁ : ptr_nd₁.angle₁.value = ptr_nd₂.angle₁.value := by
       exact angle_eq_of_cosine_eq_of_cclock pc (cosine_eq_of_SSS pe₁ pe₂ pe₃)
