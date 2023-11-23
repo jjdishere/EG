@@ -29,6 +29,7 @@ instance : CircularOrder AngValue := inferInstanceAs (CircularOrder Real.Angle)
 end angvalue
 end EuclidGeom
 
+@[pp_dot]
 def Real.toAngValue : ℝ → EuclidGeom.AngValue := Real.Angle.coe
 
 namespace EuclidGeom
@@ -37,6 +38,7 @@ section angvalue
 instance : Coe Real AngValue where
   coe := Real.toAngValue
 
+@[pp_dot]
 def AngValue.toReal : AngValue → ℝ := Real.Angle.toReal
 
 instance : Coe AngValue ℝ where
@@ -45,9 +47,9 @@ instance : Coe AngValue ℝ where
 section real_angvalue_compatibility
 -- this section is partially intended to be not so complete, we disencouage using real to denote the angle. for more involved use of real angvalue compatibility, please use theorems in Real.AddCircle.
 
-theorem toreal_le_pi {θ : AngValue} : θ.toReal ≤ pi := sorry
+theorem toreal_le_pi {θ : AngValue} : θ.toReal ≤ π := sorry
 
-theorem toreal_neg_pi_le {θ : AngValue} : -pi < θ.toReal := sorry
+theorem toreal_neg_pi_le {θ : AngValue} : -π < θ.toReal := sorry
 
 section composite
 
@@ -80,16 +82,20 @@ section group_hom
 --`add sub neg smul` `to be added`
 -- `the current direction of simp is turn every thing into Real, is this good?`
 @[simp]
-theorem AngValue.add_coe (x y: ℝ) : (x : AngValue) + (y : AngValue) = (((x + y) : Real) : AngValue) := rfl
+theorem AngValue.add_coe (x y: ℝ) : (x : AngValue) + (y : AngValue) = (((x + y) : ℝ) : AngValue) := rfl
 
 @[simp]
-theorem AngValue.sub_coe (x y: ℝ) : (x : AngValue) - (y : AngValue) = (((x - y) : Real) : AngValue)  := rfl
+theorem AngValue.sub_coe (x y: ℝ) : (x : AngValue) - (y : AngValue) = (((x - y) : ℝ) : AngValue)  := rfl
 
 @[simp]
-theorem AngValue.nat_mul_coe (n : ℕ) (x : ℝ) : n • (x : AngValue) = ((n * x: Real) : AngValue) := (nsmul_eq_mul _ x) ▸ Eq.refl _
+theorem AngValue.nat_mul_coe (n : ℕ) (x : ℝ) : n • (x : AngValue) = ((n * x: ℝ) : AngValue) := (nsmul_eq_mul _ x) ▸ Eq.refl _
 
 @[simp]
-theorem AngValue.neg_coe (x : ℝ): -(x : AngValue) = (((-x): Real) : AngValue) := rfl
+theorem AngValue.int_mul_coe (n : ℤ) (x : ℝ) : n • (x : AngValue) = ((n * x : ℝ ) : AngValue) := (zsmul_eq_mul x _) ▸ Eq.refl _
+
+@[simp]
+theorem AngValue.neg_coe (x : ℝ): -(x : AngValue) = (((-x) : ℝ) : AngValue) := rfl
+
 
 end group_hom
 
@@ -97,11 +103,16 @@ end real_angvalue_compatibility
 
 section pos_neg_isnd
 
-def AngValue.IsPos (θ : AngValue) : Prop := sbtw 0 θ π
+namespace AngValue
 
-def AngValue.IsNeg (θ : AngValue) : Prop := sbtw (π: Real.Angle) θ 0
+@[pp_dot]
+def IsPos (θ : AngValue) : Prop := sbtw 0 θ π
 
-def AngValue.IsND (θ : AngValue) : Prop := ¬ (θ = 0 ∨ θ = π)
+@[pp_dot]
+def IsNeg (θ : AngValue) : Prop := sbtw (π: Real.Angle) θ 0
+
+@[pp_dot]
+def IsND (θ : AngValue) : Prop := ¬ (θ = 0 ∨ θ = π)
 
 section trichotomy
 
@@ -143,12 +154,15 @@ theorem not_is_nd_iff' {θ : AngValue} : ¬ θ.IsND ↔ ((θ : ℝ) = 0 ∨ (θ 
 
 end toreal
 
+end AngValue
 end pos_neg_isnd
 
--- `Do we prepare is acute, is right, ... here?`
+-- `Do we prepare is acute, is right, ... here?` `To be added`
 
 section trignometric
--- `a section discussing cos sin, uniqueness with pos neg
+-- `a section discussing cos sin, uniqueness with pos neg`
+-- `acute, ... also implies uniqueness`
+-- sin cos special values is already at simp
 
 theorem pos_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : AngValue) (hang₁ : ang₁.IsPos) (hang₂ : ang₂.IsPos) : cos ang₁ = cos ang₂ ↔ ang₁ = ang₂ := by
   rw [Real.Angle.cos_eq_iff_eq_or_eq_neg]
@@ -157,7 +171,7 @@ theorem pos_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : AngValue) (hang₁ : 
   rcases e with e₁ | e₂
   · exact e₁
   · exfalso
-    exact not_isneg_of_ispos hang₁ (e₂ ▸ neg_isneg_of_ispos hang₂)
+    exact AngValue.not_isneg_of_ispos hang₁ (e₂ ▸ AngValue.neg_isneg_of_ispos hang₂)
   exact Or.inl
 
 theorem neg_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : AngValue) (hang₁ : ang₁.IsNeg) (hang₂ : ang₂.IsNeg) : cos ang₁ = cos ang₂ ↔ ang₁ = ang₂ := by
@@ -167,11 +181,12 @@ theorem neg_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : AngValue) (hang₁ : 
   rcases e with e₁ | e₂
   · exact e₁
   · exfalso
-    exact not_ispos_of_isneg hang₁ (e₂ ▸ neg_ispos_of_isneg hang₂)
+    exact AngValue.not_ispos_of_isneg hang₁ (e₂ ▸ AngValue.neg_ispos_of_isneg hang₂)
   exact Or.inl
 
 end trignometric
 
+@[pp_dot]
 def AngValue.toDir (θ : AngValue) : Dir where
   toVec := ⟨cos θ, sin θ⟩
   unit := by
@@ -180,6 +195,17 @@ def AngValue.toDir (θ : AngValue) : Dir where
     rw [pow_two, pow_two]
     simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
 
+@[pp_dot]
+def Dir.toAngValue (d : Dir) : AngValue := (Complex.arg d.1 : Real.Angle)
+
+section mul_add_isom
+
+@[simp]
+theorem toangvalue_todir_eq_self (d : Dir) : d.toAngValue.toDir = d := sorry
+
+@[simp]
+theorem todir_toangvalue_eq_self (θ : AngValue) : θ.toDir.toAngValue = θ := sorry
+--`TBA`
 -- `not reall useful, fields and corollories are really useful, should write out explicitly` `Avoid AddDir`
 def AddDir.toAngValue : Additive Dir ≃+ AngValue where
   toFun := fun d => (Complex.arg (d : Dir).1 : Real.Angle)
@@ -188,11 +214,8 @@ def AddDir.toAngValue : Additive Dir ≃+ AngValue where
   right_inv := sorry
   map_add' _ _:= Complex.arg_mul_coe_angle (Dir.tovec_ne_zero _) (Dir.tovec_ne_zero _)
 
--- example (r : Real) : - (r.toAngValue) = (-r).toAngValue := by exact rfl
--- example (a b : ℝ) : (a + b).toAngValue = a.toAngValue + b := rfl
--- `we should put a direction into simp?`
+end mul_add_isom
 
-def Dir.toAngValue (d : Dir) : AngValue := AddDir.toAngValue d
 
 end angvalue
 
@@ -219,7 +242,9 @@ instance : Coe ℝ AngDValue where
 
 def AddDir.toAngDValue : Additive Dir →+ AngDValue where
   toFun := fun d => AngValue.toAngDValue (Complex.arg (d : Dir).1 : Real.Angle)
-  map_zero' := by simp only [Dir.one_eq_one_toComplex, Complex.arg_one, Real.Angle.coe_zero, map_zero]
+  map_zero' := by
+    have : (1 : Dir) = (0 : Additive Dir) := rfl
+    simp only [this ▸ Dir.one_eq_one_toComplex, Complex.arg_one, Real.Angle.coe_zero, map_zero]
   map_add' _ _:= by sorry
 
 def Dir.toAngDValue : Dir → AngDValue := fun d => AddDir.toAngDValue d

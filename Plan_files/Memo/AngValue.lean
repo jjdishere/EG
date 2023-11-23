@@ -42,7 +42,7 @@ File Basic.Angle :
     section real_angvalue_compatibility
       section composite
       section special_value
-      section group_hom `?, use AddCircle`
+      section group_hom `for simp direction`
     section pos_neg_isnd
       section trichotomy
       section neg
@@ -51,7 +51,7 @@ File Basic.Angle :
     section trignometric
     section dir_angvalue_compatibility
       section special_value
-      section mul_add_hom
+      section mul_add_isom
   section angdvalue
   `AngDValue` : instances, AngValue.toAngDValue, Real.toAngDValue
     AngDValue.Double : `AngDValue → AngValue`
@@ -60,7 +60,7 @@ File Basic.Angle :
       section group_hom `?, use AddCircle, but for Double and proj need thms`
     section proj_angdvalue_compatibility
       section special_value
-      section mul_add_home
+      section mul_add_isom
 
   section Cosine_theorem_for_Vec_nd
   section Linear_Algebra
