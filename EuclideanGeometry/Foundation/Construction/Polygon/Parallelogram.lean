@@ -11,11 +11,14 @@ noncomputable section
 namespace EuclidGeom
 
 -- `Add class parallelogram and state every theorem in structure`
-class Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
+@[ext]
+structure Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
 --  `to be added`
 
+@[pp_dot]
 def Quadrilateral_cvx.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := ( qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (qdr_cvx.edge_nd₁₄ ∥ (qdr_cvx.edge_nd₂₃))
 
+@[pp_dot]
 def Quadrilateral.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases qdr IsConvex
   · exact (Quadrilateral_cvx.mk_is_convex h).IsParallelogram
@@ -60,9 +63,9 @@ theorem is_prg_of_eq_length_eq_length (h₁ : (qdr_cvx.edge_nd₁₂).1.length =
   have prep₃: (qdr_cvx.triangle₁).1.edge₂.length = (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).1.length := rfl
   have prep₄: (qdr_cvx.triangle₃).1.edge₂.length = (SEG_nd qdr_cvx.point₄ qdr_cvx.point₂ qdr_cvx.nd₂₄.symm).1.length := rfl
   have prep₅: (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).1.length = (SEG_nd qdr_cvx.point₄ qdr_cvx.point₂ qdr_cvx.nd₂₄.symm).1.length := by
-    apply length_eq_length_of_rev
+    apply Seg_nd.length_of_rev_eq_length.symm
   have prep₈: (SEG_nd qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.nd₁₄).1.length = (SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₁₄.symm).1.length := by
-    apply length_eq_length_of_rev
+    apply Seg_nd.length_of_rev_eq_length.symm
   have t₂: (qdr_cvx.triangle₁).1.edge₂.length = (qdr_cvx.triangle₃).1.edge₂.length := by
     rw [prep₃, prep₄]
     exact prep₅
@@ -207,7 +210,7 @@ theorem nd₁₃_of_is_prg (h : qdr.IsParallelogram) : qdr.point₃ ≠ qdr.poin
   by_cases j: qdr.point₃ ≠ qdr.point₁
   · simp only [ne_eq, j, not_false_eq_true]
   simp at j
-  · simp only [ne_eq, j, false_and, dite_false] at s
+  · simp only [j, ne_eq, not_true_eq_false, false_and, dite_not, dite_false] at s
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG, C ≠ A. -/
 theorem nd₁₃_of_is_prg_variant (h : QDR A B C D IsPRG) : C ≠ A := by
@@ -216,7 +219,7 @@ theorem nd₁₃_of_is_prg_variant (h : QDR A B C D IsPRG) : C ≠ A := by
   by_cases j: C ≠ A
   · simp only [ne_eq, j, not_false_eq_true]
   simp at j
-  · simp only [ne_eq, j, false_and, dite_false] at s
+  · simp only [j, ne_eq, not_true_eq_false, false_and, dite_not, dite_false] at s
 
 /-- Given Quadrilateral qdr IsPRG, qdr.point₄ ≠ qdr.point₂. -/
 theorem nd₂₄_of_is_prg (h : qdr.IsParallelogram) : qdr.point₄ ≠ qdr.point₂ := by
@@ -225,7 +228,7 @@ theorem nd₂₄_of_is_prg (h : qdr.IsParallelogram) : qdr.point₄ ≠ qdr.poin
   by_cases j: qdr.point₄ ≠ qdr.point₂
   · simp only [ne_eq, j, not_false_eq_true]
   simp at j
-  · simp only [ne_eq, j, and_false, dite_false] at s
+  · simp only [ne_eq, j, not_true_eq_false, and_false, dite_not, dite_false] at s
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG, D ≠ B. -/
 theorem nd₂₄_of_is_prg_variant (h : QDR A B C D IsPRG) : D ≠ B := by
@@ -234,7 +237,7 @@ theorem nd₂₄_of_is_prg_variant (h : QDR A B C D IsPRG) : D ≠ B := by
   by_cases j: D ≠ B
   · simp only [ne_eq, j, not_false_eq_true]
   simp at j
-  · simp only [ne_eq, j, and_false, dite_false] at s
+  · simp only [ne_eq, j, not_true_eq_false, and_false, dite_not, dite_false] at s
 
 /-- Given Quadrilateral qdr IsPRG, qdr.point₂ ≠ qdr.point₁. -/
 theorem nd₁₂_of_is_prg (h : qdr.IsParallelogram) : qdr.point₂ ≠ qdr.point₁ := by
