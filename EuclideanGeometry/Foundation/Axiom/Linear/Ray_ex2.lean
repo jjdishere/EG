@@ -9,7 +9,7 @@ section MoreCoercionCompatibility
 
 -- More theorem of this flavor, please formulate them on your own, following the instructions.  `But be careful that we introduced seg₁ and seg₂ using {}, this is because we want the computer to infer what they are; same applies to the point A.`
 
-/- Given two segments $seg_1$ and $seg_2$, if the source and the target of the $seg_1$ both lie on $seg_2$, then every point of $seg_1$ lies on $seg_2$. -/
+/-- Given two segments $seg_1$ and $seg_2$, if the source and the target of the $seg_1$ both lie on $seg_2$, then every point of $seg_1$ lies on $seg_2$. -/
 theorem every_pt_lies_on_seg_of_source_and_target_lies_on_seg {seg₁ seg₂ : Seg P} (h₁ : seg₁.source LiesOn seg₂) (h₂ : seg₁.target LiesOn seg₂) {A : P} (ha : A LiesOn seg₁) : (A LiesOn seg₂) :=by
   rcases h₁ with ⟨x,xnonneg,xle1,hx⟩
   rcases h₂ with ⟨y,ynonneg,yle1,hy⟩
@@ -32,9 +32,8 @@ theorem every_pt_lies_on_seg_of_source_and_target_lies_on_seg {seg₁ seg₂ : S
   apply mul_le_mul _ yle1 ynonneg tnonneg
   simp only [le_refl]
   rw [ht]
-  
-/- Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie in the interior of $seg_2$, and if $A$ is a point on $seg_1$, then $A$ lies in the interior of $seg_2$. -/
 
+/-- Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie in the interior of $seg_2$, and if $A$ is a point on $seg_1$, then $A$ lies in the interior of $seg_2$. -/
 theorem every_pt_lies_int_seg_of_source_and_target_lies_int_seg {seg₁ seg₂ : Seg P} (h₁ : seg₁.source LiesInt seg₂) (h₂ : seg₁.target LiesInt seg₂) {A : P} (ha : A LiesOn seg₁) : A LiesInt seg₂ := by
   rw[Seg.lies_int_iff]
   constructor
@@ -79,7 +78,7 @@ theorem every_pt_lies_int_seg_of_source_and_target_lies_int_seg {seg₁ seg₂ :
   left
   ring
 
-/- Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie on $seg_2$, and if $A$ is a point in the interior of $seg_1$, then $A$ lies in the interior of $seg_2$. -/
+/-- Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie on $seg_2$, and if $A$ is a point in the interior of $seg_1$, then $A$ lies in the interior of $seg_2$. -/
 theorem every_int_pt_lies_int_seg_of_source_and_target_lies_on_seg {seg₁ seg₂ : Seg P} (h₁ : seg₁.source LiesOn seg₂) (h₂ : seg₁.target LiesOn seg₂) {A : P} (ha : A LiesInt seg₁) : A LiesInt seg₂ := by
   apply (Seg.lies_int_iff A).mpr
   rcases h₁ with ⟨x,xnonneg,xle1,hx⟩
@@ -141,7 +140,7 @@ theorem every_int_pt_lies_int_seg_of_source_and_target_lies_on_seg {seg₁ seg�
   left
   ring
 
-/- Given a segment and a ray, if the source and the target of the segment both lie on the ray, and if $A$ is a point on the segment, then $A$ lies on the ray. -/
+/-- Given a segment and a ray, if the source and the target of the segment both lie on the ray, and if $A$ is a point on the segment, then $A$ lies on the ray. -/
 theorem every_pt_lies_on_ray_of_source_and_target_lies_on_ray {seg : Seg P} {ray : Ray P} (h₁ : seg.source LiesOn ray) (h₂: seg.target LiesOn ray) {A : P} (ha : A LiesOn seg) : A LiesOn ray :=by
   rcases h₁ with ⟨x,xnonneg,hx⟩
   rcases h₂ with ⟨y,ynonneg,hy⟩
@@ -158,13 +157,13 @@ theorem every_pt_lies_on_ray_of_source_and_target_lies_on_ray {seg : Seg P} {ray
   linarith
   rw[ht]
 
-/- Given a segment and a ray, if the source and the target of the segment both lie in the interior of the ray, and if $A$ is a point on the segment, then $A$ lies in the interior of the ray.-/
+/-- Given a segment and a ray, if the source and the target of the segment both lie in the interior of the ray, and if $A$ is a point on the segment, then $A$ lies in the interior of the ray.-/
 theorem every_pt_lies_int_ray_of_source_and_target_lies_int_ray {seg : Seg P} {ray : Ray P}(h₁ : seg.source LiesInt ray) (h₂ : seg.target LiesInt ray) {A : P} (ha : A LiesOn seg) : A LiesInt ray := by
   rcases ((Ray.lies_int_iff seg.source).mp h₁) with ⟨x,xpos,hx⟩
   rcases ((Ray.lies_int_iff seg.target).mp h₂) with ⟨y,ypos,hy⟩
   apply (Ray.lies_int_iff A).mpr
   rcases ha with ⟨t,tnonneg,tle1,ht⟩
-  rw[←vec_sub_vec ray.source,←vec_sub_vec ray.source seg.source seg.target,hx,hy,sub_eq_iff_eq_add,←sub_smul,smul_smul,←add_smul,mul_sub] at ht 
+  rw[←vec_sub_vec ray.source,←vec_sub_vec ray.source seg.source seg.target,hx,hy,sub_eq_iff_eq_add,←sub_smul,smul_smul,←add_smul,mul_sub] at ht
   use (t*y+(1-t)*x)
   constructor
   by_cases 0=t
@@ -179,7 +178,7 @@ theorem every_pt_lies_int_ray_of_source_and_target_lies_int_ray {seg : Seg P} {r
   left
   ring
 
-/- Given a segment and a ray, if the source and the target of the segment both lie on the ray, and if $A$ is a point in the interior of the segment, then $A$ lies in the interior of the ray. -/
+/-- Given a segment and a ray, if the source and the target of the segment both lie on the ray, and if $A$ is a point in the interior of the segment, then $A$ lies in the interior of the ray. -/
 theorem every_int_pt_lies_int_ray_of_source_and_target_lies_on_ray {seg : Seg P} {ray : Ray P} (h₁ : seg.source LiesOn ray) (h₂ : seg.target LiesOn ray) {A : P} (ha : A LiesInt seg) : A LiesInt ray := by
   rcases h₁ with ⟨x,xnonneg,hx⟩
   rcases h₂ with ⟨y,ynonneg,hy⟩
@@ -213,7 +212,7 @@ theorem every_int_pt_lies_int_ray_of_source_and_target_lies_on_ray {seg : Seg P}
   left
   ring
 
-/- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies on $ray_2$, and if $A$ is a point on $ray_1$, then $A$ lies on $ray_2$. -/
+/-- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies on $ray_2$, and if $A$ is a point on $ray_1$, then $A$ lies on $ray_2$. -/
 theorem every_pt_lies_on_ray_of_source_lies_on_ray_and_same_dir {ray₁ ray₂ : Ray P} (e : ray₁.toDir = ray₂.toDir) (h : ray₁.source LiesOn ray₂){A : P} (ha : A LiesOn ray₁) : A LiesOn ray₂ := by
   rcases h with ⟨x,xnonneg,hx⟩
   rcases ha with ⟨t,tnonneg,ht⟩
@@ -222,7 +221,7 @@ theorem every_pt_lies_on_ray_of_source_lies_on_ray_and_same_dir {ray₁ ray₂ :
   linarith
   rw[←vec_add_vec ray₂.source ray₁.source A,hx,ht,e,add_smul]
 
-/- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies in the interior of $ray_2$, and if $A$ is a point on $ray_1$, then $A$ lies in the interior of $ray_2$. -/
+/-- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies in the interior of $ray_2$, and if $A$ is a point on $ray_1$, then $A$ lies in the interior of $ray_2$. -/
 theorem every_pt_lies_int_ray_of_source_lies_int_ray_and_same_dir {ray₁ ray₂ : Ray P} (e : ray₁.toDir = ray₂.toDir) (h : ray₁.source LiesInt ray₂) {A : P} (ha : A LiesOn ray₁) : A LiesInt ray₂ := by
   apply (Ray.lies_int_iff A).mpr
   rcases ha with ⟨t,tnonneg,ht⟩

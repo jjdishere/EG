@@ -18,7 +18,7 @@ Team D 1 Muqing Jiang :
 * Formalize ShanZun Exercise_1a 1b (1.3-1.6)
 
 Team A 2 Yongle Bai :
-* Fills sorry's in section coersion_compatibility and section midpoint Ray.lean
+* Fills sorry's in section coercion_compatibility and section midpoint Ray.lean
 `Team A cease to exist`
 
 Team F 3 Zhuoni Chi :
