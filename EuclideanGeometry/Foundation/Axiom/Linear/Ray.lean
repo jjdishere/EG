@@ -926,7 +926,7 @@ theorem lies_on_iff_lies_on_toray_and_rev_toray {X : P} {seg_nd : Seg_nd P} : X 
   simp only[inv_nonneg]
   linarith
   linarith
-  rw [h, mul_smul, this, ← Vec_nd.norm_smul_todir_eq_self seg_nd.toVec_nd, smul_smul, smul_smul, mul_assoc, ← norm_of_Vec_nd_eq_norm_of_Vec_nd_fst,inv_mul_cancel (Vec_nd.norm_ne_zero seg_nd.toVec_nd),mul_one]
+  rw [h, mul_smul, this, ← Vec_nd.norm_smul_todir_eq_self seg_nd.toVec_nd, smul_smul, smul_smul, mul_assoc,inv_mul_cancel (Vec_nd.norm_ne_zero seg_nd.toVec_nd),mul_one]
   rfl
 
 -- `This theorem really concerns about the total order on a line`

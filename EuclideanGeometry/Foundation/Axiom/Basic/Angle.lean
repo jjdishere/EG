@@ -377,7 +377,7 @@ theorem toproj_toangdvalue_eq_toangvalue_toangdvalue (x : Dir) : x.toProj.toAngD
 
 end angdvalue
 
-def Dir.DiffAngle (x y : Dir) : AngValue := (y / x).toAngValue
+def Dir.AngDiff (x y : Dir) : AngValue := (y / x).toAngValue
 
 -- Our aim is to prove the Cosine value of the angle of two Vec_nd-s, their norm and inner product satisfy THE EQUALITY. We will use this to prove the Cosine theorem of Triangle, which is in the file Trigonometric
 
@@ -388,7 +388,7 @@ theorem fst_of_angle_tovec (x y : Dir) : (y * (x⁻¹)).1.1 = x.1.1 * y.1.1 + x.
   rw [h]
   rfl
 
-def Vec_nd.angle (v₁ v₂ : Vec_nd) := Dir.DiffAngle (Vec_nd.toDir v₁) (Vec_nd.toDir v₂)
+def Vec_nd.angle (v₁ v₂ : Vec_nd) := Dir.AngDiff (Vec_nd.toDir v₁) (Vec_nd.toDir v₂)
 
 @[simp]
 theorem cos_arg_of_dir_eq_fst (x : Dir) : cos (x.toAngValue) = x.1.1 := by
@@ -400,8 +400,8 @@ theorem sin_arg_of_dir_eq_fst (x : Dir) : sin (x.toAngValue) = x.1.2 := by
   have w₁ : (AngValue.toDir (x.toAngValue)).1.2 = sin (x.toAngValue) := rfl
   simp only [← w₁, toangvalue_todir_eq_self]
 
-theorem cos_angle_of_dir_dir_eq_inner (d₁ d₂ : Dir) : cos (Dir.DiffAngle d₁ d₂) = inner d₁.1 d₂.1 := by
-  unfold Dir.DiffAngle inner InnerProductSpace.toInner InnerProductSpace.complexToReal InnerProductSpace.isROrCToReal
+theorem cos_angle_of_dir_dir_eq_inner (d₁ d₂ : Dir) : cos (Dir.AngDiff d₁ d₂) = inner d₁.1 d₂.1 := by
+  unfold Dir.AngDiff inner InnerProductSpace.toInner InnerProductSpace.complexToReal InnerProductSpace.isROrCToReal
   simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
   rw [cos_arg_of_dir_eq_fst]
   exact (fst_of_angle_tovec d₁ d₂)
@@ -422,7 +422,7 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
   let h := Quotient.exact h
   unfold HasEquiv.Equiv instHasEquiv PM.con PM at h
   simp only [Con.rel_eq_coe, Con.rel_mk] at h
-  unfold Vec_nd.angle Dir.DiffAngle
+  unfold Vec_nd.angle Dir.AngDiff
   by_cases v₁.toDir = Dir.I * v₂.toDir
   · right
     rw [h]
@@ -435,10 +435,10 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
     rw [e]
     simp only [I_toangvalue_eq_pi_div_2]
   intro h
-  by_cases Dir.DiffAngle d₁ d₂ = ↑(π / 2)
-  · have w : AngValue.toDir (Dir.DiffAngle d₁ d₂) = AngValue.toDir ↑(π / 2) := by
+  by_cases Dir.AngDiff d₁ d₂ = ↑(π / 2)
+  · have w : AngValue.toDir (Dir.AngDiff d₁ d₂) = AngValue.toDir ↑(π / 2) := by
       rw [h]
-    unfold Dir.DiffAngle at w
+    unfold Dir.AngDiff at w
     simp only [toangvalue_todir_eq_self, pi_div_two_todir_eq_I] at w
     unfold Vec_nd.toProj Proj.perp
     have e : Vec_nd.toDir v₂ = d₂ := rfl
@@ -447,10 +447,10 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
     have e'' : Dir.toProj (Dir.I * d₁) = Proj.I * d₁.toProj := rfl
     rw [e, e', e'', ← mul_assoc]
     simp only [Proj.I_mul_I_eq_one_of_Proj, one_mul]
-  · have w : AngValue.toDir (Dir.DiffAngle d₁ d₂) = AngValue.toDir (↑(-π / 2)) := by
-      have w' : Dir.DiffAngle d₁ d₂ = ↑(-π / 2) := by tauto
+  · have w : AngValue.toDir (Dir.AngDiff d₁ d₂) = AngValue.toDir (↑(-π / 2)) := by
+      have w' : Dir.AngDiff d₁ d₂ = ↑(-π / 2) := by tauto
       rw [w']
-    unfold Dir.DiffAngle at w
+    unfold Dir.AngDiff at w
     simp only [I_toangvalue_eq_pi_div_2] at w
     unfold Vec_nd.toProj Proj.perp
     have e : Vec_nd.toDir v₁ = d₁ := rfl
@@ -466,9 +466,9 @@ end Cosine_theorem_for_Vec_nd
 
 section Linear_Algebra
 
-theorem det_eq_sin_mul_norm_mul_norm' (u v :Dir) : det u.1 v.1 = sin (Dir.DiffAngle u v) := by
+theorem det_eq_sin_mul_norm_mul_norm' (u v :Dir) : det u.1 v.1 = sin (Dir.AngDiff u v) := by
   rw [det_eq_im_of_quotient]
-  unfold Dir.DiffAngle
+  unfold Dir.AngDiff
   rw [sin_arg_of_dir_eq_fst]
   rfl
 

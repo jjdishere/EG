@@ -4,7 +4,7 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Angle
 noncomputable section
 namespace EuclidGeom
 
-def DirFig.AngDiff {P : Type _} [EuclideanPlane P] ()
+def DirObj.AngDiff [DirObj α] [DirObj β] (F : α) (G : β) : AngValue := Dir.AngDiff (toDir F) (toDir G)
 
 /- Define values of oriented angles, in (-π, π], modulo 2 π. -/
 /- Define oriented angles, ONLY taking in two rays starting at one point!  And define ways to construct oriented angles, by given three points on the plane, and etc.  -/
@@ -33,7 +33,7 @@ def mk_dirline_dirline (l₁ l₂ : DirLine P) (h : ¬ l₁ ∥ l₂) : Angle P 
   end_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toline_of_not_para _ _ h) ) l₂ (Line.inx_lies_on_snd (DirLine.not_para_toline_of_not_para _ _ h))
   source_eq_source := rfl
 
-def value (A : Angle P): AngValue := Dir.toAngValue ( (A.end_ray.toDir) * (A.start_ray.toDir)⁻¹ )
+def value (A : Angle P) : AngValue := DirObj.AngDiff A.start_ray A.end_ray
 
 def is_nd (ang : Angle P) : Prop := ang.value ≠ 0 ∧ ang.value ≠ π
 
@@ -41,7 +41,7 @@ protected def source (ang : Angle P) : P := ang.start_ray.source
 
 end Angle
 
-theorem angle_value_eq_dir_angle (r r' : Ray P) (h : r.source = r'.source) : (Angle.mk r r' h).value = Dir.angle r.toDir r'.toDir := rfl
+theorem angle_value_eq_dir_angle (r r' : Ray P) (h : r.source = r'.source) : (Angle.mk r r' h).value = Dir.AngDiff r.toDir r'.toDir := rfl
 
 def value_of_angle_of_three_point_nd (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): AngValue :=
 (Angle.mk_pt_pt_pt _ _ _ h₁ h₂).value
