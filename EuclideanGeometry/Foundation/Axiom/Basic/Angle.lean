@@ -80,19 +80,19 @@ end special_value
 
 section group_hom
 -- `the current direction of simp is turn every thing into Real, is this good?` ` Maybe all reversed is better`
--- @[simp low]
+@[simp low]
 theorem AngValue.add_coe (x y: ℝ) : (x : AngValue) + (y : AngValue) = (((x + y) : ℝ) : AngValue) := rfl
 
--- @[simp low]
+@[simp low]
 theorem AngValue.neg_coe (x : ℝ): -(x : AngValue) = (((-x) : ℝ) : AngValue) := rfl
 
--- @[simp low]
+@[simp low]
 theorem AngValue.sub_coe (x y: ℝ) : (x : AngValue) - (y : AngValue) = (((x - y) : ℝ) : AngValue)  := rfl
 
--- @[simp low]
+@[simp low]
 theorem AngValue.nsmul_coe (n : ℕ) (x : ℝ) : n • (x : AngValue) = ((n * x: ℝ) : AngValue) := (nsmul_eq_mul _ x) ▸ Eq.refl _
 
---@[simp low]
+@[simp low]
 theorem AngValue.zsmul_coe (n : ℤ) (x : ℝ) : n • (x : AngValue) = ((n * x : ℝ ) : AngValue) := (zsmul_eq_mul x _) ▸ Eq.refl _
 
 end group_hom
@@ -258,31 +258,31 @@ theorem neg_I_toangvalue_eq_neg_pi_div_2 : (-Dir.I).toAngValue = (-π/2 : ℝ)  
 theorem mul_toangvalue_eq_toangvalue_add (d₁ d₂ : Dir) : (d₁ * d₂).toAngValue = d₁.toAngValue + d₂.toAngValue := Complex.arg_mul_coe_angle (Dir.tovec_ne_zero _) (Dir.tovec_ne_zero _)
 
 @[simp]
-theorem todir_mul_eq_add_todir (θ₁ θ₂ : AngValue) : θ₁.toDir * θ₂.toDir = (θ₁ + θ₂).toDir := sorry
+theorem add_todir_eq_todir_mul (θ₁ θ₂ : AngValue) : (θ₁ + θ₂).toDir = θ₁.toDir * θ₂.toDir := sorry
 
 @[simp]
 theorem inv_toangvalue_eq_toangvalue_neg (d : Dir) : (d⁻¹).toAngValue = - d.toAngValue := sorry
 
 @[simp]
-theorem todir_inv_eq_neg_todir (θ : AngValue) : θ.toDir⁻¹= (-θ).toDir := sorry
+theorem neg_todir_eq_todir_inv (θ : AngValue) : (-θ).toDir  = θ.toDir⁻¹ := sorry
 
 @[simp]
 theorem div_toangvalue_eq_toangvalue_sub (d₁ d₂ : Dir) : (d₁ / d₂).toAngValue = d₁.toAngValue - d₂.toAngValue := sorry
 
 @[simp]
-theorem todir_div_eq_sub_todir (θ₁ θ₂ : AngValue) : θ₁.toDir / θ₂.toDir = (θ₁ - θ₂).toDir := sorry
+theorem sub_todir_eq_todir_div (θ₁ θ₂ : AngValue) : (θ₁ - θ₂).toDir = θ₁.toDir / θ₂.toDir := sorry
 
 @[simp]
 theorem npow_toangvalue_eq_toangvalue_nsmul (n : ℕ) (d : Dir) : (d ^ n).toAngValue = n • d.toAngValue := sorry
 
 @[simp]
-theorem todir_npow_eq_nsmul_todir (n : ℕ) (θ : AngValue) : θ.toDir ^ n = (n • θ).toDir := sorry
+theorem nsmul_todir_eq_todir_npow (n : ℕ) (θ : AngValue) : (n • θ).toDir = θ.toDir ^ n := sorry
 
 @[simp]
 theorem zpow_toangvalue_eq_toangvalue_zsmul (n : ℤ) (d : Dir) : (d ^ n).toAngValue = n • d.toAngValue := sorry
 
 @[simp]
-theorem todir_zpow_eq_zsmul_todir (n : ℤ) (θ : AngValue) : θ.toDir ^ n = (n • θ).toDir := sorry
+theorem zsmul_todir_eq_todir_zpow_ (n : ℤ) (θ : AngValue) : (n • θ).toDir = θ.toDir ^ n := sorry
 
 -- not really useful, fields and corollories are really useful, should write out explicitly
 def AddDir.toAngValue.add_hom : Additive Dir ≃+ AngValue where
@@ -317,7 +317,7 @@ def AngDValue.Double : AngDValue → AngValue := AddCircle.equivAddCircle π (2 
 -- `Do we need a AngValue.Halve function?`
 
 section angvalue_angdvalue_compatibility
--- `This section needs following theorems @[simp] direction is always to angvalue`
+-- `This section needs following theorems @[simp] direction is always to target`
 -- AngValue.toAngDValue special value 0 pi/2 pi -pi/2
 -- AngValue.toAngDValue is group hom (add neg sub nsmul zsmul), ↑x = ↑y iff x = y or x = y + pi
 -- AngDValue.Double special value
@@ -379,92 +379,42 @@ end angdvalue
 
 def Dir.DiffAngle (x y : Dir) : AngValue := (y / x).toAngValue
 
--- def angle (x y : Dir) := Complex.arg ( (y * (x⁻¹)).1)
---`should change to`
--- def Dir.Angle_diff (x y : Dir) := (y * (x⁻¹)).toAngValue, or y.toAngValue - x.toAngValue
---`All following theorems needs to change`
+-- Our aim is to prove the Cosine value of the angle of two Vec_nd-s, their norm and inner product satisfy THE EQUALITY. We will use this to prove the Cosine theorem of Triangle, which is in the file Trigonometric
+
+section Cosine_theorem_for_Vec_nd
 
 theorem fst_of_angle_tovec (x y : Dir) : (y * (x⁻¹)).1.1 = x.1.1 * y.1.1 + x.1.2 * y.1.2 := by
   have h : x.1.1 * y.1.1 + x.1.2 * y.1.2 = y.1.1 * x.1.1 - y.1.2 * (-x.1.2) := by ring
   rw [h]
   rfl
 
-/-
-def AngValue.toDir (θ : ℝ) : Dir where
-  toVec := ⟨cos θ, sin θ⟩
-  unit := by
-    unfold inner InnerProductSpace.toInner InnerProductSpace.complexToReal InnerProductSpace.isROrCToReal
-    rw [← cos_sq_add_sin_sq θ]
-    rw [pow_two, pow_two]
-    simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
--/
---`should remove Complex.arg, we use Dir.toAngValue now`
-section Make_angle_theorems
-
-/-
-@[simp]
-theorem angvalue_todir_arg_toComplex_of_nonzero_eq_todir (x : Vec_nd) : AngValue.toDir (Complex.arg x.1) = Vec_nd.toDir x := by
-  unfold Vec_nd.toDir AngValue.toDir HSMul.hSMul instHSMul SMul.smul Complex.instSMulRealComplex Vec.norm
-  simp only [ne_eq, smul_eq_mul, zero_mul, sub_zero, add_zero]
-  ext <;>
-  dsimp <;>
-  unfold Real.toAngValue
-  rw [Real.Angle.cos_coe, Complex.cos_arg]
-  ring
-  exact x.2
-  rw [Real.Angle.sin_coe, Complex.sin_arg]
-  ring
-
-@[simp]
-theorem angvalue_todir_arg_toComplex_of_Dir_eq_self (x: Dir) : AngValue.toDir (Complex.arg (x.1)) = x := by
-  have w : Complex.abs (x.1) = 1 := Dir.norm_of_dir_tovec_eq_one x
-  ext : 1
-  unfold AngValue.toDir Real.toAngValue
-  simp only [cos_coe, sin_coe]
-  rw [Complex.cos_arg, Complex.sin_arg, w]
-  unfold Dir.toVec
-  ext : 1
-  simp only [div_one]
-  simp only [div_one]
-  by_contra h
-  rw [h] at w
-  simp only [map_zero, zero_ne_one] at w
--/
-end Make_angle_theorems
-
--- Our aim is to prove the Cosine value of the angle of two Vec_nd-s, their norm and inner product satisfy THE EQUALITY. We will use this to prove the Cosine theorem of Triangle, which is in the file Trigonometric
-
-section Cosine_theorem_for_Vec_nd
-
-theorem Vec_nd.norm_smul_todir_eq_self (v : Vec_nd) : Vec.norm v.1 • (Vec_nd.toDir v).toVec = v := by
-  symm
-  apply (inv_smul_eq_iff₀ (Iff.mpr norm_ne_zero_iff v.2)).1
-  rfl
-
 def Vec_nd.angle (v₁ v₂ : Vec_nd) := Dir.DiffAngle (Vec_nd.toDir v₁) (Vec_nd.toDir v₂)
 
-theorem cos_arg_of_dir_eq_fst (x : Dir) : cos (Complex.arg x.1) = x.1.1 := by
-  have w₁ : (AngValue.toDir (Complex.arg x.1)).1.1 = cos (Complex.arg x.1) := rfl
-  simp[← w₁, toangvalue_todir_eq_self]
+@[simp]
+theorem cos_arg_of_dir_eq_fst (x : Dir) : cos (x.toAngValue) = x.1.1 := by
+  have w₁ : (AngValue.toDir (x.toAngValue)).1.1 = cos (x.toAngValue) := rfl
+  simp [← w₁, toangvalue_todir_eq_self]
 
-theorem sin_arg_of_dir_eq_fst (x : Dir) : sin (Complex.arg (x.1)) = x.1.2 := by
-  have w₁ : (AngValue.toDir (Complex.arg (x.1))).1.2 = sin (Complex.arg (x.1)) := rfl
+@[simp]
+theorem sin_arg_of_dir_eq_fst (x : Dir) : sin (x.toAngValue) = x.1.2 := by
+  have w₁ : (AngValue.toDir (x.toAngValue)).1.2 = sin (x.toAngValue) := rfl
   simp only [← w₁, toangvalue_todir_eq_self]
 
 theorem cos_angle_of_dir_dir_eq_inner (d₁ d₂ : Dir) : cos (Dir.DiffAngle d₁ d₂) = inner d₁.1 d₂.1 := by
   unfold Dir.DiffAngle inner InnerProductSpace.toInner InnerProductSpace.complexToReal InnerProductSpace.isROrCToReal
   simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
   rw [cos_arg_of_dir_eq_fst]
-  exact (Dir.fst_of_angle_tovec d₁ d₂)
+  exact (fst_of_angle_tovec d₁ d₂)
 
 theorem norm_mul_norm_mul_cos_angle_eq_inner_of_Vec_nd (v₁ v₂ : Vec_nd) : (Vec.norm v₁) * (Vec.norm v₂) * cos (Vec_nd.angle v₁ v₂) = inner v₁.1 v₂.1 := by
-  have h : @inner ℝ _ _ v₁.1 v₂.1 = inner (Vec.norm v₁ • (Vec_nd.toDir v₁).1) (Vec.norm v₂ • (Vec_nd.toDir v₂).1) := by
-    nth_rw 1 [← Vec_nd.norm_smul_todir_eq_self v₁, ← Vec_nd.norm_smul_todir_eq_self v₂]
+  have h : @inner ℝ _ _ v₁.1 v₂.1 = inner (v₁.norm • (Vec_nd.toDir v₁).1) (v₂.norm • (Vec_nd.toDir v₂).1) := by simp only [ne_eq,
+    Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add,
+    Vec_nd.norm_smul_todir_eq_self]
   rw [h]
   rw [inner_smul_left, inner_smul_right, ← cos_angle_of_dir_dir_eq_inner, mul_assoc]
   rfl
 
-theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec_nd) : v₁.toProj = v₂.toProj.perp ↔ (Vec_nd.angle v₁ v₂ = π / 2) ∨ (Vec_nd.angle v₁ v₂ = -(π / 2)) := by
+theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec_nd) : v₁.toProj = v₂.toProj.perp ↔ (Vec_nd.angle v₁ v₂ = ↑(π / 2)) ∨ (Vec_nd.angle v₁ v₂ = ↑(-π / 2)) := by
   let d₁ := Vec_nd.toDir v₁
   let d₂ := Vec_nd.toDir v₂
   constructor
@@ -473,20 +423,20 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
   unfold HasEquiv.Equiv instHasEquiv PM.con PM at h
   simp only [Con.rel_eq_coe, Con.rel_mk] at h
   unfold Vec_nd.angle Dir.DiffAngle
-  by_cases d₁ = Dir.I * d₂
+  by_cases v₁.toDir = Dir.I * v₂.toDir
   · right
-    rw [mul_inv_eq_of_eq_mul (Eq.symm (inv_mul_eq_of_eq_mul h))]
-    simp only [Dir.inv_of_I_eq_neg_I, Dir.neg_I_toComplex_eq_neg_I, Complex.arg_neg_I]
+    rw [h]
+    simp only [div_mul_cancel''', Dir.inv_of_I_eq_neg_I, neg_I_toangvalue_eq_neg_pi_div_2]
   · left
-    have e : d₂ * d₁⁻¹ = Dir.I := by
+    have e : d₂ / d₁ = Dir.I := by
       have w : d₁ = - (Dir.I * d₂) := by tauto
       rw [← neg_mul, ← Dir.inv_of_I_eq_neg_I] at w
       exact Eq.symm (eq_mul_inv_of_mul_eq (mul_eq_of_eq_inv_mul w))
     rw [e]
-    simp only [Dir.I_toComplex_eq_I, Complex.arg_I]
+    simp only [I_toangvalue_eq_pi_div_2]
   intro h
-  by_cases Dir.DiffAngle d₁ d₂ = π / 2
-  · have w : AngValue.toDir (Dir.DiffAngle d₁ d₂) = AngValue.toDir (π / 2) := by
+  by_cases Dir.DiffAngle d₁ d₂ = ↑(π / 2)
+  · have w : AngValue.toDir (Dir.DiffAngle d₁ d₂) = AngValue.toDir ↑(π / 2) := by
       rw [h]
     unfold Dir.DiffAngle at w
     simp only [toangvalue_todir_eq_self, pi_div_two_todir_eq_I] at w
@@ -497,15 +447,17 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
     have e'' : Dir.toProj (Dir.I * d₁) = Proj.I * d₁.toProj := rfl
     rw [e, e', e'', ← mul_assoc]
     simp only [Proj.I_mul_I_eq_one_of_Proj, one_mul]
-  · have w : AngValue.toDir (Dir.DiffAngle d₁ d₂) = AngValue.toDir (-(π / 2)) := by
-      have w' : Dir.DiffAngle d₁ d₂ = -(π / 2) := by tauto
+  · have w : AngValue.toDir (Dir.DiffAngle d₁ d₂) = AngValue.toDir (↑(-π / 2)) := by
+      have w' : Dir.DiffAngle d₁ d₂ = ↑(-π / 2) := by tauto
       rw [w']
     unfold Dir.DiffAngle at w
     simp only [I_toangvalue_eq_pi_div_2] at w
     unfold Vec_nd.toProj Proj.perp
     have e : Vec_nd.toDir v₁ = d₁ := rfl
     have e' : d₁ = Dir.I * d₂ := by
+      simp only [neg_pi_div_two_todir_eq_neg_I] at w
       rw [← Dir.inv_of_I_eq_neg_I] at w
+      simp only [div_toangvalue_eq_toangvalue_sub, sub_todir_eq_todir_div, toangvalue_todir_eq_self] at w
       exact eq_mul_of_inv_mul_eq (mul_eq_of_eq_div (Eq.symm w))
     rw [e, e']
     rfl
@@ -518,14 +470,15 @@ theorem det_eq_sin_mul_norm_mul_norm' (u v :Dir) : det u.1 v.1 = sin (Dir.DiffAn
   rw [det_eq_im_of_quotient]
   unfold Dir.DiffAngle
   rw [sin_arg_of_dir_eq_fst]
+  rfl
 
 theorem det_eq_sin_mul_norm_mul_norm (u v : Vec_nd): det u v = sin (Vec_nd.angle u v) * Vec.norm u * Vec.norm v := by
   let nu := u.toDir
   let nv := v.toDir
   let unorm := u.norm
   let vnorm := v.norm
-  have hu : u.1 = unorm • nu.1 := Vec_nd.self_eq_norm_smul_todir u
-  have hv : v.1 = vnorm • nv.1 := Vec_nd.self_eq_norm_smul_todir v
+  have hu : u.1 = u.norm • nu.1 := by simp only [ne_eq, Vec_nd.norm_smul_todir_eq_self]
+  have hv : v.1 = v.norm • nv.1 := by simp only [ne_eq, Vec_nd.norm_smul_todir_eq_self]
   rw [hu, hv, det_smul_left_eq_mul_det, det_smul_right_eq_mul_det]
   have unorm_nonneg : 0 ≤ unorm := Vec.norm_nonnegative u
   have vnorm_nonneg : 0 ≤ vnorm := Vec.norm_nonnegative v
@@ -547,13 +500,13 @@ theorem sameRay_iff_eq (a b : Dir) : SameRay ℝ a.1 b.1 ↔ a = b := by
   constructor
   · simp only [Dir.tovec_ne_zero, false_or]
     intro h
-    let g := congrArg (fun (z : Real) => z.toAngValue.toDir) h
-    simp only [Dir.mk_angle_arg_toComplex_of_Dir_eq_self] at g
+    have g : a.toAngValue.toDir = b.toAngValue.toDir := congrArg (fun (z : Real) => z.toAngValue.toDir) h
+    simp only [toangvalue_todir_eq_self] at g
     exact g
   · tauto
 
 theorem sameRay_Vec_nd_toDir (z : Vec_nd) : SameRay ℝ z.1 z.toDir.1 := by
-  rw [Complex.sameRay_iff_arg_div_eq_zero, Vec_nd.self_eq_norm_smul_todir z, Complex.real_smul, ← mul_div, div_self (Dir.tovec_ne_zero (Vec_nd.toDir z)), mul_one, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst]
+  rw [Complex.sameRay_iff_arg_div_eq_zero, (Vec_nd.norm_smul_todir_eq_self z).symm, Complex.real_smul, ← mul_div, div_self (Dir.tovec_ne_zero (Vec_nd.toDir z)), mul_one, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst]
   exact Complex.arg_ofReal_of_nonneg (Vec.norm_nonnegative z)
 
 theorem toDir_eq_toDir_of_sameRay (z₁ z₂ : Vec_nd) : SameRay ℝ z₁.1 z₂.1 → z₁.toDir = z₂.toDir := fun h => (sameRay_iff_eq z₁.toDir z₂.toDir).1 (SameRay.symm (SameRay.trans (SameRay.symm (SameRay.trans h (sameRay_Vec_nd_toDir z₂) (by simp only [ne_eq, ne_zero_of_Vec_nd, false_or, IsEmpty.forall_iff]))) (sameRay_Vec_nd_toDir z₁) (by simp only [ne_eq, ne_zero_of_Vec_nd, false_or, IsEmpty.forall_iff])))

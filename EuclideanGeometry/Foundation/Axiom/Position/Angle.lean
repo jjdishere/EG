@@ -3,6 +3,9 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Angle
 
 noncomputable section
 namespace EuclidGeom
+
+def DirFig.AngDiff {P : Type _} [EuclideanPlane P] ()
+
 /- Define values of oriented angles, in (-π, π], modulo 2 π. -/
 /- Define oriented angles, ONLY taking in two rays starting at one point!  And define ways to construct oriented angles, by given three points on the plane, and etc.  -/
 @[ext]

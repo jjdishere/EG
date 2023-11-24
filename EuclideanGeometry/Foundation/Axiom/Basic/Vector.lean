@@ -32,7 +32,7 @@ scoped macro_rules | `($x ^ $y) => `(HPow.hPow $x $y)
 scoped notation "π" => Real.pi
 
 /- the notation for the class of vectors -/
-scoped notation "Vec" => ℂ
+abbrev Vec := ℂ
 
 /- the class of non-degenerate vectors -/
 def Vec_nd := {z : ℂ // z ≠ 0}
@@ -66,6 +66,7 @@ instance : HasDistribNeg Vec_nd where
 
 end Vec_nd
 
+@[pp_dot]
 def Vec.norm (x : Vec) := Complex.abs x
 
 /- norm of multiplication by a nonnegative real number equal multiplication of norm -/
@@ -75,18 +76,19 @@ theorem Vec.norm_smul_eq_mul_norm {x : ℝ} (x_nonneg : 0 ≤ x) (u : Vec) : Vec
   tauto
 
 @[simp]
-theorem neg_Vec_norm_eq_Vec_norm (z : Vec) : Vec.norm (-z) = Vec.norm z := by
+theorem neg_Vec_norm_eq_Vec_norm (z : Vec) : (-z).norm = z.norm := by
   have h : Complex.abs (-z) = Complex.abs (z) := by
     simp only [map_neg_eq_map]
   unfold Vec.norm
   rw [h]
 
 -- norm is nonnegetive
-theorem Vec.norm_nonnegative (u : Vec) : 0 ≤ Vec.norm u := Real.sqrt_nonneg _
+theorem Vec.norm_nonnegative (u : Vec) : 0 ≤ u.norm := Real.sqrt_nonneg _
 
-def Vec_nd.norm (x : Vec_nd) := Complex.abs x
+@[pp_dot]
+def Vec_nd.norm (x : Vec_nd) := Vec.norm x
 
-theorem Vec_nd.norm_ne_zero (z : Vec_nd) : Vec_nd.norm z ≠ 0 := norm_ne_zero_iff.2 z.2
+theorem Vec_nd.norm_ne_zero (z : Vec_nd) : z.norm ≠ 0 := norm_ne_zero_iff.2 z.2
 
 theorem Vec_nd.norm_pos (z : Vec_nd) : Vec_nd.norm z > 0 := norm_pos_iff.2 z.2
 
@@ -126,6 +128,7 @@ theorem dir_tovec_fst_mul_fst_plus_snd_mul_snd_eq_one (x : Dir) : x.1.1 * x.1.1 
   unfold inner InnerProductSpace.toInner InnerProductSpace.complexToReal InnerProductSpace.isROrCToReal
   simp only [Complex.inner, Complex.mul_re, Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
 
+@[pp_dot]
 def Vec_nd.toDir (z : Vec_nd) : Dir where
   toVec := (Vec.norm z.1)⁻¹ • z.1
   unit := by
@@ -137,16 +140,17 @@ def Vec_nd.toDir (z : Vec_nd) : Dir where
     exact norm_ne_zero_iff.2 z.2
 
 --nondegenerate vector equal norm multiply vector toDir
-theorem Vec_nd.self_eq_norm_smul_todir (z : Vec_nd) : z.1 = Vec_nd.norm z • (Vec_nd.toDir z).1 := by
-  dsimp only [Vec_nd.toDir]
-  repeat rw [Complex.real_smul]
-  rw [←mul_assoc, ←Complex.ofReal_mul]
-  have : Vec_nd.norm z * (Vec.norm z)⁻¹ = 1 := by
-    field_simp
-    apply div_self
-    apply Vec_nd.norm_ne_zero
-  rw [this]
-  simp
+@[simp ↓]
+theorem Vec_nd.norm_smul_todir_eq_self (v : Vec_nd) :  v.norm • v.toDir.toVec = v.1 := by
+  symm
+  apply (inv_smul_eq_iff₀ (Iff.mpr norm_ne_zero_iff v.2)).1
+  rfl
+
+@[simp ↓]
+theorem Vec_nd.norm_mul_todir_eq_self (v : Vec_nd) :  v.norm * v.toDir.toVec = v.1 := by
+  symm
+  apply (inv_smul_eq_iff₀ (Iff.mpr norm_ne_zero_iff v.2)).1
+  rfl
 
 -- Basic facts about Dir, the group structure, neg, and the fact that we can make angle using Dir. There are a lot of relevant (probably easy) theorems under the following namespace.
 
