@@ -67,7 +67,7 @@ lemma b_ne_f : B ≠ F := by
 lemma d_ne_f : D ≠ F := sorry
 
 -- Theorem : $\angle BFD = \pi / 2 - \angle CAB$
-theorem Aref_Wernick_Exercise_1_2 : ∠ B F D (b_ne_f (hnd := hnd) (hd := hd) (hf := hf)) d_ne_f = π / 2 - ∠ C A B (c_ne_a (hnd := hnd)) (b_ne_a (hnd := hnd)) := sorry
+theorem Aref_Wernick_Exercise_1_2 : ∠ B F D (b_ne_f (hnd := hnd) (hd := hd) (hf := hf)) d_ne_f = ↑(π / 2) - ∠ C A B (c_ne_a (hnd := hnd)) (b_ne_a (hnd := hnd)) := sorry
 
 end Aref_Wernick_Exercise_1_2
 

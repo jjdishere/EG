@@ -399,7 +399,7 @@ theorem Seg_nd.lies_on_toray_of_lies_on {X : P} {seg_nd : Seg_nd P} (h : X LiesO
   refine' ⟨t * Vec.norm (VEC seg_nd.source seg_nd.target),
     mul_nonneg ht0 (Vec.norm_nonnegative (VEC seg_nd.source seg_nd.target)), _⟩
   simp only [toRay, h, Complex.real_smul, Complex.ofReal_mul, mul_assoc]
-  exact congrArg (HMul.hMul _) seg_nd.toVec_nd.self_eq_norm_smul_todir
+  exact congrArg (HMul.hMul _) seg_nd.toVec_nd.norm_smul_todir_eq_self.symm
 
 /-- For a nondegenerate segment $seg_nd$, every point of the interior of the $seg_nd$ lies in the interior of the ray associated to the $seg_nd$. -/
 theorem Seg_nd.lies_int_toray_of_lies_int {X : P} {seg_nd : Seg_nd P} (h : X LiesInt seg_nd) : X LiesInt seg_nd.toRay :=
@@ -926,7 +926,7 @@ theorem lies_on_iff_lies_on_toray_and_rev_toray {X : P} {seg_nd : Seg_nd P} : X 
   simp only[inv_nonneg]
   linarith
   linarith
-  rw [h, mul_smul, this, ← Vec_nd.norm_smul_todir_eq_self seg_nd.toVec_nd, smul_smul, smul_smul, mul_assoc, ← norm_of_Vec_nd_eq_norm_of_Vec_nd_fst,inv_mul_cancel (Vec_nd.norm_ne_zero seg_nd.toVec_nd),mul_one]
+  rw [h, mul_smul, this, ← Vec_nd.norm_smul_todir_eq_self seg_nd.toVec_nd, smul_smul, smul_smul, mul_assoc,inv_mul_cancel (Vec_nd.norm_ne_zero seg_nd.toVec_nd),mul_one]
   rfl
 
 -- `This theorem really concerns about the total order on a line`

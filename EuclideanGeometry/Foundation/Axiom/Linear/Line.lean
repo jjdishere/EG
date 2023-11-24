@@ -621,7 +621,7 @@ theorem Line.lies_on_of_exist_real_vec_eq_smul_vec {A B : P} {v : Vec_nd} {t : �
     simp only [ne_eq, norm_of_Vec_nd_eq_norm_of_Vec_nd_fst]
     rw [mul_smul]
     congr
-    exact Vec_nd.self_eq_norm_smul_todir _
+    exact (Vec_nd.norm_smul_todir_eq_self _).symm
   lies_on_of_exist_real_vec_eq_smul h'
 
 theorem Line.lies_on_of_exist_real_of_pt_pt {A B C : P} (h : B ≠ A) {t : ℝ} (ht : VEC A C = t • VEC A B) : C LiesOn (LIN A B h) :=

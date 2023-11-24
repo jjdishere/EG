@@ -27,6 +27,8 @@ lemma d_ne_a : D ≠ A := sorry
 lemma e_ne_a : E ≠ A := sorry
 
 -- Theorem : $\angle DAE = (\angle CBA - \angle ACB) / 2$
+--`This need to reformulate`
+/-
 theorem Shan_Problem_1_1 : ∠ D A E d_ne_a e_ne_A = (1 / 2) * (∠ C B A b_ne_c.symm a_ne_b - ∠ A C B c_ne_a.symm b_ne_c) := by
   -- $\angle BAE - \angle DAE = \angle BAD$
   have ang₁ : ∠ B A E a_ne_b.symm e_ne_a - ∠ D A E d_ne_a e_ne_a = ∠ B A D a_ne_b d_ne_a := sorry
@@ -38,7 +40,7 @@ theorem Shan_Problem_1_1 : ∠ D A E d_ne_a e_ne_A = (1 / 2) * (∠ C B A b_ne_c
   have ang₄ : ∠ D A C d_ne_a c_ne_a - ∠ B A D a_ne_b d_ne_a = ∠ C B A b_ne_c.symm a_ne_b - ∠ A C B c_ne_a.symm b_ne_c := sorry
   rw[← ang₄, ← ang₂, ← ang₁, ← ang₃]
   ring
-
+-/
 end Shan_Problem_1_1
 
 namespace Shan_Problem_1_2
