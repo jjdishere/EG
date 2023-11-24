@@ -43,7 +43,9 @@ end AngleSum
 
 section colinear
 
-theorem colinear_of_zero_angle {A O B : P} {h₁ : A ≠ O} {h₂ : B ≠ O} : ∠ A O B h₁ h₂ = 0 → colinear O A B := by sorry
+theorem colinear_of_angle_eq_zero {A O B : P} {h₁ : A ≠ O} {h₂ : B ≠ O} : ∠ A O B h₁ h₂ = 0 → colinear O A B := by sorry
+
+theorem colinear_of_angle_eq_pi {A O B : P} {h₁ : A ≠ O} {h₂ : B ≠ O} : ∠ A O B h₁ h₂ = π → colinear O A B := by sorry
 
 end colinear
 

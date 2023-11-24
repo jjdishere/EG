@@ -64,7 +64,7 @@ theorem angle_eq_of_cosine_eq_of_cclock (cclock : tr_nd₁.is_cclock ↔ tr_nd�
 
 theorem angle_eq_neg_of_cosine_eq_of_clock (clock : tr_nd₁.is_cclock ↔ ¬ tr_nd₂.is_cclock) (cosine : cos tr_nd₁.angle₁.value = cos tr_nd₂.angle₁.value) : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value := by sorry
 
-theorem sine_ne_zero_of_nd (tr_nd : Triangle_nd P) : Real.sin (tr_nd.angle₁.value)  ≠ 0 := by sorry
+theorem sine_ne_zero_of_nd (tr_nd : Triangle_nd P) : sin (tr_nd.angle₁.value)  ≠ 0 := by sorry
 
 namespace Triangle_nd
 

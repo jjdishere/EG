@@ -74,7 +74,9 @@ theorem AngValue.coe_zero : ((0 : Real) : AngValue) = (0 : AngValue) := rfl
 theorem AngValue.coe_two_pi : ((2 * π : Real) : AngValue) = (0 : AngValue) := Real.Angle.coe_two_pi
 
 @[simp]
-theorem AngValue.neg_coe_pi : (-π :AngValue) = (π : AngValue)  := Real.Angle.neg_coe_pi
+theorem AngValue.neg_coe_pi : (-π :AngValue) = (π : AngValue) := Real.Angle.neg_coe_pi
+
+theorem AngValue.eq_zero_or_eq_pi_of_eq_neg {θ : AngValue} : θ = - θ → θ = 0 ∨ θ = π := sorry
 
 end special_value
 
@@ -131,12 +133,18 @@ theorem ispos_or_isneg_or_not_isnd {θ : AngValue} : θ.IsPos ∨ θ.IsNeg ∨ �
 end trichotomy
 
 section neg
-
+-- `add iff to simp`
 theorem neg_isneg_of_ispos {θ : AngValue} : θ.IsPos → (-θ).IsNeg := sorry
 
 theorem neg_ispos_of_isneg {θ : AngValue} : θ.IsNeg → (-θ).IsPos := sorry
 
 theorem neg_isnd_of_isnd {θ : AngValue} : θ.IsND → (-θ).IsND := sorry
+
+theorem isneg_of_neg_ispos {θ : AngValue} : (-θ).IsPos → θ.IsNeg := sorry
+
+theorem ispos_of_neg_isneg {θ : AngValue} : (-θ).IsNeg → θ.IsPos := sorry
+
+theorem isnd_of_neg_isnd {θ : AngValue} : (-θ).IsND → θ.IsND := sorry
 
 end neg
 
