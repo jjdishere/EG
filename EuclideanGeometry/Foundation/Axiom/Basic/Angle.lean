@@ -159,8 +159,9 @@ end pos_neg_isnd
 
 section trigonometric
 -- `a section discussing cos sin, uniqueness with pos neg`
+-- `sin >0 implies angle > 0, cos >0 implies ..., sin = 0 implies ...`
 -- `acute, ... also implies uniqueness`
--- sin cos special values is already at simp
+-- sin cos of special values is already at simp
 
 @[simp]
 theorem AngValue.cos_coe (x : ℝ) : cos (x.toAngValue) = Real.cos x := Real.Angle.cos_coe _

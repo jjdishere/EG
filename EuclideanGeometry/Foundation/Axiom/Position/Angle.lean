@@ -46,8 +46,6 @@ theorem angle_value_eq_dir_angle (r r' : Ray P) (h : r.source = r'.source) : (An
 def value_of_angle_of_three_point_nd (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): AngValue :=
 (Angle.mk_pt_pt_pt _ _ _ h₁ h₂).value
 
-def value_of_angle_of_two_ray_of_eq_source (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : AngValue := (Angle.mk start_ray end_ray h).value
-
 scoped notation "ANG" => Angle.mk_pt_pt_pt
 
 scoped notation "∠" => value_of_angle_of_three_point_nd
@@ -105,9 +103,11 @@ end Angle
 theorem eq_end_ray_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁.end_ray = ang₂.end_ray := by
   ext : 1
   rw [← ang₁.source_eq_source, ← ang₂.source_eq_source, (congrArg (fun z => z.source)) h]
-  let g := (congrArg (fun z => Dir.mk_angle z)) v
-  unfold Angle.value Dir.angle at g
-  simp only [Dir.mk_angle_arg_toComplex_of_Dir_eq_self, (congrArg (fun z => z.toDir)) h, eq_mul_inv_iff_mul_eq, mul_assoc, inv_mul_self, mul_one] at g
+  let g := (congrArg (fun z => AngValue.toDir z)) v
+  unfold Angle.value DirObj.AngDiff Dir.AngDiff at g
+  simp only [div_toangvalue_eq_toangvalue_sub, sub_todir_eq_todir_div, toangvalue_todir_eq_self] at g
+  rw [h] at g
+  simp only [div_left_inj] at g
   exact g
 
 theorem eq_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁ = ang₂ := Angle.ext ang₁ ang₂ h (eq_end_ray_of_eq_value_eq_start_ray h v)
