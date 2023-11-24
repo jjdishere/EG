@@ -1,6 +1,6 @@
 import EuclideanGeometry.Foundation.Construction.Polygon.Quadrilateral
 import EuclideanGeometry.Foundation.Construction.Polygon.Trapezoid
-import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence
+import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence'
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 
@@ -74,21 +74,14 @@ theorem is_prg_of_eq_length_eq_length (h₁ : (qdr_cvx.edge_nd₁₂).1.length =
   have t₃: (qdr_cvx.triangle₁).1.edge₃.length = (qdr_cvx.triangle₃).1.edge₃.length := by
     rw [prep₆, prep₇, prep₈.symm]
     exact h₂
-  have u: qdr_cvx.triangle₁.1 IsCongrTo qdr_cvx.triangle₃.1 := (congr_of_SSS_of_eq_orientation t₁ t₂ t₃ qdr_cvx.cclock_eq)
+  have u: qdr_cvx.triangle₁ ≅ qdr_cvx.triangle₃ := (Triangle_nd.congr_of_SSS_of_eq_orientation t₁ t₂ t₃ qdr_cvx.cclock_eq)
   have A: qdr_cvx.triangle₁.1.is_nd ∧ qdr_cvx.triangle₃.1.is_nd := by
       constructor
       apply qdr_cvx.triangle₁.2
       apply qdr_cvx.triangle₃.2
-  have prepa₁: qdr_cvx.triangle₁.angle₁.value = qdr_cvx.triangle₃.angle₁.value := by
-    unfold IsCongr at u
-    simp only [A, dite_true] at u
-    rcases u with ⟨propa,propb,propc,propd,prope,propf⟩
-    exact propd
-  have prepa₂: qdr_cvx.triangle₁.angle₃.value = qdr_cvx.triangle₃.angle₃.value := by
-    unfold IsCongr at u
-    simp only [A, dite_true] at u
-    rcases u with ⟨propa,propb,propc,propd,prope,propf⟩
-    exact propf
+  have prepa₁: qdr_cvx.triangle₁.angle₁.value = qdr_cvx.triangle₃.angle₁.value := by exact u.4
+
+  have prepa₂: qdr_cvx.triangle₁.angle₃.value = qdr_cvx.triangle₃.angle₃.value := by exact u.6
   constructor
   have rex: qdr_cvx.diag_nd₂₄.toRay.toDir = - (qdr_cvx.diag_nd₂₄).toRay.reverse.toDir := by
     exact neg_eq_iff_eq_neg.mp rfl
