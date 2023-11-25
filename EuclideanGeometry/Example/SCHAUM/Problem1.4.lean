@@ -43,7 +43,7 @@ theorem Problem1_4_ : (SEG B C).length = (SEG D E).length ∧ (SEG A C).length =
   have b_ne_a : B ≠ A := by sorry
   have d_ne_f : D ≠ F := by sorry
   have e_ne_f : E ≠ F := by sorry
--- We have $\angle B A C = \angle D F E$ and $\angle C B A = \angle E D F$ because of alternate interior angles are equal.
+-- We have $\angle B A C = \angle D F E$ and $\angle C B A = \angle E D F$ because alternate interior angles are equal.
   have ang2 : ∠ B A C b_ne_a (c_ne_a (C_off_lin := C_off_lin)) = ∠ D F E d_ne_f e_ne_f := by
     have alt : IsAlternateIntAng (ANG C A B (c_ne_a (C_off_lin := C_off_lin)) b_ne_a) (ANG E F D e_ne_f d_ne_f) := by
       constructor
