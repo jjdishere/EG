@@ -25,7 +25,7 @@ def IsCongr (tr₁ tr₂: Triangle P) : Prop := by
 
 scoped infix : 50 "IsCongrTo" => IsCongr
 
-scoped infix : 50 "≅" => IsCongr --do we need?
+-- scoped infix : 50 "≅" => IsCongr --do we need?
 
 namespace IsCongr
 
@@ -212,6 +212,7 @@ protected theorem trans (h₁ : tr₁ IsCongrTo tr₂) (h₂ : tr₂ IsCongrTo t
       rcases h₂ with ⟨l₁',l₂',l₃',a₁',a₂',a₃'⟩
       rw [<-l₁] at l₁' ; rw [<-l₂] at l₂' ; rw [<-l₃] at l₃' ; rw [<-a₁] at a₁' ; rw[<-a₂] at a₂' ; rw[<-a₃] at a₃'
       simp only [l₁',l₂',l₃',a₁',a₂',a₃']
+      tauto
     . have nd₂ : tr₁.is_nd = tr₂.is_nd := by apply IsCongr.is_nd tr₁ tr₂ h₁
       simp only [nd₁, eq_iff_iff, false_iff] at nd₂
       have nd₃ : tr₂.is_nd = tr₃.is_nd := by apply IsCongr.is_nd tr₂ tr₃ h₂
@@ -223,6 +224,7 @@ protected theorem trans (h₁ : tr₁ IsCongrTo tr₂) (h₂ : tr₂ IsCongrTo t
       rcases h₂ with ⟨l₁',l₂',l₃'⟩
       rw [<-l₁] at l₁' ; rw [<-l₂] at l₂' ; rw [<-l₃] at l₃'
       simp only [l₁',l₂',l₃']
+      tauto
 
 instance : IsEquiv (Triangle P) IsCongr where
   refl := IsCongr.refl
@@ -437,6 +439,7 @@ theorem congr_of_trans_acongr (h₁ : tr₁ IsACongrTo tr₂) (h₂ : tr₂ IsAC
       rcases h₂ with ⟨l₁',l₂',l₃',a₁',a₂',a₃'⟩
       rw [<-l₁] at l₁' ; rw [<-l₂] at l₂' ; rw [<-l₃] at l₃' ; rw[ neg_eq_iff_eq_neg.mpr a₁'] at a₁ ; rw[neg_eq_iff_eq_neg.mpr a₂'] at a₂ ; rw[neg_eq_iff_eq_neg.mpr a₃'] at a₃
       simp only [l₁',l₂',l₃',a₁,a₂,a₃]
+      tauto
     . have nd₂ : tr₁.is_nd ↔ tr₂.is_nd := by apply IsACongr.is_nd tr₁ tr₂ h₁
       simp [nd₁] at nd₂
       have nd₃ : tr₂.is_nd ↔ tr₃.is_nd := by apply IsACongr.is_nd tr₂ tr₃ h₂
@@ -448,6 +451,7 @@ theorem congr_of_trans_acongr (h₁ : tr₁ IsACongrTo tr₂) (h₂ : tr₂ IsAC
       rcases h₂ with ⟨l₁',l₂',l₃'⟩
       rw [<-l₁] at l₁' ; rw [<-l₂] at l₂' ; rw [<-l₃] at l₃'
       simp only [l₁',l₂',l₃']
+      tauto
 
 instance : IsSymm (Triangle P) IsACongr where
   symm := IsACongr.symm
