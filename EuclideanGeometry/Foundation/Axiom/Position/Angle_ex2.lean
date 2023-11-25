@@ -1,6 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
-import EuclideanGeometry.Foundation.Axiom.Position.Convex
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 
 noncomputable section
@@ -15,9 +13,9 @@ section AngleValue
 
 
 /- theorem - π < angle.value, angle.value ≤ π,  -/
-theorem val_gt_neg_pi (ang : Angle P) : -π < ang.value := sorry
+theorem val_gt_neg_pi (ang : Angle P) : -π < ↑ang.value := sorry
 
-theorem val_le_pi (ang : Angle P) : ang.value < π := sorry
+theorem val_le_pi (ang : Angle P) : ↑ang.value < π := sorry
 
 /- theorem when angle > 0, IsInt means lies left of start ray + right of end ray; when angle < 0, ...  -/
 
@@ -45,7 +43,9 @@ end AngleSum
 
 section colinear
 
-theorem colinear_of_zero_angle {A O B : P} {h₁ : A ≠ O} {h₂ : B ≠ O} : ∠ A O B h₁ h₂ = 0 → colinear O A B := by sorry
+theorem colinear_of_angle_eq_zero {A O B : P} {h₁ : A ≠ O} {h₂ : B ≠ O} : ∠ A O B h₁ h₂ = 0 → colinear O A B := by sorry
+
+theorem colinear_of_angle_eq_pi {A O B : P} {h₁ : A ≠ O} {h₂ : B ≠ O} : ∠ A O B h₁ h₂ = π → colinear O A B := by sorry
 
 end colinear
 

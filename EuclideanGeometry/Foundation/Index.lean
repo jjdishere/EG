@@ -5,8 +5,7 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Plane
 import EuclideanGeometry.Foundation.Axiom.Basic.Class
 /- Axiom.Linear -/
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
-import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
-import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex2
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Line
 import EuclideanGeometry.Foundation.Axiom.Linear.Class
@@ -23,7 +22,7 @@ import EuclideanGeometry.Foundation.Axiom.Isometry.Rotation
 import EuclideanGeometry.Foundation.Axiom.Isometry.Translation_ex
 /- Axiom.Triangle -/
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
-import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
+import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_trash
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence' -- `to avoid ambiguous notation, use notation ≅, ≅ₐ`
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
@@ -37,7 +36,7 @@ import EuclideanGeometry.Foundation.Axiom.Circle.IncribedAngle
 /- Tactic -/
 /- Tactic.Congruence -/
 import EuclideanGeometry.Foundation.Tactic.Congruence.Attr
-import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence
+import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence'
 -- import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence' -- `need to avoid some name collision during initialization?`
 import EuclideanGeometry.Foundation.Tactic.Colinear.perm_colinear
 

@@ -1,5 +1,4 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Line
-import EuclideanGeometry.Foundation.Axiom.Linear.Ray_ex
 import EuclideanGeometry.Foundation.Axiom.Linear.Class
 
 /-!
@@ -178,6 +177,84 @@ theorem DirLine.not_para_of_not_para_toline (dirline dirline' : DirLine P) : ¬ 
 theorem DirLine.not_para_iff_not_para_toline (dirline dirline' : DirLine P) : ¬ dirline ∥ dirline' ↔ ¬ dirline.toLine ∥ dirline'.toLine  := ⟨Quotient.ind₂ (fun _ _ => id) dirline dirline', Quotient.ind₂ (fun _ _ => id) dirline dirline'⟩
 
 end parallel_iff_coercion_parallel
+
+section reverse
+
+variable {α β : (P : Type _) → [EuclideanPlane P] → Type _} [DirFig α] [DirFig β] {l₁ : α P} {l₂ : β P}
+
+theorem DirFig.para_rev_of_para (h : l₁ ∥ l₂) : l₁ ∥ reverse l₂ :=
+  h.trans (rev_toProj_eq_toProj l₂).symm
+
+theorem Seg_nd.para_rev_of_para {s s' : Seg_nd P} (h : s ∥ s') : s ∥ s'.reverse :=
+  DirFig.para_rev_of_para h
+
+theorem Ray.para_rev_of_para {r r' : Ray P} (h : r ∥ r') : r ∥ r'.reverse :=
+  DirFig.para_rev_of_para h
+
+theorem DirLine.para_rev_of_para {l l' : DirLine P} (h : l ∥ l') : l ∥ l'.reverse :=
+  DirFig.para_rev_of_para h
+
+theorem DirFig.not_para_rev_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ l₁ ∥ reverse l₂ :=
+  fun hn ↦ h ((para_rev_of_para hn).trans (congrArg ProjObj.toProj (rev_rev l₂)))
+
+theorem Seg_nd.not_para_rev_of_not_para {s s' : Seg_nd P} (h : ¬ s ∥ s') : ¬ s ∥ s'.reverse :=
+  DirFig.not_para_rev_of_not_para h
+
+theorem Ray.not_para_rev_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r ∥ r'.reverse :=
+  DirFig.not_para_rev_of_not_para h
+
+theorem DirLine.not_para_rev_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l ∥ l'.reverse :=
+  DirFig.not_para_rev_of_not_para h
+
+theorem DirFig.rev_para_of_para (h : l₁ ∥ l₂) : reverse l₁ ∥ l₂ :=
+  (rev_toProj_eq_toProj l₁).trans h
+
+theorem Seg_nd.rev_para_of_para {s s' : Seg_nd P} (h : s ∥ s') : s.reverse ∥ s' :=
+  DirFig.rev_para_of_para h
+
+theorem Ray.rev_para_of_para {r r' : Ray P} (h : r ∥ r') : r.reverse ∥ r' :=
+  DirFig.rev_para_of_para h
+
+theorem DirLine.rev_para_of_para {l l' : DirLine P} (h : l ∥ l') : l.reverse ∥ l' :=
+  DirFig.rev_para_of_para h
+
+theorem DirFig.not_rev_para_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ l₂ :=
+  fun hn ↦ h ((congrArg ProjObj.toProj (rev_rev l₁)).symm.trans (rev_para_of_para hn) )
+
+theorem Seg_nd.not_rev_para_of_not_para {s s' : Seg_nd P} (h : ¬ s ∥ s') : ¬ s.reverse ∥ s' :=
+  DirFig.not_rev_para_of_not_para h
+
+theorem Ray.not_rev_para_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r.reverse ∥ r' :=
+  DirFig.not_rev_para_of_not_para h
+
+theorem DirLine.not_rev_para_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l.reverse ∥ l' :=
+  DirFig.not_rev_para_of_not_para h
+
+theorem DirFig.rev_para_rev_of_para (h : l₁ ∥ l₂) : reverse l₁ ∥ reverse l₂ :=
+  rev_para_of_para (para_rev_of_para h)
+
+theorem Seg_nd.rev_para_rev_of_para {s s' : Seg_nd P} (h : s ∥ s') : s.reverse ∥ s'.reverse :=
+  DirFig.rev_para_rev_of_para h
+
+theorem Ray.rev_para_rev_of_para {r r' : Ray P} (h : r ∥ r') : r.reverse ∥ r'.reverse :=
+  DirFig.rev_para_rev_of_para h
+
+theorem DirLine.rev_para_rev_of_para {l l' : DirLine P} (h : l ∥ l') : l.reverse ∥ l'.reverse :=
+  DirFig.rev_para_rev_of_para h
+
+theorem DirFig.not_rev_para_rev_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ reverse l₂ :=
+  not_rev_para_of_not_para (not_para_rev_of_not_para h)
+
+theorem Seg_nd.not_rev_para_rev_of_not_para {s s' : Seg_nd P} (h : ¬ s ∥ s') : ¬ s.reverse ∥ s'.reverse :=
+  DirFig.not_rev_para_rev_of_not_para h
+
+theorem Ray.not_rev_para_rev_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r.reverse ∥ r'.reverse :=
+  DirFig.not_rev_para_rev_of_not_para h
+
+theorem DirLine.not_rev_para_rev_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l.reverse ∥ l'.reverse :=
+  DirFig.not_rev_para_rev_of_not_para h
+
+end reverse
 
 end coercion_theorem
 
