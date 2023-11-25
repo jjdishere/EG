@@ -64,7 +64,6 @@ def diag₂₄ : Seg P := SEG qdr.2 qdr.4
 
 end Quadrilateral
 
-
 /--
 A quadrilateral is called convex if
 1. both diagnals are non-degenerate,
@@ -100,6 +99,13 @@ namespace Quadrilateral_cvx
 def mk_is_convex {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsConvex) : Quadrilateral_cvx P where
   toQuadrilateral := qdr
   convex := h
+
+section criteria
+variable {A B C D : P}
+
+-- theorem is_convex_of_inferior_angle `to be added`
+
+end criteria
 
 section property
 -- properties of convex quadrilateral `to be added`
