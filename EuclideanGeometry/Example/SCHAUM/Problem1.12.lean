@@ -26,8 +26,8 @@ variable {hperp2 : (SEG_nd B D (d_ne_b (hconv := hconv))) ⟂ (SEG_nd A D (a_ne_
 -- $BC = DA$.
 variable {heq : (SEG B C).length = (SEG A D).length}
 -- State the main goal.
-theorem SCHAUM_Problem_1_12 : Quadrilateral.IsParallelogram (QDR A B C D) := by
-  apply is_prg_of_para_eq_length'
+theorem SCHAUM_Problem_1_12 : Quadrilateral_cvx.IsParallelogram (QDR_cvx A B C D hconv) := by
+  apply is_prg_of_para_eq_length' (QDR_cvx A B C D hconv)
   · unfold perpendicular at *
     unfold parallel
     have h : toProj (SEG_nd B C (c_ne_b (hconv := hconv))) = toProj (SEG_nd A D (a_ne_d (hconv := hconv)).symm) := by
@@ -40,6 +40,5 @@ theorem SCHAUM_Problem_1_12 : Quadrilateral.IsParallelogram (QDR A B C D) := by
         _ = toProj (SEG_nd A D (a_ne_d (hconv := hconv)).symm) := by simp
     exact h.symm
   · exact heq.symm
-  · exact hconv
 
 end SCHAUM_Problem_1_12

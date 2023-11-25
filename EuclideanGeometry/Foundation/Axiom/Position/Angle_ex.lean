@@ -69,7 +69,7 @@ theorem end_ray_todir_eq_todir_of_ang_eq_ang {ang₁ ang₂ : Angle P} (hs : ang
 structure IsOppositeAng (ang₁ ang₂ : Angle P) : Prop where
   start_ray : ang₁.start_ray = ang₂.start_ray.reverse
   end_ray : ang₁.end_ray = ang₂.start_ray.reverse
-
+-- I think that the definition of end_rays here is incorrect
 structure IsCorrespondingAng (ang₁ ang₂ : Angle P) : Prop where
   start_ray : ang₁.start_ray.toDir = ang₂.start_ray.toDir
   end_ray : ang₁.start_ray.toDirLine = ang₂.start_ray.toDirLine

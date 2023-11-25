@@ -37,7 +37,7 @@ theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
       _ = (SEG A C).length := length_eq_length_of_rev (SEG C A)
   have seg1 : (SEG B D).length = (SEG C E).length := by
     calc
-      _ = (SEG D B).length := by sorry
+      _ = (SEG D B).length := by apply length_eq_length_of_rev
       _ = (SEG A B).length - (SEG A D).length := by
         rw [← eq_sub_of_add_eq']
         exact (length_eq_length_add_length (SEG A B) D (D_on_seg)).symm
@@ -59,9 +59,15 @@ theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
   have q_ne_c : Q ≠ C := (ne_of_not_colinear hnd2).2.2.symm
   have ang2 : (∠ D B P b_ne_d.symm p_ne_b) = - (∠ E C Q c_ne_e.symm q_ne_c) := by
     calc
-      _ = ∠ A B C a_ne_b c_ne_b := by sorry
+      _ = ∠ A B C a_ne_b c_ne_b := by
+        have : ANG D B P b_ne_d.symm p_ne_b = ANG A B C a_ne_b c_ne_b := by
+          apply eq_ang_of_liesint_liesint
+          · sorry
+          · sorry
+        unfold value_of_angle_of_three_point_nd
+        congr
       _ = ∠ B C A c_ne_b.symm a_ne_c := by sorry
-      _ = - ∠ A C B a_ne_c c_ne_b.symm := by sorry
+      _ = - ∠ A C B a_ne_c c_ne_b.symm := neg_value_of_rev_ang c_ne_b.symm a_ne_c
       _ = - ∠ E C Q c_ne_e.symm q_ne_c := by sorry
   have ang1 : (∠ B P D p_ne_b.symm p_ne_d.symm) = - (∠ C Q E q_ne_c.symm q_ne_e.symm) := by sorry
   have h : IsACongr (TRI_nd P B D hnd1).1 (TRI_nd Q C E hnd2).1 := by
