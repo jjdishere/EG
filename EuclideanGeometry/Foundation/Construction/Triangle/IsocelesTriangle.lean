@@ -2,7 +2,6 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence'
-import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
 import Mathlib.Data.Real.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
@@ -128,11 +127,13 @@ rcases this with k4 | k5
 
 -- An clockwise regular triangle has all angles being π/3
 
-theorem ang_eq_sixty_deg_of_cclock_regular_tri (tri_nd : Triangle_nd P) (cclock : tri_nd.is_cclock)(h : tri_nd.1.IsRegular) : tri_nd.angle₁.value= (π / 3) ∧ tri_nd.angle₂.value = π / 3 ∧ tri_nd.angle₃.value = π / 3 := by
+theorem ang_eq_sixty_deg_of_cclock_regular_tri (tri_nd : Triangle_nd P) (cclock : tri_nd.is_cclock)(h : tri_nd.1.IsRegular) : tri_nd.angle₁.value= ↑(π / 3) ∧ tri_nd.angle₂.value = ↑(π / 3) ∧ tri_nd.angle₃.value = ↑(π / 3) := by
+sorry
+/-
 rw [regular_tri_iff_eq_angle_of_nd_tri] at h
 rcases h with ⟨h1, h2⟩
 have h3 := Triangle_nd.angle_sum_eq_pi_of_cclock tri_nd cclock
-rw [← h1, ← h2, ← mul_one tri_nd.angle₁.value , ← mul_add, ← mul_add] at h3
+rw [← h1, ← h2, ← mul_add, ← mul_add] at h3
 norm_num at h3
 rw [← eq_div_iff] at h3
 constructor
@@ -141,10 +142,12 @@ constructor
 rw [← h1, h3]
 rw [← h2, h3]
 norm_num
+-/
 
 -- An anticlockwise equilateral triangle has all angles being - π/3
 
-theorem ang_eq_sixty_deg_of_acclock_regular_tri (tri_nd : Triangle_nd P) (acclock : ¬ tri_nd.is_cclock)(h : tri_nd.1.IsRegular) : tri_nd.angle₁.value= - π / 3 ∧ tri_nd.angle₂.value = - π / 3 ∧ tri_nd.angle₃.value = - π / 3 := by
+theorem ang_eq_sixty_deg_of_acclock_regular_tri (tri_nd : Triangle_nd P) (acclock : ¬ tri_nd.is_cclock)(h : tri_nd.1.IsRegular) : tri_nd.angle₁.value= ↑ (- π / 3) ∧ tri_nd.angle₂.value = ↑(- π / 3) ∧ tri_nd.angle₃.value = ↑ (- π / 3) := by sorry
+/-
 rw [regular_tri_iff_eq_angle_of_nd_tri] at h
 rcases h with ⟨h1, h2⟩
 have h3 := Triangle_nd.angle_sum_eq_neg_pi_of_clock tri_nd acclock
@@ -157,10 +160,13 @@ constructor
 rw [← h1, h3]
 rw [← h2, h3]
 norm_num
+-/
 
 -- An isoceles triangle is an equilateral triangle if one of its angle is π/3 (or -π /3). Here there are two possibilities
 
-theorem regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg(tri_nd : Triangle_nd P) (h : tri_nd.angle₁.value = π /3 ∨ tri_nd.angle₁.value = - π / 3)(h1 : tri_nd.1.IsIsoceles) : tri_nd.1.IsRegular := by
+theorem regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg(tri_nd : Triangle_nd P) (h : tri_nd.angle₁.value = ↑ (π /3) ∨ tri_nd.angle₁.value = ↑ (- π / 3)) (h1 : tri_nd.1.IsIsoceles) : tri_nd.1.IsRegular := by
+sorry
+/-
 rcases h with (p1 | p2)
 have cclock : tri_nd.is_cclock := by
   apply Triangle_nd.cclock_of_pos_angle
@@ -193,9 +199,10 @@ rw [regular_tri_iff_eq_angle_of_nd_tri]
 constructor
 rw [p2 , f4]
 rw [p2 , f5]
+-/
 
-
-theorem regular_tri_of_isoceles_tri_of_snd_ang_eq_sixty_deg (tri_nd : Triangle_nd P) (h : tri_nd.angle₂.value = π /3 ∨ tri_nd.angle₂.value = - π / 3)(h1 : tri_nd.1.IsIsoceles) : tri_nd.1.IsRegular:= by
+theorem regular_tri_of_isoceles_tri_of_snd_ang_eq_sixty_deg (tri_nd : Triangle_nd P) (h : tri_nd.angle₂.value = ↑ (π /3) ∨ tri_nd.angle₂.value = ↑ (- π / 3)) (h1 : tri_nd.1.IsIsoceles) : tri_nd.1.IsRegular:= by sorry
+/-
 apply regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg
 rcases h with (p1 | p2)
 left
@@ -219,8 +226,10 @@ have f3 := Triangle_nd.angle_sum_eq_neg_pi_of_clock tri_nd f3
 rw [← is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp h1, p2] at f3
 linarith [f3]
 exact h1
+-/
 
-theorem regular_tri_of_isoceles_tri_of_trd_ang_eq_sixty_deg (tri_nd : Triangle_nd P) (h : tri_nd.angle₃.value = π /3 ∨ tri_nd.angle₃.value = - π / 3)(h1 : tri_nd.1.IsIsoceles) : tri_nd.1.IsRegular:= by
+theorem regular_tri_of_isoceles_tri_of_trd_ang_eq_sixty_deg (tri_nd : Triangle_nd P) (h : tri_nd.angle₃.value = ↑ (π /3) ∨ tri_nd.angle₃.value = ↑(- π / 3)) (h1 : tri_nd.1.IsIsoceles) : tri_nd.1.IsRegular:= by sorry
+/-
 apply regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg
 rcases h with (p1 | p2)
 left
@@ -244,5 +253,5 @@ have f3 := Triangle_nd.angle_sum_eq_neg_pi_of_clock tri_nd f2
 rw [is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp h1, p2] at f3
 linarith [f3]
 exact h1
-
+-/
 end EuclidGeom
