@@ -4,6 +4,8 @@ import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
+
+import EuclideanGeometry.Foundation.Axiom.Basic.Angle_trash
 /-!
 
 -/
@@ -27,7 +29,6 @@ structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
 
 structure IsAngBisLine (ang : Angle P) (line : Line P) : Prop where
   source_on : ang.source LiesOn line
-
 
 structure IsExAngBis
 
@@ -56,7 +57,17 @@ namespace Angle
 theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
   eq_source := rfl
   eq_value := by
-    sorry
+    have h : ang.source = ang.AngBis.source := rfl
+    rw [mk_strat_ray_value_eq_angdiff ang ang.AngBis h]
+    rw [mk_ray_end_value_eq_angdiff ang ang.AngBis h]
+    rw [Dir.AngDiff]
+    rw [Dir.AngDiff]
+    rw [← dir_eq_of_angvalue_eq]
+    rw [AngBis]
+    rw [end_ray_eq_start_ray_mul_value]
+    simp
+    rw [← sub_todir_eq_todir_div]
+    rw [theta_sub_half_theta_eq_half_theta ang.value]
   same_sgn := by
     sorry
 
