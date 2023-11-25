@@ -9,8 +9,8 @@ namespace EuclidGeom
 variable {P : Type _} [EuclideanPlane P]
 
 namespace Shan_Problem_1_3
-/- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$. Let $D$ be a point in the extension of $AB$ such that $BD = AB$. Let $E$ be the midpoint of $AB$.
-
+/- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
+ Let $D$ be a point in the extension of $AB$ such that $BD = AB$. Let $E$ be the midpoint of $AB$.
 Prove that $CD = 2 \cdot CE$. -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
@@ -27,8 +27,19 @@ variable {D : P} {hd_1 : D LiesInt (SEG_nd A B a_ne_b).extension}
 variable {E : P} {he : E = (SEG A B).midpoint}
 
 -- Theorem : $CD = 2 \cdot CE$
-theorem Shan_Problem_1_3 : (SEG C D).length = 2 * (SEG C E).length := sorry
-
+theorem Shan_Problem_1_3 : (SEG C D).length = 2 * (SEG C E).length := by
+  -- Extend $AC$ to $F$ such that $CF = AC$
+  let F := Ray.extpoint (SEG_nd A C c_ne_a).extension (SEG A C).length
+  have cf_eq_ac : (SEG C F).length = (SEG A C).length := by
+    apply seg_length_eq_dist_of_extpoint (SEG_nd A C c_ne_a).extension
+    simp
+  -- $\triangle A B F$ is congruent to $\triangle A C D$, so $BF = CD$
+  have iso : (▵ A B F) ≅ₐ (▵ A C D) := sorry
+  have bf_eq_cd : (SEG B F).length = (SEG C D).length := iso.edge₁
+  -- $2 CE = BF$
+  -- 以后这里可能需要增加中位线的定理
+  have two_ce_eq_bf : 2 * (SEG C E).length = (SEG B F).length := sorry
+  rw[two_ce_eq_bf, bf_eq_cd]
 end Shan_Problem_1_3
 
 namespace Shan_Problem_1_4
