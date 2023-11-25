@@ -175,40 +175,27 @@ theorem is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.ed
   -- Case that is not convex, goal is prove contra
   have angle₁_eq_angle₄: (ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₃₄.symm qdr_cvx.nd₁₄.symm).value = (ANG qdr_cvx.point₂ qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.nd₁₂ qdr_cvx.nd₁₄).value := by
     apply ang_eq_ang_of_todir_rev_todir
-    have ray₁₂_toDir_eq_Seg_nd₁₂_toDir: qdr_cvx.edge_nd₁₂.toDir = (ANG qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.nd₁₄ qdr_cvx.nd₁₂).end_ray.toDir := by rfl
-    have ray₄₃_toDir_rev_Seg_nd₃₄_toDir: qdr_cvx.edge_nd₃₄.toDir = - (ANG qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.nd₁₄.symm qdr_cvx.nd₃₄.symm).end_ray.toDir := by
-      have Seg_nd₁₂_rev: qdr_cvx.edge_nd₃₄.reverse.toDir = - qdr_cvx.edge_nd₃₄.toDir := qdr_cvx.edge_nd₃₄.todir_of_rev_eq_neg_todir
-      have Seg_nd₁₂_rev': - qdr_cvx.edge_nd₃₄.reverse.toDir = qdr_cvx.edge_nd₃₄.toDir := by
-        exact neg_eq_iff_eq_neg.mpr Seg_nd₁₂_rev
-      have ray_toDir_eq_Seg_nd_toDir: qdr_cvx.edge_nd₃₄.reverse.toDir = (ANG qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.nd₁₄.symm qdr_cvx.nd₃₄.symm).end_ray.toDir := by rfl
-      rw [Seg_nd₁₂_rev'.symm, ray_toDir_eq_Seg_nd_toDir]
-    have ray₄₃_toDir_rev_Seg_nd₃₄_toDir': - qdr_cvx.edge_nd₃₄.toDir = (ANG qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.nd₁₄.symm qdr_cvx.nd₃₄.symm).end_ray.toDir := by
-      exact neg_eq_iff_eq_neg.mpr ray₄₃_toDir_rev_Seg_nd₃₄_toDir
-    --rw [ray₁₂_toDir_eq_Seg_nd₁₂_toDir.symm, ray₄₃_toDir_rev_Seg_nd₃₄_toDir'.symm, case_not_convex]
-    --exact qdr_cvx.edge_nd₁₄.todir_of_rev_eq_neg_todir
-    sorry
-    sorry
-  have IsCongrTo₁₄: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).1 IsCongrTo (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_colinear₁₂₄).1 := by
-    have edge₂_eq: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).1.edge₂.length = (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_colinear₁₂₄).1.edge₂.length := by
-      apply length_of_rev_eq_length'
+    have ray₁₂_toDir_eq_Seg_nd₁₂_toDir: qdr_cvx.edge_nd₁₂.toDir = (ANG qdr_cvx.point₂ qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.nd₁₂ qdr_cvx.nd₁₄).start_ray.toDir := by rfl
+    have ray₄₃_toDir_eq_Seg_nd₃₄_rev_toDir: qdr_cvx.edge_nd₃₄.reverse.toDir = (ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₃₄.symm qdr_cvx.nd₁₄.symm).start_ray.toDir := by rfl
+    have Seg_nd₄₃_toDir_neg_Seg_nd₃₄_rev_toDir: qdr_cvx.edge_nd₃₄.reverse.toDir = - qdr_cvx.edge_nd₃₄.toDir := by apply Seg_nd.todir_of_rev_eq_neg_todir
+    rw [ray₁₂_toDir_eq_Seg_nd₁₂_toDir.symm, ray₄₃_toDir_eq_Seg_nd₃₄_rev_toDir.symm, Seg_nd₄₃_toDir_neg_Seg_nd₃₄_rev_toDir, case_not_convex]
+    exact qdr_cvx.edge_nd₁₄.todir_of_rev_eq_neg_todir
+  have IsCongrTo₁₄: TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁ IsCongrTo TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_colinear₁₂₄ := by
+    have edge₂_eq: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).1.edge₂.length = (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_colinear₁₂₄).1.edge₂.length := by apply length_of_rev_eq_length'
     have edge₃_eq: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).1.edge₃.length = (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_colinear₁₂₄).1.edge₃.length := by
-      have eq_length: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).1.edge₃.length = qdr_cvx.edge_nd₃₄.length := by
-        apply length_of_rev_eq_length'
+      have eq_length: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).1.edge₃.length = qdr_cvx.edge_nd₃₄.length := by apply length_of_rev_eq_length'
       rw [eq_length]
       exact h₂.symm
-    --apply congr_of_SAS edge₂_eq angle₁_eq_angle₄ edge₃_eq
-    sorry
-  unfold Triangle.IsCongr at IsCongrTo₁₄
+    apply Triangle_nd.congr_of_SAS edge₂_eq angle₁_eq_angle₄ edge₃_eq
+  unfold Triangle_nd.IsCongr at IsCongrTo₁₄
   have A: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).1.is_nd ∧ (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_colinear₁₂₄).1.is_nd := by
       constructor
       apply qdr_cvx.not_colinear₄₃₁
       apply qdr_cvx.not_colinear₁₂₄
   -- Use IsCongrTo to prove angle eq
   have prepa₁: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_colinear₁₂₄).angle₃.value = (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).angle₃.value := by
-    --simp only [A, dite_true] at IsCongrTo₁₄
-    --rcases IsCongrTo₁₄ with ⟨_, _, _, _, _, propf⟩
-    --exact propf.symm
-    sorry
+    rcases IsCongrTo₁₄ with ⟨_, _, _, _, _, propf⟩
+    exact propf.symm
   -- Use angle_eq to prove two diag para.
   have prepa₂: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).angle₃.start_ray.reverse.toDir = (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_colinear₁₂₄).angle₃.start_ray.toDir := by
     have prepaA: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).angle₃.start_ray.reverse.toDir = - (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).angle₃.start_ray.toDir := (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).angle₃.start_ray.todir_of_rev_eq_neg_todir
@@ -242,18 +229,16 @@ theorem is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.ed
   -- Prove IsCongrTo
   have prepar₁: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).1.edge₂.length = (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).1.edge₂.length := length_of_rev_eq_length'
   have prepar₂: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).1.edge₃.length = (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).1.edge₃.length := h₂
-  have IsCongrTo₁₃: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).1 IsCongrTo (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).1 := sorry--congr_of_SAS prepar₁ angle₁_eq_angle₃ prepar₂
-  unfold Triangle.IsCongr at IsCongrTo₁₃
+  have IsCongrTo₁₃: TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃ IsCongrTo TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁ := Triangle_nd.congr_of_SAS prepar₁ angle₁_eq_angle₃ prepar₂
+  unfold Triangle_nd.IsCongr at IsCongrTo₁₃
   have A: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).1.is_nd ∧ (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).1.is_nd := by
       constructor
       apply (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).2
       apply (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).2
   -- Use IsCongrTo to prove angle eq
   have pr₁: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).angle₃.value = (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).angle₃.value := by
-    --simp only [A, dite_true] at IsCongrTo₁₃
-    --rcases IsCongrTo₁₃ with ⟨_, _, _, _, _, propf⟩
-    --exact propf
-    sorry
+    rcases IsCongrTo₁₃ with ⟨_, _, _, _, _, propf⟩
+    exact propf
   -- Use angle eq to prove para, hope qdr_cvx becomes prg
   have pr₂: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).angle₃.start_ray.toDir = (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).angle₃.start_ray.reverse.toDir := by
     have K₄: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).angle₃.start_ray.toDir = qdr_cvx.diag_nd₁₃.reverse.toDir := by rfl
@@ -350,7 +335,24 @@ theorem is_prg_of_eq_angle_value_eq_angle_value_variant (h₁ : (ANG D A B (Quad
   exact j h
 
 /-- Given Quadrilateral_cvx qdr_cvx, and qdr_cvx.diag_nd₁₃.1.midpoint = qdr_cvx.diag_nd₂₄.1.midpoint, qdr_cvx is a Parallelogram_nd. -/
-theorem is_prg_nd_of_diag_inx_eq_mid_eq_mid (h' : qdr_cvx.diag_nd₁₃.1.midpoint = qdr_cvx.diag_nd₂₄.1.midpoint) : qdr_cvx.IsParallelogram_nd := sorry
+theorem is_prg_nd_of_diag_inx_eq_mid_eq_mid (h' : qdr_cvx.diag_nd₁₃.1.midpoint = qdr_cvx.diag_nd₂₄.1.midpoint) : qdr_cvx.IsParallelogram_nd := by
+  let midpoint := qdr_cvx.diag_nd₁₃.1.midpoint
+  have qdr_cvx_eq_midpoint_of_diag₂₄: midpoint = qdr_cvx.diag_nd₂₄.1.midpoint := by rw [h'.symm]
+  have midpoint_Liesint_diag₁₃: midpoint LiesInt qdr_cvx.diag_nd₁₃ := by apply Seg_nd.midpt_lies_int
+  have midpoint_Liesint_diag₂₄: midpoint LiesInt qdr_cvx.diag_nd₂₄ := by
+    rw [qdr_cvx_eq_midpoint_of_diag₂₄]
+    apply Seg_nd.midpt_lies_int
+  have nd₁₅: qdr_cvx.point₁ ≠ midpoint := by
+    sorry
+  have nd₂₅: qdr_cvx.point₂ ≠ midpoint := by
+    sorry
+  have nd₃₅: qdr_cvx.point₃ ≠ midpoint := by
+    sorry
+  have nd₄₅: qdr_cvx.point₄ ≠ midpoint := by
+    sorry
+  have prep₁_pre: (SEG_nd qdr_cvx.point₁ midpoint nd₁₅.symm).length = (SEG_nd midpoint qdr_cvx.point₃ nd₃₅).length := by apply dist_target_eq_dist_source_of_midpt
+
+  sorry
 
 /-- Given four points ABCD and Quadrilateral ABCD IsConvex, and the midpoint of the diagonal AC and BD is the same, Quadrilateral ABCD is a Parallelogram_nd. -/
 theorem is_prg_of_diag_inx_eq_mid_eq_mid_variant (h' : (SEG A C).midpoint = (SEG B D).midpoint) : QDR A B C D IsPRG_nd := by

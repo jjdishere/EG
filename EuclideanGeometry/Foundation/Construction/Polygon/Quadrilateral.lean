@@ -2,6 +2,7 @@ import EuclideanGeometry.Foundation.Axiom.Position.Convex
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel_trash
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 
 /-!
 # Quadrilateral
