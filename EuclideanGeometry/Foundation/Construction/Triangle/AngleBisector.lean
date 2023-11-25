@@ -56,8 +56,9 @@ namespace Angle
 theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
   eq_source := rfl
   eq_value := by
-
-  eq_dir := _
+    sorry
+  same_sgn := by
+    sorry
 
 
 theorem angbisline_is_angbisline : sorry := sorry
