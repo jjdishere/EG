@@ -580,30 +580,69 @@ theorem eq_angle_value_of_is_prg_nd'_variant (h : QDR A B C D IsPRG_nd) : ANG D 
   sorry
 
 /-- Given Quadrilateral qdr IsPRG_nd, the intersection of diagonals is the midpoint of one diagonal namely Quadrilateral_cvx.diag_inx QDR_cvx qdr.point₁ qdr.point₂ qdr.point₃ qdr.point₄ = (SEG qdr.point₁ qdr.point₃).midpoint. -/
-theorem eq_midpt_of_diag_inx_of_is_prg_nd {E : P} (h : qdr.IsParallelogram_nd) : Quadrilateral_cvx.diag_inx (QDR_cvx qdr.point₁ qdr.point₂ qdr.point₃ qdr.point₄ (is_convex_of_is_prg_nd qdr h)) = (SEG qdr.point₁ qdr.point₃).midpoint :=
+theorem eq_midpt_of_diag_inx_of_is_prg_nd (h : qdr.IsParallelogram_nd) : Quadrilateral_cvx.diag_inx (QDR_cvx qdr.point₁ qdr.point₂ qdr.point₃ qdr.point₄ (is_convex_of_is_prg_nd qdr h)) = (SEG qdr.point₁ qdr.point₃).midpoint :=
   sorry
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG_nd, the intersection of diagonals is the midpoint of one diagonal namely Quadrilateral_cvx.diag_inx QDR_cvx A B C D = (SEG A C).midpoint. -/
-theorem eq_midpt_of_diag_inx_of_is_prg_nd_variant {E : P} (h : QDR A B C D IsPRG_nd) : Quadrilateral_cvx.diag_inx (QDR_cvx A B C D (is_convex_of_is_prg_nd_variant h)) = (SEG A C).midpoint :=
+theorem eq_midpt_of_diag_inx_of_is_prg_nd_variant (h : QDR A B C D IsPRG_nd) : Quadrilateral_cvx.diag_inx (QDR_cvx A B C D (is_convex_of_is_prg_nd_variant h)) = (SEG A C).midpoint :=
   have h : (SEG_nd A B (nd₁₂_of_is_prg_nd_variant h)) ∥ SEG_nd C D (nd₃₄_of_is_prg_nd_variant h) := para_of_is_prg_nd_variant h
   sorry
 
 /-- Given Quadrilateral qdr IsPRG_nd, the intersection of diagonals is the midpoint of one diagonal namely Quadrilateral_cvx.diag_inx QDR_cvx qdr.point₁ qdr.point₂ qdr.point₃ qdr.point₄ = (SEG qdr.point₂ qdr.point₄).midpoint. -/
-theorem eq_midpt_of_diag_inx_of_is_prg_nd' {E : P} (h : qdr.IsParallelogram_nd) : Quadrilateral_cvx.diag_inx (QDR_cvx qdr.point₁ qdr.point₂ qdr.point₃ qdr.point₄ (is_convex_of_is_prg_nd qdr h)) = (SEG qdr.point₂ qdr.point₄).midpoint :=
+theorem eq_midpt_of_diag_inx_of_is_prg_nd' (h : qdr.IsParallelogram_nd) : Quadrilateral_cvx.diag_inx (QDR_cvx qdr.point₁ qdr.point₂ qdr.point₃ qdr.point₄ (is_convex_of_is_prg_nd qdr h)) = (SEG qdr.point₂ qdr.point₄).midpoint :=
   sorry
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG_nd, the intersection of diagonals is the midpoint of one diagonal namely Quadrilateral_cvx.diag_inx QDR_cvx A B C D = (SEG B D).midpoint. -/
-theorem eq_midpt_of_diag_inx_of_is_prg_nd'_variant {E : P} (h : QDR A B C D IsPRG_nd) : Quadrilateral_cvx.diag_inx (QDR_cvx A B C D (is_convex_of_is_prg_nd_variant h)) = (SEG B D).midpoint :=
+theorem eq_midpt_of_diag_inx_of_is_prg_nd'_variant (h : QDR A B C D IsPRG_nd) : Quadrilateral_cvx.diag_inx (QDR_cvx A B C D (is_convex_of_is_prg_nd_variant h)) = (SEG B D).midpoint :=
   have h : (SEG_nd A B (nd₁₂_of_is_prg_nd_variant h)) ∥ SEG_nd C D (nd₃₄_of_is_prg_nd_variant h) := para_of_is_prg_nd_variant h
   sorry
 
+/-- Given Quadrilateral qdr IsPRG_nd, the midpoints of the diagonals are the same. -/
+theorem eq_midpt_of_diag_of_is_prg (h : qdr.IsParallelogram_nd) : (SEG qdr.point₁ qdr.point₃).midpoint = (SEG qdr.point₂ qdr.point₄).midpoint := by
+  rw [← eq_midpt_of_diag_inx_of_is_prg_nd qdr h]
+  rw [eq_midpt_of_diag_inx_of_is_prg_nd' qdr h]
+
+/-- Given four points A B C D and Quadrilateral ABCD IsPRG_nd, the midpoints of the diagonals are the same. -/
+theorem eq_midpt_of_diag_of_is_prg_variant (h : QDR A B C D IsPRG_nd) : (SEG A C).midpoint = (SEG B D).midpoint := eq_midpt_of_diag_of_is_prg (QDR A B C D) h
+
+/-- Given Quadrilateral qdr IsPRG_nd, then Quadrilateral IsPRG. -/
+theorem prg_nd_is_prg (h : qdr.IsParallelogram_nd) : qdr.IsParallelogram := by sorry
+
+/-- Given four points ABCD and Quadrilateral ABCD IsPRG_nd, then Quadrilateral ABCD IsPRG. -/
+theorem prg_nd_is_prg_variant (h : QDR A B C D IsPRG_nd) : QDR A B C D IsPRG := prg_nd_is_prg (QDR A B C D) h
+
+/-- Given Quadrilateral qdr IsPRG_nd, then VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃. -/
+theorem eq_vec_of_is_prg_nd (h : qdr.IsParallelogram_nd) : VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃ := prg_nd_is_prg qdr h
+
+/-- Given four points ABCD and Quadrilateral ABCD IsPRG_nd, then VEC A B = VEC D C. -/
+theorem eq_vec_of_is_prg_nd_variant (h : QDR A B C D IsPRG_nd) : VEC A B = VEC D C := eq_vec_of_is_prg_nd (QDR A B C D) h
+
+/-- Given Quadrilateral qdr IsPRG_nd, then VEC qdr.point₁ qdr.point₄ = VEC qdr.point₂ qdr.point₃. -/
+theorem eq_vec_of_is_prg_nd' (h : qdr.IsParallelogram_nd) : VEC qdr.point₁ qdr.point₄ = VEC qdr.point₂ qdr.point₃ := by
+  rw [← vec_add_vec qdr.point₁ qdr.point₂ qdr.point₄]
+  rw [← vec_add_vec qdr.point₂ qdr.point₄ qdr.point₃]
+  rw [eq_vec_of_is_prg_nd qdr h]
+  exact add_comm (VEC qdr.point₄ qdr.point₃) (VEC qdr.point₂ qdr.point₄)
+
+/-- Given four points ABCD and Quadrilateral ABCD IsPRG_nd, then VEC A D = VEC B C. -/
+theorem eq_vec_of_is_prg_nd'_variant (h : QDR A B C D IsPRG_nd) : VEC A D = VEC B C := eq_vec_of_is_prg_nd' (QDR A B C D) h
+
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG_nd, the sum of the squares of each side equals to the sum of the squares of the diagonals namely 2 * (SEG qdr.point₁ qdr.point₂).length ^ 2 + 2 * (SEG qdr.point₂ qdr.point₃).length ^ 2 = (SEG qdr.point₁ qdr.point₃).length ^ 2 + (SEG qdr.point₂ qdr.point₄).length ^ 2. -/
 theorem parallelogram_law (h : qdr.IsParallelogram_nd) : 2 * (SEG qdr.point₁ qdr.point₂).length ^ 2 + 2 * (SEG qdr.point₂ qdr.point₃).length ^ 2 = (SEG qdr.point₁ qdr.point₃).length ^ 2 + (SEG qdr.point₂ qdr.point₄).length ^ 2 := by
-  sorry
+  repeat rw [Seg.length]
+  repeat rw [seg_tovec_eq_vec]
+  rw [(vec_add_vec qdr.point₁ qdr.point₂ qdr.point₃).symm]
+  rw [(vec_add_vec qdr.point₂ qdr.point₃ qdr.point₄).symm]
+  rw [← neg_vec qdr.point₄ qdr.point₃]
+  rw [← eq_vec_of_is_prg_nd qdr h]
+  rw [← sub_eq_add_neg (VEC qdr.point₂ qdr.point₃) (VEC qdr.point₁ qdr.point₂)]
+  rw [add_comm (VEC qdr.point₁ qdr.point₂) (VEC qdr.point₂ qdr.point₃)]
+  repeat rw [sq]
+  rw [(parallelogram_law_with_norm ℝ (VEC qdr.point₂ qdr.point₃) (VEC qdr.point₁ qdr.point₂))]
+  ring
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG_nd, the sum of the squares of each side equals to the sum of the squares of the diagonals namely 2 * (SEG A B).length ^ 2 + 2 * (SEG B C).length ^ 2 = (SEG A C).length ^ 2 + (SEG B D).length ^ 2. -/
-theorem parallelogram_law_variant (h : QDR A B C D IsPRG_nd) : 2 * (SEG A B).length ^ 2 + 2 * (SEG B C).length ^ 2 = (SEG A C).length ^ 2 + (SEG B D).length ^ 2 :=
-  sorry
+theorem parallelogram_law_variant (h : QDR A B C D IsPRG_nd) : 2 * (SEG A B).length ^ 2 + 2 * (SEG B C).length ^ 2 = (SEG A C).length ^ 2 + (SEG B D).length ^ 2 := parallelogram_law (QDR A B C D) h
 
 end property
 
