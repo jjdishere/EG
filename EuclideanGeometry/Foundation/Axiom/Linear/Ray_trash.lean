@@ -15,4 +15,10 @@ theorem Seg_nd.not_lies_int_extn_and_rev_extn_of_lies_on {A : P} {seg_nd : Seg_n
   simp only [extn_eq_rev_toray_rev, Ray.rev_rev_eq_self, Seg_nd.rev_rev_eq_self]
   exact lies_on_toray_of_lies_on lieson
 
-  end EuclidGeom
+theorem Ray.pt_lies_int_pt_pt (A B : P) (h : B ≠ A) : B LiesInt (RAY _ _ h) := by
+  sorry
+
+theorem Ray.pt_lies_on_pt_pt (A B : P) (h : B ≠ A) : B LiesOn (RAY _ _ h) := by
+  sorry
+
+end EuclidGeom
