@@ -6,7 +6,7 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
 
-namespace Problem1_1_
+namespace Problem_1_1
 /-Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.Let $D$ be a point on $AB$.
 Let $E$ be a point on $AC$ such that $AE = AD$. Let $M$ be the midpoint of $BC$.
 
@@ -23,7 +23,7 @@ variable {E_ray_position : (SEG A E).length = (SEG A D).length}
 --Let $M$ be the midpoint of $BC$.
 variable {M : P} {median_M_position : M = (SEG B C).midpoint}
 --Prove that $DM = EM$.
-theorem Problem1_1_ : (SEG D M).length = (SEG E M).length := by
+theorem Problem_1_1 : (SEG D M).length = (SEG E M).length := by
   have h₀ : (SEG A B).length = (SEG A C).length := by
     calc
       _ = (SEG C A).length := hisoc.symm
@@ -76,4 +76,4 @@ theorem Problem1_1_ : (SEG D M).length = (SEG E M).length := by
     · exact h₃
 
   exact h₆.edge₁
-end Problem1_1_
+end Problem_1_1
