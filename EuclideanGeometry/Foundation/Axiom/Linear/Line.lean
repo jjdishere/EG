@@ -693,65 +693,19 @@ section colinear
 
 namespace Line
 
+theorem pt_pt_linear {A B C : P} (h : B ≠ A) (hc : C LiesOn (LIN A B h) ) : colinear A B C :=
+  if hcb : C = B then colinear_of_trd_eq_snd A hcb
+  else if hac : A = C then colinear_of_fst_eq_snd B hac
+  else perm_colinear_trd_fst_snd <| (dite_prop_iff_or _).mpr <| .inr ⟨by push_neg; exact ⟨hac, h, hcb⟩,
+    ((lies_on_iff_eq_toproj_of_lies_on hcb (snd_pt_lies_on_mk_pt_pt h)).mp hc).trans <|
+      congrArg toProj (line_of_pt_pt_eq_rev h)⟩
+
 theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h₃ : C LiesOn l) : colinear A B C := by
-  revert l
-  rintro ⟨ray⟩ a b c
-  cases a with
-  | inl a =>
-    cases b with
-    | inl b =>
-      cases c with
-      | inl c =>
-        exact Ray.colinear_of_lies_on a b c
-      | inr c =>
-        let ray' := Ray.mk C ray.toDir
-        have a' : A ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev a c
-        have b' : B ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev b c
-        exact Ray.colinear_of_lies_on a' b' (Ray.source_lies_on)
-    | inr b =>
-      cases c with
-      | inl c =>
-        let ray' := Ray.mk B ray.toDir
-        have a' : A ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev a b
-        have c' : C ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev c b
-        exact Ray.colinear_of_lies_on a' (Ray.source_lies_on) c'
-      | inr c =>
-        let ray' := Ray.mk A ray.reverse.toDir
-        have a' : A LiesOn ray.reverse.reverse := by
-          rw [Ray.rev_rev_eq_self]
-          exact a
-        have b' : B ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev b a'
-        have c' : C ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev c a'
-        exact Ray.colinear_of_lies_on (ray'.source_lies_on) b' c'
-  | inr a =>
-    cases b with
-    | inl b =>
-      cases c with
-      | inl c =>
-        let ray' := Ray.mk A ray.toDir
-        have b' : B ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev b a
-        have c' : C ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev c a
-        exact Ray.colinear_of_lies_on (ray'.source_lies_on) b' c'
-      | inr c =>
-        let ray' := Ray.mk B ray.reverse.toDir
-        have b' : B LiesOn ray.reverse.reverse := by
-          rw [Ray.rev_rev_eq_self]
-          exact b
-        have a' : A ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev a b'
-        have c' : C ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev c b'
-        exact Ray.colinear_of_lies_on a' (Ray.source_lies_on) c'
-    | inr b =>
-      cases c with
-      | inl c =>
-        let ray' := Ray.mk C ray.reverse.toDir
-        have c' : C LiesOn ray.reverse.reverse := by
-          rw [Ray.rev_rev_eq_self]
-          exact c
-        have a' : A ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev a c'
-        have b' : B ∈ ray'.carrier := lies_on_pt_todir_of_pt_lies_on_rev b c'
-        exact Ray.colinear_of_lies_on  a' b' (Ray.source_lies_on)
-      | inr c =>
-        exact Ray.colinear_of_lies_on a b c
+  if h : B = A then exact colinear_of_snd_eq_fst C h
+  else
+  refine' pt_pt_linear h _
+  rw [eq_line_of_pt_pt_of_ne h h₁ h₂]
+  exact h₃
 
 theorem pt_pt_maximal {A B C : P} (h : B ≠ A) (Co : colinear A B C) : C LiesOn (LIN A B h) :=
   if hcb : C = B then by
@@ -921,9 +875,9 @@ instance PartialOrder_of_AddTorsor : PartialOrder L where
   lt a b := a -ᵥ b < 0
   le_refl _ := by simp only [vsub_self, le_refl]
   le_trans a b c hab hbc := (vsub_add_vsub_cancel a b c).symm.trans_le (add_nonpos hab hbc)
-  lt_iff_le_not_le a b := by
+  lt_iff_le_not_le a b :=
     have hv : a -ᵥ b < 0 ↔ a -ᵥ b ≤ 0 ∧ ¬ 0 ≤ a -ᵥ b := Preorder.lt_iff_le_not_le (a -ᵥ b) 0
-    exact ⟨fun hab ↦ ⟨(hv.mp hab).1, (zero_le_iff_neg_le_zero a b).not.mp (hv.mp hab).2⟩,
+    ⟨fun hab ↦ ⟨(hv.mp hab).1, (zero_le_iff_neg_le_zero a b).not.mp (hv.mp hab).2⟩,
       fun ⟨hab, hba⟩ ↦ hv.mpr ⟨hab, (zero_le_iff_neg_le_zero a b).not.mpr hba⟩⟩
   le_antisymm a b hab hba :=
     eq_of_vsub_eq_zero (PartialOrder.le_antisymm (a -ᵥ b) 0 hab ((zero_le_iff_neg_le_zero a b).mpr hba))

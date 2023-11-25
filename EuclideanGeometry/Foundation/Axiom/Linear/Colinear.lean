@@ -84,6 +84,15 @@ theorem triv_colinear (A C : P) : (colinear A A C) := by
   exfalso
   exact h.2.2 rfl
 
+theorem colinear_of_trd_eq_snd (A : P) {B C : P} (h : C = B) : colinear A B C :=
+  (dite_prop_iff_or (C = B ∨ A = C ∨ B = A)).mpr (.inl ⟨.inl h, trivial⟩)
+
+theorem colinear_of_fst_eq_snd (B : P) {A C : P} (h : A = C) : colinear A B C :=
+  (dite_prop_iff_or (C = B ∨ A = C ∨ B = A)).mpr (.inl ⟨.inr (.inl h), trivial⟩)
+
+theorem colinear_of_snd_eq_fst {A B : P} (C : P) (h : B = A)  : colinear A B C :=
+  (dite_prop_iff_or (C = B ∨ A = C ∨ B = A)).mpr (.inl ⟨.inr (.inr h), trivial⟩)
+
 /-- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are colinear (in that order), then $A$, $C$, $B$ are colinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity. -/
 theorem flip_colinear_snd_trd {A B C : P} (c : colinear A B C) : colinear A C B := by
   by_cases (B ≠ A) ∧ (C ≠ A)
