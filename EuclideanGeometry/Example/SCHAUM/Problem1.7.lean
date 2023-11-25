@@ -1,0 +1,38 @@
+import EuclideanGeometry.Foundation.Index
+
+noncomputable section
+
+namespace EuclidGeom
+
+variable {Plane : Type _} [EuclideanPlane Plane]
+
+namespace Problem1_7_
+/-Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$.
+Let $D$ and $E$ be points on the segment $BC$ such that $BD = CE$.
+
+Prove that the height of $D$ to $AB$ is the same as the height of $E$ to $AC$.
+-/
+--Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$
+variable {A B C : Plane} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+--Let $D$ be point on the segment $BC$
+variable {D : Plane} {D_on_seg : D LiesInt (SEG B C)}
+--Let $E$ be point on the segment $BC$
+variable {E : Plane} {E_on_seg : E LiesInt (SEG B C)}
+--such that $BD = CE$
+variable {E_ray_position : (SEG B D).length = (SEG C E).length}
+--Claim $B \ne A$
+lemma b_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
+--Claim $C \ne A$
+lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
+--Prove that the height of $D$ to $AB$ is the same as the height of $E$ to $AC$
+--take the foot of the height of $D$ to $AB$ and denote as $X$
+variable {X : Plane} {hd : X = perp_foot D (LIN A B b_ne_a)}
+--take the foot of the height of $E$ to $AB$ and denote as $Y$
+variable {Y : Plane} {he : Y = perp_foot E (LIN A C c_ne_a)}
+theorem Problem1_7_ : (SEG D X).length = (SEG E Y).length := by
+  have hnd_bdx : ¬ colinear B D X := by sorry
+  have hnd_cey : ¬ colinear C E Y := by sorry
+  have trngl_bdx_acongr_trngl_cey : Triangle_nd.IsACongr (TRI_nd B D X hnd_bdx) (TRI_nd C E Y hnd_cey) := by sorry
+
+  exact trngl_bdx_acongr_trngl_cey.edge₁
+end Problem1_7_
