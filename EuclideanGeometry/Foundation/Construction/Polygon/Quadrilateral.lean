@@ -2,6 +2,7 @@ import EuclideanGeometry.Foundation.Axiom.Position.Convex
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel_trash
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 
 /-!
 # Quadrilateral
@@ -283,19 +284,19 @@ def angle₃ : Angle P := ANG qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄
 @[pp_dot]
 def angle₄ : Angle P := ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₃₄.symm qdr_cvx.nd₁₄.symm
 
-/--triangle point₄ point₁ point₂-/
+/--triangle point₄ point₁ point₂, which includes angle₁-/
 @[pp_dot]
 def triangle₁ : Triangle_nd P := TRI_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.not_colinear₄₁₂
 
-/--triangle point₁ point₂ point₃-/
+/--triangle point₁ point₂ point₃, which includes angle₂-/
 @[pp_dot]
 def triangle₂ : Triangle_nd P := TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃
 
-/--triangle point₂ point₃ point₄-/
+/--triangle point₂ point₃ point₄, which includes angle₃-/
 @[pp_dot]
 def triangle₃ : Triangle_nd P := TRI_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.not_colinear₂₃₄
 
-/--triangle point₃ point₄ point₁-/
+/--triangle point₃ point₄ point₁, which includes angle₄-/
 @[pp_dot]
 def triangle₄ : Triangle_nd P := TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁
 
