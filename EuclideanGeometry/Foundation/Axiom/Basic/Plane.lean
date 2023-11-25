@@ -60,6 +60,11 @@ theorem vec_same_eq_zero (A : P) : VEC A A = 0 := by
 theorem neg_vec (A B : P) : - VEC A B = VEC B A := by
   rw [Vec.mk_pt_pt, Vec.mk_pt_pt, neg_vsub_eq_vsub_rev]
 
+@[simp]
+theorem neg_vec_norm_eq (A B : P) : (VEC A B).norm = (VEC B A).norm := by
+  rw [← neg_vec A B]
+  simp only [neg_Vec_norm_eq_Vec_norm]
+
 theorem eq_iff_vec_eq_zero (A B : P) : B = A ↔ VEC A B = 0 := vsub_eq_zero_iff_eq.symm
 
 theorem ne_iff_vec_ne_zero (A B : P) : B ≠ A ↔ VEC A B ≠ 0 := (eq_iff_vec_eq_zero A B).not
@@ -93,7 +98,6 @@ theorem eq_of_smul_Vec_nd_eq_smul_Vec_nd {v : Vec_nd} {tA tB : ℝ} (e : tA • 
   have: v.1 ≠ 0 := by
     apply v.2
   contradiction
-
 
 def Vec_nd.mk_pt_pt (A B : P) (h : B ≠ A) : Vec_nd := ⟨Vec.mk_pt_pt A B, (ne_iff_vec_ne_zero A B).mp h⟩
 

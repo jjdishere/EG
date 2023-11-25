@@ -1,6 +1,6 @@
 import EuclideanGeometry.Foundation.Construction.Polygon.Quadrilateral
 import EuclideanGeometry.Foundation.Construction.Polygon.Trapezoid
-import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence
+import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence'
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 
@@ -11,11 +11,14 @@ noncomputable section
 namespace EuclidGeom
 
 -- `Add class parallelogram and state every theorem in structure`
-class Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
+@[ext]
+structure Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
 --  `to be added`
 
+@[pp_dot]
 def Quadrilateral_cvx.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := ( qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (qdr_cvx.edge_nd₁₄ ∥ (qdr_cvx.edge_nd₂₃))
 
+@[pp_dot]
 def Quadrilateral.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases qdr IsConvex
   · exact (Quadrilateral_cvx.mk_is_convex h).IsParallelogram
@@ -71,21 +74,14 @@ theorem is_prg_of_eq_length_eq_length (h₁ : (qdr_cvx.edge_nd₁₂).1.length =
   have t₃: (qdr_cvx.triangle₁).1.edge₃.length = (qdr_cvx.triangle₃).1.edge₃.length := by
     rw [prep₆, prep₇, prep₈.symm]
     exact h₂
-  have u: qdr_cvx.triangle₁.1 IsCongrTo qdr_cvx.triangle₃.1 := (congr_of_SSS_of_eq_orientation t₁ t₂ t₃ qdr_cvx.cclock_eq)
+  have u: qdr_cvx.triangle₁ ≅ qdr_cvx.triangle₃ := (Triangle_nd.congr_of_SSS_of_eq_orientation t₁ t₂ t₃ qdr_cvx.cclock_eq)
   have A: qdr_cvx.triangle₁.1.is_nd ∧ qdr_cvx.triangle₃.1.is_nd := by
       constructor
       apply qdr_cvx.triangle₁.2
       apply qdr_cvx.triangle₃.2
-  have prepa₁: qdr_cvx.triangle₁.angle₁.value = qdr_cvx.triangle₃.angle₁.value := by
-    unfold IsCongr at u
-    simp only [A, dite_true] at u
-    rcases u with ⟨propa,propb,propc,propd,prope,propf⟩
-    exact propd
-  have prepa₂: qdr_cvx.triangle₁.angle₃.value = qdr_cvx.triangle₃.angle₃.value := by
-    unfold IsCongr at u
-    simp only [A, dite_true] at u
-    rcases u with ⟨propa,propb,propc,propd,prope,propf⟩
-    exact propf
+  have prepa₁: qdr_cvx.triangle₁.angle₁.value = qdr_cvx.triangle₃.angle₁.value := by exact u.4
+
+  have prepa₂: qdr_cvx.triangle₁.angle₃.value = qdr_cvx.triangle₃.angle₃.value := by exact u.6
   constructor
   have rex: qdr_cvx.diag_nd₂₄.toRay.toDir = - (qdr_cvx.diag_nd₂₄).toRay.reverse.toDir := by
     exact neg_eq_iff_eq_neg.mp rfl
@@ -207,7 +203,7 @@ theorem nd₁₃_of_is_prg (h : qdr.IsParallelogram) : qdr.point₃ ≠ qdr.poin
   by_cases j: qdr.point₃ ≠ qdr.point₁
   · simp only [ne_eq, j, not_false_eq_true]
   simp at j
-  · simp only [ne_eq, j, false_and, dite_false] at s
+  · simp only [j, ne_eq, not_true_eq_false, false_and, dite_not, dite_false] at s
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG, C ≠ A. -/
 theorem nd₁₃_of_is_prg_variant (h : QDR A B C D IsPRG) : C ≠ A := by
@@ -216,7 +212,7 @@ theorem nd₁₃_of_is_prg_variant (h : QDR A B C D IsPRG) : C ≠ A := by
   by_cases j: C ≠ A
   · simp only [ne_eq, j, not_false_eq_true]
   simp at j
-  · simp only [ne_eq, j, false_and, dite_false] at s
+  · simp only [j, ne_eq, not_true_eq_false, false_and, dite_not, dite_false] at s
 
 /-- Given Quadrilateral qdr IsPRG, qdr.point₄ ≠ qdr.point₂. -/
 theorem nd₂₄_of_is_prg (h : qdr.IsParallelogram) : qdr.point₄ ≠ qdr.point₂ := by
@@ -225,7 +221,7 @@ theorem nd₂₄_of_is_prg (h : qdr.IsParallelogram) : qdr.point₄ ≠ qdr.poin
   by_cases j: qdr.point₄ ≠ qdr.point₂
   · simp only [ne_eq, j, not_false_eq_true]
   simp at j
-  · simp only [ne_eq, j, and_false, dite_false] at s
+  · simp only [ne_eq, j, not_true_eq_false, and_false, dite_not, dite_false] at s
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG, D ≠ B. -/
 theorem nd₂₄_of_is_prg_variant (h : QDR A B C D IsPRG) : D ≠ B := by
@@ -234,7 +230,7 @@ theorem nd₂₄_of_is_prg_variant (h : QDR A B C D IsPRG) : D ≠ B := by
   by_cases j: D ≠ B
   · simp only [ne_eq, j, not_false_eq_true]
   simp at j
-  · simp only [ne_eq, j, and_false, dite_false] at s
+  · simp only [ne_eq, j, not_true_eq_false, and_false, dite_not, dite_false] at s
 
 /-- Given Quadrilateral qdr IsPRG, qdr.point₂ ≠ qdr.point₁. -/
 theorem nd₁₂_of_is_prg (h : qdr.IsParallelogram) : qdr.point₂ ≠ qdr.point₁ := by
