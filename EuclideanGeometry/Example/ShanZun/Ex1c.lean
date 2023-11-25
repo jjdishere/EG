@@ -57,7 +57,6 @@ lemma aec_colinear : colinear A E C := by
 
 lemma midpt_half_length : (SEG A D).length = (SEG A B).length/2:=by
   rw[length_eq_length_add_length (seg:= SEG A B) (A := D),← dist_target_eq_dist_source_of_eq_midpt,half_add_self]
-  simp only [Seg.source]
   exact hd
   rw[hd]
   exact Seg.midpt_lies_on
@@ -122,15 +121,17 @@ lemma hnd'' : ¬ colinear C D E := by
     exact hd
   apply hnd this
 lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C hnd := by
+  let tri_nd_ADE := TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)
+  let tri_nd_ABC := TRI_nd A B C hnd
   apply sim_of_SAS
-  simp only [Triangle.edge₂,Triangle.edge₃]
-  have tr13: (TRI_nd A D E(@hnd' P _ A B C hnd D hd E he)).1.point₃=E:= rfl
-  have tr23: (TRI_nd A B C hnd).1.point₃ =C:= rfl
-  have tr11: (TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).1.point₁=A:= rfl
-  have tr21: (TRI_nd A B C hnd).1.point₁ =A:= rfl
-  have tr12: (TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).1.point₂=D:= rfl
-  have tr22: (TRI_nd A B C hnd).1.point₂ =B := rfl
-  rw[tr13,tr12,tr11,tr23,tr22,tr21,Seg.length_of_rev_eq_length.symm,(Seg.length_of_rev_eq_length (seg := SEG C A)).symm]
+  simp only [Triangle_nd.edge₂,Triangle_nd.edge₃, Triangle.edge₂,Triangle.edge₃]
+  have tr13: tri_nd_ADE.1.point₃=E:= rfl
+  have tr23: tri_nd_ABC.1.point₃ =C:= rfl
+  have tr11: tri_nd_ADE.1.point₁=A:= rfl
+  have tr21: tri_nd_ABC.1.point₁ =A:= rfl
+  have tr12: tri_nd_ADE.1.point₂=D:= rfl
+  have tr22: tri_nd_ABC.1.point₂ =B := rfl
+  rw [tr13, tr12, tr11, tr23, tr22, tr21, ← Seg.length_of_rev_eq_length, ← (SEG C A).length_of_rev_eq_length]
   simp only [Seg.reverse]
   rw[ae_ratio,ad_ratio]
   use C
@@ -193,6 +194,7 @@ lemma ad_eq_cd: (SEG A D).length = (SEG C D).length  := by
     simp only
     exact he
 
+-- Theorem : $CD = AB / 2$
 theorem Shan_Problem_1_7 : (SEG C D).length = (SEG A B).length/2 := by
   rw[←ad_eq_cd]
   apply midpt_half_length
@@ -209,15 +211,19 @@ namespace Shan_Problem_1_8
 
 Prove that $FG \perp DE$. -/
 variable {A B C : P} {hnd : ¬ colinear A B C}
-lemma b_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
-lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
-lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
+-- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
+lemma a_ne_b : A ≠ B := sorry
+lemma b_ne_c : B ≠ C := sorry
+lemma c_ne_a : C ≠ A := sorry
 --introduce the perps
-variable {D : P} {hd : D = perp_foot B (SEG_nd A C c_ne_a).toLine}
-variable {E : P} {he : E = perp_foot C (SEG_nd A B b_ne_a).toLine}
+variable {D : P} {hd : D = perp_foot B (LIN A C c_ne_a)}
+variable {E : P} {he : E = perp_foot C (LIN A B a_ne_b.symm)}
 variable {F G: P} {hf : F = (SEG B C).midpoint} {hg : G = (SEG D E).midpoint}
 lemma e_ne_d: E ≠ D := sorry
 lemma g_ne_f: G ≠ F := sorry
 --Failed to use the notation ⟂
-theorem Shan_Problem_1_8:(SEG_nd F G g_ne_f).toLine.toProj = (SEG_nd D E e_ne_d).toLine.toProj.perp := sorry
+
+-- Theorem : $FG \perp DE$
+theorem Shan_Problem_1_8 : (SEG_nd F G g_ne_f) ⟂ (SEG_nd D E e_ne_d) := sorry
+
 end Shan_Problem_1_8

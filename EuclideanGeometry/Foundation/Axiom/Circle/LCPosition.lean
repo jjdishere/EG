@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
+import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular_trash
 
 noncomputable section
 namespace EuclidGeom
@@ -26,10 +27,30 @@ scoped infix : 50 "Disjoint" => Circle.DirLine.IsDisjoint
 
 namespace Circle
 
-theorem DirLC_disjoint_pt_liesout_circle {l : DirLine P} {ω : Circle P} {A : P} (h : l Disjoint ω) (hh : A LiesOn l.toLine) : A LiesOut ω := sorry
+theorem DirLC_disjoint_pt_liesout_circle {l : DirLine P} {ω : Circle P} {A : P} (h : l Disjoint ω) (hh : A LiesOn l.toLine) : A LiesOut ω := by
+  show dist ω.center A > ω.radius
+  calc
+    _ ≥ dist_pt_line ω.center l.toLine := by apply dist_pt_line_shortest _ _ hh
+    _ > ω.radius := h
 
 
-theorem DirLC_intersect_iff_tangent_or_secant {l : DirLine P} {ω : Circle P} : (DirLine.IsIntersected l ω) ↔ (l Tangent ω) ∨ (l Secant ω) := sorry
+theorem DirLC_intersect_iff_tangent_or_secant {l : DirLine P} {ω : Circle P} : (DirLine.IsIntersected l ω) ↔ (l Tangent ω) ∨ (l Secant ω) := by
+  constructor
+  · intro h
+    have : dist_pt_line ω.center l.toLine ≤ ω.radius := h
+    by_cases h₁ : dist_pt_line ω.center l.toLine < ω.radius
+    · right; exact h₁
+    left
+    push_neg at h₁
+    show dist_pt_line ω.center l.toLine = ω.radius
+    linarith
+  intro h
+  show dist_pt_line ω.center l.toLine ≤ ω.radius
+  rcases h with h | h
+  have : dist_pt_line ω.center l.toLine = ω.radius := h
+  linarith
+  have : dist_pt_line ω.center l.toLine < ω.radius := h
+  linarith
 
 theorem DirLC_inxwith_iff_intersect {l : DirLine P} {ω : Circle P} : l InxWith ω ↔ DirLine.IsIntersected l ω := sorry
 

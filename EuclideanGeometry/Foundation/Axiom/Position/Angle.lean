@@ -1,11 +1,15 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
+import EuclideanGeometry.Foundation.Axiom.Basic.Angle
 
 noncomputable section
 namespace EuclidGeom
+
+def DirObj.AngDiff [DirObj α] [DirObj β] (F : α) (G : β) : AngValue := Dir.AngDiff (toDir F) (toDir G)
+
 /- Define values of oriented angles, in (-π, π], modulo 2 π. -/
 /- Define oriented angles, ONLY taking in two rays starting at one point!  And define ways to construct oriented angles, by given three points on the plane, and etc.  -/
 @[ext]
-class Angle (P : Type _) [EuclideanPlane P] where
+structure Angle (P : Type _) [EuclideanPlane P] where
   start_ray : Ray P
   end_ray : Ray P
   source_eq_source : start_ray.source = end_ray.source
@@ -29,7 +33,7 @@ def mk_dirline_dirline (l₁ l₂ : DirLine P) (h : ¬ l₁ ∥ l₂) : Angle P 
   end_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toline_of_not_para _ _ h) ) l₂ (Line.inx_lies_on_snd (DirLine.not_para_toline_of_not_para _ _ h))
   source_eq_source := rfl
 
-def value (A : Angle P): ℝ := Dir.angle (A.start_ray.toDir) (A.end_ray.toDir)
+def value (A : Angle P) : AngValue := DirObj.AngDiff A.start_ray A.end_ray
 
 def is_nd (ang : Angle P) : Prop := ang.value ≠ 0 ∧ ang.value ≠ π
 
@@ -37,12 +41,10 @@ protected def source (ang : Angle P) : P := ang.start_ray.source
 
 end Angle
 
-theorem angle_value_eq_dir_angle (r r' : Ray P) (h : r.source = r'.source) : (Angle.mk r r' h).value = Dir.angle r.toDir r'.toDir := rfl
+theorem angle_value_eq_dir_angle (r r' : Ray P) (h : r.source = r'.source) : (Angle.mk r r' h).value = Dir.AngDiff r.toDir r'.toDir := rfl
 
-def value_of_angle_of_three_point_nd (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): ℝ :=
+def value_of_angle_of_three_point_nd (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): AngValue :=
 (Angle.mk_pt_pt_pt _ _ _ h₁ h₂).value
-
-def value_of_angle_of_two_ray_of_eq_source (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : ℝ := (Angle.mk start_ray end_ray h).value
 
 scoped notation "ANG" => Angle.mk_pt_pt_pt
 
@@ -59,7 +61,7 @@ protected def IsOn (p : P) (ang : Angle P) : Prop := by
   · let ray := Ray.mk_pt_pt ang.source p h
     let o₁ := Angle.mk ang.start_ray ray rfl
     let o₂ := Angle.mk ray ang.end_ray (ang.3)
-    exact if ang.value ≥ 0 then (o₁.value ≥ 0 ∧ o₂.value ≥ 0) else (o₁.value ≤ 0 ∧ o₂.value ≤ 0)
+    exact if ang.value.toReal ≥ 0 then (o₁.value.toReal ≥ 0 ∧ o₂.value.toReal ≥ 0) else (o₁.value.toReal ≤ 0 ∧ o₂.value.toReal ≤ 0)
 
 protected def IsInt (p : P) (ang : Angle P) : Prop := by
   by_cases p = ang.source
@@ -67,7 +69,7 @@ protected def IsInt (p : P) (ang : Angle P) : Prop := by
   · let ray := Ray.mk_pt_pt ang.source p h
     let o₁ := Angle.mk ang.start_ray ray rfl
     let o₂ := Angle.mk ray ang.end_ray (ang.3)
-    exact if ang.value ≥ 0 then (o₁.value > 0 ∧ o₂.value > 0) else (o₁.value < 0 ∧ o₂.value < 0)
+    exact if ang.value.toReal ≥ 0 then (o₁.value.toReal > 0 ∧ o₂.value.toReal > 0) else (o₁.value.toReal < 0 ∧ o₂.value.toReal < 0)
 
 protected theorem ison_of_isint {A : P} {ang : Angle P} : Angle.IsInt A ang → Angle.IsOn A ang := by
   unfold Angle.IsOn Angle.IsInt
@@ -76,7 +78,7 @@ protected theorem ison_of_isint {A : P} {ang : Angle P} : Angle.IsInt A ang → 
   · simp only [h, ge_iff_le, dite_true]
   · simp only [h, ge_iff_le, dite_false]
     simp only [h, ge_iff_le, gt_iff_lt, dite_false] at g
-    by_cases f : 0 ≤ ang.value
+    by_cases f : 0 ≤ ang.value.toReal
     simp only [f, ite_true] at *
     constructor <;> linarith
     simp only [f, ite_false, not_false_eq_true] at *
@@ -98,7 +100,15 @@ instance : IntFig Angle where
 
 end Angle
 
-theorem eq_end_ray_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁.end_ray = ang₂.end_ray := sorry
+theorem eq_end_ray_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁.end_ray = ang₂.end_ray := by
+  ext : 1
+  rw [← ang₁.source_eq_source, ← ang₂.source_eq_source, (congrArg (fun z => z.source)) h]
+  let g := (congrArg (fun z => AngValue.toDir z)) v
+  unfold Angle.value DirObj.AngDiff Dir.AngDiff at g
+  simp only [div_toangvalue_eq_toangvalue_sub, sub_todir_eq_todir_div, toangvalue_todir_eq_self] at g
+  rw [h] at g
+  simp only [div_left_inj] at g
+  exact g
 
 theorem eq_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁ = ang₂ := Angle.ext ang₁ ang₂ h (eq_end_ray_of_eq_value_eq_start_ray h v)
 

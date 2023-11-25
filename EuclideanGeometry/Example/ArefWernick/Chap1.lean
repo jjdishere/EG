@@ -10,12 +10,8 @@ variable {P : Type _} [EuclideanPlane P]
 
 namespace Aref_Wernick_Exercise_1_1
 /- Two triangles are congruent if two sides and the enclosed median in one triangle are respectively equal to two sides and the enclosed median of the other.
-
 In other words, let $\triangle A_1B_1C_1$ and $\triangle A_2B_2C_2$ be two triangles and let $A_1M_1$ and $A_2M_2$ be the corresponding medians. Suppose that $A_1B_1 = A_2B_2$, $A_1C_1 = A_2C_2$, and $A_1M_1 = A_2M_2$.
-
 Prove that $\triangle A_1B_1C_1$ is congruent to $\triangle A_2B_2C_2$. -/
-
--- Don't prove this yet, the way to prove this is to extend $A_1M_1$ to $D_1$ so that $A_1 B_1 D_1 C_1$ is a parallelogram... Parallelogram.lean is not ready yet.
 
 -- We have two triangles $\triangle A_1B_1C_1,A_2B_2C_2$ .
 variable {A₁ B₁ C₁ A₂ B₂ C₂ : P} {hnd₁ : ¬ colinear A₁ B₁ C₁} {hnd₂ : ¬ colinear A₂ B₂ C₂}
@@ -24,50 +20,14 @@ variable {M₁ M₂ : P} {hm₁ : M₁ = (SEG B₁ C₁).midpoint} {hm₂ : M₂
 -- We have $A_1B_1 = A_2B_2$, $A_1C_1 = A_2C_2$, and $A_1M_1 = A_2M_2$.
 variable {h₁ : (SEG A₁ B₁).length = (SEG A₂ B₂).length} {h₂ : (SEG A₁ C₁).length = (SEG A₂ C₂).length} {h₃ : (SEG A₁ M₁).length = (SEG A₂ M₂).length}
 
-theorem Aref_Wernick_Exercise_1_1 : (▵ A₁ B₁ C₁).IsCongr (▵ A₂ B₂ C₂) := sorry
+-- Theorem : $\triangle A_1B_1C_1$ is congruent to $\triangle A_2B_2C_2$
+theorem Aref_Wernick_Exercise_1_1 : (TRI_nd A₁ B₁ C₁ hnd₁) ≅ (TRI_nd A₂ B₂ C₂ hnd₂) := sorry
 
 end Aref_Wernick_Exercise_1_1
 
---theorem edge_toline_not_para_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : ¬ ((LIN A B (ne_of_not_colinear hnd).2.2) ∥ (LIN B C (ne_of_not_colinear hnd).1)) ∧ ¬ ((LIN B C (ne_of_not_colinear hnd).1) ∥ (LIN C A (ne_of_not_colinear hnd).2.1)) ∧ ¬ ((LIN C A (ne_of_not_colinear hnd).2.1) ∥ (LIN A B (ne_of_not_colinear hnd).2.2)) := sorry
-theorem edge_toline_not_para_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : ¬ (SEG_nd A B (ne_of_not_colinear h).2.2) ∥ SEG_nd B C (ne_of_not_colinear h).1 ∧ ¬  (SEG_nd B C (ne_of_not_colinear h).1) ∥ SEG_nd C A (ne_of_not_colinear h).2.1 ∧ ¬  (SEG_nd C A (ne_of_not_colinear h).2.1) ∥ SEG_nd A B (ne_of_not_colinear h).2.2 := by
-  constructor
-  by_contra h1
-  have eq1 : LIN A B (ne_of_not_colinear h).2.2 = LIN B C (ne_of_not_colinear h).1 := by
-    apply eq_of_parallel_and_pt_lies_on
-    exact (SEG_nd A B (ne_of_not_colinear h).2.2).target_lies_on_toline
-    exact (SEG_nd B C (ne_of_not_colinear h).1).source_lies_on_toline
-    exact h1
-  have a_lies_on_ab : A LiesOn (LIN A B (ne_of_not_colinear h).2.2) := (SEG_nd A B (ne_of_not_colinear h).2.2).source_lies_on_toline
-  have a_not_lies_on_bc := (Line.lies_on_line_of_pt_pt_iff_colinear (ne_of_not_colinear h).1 A).mp.mt (flip_colinear_snd_trd.mt (flip_colinear_fst_snd.mt h))
-  simp only[← eq1] at a_not_lies_on_bc
-  apply a_not_lies_on_bc
-  exact a_lies_on_ab
-  constructor
-  by_contra h2
-  have eq2 : LIN B C (ne_of_not_colinear h).1 = LIN C A (ne_of_not_colinear h).2.1 := by
-    apply eq_of_parallel_and_pt_lies_on
-    exact (SEG_nd B C (ne_of_not_colinear h).1).target_lies_on_toline
-    exact (SEG_nd C A (ne_of_not_colinear h).2.1).source_lies_on_toline
-    exact h2
-  have b_lies_on_bc : B LiesOn (LIN B C (ne_of_not_colinear h).1) := (SEG_nd B C (ne_of_not_colinear h).1).source_lies_on_toline
-  have b_not_lies_on_ca := (Line.lies_on_line_of_pt_pt_iff_colinear (ne_of_not_colinear h).2.1 B).mp.mt (flip_colinear_fst_snd.mt (flip_colinear_snd_trd.mt h))
-  simp only[← eq2] at b_not_lies_on_ca
-  apply b_not_lies_on_ca
-  exact b_lies_on_bc
-  by_contra h3
-  have eq3 : LIN C A (ne_of_not_colinear h).2.1 = LIN A B (ne_of_not_colinear h).2.2 := by
-    apply eq_of_parallel_and_pt_lies_on
-    exact (SEG_nd C A (ne_of_not_colinear h).2.1).target_lies_on_toline
-    exact (SEG_nd A B (ne_of_not_colinear h).2.2).source_lies_on_toline
-    exact h3
-  have c_lies_on_ca : C LiesOn (LIN C A (ne_of_not_colinear h).2.1) := (SEG_nd C A (ne_of_not_colinear h).2.1).source_lies_on_toline
-  have c_not_lies_on_ab := (Line.lies_on_line_of_pt_pt_iff_colinear (ne_of_not_colinear h).2.2 C).mp.mt h
-  simp only[← eq3] at c_not_lies_on_ab
-  apply c_not_lies_on_ab
-  exact c_lies_on_ca
-
 namespace Aref_Wernick_Exercise_1_2
-/- Let $D$ and $E$ be points on two sides $AB$ and $AC$ of a triangle $ABC$, respectively, such that $BD = BC = CE$. The segments $BE$ and $CD$ intersect at $F$.
+/- Let $D$ and $E$ be points on two sides $AB$ and $AC$ of a triangle $ABC$, respectively,
+ such that $BD = BC = CE$. The segments $BE$ and $CD$ intersect at $F$.
 
 Prove that $\angle BFD = \pi / 2 - \angle CAB$. -/
 
@@ -106,7 +66,8 @@ lemma b_ne_f : B ≠ F := by
   exact (ne_of_lieson_and_not_lieson (Seg_nd.lies_on_toline_of_lie_on f_lies_on_seg_cd) b_not_lies_on_cd).symm
 lemma d_ne_f : D ≠ F := sorry
 
-theorem Aref_Wernick_Exercise_1_2 : ∠ B F D (b_ne_f (hnd := hnd) (hd := hd) (hf := hf)) d_ne_f = π / 2 - ∠ C A B (c_ne_a (hnd := hnd)) (b_ne_a (hnd := hnd)) := sorry
+-- Theorem : $\angle BFD = \pi / 2 - \angle CAB$
+theorem Aref_Wernick_Exercise_1_2 : ∠ B F D (b_ne_f (hnd := hnd) (hd := hd) (hf := hf)) d_ne_f = ↑(π / 2) - ∠ C A B (c_ne_a (hnd := hnd)) (b_ne_a (hnd := hnd)) := sorry
 
 end Aref_Wernick_Exercise_1_2
 
