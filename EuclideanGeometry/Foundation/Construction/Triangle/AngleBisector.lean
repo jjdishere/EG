@@ -23,7 +23,7 @@ variable {P : Type _} [EuclideanPlane P]
 structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
   eq_source : ang.source = ray.source
   eq_value : (Angle.mk_strat_ray ang ray eq_source).value = (Angle.mk_ray_end ang ray eq_source).value
-  eq_dir : ((Angle.mk_strat_ray ang ray eq_source).value.IsPos ∧ (Angle.mk_ray_end ang ray eq_source).value.IsPos) ∨ ((Angle.mk_strat_ray ang ray eq_source).value.IsNeg ∧ (Angle.mk_ray_end ang ray eq_source).value.IsNeg)
+  same_sgn : ((Angle.mk_strat_ray ang ray eq_source).value.IsPos ∧ (Angle.mk_ray_end ang ray eq_source).value.IsPos) ∨ ((Angle.mk_strat_ray ang ray eq_source).value.IsNeg ∧ (Angle.mk_ray_end ang ray eq_source).value.IsNeg) ∨ ((Angle.mk_strat_ray ang ray eq_source).value.toReal = 2⁻¹ * π )
 
 structure IsAngBisLine (ang : Angle P) (line : Line P) : Prop where
   source_on : ang.source LiesOn line
@@ -53,7 +53,12 @@ end Angle
 
 namespace Angle
 
-theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis := sorry
+theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
+  eq_source := rfl
+  eq_value := by
+
+  eq_dir := _
+
 
 theorem angbisline_is_angbisline : sorry := sorry
 
