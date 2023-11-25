@@ -17,11 +17,15 @@ namespace EuclidGeom
 structure Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
 --  `to be added`
 
-@[pp_dot]
-def Quadrilateral_cvx.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := ( qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (qdr_cvx.edge_nd₁₄ ∥ (qdr_cvx.edge_nd₂₃))
+@[ext]
+class Parallelogram_nd (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
+--  `to be added`
 
 @[pp_dot]
-def Quadrilateral.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
+def Quadrilateral_cvx.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := ( qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (qdr_cvx.edge_nd₁₄ ∥ (qdr_cvx.edge_nd₂₃))
+
+@[pp_dot]
+def Quadrilateral.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases qdr IsConvex
   · exact (Quadrilateral_cvx.mk_is_convex h).IsParallelogram_nd
   · exact False
@@ -81,16 +85,15 @@ theorem is_prg_nd_of_eq_length_eq_length (h₁ : (qdr_cvx.edge_nd₁₂).1.lengt
     rw [prep₆, prep₇, prep₈.symm]
     exact h₂
   have u: qdr_cvx.triangle₁ ≅ qdr_cvx.triangle₃ := (Triangle_nd.congr_of_SSS_of_eq_orientation t₁ t₂ t₃ qdr_cvx.cclock_eq)
-  have A: qdr_cvx.triangle₁.1.is_nd ∧ qdr_cvx.triangle₃.1.is_nd := by
-      constructor
-      apply qdr_cvx.triangle₁.2
-      apply qdr_cvx.triangle₃.2
+  -- have A: qdr_cvx.triangle₁.1.is_nd ∧ qdr_cvx.triangle₃.1.is_nd := by
+  --     constructor
+  --     apply qdr_cvx.triangle₁.2
+  --     apply qdr_cvx.triangle₃.2
   have prepa₁: qdr_cvx.triangle₁.angle₁.value = qdr_cvx.triangle₃.angle₁.value := by exact u.4
 
   have prepa₂: qdr_cvx.triangle₁.angle₃.value = qdr_cvx.triangle₃.angle₃.value := by exact u.6
-  constructor
-  have rex: qdr_cvx.diag_nd₂₄.toRay.toDir = - (qdr_cvx.diag_nd₂₄).toRay.reverse.toDir := by
-    exact neg_eq_iff_eq_neg.mp rfl
+  -- have rex: qdr_cvx.diag_nd₂₄.toRay.toDir = - (qdr_cvx.diag_nd₂₄).toRay.reverse.toDir := by
+  --   exact neg_eq_iff_eq_neg.mp rfl
   have J: qdr_cvx.triangle₁.angle₁.end_ray = qdr_cvx.diag_nd₂₄.reverse.toRay := by rfl
   have K: qdr_cvx.triangle₁.angle₃.start_ray = qdr_cvx.diag_nd₂₄.toRay := by rfl
   have Q: qdr_cvx.triangle₃.angle₁.end_ray = qdr_cvx.diag_nd₂₄.toRay := by rfl
@@ -142,9 +145,7 @@ theorem is_prg_nd_of_eq_length_eq_length (h₁ : (qdr_cvx.edge_nd₁₂).1.lengt
   have win₂: qdr_cvx.edge_nd₁₄.toProj = qdr_cvx.edge_nd₂₃.toProj := by
     rw [close₁, close₂]
     exact very_close₁
-  constructor
-  exact win₁
-  exact win₂
+  exact ⟨win₁, win₂⟩
 
 /-- Given four points ABCD and Quadrilateral ABCD IsConvex, and AB = CD and AD = BC, Quadrilateral ABCD is a Parallelogram_nd. -/
 theorem is_prg_nd_of_eq_length_eq_length_variant (h₁ : (SEG A B).length = (SEG C D).length) (h₂ : (SEG A D).length = (SEG B C).length) : QDR A B C D IsPRG_nd := by
@@ -314,8 +315,10 @@ theorem is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.e
   have p₃: permute_convex.edge_nd₃₄ = qdr_cvx.edge_nd₁₄.reverse := by rfl
   have P₂: permute_convex.edge_nd₁₄.reverse.toProj = permute_convex.edge_nd₁₄.toProj := by apply permute_convex.edge_nd₁₄.toproj_of_rev_eq_toproj
   rw [P₁, p₂] at b
-  apply Seg_nd._para_rev_of_para' at b
-  exact b
+  have b': qdr_cvx.edge_nd₃₄∥qdr_cvx.edge_nd₁₂.reverse := b.symm
+  apply Seg_nd.para_rev_of_para at b'
+  -- constructor
+  exact b'.symm
   exact h₁
 
 /-- Given four points ABCD and Quadrilateral ABCD IsConvex, and AD ∥ BC and AD = BC, Quadrilateral ABCD is a Parallelogram_nd. -/
