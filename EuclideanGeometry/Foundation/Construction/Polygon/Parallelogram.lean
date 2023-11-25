@@ -14,13 +14,18 @@ noncomputable section
 namespace EuclidGeom
 
 -- `Add class parallelogram and state every theorem in structure`
-@[ext]
-structure Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
---  `to be added`
+@[pp_dot]
+def Quadrilateral.Parallelogram_property {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃
+
+scoped postfix : 50 "HasParallelogram_property" => Quadrilateral.Parallelogram_property
 
 @[ext]
-class Parallelogram_nd (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
---  `to be added`
+structure Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral P where
+  parallelogram_property : toQuadrilateral HasParallelogram_property
+
+@[ext]
+structure Parallelogram_nd (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
+  parallelogram_property : toQuadrilateral HasParallelogram_property
 
 @[pp_dot]
 def Quadrilateral_cvx.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := ( qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (qdr_cvx.edge_nd₁₄ ∥ (qdr_cvx.edge_nd₂₃))
@@ -336,21 +341,24 @@ theorem is_prg_of_eq_angle_value_eq_angle_value_variant (h₁ : (ANG D A B (Quad
 
 /-- Given Quadrilateral_cvx qdr_cvx, and qdr_cvx.diag_nd₁₃.1.midpoint = qdr_cvx.diag_nd₂₄.1.midpoint, qdr_cvx is a Parallelogram_nd. -/
 theorem is_prg_nd_of_diag_inx_eq_mid_eq_mid (h' : qdr_cvx.diag_nd₁₃.1.midpoint = qdr_cvx.diag_nd₂₄.1.midpoint) : qdr_cvx.IsParallelogram_nd := by
-  let midpoint := qdr_cvx.diag_nd₁₃.1.midpoint
-  have qdr_cvx_eq_midpoint_of_diag₂₄: midpoint = qdr_cvx.diag_nd₂₄.1.midpoint := by rw [h'.symm]
+  /-let midpoint := qdr_cvx.diag_nd₁₃.1.midpoint
+  have qdr_cvx_eq_midpoint_of_diag₂₄: qdr_cvx.diag_nd₂₄.1.midpoint = midpoint := by rw [h'.symm]
   have midpoint_Liesint_diag₁₃: midpoint LiesInt qdr_cvx.diag_nd₁₃ := by apply Seg_nd.midpt_lies_int
   have midpoint_Liesint_diag₂₄: midpoint LiesInt qdr_cvx.diag_nd₂₄ := by
-    rw [qdr_cvx_eq_midpoint_of_diag₂₄]
+    rw [qdr_cvx_eq_midpoint_of_diag₂₄.symm]
     apply Seg_nd.midpt_lies_int
-  have nd₁₅: qdr_cvx.point₁ ≠ midpoint := by
-    sorry
+  have nd₁₅: qdr_cvx.point₁ ≠ midpoint := by apply (Seg_nd_midpoint_not_eq_source qdr_cvx.diag_nd₁₃).symm
   have nd₂₅: qdr_cvx.point₂ ≠ midpoint := by
-    sorry
-  have nd₃₅: qdr_cvx.point₃ ≠ midpoint := by
-    sorry
+    have h: qdr_cvx.point₂ ≠ qdr_cvx.diag_nd₂₄.1.midpoint := by apply (Seg_nd_midpoint_not_eq_source qdr_cvx.diag_nd₂₄).symm
+    rw [qdr_cvx_eq_midpoint_of_diag₂₄] at h
+    exact h
+  have nd₃₅: qdr_cvx.point₃ ≠ midpoint := by apply (Seg_nd_midpoint_not_eq_target qdr_cvx.diag_nd₁₃).symm
   have nd₄₅: qdr_cvx.point₄ ≠ midpoint := by
-    sorry
+    have h: qdr_cvx.point₄ ≠ qdr_cvx.diag_nd₂₄.1.midpoint := by apply (Seg_nd_midpoint_not_eq_target qdr_cvx.diag_nd₂₄).symm
+    rw [qdr_cvx_eq_midpoint_of_diag₂₄] at h
+    exact h
   have prep₁_pre: (SEG_nd qdr_cvx.point₁ midpoint nd₁₅.symm).length = (SEG_nd midpoint qdr_cvx.point₃ nd₃₅).length := by apply dist_target_eq_dist_source_of_midpt
+  have prep₁_pre': (SEG_nd qdr_cvx.point₁ midpoint nd₁₅.symm).length = (SEG_nd midpoint qdr_cvx.point₁ nd₁₅).length := by   apply length_of_rev_eq_length'-/
 
   sorry
 
@@ -514,10 +522,12 @@ theorem para_of_is_prg_nd'_variant (h : QDR A B C D IsPRG_nd) : (SEG_nd A D (nd�
   simp only [k, dite_false] at h
 
 /-- Given Quadrilateral qdr IsPRG_nd, the opposite sides are equal namely (SEG_nd qdr.point₁ qdr.point₂ (nd₁₂_of_is_prg_abstract qdr h)).1.length = (SEG_nd qdr.point₃ qdr.point₄ (nd₁₂_of_is_prg_abstract qdr h)).1.length. -/
-theorem eq_length_of_is_prg_nd  (h : qdr.IsParallelogram_nd) : (SEG_nd qdr.point₁ qdr.point₂ (nd₁₂_of_is_prg_nd qdr h)).1.length = (SEG_nd qdr.point₃ qdr.point₄ (nd₃₄_of_is_prg_nd qdr h)).1.length := by
+theorem eq_length_of_is_prg_nd (h : qdr.IsParallelogram_nd) : (SEG_nd qdr.point₁ qdr.point₂ (nd₁₂_of_is_prg_nd qdr h)).1.length = (SEG_nd qdr.point₃ qdr.point₄ (nd₃₄_of_is_prg_nd qdr h)).1.length := by
   unfold Quadrilateral.IsParallelogram_nd at h
   by_cases k: qdr.IsConvex
   simp only [k, dite_true] at h
+  let qdr_cvx := Quadrilateral_cvx.mk_is_convex k
+
   sorry
   simp only [k, dite_false] at h
 
