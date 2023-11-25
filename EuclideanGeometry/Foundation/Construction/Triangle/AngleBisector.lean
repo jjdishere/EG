@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex
+import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
@@ -16,9 +17,17 @@ variable {P : Type _} [EuclideanPlane P]
 
 -- we don't need to put the following definitions in the namespace Angle, since we will certainly not use it in the form of `ang.IsBis ray`
 -- if only one condition is used, please change `structure : Prop` back to `def : Prop`, if more than one condition is used, please name each condition under structure, please do not use `∧`.
-structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
 
-structure IsAngBisLine
+
+
+structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
+  eq_source : ang.source = ray.source
+  eq_value : (Angle.mk_strat_ray ang ray eq_source).value = (Angle.mk_ray_end ang ray eq_source).value
+  eq_dir : ((Angle.mk_strat_ray ang ray eq_source).value.IsPos ∧ (Angle.mk_ray_end ang ray eq_source).value.IsPos) ∨ ((Angle.mk_strat_ray ang ray eq_source).value.IsNeg ∧ (Angle.mk_ray_end ang ray eq_source).value.IsNeg)
+
+structure IsAngBisLine (ang : Angle P) (line : Line P) : Prop where
+  source_on : ang.source LiesOn line
+
 
 structure IsExAngBis
 
@@ -26,12 +35,17 @@ structure IsExAngBiscetorLine
 
 namespace Angle
 
+
 /- when the Angle is flat, bis is on the left side-/
-def AngBis (ang : Angle P) : Ray P := sorry
+def AngBis (ang : Angle P) : Ray P where
+  source := ang.source
+  toDir := ang.start_ray.toDir * (2⁻¹ * ang.value.toReal).toAngValue.toDir
 
 def AngBisLine (ang : Angle P) : Line P := ang.AngBis.toLine
 
-def ExAngBis (ang : Angle P) : Ray P := sorry
+def ExAngBis (ang : Angle P) : Ray P where
+  source := ang.source
+  toDir := ang.start_ray.toDir * (2⁻¹ * ang.value.toReal + 2⁻¹ * π).toAngValue.toDir
 
 def ExAngBisLine (ang : Angle P) : Line P := ang.ExAngBis.toLine
 
@@ -39,7 +53,7 @@ end Angle
 
 namespace Angle
 
-theorem angbis_is_angbis : sorry := sorry
+theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis := sorry
 
 theorem angbisline_is_angbisline : sorry := sorry
 
