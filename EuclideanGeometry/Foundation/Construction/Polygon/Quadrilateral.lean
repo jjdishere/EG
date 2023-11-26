@@ -100,12 +100,15 @@ def mk_is_convex {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qd
   toQuadrilateral := qdr
   convex := h
 
-section criteria
+section criteria_cvx
 variable {A B C D : P}
 
--- theorem is_convex_of_inferior_angle `to be added`
+-- theorem is_convex_of four inferior angle
+-- theorem is_convex_of both diag divids other pts
+-- theorem is_convex_of three side 
+-- `to be added`
 
-end criteria
+end criteria_cvx
 
 section property
 -- properties of convex quadrilateral `to be added`
@@ -161,7 +164,7 @@ theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧
   simp only [g, dite_true] at k
   exact k
 
-/-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is convex. -/
+/-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is also convex. -/
 theorem permute_is_convex : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁) IsConvex := by
   unfold Quadrilateral.IsConvex
   have h : qdr_cvx.point₂ ≠ qdr_cvx.point₄ ∧ qdr_cvx.point₃ ≠ qdr_cvx.point₁ := ⟨qdr_cvx.nd₂₄.symm, qdr_cvx.nd₁₃⟩
