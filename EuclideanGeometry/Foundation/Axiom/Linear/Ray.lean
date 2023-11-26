@@ -250,7 +250,6 @@ theorem Ray.toproj_eq_toproj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).t
 /-- Given two distinct points $A$ and $B$, the ray associated to the segment $AB$ is same as ray $AB$. -/
 theorem pt_pt_seg_toray_eq_pt_pt_ray {A B : P} (h : B ≠ A) : (Seg_nd.mk A B h).toRay = Ray.mk_pt_pt A B h := rfl
 
-
 /-- Given a segment $AB$, $AB$ is nondegenerate if and only if vector  $\overrightarrow{AB}$ is nonzero. -/
 theorem Seg.is_nd_iff_tovec_ne_zero {l : Seg P} : l.is_nd ↔ l.toVec ≠ 0 := tovec_eq_zero_of_deg.not
 

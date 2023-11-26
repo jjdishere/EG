@@ -1,3 +1,4 @@
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
@@ -71,6 +72,10 @@ theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
   same_sgn := by
     sorry
 
+theorem angbis_iff_angbis (ang : Angle P) (r : Ray P) : IsAngBis ang r ↔ r = ang.AngBis := by
+  constructor
+  · sorry
+  · exact fun h ↦ (by rw [h]; apply angbis_is_angbis)
 
 theorem angbisline_is_angbisline : sorry := sorry
 
@@ -81,7 +86,10 @@ theorem exangbisline_is_exangbisline : sorry := sorry
 end Angle
 
 /-definition property: lies on the bis means bisect the angle-/
-theorem lie_on_angbis (ang: Angle P) (A : P): sorry := sorry
+theorem lie_on_angbis (ang: Angle P) (A : P) (h : A ≠ ang.source): A LiesOn ang.AngBis ↔ IsAngBis ang (RAY _ _ h) := by
+  rw [Angle.angbis_iff_angbis]
+  exact ⟨fun g ↦ (by rw [← Ray.pt_pt_eq_ray ⟨g, h⟩]; rfl),
+    fun g ↦ (by rw [← g]; apply Ray.pt_lies_on_pt_pt)⟩
 
 /- underlying line of bis as the locus satisfying the sum of distance to each ray of the angle is 0 -/
 theorem lie_on_angbisline_of_distance_zero (ang: Angle P) : sorry := sorry
