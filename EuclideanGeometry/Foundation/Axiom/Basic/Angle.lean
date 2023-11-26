@@ -48,56 +48,121 @@ instance : Coe AngValue ℝ where
 section real_angvalue_compatibility
 -- this section is partially intended to be not so complete, we disencouage using real to denote the angle. for more involved use of real angvalue compatibility, please use theorems in Real.AddCircle.
 
-theorem toreal_le_pi {θ : AngValue} : θ.toReal ≤ π := sorry
+theorem AngValue.toreal_le_pi {θ : AngValue} : θ.toReal ≤ π := toReal_le_pi θ
 
-theorem toreal_neg_pi_le {θ : AngValue} : -π < θ.toReal := sorry
+theorem AngValue.neg_pi_lt_toreal {θ : AngValue} : -π < θ.toReal := neg_pi_lt_toReal θ
+
+theorem AngValue.abs_toreal_le_pi {θ : AngValue} : |θ.toReal| ≤ π := abs_toReal_le_pi θ
 
 section composite
 
 @[simp]
-theorem toreal_toangvalue_eq_self {θ : AngValue}:  (θ.toReal).toAngValue = θ := by sorry
+theorem AngValue.toreal_toangvalue_eq_self {θ : AngValue} : (θ.toReal).toAngValue = θ := coe_toReal θ
 
-theorem toangvalue_toreal_eq_self_of_neg_pi_lt_le_pi {r : ℝ} (h₁ : -π < r) (h₂ : r ≤ π) : r.toAngValue.toReal = r := sorry
+theorem toangvalue_toreal_eq_self_of_neg_pi_lt_le_pi {r : ℝ} (h₁ : -π < r) (h₂ : r ≤ π) : r.toAngValue.toReal = r :=
+  toReal_coe_eq_self_iff.mpr ⟨h₁, h₂⟩
 
-theorem toangvalue_toreal_eq_self_add_two_mul_int_mul_pi (r : ℝ) : ∃ k : ℤ, r.toAngValue.toReal = r + k * (2 * π) := sorry
+theorem toAngValue_eq_iff {r s : ℝ} : r.toAngValue = s.toAngValue ↔ ∃ k : ℤ, r - s = k * (2 * π) :=
+  QuotientAddGroup.eq_iff_sub_mem.trans <| AddSubgroup.mem_zmultiples_iff.trans <|
+    exists_congr (fun k ↦ eq_comm.trans (zsmul_eq_mul (2 * π) k).congr_right)
 
-theorem toangvalue_eq_of_add_two_mul_int_mul_pi {r₁ r₂ : ℝ} (k : ℤ) (h : r₁ = r₂ + k *(2 * π)) : r₁.toAngValue = r₂.toAngValue := sorry
+theorem toangvalue_toreal_eq_self_add_two_mul_int_mul_pi (r : ℝ) : ∃ k : ℤ, r.toAngValue.toReal = r + k * (2 * π) := by
+  rcases toAngValue_eq_iff.mp r.toAngValue.toreal_toangvalue_eq_self with ⟨k, h⟩
+  exact ⟨k, eq_add_of_sub_eq' h⟩
+
+theorem toangvalue_eq_of_add_two_mul_int_mul_pi {r₁ r₂ : ℝ} (k : ℤ) (h : r₁ = r₂ + k *(2 * π)) : r₁.toAngValue = r₂.toAngValue :=
+  toAngValue_eq_iff.mpr ⟨k, sub_eq_of_eq_add' h⟩
+
+theorem AngValue.toreal_inj {α β : AngValue} (h : α.toReal = β.toReal) : α = β := toReal_inj.mp h
 
 end composite
 
+namespace AngValue
+
 section special_value
+
 --special values -pi 0 pi 2pi -2pi `To be added`
 @[simp]
-theorem AngValue.coe_zero : ((0 : Real) : AngValue) = (0 : AngValue) := rfl
+theorem coe_zero : ((0 : Real) : AngValue) = (0 : AngValue) := rfl
 
 @[simp]
-theorem AngValue.coe_two_pi : ((2 * π : Real) : AngValue) = (0 : AngValue) := Real.Angle.coe_two_pi
+theorem toreal_eq_zero_iff {θ : AngValue} : θ.toReal = 0 ↔ θ = 0 := toReal_eq_zero_iff
 
 @[simp]
-theorem AngValue.neg_coe_pi : (-π :AngValue) = (π : AngValue) := Real.Angle.neg_coe_pi
+theorem toreal_pi : (π : AngValue).toReal = π := toReal_pi
 
-theorem AngValue.eq_zero_or_eq_pi_of_eq_neg {θ : AngValue} : θ = - θ → θ = 0 ∨ θ = π := sorry
+@[simp]
+theorem toreal_eq_pi_iff {θ : AngValue} : θ.toReal = π ↔ θ = π := toReal_eq_pi_iff
+
+theorem pi_ne_zero : (π : AngValue) ≠ 0 := Real.Angle.pi_ne_zero
+
+@[simp]
+theorem toreal_pi_div_two : ((π / 2 : ℝ) : AngValue).toReal = π / 2 := toReal_pi_div_two
+
+@[simp]
+theorem toreal_eq_pi_div_two_iff {θ : AngValue} : θ.toReal = π / 2 ↔ θ = (π / 2 : ℝ) :=
+  toReal_eq_pi_div_two_iff
+
+@[simp]
+theorem toreal_neg_pi_div_two : ((-π / 2 : ℝ) : AngValue).toReal = -π / 2 := toReal_neg_pi_div_two
+
+@[simp]
+theorem toreal_eq_neg_pi_div_two_iff {θ : AngValue} : θ.toReal = -π / 2 ↔ θ = (-π / 2 : ℝ) :=
+  toReal_eq_neg_pi_div_two_iff
+
+theorem pi_div_two_ne_zero : ((π / 2 : ℝ) : AngValue) ≠ 0 := Real.Angle.pi_div_two_ne_zero
+
+theorem neg_pi_div_two_ne_zero : ((-π / 2 : ℝ) : AngValue) ≠ 0 := Real.Angle.neg_pi_div_two_ne_zero
+
+@[simp]
+theorem coe_two_pi : ((2 * π : Real) : AngValue) = (0 : AngValue) := Real.Angle.coe_two_pi
+
+@[simp]
+theorem neg_coe_pi : (-π :AngValue) = (π : AngValue) := Real.Angle.neg_coe_pi
+
+theorem eq_zero_or_eq_pi_of_eq_neg {θ : AngValue} : θ = - θ → θ = 0 ∨ θ = π := sorry
+
+theorem sub_coe_pi_eq_add_coe_pi {θ : AngValue} : θ - π = θ + π := Real.Angle.sub_coe_pi_eq_add_coe_pi θ
 
 end special_value
 
 section group_hom
 -- `the current direction of simp is turn every thing into Real, is this good?` ` Maybe all reversed is better`
 @[simp low]
-theorem AngValue.add_coe (x y: ℝ) : (x : AngValue) + (y : AngValue) = (((x + y) : ℝ) : AngValue) := rfl
+theorem add_coe (x y: ℝ) : (x : AngValue) + (y : AngValue) = (((x + y) : ℝ) : AngValue) := rfl
 
 @[simp low]
-theorem AngValue.neg_coe (x : ℝ): -(x : AngValue) = (((-x) : ℝ) : AngValue) := rfl
+theorem neg_coe (x : ℝ): -(x : AngValue) = (((-x) : ℝ) : AngValue) := rfl
 
 @[simp low]
-theorem AngValue.sub_coe (x y: ℝ) : (x : AngValue) - (y : AngValue) = (((x - y) : ℝ) : AngValue)  := rfl
+theorem sub_coe (x y: ℝ) : (x : AngValue) - (y : AngValue) = (((x - y) : ℝ) : AngValue)  := rfl
 
 @[simp low]
-theorem AngValue.nsmul_coe (n : ℕ) (x : ℝ) : n • (x : AngValue) = ((n * x: ℝ) : AngValue) := (nsmul_eq_mul _ x) ▸ Eq.refl _
+theorem nsmul_coe (n : ℕ) (x : ℝ) : n • (x : AngValue) = ((n * x: ℝ) : AngValue) := (nsmul_eq_mul _ x) ▸ Eq.refl _
 
 @[simp low]
-theorem AngValue.zsmul_coe (n : ℤ) (x : ℝ) : n • (x : AngValue) = ((n * x : ℝ ) : AngValue) := (zsmul_eq_mul x _) ▸ Eq.refl _
+theorem zsmul_coe (n : ℤ) (x : ℝ) : n • (x : AngValue) = ((n * x : ℝ) : AngValue) := (zsmul_eq_mul x _) ▸ Eq.refl _
+
+@[simp low]
+theorem two_nsmul_coe_div_two (x : ℝ) : 2 • (↑(x / 2) : AngValue) = x.toAngValue :=
+  Real.Angle.two_nsmul_coe_div_two x
+
+@[simp low]
+theorem two_nsmul_toreal_div_two {θ : AngValue} : 2 • (θ.toReal / 2).toAngValue = θ := by
+  nth_rw 2 [← θ.toreal_toangvalue_eq_self]
+  exact two_nsmul_coe_div_two θ.toReal
+
+@[simp low]
+theorem two_zsmul_coe_div_two (x : ℝ) : (2 : ℤ) • (↑(x / 2) : AngValue) = x.toAngValue :=
+  two_nsmul_coe_div_two x
+
+@[simp low]
+theorem two_zsmul_toreal_div_two {θ : AngValue} : (2 : ℤ) • (θ.toReal / 2).toAngValue = θ :=
+  θ.two_nsmul_toreal_div_two
 
 end group_hom
+
+end AngValue
 
 end real_angvalue_compatibility
 
@@ -521,5 +586,17 @@ theorem sameRay_Vec_nd_toDir (z : Vec_nd) : SameRay ℝ z.1 z.toDir.1 := by
 theorem toDir_eq_toDir_of_sameRay (z₁ z₂ : Vec_nd) : SameRay ℝ z₁.1 z₂.1 → z₁.toDir = z₂.toDir := fun h => (sameRay_iff_eq z₁.toDir z₂.toDir).1 (SameRay.symm (SameRay.trans (SameRay.symm (SameRay.trans h (sameRay_Vec_nd_toDir z₂) (by simp only [ne_eq, ne_zero_of_Vec_nd, false_or, IsEmpty.forall_iff]))) (sameRay_Vec_nd_toDir z₁) (by simp only [ne_eq, ne_zero_of_Vec_nd, false_or, IsEmpty.forall_iff])))
 
 end sameRay_theorems
+
+section half
+
+namespace AngValue
+
+def half (θ : AngValue) : AngValue := (θ.toReal / 2).toAngValue
+
+theorem smul_two_half (θ : AngValue) : 2 • θ.half = θ := θ.two_nsmul_toreal_div_two
+
+end AngValue
+
+end half
 
 end EuclidGeom
