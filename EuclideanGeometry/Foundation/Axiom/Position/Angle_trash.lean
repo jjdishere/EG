@@ -14,5 +14,12 @@ theorem angle_value_eq_angle (A : P) (ray : Ray P) (h : A ≠ ray.1) : (Angle.mk
 
 theorem ang_eq_ang_of_todir_rev_todir {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = - ang₂.start_ray.toDir) (he : ang₁.end_ray.toDir = - ang₂.end_ray.toDir) : ang₁.value = ang₂.value := sorry
 
+theorem angle_eq_zero_or_pi_of_colinear {A O B : P} {h₁ : A ≠ O} {h₂ : B ≠ O} : colinear O A B → (∠ A O B h₁ h₂ = 0 ∨ ∠ A O B h₁ h₂ = π) := sorry
+
+theorem angle_eq_zero_of_same_dir {A O : P} {h : A ≠ O} : ∠ A O A h h = 0 := sorry
+
+theorem not_ispos_of_not_isnd {θ : AngValue} : ¬ θ.IsND → ¬ θ.IsPos := sorry
+
+theorem not_isneg_of_not_isnd {θ : AngValue} : ¬ θ.IsND → ¬ θ.IsNeg := sorry
 
 end EuclidGeom

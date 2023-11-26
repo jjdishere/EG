@@ -3,6 +3,7 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
+import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 
 /-!
 # Quadrilateral
@@ -167,7 +168,11 @@ def triangle₄ : Triangle P := TRI qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point
 
 /-- The permute of quadrilateral_nd is also quadrilateral_nd. -/
 theorem permute_is_nd : (qdr_nd.1.permute).IsND := by
-  sorry
+  constructor
+  exact qdr_nd.nd₂₃
+  exact qdr_nd.nd₃₄
+  exact qdr_nd.nd₁₄.symm
+  exact qdr_nd.nd₁₂.symm
 
 /-- The permute quadrilateral_nd, the first point of the permute is the second point of the origin, etc. -/
 def permute : Quadrilateral_nd P := mk_is_nd (permute_is_nd qdr_nd)
@@ -229,8 +234,58 @@ section property
 
 variable {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
 
+/-- The permute of quadrilateral_cvx is also quadrilateral_cvx. -/
+theorem permute_is_convex : qdr_cvx.1.permute IsConvex := by
+  unfold Quadrilateral_nd.IsConvex
+  by_cases (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
+  · have q : (qdr_cvx.permute.angle₄.value.IsPos ∧ qdr_cvx.permute.angle₁.value.IsPos ∧ qdr_cvx.permute.angle₂.value.IsPos ∧ qdr_cvx.permute.angle₃.value.IsPos) := by
+      exact h
+    simp only [q, and_self, true_or]
+  · have p: qdr_cvx.IsConvex := qdr_cvx.convex
+    unfold Quadrilateral_nd.IsConvex at p
+    simp only [h, false_or] at p
+    have q : (qdr_cvx.permute.angle₄.value.IsNeg ∧ qdr_cvx.permute.angle₁.value.IsNeg ∧ qdr_cvx.permute.angle₂.value.IsNeg ∧ qdr_cvx.permute.angle₃.value.IsNeg) := by
+      exact p
+    simp only [q, and_self, or_true]
+  -- unfold Quadrilateral.IsConvex
+  -- have k : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁).IsND := (Quadrilateral_nd.permute_is_nd qdr_cvx.toQuadrilateral_nd)
+  -- have h : qdr_cvx.point₂ ≠ qdr_cvx.point₄ ∧ qdr_cvx.point₃ ≠ qdr_cvx.point₁ := ⟨qdr_cvx.nd₂₄.symm, qdr_cvx.nd₁₃⟩
+  -- simp only [k, ne_eq, h, not_false_eq_true, and_self, dite_true]
+  -- have g: ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := qdr_cvx.diag_not_para
+  -- rw [diag_nd₁₃, diag_nd₂₄] at g
+  -- have g': ¬ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) ∥ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) := by
+  --   apply Ne.symm (Seg_nd.not_para_rev_of_not_para (Ne.symm g))
+  -- simp only [k, g', not_false_eq_true, dite_true]
+  -- have g'': ¬ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) ∥ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) := Ne.symm g'
+  -- have nd₃₁_eq_nd₁₃ : (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine = (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine := by
+  --   exact (Line.line_of_pt_pt_eq_rev qdr_cvx.nd₁₃.symm)
+  -- have inx_eq : qdr_cvx.diag_inx = LineInx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine (Ne.symm qdr_cvx.diag_not_para) := Eq.symm (Line.inx.symm (Seg_nd.not_para_toline_of_not_para qdr_cvx.diag_nd₁₃ qdr_cvx.diag_nd₂₄ qdr_cvx.diag_not_para))
+  -- rcases qdr_cvx.diag_inx_lies_int with ⟨a, b⟩
+  -- have inx_eq' : qdr_cvx.diag_inx = Line.inx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine g'':= by
+  --   rw [inx_eq]
+  --   congr 1
+  --   exact nd₃₁_eq_nd₁₃.symm
+  -- rw [←inx_eq']
+  -- exact ⟨b, (Seg.lies_int_rev_iff_lies_int.mp a)⟩
+
+/-- The permute quadrilateral_cvx, the first point of the permute is the second point of the origin, etc. -/
+def permute : Quadrilateral_cvx P := mk_is_convex (permute_is_convex qdr_cvx)
+
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by sorry
+theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
+  by_contra h
+  have g : qdr_cvx.angle₂.value = 0 := by
+    unfold Quadrilateral_nd.angle₂
+    simp only [h]
+    exact angle_eq_zero_of_same_dir
+  have k : ¬ qdr_cvx.angle₂.value.IsND := by
+    unfold AngValue.IsND
+    simp only [g, true_or, not_true_eq_false, not_false_eq_true]
+  have k₁ : ¬ qdr_cvx.angle₂.value.IsPos := not_ispos_of_not_isnd k
+  have k₂ : ¬ qdr_cvx.angle₂.value.IsNeg := not_isneg_of_not_isnd k
+  have p: qdr_cvx.IsConvex := qdr_cvx.convex
+  unfold Quadrilateral_nd.IsConvex at p
+  simp only [k₁, false_and, and_false, k₂, or_self] at p
   -- have h: qdr_cvx.IsConvex := qdr_cvx.convex
   -- unfold Quadrilateral_nd.IsConvex at h
   -- by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
@@ -238,7 +293,7 @@ theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by sorry
   -- simp only [k, dite_false] at h
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₂₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := by sorry
+theorem nd₂₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := (qdr_cvx.permute).nd₁₃
 
 /-- The non-degenerate diagonal from the first point and third point of a convex quadrilateral -/
 def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃
@@ -247,7 +302,8 @@ def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx
 def diag_nd₂₄ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄
 
 /-- Two diagonals are not parallel to each other -/
-theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := by sorry
+theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := by
+  sorry
   -- have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
   -- have k: qdr_cvx.IsConvex := qdr_cvx.convex
   -- unfold Quadrilateral_nd.IsConvex at k
@@ -272,32 +328,6 @@ theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧
   -- rw [diag_nd₁₃, diag_nd₂₄] at g
   -- simp only [g, dite_true] at k
   -- exact k
-
-/-- The permute of quadrilateral_cvx is also quadrilateral_cvx. -/
-theorem permute_is_convex : qdr_cvx.1.permute IsConvex := by sorry
-  -- unfold Quadrilateral.IsConvex
-  -- have k : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁).IsND := (Quadrilateral_nd.permute_is_nd qdr_cvx.toQuadrilateral_nd)
-  -- have h : qdr_cvx.point₂ ≠ qdr_cvx.point₄ ∧ qdr_cvx.point₃ ≠ qdr_cvx.point₁ := ⟨qdr_cvx.nd₂₄.symm, qdr_cvx.nd₁₃⟩
-  -- simp only [k, ne_eq, h, not_false_eq_true, and_self, dite_true]
-  -- have g: ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := qdr_cvx.diag_not_para
-  -- rw [diag_nd₁₃, diag_nd₂₄] at g
-  -- have g': ¬ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) ∥ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) := by
-  --   apply Ne.symm (Seg_nd.not_para_rev_of_not_para (Ne.symm g))
-  -- simp only [k, g', not_false_eq_true, dite_true]
-  -- have g'': ¬ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) ∥ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) := Ne.symm g'
-  -- have nd₃₁_eq_nd₁₃ : (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine = (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine := by
-  --   exact (Line.line_of_pt_pt_eq_rev qdr_cvx.nd₁₃.symm)
-  -- have inx_eq : qdr_cvx.diag_inx = LineInx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine (Ne.symm qdr_cvx.diag_not_para) := Eq.symm (Line.inx.symm (Seg_nd.not_para_toline_of_not_para qdr_cvx.diag_nd₁₃ qdr_cvx.diag_nd₂₄ qdr_cvx.diag_not_para))
-  -- rcases qdr_cvx.diag_inx_lies_int with ⟨a, b⟩
-  -- have inx_eq' : qdr_cvx.diag_inx = Line.inx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine g'':= by
-  --   rw [inx_eq]
-  --   congr 1
-  --   exact nd₃₁_eq_nd₁₃.symm
-  -- rw [←inx_eq']
-  -- exact ⟨b, (Seg.lies_int_rev_iff_lies_int.mp a)⟩
-
-/-- The permute quadrilateral_cvx, the first point of the permute is the second point of the origin, etc. -/
-def permute : Quadrilateral_cvx P := mk_is_convex (permute_is_convex qdr_cvx)
 
 -- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point.
 -- not used because changing of definition.
