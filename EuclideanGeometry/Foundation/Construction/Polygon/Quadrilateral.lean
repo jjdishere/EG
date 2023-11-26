@@ -18,7 +18,8 @@ In this file we define general quadrilaterals as four points on the plane and co
 * `QDR A B C D` : notation for quadrilateral `A B C D`
 
 ## Implementation Notes
-Currently, we just defines general quadrilaterals and convex quadrilaterals. There are more classes in between. For example, quadrilateral without self-intersection, quadrilateral of non-degenerate (which means it does not self-intersect and not degenerate to a triangle).
+Currently, we just defines general quadrilaterals, non-degenerate quadrilateral (adjacent points are not the same, or cyclic-non-degenerate) and convex quadrilaterals.
+There are classes in between. For example, quadrilateral without self-intersection, quadrilateral of stronger non-degenerate (any two points are not same, we call it alternatively-non-degenerate temporarily).
 Of course many definitions work on these classes already, but without necessarity in application, we will not formalize these class for present.
 -/
 
@@ -165,7 +166,8 @@ def triangle₃ : Triangle P := TRI qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point
 def triangle₄ : Triangle P := TRI qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁
 
 /-- The permute of quadrilateral_nd is also quadrilateral_nd. -/
-theorem permute_is_nd : (qdr_nd.1.permute).IsND := sorry
+theorem permute_is_nd : (qdr_nd.1.permute).IsND := by
+  sorry
 
 /-- The permute quadrilateral_nd, the first point of the permute is the second point of the origin, etc. -/
 def permute : Quadrilateral_nd P := mk_is_nd (permute_is_nd qdr_nd)
@@ -175,18 +177,10 @@ end property_nd
 end Quadrilateral_nd
 
 /--
-A quadrilateral is called convex if
-1. both diagnals are non-degenerate,
-2. two diagonals are not parallel to each other,
-3. the interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals.
+A quadrilateral_nd is called convex if four angles are same sign.
 -/
 @[pp_dot]
-def Quadrilateral_nd.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral_nd P) : Prop := by
-  by_cases ((qdr.point₁ ≠ qdr.point₃) ∧ (qdr.point₂ ≠ qdr.point₄))
-  · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ (h.2).symm ∥ (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm))
-    · exact Line.inx (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm).toLine (SEG_nd qdr.point₂ qdr.point₄ (h.2).symm).toLine (Ne.symm g) LiesInt (SEG qdr.point₁ qdr.point₃) ∧ Line.inx (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm).toLine (SEG_nd qdr.point₂ qdr.point₄ (h.2).symm).toLine (Ne.symm g) LiesInt (SEG qdr.point₂ qdr.point₄)
-    · exact False
-  · exact False
+def Quadrilateral_nd.IsConvex {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : Prop := (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₃.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg)
 
 scoped postfix : 50 "IsConvex" => Quadrilateral_nd.IsConvex
 
@@ -236,20 +230,15 @@ section property
 variable {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
-  have h: qdr_cvx.IsConvex := qdr_cvx.convex
-  unfold Quadrilateral_nd.IsConvex at h
-  by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
-  exact k.left.symm
-  simp only [k, dite_false] at h
+theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by sorry
+  -- have h: qdr_cvx.IsConvex := qdr_cvx.convex
+  -- unfold Quadrilateral_nd.IsConvex at h
+  -- by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
+  -- exact k.left.symm
+  -- simp only [k, dite_false] at h
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₂₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := by
-  have h: qdr_cvx.IsConvex := qdr_cvx.convex
-  unfold Quadrilateral_nd.IsConvex at h
-  by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
-  exact k.right.symm
-  simp only [k, dite_false] at h
+theorem nd₂₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := by sorry
 
 /-- The non-degenerate diagonal from the first point and third point of a convex quadrilateral -/
 def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃
@@ -258,15 +247,15 @@ def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx
 def diag_nd₂₄ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄
 
 /-- Two diagonals are not parallel to each other -/
-theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := by
-  have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
-  have k: qdr_cvx.IsConvex := qdr_cvx.convex
-  unfold Quadrilateral_nd.IsConvex at k
-  simp only [ne_eq, h, not_false_eq_true, and_self, dite_true] at k
-  by_contra q
-  have r: qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := by exact q.symm
-  rw [diag_nd₁₃, diag_nd₂₄] at r
-  simp [r] at k
+theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := by sorry
+  -- have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
+  -- have k: qdr_cvx.IsConvex := qdr_cvx.convex
+  -- unfold Quadrilateral_nd.IsConvex at k
+  -- simp only [ne_eq, h, not_false_eq_true, and_self, dite_true] at k
+  -- by_contra q
+  -- have r: qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := by exact q.symm
+  -- rw [diag_nd₁₃, diag_nd₂₄] at r
+  -- simp [r] at k
 
 /-- The intersection point of two diagonals -/
 @[pp_dot]
@@ -274,15 +263,15 @@ def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.
 
 /-- The interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals. -/
 theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄.1
-:= by
-  have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
-  have k: qdr_cvx.IsConvex := qdr_cvx.convex
-  unfold Quadrilateral_nd.IsConvex at k
-  simp only [ne_eq, h, not_false_eq_true, and_self, dite_true] at k
-  have g: ¬ qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := Ne.symm qdr_cvx.diag_not_para
-  rw [diag_nd₁₃, diag_nd₂₄] at g
-  simp only [g, dite_true] at k
-  exact k
+:= by sorry
+  -- have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
+  -- have k: qdr_cvx.IsConvex := qdr_cvx.convex
+  -- unfold Quadrilateral_nd.IsConvex at k
+  -- simp only [ne_eq, h, not_false_eq_true, and_self, dite_true] at k
+  -- have g: ¬ qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := Ne.symm qdr_cvx.diag_not_para
+  -- rw [diag_nd₁₃, diag_nd₂₄] at g
+  -- simp only [g, dite_true] at k
+  -- exact k
 
 /-- The permute of quadrilateral_cvx is also quadrilateral_cvx. -/
 theorem permute_is_convex : qdr_cvx.1.permute IsConvex := by sorry
