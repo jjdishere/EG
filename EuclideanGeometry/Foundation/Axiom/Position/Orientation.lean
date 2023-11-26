@@ -255,7 +255,7 @@ theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) :
   field_simp
   exact wedge_eq_wedge_iff_odist_eq_odist_of_ne A B C D bnea
 
-theorem oarea_eq_sine_mul_length_mul_length_div_two (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : oarea A B C = (Real.sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) / 2 := by
+theorem oarea_eq_sine_mul_length_mul_length_div_two (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : oarea A B C = (sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) / 2 := by
   unfold oarea
   rw[wedge_eq_sine_mul_length_mul_length A B C bnea cnea]
 
