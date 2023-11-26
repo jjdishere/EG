@@ -105,13 +105,36 @@ instance instHasCongr : HasCongr (Triangle P) where
   symm := IsCongr.symm
   trans := IsCongr.trans
 
-theorem perm_congr {tr₁ tr₂ : Triangle P} (h : tr₁.IsCongr tr₂) : (perm_vertices tr₁).IsCongr (perm_vertices tr₂) := sorry
+theorem perm_congr {tr₁ tr₂ : Triangle P} (h : tr₁.IsCongr tr₂) : (perm_vertices tr₁).IsCongr (perm_vertices tr₂) := by
+  constructor
+  exact h.2
+  exact h.3
+  exact h.1
+  apply (dite_prop_iff_and _).mpr
+  constructor
+  rintro ⟨nd₁,nd₂⟩
+  rw [<-Triangle.nd_iff_nd_of_perm_vertices] at nd₁ nd₂
+  exact ((dite_prop_iff_and _).mp h.5).1 ⟨nd₁,nd₂⟩
+  simp only [not_and, implies_true]
+  apply (dite_prop_iff_and _).mpr
+  constructor
+  rintro ⟨nd₁,nd₂⟩
+  rw [<-Triangle.nd_iff_nd_of_perm_vertices] at nd₁ nd₂
+  exact ((dite_prop_iff_and _).mp h.6).1 ⟨nd₁,nd₂⟩
+  simp only [not_and, implies_true]
+  apply (dite_prop_iff_and _).mpr
+  constructor
+  rintro ⟨nd₁,nd₂⟩
+  rw [<-Triangle.nd_iff_nd_of_perm_vertices] at nd₁ nd₂
+  exact ((dite_prop_iff_and _).mp h.4).1 ⟨nd₁,nd₂⟩
+  simp only [not_and, implies_true]
 
 theorem congr_iff_perm_congr (tr₁ tr₂ : Triangle P) : tr₁.IsCongr tr₂ ↔ (perm_vertices tr₁).IsCongr (perm_vertices tr₂) :=
   ⟨fun h ↦ h.perm_congr, fun h ↦ h.perm_congr.perm_congr⟩
 
 -- The proof of this theorem will need to wait until the definition of area is completed.
 theorem area (h : tr₁.IsCongr tr₂) : tr₁.area = tr₂.area := sorry
+
 
 end IsCongr
 
@@ -178,7 +201,30 @@ instance instHasACongr : HasACongr (Triangle P) where
   acongr := IsACongr
   symm := IsACongr.symm
 
-theorem perm_acongr {tr₁ tr₂ : Triangle P} (h : tr₁.IsACongr tr₂) : (perm_vertices tr₁).IsACongr (perm_vertices tr₂) := sorry
+theorem perm_acongr {tr₁ tr₂ : Triangle P} (h : tr₁.IsACongr tr₂) : (perm_vertices tr₁).IsACongr (perm_vertices tr₂) := by
+  constructor
+  exact h.2
+  exact h.3
+  exact h.1
+  apply (dite_prop_iff_and _).mpr
+  constructor
+  rintro ⟨nd₁,nd₂⟩
+  rw [<-Triangle.nd_iff_nd_of_perm_vertices] at nd₁ nd₂
+  exact ((dite_prop_iff_and _).mp h.5).1 ⟨nd₁,nd₂⟩
+  simp only [not_and, implies_true]
+  apply (dite_prop_iff_and _).mpr
+  constructor
+  rintro ⟨nd₁,nd₂⟩
+  rw [<-Triangle.nd_iff_nd_of_perm_vertices] at nd₁ nd₂
+  exact ((dite_prop_iff_and _).mp h.6).1 ⟨nd₁,nd₂⟩
+  simp only [not_and, implies_true]
+  apply (dite_prop_iff_and _).mpr
+  constructor
+  rintro ⟨nd₁,nd₂⟩
+  rw [<-Triangle.nd_iff_nd_of_perm_vertices] at nd₁ nd₂
+  exact ((dite_prop_iff_and _).mp h.4).1 ⟨nd₁,nd₂⟩
+  simp only [not_and, implies_true]
+
 
 theorem acongr_iff_perm_acongr (tr₁ tr₂ : Triangle P) : tr₁.IsACongr tr₂ ↔ (perm_vertices tr₁).IsACongr (perm_vertices tr₂) :=
   ⟨fun h ↦ h.perm_acongr, fun h ↦ h.perm_acongr.perm_acongr⟩
@@ -209,9 +255,55 @@ theorem congr_of_acongr_acongr (h₁ : tr₁.IsACongr tr₂) (h₂ : tr₂.IsACo
   simp only [((dite_prop_iff_and _).mp h₁.6).1 ⟨nd₁,nd₂⟩, ((dite_prop_iff_and _).mp h₂.6).1 ⟨nd₂,nd₃⟩, neg_neg]
   simp only [not_and, implies_true]
 
-theorem acongr_of_congr_acongr (h₁ : tr₁.IsCongr tr₂) (h₂ : tr₂.IsACongr tr₃) : tr₁.IsACongr tr₃ := sorry
+theorem acongr_of_congr_acongr (h₁ : tr₁.IsCongr tr₂) (h₂ : tr₂.IsACongr tr₃) : tr₁.IsACongr tr₃ := by
+  constructor
+  simp only [h₁.1,h₂.1]
+  simp only [h₁.2,h₂.2]
+  simp only [h₁.3,h₂.3]
+  apply (dite_prop_iff_and _).mpr
+  constructor
+  rintro ⟨nd₁,nd₃⟩
+  have nd₂ := h₁.nd_of_nd nd₁
+  simp only [((dite_prop_iff_and _).mp h₁.4).1 ⟨nd₁,nd₂⟩, ((dite_prop_iff_and _).mp h₂.4).1 ⟨nd₂,nd₃⟩, neg_neg]
+  simp only [not_and, implies_true]
+  apply (dite_prop_iff_and _).mpr
+  constructor
+  rintro ⟨nd₁,nd₃⟩
+  have nd₂ := h₁.nd_of_nd nd₁
+  simp only [((dite_prop_iff_and _).mp h₁.5).1 ⟨nd₁,nd₂⟩, ((dite_prop_iff_and _).mp h₂.5).1 ⟨nd₂,nd₃⟩, neg_neg]
+  simp only [not_and, implies_true]
+  apply (dite_prop_iff_and _).mpr
+  constructor
+  rintro ⟨nd₁,nd₃⟩
+  have nd₂ := h₁.nd_of_nd nd₁
+  simp only [((dite_prop_iff_and _).mp h₁.6).1 ⟨nd₁,nd₂⟩, ((dite_prop_iff_and _).mp h₂.6).1 ⟨nd₂,nd₃⟩, neg_neg]
+  simp only [not_and, implies_true]
 
-theorem acongr_of_acongr_congr (h₁ : tr₁.IsACongr tr₂) (h₂ : tr₂.IsCongr tr₃) : tr₁.IsACongr tr₃ := sorry
+
+theorem acongr_of_acongr_congr (h₁ : tr₁.IsACongr tr₂) (h₂ : tr₂.IsCongr tr₃) : tr₁.IsACongr tr₃ := by
+  constructor
+  simp only [h₁.1,h₂.1]
+  simp only [h₁.2,h₂.2]
+  simp only [h₁.3,h₂.3]
+  apply (dite_prop_iff_and _).mpr
+  constructor
+  rintro ⟨nd₁,nd₃⟩
+  have nd₂ := h₁.nd_of_nd nd₁
+  simp only [((dite_prop_iff_and _).mp h₁.4).1 ⟨nd₁,nd₂⟩, ((dite_prop_iff_and _).mp h₂.4).1 ⟨nd₂,nd₃⟩, neg_neg]
+  simp only [not_and, implies_true]
+  apply (dite_prop_iff_and _).mpr
+  constructor
+  rintro ⟨nd₁,nd₃⟩
+  have nd₂ := h₁.nd_of_nd nd₁
+  simp only [((dite_prop_iff_and _).mp h₁.5).1 ⟨nd₁,nd₂⟩, ((dite_prop_iff_and _).mp h₂.5).1 ⟨nd₂,nd₃⟩, neg_neg]
+  simp only [not_and, implies_true]
+  apply (dite_prop_iff_and _).mpr
+  constructor
+  rintro ⟨nd₁,nd₃⟩
+  have nd₂ := h₁.nd_of_nd nd₁
+  simp only [((dite_prop_iff_and _).mp h₁.6).1 ⟨nd₁,nd₂⟩, ((dite_prop_iff_and _).mp h₂.6).1 ⟨nd₂,nd₃⟩, neg_neg]
+  simp only [not_and, implies_true]
+
 
 end Triangle
 
@@ -266,10 +358,88 @@ theorem is_cclock_of_cclock (h : tr_nd₁.IsCongr tr_nd₂) (cc : tr_nd₁.is_cc
 
 theorem area (h : tr_nd₁.IsCongr tr_nd₂) : tr_nd₁.area = tr_nd₂.area := sorry
 
-theorem perm_congr {tr_nd₁ tr_nd₂ : Triangle_nd P} (h : tr_nd₁.IsCongr tr_nd₂) : (perm_vertices tr_nd₁).IsCongr (perm_vertices tr_nd₂) := sorry
+theorem perm_congr {tr_nd₁ tr_nd₂ : Triangle_nd P} (h : tr_nd₁.IsCongr tr_nd₂) : (perm_vertices tr_nd₁).IsCongr (perm_vertices tr_nd₂) where
+  edge₁ := h.2
+  edge₂ := h.3
+  edge₃ := h.1
+  angle₁ := h.5
+  angle₂ := h.6
+  angle₃ := h.4
 
 theorem congr_iff_perm_congr (tr_nd₁ tr_nd₂ : Triangle_nd P) : tr_nd₁ ≅ tr_nd₂ ↔ perm_vertices tr_nd₁ ≅ perm_vertices tr_nd₂ :=
   ⟨fun h ↦ h.perm_congr, fun h ↦ h.perm_congr.perm_congr⟩
+
+theorem third_point_same_of_two_point_same (tr_nd₁ tr_nd₂ : Triangle_nd P) (h : tr_nd₁ ≅ tr_nd₂) (p₁ : tr_nd₁.point₁ = tr_nd₂.point₁) (p₂ : tr_nd₁.point₂ = tr_nd₂.point₂) : tr_nd₁.point₃ = tr_nd₂.point₃ := by
+  have ray_eq₁ : tr_nd₁.angle₁.end_ray = tr_nd₂.angle₁.end_ray := by
+    apply eq_end_ray_of_eq_value_eq_start_ray
+    unfold Angle.start_ray Triangle_nd.angle₁
+    simp only [p₂, p₁] ; rfl
+    exact h.4
+  have ray_eq₂ : tr_nd₁.angle₂.start_ray = tr_nd₂.angle₂.start_ray := by
+    apply eq_start_ray_of_eq_value_eq_end_ray
+    unfold Angle.end_ray Triangle_nd.angle₂
+    simp only [<-p₂, <-p₁] ; rfl
+    exact h.5
+  have l₁ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₁.end_ray.toLine := by
+    rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
+    left
+    exact Ray.snd_pt_lies_on_mk_pt_pt tr_nd₁.nontriv₂.symm
+  have l₂ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₂.start_ray.toLine := by
+    rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
+    left
+    exact Ray.snd_pt_lies_on_mk_pt_pt tr_nd₁.nontriv₁
+  have l₃ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₁.end_ray.toLine := by
+    rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
+    left
+    exact Ray.snd_pt_lies_on_mk_pt_pt tr_nd₂.nontriv₂.symm
+  have l₄ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₂.start_ray.toLine := by
+    rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
+    left
+    exact Ray.snd_pt_lies_on_mk_pt_pt tr_nd₂.nontriv₁
+  have np₁ : ¬ tr_nd₁.angle₁.end_ray.toLine ∥ tr_nd₁.angle₂.start_ray.toLine := by
+    by_contra pl
+    have triv := eq_of_parallel_and_pt_lies_on l₁ l₂ pl
+    have l₅ : tr_nd₁.point₁ LiesOn tr_nd₁.angle₁.end_ray.toLine := by
+      rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
+      left ; exact Ray.source_lies_on
+    have l₆ : tr_nd₁.point₂ LiesOn tr_nd₁.angle₁.end_ray.toLine := by
+      rw [triv]
+      rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
+      left ; exact Ray.source_lies_on
+    have col := (Line.colinear_iff_exist_line_lies_on tr_nd₁.point₁ tr_nd₁.point₂ tr_nd₁.point₃).mpr ⟨tr_nd₁.angle₁.end_ray.toLine, l₅, l₆ ,l₁⟩
+    have col' := tr_nd₁.2
+    unfold Triangle.is_nd at col'
+    have : tr_nd₁.1.point₁ = tr_nd₁.point₁ := rfl
+    rw [this] at col'
+    have : tr_nd₁.1.point₂ = tr_nd₁.point₂ := rfl
+    rw [this] at col'
+    have : tr_nd₁.1.point₃ = tr_nd₁.point₃ := rfl
+    rw [this] at col'
+    exact col' col
+  have np₂ : ¬ tr_nd₂.angle₁.end_ray.toLine ∥ tr_nd₂.angle₂.start_ray.toLine := by
+    by_contra pl
+    have triv := eq_of_parallel_and_pt_lies_on l₃ l₄ pl
+    have l₅ : tr_nd₂.point₁ LiesOn tr_nd₂.angle₁.end_ray.toLine := by
+      rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
+      left ; exact Ray.source_lies_on
+    have l₆ : tr_nd₂.point₂ LiesOn tr_nd₂.angle₁.end_ray.toLine := by
+      rw [triv]
+      rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
+      left ; exact Ray.source_lies_on
+    have col := (Line.colinear_iff_exist_line_lies_on tr_nd₂.point₁ tr_nd₂.point₂ tr_nd₂.point₃).mpr ⟨tr_nd₂.angle₁.end_ray.toLine, l₅, l₆ ,l₃⟩
+    have col' := tr_nd₂.2
+    unfold Triangle.is_nd at col'
+    have : tr_nd₂.1.point₁ = tr_nd₂.point₁ := rfl
+    rw [this] at col'
+    have : tr_nd₂.1.point₂ = tr_nd₂.point₂ := rfl
+    rw [this] at col'
+    have : tr_nd₂.1.point₃ = tr_nd₂.point₃ := rfl
+    rw [this] at col'
+    exact col' col
+  have inx₁ : tr_nd₁.point₃ = inx_of_extn_line tr_nd₁.angle₁.end_ray tr_nd₁.angle₂.start_ray np₁ := by exact inx_of_line_eq_inx np₁ ⟨l₁, l₂⟩
+  have inx₂ : tr_nd₂.point₃ = inx_of_extn_line tr_nd₂.angle₁.end_ray tr_nd₂.angle₂.start_ray np₂ := by exact inx_of_line_eq_inx np₂ ⟨l₃, l₄⟩
+  simp only [inx₁,inx₂,ray_eq₁,ray_eq₂]
+
 
 end IsCongr
 
@@ -302,7 +472,13 @@ instance instHasACongr : HasACongr (Triangle_nd P) where
   acongr := IsACongr
   symm := IsACongr.symm
 
-theorem perm_acongr {tr_nd₁ tr_nd₂ : Triangle_nd P} (h : tr_nd₁.IsACongr tr_nd₂) : (perm_vertices tr_nd₁).IsACongr (perm_vertices tr_nd₂) := sorry
+theorem perm_acongr {tr_nd₁ tr_nd₂ : Triangle_nd P} (h : tr_nd₁.IsACongr tr_nd₂) : (perm_vertices tr_nd₁).IsACongr (perm_vertices tr_nd₂) where
+  edge₁ := h.2
+  edge₂ := h.3
+  edge₃ := h.1
+  angle₁ := h.5
+  angle₂ := h.6
+  angle₃ := h.4
 
 theorem acongr_iff_perm_acongr (tr_nd₁ tr_nd₂ : Triangle_nd P) : tr_nd₁.IsACongr tr_nd₂ ↔ (perm_vertices tr_nd₁).IsACongr (perm_vertices tr_nd₂) :=
   ⟨fun h ↦ h.perm_acongr, fun h ↦ h.perm_acongr.perm_acongr⟩
@@ -635,6 +811,7 @@ theorem congr_of_ASA (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value) 
   rw [<-(edge_eq_edge_of_perm_vertices (perm_vertices tr_nd₁)).2.1,<-(edge_eq_edge_of_perm_vertices tr_nd₁).1,<-(edge_eq_edge_of_perm_vertices (perm_vertices tr_nd₂)).2.1,<-(edge_eq_edge_of_perm_vertices tr_nd₂).1]
   exact e₁
 example (a b c d : ℝ) (h : a = b) (g : c = d) : a + c = b + d := Mathlib.Tactic.LinearCombination.add_pf h g
+
 theorem acongr_of_ASA (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (a₃ : tr_nd₁.angle₃.value = - tr_nd₂.angle₃.value) : tr_nd₁ ≅ₐ tr_nd₂ := by
   have a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value := by
     by_cases c : tr_nd₁.is_cclock

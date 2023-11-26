@@ -3,6 +3,7 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Ray
 namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
+variable {P : Type _} [EuclideanPlane P] (seg_nd : Seg_nd P)
 
 theorem Seg_nd.not_lies_int_extn_and_rev_extn_of_lies_on {A : P} {seg_nd : Seg_nd P} (lieson : A LiesOn seg_nd.1) : ¬ A LiesInt seg_nd.extension ∧ ¬ A LiesInt seg_nd.reverse.extension := by
   constructor
@@ -41,5 +42,9 @@ theorem Seg_nd.midpt_ne_target {A B : P} (h : B ≠ A) : (SEG A B).midpoint ≠ 
     rw [Seg.midpt_target_length_eq]
     apply dist_pos.mpr h.symm
   linarith
+
+theorem Seg_nd_midpoint_not_eq_source : seg_nd.1.midpoint ≠ seg_nd.source := by sorry
+
+theorem Seg_nd_midpoint_not_eq_target : seg_nd.1.midpoint ≠ seg_nd.target := by sorry
 
 end EuclidGeom
