@@ -1,6 +1,6 @@
 import EuclideanGeometry.Foundation.Construction.Polygon.Quadrilateral
 import EuclideanGeometry.Foundation.Construction.Polygon.Trapezoid
-import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence'
+import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence'
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
