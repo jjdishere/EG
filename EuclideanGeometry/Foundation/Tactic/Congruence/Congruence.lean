@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence'
+import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
 
 namespace EuclidGeom
 

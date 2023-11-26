@@ -30,4 +30,7 @@ theorem mk_ray_end_value_eq_angdiff (ang : Angle P) (ray : Ray P) (h : ang.sourc
 
 end Angle
 
+theorem ang_eq_ang_of_todir_rev_todir {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = - ang₂.start_ray.toDir) (he : ang₁.end_ray.toDir = - ang₂.end_ray.toDir) : ang₁.value = ang₂.value := sorry
+
+
 end EuclidGeom
