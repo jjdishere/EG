@@ -20,11 +20,8 @@ theorem Seg_nd_midpoint_not_eq_source : seg_nd.1.midpoint ≠ seg_nd.source := b
 
 theorem Seg_nd_midpoint_not_eq_target : seg_nd.1.midpoint ≠ seg_nd.target := by sorry
 
-  end EuclidGeom
-theorem Ray.pt_lies_int_pt_pt (A B : P) (h : B ≠ A) : B LiesInt (RAY _ _ h) := by
-  sorry
+theorem Ray.pt_lies_int_pt_pt (A B : P) (h : B ≠ A) : B LiesInt (RAY _ _ h) := by sorry
 
-theorem Ray.pt_lies_on_pt_pt (A B : P) (h : B ≠ A) : B LiesOn (RAY _ _ h) := by
-  sorry
+theorem Ray.pt_lies_on_pt_pt (A B : P) (h : B ≠ A) : B LiesOn (RAY _ _ h) := by sorry
 
 end EuclidGeom
