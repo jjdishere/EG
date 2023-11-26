@@ -26,7 +26,8 @@ variable {P : Type _} [EuclideanPlane P]
 structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
   eq_source : ang.source = ray.source
   eq_value : (Angle.mk_strat_ray ang ray eq_source).value = (Angle.mk_ray_end ang ray eq_source).value
-  same_sgn : ((Angle.mk_strat_ray ang ray eq_source).value.IsPos ∧ (Angle.mk_ray_end ang ray eq_source).value.IsPos) ∨ ((Angle.mk_strat_ray ang ray eq_source).value.IsNeg ∧ (Angle.mk_ray_end ang ray eq_source).value.IsNeg) ∨ ((Angle.mk_strat_ray ang ray eq_source).value.toReal = 2⁻¹ * π )
+  same_sgn : ((Angle.mk_strat_ray ang ray eq_source).value.IsPos ∧ ang.value.IsPos) ∨ ((Angle.mk_strat_ray ang ray eq_source).value.IsNeg ∧ ang.value.IsNeg) ∨ (ang.value.toReal = π )
+
 
 structure IsAngBisLine (ang : Angle P) (line : Line P) : Prop where
   source_on : ang.source LiesOn line
@@ -70,7 +71,21 @@ theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
     rw [← sub_todir_eq_todir_div]
     rw [theta_sub_half_theta_eq_half_theta ang.value]
   same_sgn := by
+    have h : ang.source = ang.AngBis.source := rfl
+    have g : (Angle.mk_strat_ray ang ang.AngBis h).value.toReal = 2⁻¹ * ang.value.toReal := by
+      rw [mk_strat_ray_value_eq_angdiff ang ang.AngBis h]
+      rw [Dir.AngDiff]
+      unfold AngBis
+      simp
+      have g₁ : -π < (value ang).toReal := by
+        simp [toreal_neg_pi_le]
+      have h₁ : -π < 2⁻¹ * (value ang).toReal := by
+        sorry
+      sorry
     sorry
+
+
+
 
 theorem angbis_iff_angbis (ang : Angle P) (r : Ray P) : IsAngBis ang r ↔ r = ang.AngBis := by
   constructor
