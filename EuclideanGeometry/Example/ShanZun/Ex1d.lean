@@ -106,4 +106,14 @@ theorem Shan_Problem_1_10 : (SEG A D).length = (SEG D C).length := by
     simp
   -- $\angle BMC = 2\pi / 5$
   have ang₁ : ∠ B M C b_ne_m m_ne_c.symm = ↑ (2 * π / 5) := sorry
+  -- $BAM$ is not colinear
+  have bam_not_colinear : ¬ colinear B A M := sorry
+  -- $\triangle BAM$ is isoceles
+  have isocele₁ : (TRI_nd B A M bam_not_colinear).1.IsIsoceles := sorry
+  -- Let $N$ be the midpoint of $AC$
+  let N := (SEG A C).midpoint
+  -- $DN = \frac{1}{2}MB = \frac{1}{2}AC$
+  have dn_eq_half_ac : (SEG D N).length = (1 / 2) * (SEG A C).length := sorry
+  sorry
+  --需要直角三角形等价于斜边中线等于斜边一半的定理
 end Shan_Problem_1_10
