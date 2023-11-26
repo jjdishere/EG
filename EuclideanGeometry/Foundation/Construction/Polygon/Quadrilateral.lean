@@ -11,6 +11,7 @@ In this file we define general quadrilaterals as four points on the plane and co
 
 ## Important Definitions
 * `Quadrilateral P` : general quadrilaterals on the plane `P`, i.e. four points on `P`
+* `Quadrilateral_nd P` : quadrilaterals on the plane `P` s.t. the points that adjacent is not same
 * `Quadrilateral_cvx P` : convex quadrilaterals on the plane `P`
 
 ## Notation
@@ -62,11 +63,14 @@ def diag₁₃ : Seg P := SEG qdr.1 qdr.3
 @[pp_dot]
 def diag₂₄ : Seg P := SEG qdr.2 qdr.4
 
+/-- The permute quadrilateral, for example, (QDR A B C D).permute is (QDR B C D A)-/
+@[pp_dot]
+def permute : Quadrilateral P := QDR qdr.2 qdr.3 qdr.4 qdr.1
+
 end Quadrilateral
 
 /--
-A quadrilateral is called non-degenerate if
-1. the point that adjacent is not same
+A quadrilateral is called non-degenerate if the points that adjacent is not same
 -/
 @[pp_dot]
 structure Quadrilateral.IsND {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop where
@@ -100,7 +104,9 @@ section property_nd
 
 variable {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P)
 
-theorem permute_is_nd : (QDR qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁).IsND := sorry
+theorem permute_is_nd : (qdr_nd.1.permute).IsND := sorry
+
+def permute : Quadrilateral_nd P := mk_is_nd (permute_is_nd qdr_nd)
 
 end property_nd
 
@@ -217,7 +223,7 @@ theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧
   exact k
 
 /-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is also convex. -/
-theorem permute_is_convex : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁) IsConvex := by sorry
+theorem permute_is_convex : qdr_cvx.1.permute IsConvex := by sorry
   -- unfold Quadrilateral.IsConvex
   -- have k : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁).IsND := (Quadrilateral_nd.permute_is_nd qdr_cvx.toQuadrilateral_nd)
   -- have h : qdr_cvx.point₂ ≠ qdr_cvx.point₄ ∧ qdr_cvx.point₃ ≠ qdr_cvx.point₁ := ⟨qdr_cvx.nd₂₄.symm, qdr_cvx.nd₁₃⟩
@@ -238,6 +244,8 @@ theorem permute_is_convex : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point
   --   exact nd₃₁_eq_nd₁₃.symm
   -- rw [←inx_eq']
   -- exact ⟨b, (Seg.lies_int_rev_iff_lies_int.mp a)⟩
+
+def permute : Quadrilateral_cvx P := mk_is_convex (permute_is_convex qdr_cvx)
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
 theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := by sorry
