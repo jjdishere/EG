@@ -59,11 +59,11 @@ section power
 
 namespace Circle
 
-theorem circle_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : l InxWith ω) (h₂ : p LiesOn l) : sorry := sorry
+theorem circle_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) : sorry := sorry
 
-theorem chord_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : l InxWith ω) (h₂ : p LiesOn l) (h₃ : p LiesInt ω) : (dist p (DirLC_Intersected_pts h₁).front) * (dist p (DirLC_Intersected_pts h₁).back) = - power ω p := sorry
+theorem chord_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) (h₃ : p LiesInt ω) : (dist p (DirLC_Intersected_pts h₁).front) * (dist p (DirLC_Intersected_pts h₁).back) = - power ω p := sorry
 
-theorem secant_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : l InxWith ω) (h₂ : p LiesOn l) (h₃ : p LiesOut ω) : (dist p (DirLC_Intersected_pts h₁).front) * (dist p (DirLC_Intersected_pts h₁).back) = power ω p := sorry
+theorem secant_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) (h₃ : p LiesOut ω) : (dist p (DirLC_Intersected_pts h₁).front) * (dist p (DirLC_Intersected_pts h₁).back) = power ω p := sorry
 
 end Circle
 
