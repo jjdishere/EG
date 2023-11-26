@@ -752,12 +752,13 @@ theorem det_neg_eq_neg_det (u v : Vec) : det (- u) v = - det u v := by
   rw [det_smul_left_eq_mul_det u v (-1 : ℝ)]
   ring
 
---antisymmetricity of det
 theorem det_eq_neg_det (u v : Vec) : det u v = -det v u := by
   unfold det
   ring
 
---permuting vertices of a triangle has simple effect on area
+theorem det_neg_right_eq_neg_det (u v : Vec) : det u (-v) = -det u v := by
+  rw[det_eq_neg_det,det_neg_eq_neg_det,det_eq_neg_det u v]
+
 theorem det_sub_eq_det (u v : Vec) : det (u-v) v= det u v := by
   rw [sub_eq_add_neg, det_add_left_eq_add_det u (-v) v]
   have : det (-v) v = 0 := by
@@ -765,6 +766,21 @@ theorem det_sub_eq_det (u v : Vec) : det (u-v) v= det u v := by
     rw [Complex.neg_im, Complex.neg_re]
     ring
   rw [this, add_zero]
+
+theorem det_sub_left_eq_det_sub_det (u v w : Vec) : det (u-v) w = det u w - det v w := by
+  rw [sub_eq_add_neg, det_add_left_eq_add_det u (-v) w, det_neg_eq_neg_det,sub_eq_add_neg]
+
+theorem det_sub_right_eq_det_sub_det (u v w : Vec) : det u (v - w) = det u v - det u w := by
+  rw [det_eq_neg_det, det_sub_left_eq_det_sub_det, det_eq_neg_det, det_eq_neg_det u w]
+  ring
+
+theorem det_self_eq_zero (u : Vec) : det u u = 0 := by
+  unfold det
+  ring
+
+theorem det_neg_self_eq_zero (u : Vec) : det (-u) u = 0 := by
+  rw[det_neg_eq_neg_det,det_self_eq_zero]
+  ring
 
 --computing area using sine
 theorem det_eq_im_of_quotient (u v : Dir) : det u.1 v.1 = (v * (u⁻¹)).1.im := by
