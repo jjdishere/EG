@@ -65,17 +65,60 @@ def diag₂₄ : Seg P := SEG qdr.2 qdr.4
 end Quadrilateral
 
 /--
+A quadrilateral is called non-degenerate if
+1. the point that adjacent is not same
+-/
+@[pp_dot]
+def Quadrilateral.Isnd {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := (qdr.1 ≠ qdr.2) ∧ (qdr.2 ≠ qdr.3) ∧ (qdr.3 ≠ qdr.4) ∧ (qdr.4 ≠ qdr.1)
+
+scoped postfix : 50 "Isnd" => Quadrilateral.Isnd
+
+/--
+Class of nd Quadrilateral: A nd quadrilateral is quadrilateral with the property of nd.
+-/
+@[ext]
+structure Quadrilateral_nd (P : Type _) [EuclideanPlane P] extends Quadrilateral P where
+  nd : toQuadrilateral Isnd
+
+def Quadrilateral_nd.mk_pt_pt_pt_pt_nd {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D) Isnd) : Quadrilateral_nd P where
+  toQuadrilateral := (QDR A B C D)
+  nd := h
+
+scoped notation "QDR_nd" => Quadrilateral_nd.mk_pt_pt_pt_pt_nd
+
+namespace Quadrilateral_nd
+
+/-- Given a property that a quadrilateral qdr is nd, this function returns qdr itself as an object in the class of nd quadrilateral-/
+def mk_is_nd {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr Isnd) : Quadrilateral_nd P where
+  toQuadrilateral := qdr
+  nd := h
+
+section property_nd
+
+end property_nd
+
+end Quadrilateral_nd
+
+/--
 A quadrilateral is called convex if
 1. both diagnals are non-degenerate,
 2. two diagonals are not parallel to each other,
 3. the interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals.
 -/
 @[pp_dot]
-def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
+def Quadrilateral_nd.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral_nd P) : Prop := by
   by_cases ((qdr.point₁ ≠ qdr.point₃) ∧ (qdr.point₂ ≠ qdr.point₄))
   · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ (h.2).symm ∥ (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm))
     · exact Line.inx (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm).toLine (SEG_nd qdr.point₂ qdr.point₄ (h.2).symm).toLine (Ne.symm g) LiesInt (SEG qdr.point₁ qdr.point₃) ∧ Line.inx (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm).toLine (SEG_nd qdr.point₂ qdr.point₄ (h.2).symm).toLine (Ne.symm g) LiesInt (SEG qdr.point₂ qdr.point₄)
     · exact False
+  · exact False
+
+scoped postfix : 50 "IsConvex" => Quadrilateral_nd.IsConvex
+
+@[pp_dot]
+def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
+  by_cases qdr Isnd
+  · exact (Quadrilateral_nd.mk_is_nd h).Isnd
   · exact False
 
 scoped postfix : 50 "IsConvex" => Quadrilateral.IsConvex
@@ -84,11 +127,12 @@ scoped postfix : 50 "IsConvex" => Quadrilateral.IsConvex
 Class of Convex Quadrilateral: A convex quadrilateral is quadrilateral with the property of convex.
 -/
 @[ext]
-structure Quadrilateral_cvx (P : Type _) [EuclideanPlane P] extends Quadrilateral P where
-  convex : toQuadrilateral IsConvex
+structure Quadrilateral_cvx (P : Type _) [EuclideanPlane P] extends Quadrilateral_nd P where
+  convex : toQuadrilateral_nd IsConvex
 
-def Quadrilateral_cvx.mk_pt_pt_pt_pt_convex {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D) IsConvex) : Quadrilateral_cvx P where
+def Quadrilateral_cvx.mk_pt_pt_pt_pt_convex {P : Type _} [EuclideanPlane P] (A B C D : P) (g : (QDR A B C D) Isnd) (h : (QDR_nd A B C D g) IsConvex): Quadrilateral_cvx P where
   toQuadrilateral := (QDR A B C D)
+  nd := g
   convex := h
 
 scoped notation "QDR_cvx" => Quadrilateral_cvx.mk_pt_pt_pt_pt_convex
@@ -96,8 +140,9 @@ scoped notation "QDR_cvx" => Quadrilateral_cvx.mk_pt_pt_pt_pt_convex
 namespace Quadrilateral_cvx
 
 /-- Given a property that a quadrilateral qdr is convex, this function returns qdr itself as an object in the class of convex quadrilateral-/
-def mk_is_convex {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsConvex) : Quadrilateral_cvx P where
-  toQuadrilateral := qdr
+def mk_is_convex {P : Type _} [EuclideanPlane P] {qdr_nd : Quadrilateral_nd P} (h : qdr_nd IsConvex) : Quadrilateral_cvx P where
+  toQuadrilateral := qdr_nd.toQuadrilateral
+  nd := qdr_nd.nd
   convex := h
 
 section criteria_cvx
@@ -105,7 +150,7 @@ variable {A B C D : P}
 
 -- theorem is_convex_of four inferior angle
 -- theorem is_convex_of both diag divids other pts
--- theorem is_convex_of three side 
+-- theorem is_convex_of three side
 -- `to be added`
 
 end criteria_cvx
