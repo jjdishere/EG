@@ -33,6 +33,5 @@ theorem SCHAUM_Problem_1_13 : Quadrilateral.IsParallelogram (QDR P B Q D) := by
   sorry
   /- apply is_prg_of_diag_inx_eq_mid_eq_mid
   rw [← m1, ← m2] -/
--- 判别法不该要求凸吧
 
 end SCHAUM_Problem_1_13

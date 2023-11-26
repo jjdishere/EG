@@ -60,13 +60,16 @@ theorem Problem1_4_ : (SEG B C).length = (SEG D E).length ∧ (SEG A C).length =
 -- We have $AB = FD$ because $AD = AF - BF = AF - BD = BF$.
   have seg1 : (SEG A B).length = (SEG F D).length := by
     calc
-      _ = (SEG A F).length - (SEG B F).length := eq_sub_of_add_eq (length_eq_length_add_length (SEG A F) B (B_on_seg)).symm
+      _ = (SEG A F).length - (SEG B F).length := by
+        apply eq_sub_of_add_eq
+        symm
+        apply length_eq_length_add_length B_on_seg
       _ = (SEG A F).length - (SEG A D).length := by rw [seg_eq]
-      _ = (SEG D F).length := (eq_sub_of_add_eq' (length_eq_length_add_length (SEG A F) D (D_on_seg)).symm).symm
-      _ = (SEG F D).length := length_eq_length_of_rev (SEG D F)
+      _ = (SEG D F).length := (eq_sub_of_add_eq' (length_eq_length_add_length (D_on_seg)).symm).symm
+      _ = (SEG F D).length := length_of_rev_eq_length'
 -- Then $\triangle CAB ≅ \triangle EFD$ by SAS.
-  have hcong : IsCongr (TRI_nd C A B cabnd).1 (TRI_nd E F D efdnd).1 := by
-    apply congr_of_ASA
+  have hcong : Triangle_nd.IsCongr (TRI_nd C A B cabnd) (TRI_nd E F D efdnd) := by
+    apply Triangle_nd.congr_of_ASA
     · exact ang2
     · exact seg1
     · exact ang3
@@ -74,6 +77,6 @@ theorem Problem1_4_ : (SEG B C).length = (SEG D E).length ∧ (SEG A C).length =
   constructor
   · exact hcong.edge₂
   · calc
-      _ = (SEG C A).length := length_eq_length_of_rev (SEG A C)
+      _ = (SEG C A).length := length_of_rev_eq_length'
       _ = (SEG E F).length := hcong.edge₃
 end Problem1_4_

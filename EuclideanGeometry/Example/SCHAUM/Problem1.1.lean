@@ -27,7 +27,7 @@ theorem Problem1_1_ : (SEG D M).length = (SEG E M).length := by
   have h₀ : (SEG A B).length = (SEG A C).length := by
     calc
       _ = (SEG C A).length := hisoc.symm
-      _ = (SEG A C).length := length_eq_length_of_rev (SEG C A)
+      _ = (SEG A C).length := length_of_rev_eq_length'
   have h₁ : ¬ colinear B D M := by sorry
   have h₂ : ¬ colinear C E M := by sorry
   --to confirm the definition of angle is not invalid
@@ -42,7 +42,7 @@ theorem Problem1_1_ : (SEG D M).length = (SEG E M).length := by
   --the second edge of congruence
   have h₃ : (SEG B D).length = (SEG C E).length := by
     calc
-      (SEG B D).length = (SEG D B).length := length_eq_length_of_rev (SEG B D)
+      (SEG B D).length = (SEG D B).length := length_of_rev_eq_length'
       _=(SEG A B).length - (SEG A D).length := by
         rw [← eq_sub_of_add_eq']
         rw []
