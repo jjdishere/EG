@@ -36,19 +36,25 @@ variable {h₁ : (SEG A B).length = (SEG D F).length}
 variable {h₂ : (SEG B C).length = (SEG D E).length}
 -- State the main goal.
 theorem Wuwowuji_Problem_1_1 : ∠ B A C a_ne_b.symm a_ne_c.symm = ∠ E F D e_ne_f d_ne_f := by
+  -- Use SAS to prove $▵ BAC ≅ ▵ DFE$.
   have h : Triangle_nd.IsACongr (TRI_nd B A C hnd1) (TRI_nd D F E hnd2) := by
     apply Triangle_nd.acongr_of_SAS
-    · have : (SEG C B).length = (SEG E D).length := by rw [length_of_rev_eq_length', h₂, length_of_rev_eq_length']
+    · -- $CB = BC = DE = ED$.
+      have : (SEG C B).length = (SEG E D).length := by rw [length_of_rev_eq_length', h₂, length_of_rev_eq_length']
       exact this
-    · have : IsCorrespondingAng (ANG A B C a_ne_b b_ne_c.symm) (ANG E D F d_ne_e.symm d_ne_f.symm) := by
+    · -- $∠ ABC$ and $∠ EDF$ are corresponding angles.
+      have : IsCorrespondingAng (ANG A B C a_ne_b b_ne_c.symm) (ANG E D F d_ne_e.symm d_ne_f.symm) := by
         constructor
         · sorry
         · sorry
+      -- Then $∠ ABC = ∠ EDF = -∠ FDE$.
       calc
         _ = ∠ E D F d_ne_e.symm d_ne_f.symm := eq_value_of_iscorrespondingang this
         _ = _ := by apply neg_value_of_rev_ang
-    · have : (SEG B A).length = (SEG D F).length := by rw [length_of_rev_eq_length', h₁]
+    · -- $BA = AB = DF$.
+      have : (SEG B A).length = (SEG D F).length := by rw [length_of_rev_eq_length', h₁]
       exact this
+  -- $∠ BAC = -∠ CAB = - -∠ EFD = ∠ EFD$.
   calc
     _ = - ∠ C A B a_ne_c.symm a_ne_b.symm := by apply neg_value_of_rev_ang
     _ = ∠ E F D e_ne_f d_ne_f := by

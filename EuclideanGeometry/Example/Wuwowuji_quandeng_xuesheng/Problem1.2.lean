@@ -22,6 +22,7 @@ lemma b_ne_d : B ≠ D := by sorry
 lemma c_ne_d : C ≠ D := by sorry
 -- State the main goal.
 theorem Wuwowuji_Problem_1_2 : ∠ A B D a_ne_b b_ne_d.symm = ∠ D C A c_ne_d.symm a_ne_c ∨ ∠ A B D a_ne_b b_ne_d.symm = -∠ D C A c_ne_d.symm a_ne_c := by
+  -- Use SSS to prove that $▵ DBA ≅ ▵ ACD$ or $▵ DBA ≅ₐ ▵ ACD$.
   have h : (TRI_nd D B A hnd1) ≅ (TRI_nd A C D hnd2) ∨ (TRI_nd D B A hnd1) ≅ₐ (TRI_nd A C D hnd2) := by
     apply Triangle_nd.congr_or_acongr_of_SSS
     · calc
@@ -30,6 +31,7 @@ theorem Wuwowuji_Problem_1_2 : ∠ A B D a_ne_b b_ne_d.symm = ∠ D C A c_ne_d.s
         _ = _ := length_of_rev_eq_length'
     · exact length_of_rev_eq_length'
     · exact h₂
+  -- In either case we have the absolute value of the angle is equal.
   rcases h with t | t
   · left; exact t.angle₂
   · right; exact t.angle₂

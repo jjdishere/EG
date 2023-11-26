@@ -66,9 +66,9 @@ theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
       -- $∠DBP$ and $∠ABC$ are the same angle.
         have : ANG D B P b_ne_d.symm p_ne_b = ANG A B C a_ne_b c_ne_b := by
           apply eq_ang_of_liesint_liesint
-          · apply (pt_lies_int_pt_pt_iff_pt_lies_int_pt_pt b_ne_d.symm a_ne_b).mp
+          · apply (pt_lies_int_ray_of_pt_pt_iff_pt_lies_int_ray_of_pt_pt b_ne_d.symm a_ne_b).mp
             apply Seg_nd.lies_int_toray_of_lies_int (seg_nd := SEG_nd B A a_ne_b) (Seg_nd.lies_int_rev_iff_lies_int.mp D_on_seg)
-          · apply (pt_lies_int_pt_pt_iff_pt_lies_int_pt_pt c_ne_b p_ne_b).mpr
+          · apply (pt_lies_int_ray_of_pt_pt_iff_pt_lies_int_ray_of_pt_pt c_ne_b p_ne_b).mpr
             rw [hp]
             apply perp_foot_lies_int_ray_of_acute_ang (C := D) (A := B) (B := C) c_ne_b b_ne_d.symm _
             sorry
