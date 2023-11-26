@@ -74,13 +74,36 @@ lemma a_ne_b : A ≠ B := sorry
 lemma b_ne_c : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- We have $\angle BAC = 3\pi /5$
-variable {hang : ∠ B A C a_ne_b.symm c_ne_a = 3 * π / 5}
+variable {hang : ∠ B A C a_ne_b.symm c_ne_a = ↑ (3 * π / 5)}
 -- $E$ lies in the extension of $AC$ and $AE = BC$
 variable {E : P} {he₁ : E LiesInt (SEG_nd A C c_ne_a).extension} {he₂ : (SEG A E).length = (SEG B C).length}
 -- $D$ is the midpoint of $BE$
 variable {D : P} {hd : D = (SEG B E).midpoint}
 
 -- Theorem : $AD = DC$
-theorem Shan_Problem_1_10 : (SEG A D).length = (SEG D C).length := sorry
-
+theorem Shan_Problem_1_10 : (SEG A D).length = (SEG D C).length := by
+  -- Claim: $A \ne E$
+  have a_ne_e : A ≠ E := sorry
+  -- Extend $EA$ to $M$ such that $AM = EC$
+  let M := Ray.extpoint (SEG_nd E A a_ne_e).extension (SEG E C).length
+  have am_eq_ec : (SEG A M).length = (SEG E C).length := by
+    apply seg_length_eq_dist_of_extpoint (SEG_nd E A a_ne_e).extension
+    simp
+    exact length_nonneg
+  -- Claim: $M \ne C$, $B \ne M$
+  have m_ne_c : M ≠ C := sorry
+  have b_ne_m : B ≠ M := sorry
+  -- $CM = CA + AM = CA + EC = AE = BC$
+  have cm_eq_bc : (SEG C M).length = (SEG B C).length := by
+    rw[← he₂]
+    have c_lies_on_ae : C LiesOn (SEG_nd A E a_ne_e.symm).1 := Seg_nd.lies_on_of_lies_int (target_lies_int_seg_source_pt_of_pt_lies_int_extn he₁)
+    have ae_eq_ac_plus_ce : (SEG A E).length = (SEG A C).length + (SEG C E).length := length_eq_length_add_length c_lies_on_ae
+    rw[← Seg.length_of_rev_eq_length (seg := (SEG E C))] at am_eq_ec
+    have m_lies_int_ca_extn : M LiesInt (SEG_nd C A c_ne_a.symm).extension := sorry
+    have a_lies_on_cm : A LiesOn (SEG_nd C M m_ne_c).1 := Seg_nd.lies_on_of_lies_int (target_lies_int_seg_source_pt_of_pt_lies_int_extn m_lies_int_ca_extn)
+    have cm_eq_ca_plus_am : (SEG C M).length = (SEG C A).length + (SEG A M).length := length_eq_length_add_length a_lies_on_cm
+    rw[ae_eq_ac_plus_ce, cm_eq_ca_plus_am, ← Seg.length_of_rev_eq_length (seg := (SEG A C)), am_eq_ec]
+    simp
+  -- $\angle BMC = 2\pi / 5$
+  have ang₁ : ∠ B M C b_ne_m m_ne_c.symm = ↑ (2 * π / 5) := sorry
 end Shan_Problem_1_10
