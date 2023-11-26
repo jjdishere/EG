@@ -15,20 +15,40 @@ namespace EuclidGeom
 
 -- `Add class parallelogram and state every theorem in structure`
 @[pp_dot]
-def Quadrilateral.Parallelogram_property {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃
+def Quadrilateral.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃
 
-scoped postfix : 50 "HasParallelogram_property" => Quadrilateral.Parallelogram_property
+scoped postfix : 50 "IsParallelogram" => Quadrilateral.IsParallelogram
 
 @[ext]
 structure Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral P where
-  parallelogram_property : toQuadrilateral HasParallelogram_property
+  is_parallelogram : toQuadrilateral IsParallelogram
 
 @[ext]
-structure Parallelogram_nd (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
-  parallelogram_property : toQuadrilateral HasParallelogram_property
+structure Parallelogram_nd (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P, Parallelogram P
+
+def Parallelogram.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D) IsParallelogram) : Parallelogram P where
+  toQuadrilateral := (QDR A B C D)
+  is_parallelogram := h
+
+def Parallelogram_nd.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D) IsParallelogram) (h': (QDR A B C D) IsConvex): Parallelogram_nd P where
+  toQuadrilateral := (QDR A B C D)
+  is_parallelogram := h
+  convex := h'
+
+scoped notation "PRG" => Parallelogram.mk_pt_pt_pt_pt
+scoped notation "PRG_nd" => Parallelogram_nd.mk_pt_pt_pt_pt
+
+def mk_parallelogram {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) : Parallelogram P where
+  toQuadrilateral := qdr
+  is_parallelogram := h
+
+def mk_parallelogram_nd {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr IsConvex): Parallelogram_nd P where
+  toQuadrilateral := qdr
+  is_parallelogram := h
+  convex := h'
 
 @[pp_dot]
-def Quadrilateral_cvx.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := ( qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (qdr_cvx.edge_nd₁₄ ∥ (qdr_cvx.edge_nd₂₃))
+def Quadrilateral_cvx.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := ( qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.edge_nd₂₃)
 
 @[pp_dot]
 def Quadrilateral.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
@@ -36,10 +56,12 @@ def Quadrilateral.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr : Quad
   · exact (Quadrilateral_cvx.mk_is_convex h).IsParallelogram_nd
   · exact False
 
-def Quadrilateral.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃
+@[pp_dot]
+def Parallelogram.ParallelogramIs_nd {P : Type _} [EuclideanPlane P] (qdr_para : Parallelogram P) : Prop := qdr_para.1 IsConvex
 
 postfix : 50 "IsPRG_nd" => Quadrilateral.IsParallelogram_nd
 postfix : 50 "IsPRG" => Quadrilateral.IsParallelogram
+postfix : 50 "PRGIs_nd" => Parallelogram.ParallelogramIs_nd
 
 variable {P : Type _} [EuclideanPlane P]
 
@@ -507,7 +529,7 @@ theorem para_of_is_prg_nd' (h : qdr.IsParallelogram_nd) : (SEG_nd qdr.point₁ q
   by_cases k: qdr.IsConvex
   simp only [k, dite_true] at h
   unfold Quadrilateral_cvx.IsParallelogram_nd at h
-  rcases h with ⟨a,b⟩
+  rcases h with ⟨_,b⟩
   exact b
   simp only [k, dite_false] at h
 
