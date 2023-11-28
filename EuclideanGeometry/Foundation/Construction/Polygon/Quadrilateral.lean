@@ -179,6 +179,7 @@ theorem permute_is_nd : (qdr_nd.1.permute).IsND := by
   exact qdr_nd.nd₁₂.symm
 
 /-- The permute quadrilateral_nd, the first point of the permute is the second point of the origin, etc. -/
+@[pp_dot]
 def permute : Quadrilateral_nd P := mk_is_nd (permute_is_nd qdr_nd)
 
 /-- The reflect of quadrilateral_nd is also quadrilateral_nd. -/
@@ -190,6 +191,7 @@ theorem reflect_is_nd : (qdr_nd.1.reflect).IsND := by
   exact qdr_nd.nd₁₂
 
 /-- The reflect quadrilateral_nd, exchanged the second point and the fourth. -/
+@[pp_dot]
 def reflect : Quadrilateral_nd P := mk_is_nd (reflect_is_nd qdr_nd)
 
 end property_nd
@@ -289,8 +291,10 @@ def permute : Quadrilateral_cvx P := mk_is_convex (permute_is_convex qdr_cvx)
 /-- The reflect of quadrilateral_cvx is also quadrilateral_cvx. -/
 theorem reflect_is_convex : qdr_cvx.1.reflect IsConvex := by
   unfold Quadrilateral_nd.IsConvex
+  have h₁ : qdr_cvx.point₁ = qdr_cvx.1.reflect.point₁ := by
+    sorry
   have g₁ : qdr_cvx.angle₁.value.IsPos ↔ qdr_cvx.1.reflect.angle₁.value.IsNeg := by
-    unfold Quadrilateral_nd.angle₁
+    unfold Quadrilateral_nd.angle₁ Quadrilateral_nd.reflect
     sorry
   by_cases (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
   · have q : (qdr_cvx.reflect.angle₁.value.IsNeg ∧ qdr_cvx.reflect.angle₄.value.IsNeg ∧ qdr_cvx.reflect.angle₃.value.IsNeg ∧ qdr_cvx.reflect.angle₂.value.IsNeg) := by
