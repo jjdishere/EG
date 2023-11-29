@@ -420,11 +420,11 @@ structure IsACongr (tr_nd₁ tr_nd₂: Triangle_nd P) : Prop where intro ::
 namespace IsACongr
 
 theorem not_cclock_of_cclock (h : tr_nd₁.IsACongr tr_nd₂) (cc : tr_nd₁.is_cclock) : ¬ tr_nd₂.is_cclock := by
-  apply Triangle_nd.clock_of_neg_angle
+  apply clock_of_neg_angle
   left
   have : - tr_nd₁.angle₁.value = tr_nd₂.angle₁.value := by simp only [h.4, neg_neg]
-  simp [<-this]
-  exact AngValue.neg_isneg_of_ispos (tr_nd₁.angle_pos_of_cclock cc).1
+  simp only [← this, AngValue.neg_isneg_iff_ispos]
+  exact (tr_nd₁.angle_pos_of_cclock cc).1
 
 protected theorem symm (h : tr_nd₁.IsACongr tr_nd₂) : tr_nd₂.IsACongr tr_nd₁ where
   edge₁ := h.1.symm
