@@ -41,7 +41,7 @@ theorem wedge_eq_sine_mul_length_mul_length (A B C : P) (bnea : B ≠ A) (cnea :
 
 theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B C = 0) := by
   dsimp only [wedge]
-  by_cases B ≠ A
+  by_cases h : B ≠ A
   have vecabnd : VEC A B ≠ 0 := by
     exact (ne_iff_vec_ne_zero A B).mp h
   constructor

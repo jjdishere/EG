@@ -461,7 +461,7 @@ theorem every_pt_lies_int_seg_of_source_and_target_lies_int_seg {seg₁ seg₂ :
   rcases h₂ with ⟨ _ ,y,ypos,ylt1,hy⟩
   rcases ha with ⟨t,tnonneg,tle1,ht⟩
   use ( (1- t) * x + t * y)
-  by_cases 0=t
+  by_cases h : 0=t
   constructor
   simp only [←h, sub_zero, one_mul, zero_mul, add_zero]
   exact xpos
@@ -513,7 +513,7 @@ theorem every_int_pt_lies_int_seg_of_source_and_target_lies_on_seg {seg₁ seg�
     contrapose! nd
     rw[Seg.is_nd,not_not,eq_iff_vec_eq_zero,←vec_sub_vec seg₂.1,hx,hy,←sub_smul,nd,sub_self,zero_smul]
   constructor
-  by_cases 0=x
+  by_cases h : 0=x
   rw[←h,mul_zero,zero_add]
   apply mul_pos
   exact tpos
@@ -532,7 +532,7 @@ theorem every_int_pt_lies_int_seg_of_source_and_target_lies_on_seg {seg₁ seg�
   linarith
   linarith
   constructor
-  by_cases 1=x
+  by_cases h : 1=x
   simp only [←h,mul_one,sub_add,sub_lt_iff_lt_add,lt_add_iff_pos_right, sub_pos, gt_iff_lt]
   nth_rw 2[←mul_one t]
   apply mul_lt_mul_of_pos_left
@@ -584,7 +584,7 @@ theorem every_pt_lies_int_ray_of_source_and_target_lies_int_ray {seg : Seg P} {r
   rw[←vec_sub_vec ray.source,←vec_sub_vec ray.source seg.source seg.target,hx,hy,sub_eq_iff_eq_add,←sub_smul,smul_smul,←add_smul,mul_sub] at ht
   use (t*y+(1-t)*x)
   constructor
-  by_cases 0=t
+  by_cases h : 0=t
   rw[←h]
   linarith
   apply lt_of_lt_of_le (mul_pos (lt_of_le_of_ne tnonneg h) ypos)
@@ -608,7 +608,7 @@ theorem every_int_pt_lies_int_ray_of_source_and_target_lies_on_ray {seg : Seg P}
     contrapose! nd
     rw[Seg.is_nd,not_not,eq_iff_vec_eq_zero,←vec_sub_vec ray.1,hx,hy,←sub_smul,nd,sub_self,zero_smul]
   constructor
-  by_cases 0=x
+  by_cases h : 0=x
   rw[←h,mul_zero,zero_add]
   apply mul_pos
   exact tpos

@@ -684,7 +684,7 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
   unfold HasEquiv.Equiv instHasEquiv PM.con PM at h
   simp only [Con.rel_eq_coe, Con.rel_mk] at h
   unfold Vec_nd.angle Dir.AngDiff
-  by_cases v₁.toDir = Dir.I * v₂.toDir
+  by_cases h : v₁.toDir = Dir.I * v₂.toDir
   · right
     rw [h]
     simp only [div_mul_cancel''', Dir.inv_of_I_eq_neg_I, neg_I_toangvalue_eq_neg_pi_div_2]
@@ -696,7 +696,7 @@ theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (v₁ v₂ : Vec
     rw [e]
     simp only [I_toangvalue_eq_pi_div_2]
   intro h
-  by_cases Dir.AngDiff d₁ d₂ = ↑(π / 2)
+  by_cases h : Dir.AngDiff d₁ d₂ = ↑(π / 2)
   · have w : AngValue.toDir (Dir.AngDiff d₁ d₂) = AngValue.toDir ↑(π / 2) := by
       rw [h]
     unfold Dir.AngDiff at w

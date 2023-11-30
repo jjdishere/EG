@@ -52,7 +52,7 @@ def Quadrilateral_cvx.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr_cv
 
 @[pp_dot]
 def Quadrilateral.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
-  by_cases qdr IsConvex
+  by_cases h : qdr IsConvex
   · exact (Quadrilateral_cvx.mk_is_convex h).IsParallelogram_nd
   · exact False
 

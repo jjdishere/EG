@@ -72,7 +72,7 @@ A quadrilateral is called convex if
 -/
 @[pp_dot]
 def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
-  by_cases ((qdr.point₁ ≠ qdr.point₃) ∧ (qdr.point₂ ≠ qdr.point₄))
+  by_cases h : ((qdr.point₁ ≠ qdr.point₃) ∧ (qdr.point₂ ≠ qdr.point₄))
   · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ (h.2).symm ∥ (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm))
     · exact Line.inx (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm).toLine (SEG_nd qdr.point₂ qdr.point₄ (h.2).symm).toLine (Ne.symm g) LiesInt (SEG qdr.point₁ qdr.point₃) ∧ Line.inx (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm).toLine (SEG_nd qdr.point₂ qdr.point₄ (h.2).symm).toLine (Ne.symm g) LiesInt (SEG qdr.point₂ qdr.point₄)
     · exact False
@@ -105,7 +105,7 @@ variable {A B C D : P}
 
 -- theorem is_convex_of four inferior angle
 -- theorem is_convex_of both diag divids other pts
--- theorem is_convex_of three side 
+-- theorem is_convex_of three side
 -- `to be added`
 
 end criteria_cvx

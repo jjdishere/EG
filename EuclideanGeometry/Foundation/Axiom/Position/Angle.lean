@@ -56,7 +56,7 @@ namespace Angle
 /- `What does it mean to be LiesIn a angle? when the angle < 0`, for now it is defined as the smaller side. and when angle = π, it is defined as the left side -/
 
 protected def IsOn (p : P) (ang : Angle P) : Prop := by
-  by_cases p = ang.source
+  by_cases h : p = ang.source
   · exact True
   · let ray := Ray.mk_pt_pt ang.source p h
     let o₁ := Angle.mk ang.start_ray ray rfl
@@ -64,7 +64,7 @@ protected def IsOn (p : P) (ang : Angle P) : Prop := by
     exact if ang.value.toReal ≥ 0 then (o₁.value.toReal ≥ 0 ∧ o₂.value.toReal ≥ 0) else (o₁.value.toReal ≤ 0 ∧ o₂.value.toReal ≤ 0)
 
 protected def IsInt (p : P) (ang : Angle P) : Prop := by
-  by_cases p = ang.source
+  by_cases h : p = ang.source
   · exact False
   · let ray := Ray.mk_pt_pt ang.source p h
     let o₁ := Angle.mk ang.start_ray ray rfl
@@ -74,7 +74,7 @@ protected def IsInt (p : P) (ang : Angle P) : Prop := by
 protected theorem ison_of_isint {A : P} {ang : Angle P} : Angle.IsInt A ang → Angle.IsOn A ang := by
   unfold Angle.IsOn Angle.IsInt
   intro g
-  by_cases A = ang.source
+  by_cases h : A = ang.source
   · simp only [h, ge_iff_le, dite_true]
   · simp only [h, ge_iff_le, dite_false]
     simp only [h, ge_iff_le, gt_iff_lt, dite_false] at g

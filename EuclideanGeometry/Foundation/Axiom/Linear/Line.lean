@@ -839,7 +839,7 @@ instance DirLine.instRealNormedAddTorsor (l : DirLine P) : NormedAddTorsor ℝ l
     show (x + y) • l.toDir.1 +ᵥ A = x • l.toDir.1 +ᵥ (y • l.toDir.1 +ᵥ A)
     rw [add_smul, add_vadd]
   vsub := fun ⟨A, _⟩ ⟨B, _⟩ ↦ inner (A -ᵥ B) l.toDir.1
-  Nonempty := by
+  nonempty := by
     rcases l.nontriv with ⟨A, _, ha, _⟩
     exact ⟨A, ha⟩
   vsub_vadd' := by
