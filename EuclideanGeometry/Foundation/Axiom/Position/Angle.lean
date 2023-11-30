@@ -110,6 +110,8 @@ theorem eq_end_ray_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang�
   simp only [div_left_inj] at g
   exact g
 
+theorem eq_start_ray_of_eq_value_eq_end_ray {ang₁ ang₂ : Angle P} (h : ang₁.end_ray = ang₂.end_ray) (v : ang₁.value = ang₂.value) : ang₁.start_ray = ang₂.start_ray := sorry
+
 theorem eq_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁ = ang₂ := Angle.ext ang₁ ang₂ h (eq_end_ray_of_eq_value_eq_start_ray h v)
 
 -- this section should talks about when different making methods make the same angle

@@ -16,4 +16,6 @@ theorem eq_ang_of_lieson_lieson {A A' B B' O: P} (h₁ : A ≠ O) (h₂ : B ≠ 
 
 theorem neg_value_of_rev_ang {A B O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) : ∠ A O B h₁ h₂ = -∠ B O A h₂ h₁ := sorry
 
+theorem ang_eq_ang_of_todir_rev_todir {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = - ang₂.start_ray.toDir) (he : ang₁.end_ray.toDir = - ang₂.end_ray.toDir) : ang₁.value = ang₂.value := sorry
+
 end EuclidGeom
