@@ -78,7 +78,7 @@ theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
       unfold AngBis
       simp
       have g₁ : -π < (value ang).toReal := by
-        simp [toreal_neg_pi_le]
+        simp [AngValue.neg_pi_lt_toreal]
       have h₁ : -π < 2⁻¹ * (value ang).toReal := by
         sorry
       sorry
