@@ -105,7 +105,7 @@ instance instHasCongr : HasCongr (Triangle P) where
   symm := IsCongr.symm
   trans := IsCongr.trans
 
-theorem perm_congr {tr₁ tr₂ : Triangle P} (h : tr₁.IsCongr tr₂) : (perm_vertices tr₁).IsCongr (perm_vertices tr₂) := by
+theorem perm_congr (h : tr₁.IsCongr tr₂) : (perm_vertices tr₁).IsCongr (perm_vertices tr₂) := by
   constructor
   exact h.2
   exact h.3
@@ -201,7 +201,7 @@ instance instHasACongr : HasACongr (Triangle P) where
   acongr := IsACongr
   symm := IsACongr.symm
 
-theorem perm_acongr {tr₁ tr₂ : Triangle P} (h : tr₁.IsACongr tr₂) : (perm_vertices tr₁).IsACongr (perm_vertices tr₂) := by
+theorem perm_acongr (h : tr₁.IsACongr tr₂) : (perm_vertices tr₁).IsACongr (perm_vertices tr₂) := by
   constructor
   exact h.2
   exact h.3
@@ -358,7 +358,7 @@ theorem is_cclock_of_cclock (h : tr_nd₁.IsCongr tr_nd₂) (cc : tr_nd₁.is_cc
 
 theorem area (h : tr_nd₁.IsCongr tr_nd₂) : tr_nd₁.area = tr_nd₂.area := sorry
 
-theorem perm_congr {tr_nd₁ tr_nd₂ : Triangle_nd P} (h : tr_nd₁.IsCongr tr_nd₂) : (perm_vertices tr_nd₁).IsCongr (perm_vertices tr_nd₂) where
+theorem perm_congr (h : tr_nd₁.IsCongr tr_nd₂) : (perm_vertices tr_nd₁).IsCongr (perm_vertices tr_nd₂) where
   edge₁ := h.2
   edge₂ := h.3
   edge₃ := h.1
@@ -369,7 +369,7 @@ theorem perm_congr {tr_nd₁ tr_nd₂ : Triangle_nd P} (h : tr_nd₁.IsCongr tr_
 theorem congr_iff_perm_congr (tr_nd₁ tr_nd₂ : Triangle_nd P) : tr_nd₁ ≅ tr_nd₂ ↔ perm_vertices tr_nd₁ ≅ perm_vertices tr_nd₂ :=
   ⟨fun h ↦ h.perm_congr, fun h ↦ h.perm_congr.perm_congr⟩
 
-theorem third_point_same_of_two_point_same (tr_nd₁ tr_nd₂ : Triangle_nd P) (h : tr_nd₁ ≅ tr_nd₂) (p₁ : tr_nd₁.point₁ = tr_nd₂.point₁) (p₂ : tr_nd₁.point₂ = tr_nd₂.point₂) : tr_nd₁.point₃ = tr_nd₂.point₃ := by
+theorem third_point_same_of_two_point_same (h : tr_nd₁.IsCongr tr_nd₂) (p₁ : tr_nd₁.point₁ = tr_nd₂.point₁) (p₂ : tr_nd₁.point₂ = tr_nd₂.point₂) : tr_nd₁.point₃ = tr_nd₂.point₃ := by
   have ray_eq₁ : tr_nd₁.angle₁.end_ray = tr_nd₂.angle₁.end_ray := by
     apply eq_end_ray_of_eq_value_eq_start_ray
     unfold Angle.start_ray Triangle_nd.angle₁
@@ -380,66 +380,32 @@ theorem third_point_same_of_two_point_same (tr_nd₁ tr_nd₂ : Triangle_nd P) (
     unfold Angle.end_ray Triangle_nd.angle₂
     simp only [<-p₂, <-p₁] ; rfl
     exact h.5
-  have l₁ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₁.end_ray.toLine := by
-    rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
-    left
-    exact Ray.snd_pt_lies_on_mk_pt_pt tr_nd₁.nontriv₂.symm
-  have l₂ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₂.start_ray.toLine := by
-    rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
-    left
-    exact Ray.snd_pt_lies_on_mk_pt_pt tr_nd₁.nontriv₁
-  have l₃ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₁.end_ray.toLine := by
-    rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
-    left
-    exact Ray.snd_pt_lies_on_mk_pt_pt tr_nd₂.nontriv₂.symm
-  have l₄ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₂.start_ray.toLine := by
-    rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
-    left
-    exact Ray.snd_pt_lies_on_mk_pt_pt tr_nd₂.nontriv₁
+  have l₁ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₁.end_ray.toLine :=
+    .inl (Ray.snd_pt_lies_on_mk_pt_pt tr_nd₁.nontriv₂.symm)
+  have l₂ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₂.start_ray.toLine :=
+    .inl (Ray.snd_pt_lies_on_mk_pt_pt tr_nd₁.nontriv₁)
+  have l₃ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₁.end_ray.toLine :=
+    .inl (Ray.snd_pt_lies_on_mk_pt_pt tr_nd₂.nontriv₂.symm)
+  have l₄ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₂.start_ray.toLine :=
+    .inl (Ray.snd_pt_lies_on_mk_pt_pt tr_nd₂.nontriv₁)
   have np₁ : ¬ tr_nd₁.angle₁.end_ray.toLine ∥ tr_nd₁.angle₂.start_ray.toLine := by
     by_contra pl
-    have triv := eq_of_parallel_and_pt_lies_on l₁ l₂ pl
     have l₅ : tr_nd₁.point₁ LiesOn tr_nd₁.angle₁.end_ray.toLine := by
-      rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
-      left ; exact Ray.source_lies_on
+      exact .inl Ray.source_lies_on
     have l₆ : tr_nd₁.point₂ LiesOn tr_nd₁.angle₁.end_ray.toLine := by
-      rw [triv]
-      rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
-      left ; exact Ray.source_lies_on
-    have col := (Line.colinear_iff_exist_line_lies_on tr_nd₁.point₁ tr_nd₁.point₂ tr_nd₁.point₃).mpr ⟨tr_nd₁.angle₁.end_ray.toLine, l₅, l₆ ,l₁⟩
-    have col' := tr_nd₁.2
-    unfold Triangle.is_nd at col'
-    have : tr_nd₁.1.point₁ = tr_nd₁.point₁ := rfl
-    rw [this] at col'
-    have : tr_nd₁.1.point₂ = tr_nd₁.point₂ := rfl
-    rw [this] at col'
-    have : tr_nd₁.1.point₃ = tr_nd₁.point₃ := rfl
-    rw [this] at col'
-    exact col' col
+      rw [eq_of_parallel_and_pt_lies_on l₁ l₂ pl]
+      exact .inl Ray.source_lies_on
+    exact tr_nd₁.2 <| (Line.colinear_iff_exist_line_lies_on tr_nd₁.point₁ tr_nd₁.point₂ tr_nd₁.point₃).mpr
+      ⟨tr_nd₁.angle₁.end_ray.toLine, l₅, l₆ ,l₁⟩
   have np₂ : ¬ tr_nd₂.angle₁.end_ray.toLine ∥ tr_nd₂.angle₂.start_ray.toLine := by
     by_contra pl
-    have triv := eq_of_parallel_and_pt_lies_on l₃ l₄ pl
-    have l₅ : tr_nd₂.point₁ LiesOn tr_nd₂.angle₁.end_ray.toLine := by
-      rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
-      left ; exact Ray.source_lies_on
+    have l₅ : tr_nd₂.point₁ LiesOn tr_nd₂.angle₁.end_ray.toLine := .inl Ray.source_lies_on
     have l₆ : tr_nd₂.point₂ LiesOn tr_nd₂.angle₁.end_ray.toLine := by
-      rw [triv]
-      rw [Ray.lies_on_toline_iff_lies_on_or_lies_on_rev]
-      left ; exact Ray.source_lies_on
-    have col := (Line.colinear_iff_exist_line_lies_on tr_nd₂.point₁ tr_nd₂.point₂ tr_nd₂.point₃).mpr ⟨tr_nd₂.angle₁.end_ray.toLine, l₅, l₆ ,l₃⟩
-    have col' := tr_nd₂.2
-    unfold Triangle.is_nd at col'
-    have : tr_nd₂.1.point₁ = tr_nd₂.point₁ := rfl
-    rw [this] at col'
-    have : tr_nd₂.1.point₂ = tr_nd₂.point₂ := rfl
-    rw [this] at col'
-    have : tr_nd₂.1.point₃ = tr_nd₂.point₃ := rfl
-    rw [this] at col'
-    exact col' col
-  have inx₁ : tr_nd₁.point₃ = inx_of_extn_line tr_nd₁.angle₁.end_ray tr_nd₁.angle₂.start_ray np₁ := by exact inx_of_line_eq_inx np₁ ⟨l₁, l₂⟩
-  have inx₂ : tr_nd₂.point₃ = inx_of_extn_line tr_nd₂.angle₁.end_ray tr_nd₂.angle₂.start_ray np₂ := by exact inx_of_line_eq_inx np₂ ⟨l₃, l₄⟩
-  simp only [inx₁,inx₂,ray_eq₁,ray_eq₂]
-
+      rw [eq_of_parallel_and_pt_lies_on l₃ l₄ pl]
+      exact .inl Ray.source_lies_on
+    exact tr_nd₂.2 <| (Line.colinear_iff_exist_line_lies_on tr_nd₂.point₁ tr_nd₂.point₂ tr_nd₂.point₃).mpr
+      ⟨tr_nd₂.angle₁.end_ray.toLine, l₅, l₆ ,l₃⟩
+  simp only [inx_of_line_eq_inx np₁ ⟨l₁, l₂⟩, inx_of_line_eq_inx np₂ ⟨l₃, l₄⟩, ray_eq₁, ray_eq₂]
 
 end IsCongr
 
@@ -454,11 +420,11 @@ structure IsACongr (tr_nd₁ tr_nd₂: Triangle_nd P) : Prop where intro ::
 namespace IsACongr
 
 theorem not_cclock_of_cclock (h : tr_nd₁.IsACongr tr_nd₂) (cc : tr_nd₁.is_cclock) : ¬ tr_nd₂.is_cclock := by
-  apply Triangle_nd.clock_of_neg_angle
+  apply clock_of_neg_angle
   left
   have : - tr_nd₁.angle₁.value = tr_nd₂.angle₁.value := by simp only [h.4, neg_neg]
-  simp [<-this]
-  exact AngValue.neg_isneg_of_ispos (tr_nd₁.angle_pos_of_cclock cc).1
+  simp only [← this, AngValue.neg_isneg_iff_ispos]
+  exact (tr_nd₁.angle_pos_of_cclock cc).1
 
 protected theorem symm (h : tr_nd₁.IsACongr tr_nd₂) : tr_nd₂.IsACongr tr_nd₁ where
   edge₁ := h.1.symm
