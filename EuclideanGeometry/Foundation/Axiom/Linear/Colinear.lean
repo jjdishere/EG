@@ -55,8 +55,8 @@ theorem colinear_iff_eq_smul_vec_of_ne {A B C : P} (g : B ≠ A) : colinear A B 
     rw [← iff_true (colinear A B C), ← eq_iff_iff] at c
     unfold colinear at c
     rw [dite_eq_left_iff] at c
-    by_cases (C = B) ∨ (A = C) ∨ (B = A)
-    · by_cases C = A
+    by_cases h : (C = B) ∨ (A = C) ∨ (B = A)
+    · by_cases h : C = A
       · use 0
         rw [h]
         simp only [vec_same_eq_zero, zero_smul]
@@ -95,7 +95,7 @@ theorem colinear_of_snd_eq_fst {A B : P} (C : P) (h : B = A)  : colinear A B C :
 
 /-- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are colinear (in that order), then $A$, $C$, $B$ are colinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity. -/
 theorem flip_colinear_snd_trd {A B C : P} (c : colinear A B C) : colinear A C B := by
-  by_cases (B ≠ A) ∧ (C ≠ A)
+  by_cases h : (B ≠ A) ∧ (C ≠ A)
   · rcases (colinear_iff_eq_smul_vec_of_ne h.1).1 c with ⟨t, e⟩
     have ht : t ≠ 0 := by
       by_contra ht'
@@ -113,7 +113,7 @@ theorem flip_colinear_snd_trd {A B C : P} (c : colinear A B C) : colinear A C B 
 
 /-- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are colinear (in that order), then $B$, $A$, $C$ are colinear (in that order); in other words, in the definition of colinarity, swapping the first two of the three points does not change property of the three points being colinear. -/
 theorem flip_colinear_fst_snd {A B C : P} (c : colinear A B C) : colinear B A C := by
-  by_cases B = A
+  by_cases h : B = A
   · rw [h]
     exact triv_colinear _ _
   · rw [colinear_iff_eq_smul_vec_of_ne h] at c
@@ -232,7 +232,7 @@ end compatibility
 
 /-- There exists three points $A$, $B$, $C$ on the plane such that they are not colinear. -/
 theorem nontriv_of_plane {H : Type _} [h : EuclideanPlane H] : ∃ A B C : H, ¬(colinear A B C) := by
-  rcases h.Nonempty with ⟨A⟩
+  rcases h.nonempty with ⟨A⟩
   let B := (1 : Dir).toVec +ᵥ A
   let C := Dir.I.toVec +ᵥ A
   use A , B , C
