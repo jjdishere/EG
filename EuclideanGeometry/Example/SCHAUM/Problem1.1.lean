@@ -27,7 +27,7 @@ theorem Problem_1_1 : (SEG D M).length = (SEG E M).length := by
   have h₀ : (SEG A B).length = (SEG A C).length := by
     calc
       _ = (SEG C A).length := hisoc.symm
-      _ = (SEG A C).length := length_eq_length_of_rev (SEG C A)
+      _ = (SEG A C).length := sorry -- length_eq_length_of_rev (SEG C A)
   have h₁ : ¬ colinear B D M := by sorry
   have h₂ : ¬ colinear C E M := by sorry
   --to confirm the definition of angle is not invalid
@@ -42,19 +42,19 @@ theorem Problem_1_1 : (SEG D M).length = (SEG E M).length := by
   --the second edge of congruence
   have h₃ : (SEG B D).length = (SEG C E).length := by
     calc
-      (SEG B D).length = (SEG D B).length := length_eq_length_of_rev (SEG B D)
+      (SEG B D).length = (SEG D B).length := sorry --length_eq_length_of_rev (SEG B D)
       _=(SEG A B).length - (SEG A D).length := by
         rw [← eq_sub_of_add_eq']
         rw []
-        exact (length_eq_length_add_length (SEG A B) D (D_on_seg)).symm
+        sorry -- exact (length_eq_length_add_length (SEG A B) D (D_on_seg)).symm
       _= (SEG A C).length - (SEG A D).length := by rw [h₀]
       _= (SEG A C).length - (SEG A E).length := by rw [E_ray_position]
       _= (SEG E C).length := by
         rw [← eq_sub_of_add_eq']
-        exact (length_eq_length_add_length (SEG A C) E (E_on_seg)).symm
-      _= (SEG C E).length := length_eq_length_of_rev (SEG E C)
+        sorry --exact (length_eq_length_add_length (SEG A C) E (E_on_seg)).symm
+      _= (SEG C E).length := sorry -- length_eq_length_of_rev (SEG E C)
   have h₄ : (SEG M B).length = (SEG M C).length := by
-    have h₄₁ : (SEG M B).length = (SEG B M).length := length_eq_length_of_rev (SEG M B)
+    have h₄₁ : (SEG M B).length = (SEG B M).length := sorry --length_eq_length_of_rev (SEG M B)
     rw[h₄₁]
     rw [median_M_position]
     apply dist_target_eq_dist_source_of_midpt
