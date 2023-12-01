@@ -12,9 +12,9 @@ In $▵ ABC$, $D, E$ are two different points on side $BC$, $AD = AE$, $∠ BAD 
 
 Prove that $AB = AC$.
 -/
--- Define $▵ ABC$
+-- Define $▵ ABC$.
 variable {A B C : P} {hnd1 : ¬ colinear A B C}
--- $D, E$ are two different points on side $BC$
+-- $D, E$ are two different points on side $BC$.
 variable {D E : P} {hd : D LiesInt SEG B C} {he : E LiesInt SEG B C}
 -- nondegenerate
 lemma hnd2 : ¬ colinear A D E := by sorry
@@ -22,7 +22,7 @@ lemma a_ne_b : A ≠ B := by sorry
 lemma a_ne_d : A ≠ D := by sorry
 lemma a_ne_c : A ≠ C := by sorry
 lemma a_ne_e : A ≠ E := by sorry
--- $AD = AE$
+-- $AD = AE$.
 variable {hisoc : (TRI_nd A D E hnd2).1.IsIsoceles}
 -- $∠ BAD = -∠ CAE$.
 variable {hang : ∠ B A D a_ne_b a_ne_d = -∠ C A E a_ne_c a_ne_e}
