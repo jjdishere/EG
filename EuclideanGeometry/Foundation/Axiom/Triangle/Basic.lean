@@ -101,7 +101,7 @@ namespace Triangle
 
 -- When we have DirFig, rewrite this definition.
 protected def IsInt (A : P) (tr : Triangle P) : Prop := by
-  by_cases colinear tr.1 tr.2 tr.3
+  by_cases h : colinear tr.1 tr.2 tr.3
   -- why not using ¬ tr.is_nd?
   · exact False
   · let tr_nd : Triangle_nd P := ⟨tr, h⟩
@@ -253,19 +253,19 @@ end Triangle
 namespace Triangle_nd
 
 variable (tr_nd : Triangle_nd P)
+--`Rewrite this Part!!!!`
+theorem angle_pos_of_cclock (cclock : tr_nd.is_cclock) : tr_nd.angle₁.value.IsPos ∧ tr_nd.angle₂.value.IsPos ∧ tr_nd.angle₃.value.IsPos := by sorry
 
-theorem angle_pos_of_cclock (cclock : tr_nd.is_cclock) : 0 < tr_nd.angle₁.value ∧ 0 < tr_nd.angle₂.value ∧ 0 < tr_nd.angle₃.value := by sorry
+theorem angle_neg_of_clock (clock : ¬ tr_nd.is_cclock) : tr_nd.angle₁.value.IsNeg ∧ tr_nd.angle₂.value.IsNeg ∧ tr_nd.angle₃.value.IsNeg  := by sorry
 
-theorem angle_neg_of_clock (clock : ¬ tr_nd.is_cclock) : tr_nd.angle₁.value < 0 ∧ tr_nd.angle₂.value  < 0 ∧ tr_nd.angle₃.value < 0  := by sorry
+theorem cclock_of_pos_angle (h : tr_nd.angle₁.value.IsPos ∨ tr_nd.angle₂.value.IsPos ∨ tr_nd.angle₃.value.IsPos) : tr_nd.is_cclock := sorry
 
-theorem cclock_of_pos_angle (h : 0 < tr_nd.angle₁.value ∨ 0 < tr_nd.angle₂.value ∨ 0 < tr_nd.angle₃.value) : tr_nd.is_cclock := sorry
+theorem clock_of_neg_angle (h : tr_nd.angle₁.value.IsNeg ∨ tr_nd.angle₂.value.IsNeg ∨ tr_nd.angle₃.value.IsNeg) :¬ tr_nd.is_cclock := sorry
 
-theorem clock_of_neg_angle (h : tr_nd.angle₁.value < 0 ∨ tr_nd.angle₂.value < 0 ∨ tr_nd.angle₃.value < 0) :¬ tr_nd.is_cclock := sorry
-
-theorem pos_pos_or_neg_neg_of_iff_cclock {tr_nd₁ tr_nd₂ : Triangle_nd P} : (tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) ↔ (0 < tr_nd₁.angle₁.value ∧ 0 < tr_nd₂.angle₁.value) ∨ (tr_nd₁.angle₁.value < 0 ∧ tr_nd₂.angle₁.value < 0) := by
+theorem pos_pos_or_neg_neg_of_iff_cclock {tr_nd₁ tr_nd₂ : Triangle_nd P} : (tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) ↔ (tr_nd₁.angle₁.value.IsPos ∧ tr_nd₂.angle₁.value.IsPos) ∨ (tr_nd₁.angle₁.value.IsNeg ∧ tr_nd₂.angle₁.value.IsNeg) := by
   constructor
   · intro k
-    by_cases tr_nd₁.is_cclock
+    by_cases h : tr_nd₁.is_cclock
     · have h0 : tr_nd₂.is_cclock := by rw [←k] ; apply h
       left
       exact ⟨(angle_pos_of_cclock tr_nd₁ h).1, (angle_pos_of_cclock tr_nd₂ h0).1⟩

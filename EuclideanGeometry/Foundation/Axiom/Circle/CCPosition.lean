@@ -1,6 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
-import EuclideanGeometry.Foundation.Axiom.Basic.Plane_trash
 
 noncomputable section
 namespace EuclidGeom
@@ -99,7 +98,7 @@ theorem CC_circumscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle 
         rw [vadd_vsub]
       _ = Vec.norm ((VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).1 - ω₁.radius • (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).toDir.1) := rfl
       _ = Vec.norm ((Vec_nd.norm (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm) - ω₁.radius) • (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).toDir.1) := by
-        rw [sub_smul, Vec_nd.self_eq_norm_smul_todir]
+        rw [sub_smul, (Vec_nd.norm_smul_todir_eq_self _).symm]
       _ = Vec.norm ((dist ω₁.center ω₂.center - ω₁.radius) • (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).toDir.1) := by
         rw [dist_comm, NormedAddTorsor.dist_eq_norm']
         rfl
@@ -164,7 +163,7 @@ theorem CC_inscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (
         nth_rw 5 [← neg_vec]
         rw [mul_neg, mul_neg, neg_vec_norm_eq]; rfl
       _ = Vec.norm ((Vec_nd.norm (VEC_nd ω₁.center ω₂.center h.2.symm) + ω₁.radius) • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.1) := by
-        rw [add_smul, Vec_nd.self_eq_norm_smul_todir]
+        rw [add_smul, (Vec_nd.norm_smul_todir_eq_self _).symm]
       _ = Vec.norm ((dist ω₁.center ω₂.center + ω₁.radius) • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.1) := by
         congr
         unfold Vec_nd.mk_pt_pt Vec_nd.norm
