@@ -21,19 +21,19 @@ variable {E : P} {E_on_seg: E LiesInt (SEG A B)}
 variable {D_E_seg_position : (SEG B D).length = (SEG C E).length}
 --lemma for existance of angle
 --B ≠ A and C ≠ A by hnd
-lemma b_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
+lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
 lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
-lemma a_ne_b : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
-lemma a_ne_c : A ≠ C := (ne_of_not_colinear hnd).2.1
-lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
-lemma c_ne_b : C ≠ B := (ne_of_not_colinear hnd).1
+lemma A_ne_B : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
+lemma A_ne_C : A ≠ C := (ne_of_not_colinear hnd).2.1
+lemma B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
+lemma c_ne_B : C ≠ B := (ne_of_not_colinear hnd).1
 --D ≠ A and E ≠ A
 lemma d_ne_a : D ≠ A := sorry
 lemma e_ne_a : E ≠ A := sorry
-lemma d_ne_b : D ≠ B := sorry
-lemma e_ne_c : E ≠ C := sorry
+lemma d_ne_B : D ≠ B := sorry
+lemma e_ne_C : E ≠ C := sorry
 --Prove that $DM = EM$.
-theorem Problem1_3_ : ∠ D A B (d_ne_a) (b_ne_a (hnd := hnd))= ∠ C A E (c_ne_a (hnd := hnd)) (e_ne_a) := by
+theorem Problem1_3_ : ∠ D A B (d_ne_a) (B_ne_a (hnd := hnd))= ∠ C A E (c_ne_a (hnd := hnd)) (e_ne_a) := by
   --the first edge of congruence
   have h₀ : (SEG B A).length = (SEG C A).length := by
     calc
@@ -46,12 +46,12 @@ theorem Problem1_3_ : ∠ D A B (d_ne_a) (b_ne_a (hnd := hnd))= ∠ C A E (c_ne_
       _= (SEG B D).length := length_eq_length_of_rev (SEG D B)
       _= (SEG C E).length := D_E_seg_position
       _= (SEG E C).length := length_eq_length_of_rev (SEG C E)
-  have h₂ : ∠ A B D (a_ne_b (hnd := hnd)) (d_ne_b) = -∠ A C E (a_ne_c (hnd := hnd)) (e_ne_c) := by
-    have h₂₁ : ∠ A B D (a_ne_b (hnd := hnd)) (d_ne_b) = -∠ C B A (c_ne_b (hnd := hnd)) (a_ne_b (hnd := hnd)) := by sorry
-    have h₂₂ : ∠ A C E (a_ne_c (hnd := hnd)) (e_ne_c) = ∠ A C B (a_ne_c (hnd := hnd)) (b_ne_c (hnd := hnd)) := by sorry
+  have h₂ : ∠ A B D (A_ne_B (hnd := hnd)) (d_ne_B) = -∠ A C E (A_ne_C (hnd := hnd)) (e_ne_C) := by
+    have h₂₁ : ∠ A B D (A_ne_B (hnd := hnd)) (d_ne_B) = -∠ C B A (c_ne_B (hnd := hnd)) (A_ne_B (hnd := hnd)) := by sorry
+    have h₂₂ : ∠ A C E (A_ne_C (hnd := hnd)) (e_ne_C) = ∠ A C B (A_ne_C (hnd := hnd)) (B_ne_C (hnd := hnd)) := by sorry
     rw[h₂₁]
     rw[h₂₂]
-    have h₂₀ : ∠ C B A (c_ne_b (hnd := hnd)) (a_ne_b (hnd := hnd)) = ∠ A C B (a_ne_c (hnd := hnd)) (b_ne_c (hnd := hnd)) := by
+    have h₂₀ : ∠ C B A (c_ne_B (hnd := hnd)) (A_ne_B (hnd := hnd)) = ∠ A C B (A_ne_C (hnd := hnd)) (B_ne_C (hnd := hnd)) := by
       apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ A B C, hnd⟩)).mp
       exact hisoc
     rw[← h₂₀]
@@ -60,7 +60,7 @@ theorem Problem1_3_ : ∠ D A B (d_ne_a) (b_ne_a (hnd := hnd))= ∠ C A E (c_ne_
     · exact h₁
     · exact h₂
     · exact h₀
-  have h₄ : ∠ D A B (d_ne_a) (b_ne_a (hnd := hnd))= -∠ E A C (e_ne_a) (c_ne_a (hnd := hnd)) := by
+  have h₄ : ∠ D A B (d_ne_a) (B_ne_a (hnd := hnd))= -∠ E A C (e_ne_a) (c_ne_a (hnd := hnd)) := by
     exact h₃.angle₂
   rw[h₄]
   have h₅ : ∠ C A E (c_ne_a (hnd := hnd)) (e_ne_a) = -∠ E A C (e_ne_a) (c_ne_a (hnd := hnd)) := by

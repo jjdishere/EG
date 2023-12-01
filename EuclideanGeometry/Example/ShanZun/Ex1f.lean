@@ -16,11 +16,11 @@ Prove that $CE = DE$ -/
 -- Let $\triangle ABC$ be a regular triangle
 variable {A B C : P} {hnd : ¬ colinear A B C} {hreg : (▵ A B C).IsRegular}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- Let $E$ be a point on the extension of $BA$ and $D$ a point on the extension of $BC$
-variable {D E : P} {hd : D LiesOn (SEG_nd B A a_ne_b).extension} {he : E LiesOn (SEG_nd B C b_ne_c.symm).extension}
+variable {D E : P} {hd : D LiesOn (SEG_nd B A A_ne_B).extension} {he : E LiesOn (SEG_nd B C B_ne_C.symm).extension}
 -- We have $AE = BD$
 variable {h : (SEG A E).length = (SEG A E).length}
 
@@ -38,8 +38,8 @@ Prove that quadrilateral $ABCH$ is parallelogram -/
 -- We have triangle $\triangle ABC$
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $D$ is midpoint of $BA$, $E$ is midpoint of $BC$
 variable {D E : P} {hd : D = (SEG B A).midpoint} {he : E = (SEG B C).midpoint}
@@ -66,26 +66,26 @@ Prove that $AG \parallel DC$-/
 -- We have triangle $\triangle ABC$
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $D,E$ are points in $AB,AC$ respectively
-variable {D E : P} {hd : D LiesInt (SEG_nd A B a_ne_b.symm).1} {he : E LiesInt (SEG_nd A C c_ne_a).1}
+variable {D E : P} {hd : D LiesInt (SEG_nd A B A_ne_B.symm).1} {he : E LiesInt (SEG_nd A C c_ne_a).1}
 -- $F,G$ are points lies on line $BC$
-variable {F G : P} {hf : F LiesOn (LIN B C b_ne_c.symm)} {hg : G LiesOn (LIN B C b_ne_c.symm)}
+variable {F G : P} {hf : F LiesOn (LIN B C B_ne_C.symm)} {hg : G LiesOn (LIN B C B_ne_C.symm)}
 -- We have $FB = CG$
 variable {hedge : (SEG F B).length = (SEG C G).length}
 -- Claim : $F \ne A$ and $E \ne B$
 lemma f_ne_a : F ≠ A := sorry
-lemma e_ne_b : E ≠ B := sorry
+lemma e_ne_B : E ≠ B := sorry
 -- We have $AF \parallel BE$
-variable {hpara : (SEG_nd A F f_ne_a) ∥ (SEG_nd B E e_ne_b)}
+variable {hpara : (SEG_nd A F f_ne_a) ∥ (SEG_nd B E e_ne_B)}
 -- Claim: $G \ne A$ and $D \ne C$
 lemma g_ne_a : G ≠ A := sorry
-lemma d_ne_c : D ≠ C := sorry
+lemma d_ne_C : D ≠ C := sorry
 
 -- Theorem : $AG \parallel DC$
-theorem Shan_Problem_2_36 : (SEG_nd A G g_ne_a) ∥ (SEG_nd C D d_ne_c) := sorry
+theorem Shan_Problem_2_36 : (SEG_nd A G g_ne_a) ∥ (SEG_nd C D d_ne_C) := sorry
 
 end Shan_Problem_2_36
 
@@ -100,11 +100,11 @@ Prove that $AF = 3 FB$ -/
 variable {A B C : P} {hnd : ¬ colinear A B C} {hacute : Triangle_nd.IsAcute (TRI_nd A B C hnd)}
 -- 这个题应该需要加锐角三角形的限制，否则需要条件中的$AE = 2 EC$是有向线段的相等
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $BE, CF$ are heights
-variable {E F : P} {he : E = perp_foot B (LIN A C c_ne_a)} {hf : F = perp_foot C (LIN A B a_ne_b.symm)}
+variable {E F : P} {he : E = perp_foot B (LIN A C c_ne_a)} {hf : F = perp_foot C (LIN A B A_ne_B.symm)}
 -- 之后应该会需要一个锐角三角形中，垂足落在边的内部的定理
 -- We have $AE = 2 EC$
 variable {h : (SEG A E).length = 2 * (SEG E C).length}
@@ -122,22 +122,22 @@ Prove that $EF \parallel BC$-/
 -- We have triangle $\triangle ABC$
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $D$ is the midpoint of $BC$
 variable {D : P} {hd : D = (SEG B C).midpoint}
 -- Claim: $A \ne D$ and $B \ne D$ and $C \ne D$
-lemma a_ne_d : A ≠ D := sorry
-lemma b_ne_d : B ≠ D := sorry
+lemma A_ne_d : A ≠ D := sorry
+lemma B_ne_d : B ≠ D := sorry
 lemma c_ne_d : C ≠ D := sorry
 -- let the angle bisectors of $\angle ADB$ and $\angle ADC$ intersect $AB$ and $AC$ at $E,F$
-variable {E F : P} {he : is_inx E (ANG A D B a_ne_d b_ne_d).AngBis (SEG A B)} {hf : is_inx F (ANG A D C a_ne_d c_ne_d).AngBis (SEG A C)}
+variable {E F : P} {he : is_inx E (ANG A D B A_ne_d B_ne_d).AngBis (SEG A B)} {hf : is_inx F (ANG A D C A_ne_d c_ne_d).AngBis (SEG A C)}
 -- Claim: $F \ne E$
 lemma f_ne_e : F ≠ E := sorry
 
 -- Theorem : $EF \parallel BC$
-theorem Shan_Problem_2_38 : (SEG_nd E F f_ne_e) ∥ (SEG_nd B C b_ne_c.symm) := sorry
+theorem Shan_Problem_2_38 : (SEG_nd E F f_ne_e) ∥ (SEG_nd B C B_ne_C.symm) := sorry
 
 end Shan_Problem_2_38
 
@@ -169,8 +169,8 @@ Prove that $EG + FH = AC$-/
 -- We have triangle $\triangle ABC$
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $E,F$ lies on $AB$ such that $AE = FB$
 variable {E F : P} {he : E LiesInt (SEG A B)} {hf : F LiesInt (SEG A B)} {hef : (SEG A E).length = (SEG F B).length}

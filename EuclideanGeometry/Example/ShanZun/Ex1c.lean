@@ -16,16 +16,16 @@ Prove that $CD = AB / 2$. -/
 variable {A B C: P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $A \ne C$ and $B \ne C$.
 -- This is because vertices of nondegenerate triangles are distinct.
-lemma b_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
+lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
 lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
-lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
+lemma B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
 --∠ A C B = π/2
-variable {hrt : (ANG A C B c_ne_a.symm b_ne_c).IsRightAngle}
+variable {hrt : (ANG A C B c_ne_a.symm B_ne_C).IsRightAngle}
 -- D is the midpoint of segment AB
 variable {D : P} {hd : D = (SEG A B).midpoint}
 lemma d_ne_a: D ≠ A := by
   rw[hd]
-  apply (Seg_nd.midpt_lies_int (seg_nd := SEG_nd A B (b_ne_a).symm)).2.1
+  apply (Seg_nd.midpt_lies_int (seg_nd := SEG_nd A B (B_ne_a).symm)).2.1
   use C
   by_contra h
   have : colinear A B C :=by
@@ -38,7 +38,7 @@ lemma e_ne_a: E ≠ A := by
   apply (Seg_nd.midpt_lies_int (seg_nd := SEG_nd A C c_ne_a)).2.1
   use B
   exact hnd
-lemma e_ne_c: E ≠ C := by
+lemma e_ne_C: E ≠ C := by
   rw[he]
   apply (Seg_nd.midpt_lies_int (seg_nd := SEG_nd A C c_ne_a)).2.2
   use B
@@ -63,7 +63,7 @@ lemma midpt_half_length : (SEG A D).length = (SEG A B).length/2:=by
 
 lemma ad_ratio : (SEG A D).length / (SEG A B).length = 2⁻¹ := by
   apply div_eq_of_eq_mul
-  apply (length_ne_zero_iff_nd.mpr (b_ne_a)).symm
+  apply (length_ne_zero_iff_nd.mpr (B_ne_a)).symm
   use C
   exact hnd
   rw[length_eq_length_add_length (seg := (SEG A B)) (A := D),← dist_target_eq_dist_source_of_eq_midpt]
@@ -108,7 +108,7 @@ lemma hnd'' : ¬ colinear C D E := by
     use E
     exact he
     apply flip_colinear_snd_trd h
-    apply e_ne_c
+    apply e_ne_C
     apply hnd
     exact he
   have : colinear A B C := by
@@ -212,12 +212,12 @@ namespace Shan_Problem_1_8
 Prove that $FG \perp DE$. -/
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 --introduce the perps
 variable {D : P} {hd : D = perp_foot B (LIN A C c_ne_a)}
-variable {E : P} {he : E = perp_foot C (LIN A B a_ne_b.symm)}
+variable {E : P} {he : E = perp_foot C (LIN A B A_ne_B.symm)}
 variable {F G: P} {hf : F = (SEG B C).midpoint} {hg : G = (SEG D E).midpoint}
 lemma e_ne_d: E ≠ D := sorry
 lemma g_ne_f: G ≠ F := sorry

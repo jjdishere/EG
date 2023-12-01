@@ -31,14 +31,14 @@ theorem Problem1_1_ : (SEG D M).length = (SEG E M).length := by
   have h₁ : ¬ colinear B D M := by sorry
   have h₂ : ¬ colinear C E M := by sorry
   --to confirm the definition of angle is not invalid
-  have d_ne_b : D ≠ B := (ne_of_not_colinear h₁).2.2
-  have m_ne_b : M ≠ B := (ne_of_not_colinear h₁).2.1.symm
-  have e_ne_c : E ≠ C := (ne_of_not_colinear h₂).2.2
-  have m_ne_c : M ≠ C := (ne_of_not_colinear h₂).2.1.symm
-  have a_ne_b : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
-  have c_ne_b : C ≠ B := (ne_of_not_colinear hnd).1
-  have a_ne_c : A ≠ C := (ne_of_not_colinear hnd).2.1
-  have b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
+  have d_ne_B : D ≠ B := (ne_of_not_colinear h₁).2.2
+  have m_ne_B : M ≠ B := (ne_of_not_colinear h₁).2.1.symm
+  have e_ne_C : E ≠ C := (ne_of_not_colinear h₂).2.2
+  have m_ne_C : M ≠ C := (ne_of_not_colinear h₂).2.1.symm
+  have A_ne_B : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
+  have c_ne_B : C ≠ B := (ne_of_not_colinear hnd).1
+  have A_ne_C : A ≠ C := (ne_of_not_colinear hnd).2.1
+  have B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
   --the second edge of congruence
   have h₃ : (SEG B D).length = (SEG C E).length := by
     calc
@@ -58,14 +58,14 @@ theorem Problem1_1_ : (SEG D M).length = (SEG E M).length := by
     rw[h₄₁]
     rw [median_M_position]
     apply dist_target_eq_dist_source_of_midpt
-  have h₅ : ∠ D B M (d_ne_b) (m_ne_b) = -∠ E C M (e_ne_c) (m_ne_c) := by
-    have h₅₁ : -∠ E C M (e_ne_c) (m_ne_c) = -∠ A C B (a_ne_c) (b_ne_c) := by
+  have h₅ : ∠ D B M (d_ne_B) (m_ne_B) = -∠ E C M (e_ne_C) (m_ne_C) := by
+    have h₅₁ : -∠ E C M (e_ne_C) (m_ne_C) = -∠ A C B (A_ne_C) (B_ne_C) := by
       sorry
     rw [h₅₁]
-    have h₅₂ : ∠ D B M (d_ne_b) (m_ne_b) = -∠ C B A (c_ne_b) (a_ne_b) := by
+    have h₅₂ : ∠ D B M (d_ne_B) (m_ne_B) = -∠ C B A (c_ne_B) (A_ne_B) := by
       sorry
     rw [h₅₂]
-    have h₅₃ : ∠ C B A (c_ne_b) (a_ne_b) = ∠ A C B (a_ne_c) (b_ne_c) := by
+    have h₅₃ : ∠ C B A (c_ne_B) (A_ne_B) = ∠ A C B (A_ne_C) (B_ne_C) := by
       apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ A B C, hnd⟩)).mp
       exact hisoc
     rw [h₅₃]

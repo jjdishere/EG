@@ -18,17 +18,17 @@ Prove that $AD = BE = CF$
 --Let $\triangle ABC$ be a regular triangle.
 variable {A B C : Plane} {hnd : ¬ colinear A B C} {hreg : (▵ A B C).IsRegular}
 --Claim $A \ne B$
-lemma a_ne_b : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
+lemma A_ne_B : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
 --Claim $B \ne C$
-lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
+lemma B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
 --Claim $C \ne A$
 lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
 --let $D$ be point on the extension of $BC$
-variable {D : Plane} {D_on_ext : D LiesInt (SEG_nd B C b_ne_c.symm).extension}
+variable {D : Plane} {D_on_ext : D LiesInt (SEG_nd B C B_ne_C.symm).extension}
 --let $E$ be point on the extension of $CA$
 variable {E : Plane} {E_on_ext : E LiesInt (SEG_nd C A c_ne_a.symm).extension}
 --let $F$ be point on the extension of $AB$
-variable {F : Plane} {F_on_ext : F LiesInt (SEG_nd A B a_ne_b.symm).extension}
+variable {F : Plane} {F_on_ext : F LiesInt (SEG_nd A B A_ne_B.symm).extension}
 --such that $CD = AE = BF$
 variable {D_E_F_ray_position : ((SEG C D).length = (SEG A E).length) ∧ ((SEG A E).length = (SEG B F).length)}
 --Prove that $AD = BE = CF$
@@ -36,21 +36,24 @@ theorem Problem1_8_ : ((SEG A D).length = (SEG B E).length) ∧ ((SEG B E).lengt
   have ad_eq_be : (SEG A D).length = (SEG B E).length := by
     have hnd_bda : ¬ colinear B D A := by sorry
     have hnd_ceb : ¬ colinear C E B := by sorry
-    have d_ne_b : D ≠ B := by sorry
-    have a_ne_b : A ≠ B := by sorry
-    have e_ne_c : E ≠ C := by sorry
-    have b_ne_c : B ≠ C := by sorry
+    have d_ne_B : D ≠ B := by sorry
+    have A_ne_B : A ≠ B := by sorry
+    have e_ne_C : E ≠ C := by sorry
+    have B_ne_C : B ≠ C := by sorry
+    have A_ne_C : A ≠ C := by sorry
     have ab_eq_bc : (SEG A B).length = (SEG B C).length := hreg.2.symm
     have bc_eq_ca : (SEG B C).length = (SEG C A).length := hreg.1
     have c_lieson_bd : C LiesOn (SEG B D) := by sorry
     have a_lieson_ce : A LiesOn (SEG C E) := by sorry
-    let angle_dba := Angle.mk_pt_pt_pt D B A d_ne_b a_ne_b
-    let angle_ecb := Angle.mk_pt_pt_pt E C B e_ne_c b_ne_c
+    let angle_dba := Angle.mk_pt_pt_pt D B A d_ne_B A_ne_B
+    let angle_ecb := Angle.mk_pt_pt_pt E C B e_ne_C B_ne_C
     have angle_dba_eq_angle_ecb : Angle.value angle_dba = Angle.value angle_ecb := by
       calc
       Angle.value angle_dba
-      _= Angle.value (∠ C B A _ a_ne_b) := by sorry
-      _= Angle.value (∠ A C B _ b_ne_c) := by sorry
+      _= ∠ C B A B_ne_C.symm A_ne_B:= by sorry
+      _= ∠ A C B A_ne_C B_ne_C := by sorry  --apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri
+      --apply isoceles_of_regular
+      --exact hreg
       _= Angle.value angle_ecb := by sorry
     have bd_eq_ce : (SEG B D).length = (SEG C E).length := by
       calc
@@ -74,4 +77,5 @@ theorem Problem1_8_ : ((SEG A D).length = (SEG B E).length) ∧ ((SEG B E).lengt
     _= (SEG B E).length := by apply length_of_rev_eq_length'
   have be_eq_cf : (SEG B E).length = (SEG C F).length := by sorry
   exact ⟨ad_eq_be, be_eq_cf⟩
+
 end Problem1_8_

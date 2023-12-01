@@ -16,13 +16,13 @@ Prove that $AB = 2\cdot DE$. -/
 -- We have triangle $\triangle ABC$
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- We have $\angle CBA = 2\cdot \angle ACB$
-variable {hang : ∠ C B A b_ne_c.symm a_ne_b = 2 * ∠ A C B c_ne_a.symm b_ne_c}
+variable {hang : ∠ C B A B_ne_C.symm A_ne_B = 2 * ∠ A C B c_ne_a.symm B_ne_C}
 -- $AD$ is the height
-variable {D : P} {hd : D = perp_foot A (LIN B C b_ne_c.symm)}
+variable {D : P} {hd : D = perp_foot A (LIN B C B_ne_C.symm)}
 -- $AE$ is the median
 variable {E : P} {he : E = (SEG B C).midpoint}
 
@@ -39,11 +39,11 @@ Prove that $AD = DC$. -/
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
 variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- We have $\angle BAC = 3\pi /5$
-variable {hang : ∠ B A C a_ne_b.symm c_ne_a = 3 * π / 5}
+variable {hang : ∠ B A C A_ne_B.symm c_ne_a = 3 * π / 5}
 -- $E$ lies in the extension of $AC$ and $AE = BC$
 variable {E : P} {he₁ : E LiesInt (SEG_nd A C c_ne_a).extension} {he₂ : (SEG A E).length = (SEG B C).length}
 -- $D$ is the midpoint of $BE$

@@ -15,7 +15,7 @@ Prove that $AF = EF$. -/
 
   -- Let $\triangle ABC$ be an triangle.
   variable {A B C : P} {hnd : ¬ colinear A B C}
-  lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
+  lemma B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
   variable {D : P} {median_D_position : D = (SEG B C).midpoint}
   variable {median : Seg_nd P} {defmedian: median = (SEG A D)}
   variable {E : P} {E_on_ray : E LiesInt (SEG A D)}
@@ -32,15 +32,15 @@ Prove that For any point $D$ on the base $BC$, the sum of the the distance of $D
   -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
   variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
   -- Claim: $A \ne B$ and $A \neq C$. This is because vertices of nondegenerate triangles are distinct.
-  lemma b_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
+  lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
   lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
   -- Claim: For any point $D$ on the interior of the segment of $BC$, $D ≠ B$ and $D ≠ C$. This is because: $D$ is an interior point of an edge of a triangle, so it is not equal to the vertexs $B$ and $C$ of the triangle.
   variable {D : P}{hd : D LiesInt (SEG B C)}
-  lemma d_ne_b {D : P} {hd : D LiesInt (SEG B C)} : D ≠ B := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_fst_edge hd).2.1
-  lemma d_ne_c {D : P} {hd : D LiesInt (SEG B C)} : D ≠ C := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_fst_edge hd).2.2
+  lemma d_ne_B {D : P} {hd : D LiesInt (SEG B C)} : D ≠ B := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_fst_edge hd).2.1
+  lemma d_ne_C {D : P} {hd : D LiesInt (SEG B C)} : D ≠ C := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_fst_edge hd).2.2
 
   theorem Shan_Problem_1_6 : ∃ (const : ℝ) , ∀ D : P , (hd : D LiesInt (SEG B C)) →
-    dist_pt_line D (LIN A B (b_ne_a (hnd := hnd))) + dist_pt_line D (LIN A C (c_ne_a (hnd := hnd))) = const := by
+    dist_pt_line D (LIN A B (B_ne_a (hnd := hnd))) + dist_pt_line D (LIN A C (c_ne_a (hnd := hnd))) = const := by
     sorry
 
 end Shan_Problem_1_6
