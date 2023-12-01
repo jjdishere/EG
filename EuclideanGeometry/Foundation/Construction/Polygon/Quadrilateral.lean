@@ -2,6 +2,7 @@ import EuclideanGeometry.Foundation.Axiom.Position.Convex
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel_trash
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 
 /-!
 # Quadrilateral
@@ -63,7 +64,6 @@ def diag₂₄ : Seg P := SEG qdr.2 qdr.4
 
 end Quadrilateral
 
-
 /--
 A quadrilateral is called convex if
 1. both diagnals are non-degenerate,
@@ -72,7 +72,7 @@ A quadrilateral is called convex if
 -/
 @[pp_dot]
 def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
-  by_cases ((qdr.point₁ ≠ qdr.point₃) ∧ (qdr.point₂ ≠ qdr.point₄))
+  by_cases h : ((qdr.point₁ ≠ qdr.point₃) ∧ (qdr.point₂ ≠ qdr.point₄))
   · by_cases g : (¬ SEG_nd qdr.point₂ qdr.point₄ (h.2).symm ∥ (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm))
     · exact Line.inx (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm).toLine (SEG_nd qdr.point₂ qdr.point₄ (h.2).symm).toLine (Ne.symm g) LiesInt (SEG qdr.point₁ qdr.point₃) ∧ Line.inx (SEG_nd qdr.point₁ qdr.point₃ (h.1).symm).toLine (SEG_nd qdr.point₂ qdr.point₄ (h.2).symm).toLine (Ne.symm g) LiesInt (SEG qdr.point₂ qdr.point₄)
     · exact False
@@ -99,6 +99,16 @@ namespace Quadrilateral_cvx
 def mk_is_convex {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsConvex) : Quadrilateral_cvx P where
   toQuadrilateral := qdr
   convex := h
+
+section criteria_cvx
+variable {A B C D : P}
+
+-- theorem is_convex_of four inferior angle
+-- theorem is_convex_of both diag divids other pts
+-- theorem is_convex_of three side
+-- `to be added`
+
+end criteria_cvx
 
 section property
 -- properties of convex quadrilateral `to be added`
@@ -154,9 +164,8 @@ theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧
   simp only [g, dite_true] at k
   exact k
 
-/-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is convex. -/
+/-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is also convex. -/
 theorem permute_is_convex : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁) IsConvex := by
-  let permute := (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁)
   unfold Quadrilateral.IsConvex
   have h : qdr_cvx.point₂ ≠ qdr_cvx.point₄ ∧ qdr_cvx.point₃ ≠ qdr_cvx.point₁ := ⟨qdr_cvx.nd₂₄.symm, qdr_cvx.nd₁₃⟩
   simp only [ne_eq, h, not_false_eq_true, and_self, dite_true]
@@ -165,14 +174,17 @@ theorem permute_is_convex : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point
   have g': ¬ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) ∥ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) := by
     apply Ne.symm (Seg_nd.not_para_rev_of_not_para (Ne.symm g))
   simp only [g', not_false_eq_true, dite_true]
-  have inx_eq : qdr_cvx.diag_inx = Line.inx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine (Ne.symm qdr_cvx.diag_not_para) := Eq.symm (Line.inx.symm (Seg_nd.not_para_toline_of_not_para qdr_cvx.diag_nd₁₃ qdr_cvx.diag_nd₂₄ qdr_cvx.diag_not_para))
-  have inx_eq' : qdr_cvx.diag_inx = Line.inx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine (Ne.symm g') := by
-    rw [inx_eq]
-    sorry
+  have g'': ¬ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) ∥ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) := Ne.symm g'
+  have nd₃₁_eq_nd₁₃ : (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine = (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine := by
+    exact (Line.line_of_pt_pt_eq_rev qdr_cvx.nd₁₃.symm)
+  have inx_eq : qdr_cvx.diag_inx = LineInx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine (Ne.symm qdr_cvx.diag_not_para) := Eq.symm (Line.inx.symm (Seg_nd.not_para_toline_of_not_para qdr_cvx.diag_nd₁₃ qdr_cvx.diag_nd₂₄ qdr_cvx.diag_not_para))
   rcases qdr_cvx.diag_inx_lies_int with ⟨a, b⟩
-  constructor
-  sorry
-  sorry
+  have inx_eq' : qdr_cvx.diag_inx = Line.inx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine g'':= by
+    rw [inx_eq]
+    congr 1
+    exact nd₃₁_eq_nd₁₃.symm
+  rw [←inx_eq']
+  exact ⟨b, (Seg.lies_int_rev_iff_lies_int.mp a)⟩
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
 theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := by
@@ -242,8 +254,28 @@ theorem not_colinear₂₃₄ : ¬ colinear qdr_cvx.1.2 qdr_cvx.1.3 qdr_cvx.1.4 
 /-- Given a convex quadrilateral qdr_cvx, its 3rd, 4th and 1st points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₃ point₄}$ is not the same as the projective direction of the vector $\overrightarrow{point₃ point₁}$. -/
 theorem not_colinear₃₄₁ : ¬ colinear qdr_cvx.1.3 qdr_cvx.1.4 qdr_cvx.1.1 := sorry
 
+/-- Given a convex quadrilateral qdr_cvx, its 4th, 1st and 3rd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₃ point₄}$ is not the same as the projective direction of the vector $\overrightarrow{point₃ point₁}$. -/
+theorem not_colinear₄₁₃ : ¬ colinear qdr_cvx.1.4 qdr_cvx.1.1 qdr_cvx.1.3 := sorry
+
+/-- Given a convex quadrilateral qdr_cvx, its 4th, 3rd and 1st points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₃ point₄}$ is not the same as the projective direction of the vector $\overrightarrow{point₃ point₁}$. -/
+theorem not_colinear₄₃₁ : ¬ colinear qdr_cvx.1.4 qdr_cvx.1.3 qdr_cvx.1.1 := sorry
+
+/-- Given a convex quadrilateral qdr_cvx, its 1st, 4th and 3rd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₃ point₄}$ is not the same as the projective direction of the vector $\overrightarrow{point₃ point₁}$. -/
+theorem not_colinear₁₄₃ : ¬ colinear qdr_cvx.1.1 qdr_cvx.1.4 qdr_cvx.1.3 := sorry
+
 /-- Given a convex quadrilateral qdr_cvx, its 4th, 1st and 2nd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₄ point₁}$ is not the same as the projective direction of the vector $\overrightarrow{point₄ point₂}$. -/
 theorem not_colinear₄₁₂ : ¬ colinear qdr_cvx.1.4 qdr_cvx.1.1 qdr_cvx.1.2 := sorry
+
+/-- Given a convex quadrilateral qdr_cvx, its 2nd, 1st and 4th points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₄ point₁}$ is not the same as the projective direction of the vector $\overrightarrow{point₄ point₂}$. -/
+theorem not_colinear₂₁₄ : ¬ colinear qdr_cvx.1.2 qdr_cvx.1.1 qdr_cvx.1.4 := sorry
+
+/-- Given a convex quadrilateral qdr_cvx, its 1st, 4th and 2nd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₄ point₁}$ is not the same as the projective direction of the vector $\overrightarrow{point₄ point₂}$. -/
+theorem not_colinear₁₄₂ : ¬ colinear qdr_cvx.1.1 qdr_cvx.1.4 qdr_cvx.1.2 := sorry
+
+/-- Given a convex quadrilateral qdr_cvx, its 1st, 2nd and 4th points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₄ point₁}$ is not the same as the projective direction of the vector $\overrightarrow{point₄ point₂}$. -/
+theorem not_colinear₁₂₄ : ¬ colinear qdr_cvx.1.1 qdr_cvx.1.2 qdr_cvx.1.4 := sorry
+
+-- We need to add a bunch of such theorems as they may be useful in discussing general quadrilaterals, i.e. not convex, even as contradictory in proofs.
 
 /--angle at point₁ of qdr_cvx-/
 @[pp_dot]
@@ -261,19 +293,19 @@ def angle₃ : Angle P := ANG qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄
 @[pp_dot]
 def angle₄ : Angle P := ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₃₄.symm qdr_cvx.nd₁₄.symm
 
-/--triangle point₄ point₁ point₂-/
+/--triangle point₄ point₁ point₂, which includes angle₁-/
 @[pp_dot]
 def triangle₁ : Triangle_nd P := TRI_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.not_colinear₄₁₂
 
-/--triangle point₁ point₂ point₃-/
+/--triangle point₁ point₂ point₃, which includes angle₂-/
 @[pp_dot]
 def triangle₂ : Triangle_nd P := TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃
 
-/--triangle point₂ point₃ point₄-/
+/--triangle point₂ point₃ point₄, which includes angle₃-/
 @[pp_dot]
 def triangle₃ : Triangle_nd P := TRI_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.not_colinear₂₃₄
 
-/--triangle point₃ point₄ point₁-/
+/--triangle point₃ point₄ point₁, which includes angle₄-/
 @[pp_dot]
 def triangle₄ : Triangle_nd P := TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁
 
