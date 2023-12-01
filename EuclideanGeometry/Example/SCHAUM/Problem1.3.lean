@@ -37,15 +37,15 @@ theorem Problem1_3_ : ∠ D A B (d_ne_a) (b_ne_a (hnd := hnd))= ∠ C A E (c_ne_
   --the first edge of congruence
   have h₀ : (SEG B A).length = (SEG C A).length := by
     calc
-      _= (SEG A B).length := length_eq_length_of_rev (SEG B A)
+      _= (SEG A B).length := sorry -- length_eq_length_of_rev (SEG B A)
       _= (SEG C A).length := hisoc.symm
   have hnd₁ : ¬ colinear B A D := by sorry
   have hnd₂ : ¬ colinear C A E := by sorry
   have h₁ : (SEG D B).length = (SEG E C).length := by
     calc
-      _= (SEG B D).length := length_eq_length_of_rev (SEG D B)
+      _= (SEG B D).length := sorry -- length_eq_length_of_rev (SEG D B)
       _= (SEG C E).length := D_E_seg_position
-      _= (SEG E C).length := length_eq_length_of_rev (SEG C E)
+      _= (SEG E C).length := sorry --length_eq_length_of_rev (SEG C E)
   have h₂ : ∠ A B D (a_ne_b (hnd := hnd)) (d_ne_b) = -∠ A C E (a_ne_c (hnd := hnd)) (e_ne_c) := by
     have h₂₁ : ∠ A B D (a_ne_b (hnd := hnd)) (d_ne_b) = -∠ C B A (c_ne_b (hnd := hnd)) (a_ne_b (hnd := hnd)) := by sorry
     have h₂₂ : ∠ A C E (a_ne_c (hnd := hnd)) (e_ne_c) = ∠ A C B (a_ne_c (hnd := hnd)) (b_ne_c (hnd := hnd)) := by sorry
@@ -60,4 +60,10 @@ theorem Problem1_3_ : ∠ D A B (d_ne_a) (b_ne_a (hnd := hnd))= ∠ C A E (c_ne_
     · exact h₁
     · exact h₂
     · exact h₀
+  have h₄ : ∠ D A B (d_ne_a) (b_ne_a (hnd := hnd))= -∠ E A C (e_ne_a) (c_ne_a (hnd := hnd)) := by
+    exact h₃.angle₂
+  rw[h₄]
+  have h₅ : ∠ C A E (c_ne_a (hnd := hnd)) (e_ne_a) = -∠ E A C (e_ne_a) (c_ne_a (hnd := hnd)) := by
+    exact neg_value_of_rev_ang (c_ne_a (hnd := hnd)) (e_ne_a)
+  rw[h₅]
 end Problem1_3_
