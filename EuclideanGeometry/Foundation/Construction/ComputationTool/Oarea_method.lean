@@ -39,6 +39,13 @@ theorem  wedge_eq_divratio_mul_wedge_of_colinear_colinear (A B C D E : P) (colin
   rw[← wedge231 D B E, wedge_eq_wedge_add_wedge_of_colinear E A D B (perm_colinear_trd_fst_snd colin'), ← wedge231 D C E, wedge_eq_wedge_add_wedge_of_colinear E A D C (perm_colinear_trd_fst_snd colin'), wedge213 A B D, wedge231 A B E, wedge213 A C D, wedge231 A C E,wedge_eq_divratio_mul_wedge_of_colinear A B C D colin cnea,wedge_eq_divratio_mul_wedge_of_colinear A B C E colin cnea]
   ring
 
+theorem ratio_eq_wedge_div_wedge_of_colinear_colinear_notcoliear (A B C D E : P) (colin : colinear A B C) (cnea : C ≠ A) (colin' : colinear A D E) (ncolin : ¬ colinear D C E) : divratio A B C = (wedge D B E) / (wedge D C E) := by
+  rw [wedge_eq_divratio_mul_wedge_of_colinear_colinear A B C D E colin cnea colin']
+  have h0 : ¬ wedge D C E = 0 := by
+    rw[(colinear_iff_wedge_eq_zero D C E).symm]
+    exact ncolin
+  field_simp
+
 end oarea_method
 
 end EuclidGeom
