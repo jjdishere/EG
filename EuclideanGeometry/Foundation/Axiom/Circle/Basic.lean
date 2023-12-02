@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 
 noncomputable section
 namespace EuclidGeom
@@ -28,6 +29,20 @@ scoped notation "CIR" => Circle.mk_pt_pt
 
 scoped notation "⨀" => Circle.mk_pt_pt
 
+namespace Circle
+
+def mk_pt_radius (O : P) {r : ℝ} (rpos : r > 0) : Circle P where
+  center := O
+  radius := r
+  rad_pos := rpos
+
+def mk_pt_pt_diam (A B : P) (h : B ≠ A) : Circle P where
+  center := (SEG A B).midpoint
+  radius := dist (SEG A B).midpoint B
+  rad_pos := dist_pos.mpr (Seg_nd.midpt_ne_target h)
+
+end Circle
+
 section coercion
 
 -- this should not live here, this belongs to construction.
@@ -39,10 +54,6 @@ end coercion
 section position
 
 namespace Circle
-
--- Define the power of a point P relative to a circle ω with center O and radius r to be OP ^ 2 - r ^ 2
-
-def power (ω : Circle P) (p : P) : ℝ := dist ω.center p ^ 2 - ω.radius ^ 2
 
 /- `One seldom uses Inside a circle in reality.` Should we delete this? Int On Out is enough-/
 protected def IsInside (p : P) (ω : Circle P) : Prop := dist ω.center p ≤  ω.radius
@@ -73,16 +84,17 @@ scoped infix : 50 "LiesOut" => Circle.IsOutside
 
 namespace Circle
 
+theorem pt_liesout_ne_center {p : P} {ω : Circle P} (h : p LiesOut ω) : p ≠ ω.center := by
+  apply dist_pos.mp
+  rw [dist_comm]
+  have : dist ω.center p > ω.radius := h
+  have : ω.radius > 0 := ω.rad_pos
+  linarith
 
-theorem inside_circle_iff_power_neg (p : P) (ω : Circle P) : p LiesIn ω ↔ ω.power p ≤  0 := sorry
-
-theorem interior_of_circle_iff_power_neg (p : P) (ω : Circle P) : p LiesInt ω ↔ ω.power p < 0 := sorry
-
-theorem lies_on_circle_iff_power_zero (p : P) (ω : Circle P) : p LiesOn ω ↔ ω.power p = 0 := sorry
-
-theorem outside_circle_iff_power_pos (p : P) (ω : Circle P) : p LiesOut ω ↔ 0 < ω.power p  := sorry
-
-theorem interior_of_circle_iff_inside_not_on_circle (p : P) (ω : Circle P) : p LiesInt ω ↔ (p LiesIn ω) ∧ (¬ p LiesOn ω) := sorry
+theorem interior_of_circle_iff_inside_not_on_circle (p : P) (ω : Circle P) : p LiesInt ω ↔ (p LiesIn ω) ∧ (¬ p LiesOn ω) := by
+  show dist ω.center p < ω.radius ↔ (dist ω.center p ≤ ω.radius) ∧ (¬ dist ω.center p = ω.radius)
+  push_neg
+  exact lt_iff_le_and_ne
 
 -- Define a concept of segment to be entirely contained in a circle, to mean that the two endpoints of a segment to lie inside a circle.
 

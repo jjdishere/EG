@@ -17,7 +17,7 @@ Prove that $CD = 2 \cdot CE$. -/
   -- A ≠ B
   lemma a_ne_b : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
   -- Since D is on line AB and AB = BD, it is trivial that D is on ray AB. Position can be determined here.
-  variable {D : P} {D_on_ray : D LiesInt (SEG_nd A B a_ne_b).extension }
+  variable {D : P} {D_on_ray : D LiesInt (RAY A B a_ne_b) }
   variable {D_ray_position : (SEG A B).length = (SEG B D).length }
   -- As E is on AB, AE = EB, we can do the same with regard to E.
   variable {E : P} {E_midpoint : E = (SEG A B).midpoint}
