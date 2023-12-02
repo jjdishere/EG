@@ -32,7 +32,7 @@ variable {P : Plane} {hd : P = perp_foot D (LIN B C B_ne_C.symm)}
 variable {Q : Plane} {hd : Q = perp_foot E (LIN B C B_ne_C.symm)}
 -- Prove that $DP = EQ$.
 theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
-  /-In the isoceles triangle $ABC$ AB = AC
+  /-In the isoceles triangle $ABC$ $AB = AC$.
     Because $ AB = AC $ $ AD = AE $ then $ BD = AB - AD = AC - AE = CE $
     The angle $D B P$ is the same as $A B C$
     The angle $E C Q$ is the same as $A C B$
@@ -59,7 +59,7 @@ theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
   Since $DP$ is perpendicular to $BC$ at $P$, we have $\angle DPB = \pi/2$ or $ - \pi/2$.
   Since $EQ$ is perpendicular to $BC$ at $Q$, we have $\angle EQC = \pi/2$ or $ - \pi/2$.
   Thus $|\angle DPB| = |\angle EQC|$.
-  In $\triangle DBP$ and $\triangle EQC$,
+  In $\triangle DBP$ and $\triangle ECQ$,
   $\cdot \angle DBP = - \angle ECQ$
   $\cdot |\angle DPB| = |\angle EQC|$
   $\cdot BD = CE$
