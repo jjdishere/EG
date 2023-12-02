@@ -12,13 +12,33 @@ namespace Circle
 -- Define the power of a point P relative to a circle ω with center O and radius r to be OP ^ 2 - r ^ 2
 def power (ω : Circle P) (p : P) : ℝ := dist ω.center p ^ 2 - ω.radius ^ 2
 
-theorem inside_circle_iff_power_npos (p : P) (ω : Circle P) : p LiesIn ω ↔ ω.power p ≤  0 := sorry
+theorem inside_circle_iff_power_npos (p : P) (ω : Circle P) : p LiesIn ω ↔ ω.power p ≤ 0 := by
+  apply Iff.trans _ sub_nonpos.symm
+  unfold Circle.IsInside
+  apply Iff.trans _ sq_le_sq.symm
+  rw [abs_of_nonneg dist_nonneg, abs_of_pos ω.rad_pos]
 
-theorem interior_of_circle_iff_power_neg (p : P) (ω : Circle P) : p LiesInt ω ↔ ω.power p < 0 := sorry
+theorem interior_of_circle_iff_power_neg (p : P) (ω : Circle P) : p LiesInt ω ↔ ω.power p < 0 := by
+  apply Iff.trans _ sub_neg.symm
+  unfold lies_int Interior.interior instInteriorCircle Circle.interior Circle.IsInt
+  simp
+  apply Iff.trans _ sq_lt_sq.symm
+  rw [abs_of_nonneg dist_nonneg, abs_of_pos ω.rad_pos]
 
-theorem lies_on_circle_iff_power_zero (p : P) (ω : Circle P) : p LiesOn ω ↔ ω.power p = 0 := sorry
+theorem lies_on_circle_iff_power_zero (p : P) (ω : Circle P) : p LiesOn ω ↔ ω.power p = 0 := by
+  apply Iff.trans _ sub_eq_zero.symm
+  unfold lies_on Fig.carrier instFigCircle Circle.carrier Circle.IsOn
+  simp
+  apply Iff.trans _ (sq_eq_sq dist_nonneg _).symm
+  rfl
+  apply le_iff_lt_or_eq.mpr
+  left; exact ω.rad_pos
 
-theorem outside_circle_iff_power_pos (p : P) (ω : Circle P) : p LiesOut ω ↔ 0 < ω.power p  := sorry
+theorem outside_circle_iff_power_pos (p : P) (ω : Circle P) : p LiesOut ω ↔ 0 < ω.power p  := by
+  apply Iff.trans _ sub_pos.symm
+  unfold Circle.IsOutside
+  apply Iff.trans _ sq_lt_sq.symm
+  rw [abs_of_nonneg dist_nonneg, abs_of_pos ω.rad_pos]
 
 end Circle
 
@@ -48,8 +68,6 @@ theorem line_tangent_circle {ω : Circle P} {p : P} (h : p LiesOut ω) : ((DLIN 
 theorem tangent_pts_eq_tangents {ω : Circle P} {p : P} (h : p LiesOut ω) : (DirLC_Tangent_pt (line_tangent_circle h).1 = (pt_tangent_circle_pts h).left) ∧ (DirLC_Tangent_pt (line_tangent_circle h).2 = (pt_tangent_circle_pts h).right) := sorry
 
 theorem length_of_tangent {ω : Circle P} {p : P} (h : p LiesOut ω) : dist p (pt_tangent_circle_pts h).left = dist p (pt_tangent_circle_pts h).right := sorry
-
-theorem tangent_and_intersected_chord_theorem {ω : Circle P} {p : P} (h : p LiesOut ω) : sorry := sorry
 
 end Circle
 
