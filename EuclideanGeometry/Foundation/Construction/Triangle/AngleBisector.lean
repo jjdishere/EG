@@ -26,7 +26,7 @@ variable {P : Type _} [EuclideanPlane P]
 structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
   eq_source : ang.source = ray.source
   eq_value : (Angle.mk_strat_ray ang ray eq_source).value = (Angle.mk_ray_end ang ray eq_source).value
-  same_sgn : ((Angle.mk_strat_ray ang ray eq_source).value.IsPos ∧ ang.value.IsPos) ∨ ((Angle.mk_strat_ray ang ray eq_source).value.IsNeg ∧ ang.value.IsNeg) ∨ (ang.value.toReal = π )
+  same_sgn : ((Angle.mk_strat_ray ang ray eq_source).value.IsPos ∧ ang.value.IsPos) ∨ ((Angle.mk_strat_ray ang ray eq_source).value.IsNeg ∧ ang.value.IsNeg) ∨ ((Angle.mk_strat_ray ang ray eq_source).value = (π/2).toAngValue)
 
 
 structure IsAngBisLine (ang : Angle P) (line : Line P) : Prop where
