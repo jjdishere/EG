@@ -217,3 +217,25 @@ variable {E : P} {he : is_inx E (SEG A D) (SEG B C)}
 theorem Shan_Problem_2_48 : Triangle.area (▵ A B D) / Triangle.area (▵ C B D) = (SEG A E).length / (SEG D E).length := sorry
 
 end Shan_Problem_2_48
+
+namespace Shan_Problem_2_52
+/- $AD$ is the height of hypotenuse $BC$ of right triangle $\triangle ABC$,
+the angle bisector of $\angle ABC$ intersect $AD$ and $AC$ at $M,N$ respectively,
+Prove that $AB^2 - AN^2 = BM \times BN$-/
+
+-- Let triangle $\triangle ABC$ be a right triangle with $\angle BAC = 90^{circ}$
+variable {A B C : P} {hnd : ¬ colinear A B C}
+-- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
+lemma a_ne_b : A ≠ B := sorry
+lemma b_ne_c : B ≠ C := sorry
+lemma c_ne_a : C ≠ A := sorry
+variable {hright : ∠ B A C a_ne_b.symm c_ne_a = π / 2}
+-- $AD$ is the height of $\triangle ABC$
+variable {D : P} {hd : D = perp_foot A (LIN B C b_ne_c.symm)}
+-- the angle bisector of $\angle ABC$ intersect $AD$ and $AC$ at $M,N$ respectively
+variable {l : Ray P} {M N : P} {hl : l = (ANG A B C a_ne_b b_ne_c.symm).AngBis} {hm : is_inx M (SEG A D) l} {hn : is_inx N (SEG A C) l}
+
+-- Theorem : $AB^2 - AN^2 = BM \times BN$
+theorem Shan_Problem_2_52 : (SEG A B).length * (SEG A B).length - (SEG A N).length * (SEG A N).length = (SEG B M).length * (SEG B N).length := sorry
+
+end Shan_Problem_2_52
