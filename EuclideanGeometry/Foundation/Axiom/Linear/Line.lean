@@ -493,7 +493,6 @@ open Line DirLine
 
 section coercion
 
-
 theorem Ray.toline_eq_rev_toline {r : Ray P} : r.toLine = r.reverse.toLine :=
   (Quotient.eq (r := same_extn_line.setoid)).mpr same_extn_line.ray_rev_of_same_extn_line
 
