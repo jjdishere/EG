@@ -76,7 +76,8 @@ theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
     rw [AngBis]
     rw [end_ray_eq_start_ray_mul_value]
     simp
-    rw [← sub_todir_eq_todir_div, theta_sub_half_theta_eq_half_theta]
+    rw [← sub_todir_eq_todir_div]
+    exact congrArg AngValue.toDir (ang.value.sub_half_eq_half).symm
   same_sgn := by
     have h : ang.source = ang.AngBis.source := rfl
     have g : (ang.value.IsPos) ∨ (ang.value.IsNeg) ∨ (ang.value = π) ∨ (ang.value = 0) := by sorry
