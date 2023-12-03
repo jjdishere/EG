@@ -78,6 +78,7 @@ theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
     rw [← sub_todir_eq_todir_div]
     exact congrArg AngValue.toDir (ang.value.sub_half_eq_half).symm
   same_sgn := by
+    have h : ang.source = ang.AngBis.source := rfl
     have g : (ang.value.IsPos) ∨ (ang.value.IsNeg) ∨ (ang.value = π) ∨ (ang.value = 0) := by sorry
     rcases g with g₁|g₂|g₃|g₄
     · left
@@ -96,7 +97,7 @@ theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
       left
       constructor
       · apply toreal_eq_half_pi_of_eq_half_pi_toangvalue
-        simp [mk_start_ray_value_eq_half_angvalue, g₃]
+        simp [toreal_eq_half_pi_of_eq_half_pi_toangvalue,mk_start_ray_value_eq_half_angvalue, g₃]
       · exact g₃
     · right
       right
@@ -118,7 +119,7 @@ theorem angbis_iff_angbis {ang : Angle P} {r : Ray P} : IsAngBis ang r ↔ r = a
 
 theorem ang_source_rev_eq_source_bis {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) : ang.reverse.source = r.source := by rw[ang.ang_source_rev_eq_source, h.eq_source]
 
-theorem nonpi_eq_rev_angbis_of_angbis {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) (nonpi : ang.value ≠ π ): IsAngBis ang.reverse r where
+theorem nonpi_bisector_eq_bisector_of_rev {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) (nonpi : ang.value ≠ π ): IsAngBis ang.reverse r where
   eq_source := by rw[h.eq_source.symm, ang.ang_source_rev_eq_source]
   eq_value := by
     have : (Angle.mk_start_ray ang.reverse r (ang_source_rev_eq_source_bis h)) = (Angle.mk_ray_end ang r h.eq_source).reverse := rfl
@@ -139,23 +140,9 @@ theorem nonpi_eq_rev_angbis_of_angbis {ang : Angle P} {r : Ray P} (h : IsAngBis 
       exact h₃.2
     · exact Or.inr (Or.inr (Or.inr h₄))
 
-theorem nonpi_angbis_eq_rev_angbis {ang : Angle P} (nonpi : ang.value ≠ π ): ang.AngBis = ang.reverse.AngBis := by
-  apply angbis_iff_angbis.mp
-  simp[nonpi_eq_rev_angbis_of_angbis, angbis_is_angbis, nonpi]
 
-
-theorem rev_angbis_of_pi_ang {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) (pi : ang.value = π ): IsAngBis ang.reverse r.reverse where
-  eq_source := by apply ang_source_rev_eq_source_bis h
-  eq_value := by
-    have : (Angle.mk_start_ray ang r h.eq_source).value = (2⁻¹ * π).toAngValue := by
-      apply toreal_eq_half_pi_of_eq_half_pi_toangvalue
-      field_simp
-      sorry
-    sorry
-  same_sgn := sorry
-
-
-
+theorem bisector_eq_bisector_of_rev' {ang : Angle P} : ang.AngBis = ang.reverse.AngBis := by
+  sorry
 
 theorem angbisline_is_angbisline : sorry := sorry
 
@@ -194,10 +181,31 @@ namespace Triangle_nd
 
 theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : Triangle_nd P} : ¬ tri_nd.angle₁.AngBis.toLine ∥ tri_nd.angle₂.AngBis.toLine := by
   by_contra g
-  let A₁ := Angle.mk_start_ray tri_nd.angle₁ tri_nd.angle₁.AngBis tri_nd.angle₁.eq_source
+  let A₁ := (Angle.mk_start_ray tri_nd.angle₁ tri_nd.angle₁.AngBis tri_nd.angle₁.eq_source).reverse
   let A₂ := Angle.mk_ray_end tri_nd.angle₂ tri_nd.angle₂.AngBis tri_nd.angle₂.eq_source
-
+  have sr : A₁.start_ray.toDir = A₂.start_ray.toDir := by
+    have h₁ : A₁.start_ray = tri_nd.angle₁.AngBis := rfl
+    have h₂ : A₂.start_ray = tri_nd.angle₂.AngBis := rfl
+    rw [Ray.para_iff_para_toline] at g
+    rw [← h₁] at g
+    rw [← h₂] at g
+    sorry
+  have er : A₁.end_ray.toDirLine = A₂.end_ray.toDirLine.reverse := by
+    have h₃ : A₁.end_ray = tri_nd.edge_nd₃.toRay := rfl
+    have h₄ : A₂.end_ray = tri_nd.edge_nd₃.reverse.toRay := rfl
+    rw [h₃]
+    rw [h₄]
+    have h₅ : tri_nd.edge_nd₃.reverse.toDirLine.reverse = tri_nd.edge_nd₃.reverse.reverse.toDirLine := by rw [Seg_nd.todirline_rev_eq_rev_toline]
+    have h₆ : tri_nd.edge_nd₃.reverse.reverse.toDirLine = tri_nd.edge_nd₃.toDirLine := rfl
+    rw [h₆] at h₅
+    exact id h₅.symm
+  have g₁ : IsConsecutiveIntAng A₁ A₂ := by
+    constructor
+    · rw [sr]
+    · rw [er]
+  have g₂ : A₁.value - A₂.value = π := by rw [value_sub_eq_pi_of_isconsecutiveintang g₁]
   sorry
+
 
 def Incenter (tri_nd : Triangle_nd P) : P := Line.inx tri_nd.angle₁.AngBis.toLine tri_nd.angle₂.AngBis.toLine angbisline_of_angle₁_angle₂_not_parallel
 
