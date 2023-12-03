@@ -62,6 +62,9 @@ theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B
   rw [h]
   exact triv_colinear A C
 
+theorem not_colinear_iff_wedge_ne_zero (A B C : P) : (¬ colinear A B C) ↔ (wedge A B C ≠ 0) := by
+  rw [colinear_iff_wedge_eq_zero]
+
 theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge A B C) ↔ (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value.IsPos := by
   have h1 : 0 < (SEG A B).length := by
       have abnd : (SEG A B).is_nd := (ne_of_not_colinear nd).2.2

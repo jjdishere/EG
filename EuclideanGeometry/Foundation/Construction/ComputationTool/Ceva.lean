@@ -142,6 +142,17 @@ lemma b_ne_g : B ≠ G := by
 --$GA/GB=S_{\trian}DAC/S_{\trian}DBC$
 lemma dratio_gab_eq_wedge_div_wedge : divratio G A B = (wedge D A C) / (wedge D B C) := ratio_eq_wedge_div_wedge_of_colinear_colinear_notcoliear G A B D C (colin_gab (cad_nd := cad_nd) (abd_nd := abd_nd) (ba_npara_cd := ba_npara_cd) (g_def := g_def)) (b_ne_g (cad_nd := cad_nd) (abd_nd := abd_nd) (bcd_nd := bcd_nd) (ba_npara_cd := ba_npara_cd) (g_def := g_def)) (colin_gdc (cad_nd := cad_nd) (abd_nd := abd_nd) (ba_npara_cd := ba_npara_cd) (g_def := g_def)) (ncolin_dbc (bcd_nd := bcd_nd))
 
+lemma wedge_div_wedge_mul_eq_minus_one : (wedge D B A)/(wedge D C A) * ((wedge D C B)/(wedge D A B)) * ((wedge D A C)/(wedge D B C)) = -1 := by
+  rw [wedge132 D A B, wedge132 D B C, wedge132 D C A]
+  have h0 : wedge D A B ≠ 0 := (not_colinear_iff_wedge_ne_zero D A B).mp (ncolin_dab (abd_nd := abd_nd))
+  have h1 : wedge D B C ≠ 0 := (not_colinear_iff_wedge_ne_zero D B C).mp (ncolin_dbc (bcd_nd := bcd_nd))
+  have h1 : wedge D C A ≠ 0 := (not_colinear_iff_wedge_ne_zero D C A).mp (ncolin_dca (cad_nd := cad_nd))
+  field_simp
+  ring
+
+theorem ceva_theorem : (divratio E B C) * (divratio F C A) * (divratio G A B) = -1 := by
+  rw[dratio_ebc_eq_wedge_div_wedge (abd_nd := abd_nd) (bcd_nd := bcd_nd) (cad_nd := cad_nd) (cb_npara_ad := cb_npara_ad) (e_def := e_def), dratio_fca_eq_wedge_div_wedge (abd_nd := abd_nd) (bcd_nd := bcd_nd) (cad_nd := cad_nd) (ac_npara_bd := ac_npara_bd) (f_def := f_def), dratio_gab_eq_wedge_div_wedge (abd_nd := abd_nd) (bcd_nd := bcd_nd) (cad_nd := cad_nd) (ba_npara_cd := ba_npara_cd) (g_def := g_def), wedge_div_wedge_mul_eq_minus_one (abd_nd := abd_nd) (bcd_nd := bcd_nd) (cad_nd := cad_nd)]
+
 end Ceva's_theorem
 
 end EuclidGeom
