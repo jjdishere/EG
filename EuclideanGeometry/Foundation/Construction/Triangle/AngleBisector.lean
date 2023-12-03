@@ -181,6 +181,9 @@ structure IsExcircle1 (tri_nd : Triangle_nd P) (cir : Circle P) : Prop where
 namespace Triangle_nd
 
 theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : Triangle_nd P} : ¬ tri_nd.angle₁.AngBis.toLine ∥ tri_nd.angle₂.AngBis.toLine := by
+  by_contra g
+  let A₁ := Angle.mk_start_ray tri_nd.angle₁ tri_nd.angle₁.AngBis tri_nd.angle₁.eq_source
+  let A₂ := Angle.mk_ray_end tri_nd.angle₂ tri_nd.angle₂.AngBis tri_nd.angle₂.eq_source
 
   sorry
 
