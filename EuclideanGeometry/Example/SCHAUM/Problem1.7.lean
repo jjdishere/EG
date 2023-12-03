@@ -32,6 +32,22 @@ variable {X : Plane} {hd : X = perp_foot D (LIN A B B_ne_a)}
 --take the foot of the height of $E$ to $AB$ and denote as $Y$
 variable {Y : Plane} {he : Y = perp_foot E (LIN A C c_ne_a)}
 theorem Problem1_7_ : (SEG D X).length = (SEG E Y).length := by
+/-
+In isoceles triangle $ABC$, we have $\angle ABC$ and $\angle ACB$ are acute.
+From $D$ lies on $BC$ and $\angle ABC$ is acute, we know that $X$ lies on ray $BA$, so $\angle XBD$ is the same as $\angle ABC$.
+From $E$ lies on $BC$ and $\angle ACB$ is acute, we know that $Y$ lies on ray $CA$, so $\angle YCE$ is the same as $\angle ACB$.
+In isoceles triangle $ABC$, we have $\angle ABC = - \angle ACB$.
+So $\angle XBD = \angle ABC = - \angle ACB = - \angle YCE$.
+Since $DX$ is perpendicular to $AB$ at $X$, we have $\angle BXD = \pi/2$ or $\angle BXD = - \pi/2$.
+Since $EY$ is perpendicular to $AC$ at $Y$, we have $\angle CYE = \pi/2$ or $\angle CYE = - \pi/2$.
+Thus, $|\angle BXD| = |\angle CYE|$.
+In $\triangle XBD$ and $\triangle YCE$,
+$\cdot \angle XBD = - \angle YCE$
+$\cdot |\angle BXD| = |\angle CYE|$
+$\cdot BD = CE$
+Thus, $\triangle XBD \congr_a \triangle YEC$ (by AAS)
+Therefore, $DX = EY$.
+-/
   have hnd_bdx : ¬ colinear B D X := by sorry
   have hnd_cey : ¬ colinear C E Y := by sorry
   have x_ne_B : X ≠ B := by sorry

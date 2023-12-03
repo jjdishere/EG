@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Index
+import EuclideanGeometry.Foundation.Axiom.Basic.Angle_trash
 
 noncomputable section
 
@@ -9,10 +10,10 @@ variable {Plane : Type _} [EuclideanPlane Plane]
 namespace Problem1_8_
 
 /-
-Let $\triangle ABC$ be a regular triangle. Let $D$, $E$, $F$ be points on the extensions of $BC$, $CA$ and $AB$, respectively,
-such that $CD = AE = BF$.
+Let $\triangle ABC$ be a regular triangle. Let $D$, $E$ be points on the extensions of $BC$ and $CA$, respectively,
+such that $CD = AE$.
 
-Prove that $AD = BE = CF$
+Prove that $AD = BE$
 -/
 
 --Let $\triangle ABC$ be a regular triangle.
@@ -24,15 +25,13 @@ lemma B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
 --Claim $C \ne A$
 lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
 --let $D$ be point on the extension of $BC$
-variable {D : Plane} {D_on_ext : D LiesInt (SEG_nd B C B_ne_C.symm).extension}
+variable {D : Plane} {D_int_BC_ext : D LiesInt (SEG_nd B C B_ne_C.symm).extension}
 --let $E$ be point on the extension of $CA$
-variable {E : Plane} {E_on_ext : E LiesInt (SEG_nd C A c_ne_a.symm).extension}
---let $F$ be point on the extension of $AB$
-variable {F : Plane} {F_on_ext : F LiesInt (SEG_nd A B A_ne_B.symm).extension}
---such that $CD = AE = BF$
-variable {D_E_F_ray_position : ((SEG C D).length = (SEG A E).length) ∧ ((SEG A E).length = (SEG B F).length)}
+variable {E : Plane} {E_int_CA_ext : E LiesInt (SEG_nd C A c_ne_a.symm).extension}
+--such that $CD = AE$
+variable {CD_eq_AE : ((SEG C D).length = (SEG A E).length)}
 --Prove that $AD = BE = CF$
-theorem Problem1_8_ : ((SEG A D).length = (SEG B E).length) ∧ ((SEG B E).length = (SEG C F).length) := by
+theorem Problem1_8_ : ((SEG A D).length = (SEG B E).length):= by
   have ad_eq_be : (SEG A D).length = (SEG B E).length := by
     have hnd_bda : ¬ colinear B D A := by sorry
     have hnd_ceb : ¬ colinear C E B := by sorry
@@ -51,9 +50,10 @@ theorem Problem1_8_ : ((SEG A D).length = (SEG B E).length) ∧ ((SEG B E).lengt
       calc
       Angle.value angle_dba
       _= ∠ C B A B_ne_C.symm A_ne_B:= by sorry
-      _= ∠ A C B A_ne_C B_ne_C := by sorry  --apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri
-      --apply isoceles_of_regular
-      --exact hreg
+      _= ∠ A C B A_ne_C B_ne_C := by
+      apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp
+      apply isoceles_of_regular
+      exact hreg
       _= Angle.value angle_ecb := by sorry
     have bd_eq_ce : (SEG B D).length = (SEG C E).length := by
       calc
@@ -75,7 +75,4 @@ theorem Problem1_8_ : ((SEG A D).length = (SEG B E).length) ∧ ((SEG B E).lengt
     (SEG A D).length = (SEG D A).length := by apply length_of_rev_eq_length'
     _= (SEG E B).length := trngl_abd_congr_trngl_bce.edge₁
     _= (SEG B E).length := by apply length_of_rev_eq_length'
-  have be_eq_cf : (SEG B E).length = (SEG C F).length := by sorry
-  exact ⟨ad_eq_be, be_eq_cf⟩
-
 end Problem1_8_

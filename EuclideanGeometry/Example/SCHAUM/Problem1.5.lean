@@ -16,21 +16,39 @@ Prove that $PQRS$ is a parallelogram.
 -/
 
 --Let $ABCD$ be a parallelogram
-variable {A B C D : Plane} {hprg : Quadrilateral.IsParallelogram (QDR A B C D)}
+variable {A B C D : Plane} {hprgnd : (QDR A B C D) IsPRG_nd}
 --let $P$ be point on the segment $AB$
-variable {P : Plane} {P_int_ab : P LiesInt (SEG A B)}
+variable {P : Plane} {P_int_AB : P LiesInt (SEG A B)}
 --let $Q$ be point on the segment $BC$
-variable {Q : Plane} {Q_int_bc : Q LiesInt (SEG B C)}
+variable {Q : Plane} {Q_int_BC : Q LiesInt (SEG B C)}
 --let $R$ be point on the segment $CD$
-variable {R : Plane} {R_on_seg : R LiesInt (SEG C D)}
+variable {R : Plane} {R_int_CD : R LiesInt (SEG C D)}
 --let $S$ be point on the segment $DA$
-variable {S : Plane} {S_on_seg : S LiesInt (SEG D A)}
+variable {S : Plane} {S_int_DA : S LiesInt (SEG D A)}
 --such that $AP = CR$
-variable {P_R_position : (SEG A P).length = (SEG C R).length}
+variable {AP_eq_CR : (SEG A P).length = (SEG C R).length}
 --such that $AS = CQ$
-variable {S_Q_position : (SEG A S).length = (SEG C Q).length}
+variable {AS_eq_CQ : (SEG A S).length = (SEG C Q).length}
 --Prove that $PQRS$ is a parallelogram
-theorem Problem1_5_ : Quadrilateral.IsParallelogram (QDR P Q R S) := by
+theorem Problem1_5_ : (QDR P Q R S) IsPRG_nd := by
+/-
+In parallelogram $ABCD$, we have $AB, DC$ are of the same direction.
+Since $P$ lies on $AB$, we have $AP, AB$ are of the same direction.
+Since $R$ lies on $CD$, we have $RC, DC$ are of the same direction.
+Therefore, $AP, RC$ are of the same direction.
+With $AP = CR$, we know that $APCR$ is a parallelogram.
+
+In parallelogram $ABCD$, we have $AD, BC$ are of the same direction.
+Since $S$ lies on $AD$, we have $AS, AD$ are of the same direction.
+Since $Q$ lies on $BC$, we have $QC, BC$ are of the same direction.
+Therefore, $AS, QC$ are of the same direction.
+With $AS = CQ$, we know that $ASCQ$ is a parallelogram.
+
+Since $APCR$ is a parallelogram, we know that the midpoint of $PR$ is the same as the midpoint of $AC$.
+Since $ASCQ$ is a parallelogram, we know that the midpoint of $QS$ is the same as the midpoint of $AC$.
+Therefore, the midpoint of $PR$ is the same as the midpoint of $QS$.
+As a consequence, we know that $PQRS$ is a parallelogram.
+-/
   have p_ne_a : P ≠ A := by sorry
   have r_ne_C : R ≠ C := by sorry
   have s_ne_a : S ≠ A := by sorry

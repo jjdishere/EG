@@ -41,11 +41,11 @@ Therefore, $\angle DBP = \angle ABC = - \angle ACB = - \angle ECQ$.
 Since $DP$ is perpendicular to $BC$ at $P$, we have $\angle BPD = \pi/2$ or $\angle BPD = - \pi/2$.
 Since $EQ$ is perpendicular to $BC$ at $Q$, we have $\angle CQE = \pi/2$ or $\angle CQE = - \pi/2$.
 Thus, $|\angle BPD| = |\angle CQE|$
-In $\triangle PBD$ and $\triangle QEC$,
+In $\triangle PBD$ and $\triangle QCE$,
 $\cdot \angle DBP = - \angle ECQ$
 $\cdot |\angle BPD| = |\angle CQE|$
 $\cdot BD = CE$
-Thus, $\triangle PBD \congr_a \triangle QEC$ (by AAS)
+Thus, $\triangle PBD \congr_a \triangle QCE$ (by AAS)
 Therefore, $DP = EQ$.
 -/
   --In the isoceles triangle $ABC$, we have $AB = AC$.

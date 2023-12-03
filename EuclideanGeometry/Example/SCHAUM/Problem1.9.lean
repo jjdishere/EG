@@ -14,35 +14,42 @@ Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$. Let $E$ be a poi
 Prove that the line through $A$ parallel to $BC$ bisects $\angle EAC$.
 -/
 
---Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$
+-- Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$
 variable {A B C : Plane} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
---Claim $B \ne A$
-lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
---Let $E$ be a point on the extension of $BA$
-variable {l_ba_ext : Ray Plane} {hlba : l_ba_ext = (SEG_nd B A B_ne_a.symm).extension}
-variable {E : Plane} {E_on_ext : E LiesInt l_ba_ext}
---Claim $C \ne B$
-lemma c_ne_B : C ≠ B := (ne_of_not_colinear hnd).1
---Claim $E \ne A$
-lemma e_ne_a : E ≠ A := by sorry
---Claim $C \ne A$
-lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
+-- Claim $B \ne A$
+lemma B_ne_A : B ≠ A := (ne_of_not_colinear hnd).2.2
+-- denote $BA_ext$ as the extension of $BA$
+variable {BA_ext : Ray Plane} {hlba : BA_ext = (SEG_nd B A B_ne_A.symm).extension}
+-- Let $E$ be a point on the extension of $BA$
+variable {E : Plane} {E_int_ext : E LiesInt BA_ext}
+-- Claim $C \ne B$
+lemma C_ne_B : C ≠ B := (ne_of_not_colinear hnd).1
+-- Claim $E \ne A$
+lemma E_ne_A : E ≠ A := by sorry
+-- Claim $C \ne A$
+lemma C_ne_A : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
+/-
 --Prove that the line through $A$ parallel to $BC$ bisects $\angle EAC$
 --which is equivalent to the line through $A$ parallel to $BC$ is the angle bisector of $\angle EAC$
 --let $seg_nd_nc$ be the non-degenerate segment between $B$ and $C$
-variable {seg_nd_bc : Seg_nd Plane} {hbc : seg_nd_bc = SEG_nd B C c_ne_B}
 --denote the angle $\angle EAC$ as $angle_eac$
 variable {angle_eac : Angle Plane} {heac : angle_eac = Angle.mk_pt_pt_pt E A C e_ne_a c_ne_a}
-variable {l_a_para_bc : Line Plane} {hlabc : l_a_para_bc = Line.mk_pt_proj A (seg_nd_bc.toProj)}
 variable {l_bis_eac : Line Plane} {hleac : l_bis_eac = Angle.AngBisLine angle_eac}
-variable {X : Plane} {X_on_line : X LiesOn l_a_para_bc} {x_ne_a : X ≠ A}
 theorem Problem1_9_ : l_a_para_bc =  l_bis_eac := by sorry
 --ang_bis is temporarily not available to use in proofs
-theorem Problem1_9_variant : ∠ E A X e_ne_a x_ne_a = ∠ X A C x_ne_a (c_ne_a (hnd:=hnd)) := by
-  have c_ne_B : C ≠ B := by sorry
+So we attempt to prove the following version:
+-/
+-- denote $BC$ as segment $BC$
+variable {BC : Seg_nd Plane} {hbc : BC = SEG_nd B C C_ne_B}
+-- denote $l_a$ as the line passing through $A$ which is parallel to $BC$
+variable {l_a : Line Plane} {hla : l_a = Line.mk_pt_proj A (BC.toProj)}
+-- Let $X$ be a point on $l_a$
+variable {X : Plane} {X_on_la : X LiesOn l_a} {X_ne_A : X ≠ A}
+theorem Problem1_9_variant : ∠ E A X E_ne_A X_ne_A = ∠ X A C X_ne_A (C_ne_A (hnd:=hnd)) := by
+  have C_ne_B : C ≠ B := by sorry
   calc
-  ∠ E A X e_ne_a x_ne_a
-  _= ∠ A B C ((B_ne_a (hnd:=hnd)).symm) c_ne_B := by sorry
-  _= - ∠ A C B (c_ne_a (hnd:=hnd)).symm c_ne_B.symm := by sorry
-  _= ∠ X A C x_ne_a (c_ne_a (hnd:=hnd)) := by sorry
+  ∠ E A X E_ne_A X_ne_A
+  _= ∠ A B C ((B_ne_A (hnd:=hnd)).symm) C_ne_B := by sorry
+  _= - ∠ A C B (C_ne_A (hnd:=hnd)).symm C_ne_B.symm := by sorry
+  _= ∠ X A C X_ne_A (C_ne_A (hnd:=hnd)) := by sorry
 end Problem1_9_
