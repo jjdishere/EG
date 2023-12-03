@@ -56,6 +56,16 @@ end Angle
 
 namespace Angle
 
+theorem eq_source {ang : Angle P} : ang.source = ang.AngBis.source := rfl
+
+theorem mk_strat_ray_value_eq_half_angvalue (ang : Angle P) : (Angle.mk_strat_ray ang ang.AngBis eq_source).value.toReal = 2⁻¹ * ang.value.toReal := by
+  rw [mk_strat_ray_value_eq_angdiff ang ang.AngBis eq_source]
+  rw [Dir.AngDiff]
+  unfold AngBis
+  simp
+  have h₁ : (-π < 2⁻¹ * (value ang).toReal) ∧ (2⁻¹ * (value ang).toReal ≤ π) := by simp [neg_half_pi_le_half_angvalue, half_angvalue_le_half_pi]
+  simp [real_eq_toangvalue_toreal_real_iff_neg_pi_le_real_le_pi, h₁]
+
 theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
   eq_source := rfl
   eq_value := by
@@ -72,36 +82,29 @@ theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
     rw [theta_sub_half_theta_eq_half_theta ang.value]
   same_sgn := by
     have h : ang.source = ang.AngBis.source := rfl
-    have g : (Angle.mk_strat_ray ang ang.AngBis h).value.toReal = 2⁻¹ * ang.value.toReal := by
-      rw [mk_strat_ray_value_eq_angdiff ang ang.AngBis h]
-      rw [Dir.AngDiff]
-      unfold AngBis
-      simp
-      have h₁ : (-π < 2⁻¹ * (value ang).toReal) ∧ (2⁻¹ * (value ang).toReal ≤ π) := by simp [neg_half_pi_le_half_angvalue, half_angvalue_le_half_pi]
-      simp [real_eq_toangvalue_toreal_real_iff_neg_pi_le_real_le_pi, h₁]
     have g₁ : (ang.value.IsPos) ∨ (ang.value.IsNeg) ∨ (ang.value = π) ∨ (ang.value = 0) := by sorry
     rcases g₁ with g₂|g₃|g₄|g₅
     · left
       simp [g₂]
       apply half_angvalue_is_pos_if_angvalue_is_pos
-      apply g
+      apply mk_strat_ray_value_eq_half_angvalue
       apply g₂
     · right
       left
       simp [g₃]
       apply half_angvalue_is_neg_if_angvalue_is_neg
-      apply g
+      apply mk_strat_ray_value_eq_half_angvalue
       apply g₃
     · right
       right
       left
-      have : (Angle.mk_strat_ray ang ang.AngBis h).value.toReal = 2⁻¹ * π := by simp [g, g₄]
+      have : (Angle.mk_strat_ray ang ang.AngBis h).value.toReal = 2⁻¹ * π := by simp [mk_strat_ray_value_eq_half_angvalue, g₄]
       apply toreal_eq_half_pi_of_eq_half_pi_toangvalue
       apply this
     · right
       right
       right
-      have : (Angle.mk_strat_ray ang ang.AngBis h).value.toReal = 0 := by simp [g, g₅]
+      have : (Angle.mk_strat_ray ang ang.AngBis h).value.toReal = 0 := by simp [mk_strat_ray_value_eq_half_angvalue, g₅]
       apply AngValue.eq_zero_of_toreal_eq_zero
       apply this
 
@@ -139,6 +142,15 @@ theorem lie_on_angbis_of_lie_on_angbisline_inside_angle (ang : Angle P)  : sorry
 
 /-a triangle_nd admit an unique intercenter-/
 
+namespace Triangle_nd
+
+theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : Triangle_nd P} : ¬ tri_nd.angle₁.AngBis.toLine ∥ tri_nd.angle₂.AngBis.toLine := by
+
+  sorry
+
+def Incenter (tri_nd : Triangle_nd P) : P := Line.inx tri_nd.angle₁.AngBis.toLine tri_nd.angle₂.AngBis.toLine angbisline_of_angle₁_angle₂_not_parallel
+
+end Triangle_nd
 
 structure IsIncenter (tri_nd : Triangle_nd P) (I : P) : Prop where
 
