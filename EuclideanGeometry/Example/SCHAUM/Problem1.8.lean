@@ -66,9 +66,7 @@ Therefore, $BD = CE$.
       Angle.value angle_dba
       _= ∠ C B A B_ne_C.symm A_ne_B:= by sorry
       _= ∠ A C B A_ne_C B_ne_C := by
-        apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp
-        apply isoceles_of_regular
-        exact hreg
+        exact is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp isoceles_of_regular hreg
       _= Angle.value angle_ecb := by sorry
     have bd_eq_ce : (SEG B D).length = (SEG C E).length := by
       calc

@@ -1,4 +1,6 @@
 import EuclideanGeometry.Foundation.Index
+import EuclideanGeometry.Foundation.Construction.Polygon.Parallelogram_trash
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 
 noncomputable section
 
@@ -49,40 +51,50 @@ Since $ASCQ$ is a parallelogram, we know that the midpoint of $QS$ is the same a
 Therefore, the midpoint of $PR$ is the same as the midpoint of $QS$.
 As a consequence, we know that $PQRS$ is a parallelogram.
 -/
-  have p_ne_a : P ≠ A := by sorry
-  have r_ne_C : R ≠ C := by sorry
-  have s_ne_a : S ≠ A := by sorry
-  have q_ne_C : Q ≠ C := by sorry
-  have isprg_apcr : (QDR A P C R) IsPRG := by
-  --need thm : para_of_lieson_para
-  --convex requirement needs to be removed from thm
-    have ap_para_cr : (SEG_nd A P p_ne_a) ∥ (SEG_nd C R r_ne_C) := by sorry
-    apply is_prg_of_para_eq_length_variant
-    · sorry
-    · exact P_R_position
-  have isprg_ascq : (QDR A S C Q) IsPRG := by
-    have as_para_cq : (SEG_nd A S s_ne_a) ∥ (SEG_nd C Q q_ne_C) := by sorry
-    apply is_prg_of_para_eq_length_variant
-    · sorry
-    · exact S_Q_position
+  have P_ne_A : P ≠ A := by sorry
+  have R_ne_C : R ≠ C := by sorry
+  have S_ne_A : S ≠ A := by sorry
+  have Q_ne_C : Q ≠ C := by sorry
+  have B_ne_A : B ≠ A := by sorry
+  have C_ne_D : C ≠ D := by sorry
+  have not_colinear_APC : ¬ colinear A P C := by sorry
+  have isprgnd_APCR : (QDR A P C R) IsPRG_nd := by
+    have dir_ap_eq_dir_rc_rev : (SEG_nd A P P_ne_A).toDir = (SEG_nd R C R_ne_C.symm).toDir := by
+      calc
+      (SEG_nd A P P_ne_A).toDir
+      _= (SEG_nd A B B_ne_A).toDir := by sorry
+      _= (SEG_nd D C C_ne_D).toDir := by sorry
+      _= - (SEG_nd C D C_ne_D.symm).toDir := by apply Seg_nd.todir_of_rev_eq_neg_todir (seg_nd := (SEG_nd C D C_ne_D.symm))
+      _= - (SEG_nd C R R_ne_C).toDir := by sorry
+      _= (SEG_nd R C R_ne_C.symm).toDir := by symm; apply Seg_nd.todir_of_rev_eq_neg_todir (seg_nd := (SEG_nd C R R_ne_C))
+    have AP_eq_RC : (SEG A P).length = (SEG R C).length := by
+      calc
+      (SEG A P).length = (SEG C R).length := AP_eq_CR
+      _= (SEG R C).length := by exact length_of_rev_eq_length' (A := R) (B := C)
+    have isprg_APCR : (QDR A P C R) IsPRG := by exact prg_trash.vec_eq_of_eq_dir_and_eq_length P_ne_A R_ne_C.symm dir_ap_eq_dir_rc_rev AP_eq_RC
+    exact is_prg_nd_of_is_prg_not_colinear₁₂₃ (QDR A P C R) isprg_APCR not_colinear_APC
+  have isprgnd_ASCQ : (QDR A S C Q) IsPRG_nd := by
+    sorry
   have midpr_eq_midac : (SEG P R).midpoint = (SEG A C).midpoint := by
     calc
     (SEG P R).midpoint
-    _= Quadrilateral_cvx.diag_inx (QDR_cvx A P C R (is_convex_of_is_prg_variant isprg_apcr)) := by
-      exact (eq_midpt_of_diag_inx_of_is_prg'_variant isprg_apcr).symm
+    _= Quadrilateral_cvx.diag_inx (QDR_cvx A P C R (is_convex_of_is_prg_nd_variant isprgnd_APCR)) := by
+      exact (eq_midpt_of_diag_inx_of_is_prg_nd'_variant isprgnd_APCR).symm
     _= (SEG A C).midpoint := by
-      exact eq_midpt_of_diag_inx_of_is_prg_variant isprg_apcr
+      exact eq_midpt_of_diag_inx_of_is_prg_nd_variant isprgnd_APCR
   have midac_eq_midqs : (SEG A C).midpoint = (SEG Q S).midpoint := by
     calc
     (SEG A C).midpoint
-    _= Quadrilateral_cvx.diag_inx (QDR_cvx A S C Q (is_convex_of_is_prg_variant isprg_ascq)) := by
+    _= Quadrilateral_cvx.diag_inx (QDR_cvx A S C Q (is_convex_of_is_prg_nd_variant isprgnd_ASCQ)) := by
       symm
-      apply (eq_midpt_of_diag_inx_of_is_prg_variant)
-      exact isprg_ascq
+      apply (eq_midpt_of_diag_inx_of_is_prg_nd_variant)
+      exact isprgnd_ASCQ
     _= (SEG S Q).midpoint := by
-      exact eq_midpt_of_diag_inx_of_is_prg'_variant isprg_ascq
-    _= (SEG Q S).midpoint := by sorry
-  apply is_prg_of_diag_inx_eq_mid_eq_mid_variant
-  · sorry
-  · rw [midpr_eq_midac, midac_eq_midqs]
+      exact eq_midpt_of_diag_inx_of_is_prg_nd'_variant isprgnd_ASCQ
+    _= (SEG Q S).midpoint := midpt_of_rev_eq_midpt S Q
+  have isprg_PQRS : (QDR P Q R S) IsPRG := by
+    apply prg_trash.is_prg_of_diag_inx_eq_mid_eq_mid_variant_1
+    rw [midpr_eq_midac, midac_eq_midqs]
+  have not_colinear_PQR : ¬ colinear P Q R := by sorry
+  exact is_prg_nd_of_is_prg_not_colinear₁₂₃ (QDR P Q R S) isprg_PQRS not_colinear_PQR
 end Problem1_5_
