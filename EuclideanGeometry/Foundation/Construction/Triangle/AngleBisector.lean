@@ -25,12 +25,12 @@ variable {P : Type _} [EuclideanPlane P]
 
 structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
   eq_source : ang.source = ray.source
-  eq_value : (Angle.mk_strat_ray ang ray eq_source).value = (Angle.mk_ray_end ang ray eq_source).value
-  same_sgn : ((Angle.mk_strat_ray ang ray eq_source).value.IsPos ∧ ang.value.IsPos) ∨ ((Angle.mk_strat_ray ang ray eq_source).value.IsNeg ∧ ang.value.IsNeg) ∨ ((Angle.mk_strat_ray ang ray eq_source).value = (2⁻¹ * π).toAngValue) ∨ ((Angle.mk_strat_ray ang ray eq_source).value = 0)
+  eq_value : (Angle.mk_start_ray ang ray eq_source).value = (Angle.mk_ray_end ang ray eq_source).value
+  same_sgn : ((Angle.mk_start_ray ang ray eq_source).value.IsPos ∧ ang.value.IsPos) ∨ ((Angle.mk_start_ray ang ray eq_source).value.IsNeg ∧ ang.value.IsNeg) ∨ ((Angle.mk_start_ray ang ray eq_source).value = (2⁻¹ * π).toAngValue ∧ ang.value = π ) ∨ ((Angle.mk_start_ray ang ray eq_source).value = 0 ∧ ang.value = 0)
 
 
-structure IsAngBisLine (ang : Angle P) (line : Line P) : Prop where
-  source_on : ang.source LiesOn line
+structure IsAngBisLine (ang : Angle P) (l : Line P) : Prop where
+  source_on : ang.source LiesOn l
 
 structure IsExAngBis
 
@@ -58,64 +58,91 @@ namespace Angle
 
 theorem eq_source {ang : Angle P} : ang.source = ang.AngBis.source := rfl
 
-theorem mk_strat_ray_value_eq_half_angvalue (ang : Angle P) : (Angle.mk_strat_ray ang ang.AngBis eq_source).value.toReal = 2⁻¹ * ang.value.toReal := by
-  rw [mk_strat_ray_value_eq_angdiff ang ang.AngBis eq_source]
+theorem mk_start_ray_value_eq_half_angvalue {ang : Angle P} : (Angle.mk_start_ray ang ang.AngBis eq_source).value.toReal = 2⁻¹ * ang.value.toReal := by
+  rw [mk_start_ray_value_eq_angdiff eq_source]
   rw [Dir.AngDiff]
   unfold AngBis
   simp
   have h₁ : (-π < 2⁻¹ * (value ang).toReal) ∧ (2⁻¹ * (value ang).toReal ≤ π) := by simp [neg_half_pi_le_half_angvalue, half_angvalue_le_half_pi]
   simp [real_eq_toangvalue_toreal_real_iff_neg_pi_le_real_le_pi, h₁]
 
-theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
+theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
   eq_source := rfl
   eq_value := by
     have h : ang.source = ang.AngBis.source := rfl
-    rw [mk_strat_ray_value_eq_angdiff ang ang.AngBis h]
-    rw [mk_ray_end_value_eq_angdiff ang ang.AngBis h]
-    rw [Dir.AngDiff]
-    rw [Dir.AngDiff]
-    rw [← dir_eq_of_angvalue_eq]
+    rw [mk_start_ray_value_eq_angdiff h]
+    rw [mk_ray_end_value_eq_angdiff h]
+    rw [Dir.AngDiff, Dir.AngDiff, ← dir_eq_of_angvalue_eq]
     rw [AngBis]
     rw [end_ray_eq_start_ray_mul_value]
     simp
-    rw [← sub_todir_eq_todir_div]
-    rw [theta_sub_half_theta_eq_half_theta ang.value]
+    rw [← sub_todir_eq_todir_div, theta_sub_half_theta_eq_half_theta]
   same_sgn := by
     have h : ang.source = ang.AngBis.source := rfl
-    have g₁ : (ang.value.IsPos) ∨ (ang.value.IsNeg) ∨ (ang.value = π) ∨ (ang.value = 0) := by sorry
-    rcases g₁ with g₂|g₃|g₄|g₅
+    have g : (ang.value.IsPos) ∨ (ang.value.IsNeg) ∨ (ang.value = π) ∨ (ang.value = 0) := by sorry
+    rcases g with g₁|g₂|g₃|g₄
     · left
-      simp [g₂]
+      simp [g₁]
       apply half_angvalue_is_pos_if_angvalue_is_pos
-      apply mk_strat_ray_value_eq_half_angvalue
-      apply g₂
+      apply mk_start_ray_value_eq_half_angvalue
+      exact g₁
     · right
       left
-      simp [g₃]
+      simp [g₂]
       apply half_angvalue_is_neg_if_angvalue_is_neg
-      apply mk_strat_ray_value_eq_half_angvalue
-      apply g₃
+      apply mk_start_ray_value_eq_half_angvalue
+      exact g₂
     · right
       right
       left
-      have : (Angle.mk_strat_ray ang ang.AngBis h).value.toReal = 2⁻¹ * π := by simp [mk_strat_ray_value_eq_half_angvalue, g₄]
-      apply toreal_eq_half_pi_of_eq_half_pi_toangvalue
-      apply this
+      constructor
+      · apply toreal_eq_half_pi_of_eq_half_pi_toangvalue
+        simp [toreal_eq_half_pi_of_eq_half_pi_toangvalue,mk_start_ray_value_eq_half_angvalue, g₃]
+      · exact g₃
     · right
       right
       right
-      have : (Angle.mk_strat_ray ang ang.AngBis h).value.toReal = 0 := by simp [mk_strat_ray_value_eq_half_angvalue, g₅]
-      apply AngValue.eq_zero_of_toreal_eq_zero
-      apply this
+      constructor
+      · apply AngValue.eq_zero_of_toreal_eq_zero
+        simp [mk_start_ray_value_eq_half_angvalue, g₄]
+      · exact g₄
 
 
 
 
 
-theorem angbis_iff_angbis (ang : Angle P) (r : Ray P) : IsAngBis ang r ↔ r = ang.AngBis := by
+theorem angbis_iff_angbis {ang : Angle P} {r : Ray P} : IsAngBis ang r ↔ r = ang.AngBis := by
   constructor
   · sorry
   · exact fun h ↦ (by rw [h]; apply angbis_is_angbis)
+
+
+theorem ang_source_rev_eq_source_bis {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) : ang.rev.source = r.source := by rw[ang.ang_source_rev_eq_source, h.eq_source]
+
+theorem nonpi_bisector_eq_bisector_of_rev {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) (nonpi : ang.value ≠ π ): IsAngBis ang.rev r where
+  eq_source := by rw[h.eq_source.symm, ang.ang_source_rev_eq_source]
+  eq_value := by
+    have : (Angle.mk_start_ray ang.rev r (ang_source_rev_eq_source_bis h)) = (Angle.mk_ray_end ang r h.eq_source).rev := rfl
+    rw [this, (Angle.mk_ray_end ang r h.eq_source).ang_value_rev_eq_neg_value]
+    have : (Angle.mk_ray_end ang.rev r (ang_source_rev_eq_source_bis h)) = (Angle.mk_start_ray ang r h.eq_source).rev := rfl
+    rw [this, (Angle.mk_start_ray ang r h.eq_source).ang_value_rev_eq_neg_value]
+    simp [h.eq_value]
+  same_sgn := by
+    have : (Angle.mk_start_ray ang.rev r (ang_source_rev_eq_source_bis h)) = (Angle.mk_ray_end ang r h.eq_source).rev := rfl
+    rw [this, (Angle.mk_ray_end ang r h.eq_source).ang_value_rev_eq_neg_value]
+    rw [ang.ang_value_rev_eq_neg_value]
+    simp
+    rw [h.eq_value.symm]
+    rcases h.same_sgn with h₁ | h₂ | h₃ | h₄
+    · exact Or.inr (Or.inl h₁)
+    · exact Or.inl h₂
+    · absurd nonpi
+      exact h₃.2
+    · exact Or.inr (Or.inr (Or.inr h₄))
+
+
+theorem bisector_eq_bisector_of_rev' {ang : Angle P} : ang.AngBis = ang.rev.AngBis := by
+  sorry
 
 theorem angbisline_is_angbisline : sorry := sorry
 
@@ -142,15 +169,6 @@ theorem lie_on_angbis_of_lie_on_angbisline_inside_angle (ang : Angle P)  : sorry
 
 /-a triangle_nd admit an unique intercenter-/
 
-namespace Triangle_nd
-
-theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : Triangle_nd P} : ¬ tri_nd.angle₁.AngBis.toLine ∥ tri_nd.angle₂.AngBis.toLine := by
-
-  sorry
-
-def Incenter (tri_nd : Triangle_nd P) : P := Line.inx tri_nd.angle₁.AngBis.toLine tri_nd.angle₂.AngBis.toLine angbisline_of_angle₁_angle₂_not_parallel
-
-end Triangle_nd
 
 structure IsIncenter (tri_nd : Triangle_nd P) (I : P) : Prop where
 
