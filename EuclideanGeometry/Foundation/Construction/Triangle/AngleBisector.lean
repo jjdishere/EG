@@ -69,7 +69,7 @@ theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
     rw [end_ray_eq_start_ray_mul_value]
     simp
     rw [← sub_todir_eq_todir_div]
-    rw [theta_sub_half_theta_eq_half_theta ang.value]
+    exact congrArg AngValue.toDir (ang.value.sub_half_eq_half).symm
   same_sgn := by
     have h : ang.source = ang.AngBis.source := rfl
     have g : (Angle.mk_strat_ray ang ang.AngBis h).value.toReal = 2⁻¹ * ang.value.toReal := by
