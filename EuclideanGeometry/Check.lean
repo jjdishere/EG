@@ -12,7 +12,7 @@ section HEq
 def T {A A' B : Type _} (e : A = A') (f : A → B) : A' → B := by
   rw [← e]
   exact f
-theorem heq {A A' B : Type _} (e : A = A') (f : A → B) : HEq f (T e f) := by 
+theorem heq {A A' B : Type _} (e : A = A') (f : A → B) : HEq f (T e f) := by
   subst e
   rfl
 theorem heq' {g : Type _ → Type _ } {A A' B : Type _} (e : g A = g A') (f : g A → B) : HEq f (T e f) := by
@@ -35,7 +35,7 @@ theorem heq_funext {c₁ c₂ d: Sort _} (e : c₁ = c₂) {f₁ : c₁ → d} {
 
 end HEq
 
-/- 
+/-
 ## Part I: Geometric Playground
 Check whether geometric constructions, theorems are mathematically correct.
 -/
@@ -43,7 +43,7 @@ Check whether geometric constructions, theorems are mathematically correct.
 
 /-
 ## Part II: Type Reassurance
-Check the where a type is behaved as designed 
+Check the where a type is behaved as designed
 -/
 namespace EuclidGeom
 /- check instance VAdd-/
@@ -74,6 +74,49 @@ end anglecheck
 
 variable {P : Type _} [EuclideanPlane P]
 theorem test_is_on (A : P) (seg : Seg P) : (p LiesOn seg) = (Seg.IsOn p seg) := rfl
+
+
+theorem let_test (a : α) (p : α → Prop) : (let x := a; p x) ↔ (∀x, x = a → p x) := by
+  constructor
+  simp only [forall_eq, imp_self]
+  simp only [forall_eq, imp_self]
+
+theorem let_test_prop (α : Prop) (a : α) (p : α → Prop) : (let x := a; p x) ↔ ((a : α) → p a) := by
+  constructor
+  · simp only
+    intro x _
+    exact x
+  · simp only
+    intro x
+    exact x _
+
+def main_theorem (A B C : P) (h : ¬ colinear A B C) : Prop := by
+  let hAB : B≠A := by exact (ne_of_not_colinear h).2.2
+  let hCB : C ≠ B := by exact (ne_of_not_colinear h).1
+  let l₁ := LIN A B hAB
+  let l₂ := LIN B C hCB
+  let h' : ¬ l₁ ∥ l₂ := sorry
+  let E := Line.inx l₁ l₂ h'
+  exact (E = B)
+
+example (A B C : P) (h : ¬ colinear A B C) : main_theorem A B C h := by
+  unfold main_theorem
+  -- rw [let_test (α := B≠A) (a := (ne_of_not_colinear h).2.2) (p := fun x => let hCB := (_ : C ≠ B);
+-- let l₁ := LIN A B x;
+-- let l₂ := LIN B C hCB;
+-- let h' := (_ : ¬LIN A B (_ : B ≠ A)∥LIN B C (_ : C ≠ B));
+-- let E := LineInx l₁ l₂ h';
+-- E = B) ]
+  rw [let_test_prop (B≠A) (ne_of_not_colinear h).2.2 (fun x => let hCB := (_ : C ≠ B);
+ let l₁ := LIN A B x;
+ let l₂ := LIN B C hCB;
+ let h' := (_ : ¬LIN A B (_ : B ≠ A)∥LIN B C (_ : C ≠ B));
+ let E := LineInx l₁ l₂ h';
+ E = B) ]
+  intro a
+  intro x hAB
+  simp
+  sorry
 
 
 end EuclidGeom
