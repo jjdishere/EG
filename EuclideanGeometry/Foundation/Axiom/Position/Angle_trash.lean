@@ -34,17 +34,16 @@ theorem mk_start_ray_value_eq_angdiff {ang : Angle P} {ray : Ray P} (h : ang.sou
 
 theorem mk_ray_end_value_eq_angdiff {ang : Angle P} {ray : Ray P} (h : ang.source = ray.source) : (Angle.mk_ray_end ang ray h).value = Dir.AngDiff ray.toDir ang.end_ray.toDir := sorry
 
-def rev (ang: Angle P) : Angle P := Angle.mk ang.end_ray ang.start_ray ang.source_eq_source.symm
+def reverse (ang: Angle P) : Angle P := Angle.mk ang.end_ray ang.start_ray ang.source_eq_source.symm
 
-theorem ang_source_rev_eq_source {ang : Angle P} : ang.rev.source = ang.source := by
-  rw [ang.rev.ang_source_eq_end_ray_source]
+theorem ang_source_rev_eq_source {ang : Angle P} : ang.reverse.source = ang.source := by
+  rw [ang.reverse.ang_source_eq_end_ray_source]
   rw [ang.ang_source_eq_end_ray_source]
   exact ang.source_eq_source
 
-theorem ang_value_rev_eq_neg_value {ang : Angle P} :  ang.rev.value = - ang.value := by
-  unfold value DirObj.AngDiff Dir.AngDiff rev
+theorem ang_value_rev_eq_neg_value {ang : Angle P} :  ang.reverse.value = - ang.value := by
+  unfold value DirObj.AngDiff Dir.AngDiff reverse
   simp
-
 
 end Angle
 
