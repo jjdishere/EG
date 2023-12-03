@@ -51,7 +51,20 @@ structure Tangents (P : Type _) [EuclideanPlane P] where
   left : P
   right : P
 
-lemma tangent_circle_intersected {ω : Circle P} {p : P} (h : p LiesOut ω) : (Circle.mk_pt_pt_diam p ω.center (pt_liesout_ne_center h).symm) Intersect ω := sorry
+lemma tangent_circle_intersected {ω : Circle P} {p : P} (h : p LiesOut ω) : (Circle.mk_pt_pt_diam p ω.center (pt_liesout_ne_center h).symm) Intersect ω := by
+  unfold Circle.mk_pt_pt_diam
+  constructor
+  · simp; exact ω.rad_pos
+  simp
+  by_cases hi : ω.radius - dist (SEG p ω.center).midpoint ω.center ≥ 0
+  · rw [abs_of_nonneg hi]
+    apply sub_lt_iff_lt_add.mpr
+    rw [← two_mul, Seg.midpt_target_length_eq, dist_comm]
+    exact h
+  push_neg at hi
+  rw [abs_of_neg hi, ← zero_sub]
+  apply sub_lt_iff_lt_add.mpr
+  simp; exact ω.rad_pos
 
 def pt_tangent_circle_pts {ω : Circle P} {p : P} (h : p LiesOut ω) : Tangents P where
   left := (CC_Intersected_pts (tangent_circle_intersected h)).left
@@ -61,7 +74,20 @@ theorem tangents_lieson_circle {ω : Circle P} {p : P} (h : p LiesOut ω) : ((pt
   rcases CC_inx_pts_lieson_circles (tangent_circle_intersected h) with ⟨_, ⟨h₂, ⟨_, h₄⟩⟩⟩
   exact ⟨h₂, h₄⟩
 
-lemma tangents_ne_pt {ω : Circle P} {p : P} (h : p LiesOut ω) : ((pt_tangent_circle_pts h).left ≠ p) ∧ ((pt_tangent_circle_pts h).right ≠ p) := sorry
+lemma tangents_ne_pt {ω : Circle P} {p : P} (h : p LiesOut ω) : ((pt_tangent_circle_pts h).left ≠ p) ∧ ((pt_tangent_circle_pts h).right ≠ p) := by
+  constructor
+  · intro hp
+    have h₁ : ω.radius < dist ω.center p := h
+    have : (pt_tangent_circle_pts h).left LiesOn ω := (tangents_lieson_circle h).1
+    rw [hp] at this
+    have h₂ : dist ω.center p = ω.radius := this
+    linarith
+  intro hp
+  have h₁ : ω.radius < dist ω.center p := h
+  have : (pt_tangent_circle_pts h).right LiesOn ω := (tangents_lieson_circle h).2
+  rw [hp] at this
+  have h₂ : dist ω.center p = ω.radius := this
+  linarith
 
 theorem line_tangent_circle {ω : Circle P} {p : P} (h : p LiesOut ω) : ((DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1) Tangent ω) ∧ ((DLIN p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2) Tangent ω) := sorry
 
