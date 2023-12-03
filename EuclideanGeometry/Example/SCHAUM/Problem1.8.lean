@@ -1,5 +1,5 @@
 import EuclideanGeometry.Foundation.Index
-import EuclideanGeometry.Foundation.Axiom.Basic.Angle_trash
+import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 
 noncomputable section
 
@@ -30,8 +30,23 @@ variable {D : Plane} {D_int_BC_ext : D LiesInt (SEG_nd B C B_ne_C.symm).extensio
 variable {E : Plane} {E_int_CA_ext : E LiesInt (SEG_nd C A c_ne_a.symm).extension}
 --such that $CD = AE$
 variable {CD_eq_AE : ((SEG C D).length = (SEG A E).length)}
---Prove that $AD = BE = CF$
+--Prove that $AD = BE$
 theorem Problem1_8_ : ((SEG A D).length = (SEG B E).length):= by
+/-
+In regular triangle $ABC$, $\angle ABC = \angle BCA$.
+Since $D$ lies on the extension of $BC$, we know that $\angle ABD$ is the same as $\angle ABC$.
+Since $E$ lies on the extension of $CA$, we know that $\angle BCE$ is the same as $\angle BCA$.
+Therefore, $\angle ABD = \angle ABC = \angle BCA = \angle BCE$.
+In regular triangle $ABC$, $AB = BC$.
+In regular triangle $ABC$, $BC = CA$.
+So we have $BD = BC + CD = CA + AE = CE$.
+In $\triangle ABD$ and $\triangle BCE$,
+$\cdot AB = BC$
+$\cdot \angle ABD = \angle BCE$
+$\cdot BD = CE$
+Thus, $\triangle ABD \cong \triangle BCE$ (by SAS).
+Therefore, $BD = CE$.
+-/
   have ad_eq_be : (SEG A D).length = (SEG B E).length := by
     have hnd_bda : ¬ colinear B D A := by sorry
     have hnd_ceb : ¬ colinear C E B := by sorry
@@ -51,9 +66,9 @@ theorem Problem1_8_ : ((SEG A D).length = (SEG B E).length):= by
       Angle.value angle_dba
       _= ∠ C B A B_ne_C.symm A_ne_B:= by sorry
       _= ∠ A C B A_ne_C B_ne_C := by
-      apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp
-      apply isoceles_of_regular
-      exact hreg
+        apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp
+        apply isoceles_of_regular
+        exact hreg
       _= Angle.value angle_ecb := by sorry
     have bd_eq_ce : (SEG B D).length = (SEG C E).length := by
       calc

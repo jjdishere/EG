@@ -45,7 +45,7 @@ In $\triangle XBD$ and $\triangle YCE$,
 $\cdot \angle XBD = - \angle YCE$
 $\cdot |\angle BXD| = |\angle CYE|$
 $\cdot BD = CE$
-Thus, $\triangle XBD \congr_a \triangle YEC$ (by AAS)
+Thus, $\triangle XBD \cong_a \triangle YEC$ (by AAS)
 Therefore, $DX = EY$.
 -/
   have hnd_bdx : ¬ colinear B D X := by sorry

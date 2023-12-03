@@ -45,7 +45,7 @@ In $\triangle PBD$ and $\triangle QCE$,
 $\cdot \angle DBP = - \angle ECQ$
 $\cdot |\angle BPD| = |\angle CQE|$
 $\cdot BD = CE$
-Thus, $\triangle PBD \congr_a \triangle QCE$ (by AAS)
+Thus, $\triangle PBD \cong_a \triangle QCE$ (by AAS)
 Therefore, $DP = EQ$.
 -/
   --In the isoceles triangle $ABC$, we have $AB = AC$.
