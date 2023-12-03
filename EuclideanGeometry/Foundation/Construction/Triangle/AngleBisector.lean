@@ -169,7 +169,6 @@ theorem lie_on_angbis_of_lie_on_angbisline_inside_angle (ang : Angle P)  : sorry
 
 /-a triangle_nd admit an unique intercenter-/
 
-
 structure IsIncenter (tri_nd : Triangle_nd P) (I : P) : Prop where
 
 structure IsExcenter1 (tri_nd : Triangle_nd P) (E : P) : Prop where
@@ -180,7 +179,12 @@ structure IsExcircle1 (tri_nd : Triangle_nd P) (cir : Circle P) : Prop where
 
 namespace Triangle_nd
 
-def Incenter (tri_nd : Triangle_nd P) : P := sorry
+theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : Triangle_nd P} : ¬ tri_nd.angle₁.AngBis.toLine ∥ tri_nd.angle₂.AngBis.toLine := by
+
+  sorry
+
+def Incenter (tri_nd : Triangle_nd P) : P := Line.inx tri_nd.angle₁.AngBis.toLine tri_nd.angle₂.AngBis.toLine angbisline_of_angle₁_angle₂_not_parallel
+
 
 def Excenter1 (tri_nd : Triangle_nd P) : P := sorry
 
