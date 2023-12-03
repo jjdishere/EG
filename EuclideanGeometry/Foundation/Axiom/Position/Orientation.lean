@@ -102,7 +102,7 @@ theorem odist'_eq_zero_iff_exist_real_vec_eq_smul {A : P} {ray : Ray P} : odist'
 
 theorem odist'_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist' A ray = sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by
   rw [odist',Angle.value]
-  have h0 : (Angle.mk_ray_pt ray A h).value = Vec_nd.angle ray.2.toVec_nd (VEC_nd ray.source A h) := angle_value_eq_angle A ray h
+  have h0 : (Angle.mk_ray_pt ray A h).value = Vec_nd.angle ray.2.toVec_nd (VEC_nd ray.source A h) := angle_value_eq_angle h
   have h1 : ray.2.toVec_nd.1 = ray.2.1 := rfl
   have h2 : (VEC_nd ray.source A h).1=VEC ray.source A := rfl
   have h3 : Vec.norm (Dir.toVec_nd (ray.toDir)) = 1 := by apply Dir.norm_of_dir_tovec_eq_one
