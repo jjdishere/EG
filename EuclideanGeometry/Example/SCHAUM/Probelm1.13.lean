@@ -23,16 +23,19 @@ variable {P Q : Plane} {hp : Seg.IsInt P (SEG A M)} {hq : Seg.IsInt Q (SEG M C)}
 theorem SCHAUM_Problem_1_13 : Quadrilateral.IsParallelogram (QDR P B Q D) := by
   have m1 : M = (SEG B D).midpoint := by
     rw [hm]
-    apply eq_midpt_of_diag_inx_of_is_prg'
-    · sorry
-    · exact hprg
+    sorry
+    -- apply eq_midpt_of_diag_inx_of_is_prg'
+    -- · sorry
+    -- · exact hprg
   have m2 : M = (SEG P Q).midpoint := by
-    apply (eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source M (SEG P Q)).mpr
-    constructor
-    · sorry
-    · simp
-      exact hpq
-  apply is_prg_of_diag_inx_eq_mid_eq_mid
-  rw [← m1, ← m2]
+    sorry
+    -- apply (eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source M (SEG P Q)).mpr
+    -- constructor
+    -- · sorry
+    -- · simp
+    --   exact hpq
+  sorry
+  -- apply is_prg_of_diag_inx_eq_mid_eq_mid
+  -- rw [← m1, ← m2]
 
 end SCHAUM_Problem_1_13

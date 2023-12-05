@@ -14,6 +14,7 @@ Let $ABCD$ be a parallelogram. Let $P$ and $Q$ be points on the segments $AB$ an
 Prove that $PM = QN$ and $PM \parallel QN$.
 -/
 
+/-
 -- Let $ABCD$ be a parallelogram.
 variable {A B C D : Plane} {hprg : Quadrilateral.IsParallelogram (QDR A B C D)}
 -- Let $P$ and $Q$ be points on the segments $AB$ and $CD$, respectively, such that $BP = DQ$.
@@ -44,5 +45,5 @@ theorem SCHAUM_Problem_1_14 : (SEG P M).length = (SEG Q N).length ∧ ((SEG_nd P
       _ = (toProj (LIN B D (d_ne_B (hprg := hprg)))).perp := by sorry
       _ = toProj (LIN Q N n_ne_q) := by sorry
       _ = toProj (SEG_nd Q N n_ne_q) := by sorry
-
+-/
 end SCHAUM_Problem_1_14
