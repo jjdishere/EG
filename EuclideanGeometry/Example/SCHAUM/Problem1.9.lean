@@ -55,10 +55,13 @@ In isoceles triangle $ABC$, $\angle ABC = - \angle ACB$.
 As $AX$ has the opposite direction of $CB$ and $AC$ has the opposite direction of $CA$, we have $\angle ACB = - \angel XAC$
 Therefore, $\angle EAX = \angle ABC = - \angle ACB = \angle XAC$.
 -/
-  have C_ne_B : C ≠ B := by sorry
   calc
   ∠ E A X E_ne_A X_ne_A
-  _= ∠ A B C ((B_ne_A (hnd:=hnd)).symm) C_ne_B := by sorry
+  _= ∠ A B C ((B_ne_A (hnd:=hnd)).symm) C_ne_B := by
+    unfold value_of_angle_of_three_point_nd
+    unfold Angle.value
+    unfold DirObj.AngDiff
+    unfold Dir.AngDiff
   _= - ∠ A C B (C_ne_A (hnd:=hnd)).symm C_ne_B.symm := by sorry
   _= ∠ X A C X_ne_A (C_ne_A (hnd:=hnd)) := by sorry
 end Problem1_9_
