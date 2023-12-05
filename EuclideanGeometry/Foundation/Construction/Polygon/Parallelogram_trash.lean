@@ -10,4 +10,11 @@ theorem vec_eq_of_eq_dir_and_eq_length {A B C D : P} (h1 : B ≠ A) (h2 : D ≠ 
 
 theorem is_prg_of_diag_inx_eq_mid_eq_mid_variant_1 (A B C D : P) (h' : (SEG A C).midpoint = (SEG B D).midpoint) : QDR A B C D IsPRG := by sorry
 
+theorem is_prg_of_is_prg_nd (A B C D : P) (h : (QDR A B C D) IsPRG_nd) : (QDR A B C D) IsPRG := by sorry
+
+theorem todir_eq_of_is_prg_nd (A B C D : P) (h : (QDR A B C D) IsPRG_nd) (h1 : B ≠ A) (h2 : C ≠ D): (SEG_nd A B h1).toDir = (SEG_nd D C h2).toDir := by sorry
+
+theorem todir_eq_of_is_prg_nd_variant (A B C D : P) (h : (QDR A B C D) IsPRG_nd) (h1 : D ≠ A) (h2 : C ≠ B): (SEG_nd A D h1).toDir = (SEG_nd B C h2).toDir := by sorry
+
+
 end prg_trash
