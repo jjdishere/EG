@@ -39,7 +39,7 @@ def mk_pt_radius (O : P) {r : ℝ} (rpos : r > 0) : Circle P where
 def mk_pt_pt_diam (A B : P) (h : B ≠ A) : Circle P where
   center := (SEG A B).midpoint
   radius := dist (SEG A B).midpoint B
-  rad_pos := dist_pos.mpr (Seg_nd.midpt_ne_target h)
+  rad_pos := dist_pos.mpr (SEG_nd A B h).midpt_ne_target
 
 end Circle
 

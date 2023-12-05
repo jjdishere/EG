@@ -456,6 +456,10 @@ theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B 
   show B LiesOn (SEG_nd A B h).toRay
   exact SegND.lies_on_toRay_of_lies_on Seg.target_lies_on
 
+/-- Given two distinct points $A$ and $B$, $B$ lies in the interior of the ray $AB$. -/
+theorem Ray.snd_pt_lies_int_mk_pt_pt (A B : P) (h : B ≠ A) : B LiesInt (RAY A B h) :=
+  ⟨snd_pt_lies_on_mk_pt_pt h, h⟩
+
 /-- Given a point $A$ on a ray, the direction of the ray is the same as the direction from the source of the ray to $A$. -/
 theorem Ray.pt_pt_toDir_eq_ray_toDir {ray : Ray P} {A : P} (h : A LiesInt ray) : (RAY ray.1 A h.2).toDir = ray.toDir := by
   rcases (lies_int_iff).mp h with ⟨t, ht, eq⟩
@@ -1176,6 +1180,15 @@ theorem lies_on_seg_nd_or_extension_of_lies_on_toRay {seg_nd : SegND P} {A : P} 
       simp [eq, mul_smul]
       rfl⟩
 
+theorem not_lies_int_rev_extn_of_lies_on {A : P} {seg_nd : SegND P} (lieson : A LiesOn seg_nd.1) : ¬ A LiesInt seg_nd.reverse.extension := by
+  apply Ray.not_lies_int_of_lies_on_rev
+  rw [rev_extn_eq_toRay_rev, Ray.rev_rev_eq_self]
+  exact lies_on_toRay_of_lies_on lieson
+
+theorem not_lies_int_extn_of_lies_on {A : P} {seg_nd : SegND P} (lieson : A LiesOn seg_nd.1) : ¬ A LiesInt seg_nd.extension := by
+  rw [← seg_nd.rev_rev_eq_self]
+  exact not_lies_int_rev_extn_of_lies_on (Seg.lies_on_rev_of_lies_on lieson)
+
 end SegND
 
 end extension
@@ -1188,6 +1201,10 @@ section length
 /-- This function gives the length of a given segment, which is the norm of the vector associated to the segment. -/
 @[pp_dot]
 def Seg.length (seg : Seg P) : ℝ := norm (seg.toVec)
+
+/-- The length of segment $AB$ is the same as the distance form $A$ to $B$. -/
+theorem Seg.length_eq_dist {A B : P} : (SEG A B).length = dist A B :=
+  ((dist_comm A B).trans (NormedAddTorsor.dist_eq_norm' B A)).symm
 
 /-- This function defines the length of a nondegenerate segment, which is just the length of the segment. -/
 def SegND.length (seg_nd : SegND P) : ℝ := seg_nd.1.length
@@ -1337,6 +1354,14 @@ theorem Seg.lies_on_of_eq_midpt {seg : Seg P} (h : A = seg.midpoint) : A LiesOn 
 theorem SegND.midpt_lies_int {seg_nd : SegND P} :seg_nd.midpoint LiesInt seg_nd :=
   Seg.lies_int_iff.mpr ⟨seg_nd.2, ⟨1 / 2, by norm_num; exact seg_nd.vec_source_midpt⟩⟩
 
+/-- The midpoint of a nondegenerate segment is not equal to the source of the segment. -/
+theorem Seg_nd.midpt_ne_source {seg_nd : SegND P} : seg_nd.midpoint ≠ seg_nd.source :=
+  (seg_nd.midpt_lies_int).2.1
+
+/-- The midpoint of a nondegenerate segment is not equal to the target of the segment. -/
+theorem Seg_nd.midpt_ne_target {seg_nd : SegND P} : seg_nd.midpoint ≠ seg_nd.target :=
+  (seg_nd.midpt_lies_int).2.2
+
 /-- The midpoint of a nondegenerate segment lies in the interior of the segment. -/
 theorem SegND.lies_int_of_eq_midpt {seg_nd : SegND P} (h : A = seg_nd.midpoint) : A LiesInt seg_nd := by
   rw [h]
@@ -1378,8 +1403,8 @@ theorem eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source {X : P} {seg : Seg
       exact (eq_add_of_sub_eq (mul_right_cancel₀ h0 h)).symm
     exact midpt_of_vector_from_source (by rw [ht, h])
 
-theorem SegND_eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source {X : P} {seg_nd : SegND P} : X = seg_nd.midpoint ↔ (X LiesOn seg_nd) ∧ (SEG seg_nd.source X).length = (SEG X seg_nd.target).length := by
-  exact eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source
+theorem SegND_eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source {X : P} {seg_nd : SegND P} : X = seg_nd.midpoint ↔ (X LiesOn seg_nd) ∧ (SEG seg_nd.source X).length = (SEG X seg_nd.target).length :=
+  eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source
 
 end midpoint
 
@@ -1396,8 +1421,10 @@ theorem SegND.target_eq_vec_vadd_target_midpt {seg_nd : SegND P} : seg_nd.target
   midpt_of_same_vector_to_source_and_target (vadd_vsub seg_nd.toVecND.1 seg_nd.target).symm
 
 /-- Given a nondegenerate segment $AB$, B lies in the interior of the segment of $A(B + \overrightarrow{AB})$  -/
-theorem SegND.target_lies_int_seg_source_vec_vadd_target {seg_nd : SegND P} : seg_nd.target LiesInt (SEG seg_nd.source (seg_nd.toVecND.1 +ᵥ seg_nd.target)) := by sorry
-
+theorem SegND.target_lies_int_seg_source_vec_vadd_target {seg_nd : SegND P} : seg_nd.target LiesInt (SEG seg_nd.source (seg_nd.toVecND.1 +ᵥ seg_nd.target)) := sorry
+  /- (SEG_nd seg_nd.1.1  <| fun h ↦ seg_nd.2 <| toVec_eq_zero_of_deg.mpr <| zero_eq_bit0.mp <|
+    (vsub_eq_zero_iff_eq.mpr h).symm.trans <| vadd_vsub_assoc seg_nd.1.toVec
+      seg_nd.1.2 seg_nd.1.1).lies_int_of_eq_midpt seg_nd.target_eq_vec_vadd_target_midpt -/
 
 /-- Archimedean property I : given a directed segment AB (with A ≠ B), then there exists a point P such that B lies on the directed segment AP and P ≠ B. -/
 theorem SegND.exist_pt_beyond_pt (l : SegND P) : (∃ q : P, l.target LiesInt (SEG l.source q)) :=
