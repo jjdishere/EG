@@ -1,6 +1,7 @@
 import EuclideanGeometry.Foundation.Index
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
+import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence_trash
 
 noncomputable section
 
@@ -17,11 +18,11 @@ Prove that the height of $D$ to $AB$ is the same as the height of $E$ to $AC$.
 --Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$
 variable {A B C : Plane} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
 --Let $D$ be point on the segment $BC$
-variable {D : Plane} {D_on_seg : D LiesInt (SEG B C)}
+variable {D : Plane} {D_int_BC : D LiesInt (SEG B C)}
 --Let $E$ be point on the segment $BC$
-variable {E : Plane} {E_on_seg : E LiesInt (SEG B C)}
+variable {E : Plane} {E_int_BC : E LiesInt (SEG B C)}
 --such that $BD = CE$
-variable {E_ray_position : (SEG B D).length = (SEG C E).length}
+variable {BD_eq_CE : (SEG B D).length = (SEG C E).length}
 --Claim $B \ne A$
 lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
 --Claim $C \ne A$
@@ -42,33 +43,38 @@ Since $DX$ is perpendicular to $AB$ at $X$, we have $\angle BXD = \pi/2$ or $\an
 Since $EY$ is perpendicular to $AC$ at $Y$, we have $\angle CYE = \pi/2$ or $\angle CYE = - \pi/2$.
 Thus, $|\angle BXD| = |\angle CYE|$.
 In $\triangle XBD$ and $\triangle YCE$,
-$\cdot \angle XBD = - \angle YCE$
 $\cdot |\angle BXD| = |\angle CYE|$
+$\cdot \angle DBX = - \angle ECY$
 $\cdot BD = CE$
 Thus, $\triangle XBD \cong_a \triangle YEC$ (by AAS)
 Therefore, $DX = EY$.
 -/
-  have hnd_bdx : ¬ colinear B D X := by sorry
-  have hnd_cey : ¬ colinear C E Y := by sorry
-  have x_ne_B : X ≠ B := by sorry
-  have d_ne_B : D ≠ B := by sorry
-  have y_ne_C : Y ≠ C := by sorry
-  have e_ne_C : E ≠ C := by sorry
+  have not_colinear_XBD : ¬ colinear X B D := by sorry
+  have not_colinear_YCE : ¬ colinear Y C E := by sorry
+  -- We have that $X, B, D$ are pairwise distinct.
+  have X_ne_B : X ≠ B := by sorry
+  have D_ne_X : D ≠ X := by sorry
+  have D_ne_B : D ≠ B := by sorry
+  -- We have that $Y, C, E$ are pairwise distinct.
+  have Y_ne_C : Y ≠ C := by sorry
+  have E_ne_Y : E ≠ Y := by sorry
+  have E_ne_C : E ≠ C := by sorry
+  -- We have that $A, B, C$ are pairwise distinct.
   have A_ne_B : A ≠ B := by sorry
-  have c_ne_B : C ≠ B := by sorry
+  have C_ne_B : C ≠ B := by sorry
   have A_ne_C : A ≠ C := by sorry
-  have trngl_bdx_acongr_trngl_cey : Triangle_nd.IsACongr (TRI_nd B D X hnd_bdx) (TRI_nd C E Y hnd_cey) := by
-    have ang_dbx_eq_neg_ang_ecy : ∠ D B X d_ne_B x_ne_B = - ∠ E C Y e_ne_C y_ne_C := by
+  have trngl_XBD_acongr_trngl_YCE : (TRI_nd X B D not_colinear_XBD) ≅ₐ (TRI_nd Y C E not_colinear_YCE) := by
+    have angle_BXD_eq_neg_angle_CYE : ∠ B X D X_ne_B.symm D_ne_X = - ∠ C Y E Y_ne_C.symm E_ne_Y := by sorry
+    have angle_DBX_eq_neg_angle_ECY : ∠ D B X D_ne_B X_ne_B = - ∠ E C Y E_ne_C Y_ne_C := by
       calc
-      ∠ D B X d_ne_B x_ne_B
-      _= ∠ C B A c_ne_B A_ne_B := by sorry
+      ∠ D B X D_ne_B X_ne_B
+      _= ∠ C B A C_ne_B A_ne_B := by sorry
         --apply Angle_trash.eq_ang_of_lieson_lieson
-      _= - ∠ B C A c_ne_B.symm A_ne_C := by sorry
-      _= - ∠ E C Y e_ne_C y_ne_C := by sorry
-    apply Triangle_nd.acongr_of_AAS
-    -- the current AAS thm seems like ASA
-    · exact ang_dbx_eq_neg_ang_ecy
-    · sorry
-    · exact E_ray_position
-  exact trngl_bdx_acongr_trngl_cey.edge₁
+      _= - ∠ B C A C_ne_B.symm A_ne_C := by sorry
+      _= - ∠ E C Y E_ne_C Y_ne_C := by sorry
+    apply cong_trash.acongr_of_AAS
+    · exact angle_BXD_eq_neg_angle_CYE
+    · exact angle_DBX_eq_neg_angle_ECY
+    · exact BD_eq_CE
+  exact trngl_XBD_acongr_trngl_YCE.edge₂
 end Problem1_7_
