@@ -19,7 +19,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ colinear A B C
+  not_colinear_ABC : ¬ colinear A B C
   hisoc : (▵ A B C).IsIsoceles
   --Let $D$ be a point on $AB$.
   D : Plane
@@ -32,7 +32,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   -- Claim: $B \ne C$.
   B_ne_C : B ≠ C :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear hnd).1.symm
+    (ne_of_not_colinear not_colinear_ABC).1.symm
   -- Let $P$ be the foot of perpendicular from $D$ to $BC$.
   P : Plane
   hP : P = perp_foot D (LIN B C B_ne_C.symm)
@@ -80,27 +80,27 @@ theorem result (e : Setting Plane) : (SEG e.D e.P).length = (SEG e.E e.Q).length
         exact sorry --(length_eq_length_add_length (SEG A C) E (E_on_seg)).symm
       _ = (SEG e.C e.E).length := sorry -- length_eq_length_of_rev (SEG E C)
   -- We have $A \ne B$.
-  have A_ne_B : e.A ≠ e.B := (ne_of_not_colinear e.hnd).2.2.symm
+  have A_ne_B : e.A ≠ e.B := (ne_of_not_colinear e.not_colinear_ABC).2.2.symm
   -- We have $A \ne C$.
-  have A_ne_C : e.A ≠ e.C := (ne_of_not_colinear e.hnd).2.1
+  have A_ne_C : e.A ≠ e.C := (ne_of_not_colinear e.not_colinear_ABC).2.1
   -- We have $C \ne B$.
-  have C_ne_B : e.C ≠ e.B := (ne_of_not_colinear e.hnd).1
+  have C_ne_B : e.C ≠ e.B := (ne_of_not_colinear e.not_colinear_ABC).1
   -- We have $\triangle PBD$ is nondegenerate
-  have hnd1 : ¬ colinear e.P e.B e.D := by sorry
+  have not_colinear_PBD : ¬ colinear e.P e.B e.D := by sorry
   -- We have $B \ne D$.
-  have B_ne_D : e.B ≠ e.D := (ne_of_not_colinear hnd1).1.symm
+  have B_ne_D : e.B ≠ e.D := (ne_of_not_colinear not_colinear_PBD).1.symm
   -- We have $P \ne D$.
-  have P_ne_D : e.P ≠ e.D := (ne_of_not_colinear hnd1).2.1
+  have P_ne_D : e.P ≠ e.D := (ne_of_not_colinear not_colinear_PBD).2.1
   -- We have $P \ne B$.
-  have P_ne_B : e.P ≠ e.B := (ne_of_not_colinear hnd1).2.2.symm
+  have P_ne_B : e.P ≠ e.B := (ne_of_not_colinear not_colinear_PBD).2.2.symm
   -- We have $\triangle QCE$ is nondegenerate
-  have hnd2 : ¬ colinear e.Q e.C e.E := by sorry
+  have not_colinear_QCE : ¬ colinear e.Q e.C e.E := by sorry
   -- We have $C \ne E$.
-  have C_ne_E : e.C ≠ e.E := (ne_of_not_colinear hnd2).1.symm
+  have C_ne_E : e.C ≠ e.E := (ne_of_not_colinear not_colinear_QCE).1.symm
   -- We have $Q \ne E$.
-  have Q_ne_E : e.Q ≠ e.E := (ne_of_not_colinear hnd2).2.1
+  have Q_ne_E : e.Q ≠ e.E := (ne_of_not_colinear not_colinear_QCE).2.1
   -- We have $Q \ne C$.
-  have Q_ne_C : e.Q ≠ e.C := (ne_of_not_colinear hnd2).2.2.symm
+  have Q_ne_C : e.Q ≠ e.C := (ne_of_not_colinear not_colinear_QCE).2.2.symm
   -- Therefore, $\angle DBP = \angle ABC = -\angle ACB = - \angle ECQ$.
   have ang2 : (∠ e.D e.B e.P B_ne_D.symm P_ne_B) = - (∠ e.E e.C e.Q C_ne_E.symm Q_ne_C) := by
     calc
@@ -115,7 +115,7 @@ theorem result (e : Setting Plane) : (SEG e.D e.P).length = (SEG e.E e.Q).length
   -- $|\angle DPB| = |\angle EQC|$.
   have ang1 : (∠ e.B e.P e.D P_ne_B.symm P_ne_D.symm) = - (∠ e.C e.Q e.E Q_ne_C.symm Q_ne_E.symm) := by sorry
   -- $\triangle DPB \congr_a \triangle EQC$ (by AAS).
-  have h : (TRI_nd e.P e.B e.D hnd1) ≅ₐ (TRI_nd e.Q e.C e.E hnd2) := by
+  have h : (TRI_nd e.P e.B e.D not_colinear_PBD) ≅ₐ (TRI_nd e.Q e.C e.E not_colinear_QCE) := by
     apply Triangle_nd.acongr_of_AAS
     -- $\cdot \angle DBP = - \angle ECQ$
     · exact ang1
