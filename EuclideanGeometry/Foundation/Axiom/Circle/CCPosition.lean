@@ -85,7 +85,7 @@ theorem CC_circumscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle 
           simp
         _ = Vec.norm (ω₁.radius • (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).toDir.1) := rfl
         _ = ω₁.radius := by
-          rw [Vec.norm_smul_eq_mul_norm, Dir.norm_of_dir_tovec_eq_one, mul_one]
+          rw [Vec.norm_smul_eq_mul_norm, Dir.norm_of_dir_toVec_eq_one, mul_one]
           apply le_iff_lt_or_eq.mpr
           left; exact ω₁.rad_pos
     show Circle.IsOn (CC_Circumscribe_Point h) ω₁
@@ -98,15 +98,15 @@ theorem CC_circumscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle 
         unfold CC_Circumscribe_Point Vec.mk_pt_pt
         rw [vadd_vsub]
       _ = Vec.norm ((VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).1 - ω₁.radius • (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).toDir.1) := rfl
-      _ = Vec.norm ((Vec_nd.norm (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm) - ω₁.radius) • (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).toDir.1) := by
-        rw [sub_smul, Vec_nd.self_eq_norm_smul_todir]
+      _ = Vec.norm ((VecND.norm (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm) - ω₁.radius) • (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).toDir.1) := by
+        rw [sub_smul, VecND.self_eq_norm_smul_toDir]
       _ = Vec.norm ((dist ω₁.center ω₂.center - ω₁.radius) • (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).toDir.1) := by
         rw [dist_comm, NormedAddTorsor.dist_eq_norm']
         rfl
       _ = Vec.norm (ω₂.radius • (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).toDir.1) := by
         rw [h, add_comm, add_sub_cancel]
       _ = ω₂.radius := by
-          rw [Vec.norm_smul_eq_mul_norm, Dir.norm_of_dir_tovec_eq_one, mul_one]
+          rw [Vec.norm_smul_eq_mul_norm, Dir.norm_of_dir_toVec_eq_one, mul_one]
           apply le_iff_lt_or_eq.mpr
           left; exact ω₂.rad_pos
   show Circle.IsOn (CC_Circumscribe_Point h) ω₂
@@ -143,7 +143,7 @@ theorem CC_inscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (
           simp
         _ = Vec.norm (ω₁.radius • (VEC_nd ω₂.center ω₁.center h.2).toDir.1) := rfl
         _ = ω₁.radius := by
-          rw [Vec.norm_smul_eq_mul_norm, Dir.norm_of_dir_tovec_eq_one, mul_one]
+          rw [Vec.norm_smul_eq_mul_norm, Dir.norm_of_dir_toVec_eq_one, mul_one]
           apply le_iff_lt_or_eq.mpr
           left; exact ω₁.rad_pos
     show Circle.IsOn (CC_Inscribe_Point h) ω₁
@@ -159,22 +159,22 @@ theorem CC_inscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (
       _ = Vec.norm ((VEC_nd ω₁.center ω₂.center h.2.symm).1 - ω₁.radius • (VEC_nd ω₂.center ω₁.center h.2).toDir.1) := rfl
       _ = Vec.norm ((VEC_nd ω₁.center ω₂.center h.2.symm).1 + ω₁.radius • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.1) := by
         congr
-        unfold Dir.toVec Vec_nd.toDir Vec_nd.mk_pt_pt
+        unfold Dir.toVec VecND.toDir VecND.mk_pt_pt
         simp
         nth_rw 4 [← neg_vec]
         rw [mul_neg, mul_neg, neg_vec_norm_eq]; rfl
-      _ = Vec.norm ((Vec_nd.norm (VEC_nd ω₁.center ω₂.center h.2.symm) + ω₁.radius) • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.1) := by
-        rw [add_smul, Vec_nd.self_eq_norm_smul_todir]
+      _ = Vec.norm ((VecND.norm (VEC_nd ω₁.center ω₂.center h.2.symm) + ω₁.radius) • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.1) := by
+        rw [add_smul, VecND.self_eq_norm_smul_toDir]
       _ = Vec.norm ((dist ω₁.center ω₂.center + ω₁.radius) • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.1) := by
         congr
-        unfold Vec_nd.mk_pt_pt Vec_nd.norm
+        unfold VecND.mk_pt_pt VecND.norm
         simp
         rw [dist_comm, NormedAddTorsor.dist_eq_norm']
         rfl
       _ = Vec.norm (ω₂.radius • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.1) := by
         congr; rw [h.1]; linarith
       _ = ω₂.radius := by
-          rw [Vec.norm_smul_eq_mul_norm, Dir.norm_of_dir_tovec_eq_one, mul_one]
+          rw [Vec.norm_smul_eq_mul_norm, Dir.norm_of_dir_toVec_eq_one, mul_one]
           apply le_iff_lt_or_eq.mpr
           left; exact ω₂.rad_pos
   show Circle.IsOn (CC_Inscribe_Point h) ω₂
@@ -188,7 +188,7 @@ theorem CC_inscribe_point_centers_colinear {ω₁ : Circle P} {ω₂ : Circle P}
         simp
       _ = ω₁.radius • (- (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.1) := by
         congr
-        unfold Dir.toVec Vec_nd.toDir Vec_nd.mk_pt_pt
+        unfold Dir.toVec VecND.toDir VecND.mk_pt_pt
         simp
         nth_rw 2 [← neg_vec]
         rw [← mul_neg, neg_vec_norm_eq]
@@ -291,10 +291,10 @@ theorem CC_inx_pts_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Int
   · have : Complex.I ≠ 0 := Complex.I_ne_zero
     tauto
   contrapose! h₃
-  apply Dir.tovec_ne_zero
+  apply Dir.toVec_ne_zero
 
 theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : ((CC_Intersected_pts h).left LiesOn ω₁) ∧ ((CC_Intersected_pts h).left LiesOn ω₂) ∧ ((CC_Intersected_pts h).right LiesOn ω₁) ∧ ((CC_Intersected_pts h).right LiesOn ω₂) := by
-  have hd : Complex.abs ((VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec) = 1 := by apply Dir.norm_of_dir_tovec_eq_one
+  have hd : Complex.abs ((VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec) = 1 := by apply Dir.norm_of_dir_toVec_eq_one
   have dpos : 0 < dist ω₁.center ω₂.center := by apply dist_pos.mpr (CC_intersected_centers_distinct h)
   have hlt : (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2 < ω₁.radius ^ 2 := by
     apply sq_lt_sq.mpr
@@ -380,7 +380,7 @@ theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω�
 
 theorem CC_inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (LIN (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm) ⟂ (LIN ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm) := by
   show (LIN (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm).toProj = Dir.I.toProj * (LIN ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toProj
-  have hd : Complex.abs ((VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec) = 1 := by apply Dir.norm_of_dir_tovec_eq_one
+  have hd : Complex.abs ((VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec) = 1 := by apply Dir.norm_of_dir_toVec_eq_one
   have hn : Vec.norm (VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right) = 2 * (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2)) := by
     unfold Vec.mk_pt_pt CC_Intersected_pts
     simp only
@@ -411,7 +411,7 @@ theorem CC_inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (
   calc
     _ = (VEC_nd (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm).toDir.toProj := rfl
     _ = (Dir.I * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir).toProj := by
-      apply (Dir.eq_toproj_iff _ _).mpr
+      apply (Dir.toProj_eq_toProj_iff _ _).mpr
       right; exact hdir
 
 

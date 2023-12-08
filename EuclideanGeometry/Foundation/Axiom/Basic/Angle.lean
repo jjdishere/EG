@@ -1,5 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Basic.Vector
-import Mathlib.Analysis.Normed.Group.AddCircle
+import EuclideanGeometry.Foundation.Axiom.Basic.Angle.FromMathlib
 /-!
 # Angle Conversions
 
@@ -14,80 +13,170 @@ In this file, we define suitable coversion function between `ℝ⧸2π`,`ℝ⧸�
 
 -/
 noncomputable section
+
 namespace EuclidGeom
 
-section angvalue
-def AngValue := Real.Angle
-
-instance : NormedAddCommGroup AngValue := inferInstanceAs (NormedAddCommGroup (AddCircle (2*π)))
-
-def Real.toAngValue : ℝ → AngValue := Real.Angle.coe
-
-instance : Coe Real AngValue where
-  coe := Real.toAngValue
-
-def IsPos (θ : Real.Angle) : Prop := sbtw 0 θ π
-
-def IsNeg (θ : Real.Angle) : Prop := sbtw (π: Real.Angle) θ 0
-
-def AngValue.toReal : Real.Angle → ℝ := Real.Angle.toReal
-
--- should be isomorphism
-def AddDir.toAngValue : Additive Dir →+ AngValue where
-  toFun := fun d => (Complex.arg (d : Dir).1 : Real.Angle)
-  map_zero' := by simp only [Dir.one_eq_one_toComplex, Complex.arg_one, Real.Angle.coe_zero]
-  map_add' _ _:= Complex.arg_mul_coe_angle (Dir.tovec_ne_zero _) (Dir.tovec_ne_zero _)
-
-def Dir.toAngValue (d : Dir) : AngValue := AddDir.toAngValue d
-
-end angvalue
-
-section angdvalue
+open Real
 
 def AngDValue := AddCircle π
 
-instance : NormedAddCommGroup AngDValue := inferInstanceAs (NormedAddCommGroup (AddCircle π))
+namespace AngDValue
 
-def AngValue.toAngDValue : AngValue →+ AngDValue where
-  toFun := Quotient.lift (fun x : ℝ => (x : AddCircle π)) sorry
-  map_zero' := sorry
-  map_add' := sorry
+instance : NormedAddCommGroup AngDValue :=
+  inferInstanceAs (NormedAddCommGroup (AddCircle π))
+
+instance : Inhabited AngDValue :=
+  inferInstanceAs (Inhabited (AddCircle π))
+
+@[coe]
+def _root_.AngValue.toAngDValue' : AngValue → AngDValue :=
+  Quotient.map' id (by
+    rintro _ _ ⟨⟨v, ⟨k, hv⟩⟩, h⟩
+    exact ⟨⟨v, ⟨k * 2, by simpa [mul_assoc] using hv⟩⟩, h⟩)
 
 instance : Coe AngValue AngDValue where
-  coe := AngValue.toAngDValue
+  coe := AngValue.toAngDValue'
 
-def Real.toAngDValue : ℝ → AngDValue := fun r => (r : AngDValue)
+def _root_.AngValue.toAngDValue : AngValue →+ AngDValue where
+  toFun := (↑)
+  map_zero' := rfl
+  map_add' θ ψ := by
+    induction θ using AngValue.induction_on
+    induction ψ using AngValue.induction_on
+    rfl
 
-instance : Coe ℝ AngDValue where
-  coe := Real.toAngDValue
+instance : CircularOrder AngDValue :=
+  QuotientAddGroup.circularOrder (hp' := ⟨by norm_num [pi_pos]⟩)
 
-def AddDir.toAngDValue : Additive Dir →+ AngDValue where
-  toFun := fun d => AngValue.toAngDValue (Complex.arg (d : Dir).1 : Real.Angle)
-  map_zero' := by simp only [Dir.one_eq_one_toComplex, Complex.arg_one, Real.Angle.coe_zero, map_zero]
-  map_add' _ _:= by sorry
+theorem coe_def (x : ℝ) : (x : AngDValue) = QuotientAddGroup.mk x :=
+  rfl
 
-def Dir.toAngDValue : Dir → AngDValue := fun d => AddDir.toAngDValue d
+@[continuity]
+theorem continuous_coe : Continuous ((↑) : ℝ → AngDValue) :=
+  continuous_quotient_mk'
 
--- should be isomorphism
-def AddProj.toAngDValue : Additive Proj →+ AngDValue where
-  toFun := Quotient.lift (fun p => AngValue.toAngDValue (Complex.arg (p : Dir).1 : Real.Angle)) sorry
-  map_zero' := sorry
-  map_add' _ _:= by sorry
+/-- Coercion `ℝ → AngDValue` as an additive homomorphism. -/
+def coeHom : ℝ →+ AngDValue :=
+  QuotientAddGroup.mk' _
 
-def Proj.toAngDValue : Proj → AngDValue := fun p => AddProj.toAngDValue p
--- some coercion compatibility
--- special values
--- lift +-
--- pos neg 0
+@[simp]
+theorem coe_coeHom : (coeHom : ℝ → AngDValue) = ((↑) : ℝ → AngDValue) :=
+  rfl
 
-end angdvalue
+/-- An induction principle to deduce results for `AngDValue` from those for `ℝ`, used with
+`induction θ using AngDValue.induction_on`. -/
+@[elab_as_elim]
+protected theorem induction_on {p : AngDValue → Prop} (θ : AngDValue) (h : ∀ x : AngValue, p x) : p θ :=
+  Quotient.inductionOn' θ (fun x ↦ h x)
 
+@[simp, norm_cast]
+theorem coe_zero : ↑(0 : AngValue) = (0 : AngDValue) :=
+  rfl
 
-/-
-#check Real.Angle.toReal
-variable (a : Real.Angle)
-#check a.toReal
--/
+section dsimp
 
+@[simp, nolint simpNF]
+theorem coe_add_coe (x y : ℝ) : ↑(x + y : AngValue) = (↑x + ↑y : AngDValue) :=
+  rfl
+
+@[simp, nolint simpNF]
+theorem coe_neg_coe (x : ℝ) : ↑(-x : AngValue) = -(↑x : AngDValue) :=
+  rfl
+
+@[simp, nolint simpNF]
+theorem coe_sub_coe (x y : ℝ) : ↑(x - y : AngValue) = (↑x - ↑y : AngDValue) :=
+  rfl
+
+@[simp, nolint simpNF]
+theorem coe_nsmul_coe (n : ℕ) (x : ℝ) : ↑(n • x : AngValue) = n • (↑x : AngDValue) :=
+  rfl
+
+@[simp, nolint simpNF]
+theorem coe_zsmul_coe (z : ℤ) (x : ℝ) : ↑(z • x : AngValue) = z • (↑x : AngDValue) :=
+  rfl
+
+end dsimp
+
+@[simp, norm_cast]
+theorem coe_add (x y : AngValue) : ↑(x + y : AngValue) = (↑x + ↑y : AngDValue) := by
+  induction x using AngValue.induction_on
+  induction y using AngValue.induction_on
+  rfl
+
+@[simp, norm_cast]
+theorem coe_neg (x : AngValue) : ↑(-x : AngValue) = -(↑x : AngDValue) := by
+  induction x using AngValue.induction_on
+  rfl
+
+@[simp, norm_cast]
+theorem coe_sub (x y : AngValue) : ↑(x - y : AngValue) = (↑x - ↑y : AngDValue) := by
+  induction x using AngValue.induction_on
+  induction y using AngValue.induction_on
+  rfl
+
+@[simp, norm_cast]
+theorem coe_nsmul (n : ℕ) (x : AngValue) : ↑(n • x : AngValue) = n • (↑x : AngDValue) := by
+  induction x using AngValue.induction_on
+  rfl
+
+@[simp, norm_cast]
+theorem coe_zsmul (z : ℤ) (x : AngValue) : ↑(z • x : AngValue) = z • (↑x : AngDValue) := by
+  induction x using AngValue.induction_on
+  rfl
+
+theorem eq_iff_pi_dvd_sub {ψ θ : ℝ} : (θ : AngDValue) = ψ ↔ ∃ k : ℤ, θ - ψ = π * k := by
+  simp only [QuotientAddGroup.eq, AddSubgroup.zmultiples_eq_closure,
+    AddSubgroup.mem_closure_singleton, zsmul_eq_mul', (sub_eq_neg_add _ _).symm, eq_comm]
+  -- Porting note: added `rw`, `simp [Angle.coe, QuotientAddGroup.eq]` doesn't fire otherwise
+  rw [AngDValue.coe_def, AngDValue.coe_def, QuotientAddGroup.eq]
+  simp only [AddSubgroup.zmultiples_eq_closure,
+    AddSubgroup.mem_closure_singleton, zsmul_eq_mul', (sub_eq_neg_add _ _).symm, eq_comm]
+
+@[simp]
+theorem coe_pi : ↑(π : ℝ) = (0 : AngDValue) :=
+  eq_iff_pi_dvd_sub.2 ⟨1, by rw [sub_zero, Int.cast_one, mul_one]⟩
+
+@[simp]
+theorem two_nsmul_coe_div_two (θ : ℝ) : (2 : ℕ) • (↑(θ / 2) : AngDValue) = θ := by
+  rw [← coe_nsmul, two_nsmul, ← AngValue.coe_add, add_halves]
+
+@[simp]
+theorem two_zsmul_coe_div_two (θ : ℝ) : (2 : ℤ) • (↑(θ / 2) : AngDValue) = θ := by
+  rw [← coe_zsmul, two_zsmul, ← AngValue.coe_add, add_halves]
+
+theorem coe_eq_coe_iff {θ₁ θ₂ : AngValue} :
+    (θ₁ : AngDValue) = (θ₂ : AngDValue) ↔ θ₁ = θ₂ ∨ θ₁ = θ₂ + π := by
+  induction' θ₁ using AngValue.induction_on with x₁
+  induction' θ₂ using AngValue.induction_on with x₂
+  rw [eq_iff_pi_dvd_sub, AngValue.eq_iff_two_pi_dvd_sub, ← AngValue.coe_add, AngValue.eq_iff_two_pi_dvd_sub]
+  constructor
+  · rintro ⟨x, h⟩
+    simp_rw [← sub_sub, h]
+    obtain ⟨x, (rfl | rfl)⟩ := x.even_or_odd'
+    · exact .inl ⟨x, by push_cast; ring⟩
+    · exact .inr ⟨x, by push_cast; ring⟩
+  · rintro (⟨x, h⟩ | ⟨x, h⟩)
+    · simp_rw [h]
+      exact ⟨2 * x, by push_cast; ring⟩
+    · rw [← sub_sub, sub_eq_iff_eq_add] at h
+      simp_rw [h]
+      exact ⟨2 * x + 1, by push_cast; ring⟩
+
+@[simp]
+lemma coe_add_pi (v : AngValue) : ↑(v + π) = (v : AngDValue) := by
+  rw [coe_eq_coe_iff]
+  exact .inr rfl
+
+protected abbrev lift {α : Sort*} (f : AngValue → α) (hf : ∀ θ, f (θ + π) = f θ) : AngDValue → α :=
+  Quotient.lift (fun v : ℝ ↦ f v) fun (v₁ v₂ : ℝ) h ↦ (by
+    replace h : (v₁ : AngDValue) = (v₂ : AngDValue)
+    · simpa using Quotient.sound h
+    obtain (h | h) := coe_eq_coe_iff.mp h <;>
+      simp [h, hf])
+
+def _root_.Real.toAngDValue : ℝ →+ AngDValue :=
+  AngValue.toAngDValue.comp AngValue.coeHom
+
+end AngDValue
 
 end EuclidGeom

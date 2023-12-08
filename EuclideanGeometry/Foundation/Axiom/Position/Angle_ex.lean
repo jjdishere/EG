@@ -39,7 +39,7 @@ theorem acute_of_supp_of_obtuse (rt : IsObtuseAngle ang) :  IsRightAngle ang.sup
 
 theorem obtuse_of_supp_of_acute (rt : IsAcuteAngle ang) :  IsRightAngle ang.supplementary := by sorry
 
-theorem is_nd_of_supp_of_is_nd (nontriv : ang.is_nd) : ang.supplementary.is_nd := by sorry
+theorem IsND_of_supp_of_IsND (nontriv : ang.IsND) : ang.supplementary.IsND := by sorry
 
 def opposite :(Angle P) where
   start_ray := ang.start_ray.reverse
@@ -48,7 +48,7 @@ def opposite :(Angle P) where
 
 theorem opposite_eq_supp_of_supp : ang.supplementary.supplementary = ang := by sorry
 
-theorem  is_nd_of_oppo_of_is_nd (nontriv : ang.is_nd) : ang.opposite.is_nd := by sorry
+theorem  IsND_of_oppo_of_IsND (nontriv : ang.IsND) : ang.opposite.IsND := by sorry
 
 end Angle
 
@@ -56,11 +56,11 @@ section parallel
 variable {P : Type _} [EuclideanPlane P]
 -- should be stated use mod 2pi first, then back to pi or -pi
 
-theorem ang_eq_ang_of_todir_eq_todir {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = ang₂.start_ray.toDir) (he : ang₁.end_ray.toDir = ang₂.end_ray.toDir) : ang₁.value = ang₂.value := sorry
+theorem ang_eq_ang_of_toDir_eq_toDir {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = ang₂.start_ray.toDir) (he : ang₁.end_ray.toDir = ang₂.end_ray.toDir) : ang₁.value = ang₂.value := sorry
 
-theorem start_ray_todir_eq_todir_of_ang_eq_ang {ang₁ ang₂ : Angle P} (hs : ang₁.end_ray.toDir = ang₂.end_ray.toDir) (h : ang₁.value = ang₂.value) : ang₁.start_ray.toDir = ang₂.start_ray.toDir := sorry
+theorem start_ray_toDir_eq_toDir_of_ang_eq_ang {ang₁ ang₂ : Angle P} (hs : ang₁.end_ray.toDir = ang₂.end_ray.toDir) (h : ang₁.value = ang₂.value) : ang₁.start_ray.toDir = ang₂.start_ray.toDir := sorry
 
-theorem end_ray_todir_eq_todir_of_ang_eq_ang {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = ang₂.start_ray.toDir) (h : ang₁.value = ang₂.value) : ang₁.end_ray.toDir = ang₂.end_ray.toDir := sorry
+theorem end_ray_toDir_eq_toDir_of_ang_eq_ang {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = ang₂.start_ray.toDir) (h : ang₁.value = ang₂.value) : ang₁.end_ray.toDir = ang₂.end_ray.toDir := sorry
 
 -- theorem discuss all possible case of end/start.toDir = +- end/start.toDir
 -- `do we need construction of OppositeAng?`

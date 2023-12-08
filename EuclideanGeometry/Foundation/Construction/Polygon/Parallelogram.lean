@@ -60,9 +60,9 @@ theorem is_prg_of_eq_length_eq_length (h₁ : (qdr_cvx.edge_nd₁₂).1.length =
   have prep₃: (qdr_cvx.triangle₁).1.edge₂.length = (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).1.length := rfl
   have prep₄: (qdr_cvx.triangle₃).1.edge₂.length = (SEG_nd qdr_cvx.point₄ qdr_cvx.point₂ qdr_cvx.nd₂₄.symm).1.length := rfl
   have prep₅: (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).1.length = (SEG_nd qdr_cvx.point₄ qdr_cvx.point₂ qdr_cvx.nd₂₄.symm).1.length := by
-    apply Seg_nd.length_of_rev_eq_length.symm
+    apply SegND.length_of_rev_eq_length.symm
   have prep₈: (SEG_nd qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.nd₁₄).1.length = (SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₁₄.symm).1.length := by
-    apply Seg_nd.length_of_rev_eq_length.symm
+    apply SegND.length_of_rev_eq_length.symm
   have t₂: (qdr_cvx.triangle₁).1.edge₂.length = (qdr_cvx.triangle₃).1.edge₂.length := by
     rw [prep₃, prep₄]
     exact prep₅
@@ -72,7 +72,7 @@ theorem is_prg_of_eq_length_eq_length (h₁ : (qdr_cvx.edge_nd₁₂).1.length =
     rw [prep₆, prep₇, prep₈.symm]
     exact h₂
   have u: qdr_cvx.triangle₁.1 IsCongrTo qdr_cvx.triangle₃.1 := (congr_of_SSS_of_eq_orientation t₁ t₂ t₃ qdr_cvx.cclock_eq)
-  have A: qdr_cvx.triangle₁.1.is_nd ∧ qdr_cvx.triangle₃.1.is_nd := by
+  have A: qdr_cvx.triangle₁.1.IsND ∧ qdr_cvx.triangle₃.1.IsND := by
       constructor
       apply qdr_cvx.triangle₁.2
       apply qdr_cvx.triangle₃.2
@@ -94,17 +94,17 @@ theorem is_prg_of_eq_length_eq_length (h₁ : (qdr_cvx.edge_nd₁₂).1.length =
   have Q: qdr_cvx.triangle₃.angle₁.end_ray = qdr_cvx.diag_nd₂₄.toRay := by rfl
   have joker: qdr_cvx.triangle₃.angle₃.start_ray = qdr_cvx.diag_nd₂₄.reverse.toRay := by rfl
   have prepa₃: qdr_cvx.triangle₁.angle₃.start_ray.toDir = qdr_cvx.triangle₃.angle₃.start_ray.reverse.toDir := by
-    have JOKER: qdr_cvx.diag_nd₂₄.reverse.toRay.reverse.toDir = - qdr_cvx.diag_nd₂₄.reverse.toRay.toDir := qdr_cvx.diag_nd₂₄.reverse.toRay.todir_of_rev_eq_neg_todir
-    have SpadeA: qdr_cvx.diag_nd₂₄.reverse.toRay.toDir = - qdr_cvx.diag_nd₂₄.toRay.toDir := qdr_cvx.diag_nd₂₄.todir_of_rev_eq_neg_todir
+    have JOKER: qdr_cvx.diag_nd₂₄.reverse.toRay.reverse.toDir = - qdr_cvx.diag_nd₂₄.reverse.toRay.toDir := qdr_cvx.diag_nd₂₄.reverse.toRay.toDir_of_rev_eq_neg_toDir
+    have SpadeA: qdr_cvx.diag_nd₂₄.reverse.toRay.toDir = - qdr_cvx.diag_nd₂₄.toRay.toDir := qdr_cvx.diag_nd₂₄.toDir_of_rev_eq_neg_toDir
     rw [K, joker, JOKER, SpadeA]
     simp only [neg_neg]
   have prepa₄: qdr_cvx.triangle₁.angle₁.end_ray.toDir = qdr_cvx.triangle₃.angle₁.end_ray.reverse.toDir := by
     --qdr_cvx.diag_nd₂₄.reverse.toRay.toDir = qdr_cvx.diag_nd₂₄.toRay.reverse.toDir
-    have JOKER: qdr_cvx.diag_nd₂₄.reverse.toRay.toDir = - qdr_cvx.diag_nd₂₄.toRay.toDir := qdr_cvx.diag_nd₂₄.todir_of_rev_eq_neg_todir
-    have SpadeA: qdr_cvx.diag_nd₂₄.toRay.reverse.toDir = -qdr_cvx.diag_nd₂₄.toRay.toDir := qdr_cvx.diag_nd₂₄.toRay.todir_of_rev_eq_neg_todir
+    have JOKER: qdr_cvx.diag_nd₂₄.reverse.toRay.toDir = - qdr_cvx.diag_nd₂₄.toRay.toDir := qdr_cvx.diag_nd₂₄.toDir_of_rev_eq_neg_toDir
+    have SpadeA: qdr_cvx.diag_nd₂₄.toRay.reverse.toDir = -qdr_cvx.diag_nd₂₄.toRay.toDir := qdr_cvx.diag_nd₂₄.toRay.toDir_of_rev_eq_neg_toDir
     rw [J, Q, JOKER, SpadeA]
-  have prepar: qdr_cvx.triangle₁.angle₁.start_ray.toDir = (qdr_cvx.triangle₃.angle₁.start_ray).reverse.toDir := start_ray_todir_rev_todir_of_ang_rev_ang prepa₄ prepa₁
-  have prepar': qdr_cvx.triangle₁.angle₃.end_ray.toDir = (qdr_cvx.triangle₃.angle₃.end_ray).reverse.toDir := end_ray_todir_rev_todir_of_ang_rev_ang prepa₃ prepa₂
+  have prepar: qdr_cvx.triangle₁.angle₁.start_ray.toDir = (qdr_cvx.triangle₃.angle₁.start_ray).reverse.toDir := start_ray_toDir_rev_toDir_of_ang_rev_ang prepa₄ prepa₁
+  have prepar': qdr_cvx.triangle₁.angle₃.end_ray.toDir = (qdr_cvx.triangle₃.angle₃.end_ray).reverse.toDir := end_ray_toDir_rev_toDir_of_ang_rev_ang prepa₃ prepa₂
 
   sorry
   sorry

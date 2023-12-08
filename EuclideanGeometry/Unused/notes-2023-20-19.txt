@@ -7,7 +7,7 @@ Structure of Tactic: LinearOrder
 
 Input: 
   ⬝ goal (check that it is of the form C LiesOn/LiesIn SEG_nd A B h, or extensions)
-  ⬝ get all known hypotheses including, LiesOn/LiesIn, extension, colinear, ¬ ▵.is_nd, points being equal, and etc. (Each such statement may also provide certain information regarding point positions)
+  ⬝ get all known hypotheses including, LiesOn/LiesIn, extension, colinear, ¬ ▵.IsND, points being equal, and etc. (Each such statement may also provide certain information regarding point positions)
 
 Additional concepts/theorems to be established:
   ⬝ Given  RAY A B h, and two points C D such that C D LiesOn LIN A B h,  whether C < D for the direction or now, and related compatibility theorems, and conversion theorems to LiesOn/LiesIn etc.

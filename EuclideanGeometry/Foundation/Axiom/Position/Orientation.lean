@@ -35,7 +35,7 @@ theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, w
 
 theorem wedge_eq_sine_mul_length_mul_length (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : wedge A B C = (Real.sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) := by
   unfold wedge
-  have h0 : (Angle.mk_pt_pt_pt B A C bnea cnea).value = Vec_nd.angle (VEC_nd A B bnea) (VEC_nd A C cnea)  := rfl
+  have h0 : (Angle.mk_pt_pt_pt B A C bnea cnea).value = VecND.angle (VEC_nd A B bnea) (VEC_nd A C cnea)  := rfl
   rw [h0]
   apply det_eq_sin_mul_norm_mul_norm (VEC_nd A B bnea) (VEC_nd A C cnea)
 
@@ -64,10 +64,10 @@ theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B
 
 theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge A B C) ↔ (0 < (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value ∧ (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value < π) := by
   have h1 : 0 < (SEG A B).length := by
-      have abnd : (SEG A B).is_nd := (ne_of_not_colinear nd).2.2
+      have abnd : (SEG A B).IsND := (ne_of_not_colinear nd).2.2
       exact length_pos_iff_nd.mpr (abnd)
   have h2 : 0 < (SEG A C).length := by
-      have acnd : (SEG A C).is_nd := (ne_of_not_colinear nd).2.1.symm
+      have acnd : (SEG A C).IsND := (ne_of_not_colinear nd).2.1.symm
       exact length_pos_iff_nd.mpr (acnd)
   constructor
   · intro h0
@@ -94,20 +94,20 @@ theorem odist'_eq_zero_iff_exist_real_vec_eq_smul {A : P} {ray : Ray P} : odist'
   constructor
   intro k
   dsimp only [odist'] at k
-  apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) (Dir.tovec_ne_zero ray.2)).mp
+  apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) (Dir.toVec_ne_zero ray.2)).mp
   exact k
   intro e
-  apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) (Dir.tovec_ne_zero ray.2)).mpr
+  apply (det_eq_zero_iff_eq_smul (ray.2.1) (VEC ray.1 A) (Dir.toVec_ne_zero ray.2)).mpr
   exact e
 
 theorem odist'_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist' A ray = Real.sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by
   rw [odist',Angle.value]
-  have h0 : (Angle.mk_ray_pt ray A h).value = Vec_nd.angle ray.2.toVec_nd (VEC_nd ray.source A h) := angle_value_eq_angle A ray h
-  have h1 : ray.2.toVec_nd.1 = ray.2.1 := rfl
+  have h0 : (Angle.mk_ray_pt ray A h).value = VecND.angle ray.2.toVecND (VEC_nd ray.source A h) := angle_value_eq_angle A ray h
+  have h1 : ray.2.toVecND.1 = ray.2.1 := rfl
   have h2 : (VEC_nd ray.source A h).1=VEC ray.source A := rfl
-  have h3 : Vec.norm (Dir.toVec_nd (ray.toDir)) = 1 := by apply Dir.norm_of_dir_tovec_eq_one
+  have h3 : Vec.norm (Dir.toVecND (ray.toDir)) = 1 := by apply Dir.norm_of_dir_toVec_eq_one
   have h4 : (SEG ray.source A).length = Vec.norm (VEC_nd ray.source A h) := rfl
-  rw [← h1, ← h2, det_eq_sin_mul_norm_mul_norm ray.2.toVec_nd (VEC_nd ray.source A h),h3,h4,← h0]
+  rw [← h1, ← h2, det_eq_sin_mul_norm_mul_norm ray.2.toVecND (VEC_nd ray.source A h),h3,h4,← h0]
   ring_nf
   rw [mul_comm]
   rfl
@@ -133,7 +133,7 @@ theorem odist'_eq_odist'_of_to_dirline_eq_to_dirline (A : P) (ray ray' : Ray P) 
   dsimp only [odist']
   choose t₂ kt using h₃
   rw [kt,det_add_right_eq_add_det ray.2.1 (t₂ • ray.2.1) (VEC ray'.1 A)]
-  rw [(det_eq_zero_iff_eq_smul ray.2.1 (t₂ • ray.2.1) (Dir.tovec_ne_zero ray.2)).mpr _]
+  rw [(det_eq_zero_iff_eq_smul ray.2.1 (t₂ • ray.2.1) (Dir.toVec_ne_zero ray.2)).mpr _]
   field_simp[h₁]
   use t₂
 
@@ -141,7 +141,7 @@ def odist (A : P) [DirFig α] (l : α P) : ℝ := Quotient.lift (s := same_dir_l
 
 theorem odist_reverse_eq_neg_odist (A : P) [DirFig α] (dl : α P) : odist A (DirFig.reverse dl) = - odist A dl := sorry
 
-theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (Seg_nd.mk A B bnea) = odist D (Seg_nd.mk A B bnea)) ↔ (wedge A B C = wedge A B D) := sorry
+theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SegND.mk A B bnea) = odist D (SegND.mk A B bnea)) ↔ (wedge A B C = wedge A B D) := sorry
 
 end oriented_distance
 
@@ -192,7 +192,7 @@ theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A r
   exact (h k).elim
   dsimp only [Line.IsOn]
   intro p
-  rw [Ray.toline_carrier_eq_ray_carrier_union_rev_carrier ray] at p
+  rw [Ray.toLine_carrier_eq_ray_carrier_union_rev_carrier ray] at p
   exact (odist'_eq_zero_iff_exist_real_vec_eq_smul).mpr (lies_on_or_rev_iff_exist_real_vec_eq_smul.mp p)
 
 theorem online_iff_lies_on_line (A : P) [DirFig α] (df : α P) : Line.IsOn A (toLine df) ↔ odist A df = 0 := sorry
@@ -205,9 +205,9 @@ end point_toray
 
 section oriented_area
 
-theorem oarea_eq_length_mul_odist_div_2 (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (Seg_nd.mk A B bnea)) * (SEG A B).length) / 2:= sorry
+theorem oarea_eq_length_mul_odist_div_2 (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (SegND.mk A B bnea)) * (SEG A B).length) / 2:= sorry
 
-theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (Seg_nd.mk A B bnea) = odist D (Seg_nd.mk A B bnea)) ↔ oarea A B C = oarea A B D := sorry
+theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SegND.mk A B bnea) = odist D (SegND.mk A B bnea)) ↔ oarea A B C = oarea A B D := sorry
 
 theorem oarea_eq_sine_mul_length_mul_length_div_2 (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : oarea A B C = (Real.sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) / 2 := sorry
 
@@ -226,22 +226,22 @@ theorem odist_eq_odist_of_parallel' (A B : P) (ray : Ray P) (bnea : B ≠ A) (pa
     rw [det_add_right_eq_add_det]
   have h2 : det ray.2.1 (VEC A B) = 0 := by
     unfold parallel at para
-    have h3 : Dir.toProj ray.2 = Vec_nd.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) := para.symm
-    have h4 : Vec_nd.toProj ray.2.toVec_nd = Vec_nd.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) := by
+    have h3 : Dir.toProj ray.2 = VecND.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : VecND) := para.symm
+    have h4 : VecND.toProj ray.2.toVecND = VecND.toProj (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : VecND) := by
       rw [← h3]
-      exact dir_toVec_nd_toProj_eq_dir_toProj ray.2
-    exact det_eq_zero_of_toProj_eq (⟨ray.2.1 , Dir.tovec_ne_zero ray.2⟩ : Vec_nd) (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : Vec_nd) h4
+      exact dir_toVecND_toProj_eq_dir_toProj ray.2
+    exact det_eq_zero_of_toProj_eq (⟨ray.2.1 , Dir.toVec_ne_zero ray.2⟩ : VecND) (⟨(VEC A B) , (VEC_nd A B bnea).2⟩ : VecND) h4
   rw [h2] at h1
   rw [add_zero] at h1
   exact h1.symm
 
-theorem odist_eq_odist_of_parallel (A B : P) [DirFig α] (df : α P) (bnea : B ≠ A) (para : parallel (Seg_nd.mk A B bnea) df) : odist A df = odist B df := sorry
+theorem odist_eq_odist_of_parallel (A B : P) [DirFig α] (df : α P) (bnea : B ≠ A) (para : parallel (SegND.mk A B bnea) df) : odist A df = odist B df := sorry
 
-theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (Seg_nd.mk A B bnea) (Seg_nd.mk C D dnec)) ↔ wedge A B C = wedge A B D := sorry
+theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (SegND.mk A B bnea) (SegND.mk C D dnec)) ↔ wedge A B C = wedge A B D := sorry
 
-theorem odist_eq_odist_iff_parallel_ne (A B : P) [DirFig α] (df : α P) (bnea : B ≠ A) : (parallel (Seg_nd.mk A B bnea) df) ↔ odist A df = odist B df := sorry
+theorem odist_eq_odist_iff_parallel_ne (A B : P) [DirFig α] (df : α P) (bnea : B ≠ A) : (parallel (SegND.mk A B bnea) df) ↔ odist A df = odist B df := sorry
 
-theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (Seg_nd.mk A B bnea) (Seg_nd.mk C D dnec)) ↔ oarea A B C = oarea A B D := sorry
+theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (SegND.mk A B bnea) (SegND.mk C D dnec)) ↔ oarea A B C = oarea A B D := sorry
 
 end cooperation_with_parallel
 

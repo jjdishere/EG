@@ -50,9 +50,9 @@ Prove that $BD = AC + CD$.-/
   -- Direct from the problem statement
   variable (hang : 2 * ∠ C B A c_ne_b a_ne_b = ∠ A C B a_ne_c b_ne_c)
   -- Define segment AD, with A ≠ D
-  variable {height : Seg_nd P} {defheight : height = (SEG A D)}
+  variable {height : SegND P} {defheight : height = (SEG A D)}
   -- Define base BC. Possible improvement here.
-  variable {base : Seg_nd P} {defbase : base = (SEG B C)}
+  variable {base : SegND P} {defbase : base = (SEG B C)}
   -- Perpendicular base and height, directly stated
   variable {heightproperty : height ⟂ base}
   -- Main theorem statement

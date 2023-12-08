@@ -22,21 +22,21 @@ structure IsCongr (tr₁ tr₂ : Triangle P) : Prop where intro ::
   edge₁ : tr₁.edge₁.length = tr₂.edge₁.length
   edge₂ : tr₁.edge₂.length = tr₂.edge₂.length
   edge₃ : tr₁.edge₃.length = tr₂.edge₃.length
-  angle₁ : if h : tr₁.is_nd ∧ tr₂.is_nd then
+  angle₁ : if h : tr₁.IsND ∧ tr₂.IsND then
     (Triangle_nd.angle₁ ⟨tr₁, h.1⟩).value = (Triangle_nd.angle₁ ⟨tr₂, h.2⟩).value
     else True
-  angle₂ : if h : tr₁.is_nd ∧ tr₂.is_nd then
+  angle₂ : if h : tr₁.IsND ∧ tr₂.IsND then
     (Triangle_nd.angle₂ ⟨tr₁, h.1⟩).value = (Triangle_nd.angle₂ ⟨tr₂, h.2⟩).value
     else True
-  angle₃ : if h : tr₁.is_nd ∧ tr₂.is_nd then
+  angle₃ : if h : tr₁.IsND ∧ tr₂.IsND then
     (Triangle_nd.angle₃ ⟨tr₁, h.1⟩).value = (Triangle_nd.angle₃ ⟨tr₂, h.2⟩).value
     else True
 
 namespace IsCongr
 
-theorem nd_of_nd (h : tr₁.IsCongr tr₂) (nd : tr₁.is_nd) : tr₂.is_nd := by
+theorem nd_of_nd (h : tr₁.IsCongr tr₂) (nd : tr₁.IsND) : tr₂.IsND := by
   by_contra col
-  unfold is_nd at col
+  unfold IsND at col
   push_neg at col
   rw [Triangle.edge_sum_eq_edge_iff_colinear] at col
   rcases col with l₁ | l₂ | l₃
@@ -119,21 +119,21 @@ structure IsACongr (tr₁ tr₂ : Triangle P) : Prop where intro ::
   edge₁ : tr₁.edge₁.length = tr₂.edge₁.length
   edge₂ : tr₁.edge₂.length = tr₂.edge₂.length
   edge₃ : tr₁.edge₃.length = tr₂.edge₃.length
-  angle₁ : if h : tr₁.is_nd ∧ tr₂.is_nd then
+  angle₁ : if h : tr₁.IsND ∧ tr₂.IsND then
     (Triangle_nd.angle₁ ⟨tr₁, h.1⟩).value = - (Triangle_nd.angle₁ ⟨tr₂, h.2⟩).value
     else True
-  angle₂ : if h : tr₁.is_nd ∧ tr₂.is_nd then
+  angle₂ : if h : tr₁.IsND ∧ tr₂.IsND then
     (Triangle_nd.angle₂ ⟨tr₁, h.1⟩).value = - (Triangle_nd.angle₂ ⟨tr₂, h.2⟩).value
     else True
-  angle₃ : if h : tr₁.is_nd ∧ tr₂.is_nd then
+  angle₃ : if h : tr₁.IsND ∧ tr₂.IsND then
     (Triangle_nd.angle₃ ⟨tr₁, h.1⟩).value = - (Triangle_nd.angle₃ ⟨tr₂, h.2⟩).value
     else True
 
 namespace IsACongr
 
-theorem nd_of_nd (h : tr₁.IsACongr tr₂) (nd : tr₁.is_nd) : tr₂.is_nd := by
+theorem nd_of_nd (h : tr₁.IsACongr tr₂) (nd : tr₁.IsND) : tr₂.IsND := by
   by_contra col
-  unfold is_nd at col
+  unfold IsND at col
   push_neg at col
   rw [Triangle.edge_sum_eq_edge_iff_colinear] at col
   rcases col with l₁ | l₂ | l₃
@@ -355,7 +355,7 @@ theorem Triangle.acongr_of_acongr (h : tr_nd₁ ≅ₐ tr_nd₂) : tr_nd₁.1 �
   angle₂ := (dite_prop_iff_and _).mpr ⟨fun _ ↦ h.5 , fun _ ↦ trivial⟩
   angle₃ := (dite_prop_iff_and _).mpr ⟨fun _ ↦ h.6 , fun _ ↦ trivial⟩
 
-theorem Triangle.nd_of_congr (h : tr_nd.1 ≅ tr) : tr.is_nd := by
+theorem Triangle.nd_of_congr (h : tr_nd.1 ≅ tr) : tr.IsND := by
   exact IsCongr.nd_of_nd h tr_nd.2
 
 theorem Triangle_nd.congr_of_congr (h : tr_nd.1 ≅ tr) : tr_nd ≅ ⟨tr, tr.nd_of_congr h⟩ where
@@ -372,20 +372,20 @@ namespace Triangle
 
 section degenerate
 
-theorem IsCongr.not_nd_of_not_nd (h : tr₁ ≅ tr₂) (nnd : ¬ tr₁.is_nd) : ¬ tr₂.is_nd :=
+theorem IsCongr.not_nd_of_not_nd (h : tr₁ ≅ tr₂) (nnd : ¬ tr₁.IsND) : ¬ tr₂.IsND :=
   fun nd ↦ nnd (h.symm.nd_of_nd nd)
 
-theorem IsACongr.not_nd_of_not_nd (h : tr₁.IsACongr tr₂) (nnd : ¬ tr₁.is_nd) : ¬ tr₂.is_nd :=
+theorem IsACongr.not_nd_of_not_nd (h : tr₁.IsACongr tr₂) (nnd : ¬ tr₁.IsND) : ¬ tr₂.IsND :=
   fun nd ↦ nnd (h.symm.nd_of_nd nd)
 
-theorem not_nd_of_acongr_self (h : tr.IsACongr tr) : ¬ tr.is_nd := by
+theorem not_nd_of_acongr_self (h : tr.IsACongr tr) : ¬ tr.IsND := by
   by_contra nd
   let tr_nd : Triangle_nd P := ⟨tr, nd⟩
   have temp := ((dite_prop_iff_and _).mp h.4).1 ⟨nd,nd⟩
   have eq_zero : Angle.value tr_nd.angle₁ = 0 := by linarith
   exact nd (colinear_of_zero_angle eq_zero)
 
-theorem acongr_self_of_not_nd (nnd : ¬ tr.is_nd) : tr.IsACongr tr where
+theorem acongr_self_of_not_nd (nnd : ¬ tr.IsND) : tr.IsACongr tr where
   edge₁ := rfl
   edge₂ := rfl
   edge₃ := rfl
@@ -393,7 +393,7 @@ theorem acongr_self_of_not_nd (nnd : ¬ tr.is_nd) : tr.IsACongr tr where
   angle₂ := (dite_prop_iff_and _).mpr ⟨fun nd ↦ (nnd nd.1).elim, fun _ ↦ trivial⟩
   angle₃ := (dite_prop_iff_and _).mpr ⟨fun nd ↦ (nnd nd.1).elim, fun _ ↦ trivial⟩
 
-theorem IsCongr.acongr_of_left_not_nd (h : tr₁.IsCongr tr₂) (nnd : ¬ tr₁.is_nd) : tr₁.IsACongr tr₂ where
+theorem IsCongr.acongr_of_left_not_nd (h : tr₁.IsCongr tr₂) (nnd : ¬ tr₁.IsND) : tr₁.IsACongr tr₂ where
   edge₁ := h.1
   edge₂ := h.2
   edge₃ := h.3
@@ -401,7 +401,7 @@ theorem IsCongr.acongr_of_left_not_nd (h : tr₁.IsCongr tr₂) (nnd : ¬ tr₁.
   angle₂ := (dite_prop_iff_and _).mpr ⟨fun nd ↦ (nnd nd.1).elim,fun _ ↦ trivial⟩
   angle₃ := (dite_prop_iff_and _).mpr ⟨fun nd ↦ (nnd nd.1).elim,fun _ ↦ trivial⟩
 
-theorem IsCongr.acongr_of_right_not_nd (h : tr₁.IsCongr tr₂) (nnd : ¬ tr₂.is_nd) : tr₁.IsACongr tr₂ where
+theorem IsCongr.acongr_of_right_not_nd (h : tr₁.IsCongr tr₂) (nnd : ¬ tr₂.IsND) : tr₁.IsACongr tr₂ where
   edge₁ := h.1
   edge₂ := h.2
   edge₃ := h.3
@@ -409,7 +409,7 @@ theorem IsCongr.acongr_of_right_not_nd (h : tr₁.IsCongr tr₂) (nnd : ¬ tr₂
   angle₂ := (dite_prop_iff_and _).mpr ⟨fun nd ↦ (nnd nd.2).elim,fun _ ↦ trivial⟩
   angle₃ := (dite_prop_iff_and _).mpr ⟨fun nd ↦ (nnd nd.2).elim,fun _ ↦ trivial⟩
 
-theorem IsACongr.congr_of_left_not_nd (h : tr₁.IsACongr tr₂) (nnd : ¬ tr₁.is_nd) : tr₁.IsCongr tr₂ where
+theorem IsACongr.congr_of_left_not_nd (h : tr₁.IsACongr tr₂) (nnd : ¬ tr₁.IsND) : tr₁.IsCongr tr₂ where
   edge₁ := h.1
   edge₂ := h.2
   edge₃ := h.3
@@ -417,7 +417,7 @@ theorem IsACongr.congr_of_left_not_nd (h : tr₁.IsACongr tr₂) (nnd : ¬ tr₁
   angle₂ := (dite_prop_iff_and _).mpr ⟨fun nd ↦ (nnd nd.1).elim,fun _ ↦ trivial⟩
   angle₃ := (dite_prop_iff_and _).mpr ⟨fun nd ↦ (nnd nd.1).elim,fun _ ↦ trivial⟩
 
-theorem IsACongr.congr_of_right_not_nd (h : tr₁.IsACongr tr₂) (nnd : ¬ tr₂.is_nd) : tr₁.IsCongr tr₂ where
+theorem IsACongr.congr_of_right_not_nd (h : tr₁.IsACongr tr₂) (nnd : ¬ tr₂.IsND) : tr₁.IsCongr tr₂ where
   edge₁ := h.1
   edge₂ := h.2
   edge₃ := h.3
@@ -723,7 +723,7 @@ end Triangle_nd
 
 namespace Triangle
 
-theorem congr_of_SSS_of_left_not_nd (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) (nnd : ¬ tr₁.is_nd) : tr₁ ≅ tr₂ where
+theorem congr_of_SSS_of_left_not_nd (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) (nnd : ¬ tr₁.IsND) : tr₁ ≅ tr₂ where
   edge₁ := e₁
   edge₂ := e₂
   edge₃ := e₃
@@ -731,7 +731,7 @@ theorem congr_of_SSS_of_left_not_nd (e₁ : tr₁.edge₁.length = tr₂.edge₁
   angle₂ := (dite_prop_iff_and _).mpr ⟨fun nd ↦ (nnd nd.1).elim,fun _ ↦ trivial⟩
   angle₃ := (dite_prop_iff_and _).mpr ⟨fun nd ↦ (nnd nd.1).elim,fun _ ↦ trivial⟩
 
-theorem congr_of_SSS_of_right_not_nd (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) (nnd : ¬ tr₂.is_nd) : tr₁ ≅ tr₂ where
+theorem congr_of_SSS_of_right_not_nd (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) (nnd : ¬ tr₂.IsND) : tr₁ ≅ tr₂ where
   edge₁ := e₁
   edge₂ := e₂
   edge₃ := e₃
@@ -739,22 +739,22 @@ theorem congr_of_SSS_of_right_not_nd (e₁ : tr₁.edge₁.length = tr₂.edge�
   angle₂ := (dite_prop_iff_and _).mpr ⟨fun nd ↦ (nnd nd.2).elim,fun _ ↦ trivial⟩
   angle₃ := (dite_prop_iff_and _).mpr ⟨fun nd ↦ (nnd nd.2).elim,fun _ ↦ trivial⟩
 
-theorem acongr_of_SSS_of_left_not_nd (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) (nnd : ¬ tr₁.is_nd) : tr₁ ≅ₐ tr₂ :=
+theorem acongr_of_SSS_of_left_not_nd (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) (nnd : ¬ tr₁.IsND) : tr₁ ≅ₐ tr₂ :=
   (congr_of_SSS_of_left_not_nd e₁ e₂ e₃ nnd).acongr_of_left_not_nd nnd
 
-theorem acongr_of_SSS_of_right_not_nd (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) (nnd : ¬ tr₂.is_nd) : tr₁ ≅ₐ tr₂ :=
+theorem acongr_of_SSS_of_right_not_nd (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) (nnd : ¬ tr₂.IsND) : tr₁ ≅ₐ tr₂ :=
   (congr_of_SSS_of_right_not_nd e₁ e₂ e₃ nnd).acongr_of_right_not_nd nnd
 
 theorem congr_or_acongr_of_SSS (e₁ : tr₁.edge₁.length = tr₂.edge₁.length) (e₂ : tr₁.edge₂.length = tr₂.edge₂.length) (e₃ : tr₁.edge₃.length = tr₂.edge₃.length) : tr₁ ≅ tr₂ ∨ tr₁ ≅ₐ tr₂ := by
-  by_cases nd₁ : tr₁.is_nd
+  by_cases nd₁ : tr₁.IsND
   . let tr_nd₁ : Triangle_nd P := ⟨tr₁,nd₁⟩
-    by_cases nd₂ : tr₂.is_nd
+    by_cases nd₂ : tr₂.IsND
     . let tr_nd₂ : Triangle_nd P := ⟨tr₂,nd₂⟩
       rcases Triangle_nd.congr_or_acongr_of_SSS (tr_nd₁ := tr_nd₁) (tr_nd₂ := tr_nd₂) e₁ e₂ e₃ with h | h'
       . exact .inl (Triangle.congr_of_congr h)
       . exact .inr (Triangle.acongr_of_acongr h')
     . by_contra
-      unfold is_nd at nd₂
+      unfold IsND at nd₂
       push_neg at nd₂
       rw [Triangle.edge_sum_eq_edge_iff_colinear] at nd₂
       rcases nd₂ with l₁ | l₂ | l₃
