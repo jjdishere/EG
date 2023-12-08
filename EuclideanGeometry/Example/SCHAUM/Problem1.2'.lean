@@ -14,29 +14,36 @@ Let $Q$ be the foot of perpendicular from $E$ to $BC$.
 Prove that $DP = EQ$.
 -/
 
---Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : Plane} {hnd: ¬ colinear A B C} {hisoc: (▵ A B C).IsIsoceles}
---Let $D$ be a point on $AB$.
-variable {D : Plane} {D_int_AB: D LiesInt (SEG A B)}
---Let $E$ be a point on $AC$
-variable {E : Plane} {E_int_AC: E LiesInt (SEG A C)}
---such that $AE = AD$.
-variable {AE_eq_AD : (SEG A E).length = (SEG A D).length}
--- Claim: $B \ne C$.
-lemma B_ne_C : B ≠ C :=
-  -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-  (ne_of_not_colinear hnd).1.symm
--- Let $P$ be the foot of perpendicular from $D$ to $BC$.
-variable {P : Plane} {hd : P = perp_foot D (LIN B C B_ne_C.symm)}
--- Let $Q$ be the foot of perpendicular from $E$ to $BC$.
-variable {Q : Plane} {hd : Q = perp_foot E (LIN B C B_ne_C.symm)}
--- Prove that $DP = EQ$.
-theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
+structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+  -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
+  A : Plane
+  B : Plane
+  C : Plane
+  hnd : ¬ colinear A B C
+  hisoc : (▵ A B C).IsIsoceles
+  --Let $D$ be a point on $AB$.
+  D : Plane
+  D_int_AB : D LiesInt (SEG A B)
+  --Let $E$ be a point on $AC$,
+  E : Plane
+  E_int_AC: E LiesInt (SEG A C)
+  -- such that $AE = AD$.
+  AE_eq_AD : (SEG A E).length = (SEG A D).length
+  -- Claim: $B \ne C$.
+  B_ne_C : B ≠ C :=
+    -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
+    (ne_of_not_colinear hnd).1.symm
+  -- Let $P$ be the foot of perpendicular from $D$ to $BC$.
+  P : Plane
+  hP : P = perp_foot D (LIN B C B_ne_C.symm)
+  -- Let $Q$ be the foot of perpendicular from $E$ to $BC$.
+  Q : Plane
+  hQ : Q = perp_foot E (LIN B C B_ne_C.symm)
+
+theorem result (e : Setting Plane) : (SEG e.D e.P).length = (SEG e.E e.Q).length := by
 /-
   In the isoceles triangle $ABC$, we have $AB = AC$.
   Thus we have $BD = AB - AD = AC - AE = CE$.
-  The angle $DBP$ is the same as angle $ABC$,
-  the angle $ECQ$ is the same as angle $ACB$.
   In the isoceles triangle $ABC$, we have $\angle ABC = - \angle ACB$.
   Therefore, $\angle DBP = \angle ABC = -\angle ACB = - \angle ECQ$.
   Since $DP$ is perpendicular to $BC$ at $P$, we have $\angle DPB = \pi/2$ or $ - \pi/2$.
@@ -50,65 +57,65 @@ theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
   Therefore, $DP = EQ$.
 -/
   -- In the isoceles triangle $ABC$, we have $AB = AC$.
-  have hisoc' : (SEG A B).length = (SEG A C).length := by
+  have hisoc' : (SEG e.A e.B).length = (SEG e.A e.C).length := by
     calc
       -- $AB = CA$ by isoceles,
-      _ = (SEG C A).length := hisoc.symm
+      _ = (SEG e.C e.A).length := e.hisoc.symm
       -- $CA = AC$ by symmetry.
-      _ = (SEG A C).length := (SEG A C).length_of_rev_eq_length
+      _ = (SEG e.A e.C).length := (SEG e.A e.C).length_of_rev_eq_length
   -- Thus we have $BD = AB - AD = AC - AE = CE$.
-  have seg1 : (SEG B D).length = (SEG C E).length := by
+  have seg1 : (SEG e.B e.D).length = (SEG e.C e.E).length := by
     calc
       -- $BD = DB$ by symmetry,
-      _ = (SEG D B).length := by sorry
+      _ = (SEG e.D e.B).length := by sorry
       -- $DB = AB - AD$ since $D$ lies on $AB$,
-      _ = (SEG A B).length - (SEG A D).length := by
+      _ = (SEG e.A e.B).length - (SEG e.A e.D).length := by
         rw [← eq_sub_of_add_eq']
         exact sorry -- (length_eq_length_add_length (SEG A B) D (D_on_seg)).symm
       -- $AB - AD = AC - AE$ since $AB = AC$ and $AD = AE$,
-      _ = (SEG A C).length - (SEG A E).length := by sorry -- rw [E_ray_position, ← hisoc']
+      _ = (SEG e.A e.C).length - (SEG e.A e.E).length := by sorry -- rw [E_ray_position, ← hisoc']
       -- $AC - AE = EC$ since $E$ lies on $AC$.
-      _ = (SEG E C).length := by
+      _ = (SEG e.E e.C).length := by
         rw [← eq_sub_of_add_eq']
         exact sorry --(length_eq_length_add_length (SEG A C) E (E_on_seg)).symm
-      _ = (SEG C E).length := sorry -- length_eq_length_of_rev (SEG E C)
+      _ = (SEG e.C e.E).length := sorry -- length_eq_length_of_rev (SEG E C)
   -- We have $A \ne B$.
-  have a_ne_b : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
+  have A_ne_B : e.A ≠ e.B := (ne_of_not_colinear e.hnd).2.2.symm
   -- We have $A \ne C$.
-  have a_ne_c : A ≠ C := (ne_of_not_colinear hnd).2.1
+  have A_ne_C : e.A ≠ e.C := (ne_of_not_colinear e.hnd).2.1
   -- We have $C \ne B$.
-  have c_ne_b : C ≠ B := (ne_of_not_colinear hnd).1
+  have C_ne_B : e.C ≠ e.B := (ne_of_not_colinear e.hnd).1
   -- We have $\triangle PBD$ is nondegenerate
-  have hnd1 : ¬ colinear P B D := by sorry
+  have hnd1 : ¬ colinear e.P e.B e.D := by sorry
   -- We have $B \ne D$.
-  have b_ne_d : B ≠ D := (ne_of_not_colinear hnd1).1.symm
+  have B_ne_D : e.B ≠ e.D := (ne_of_not_colinear hnd1).1.symm
   -- We have $P \ne D$.
-  have p_ne_d : P ≠ D := (ne_of_not_colinear hnd1).2.1
+  have P_ne_D : e.P ≠ e.D := (ne_of_not_colinear hnd1).2.1
   -- We have $P \ne B$.
-  have p_ne_b : P ≠ B := (ne_of_not_colinear hnd1).2.2.symm
+  have P_ne_B : e.P ≠ e.B := (ne_of_not_colinear hnd1).2.2.symm
   -- We have $\triangle QCE$ is nondegenerate
-  have hnd2 : ¬ colinear Q C E := by sorry
+  have hnd2 : ¬ colinear e.Q e.C e.E := by sorry
   -- We have $C \ne E$.
-  have c_ne_e : C ≠ E := (ne_of_not_colinear hnd2).1.symm
+  have C_ne_E : e.C ≠ e.E := (ne_of_not_colinear hnd2).1.symm
   -- We have $Q \ne E$.
-  have q_ne_e : Q ≠ E := (ne_of_not_colinear hnd2).2.1
+  have Q_ne_E : e.Q ≠ e.E := (ne_of_not_colinear hnd2).2.1
   -- We have $Q \ne C$.
-  have q_ne_c : Q ≠ C := (ne_of_not_colinear hnd2).2.2.symm
+  have Q_ne_C : e.Q ≠ e.C := (ne_of_not_colinear hnd2).2.2.symm
   -- Therefore, $\angle DBP = \angle ABC = -\angle ACB = - \angle ECQ$.
-  have ang2 : (∠ D B P b_ne_d.symm p_ne_b) = - (∠ E C Q c_ne_e.symm q_ne_c) := by
+  have ang2 : (∠ e.D e.B e.P B_ne_D.symm P_ne_B) = - (∠ e.E e.C e.Q C_ne_E.symm Q_ne_C) := by
     calc
-      -- The angle $DBP$ is the same as angle $ABC$,
-      _ = ∠ A B C a_ne_b c_ne_b := by sorry
-      -- In the isoceles triangle $ABC$, we have $\angle ABC = \angle BCA$,
-      _ = ∠ B C A c_ne_b.symm a_ne_c := by sorry
+      -- the angle $DBP$ is the same as angle $ABC$,
+      _ = ∠ e.A e.B e.C A_ne_B C_ne_B := by sorry
+      -- in the isoceles triangle $ABC$, we have $\angle ABC = \angle BCA$,
+      _ = ∠ e.B e.C e.A C_ne_B.symm A_ne_C := by sorry
       -- $\angle BCA = - \angle ACB$ by symmetry,
-      _ = - ∠ A C B a_ne_c c_ne_b.symm := by sorry
+      _ = - ∠ e.A e.C e.B A_ne_C C_ne_B.symm := by sorry
       -- the angle $ECQ$ is the same as angle $ACB$.
-      _ = - ∠ E C Q c_ne_e.symm q_ne_c := by sorry
+      _ = - ∠ e.E e.C e.Q C_ne_E.symm Q_ne_C := by sorry
   -- $|\angle DPB| = |\angle EQC|$.
-  have ang1 : (∠ B P D p_ne_b.symm p_ne_d.symm) = - (∠ C Q E q_ne_c.symm q_ne_e.symm) := by sorry
+  have ang1 : (∠ e.B e.P e.D P_ne_B.symm P_ne_D.symm) = - (∠ e.C e.Q e.E Q_ne_C.symm Q_ne_E.symm) := by sorry
   -- $\triangle DPB \congr_a \triangle EQC$ (by AAS).
-  have h : (TRI_nd P B D hnd1) ≅ₐ (TRI_nd Q C E hnd2) := by
+  have h : (TRI_nd e.P e.B e.D hnd1) ≅ₐ (TRI_nd e.Q e.C e.E hnd2) := by
     apply Triangle_nd.acongr_of_AAS
     -- $\cdot \angle DBP = - \angle ECQ$
     · exact ang1
