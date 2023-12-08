@@ -11,4 +11,8 @@ theorem ne_source_of_lies_int_seg (A B C : P) (h2 : C LiesInt (SEG A B)) : C ≠
 
 theorem eq_todir_of_lies_int_seg_nd (A B C : P) (h1 : B ≠ A) (h2 : C LiesInt (SEG A B)) : (SEG_nd A B h1).toDir = (SEG_nd A C (ne_source_of_lies_int_seg_nd A B C h1 h2)).toDir := by sorry
 
+theorem lies_int_seg_nd_of_lies_int_seg (A B C : P) (h1 : B ≠ A) (h2 : C LiesInt (SEG A B)) : C LiesInt (SEG_nd A B h1) := by sorry
+
+theorem lies_on_seg_nd_of_lies_on_seg (A B C : P) (h1 : B ≠ A) (h2 : C LiesOn (SEG A B)) : C LiesOn (SEG_nd A B h1) := by sorry
+
 end EuclidGeom
