@@ -3,6 +3,7 @@ import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Line_trash
+import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex_trash
 
 noncomputable section
 
@@ -76,12 +77,18 @@ Therefore, $DX = EY$.
     _= ∠ C B A C_ne_B A_ne_B := by
       have D_int_ray_BC : D LiesInt (RAY B C C_ne_B) := by
         apply Seg_nd.lies_int_toray_of_lies_int (seg_nd := (SEG_nd B C C_ne_B))
-
-      have X_int_ray_BA : X LiesInt (RAY B A A_ne_B) := by sorry
+        exact lies_int_seg_nd_of_lies_int_seg B C D C_ne_B D_int_BC
+      have X_int_ray_BA : X LiesInt (RAY B A A_ne_B) := by
+        rw [hd]
+        -- apply perp_foot_lies_int_ray_of_acute_ang (A := B) (B := A) (C := C)
       rw [eq_ang_val_of_lieson_lieson C_ne_B A_ne_B D_ne_B X_ne_B D_int_ray_BC X_int_ray_BA]
     _= - ∠ B C A C_ne_B.symm A_ne_C := angle_CBA_eq_neg_angle_BCA
     _= - ∠ E C Y E_ne_C Y_ne_C := by
-      have E_int_ray_CB : E LiesInt (RAY C B C_ne_B.symm) := by sorry
+      have E_int_ray_CB : E LiesInt (RAY C B C_ne_B.symm) := by
+        apply Seg_nd.lies_int_toray_of_lies_int (seg_nd := (SEG_nd C B C_ne_B.symm))
+        apply lies_int_seg_nd_of_lies_int_seg C B E C_ne_B.symm _
+        apply (Seg.lies_int_rev_iff_lies_int (seg := (SEG B C))).mpr
+        exact E_int_BC
       have Y_int_ray_CA : Y LiesInt (RAY C A A_ne_C) := by sorry
       rw [eq_ang_val_of_lieson_lieson C_ne_B.symm A_ne_C E_ne_C Y_ne_C E_int_ray_CB Y_int_ray_CA]
   have triangle_XBD_acongr_triangle_YCE : (TRI_nd X B D not_colinear_XBD) ≅ₐ (TRI_nd Y C E not_colinear_YCE) := by
