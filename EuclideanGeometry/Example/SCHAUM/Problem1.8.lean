@@ -68,7 +68,10 @@ Therefore, $BD = CE$.
     _= ∠ A C B A_ne_C B_ne_C := by
       apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd A B C hnd))).mp
       exact Triangle.isoceles_of_regular (▵ A B C) hreg
-    _= ∠ E C B E_ne_C B_ne_C := by sorry
+    _= ∠ E C B E_ne_C B_ne_C := by
+      apply eq_ang_val_of_lieson_lieson A_ne_C B_ne_C E_ne_C B_ne_C
+      · sorry
+      · sorry
   have BD_eq_CE : (SEG B D).length = (SEG C E).length := by
     calc
     (SEG B D).length

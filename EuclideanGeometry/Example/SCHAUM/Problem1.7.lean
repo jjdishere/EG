@@ -79,8 +79,16 @@ Therefore, $DX = EY$.
         apply Seg_nd.lies_int_toray_of_lies_int (seg_nd := (SEG_nd B C C_ne_B))
         exact lies_int_seg_nd_of_lies_int_seg B C D C_ne_B D_int_BC
       have X_int_ray_BA : X LiesInt (RAY B A A_ne_B) := by
-        rw [hd]
-        -- apply perp_foot_lies_int_ray_of_acute_ang (A := B) (B := A) (C := C)
+        rw [hd, Line.line_of_pt_pt_eq_rev A_ne_B.symm]
+        have angle_ABD_acute :  Angle.IsAcuteAngle (ANG A B D A_ne_B D_ne_B) := by
+          have angle_ABD_is_angle_ABC : (ANG A B D A_ne_B D_ne_B) = (ANG A B C A_ne_B C_ne_B) := by
+            symm;
+            apply eq_ang_of_lieson_lieson A_ne_B C_ne_B A_ne_B D_ne_B
+            · sorry
+            · exact D_int_ray_BC
+          rw [angle_ABD_is_angle_ABC]
+          exact ang_acute_of_is_isoceles' hnd hisoc
+        exact perp_foot_lies_int_ray_of_acute_ang (A := B) (B := A) (C := D) A_ne_B D_ne_B angle_ABD_acute
       rw [eq_ang_val_of_lieson_lieson C_ne_B A_ne_B D_ne_B X_ne_B D_int_ray_BC X_int_ray_BA]
     _= - ∠ B C A C_ne_B.symm A_ne_C := angle_CBA_eq_neg_angle_BCA
     _= - ∠ E C Y E_ne_C Y_ne_C := by

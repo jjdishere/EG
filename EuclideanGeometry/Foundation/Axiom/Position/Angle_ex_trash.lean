@@ -10,4 +10,6 @@ theorem perp_foot_lies_int_ray_of_acute_ang {A B C : P} (b_ne_a : B ≠ A) (c_ne
 
 theorem ang_acute_of_is_isoceles {A B C : P} (hnd : ¬ colinear A B C) (hisoc : (▵ A B C).IsIsoceles) : Angle.IsAcuteAngle (ANG C B A (ne_of_not_colinear hnd).1 (ne_of_not_colinear hnd).2.2.symm) := by sorry
 
+theorem ang_acute_of_is_isoceles' {A B C : P} (hnd : ¬ colinear A B C) (hisoc : (▵ A B C).IsIsoceles) : Angle.IsAcuteAngle (ANG A B C (ne_of_not_colinear hnd).2.2.symm (ne_of_not_colinear hnd).1) := by sorry
+
 end EuclidGeom
