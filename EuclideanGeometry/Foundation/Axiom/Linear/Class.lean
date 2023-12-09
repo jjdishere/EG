@@ -27,7 +27,7 @@ In this file, we assign linear objects into different abstract classes so that p
 ## Usage of Classes
 
 * `LinFig` : A basic class.
-* `DirObj` : Every two objects has a angle between them. This angle should be saved as Dir and has 3 representations, `Real.Angle` (mod 2π), `(-π, π]`, `[0, 2π)`.
+* `DirObj` : Every two objects has a angle between them. This angle should be saved as Dir and has 3 representations, `AngValue` (mod 2π), `(-π, π]`, `[0, 2π)`.
 * `DirFig` : `toDirLine` method, can define `odist`, `odist_sign`, `Left`, `Right`, `OnLine`, `OffLine`.
 * `ProjObj` : parallel and perpendicular.
 * `ProjFig` : `toLine` method, compatibility of carrier to Line.
@@ -150,7 +150,7 @@ instance : DirFig DirLine where
   toDir_toProj_eq_toProj := rfl
   toDirLine_toLine_eq_toLine := rfl
   reverse := DirLine.reverse
-  rev_rev := DirLine.rev_rev_eq_self
+  rev_rev _ := DirLine.rev_rev_eq_self
   toDirLine_rev_eq_to_rev_dirline := by simp only [id_eq, implies_true, forall_const]
 
 instance : ProjFig Line where

@@ -71,7 +71,7 @@ open scoped LinearAlgebra.Projectivization
 
 variable {K V : Type*} [DivisionRing K] [AddCommGroup V] [Module K V]
 variable {L W : Type*} [DivisionRing L] [AddCommGroup W] [Module L W]
-variable {σ : K →+* L} {σ' : L →+* K} [RingHomInvPair σ σ'] [RingHomInvPair σ' σ] 
+variable {σ : K →+* L} {σ' : L →+* K} [RingHomInvPair σ σ'] [RingHomInvPair σ' σ]
 
 /-- An semilinear equivalence of vector spaces induces a equivalence on projective spaces. -/
 def mapEquiv (f : V ≃ₛₗ[σ] W) : ℙ K V ≃ ℙ L W where
@@ -1082,7 +1082,6 @@ lemma rotate_zero : Dir.rotate 0 = Equiv.refl _ := by
   induction d using Dir.ind
   simp
 
-@[simp]
 lemma rotate_pi_apply (d : Dir) : Dir.rotate π d = -d :=
   d.ind fun v ↦ by simp
 
@@ -1090,7 +1089,6 @@ lemma rotate_add_apply (θ ψ : AngValue) (d : Dir) :
     Dir.rotate (θ + ψ) d = Dir.rotate θ (Dir.rotate ψ d) :=
   d.ind fun v ↦ by simp
 
-@[simp]
 lemma rotate_add (θ ψ : AngValue) :
     Dir.rotate (θ + ψ) = Dir.rotate θ * Dir.rotate ψ := by
   ext
@@ -1118,6 +1116,13 @@ instance : AddTorsor AngValue Dir where
   vadd_vsub' θ d := d.ind fun v ↦ by
     dsimp [vadd_def]
     exact VecND.angle_rotate_right θ v
+
+@[simp]
+lemma rotate_eq_vadd (θ : AngValue) (d : Dir) : rotate θ d = θ +ᵥ d := rfl
+
+@[simp]
+lemma vadd_neg (θ : AngValue) (d : Dir) : θ +ᵥ -d = -(θ +ᵥ d) :=
+  map_neg (rotate θ) d
 
 @[simp]
 lemma pi_vadd (d : Dir) : (π : AngValue) +ᵥ d = -d :=
@@ -1252,7 +1257,7 @@ end Dir
 def Proj := Quotient <| Setoid.correspondence (RayVector.Setoid ℝ Vec) ⟨projectivizationSetoid ℝ Vec, by
   intro _ _ h
   obtain ⟨x, hx, h⟩ := VecND.SameDir.ofSameRay h
-  exact ⟨.mk0 x hx.ne', h.symm⟩⟩ 
+  exact ⟨.mk0 x hx.ne', h.symm⟩⟩
 
 @[pp_dot]
 def Dir.toProj : Dir → Proj := Quotient.mk _
@@ -1327,6 +1332,41 @@ lemma VecND.neg_toProj (v : VecND) : (-v).toProj = v.toProj := by
 @[simp]
 lemma Dir.toProj_neg (d : Dir) : (↑(-d) : Proj) = (d : Proj) :=
   d.ind fun v ↦ by rw [← VecND.neg_toDir, VecND.toDir_toProj, VecND.toDir_toProj, VecND.neg_toProj]
+
+theorem Vec.det_eq_zero_iff_eq_smul_right {u v : Vec} : Vec.det u v = 0 ↔ v = 0 ∨ (∃ (t : ℝ), u = t • v) := by
+  constructor
+  · intro e
+    by_cases h : v = 0; · exact .inl h
+    right
+    have h : v.1 ≠ 0 ∨ v.2 ≠ 0
+    · contrapose! h
+      apply Vec.ext <;> simp [h]
+    push_neg at h
+    obtain (h | h) := h
+    · use v.1⁻¹ * u.1
+      rw [mul_smul, eq_inv_smul_iff₀ h]
+      rw [det_apply, sub_eq_zero] at e
+      apply ext
+      · simp [mul_comm]
+      · simp [e, mul_comm]
+    · use v.2⁻¹ * u.2
+      rw [mul_smul, eq_inv_smul_iff₀ h]
+      rw [det_apply, sub_eq_zero] at e
+      apply ext
+      · simp [e, mul_comm]
+      · simp [mul_comm]
+  · rintro (h | ⟨t, rfl⟩)
+    · simp [h]
+    · simp
+
+theorem Vec.det_eq_zero_iff_eq_smul_left {u v : Vec} : Vec.det u v = 0 ↔ u = 0 ∨ (∃ (t : ℝ), v = t • u) := by
+  rw [← det_skew, neg_eq_zero, det_eq_zero_iff_eq_smul_right]
+
+theorem VecND.det_eq_zero_iff_toProj_eq_toProj {u v : VecND} :
+    Vec.det u v = 0 ↔ u.toProj = v.toProj := by
+  rw [Vec.det_eq_zero_iff_eq_smul_right, VecND.toProj_eq_toProj_iff]
+  simp
+
 
 namespace Proj
 
@@ -1403,7 +1443,7 @@ instance : VAdd AngDValue Proj where
   vadd := AngDValue.lift (fun θ ↦ Proj.map (Dir.rotate θ)) fun θ ↦ by
     ext p
     induction p using Proj.ind
-    simp
+    simp [add_vadd]
 
 lemma vadd_coe_left (θ : AngValue) (p : Proj) : (θ : AngDValue) +ᵥ p = Proj.map (Dir.rotate θ) p := by
   induction θ using AngValue.induction_on
@@ -1411,7 +1451,8 @@ lemma vadd_coe_left (θ : AngValue) (p : Proj) : (θ : AngDValue) +ᵥ p = Proj.
 
 @[simp]
 lemma vadd_coe (θ : AngValue) (d : Dir) : (θ : AngDValue) +ᵥ (d : Proj) = θ +ᵥ d := by
-  simp [vadd_coe_left, Dir.vadd_def]
+  simp only [vadd_coe_left, Dir.vadd_def]
+  simp
 
 instance : AddTorsor AngDValue Proj where
   zero_vadd p := by
@@ -1434,6 +1475,15 @@ instance : AddTorsor AngDValue Proj where
     induction θ using AngDValue.induction_on
     induction p using Proj.ind
     simp
+
+@[pp_dot]
+def perp (p : Proj) : Proj := ((π / 2 : ℝ) : AngDValue) +ᵥ p
+
+@[simp]
+lemma perp_perp (p : Proj) : p.perp.perp = p := by
+  rw [perp, perp, vadd_vadd]
+  norm_cast
+  simp
 
 end Proj
 

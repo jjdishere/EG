@@ -152,20 +152,28 @@ end make
 
 section coercion
 
+@[pp_dot]
 def DirLine.toDir (l : DirLine P) : Dir := Quotient.lift (s := same_dir_line.setoid) (fun ray => ray.toDir) (fun _ _ h => h.left) l
 
+@[pp_dot]
 def DirLine.toProj (l : DirLine P) : Proj := l.toDir.toProj
 
+@[pp_dot]
 def DirLine.toLine (l : DirLine P) : Line P := Quotient.lift (⟦·⟧) (fun _ _ h => Quotient.sound $ same_dir_line_le_same_extn_line h) l
 
+@[pp_dot]
 def Ray.toDirLine (ray : Ray P) : DirLine P := ⟦ray⟧
 
+@[pp_dot]
 def SegND.toDirLine (seg_nd : SegND P) : DirLine P := seg_nd.toRay.toDirLine
 
+@[pp_dot]
 def Line.toProj (l : Line P) : Proj := Quotient.lift (s := same_extn_line.setoid) (fun ray : Ray P => ray.toProj) (fun _ _ h => h.left) l
 
+@[pp_dot]
 def Ray.toLine (ray : Ray P) : Line P := ⟦ray⟧
 
+@[pp_dot]
 def SegND.toLine (seg_nd : SegND P) : Line P := ⟦seg_nd.toRay⟧
 
 end coercion
@@ -190,40 +198,6 @@ instance : Coe (Ray P) (Line P) where
   coe := Ray.toLine
 
 end coercion_compatibility
-
-/-
-section ClassDirFig
-
-variable (P : Type _) [EuclideanPlane P]
-
-class DirFig (α : Type*) where
-  toDirLine : α → DirLine P
-
-instance DirLine.instDirFig : DirFig P (DirLine P) where
-  toDirLine l := l
-
-instance Ray.instDirFig : DirFig P (Ray P) where
-  toDirLine := Quotient.mk (@same_dir_line.setoid P _)
-
-instance SegND.instDirFig : DirFig P (SegND P) where
-  toDirLine s := Quotient.mk (@same_dir_line.setoid P _) s.toRay
-
-section DirFig
-
-variable {P : Type _} [EuclideanPlane P] {α : Type _} [DirFig P α] (l : α)
-
-def toDir : Dir := (@DirFig.toDirLine P _ _ _ l).toDir
-
-def toProj : Proj := (@DirFig.toDirLine P _ _ _ l).toDir.toProj
-
-def toLine : Line P := (@DirFig.toDirLine P _ _ _ l).toLine
-
--- And other definitions, such as IsLeft, IsRight, OnLine, odist, sign, and so on.
-
-end DirFig
-
-end ClassDirFig
--/
 
 open Classical
 
@@ -312,48 +286,51 @@ theorem ray_of_pt_dirline_toDirLine_toDir_eq_dirline_toDir (A : P) (l : DirLine 
 
 end dirline_toray
 
+namespace DirLine
+
+variable {l l₁ l₂ : DirLine P}
+
 section reverse
 
-def DirLine.reverse (l : DirLine P) : DirLine P := by
+@[pp_dot]
+def reverse (l : DirLine P) : DirLine P := by
   refine' Quotient.lift (⟦·.reverse⟧) (fun a b h ↦ _) l
-  exact (@Quotient.eq _ same_dir_line.setoid _ _).mpr ⟨neg_inj.mpr h.left, Ray.lies_on_rev_or_lies_on_iff.mp h.2⟩
+  exact (@Quotient.eq _ same_dir_line.setoid _ _).mpr ⟨neg_inj.mpr h.1, Ray.lies_on_rev_or_lies_on_iff.mp h.2⟩
 
-theorem DirLine.rev_toDir_eq_neg_toDir {l : DirLine P} : l.reverse.toDir = - l.toDir := by
+theorem rev_toDir_eq_neg_toDir {l : DirLine P} : l.reverse.toDir = - l.toDir := by
   revert l
-  rintro ⟨r⟩
+  rintro ⟨_⟩
   rfl
 
-theorem DirLine.rev_rev_eq_self (l : DirLine P) : l.reverse.reverse = l := by
+theorem rev_rev_eq_self : l.reverse.reverse = l := by
   revert l
   rintro ⟨r⟩
   exact congrArg (@Quotient.mk _ same_dir_line.setoid) r.rev_rev_eq_self
 
-theorem DirLine.lies_on_rev_iff_lies_on {A : P} {l : DirLine P} : A LiesOn l.reverse ↔ A LiesOn l := by
+theorem lies_on_rev_iff_lies_on {A : P} {l : DirLine P} : A LiesOn l.reverse ↔ A LiesOn l := by
   revert l
   rintro ⟨r⟩
-  exact Ray.lies_on_rev_or_lies_on_iff.symm
+  exact (r.lies_on_rev_or_lies_on_iff).symm
 
 end reverse
 
 section line_dirline_compatibility
 
-namespace DirLine
-
 variable (l : DirLine P) {l₁ l₂ : DirLine P}
 
 theorem rev_toLine_eq_toLine : l.reverse.toLine = l.toLine := by
   revert l
-  rintro ⟨r⟩
+  rintro ⟨_⟩
   exact (@Quotient.eq _ same_extn_line.setoid _ _).mpr same_extn_line.ray_rev_of_same_extn_line.symm
 
 theorem eq_of_toDir_eq_of_toLine_eq (h : l₁.toLine = l₂.toLine) (hd : l₁.toDir = l₂.toDir) : l₁ = l₂ := by
   revert l₁ l₂
-  rintro ⟨r₁⟩ ⟨r₂⟩ h hd
+  rintro ⟨_⟩ ⟨_⟩ h hd
   exact (@Quotient.eq _ same_dir_line.setoid _ _).mpr ⟨hd, ((@Quotient.eq _ same_extn_line.setoid _ _).mp h).2⟩
 
 theorem eq_rev_of_toDir_eq_neg_of_toLine_eq (h : l₁.toLine = l₂.toLine) (hd : l₁.toDir = - l₂.toDir) : l₁ = l₂.reverse := by
   revert l₁ l₂
-  rintro ⟨r₁⟩ ⟨r₂⟩ h hd
+  rintro ⟨_⟩ ⟨_⟩ h hd
   exact (@Quotient.eq _ same_dir_line.setoid _ _).mpr ⟨hd, ((@Quotient.eq _ same_extn_line.setoid _ _).mp h).2⟩
 
 theorem eq_rev_of_toDir_ne_of_toLine_eq (h : l₁.toLine = l₂.toLine) (hd : l₁.toDir ≠ l₂.toDir) : l₁ = l₂.reverse :=
@@ -364,9 +341,9 @@ theorem eq_or_eq_rev_of_toLine_eq (h : l₁.toLine = l₂.toLine) : l₁ = l₂ 
   if hd : l₁.toDir = l₂.toDir then .inl (eq_of_toDir_eq_of_toLine_eq h hd)
   else .inr (eq_rev_of_toDir_ne_of_toLine_eq h hd)
 
-end DirLine
-
 end line_dirline_compatibility
+
+end DirLine
 
 namespace Line
 
@@ -548,7 +525,7 @@ theorem SegND.toDirLine_eq_toray_toLine {s : SegND P} : s.toRay.toDirLine = s.to
 
 theorem SegND.toDirLine_rev_eq_rev_toLine {s : SegND P} : s.toDirLine.reverse = s.reverse.toDirLine :=
   (eq_dirline_of_toDir_eq_of_pt_of_ne s.2.symm (DirLine.lies_on_rev_iff_lies_on.mpr target_lies_on_toDirLine)
-    ((s.toDir_of_rev_eq_neg_toDir).trans (s.toDirLine.rev_toDir_eq_neg_toDir).symm)).symm
+    ((s.toDir_of_rev_eq_neg_toDir).trans s.toDirLine.rev_toDir_eq_neg_toDir)).symm
 
 theorem SegND.toDirLine_eq_extn_toDirLine {s : SegND P} : s.toDirLine = s.extension.toDirLine :=
     (Quotient.eq (r := same_dir_line.setoid)).mpr
@@ -595,10 +572,12 @@ theorem Ray.lies_on_ray_or_lies_on_ray_rev_iff : A LiesOn r ∧ A ≠ r.source �
 theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source {r : Ray P} : (A LiesOn r.toLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) := by
   rw [lies_int_def, lies_int_def, source_of_rev_eq_source, lies_on_ray_or_lies_on_ray_rev_iff, lies_on_toLine_iff_lies_on_or_lies_on_rev]
 
-theorem SegND.lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on {A : P} {seg_nd : SegND P} (h : ¬ A LiesInt seg_nd.1) : A LiesOn seg_nd.toLine ↔ (A LiesOn seg_nd.extension) ∨ (A LiesOn seg_nd.reverse.extension) := by sorry
-/-  constructor
+theorem SegND.lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on {A : P} {seg_nd : SegND P} (h : ¬ A LiesInt seg_nd.1) : A LiesOn seg_nd.toLine ↔ (A LiesOn seg_nd.extension) ∨ (A LiesOn seg_nd.reverse.extension) := by
+  sorry
+  /-
+  constructor
   · intro hh
-    rcases Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev.mp hh with h₁ | h₂
+    rcases (seg_nd.toRay.lies_on_toline_iff_lies_on_or_lies_on_rev).mp hh with h₁ | h₂
     · by_cases ax : A = seg_nd.1.source
       · rw [ax]
         exact .inr Ray.source_lies_on
@@ -607,12 +586,15 @@ theorem SegND.lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on {A : P}
         exact .inl Ray.source_lies_on
       exact .casesOn (lies_on_seg_nd_or_extension_of_lies_on_toray h₁)
         (fun h₁ ↦ (h ⟨h₁, ax, ay⟩).elim) (fun h₁ ↦ .inl h₁)
+    rw [rev_extn_eq_toray_rev]
     exact .inr h₂
   · exact fun hh ↦ .casesOn hh
-      (fun h₁ ↦ Eq.mpr (seg_nd.toLine_eq_extn_toLine ▸ Eq.refl (A LiesOn seg_nd.toLine))
-        ((seg_nd.extension.lies_on_toLine_iff_lies_on_or_lies_on_rev).mpr (.inl h₁)))
-      (fun h₂ ↦ (seg_nd.toRay.lies_on_toLine_iff_lies_on_or_lies_on_rev).mpr (.inr h₂))
--/
+      (fun h₁ ↦ Eq.mpr (seg_nd.toline_eq_extn_toline ▸ Eq.refl (A LiesOn seg_nd.toLine))
+        ((seg_nd.extension.lies_on_toline_iff_lies_on_or_lies_on_rev).mpr (.inl h₁)))
+      (fun h₂ ↦ (seg_nd.toRay.lies_on_toline_iff_lies_on_or_lies_on_rev).mpr <| .inr <| by
+        rw [← rev_extn_eq_toray_rev]
+        exact h₂)
+  -/
 
 theorem SegND.lies_on_toLine_of_lies_on_extn {X : P} {seg_nd : SegND P} (lieson : X LiesOn seg_nd.extension) : X LiesOn seg_nd.toLine := by
   rw [SegND.toLine_eq_rev_toLine]
@@ -720,6 +702,13 @@ end lieson
 section colinear
 
 namespace Line
+
+theorem pt_pt_linear {A B C : P} (h : B ≠ A) (hc : C LiesOn (LIN A B h) ) : colinear A B C :=
+  if hcb : C = B then colinear_of_trd_eq_snd A hcb
+  else if hac : A = C then colinear_of_fst_eq_snd B hac
+  else perm_colinear_trd_fst_snd <| (dite_prop_iff_or _).mpr <| .inr ⟨by push_neg; exact ⟨hac, h, hcb⟩,
+    ((lies_on_iff_eq_toProj_of_lies_on hcb (snd_pt_lies_on_mk_pt_pt h)).mp hc).trans <|
+      congrArg toProj (line_of_pt_pt_eq_rev h)⟩
 
 theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h₃ : C LiesOn l) : colinear A B C := by
   revert l
@@ -852,7 +841,7 @@ section Archimedean_property
 namespace Line
 
 -- there are two distinct points on a line
-theorem exists_ne_pt_pt_lies_on_of_line (A : P) (l : Line P) : ∃ B : P, B LiesOn l ∧ B ≠ A := by
+theorem exists_ne_pt_pt_lies_on (A : P) {l : Line P} : ∃ B : P, B LiesOn l ∧ B ≠ A := by
   rcases l.nontriv with ⟨X, Y, hx, hy, ne⟩
   exact if h : A = X then ⟨Y, hy, ne.trans_eq h.symm⟩ else ⟨X, hx, ne_comm.mp h⟩
 
@@ -878,8 +867,8 @@ end Line
 namespace DirLine
 
 -- there are two distinct points on a directed line
-theorem exists_ne_pt_pt_lies_on_of_dirline (A : P) (l : DirLine P) : ∃ B : P, B LiesOn l ∧ B ≠ A :=
-  Line.exists_ne_pt_pt_lies_on_of_line A l
+theorem exists_ne_pt_pt_lies_on (A : P) {l : DirLine P} : ∃ B : P, B LiesOn l ∧ B ≠ A :=
+  l.toLine.exists_ne_pt_pt_lies_on A
 
 theorem lies_on_of_SegND_toProj_eq_toProj {A B : P} {l : DirLine P} (ha : A LiesOn l) (hab : B ≠ A) (hp : (SEG_nd A B hab).toDir = l.toDir) : B LiesOn l :=
   Line.lies_on_of_SegND_toProj_eq_toProj ha hab ((congrArg Dir.toProj hp).trans l.toLine_toProj_eq_toProj.symm)
@@ -896,22 +885,20 @@ end Archimedean_property
 
 section dist
 
-namespace DirLine
-
 instance (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
   vadd := fun x ⟨A, ha⟩ ↦ ⟨x • l.toDir.unitVec +ᵥ A, lies_on_of_exist_real_vec_eq_smul_toDir ha (vadd_vsub _ A)⟩
   zero_vadd := by
-    intro ⟨A, ha⟩
+    intro ⟨A, _⟩
     apply Subtype.val_inj.mp
     show (0 : ℝ) • l.toDir.unitVec +ᵥ A = A
     rw [zero_smul, zero_vadd]
   add_vadd := by
-    intro x y ⟨A, ha⟩
+    intro x y ⟨A, _⟩
     apply Subtype.val_inj.mp
     show (x + y) • l.toDir.unitVec +ᵥ A = x • l.toDir.unitVec +ᵥ (y • l.toDir.unitVec +ᵥ A)
     rw [add_smul, add_vadd]
   vsub := fun ⟨A, ha⟩ ⟨B, hb⟩ ↦ inner (A -ᵥ B) l.toDir.unitVec
-  Nonempty := by
+  nonempty := by
     rcases l.nontriv with ⟨A, _, ha, _⟩
     exact ⟨A, ha⟩
   vsub_vadd' := by
@@ -930,28 +917,51 @@ instance (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
     rw [vadd_vsub, real_inner_smul_self_left l.toDir.unitVec x, l.toDir.norm_unitVec, mul_one, mul_one]
   dist_eq_norm' := sorry
 
-def ddist {l : DirLine P} {A : P} {B : P} (ha : A LiesOn l) (hb : B LiesOn l) : ℝ :=
+def DirLine.ddist {l : DirLine P} {A : P} {B : P} (ha : A LiesOn l) (hb : B LiesOn l) : ℝ :=
   (⟨B, hb⟩ : l.carrier.Elem) -ᵥ ⟨A, ha⟩
 
-instance (l : DirLine P) : LinearOrder l.carrier.Elem where
-  le A B := A -ᵥ B ≤ 0
-  lt A B := A -ᵥ B < 0
-  le_refl A := by simp only [vsub_self, le_refl]
-  le_trans := sorry
-  lt_iff_le_not_le := sorry
-  le_antisymm := sorry
-  min := sorry
-  max := sorry
-  compare := sorry
-  le_total := sorry
+variable {V : outParam Type*} {L : Type*} [outParam (AddCommGroup V)] [AddTorsor V L] [LinearOrder V]
+  [CovariantClass V V (fun x y ↦ x + y) (fun x y ↦ x ≤ y)]
+
+theorem zero_le_iff_neg_le_zero (a b : L) : 0 ≤ a -ᵥ b ↔ b -ᵥ a ≤ 0 :=
+  Iff.trans (by rw [vsub_add_vsub_cancel, vsub_self, zero_add]) (add_le_add_iff_right (a -ᵥ b))
+
+instance PartialOrder_of_AddTorsor : PartialOrder L where
+  le a b := a -ᵥ b ≤ 0
+  lt a b := a -ᵥ b < 0
+  le_refl _ := by simp only [vsub_self, le_refl]
+  le_trans a b c hab hbc := (vsub_add_vsub_cancel a b c).symm.trans_le (add_nonpos hab hbc)
+  lt_iff_le_not_le a b :=
+    have hv : a -ᵥ b < 0 ↔ a -ᵥ b ≤ 0 ∧ ¬ 0 ≤ a -ᵥ b := Preorder.lt_iff_le_not_le (a -ᵥ b) 0
+    ⟨fun hab ↦ ⟨(hv.mp hab).1, (zero_le_iff_neg_le_zero a b).not.mp (hv.mp hab).2⟩,
+      fun ⟨hab, hba⟩ ↦ hv.mpr ⟨hab, (zero_le_iff_neg_le_zero a b).not.mpr hba⟩⟩
+  le_antisymm a b hab hba :=
+    eq_of_vsub_eq_zero (PartialOrder.le_antisymm (a -ᵥ b) 0 hab ((zero_le_iff_neg_le_zero a b).mpr hba))
+
+instance LinearOrder_of_AddTorsor : LinearOrder L := {
+  PartialOrder_of_AddTorsor with
+  min := fun a b ↦ if a ≤ b then a else b
+  max := fun a b ↦ if a ≤ b then b else a
   decidableLE := decRel fun _ ↦ _
   decidableEq := decRel fun _ ↦ _
   decidableLT := decRel fun _ ↦ _
-  min_def := sorry
-  max_def := sorry
-  compare_eq_compareOfLessAndEq := sorry
+  min_def := by
+    intros
+    simp only [min]
+    congr
+  max_def := by
+    intros
+    simp only [min]
+    congr
+  le_total := fun a b ↦
+    (or_congr_right (zero_le_iff_neg_le_zero a b).symm).mpr (LinearOrder.le_total (a -ᵥ b) 0)
+  compare := fun a b ↦ compareOfLessAndEq a b
+  compare_eq_compareOfLessAndEq := by
+    compareOfLessAndEq_rfl
+}
 
-end DirLine
+instance DirLine.instLinearOrder (l : DirLine P) : LinearOrder l.carrier.Elem :=
+  LinearOrder_of_AddTorsor
 
 end dist
 

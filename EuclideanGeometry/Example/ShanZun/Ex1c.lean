@@ -57,7 +57,6 @@ lemma aec_colinear : colinear A E C := by
 
 lemma midpt_half_length : (SEG A D).length = (SEG A B).length/2:=by
   rw[length_eq_length_add_length (seg:= SEG A B) (A := D),← dist_target_eq_dist_source_of_eq_midpt,half_add_self]
-  simp only [Seg.source]
   exact hd
   rw[hd]
   exact Seg.midpt_lies_on
@@ -122,15 +121,17 @@ lemma hnd'' : ¬ colinear C D E := by
     exact hd
   apply hnd this
 lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C hnd := by
+  let tri_nd_ADE := TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)
+  let tri_nd_ABC := TRI_nd A B C hnd
   apply sim_of_SAS
   simp only [Triangle_nd.edge₂,Triangle_nd.edge₃, Triangle.edge₂,Triangle.edge₃]
-  have tr13: (TRI A D E).point₃=E:= rfl
-  have tr23: (TRI A B C).point₃ =C:= rfl
-  have tr11: (TRI A D E).point₁=A:= rfl
-  have tr21: (TRI A B C).point₁ =A:= rfl
-  have tr12: (TRI A D E).point₂=D:= rfl
-  have tr22: (TRI A B C).point₂ =B := rfl
-  rw[tr13, tr12, tr11, tr23, tr22, tr21, ← Seg.length_of_rev_eq_length, ← (SEG C A).length_of_rev_eq_length]
+  have tr13: tri_nd_ADE.1.point₃=E:= rfl
+  have tr23: tri_nd_ABC.1.point₃ =C:= rfl
+  have tr11: tri_nd_ADE.1.point₁=A:= rfl
+  have tr21: tri_nd_ABC.1.point₁ =A:= rfl
+  have tr12: tri_nd_ADE.1.point₂=D:= rfl
+  have tr22: tri_nd_ABC.1.point₂ =B := rfl
+  rw [tr13, tr12, tr11, tr23, tr22, tr21, ← Seg.length_of_rev_eq_length, ← (SEG C A).length_of_rev_eq_length]
   simp only [Seg.reverse]
   rw[ae_ratio,ad_ratio]
   use C

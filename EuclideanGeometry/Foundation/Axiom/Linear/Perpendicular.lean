@@ -70,6 +70,8 @@ theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on {A : P} {l : Line P} 
 theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l :=
   length_eq_zero_iff_deg.trans ((Eq.congr rfl rfl).trans (perp_foot_eq_self_iff_lies_on A l))
 
+theorem dist_pt_line_shortest (A B : P) {l : Line P} (h : B LiesOn l) : dist A B ≥ dist_pt_line A l := sorry
+
 end Perpendicular_constructions
 
 end EuclidGeom

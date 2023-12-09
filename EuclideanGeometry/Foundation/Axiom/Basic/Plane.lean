@@ -52,6 +52,10 @@ theorem vec_same_eq_zero (A : P) : VEC A A = 0 := by
 theorem neg_vec (A B : P) : - VEC A B = VEC B A := by
   rw [Vec.mkPtPt, Vec.mkPtPt, neg_vsub_eq_vsub_rev]
 
+@[simp]
+theorem neg_vec_norm_eq (A B : P) : ‖VEC A B‖ = ‖VEC B A‖ := by
+  rw [← neg_vec A B, norm_neg]
+
 theorem eq_iff_vec_eq_zero (A B : P) : B = A ↔ VEC A B = 0 := vsub_eq_zero_iff_eq.symm
 
 theorem ne_iff_vec_ne_zero (A B : P) : B ≠ A ↔ VEC A B ≠ 0 := (eq_iff_vec_eq_zero A B).not

@@ -67,19 +67,19 @@ theorem end_ray_toDir_eq_toDir_of_ang_eq_ang {ang₁ ang₂ : Angle P} (hs : ang
 
 structure IsOppositeAng (ang₁ ang₂ : Angle P) : Prop where
   start_ray : ang₁.start_ray = ang₂.start_ray.reverse
-  end_ray : ang₁.end_ray = ang₂.start_ray.reverse
+  end_ray : ang₁.end_ray = ang₂.end_ray.reverse
 
 structure IsCorrespondingAng (ang₁ ang₂ : Angle P) : Prop where
   start_ray : ang₁.start_ray.toDir = ang₂.start_ray.toDir
-  end_ray : ang₁.start_ray.toDirLine = ang₂.start_ray.toDirLine
+  end_ray : ang₁.end_ray.toDirLine = ang₂.end_ray.toDirLine
 
 structure IsConsecutiveIntAng (ang₁ ang₂ : Angle P) : Prop where
   start_ray : ang₁.start_ray.toDir = ang₂.start_ray.toDir
-  end_ray : ang₁.start_ray.toDirLine = ang₂.start_ray.toDirLine.reverse
+  end_ray : ang₁.end_ray.toDirLine = ang₂.end_ray.toDirLine.reverse
 
 structure IsAlternateIntAng (ang₁ ang₂ : Angle P) : Prop where
   start_ray : ang₁.start_ray.toDir = - ang₂.start_ray.toDir
-  end_ray : ang₁.start_ray.toDirLine = ang₂.start_ray.toDirLine.reverse
+  end_ray : ang₁.end_ray.toDirLine = ang₂.end_ray.toDirLine.reverse
 
 theorem IsOppositeAng.symm {ang₁ ang₂ : Angle P} : IsOppositeAng ang₁ ang₂ → IsOppositeAng ang₂ ang₁ := sorry
 
@@ -93,7 +93,7 @@ theorem eq_value_of_isoppositeang {ang₁ ang₂ : Angle P} (h : IsOppositeAng a
 
 theorem eq_value_of_iscorrespondingang {ang₁ ang₂ : Angle P} (h : IsCorrespondingAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
 
--- theorem value_sub_eq_pi_of_isconsecutiveintang {ang₁ ang₂ : Angle P} (h : IsConsecutiveIntAng ang₁ ang₂) : sorry := sorry --`first mod 2π, then discuss +-? `
+theorem value_sub_eq_pi_of_isconsecutiveintang {ang₁ ang₂ : Angle P} (h : IsConsecutiveIntAng ang₁ ang₂) : ang₁.value - ang₂.value = π := sorry --`first mod 2π, then discuss +-? `
 
 theorem eq_value_of_isalternateintang {ang₁ ang₂ : Angle P} (h : IsAlternateIntAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
 
