@@ -104,7 +104,7 @@ theorem Parallelogram_not_colinear₁₂₃ (P : Type _) [EuclideanPlane P] (qdr
    constructor
    sorry
    sorry
-   simp[h]
+   sorry
    sorry
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 2nd, 3rd and 4th points are not colinear, then qdr_nd is a parallelogram_nd.-/
