@@ -4,6 +4,7 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
+import EuclideanGeometry.Foundation.Axiom.Position.Orientation
 
 /-!
 # Quadrilateral
@@ -237,16 +238,49 @@ def mk_is_convex {P : Type _} [EuclideanPlane P] {qdr_nd : Quadrilateral_nd P} (
   convex := h
 
 section criteria_cvx
+variable {P : Type _} [EuclideanPlane P]
 variable {A B C D : P}
+
+structure is_convex_of_three_sides_two_pts_at_same_side' where
+  qdr_nd : Quadrilateral_nd P
+  same_side₁ : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = odist_sign qdr_nd.point₂ qdr_nd.edge_nd₃₄
+  same_side₂ : odist_sign qdr_nd.point₂ qdr_nd.edge_nd₁₄.reverse = odist_sign qdr_nd.point₃ qdr_nd.edge_nd₁₄.reverse
+  same_side₃ : odist_sign qdr_nd.point₃ qdr_nd.edge_nd₁₂ = odist_sign qdr_nd.point₄ qdr_nd.edge_nd₁₂
+
+/- Given Quadrilateral_nd qdr_nd, if qdr_nd.point₁ and qdr_nd.point₂ are at the same side of qdr_nd.nd₃₄, and it also holds for nd₄₁ and nd₁₂, then it's convex. -/
+theorem is_convex_of_three_sides_two_pts_at_same_side (p : is_convex_of_three_sides_two_pts_at_same_side' (P := P)) : p.qdr_nd IsConvex := by
+  let qdr_nd := p.qdr_nd
+  sorry
+  -- by_cases h : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = 1
+  -- ·
+
+structure is_convex_of_diag_inx_lies_int' where
+  qdr : Quadrilateral P
+  ne₁ : qdr.point₁ ≠ qdr.point₃
+  ne₂ : qdr.point₂ ≠ qdr.point₄
+  diag₁₃ := (SEG_nd qdr.point₁ qdr.point₃ ne₁.symm)
+  diag₂₄ := (SEG_nd qdr.point₂ qdr.point₄ ne₂.symm)
+  not_para : ¬ diag₁₃ ∥ diag₂₄
+  -- inx := LineInx diag₁₃.toLine diag₂₄.toLine not_para
+  inx_lies_int₁ : LineInx diag₁₃.toLine diag₂₄.toLine not_para LiesInt diag₁₃
+  inx_lies_int₂ : LineInx diag₁₃.toLine diag₂₄.toLine not_para LiesInt diag₂₄
+
+/- Given Quadrilateral qdr, two diagonals intersect in their interior, then qdr is a Quadrilateral_cvx. -/
+theorem is_convex_of_diag_inx_lies_int (p : is_convex_of_diag_inx_lies_int' (P := P)) : p.qdr IsConvex := by sorry
+  /-
+  1. proof it's nd.
+  2. proof it's satisfy is_convex_of_three_sides_two_pts_at_same_side.
+  3. proof sign of angle₁ = angle₃, angle₂ = angle₄.
+  4. because nd₂₃ not divid pt₁ and pt₄, then sign of angle₂ = angle₃.
+  -/
 
 -- theorem is_convex_of four inferior angle
 -- theorem is_convex_of both diag divids other pts
--- theorem is_convex_of three side
 -- `to be added`
 
 end criteria_cvx
 
-section property
+section property_cvx
 -- properties of convex quadrilateral `to be added`
 
 variable {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
@@ -314,12 +348,8 @@ theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
     unfold Quadrilateral_nd.angle₂
     simp only [h]
     exact angle_eq_zero_of_same_dir
-  have k : ¬ qdr_cvx.angle₂.value.IsND := by
-    sorry
-    -- unfold AngValue.IsND
-    -- simp only [g, true_or, not_true_eq_false, not_false_eq_true]
-  have k₁ : ¬ qdr_cvx.angle₂.value.IsPos := not_ispos_of_not_isnd k
-  have k₂ : ¬ qdr_cvx.angle₂.value.IsNeg := not_isneg_of_not_isnd k
+  have k₁ : ¬ qdr_cvx.angle₂.value.IsPos := AngValue.not_ispos_of_eq_zero g
+  have k₂ : ¬ qdr_cvx.angle₂.value.IsNeg := AngValue.not_isneg_of_eq_zero g
   have p: qdr_cvx.IsConvex := qdr_cvx.convex
   unfold Quadrilateral_nd.IsConvex at p
   simp only [k₁, false_and, and_false, k₂, or_self] at p
@@ -441,12 +471,14 @@ theorem cclock_eq : qdr_cvx.triangle_nd₁.is_cclock ↔ qdr_cvx.triangle_nd₃.
 
 theorem cclock_eq' : qdr_cvx.triangle_nd₂.is_cclock ↔ qdr_cvx.triangle_nd₄.is_cclock := sorry
 
-end property
+end property_cvx
 
 end Quadrilateral_cvx
 
 section criteria
 -- the criteria of a quadrilateral being convex `to be added`
+
+variable {P : Type _} [EuclideanPlane P]
 
 end criteria
 
