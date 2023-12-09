@@ -39,6 +39,41 @@ theorem vec_eq_vec_smul_ratio (A B C : P) (colin : colinear A B C) (cnea : C ≠
   rw [h1, ratio_is_real A B C colin cnea]
   field_simp
 
+theorem ratio_eq_ratio_div_ratio_minus_one (A B C : P) (cnea : C ≠ A) (colin : colinear A B C) : divratio B A C = (divratio A B C) / (divratio A B C - 1) := by
+  have h0 : VEC B A = (-divratio A B C) • VEC A C := by
+    rw [← neg_vec A B, vec_eq_vec_smul_ratio A B C colin cnea]
+    field_simp
+  have h1 : VEC B C = (1 - divratio A B C) • VEC A C := by
+    rw [← vec_add_vec B A C, h0]
+    have h2 : VEC A C = (1 : ℝ) • VEC A C := by
+      field_simp
+    nth_rw 2 [h2]
+    rw[← add_smul]
+    have h3 : -divratio A B C + 1 = 1 - divratio A B C := by
+      ring
+    rw[h3]
+  have h4 : VEC B A / VEC B C = (((divratio A B C / (divratio A B C - 1)) : ℝ ) : ℂ) := by
+    rw [h0, h1]
+    have h5 : VEC A C ≠ 0 := (ne_iff_vec_ne_zero A C).mp cnea
+    rw [Complex.real_smul, Complex.real_smul, mul_div_mul_right _ _ h5]
+    field_simp
+    norm_cast
+    have h6 : - (divratio A B C - 1) = (1 - divratio A B C) := by
+      ring
+    rw [← h6, neg_div_neg_eq (divratio A B C) (divratio A B C - 1)]
+  conv =>
+    lhs
+    unfold divratio
+  rw [h4]
+  rw[Complex.ofReal_re]
+
+theorem pt_eq_of_ratio_eq_of_ne_ne (A B C D : P) (cned : C ≠ D) (dnea : D ≠ A) (dneb : D ≠ B) (colinacd : colinear A C D) (colinbcd : colinear B C D) (req : divratio A C D = divratio B C D) : A = B := by
+  have h0 : divratio C A D = divratio C B D := by
+    rw [ratio_eq_ratio_div_ratio_minus_one A C D dnea colinacd, req, ratio_eq_ratio_div_ratio_minus_one B C D dneb colinbcd]
+  have h1 : VEC C A = VEC C B := by
+    rw [vec_eq_vec_smul_ratio C A D (flip_colinear_fst_snd colinacd) cned.symm, vec_eq_vec_smul_ratio C B D (flip_colinear_fst_snd colinbcd) cned.symm, h0]
+  rw [← start_vadd_vec_eq_end C A, h1, start_vadd_vec_eq_end C B]
+
 end ratio
 
 end EuclidGeom
