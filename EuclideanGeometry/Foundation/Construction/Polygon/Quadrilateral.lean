@@ -250,8 +250,9 @@ structure is_convex_of_three_sides_two_pts_at_same_side' where
 /- Given Quadrilateral_nd qdr_nd, if qdr_nd.point₁ and qdr_nd.point₂ are at the same side of qdr_nd.nd₃₄, and it also holds for nd₄₁ and nd₁₂, then it's convex. -/
 theorem is_convex_of_three_sides_two_pts_at_same_side (p : is_convex_of_three_sides_two_pts_at_same_side' (P := P)) : p.qdr_nd IsConvex := by
   let qdr_nd := p.qdr_nd
-  by_cases h : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = 1
-  · 
+  sorry
+  -- by_cases h : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = 1
+  -- ·
 
 structure is_convex_of_diag_inx_lies_int' where
   qdr : Quadrilateral P
