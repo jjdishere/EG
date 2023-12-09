@@ -150,7 +150,7 @@ instance : DirFig DirLine where
   todir_toproj_eq_toproj := rfl
   todirline_toline_eq_toline := rfl
   reverse := DirLine.reverse
-  rev_rev := DirLine.rev_rev_eq_self
+  rev_rev _ := DirLine.rev_rev_eq_self
   todirline_rev_eq_to_rev_dirline := by simp only [id_eq, implies_true, forall_const]
 
 instance : ProjFig Line where

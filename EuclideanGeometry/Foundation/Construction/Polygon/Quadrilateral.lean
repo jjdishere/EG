@@ -209,7 +209,7 @@ scoped postfix : 50 "IsConvex" => Quadrilateral_nd.IsConvex
 @[pp_dot]
 def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases qdr.IsND
-  · exact (Quadrilateral_nd.mk_is_nd h).IsND
+  · exact (Quadrilateral_nd.mk_is_nd h).IsConvex
   · exact False
 
 scoped postfix : 50 "IsConvex" => Quadrilateral.IsConvex

@@ -1,8 +1,12 @@
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex
+import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
+
+import EuclideanGeometry.Foundation.Axiom.Basic.Angle_trash
 /-!
 
 -/
@@ -16,9 +20,17 @@ variable {P : Type _} [EuclideanPlane P]
 
 -- we don't need to put the following definitions in the namespace Angle, since we will certainly not use it in the form of `ang.IsBis ray`
 -- if only one condition is used, please change `structure : Prop` back to `def : Prop`, if more than one condition is used, please name each condition under structure, please do not use `∧`.
-structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
 
-structure IsAngBisLine
+
+
+structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
+  eq_source : ang.source = ray.source
+  eq_value : (Angle.mk_strat_ray ang ray eq_source).value = (Angle.mk_ray_end ang ray eq_source).value
+  same_sgn : ((Angle.mk_strat_ray ang ray eq_source).value.IsPos ∧ ang.value.IsPos) ∨ ((Angle.mk_strat_ray ang ray eq_source).value.IsNeg ∧ ang.value.IsNeg) ∨ (ang.value.toReal = π )
+
+
+structure IsAngBisLine (ang : Angle P) (line : Line P) : Prop where
+  source_on : ang.source LiesOn line
 
 structure IsExAngBis
 
@@ -26,12 +38,17 @@ structure IsExAngBiscetorLine
 
 namespace Angle
 
+
 /- when the Angle is flat, bis is on the left side-/
-def AngBis (ang : Angle P) : Ray P := sorry
+def AngBis (ang : Angle P) : Ray P where
+  source := ang.source
+  toDir := ang.start_ray.toDir * (2⁻¹ * ang.value.toReal).toAngValue.toDir
 
 def AngBisLine (ang : Angle P) : Line P := ang.AngBis.toLine
 
-def ExAngBis (ang : Angle P) : Ray P := sorry
+def ExAngBis (ang : Angle P) : Ray P where
+  source := ang.source
+  toDir := ang.start_ray.toDir * (2⁻¹ * ang.value.toReal + 2⁻¹ * π).toAngValue.toDir
 
 def ExAngBisLine (ang : Angle P) : Line P := ang.ExAngBis.toLine
 
@@ -39,7 +56,41 @@ end Angle
 
 namespace Angle
 
-theorem angbis_is_angbis : sorry := sorry
+theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
+  eq_source := rfl
+  eq_value := by
+    have h : ang.source = ang.AngBis.source := rfl
+    rw [mk_strat_ray_value_eq_angdiff ang ang.AngBis h]
+    rw [mk_ray_end_value_eq_angdiff ang ang.AngBis h]
+    rw [Dir.AngDiff]
+    rw [Dir.AngDiff]
+    rw [← dir_eq_of_angvalue_eq]
+    rw [AngBis]
+    rw [end_ray_eq_start_ray_mul_value]
+    simp
+    rw [← sub_todir_eq_todir_div]
+    exact congrArg AngValue.toDir (ang.value.sub_half_eq_half).symm
+  same_sgn := by
+    have h : ang.source = ang.AngBis.source := rfl
+    have g : (Angle.mk_strat_ray ang ang.AngBis h).value.toReal = 2⁻¹ * ang.value.toReal := by
+      rw [mk_strat_ray_value_eq_angdiff ang ang.AngBis h]
+      rw [Dir.AngDiff]
+      unfold AngBis
+      simp
+      have g₁ : -π < (value ang).toReal := by
+        simp [AngValue.neg_pi_lt_toreal]
+      have h₁ : -π < 2⁻¹ * (value ang).toReal := by
+        sorry
+      sorry
+    sorry
+
+
+
+
+theorem angbis_iff_angbis (ang : Angle P) (r : Ray P) : IsAngBis ang r ↔ r = ang.AngBis := by
+  constructor
+  · sorry
+  · exact fun h ↦ (by rw [h]; apply angbis_is_angbis)
 
 theorem angbisline_is_angbisline : sorry := sorry
 
@@ -50,7 +101,10 @@ theorem exangbisline_is_exangbisline : sorry := sorry
 end Angle
 
 /-definition property: lies on the bis means bisect the angle-/
-theorem lie_on_angbis (ang: Angle P) (A : P): sorry := sorry
+theorem lie_on_angbis (ang: Angle P) (A : P) (h : A ≠ ang.source): A LiesOn ang.AngBis ↔ IsAngBis ang (RAY _ _ h) := by
+  rw [Angle.angbis_iff_angbis]
+  exact ⟨fun g ↦ (by rw [← Ray.pt_pt_eq_ray ⟨g, h⟩]; rfl),
+    fun g ↦ (by rw [← g]; apply Ray.pt_lies_on_pt_pt)⟩
 
 /- underlying line of bis as the locus satisfying the sum of distance to each ray of the angle is 0 -/
 theorem lie_on_angbisline_of_distance_zero (ang: Angle P) : sorry := sorry

@@ -14,4 +14,5 @@ require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git"
 
 meta if get_config? env = some "CI_BUILD" then
-require «doc-gen4» from git "https://github.com/leanprover/doc-gen4.git"
+require «doc-gen4» from git
+  "https://github.com/leanprover/doc-gen4.git" @ "3cc5df1be7f6db5ac13f26edda3fc258e199ab5f"
