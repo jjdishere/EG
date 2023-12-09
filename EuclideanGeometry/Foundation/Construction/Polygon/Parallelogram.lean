@@ -38,7 +38,7 @@ def Quadrilateral_nd.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr_nd 
 
 @[pp_dot]
 def Quadrilateral.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
-  by_cases qdr.IsND
+  by_cases h : qdr.IsND
   · exact (Quadrilateral_nd.mk_is_nd h).IsParallelogram_nd
   · exact False
 
