@@ -60,7 +60,38 @@ structure Parallelogram_nd (P : Type _) [EuclideanPlane P] extends Quadrilateral
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 1st, 2nd and 3rd points are not colinear, then qdr_nd is a parallelogram_nd.-/
 theorem Parallelogram_not_colinear₁₂₃ (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (para: qdr_nd.1 IsParallelogram) (h: ¬ colinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd IsParallelogram_nd := by
-  sorry
+
+   have hba : qdr_nd.1.2 ≠ qdr_nd.1.1 := by
+     unfold colinear at h
+     exact (ne_of_not_colinear h).2.2
+   have hbc : qdr_nd.1.2 ≠ qdr_nd.1.3 :=by
+     exact (ne_of_not_colinear h).1.symm
+   have hca: qdr_nd.1.3 ≠ qdr_nd.1.1 :=by
+     exact (ne_of_not_colinear h).2.1.symm
+
+   have t : ¬ colinear qdr_nd.point₂ qdr_nd.point₁ qdr_nd.point₃ := by
+     by_contra k
+     simp [flip_colinear_fst_snd k] at h
+   have x : ¬ colinear_of_nd hbc hba.symm := by
+     unfold colinear at t
+     simp [hbc,hba.symm,hca] at t
+     simp [t]
+
+   have s : ¬ qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₂₃.toProj := by
+     unfold colinear_of_nd at x
+     sorry
+   have v₁ : qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₃₄.toProj := by sorry
+   have v₂ : qdr_nd.edge_nd₂₃.toProj = qdr_nd.edge_nd₁₄.toProj := by sorry
+   have s₁ : ¬ qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₂₃.toProj := by sorry
+   have s₂ : ¬ qdr_nd.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj := by sorry
+   have s₃ : ¬ qdr_nd.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.toProj := by sorry
+   constructor
+   sorry
+   constructor
+   sorry
+   sorry
+   simp[h]
+   sorry
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 2nd, 3rd and 4th points are not colinear, then qdr_nd is a parallelogram_nd.-/
 theorem Parallelogram_not_colinear₂₃₄ (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (para: qdr_nd.1 IsParallelogram) (h: ¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd IsParallelogram_nd := by
