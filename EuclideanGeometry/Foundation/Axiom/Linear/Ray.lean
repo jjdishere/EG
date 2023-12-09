@@ -5,21 +5,16 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Class
 # Segments and rays
 
 In this file, we define the class of segments, rays, and their coercions, as well as basic properties.  A more precise plan in terms of sections is as follows:
-(1) (definition) We define the corresponding classes: rays, segments, and nondegenerate segments.
-(2) (make) We define the make functions of rays, segments, and nondegenerate segments.
-(3) (coercion) We define the coercions among rays, segments, and nondegenerate segments, as well as coercions to directions, or projective directions.
-(4) (coercion-compatibility) We discuss compatibility of coercion functions.
-(5) (lieson-compatibility) We discuss compatibility regarding points lying on or in the interior of segments or rays.
-(6) (reverse) We introduce the concept of reversing a segment and reversing a ray.
-(7) (extension) We define the extension ray of a nondegenerate segment.
-
-We define the length function of a segment.
-
-We define the concept of extending a segment into a ray.
-
-We define the function that gives the midpoint of a segment.
-
-We discuss the Archimedean property of a segment.
+* (1) (definition) We define the corresponding classes: rays, segments, and nondegenerate segments.
+* (2) (make) We define the make functions of rays, segments, and nondegenerate segments.
+* (3) (coercion) We define the coercions among rays, segments, and nondegenerate segments, as well as coercions to directions, or projective directions.
+* (4) (coercion-compatibility) We discuss compatibility of coercion functions.
+* (5) (lieson-compatibility) We discuss compatibility regarding points lying on or in the interior of segments or rays.
+* (6) (reverse) We introduce the concept of reversing a segment and reversing a ray.
+* (7) (extension) We define the extension ray of a nondegenerate segment.
+* (8) (length) We define the length function of a segment.
+* (9) (midpoint) We define the function that gives the midpoint of a segment.
+* (10) (archimedean) We discuss the Archimedean property of a segment.
 
 ## Important definitions
 
@@ -52,7 +47,11 @@ We discuss the Archimedean property of a segment.
 noncomputable section
 namespace EuclidGeom
 
+
 section definition
+/-!
+## (1) Definition
+-/
 
 /-- A \emph{ray} consists of a pair of a point $P$ and a direction; it is the ray that starts at the point and extends in the given direction. -/
 @[ext]
@@ -87,6 +86,9 @@ variable {P : Type _} [EuclideanPlane P]
 
 
 section make
+/-!
+## (2) Make
+-/
 
 /-- Given two points $A$ and $B$, this returns the segment with source $A$ and target $B$; it is an abbreviation of  \verb|Seg.mk|. -/
 scoped notation "SEG" => Seg.mk
@@ -111,6 +113,10 @@ end make
 
 
 section coersion
+/-!
+## (3) Coersion
+-/
+
 
 namespace Ray
 
@@ -221,6 +227,9 @@ end coersion
 
 
 section coersion_compatibility
+/-!
+## (4) Coersion compatiblity
+-/
 
 /-- Given a nondegenerate segment, the direction of to the ray associated to the segment is the same as the direction of the segment. -/
 @[simp]
@@ -266,6 +275,9 @@ end coersion_compatibility
 
 
 section lieson_compatibility
+/-!
+## (5) Lieson compatibility
+-/
 
 /-- Given a nondegenerate segment, a point lies on the nondegenerate segment if and only if it lies on the corresponding segment (without knowing the nondegenate condition). -/
 @[simp]
@@ -655,6 +667,9 @@ end lieson_compatibility
 
 
 section reverse
+/-!
+## (6) Reverse
+-/
 
 /-- Given a ray, this function returns the ray with the same source but with reversed direction. -/
 @[pp_dot]
@@ -1025,6 +1040,9 @@ end reverse
 
 
 section extension
+/-!
+## (7) Extension
+-/
 
 namespace Seg_nd
 
@@ -1149,6 +1167,9 @@ end Seg_nd
 end extension
 
 section length
+/-!
+## (8) Length
+-/
 
 /-- This function gives the length of a given segment, which is the norm of the vector associated to the segment. -/
 @[pp_dot]
@@ -1214,6 +1235,9 @@ theorem length_eq_length_add_length {seg : Seg P} {A : P} (lieson : A LiesOn seg
 end length
 
 section midpoint
+/-!
+## (9) Midpoint
+-/
 
 /-- Given a segment $AB$, this function returns the midpoint of $AB$, defined as moving from $A$ by the vector $\overrightarrow{AB}/2$. -/
 @[pp_dot]
@@ -1349,7 +1373,10 @@ theorem Seg_nd_eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source {X : P} {se
 
 end midpoint
 
-section existence
+section existence_theorem
+/-!
+## (10) Existence theorem
+-/
 
 /-- Given a segment $AB$, the midpoint of $A$ and $B + \overrightarrow{AB}$ is B  -/
 theorem target_eq_vec_vadd_target_midpt {seg : Seg P} : seg.2 = (SEG seg.1 (seg.toVec +ᵥ seg.2)).midpoint :=
@@ -1395,6 +1422,6 @@ theorem Ray.nontriv (ray : Ray P) : ∃ (A B : P), (A ∈ ray.carrier) ∧ (B �
   rw [ne_eq, vadd_eq_self_iff_vec_eq_zero]
   exact ray.2.tovec_ne_zero⟩
 
-end existence
+end existence_theorem
 
 end EuclidGeom
