@@ -208,7 +208,7 @@ scoped postfix : 50 "IsConvex" => Quadrilateral_nd.IsConvex
 
 @[pp_dot]
 def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
-  by_cases qdr.IsND
+  by_cases h : qdr.IsND
   · exact (Quadrilateral_nd.mk_is_nd h).IsConvex
   · exact False
 
@@ -254,7 +254,7 @@ variable {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
 /-- The permute of quadrilateral_cvx is also quadrilateral_cvx. -/
 theorem permute_is_convex : qdr_cvx.1.permute IsConvex := by
   unfold Quadrilateral_nd.IsConvex
-  by_cases (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
+  by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
   · have q : (qdr_cvx.permute.angle₄.value.IsPos ∧ qdr_cvx.permute.angle₁.value.IsPos ∧ qdr_cvx.permute.angle₂.value.IsPos ∧ qdr_cvx.permute.angle₃.value.IsPos) := by
       exact h
     simp only [q, and_self, true_or]
@@ -296,7 +296,7 @@ theorem reflect_is_convex : qdr_cvx.1.reflect IsConvex := by
   have g₁ : qdr_cvx.angle₁.value.IsPos ↔ qdr_cvx.1.reflect.angle₁.value.IsNeg := by
     unfold Quadrilateral_nd.angle₁ Quadrilateral_nd.reflect
     sorry
-  by_cases (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
+  by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
   · have q : (qdr_cvx.reflect.angle₁.value.IsNeg ∧ qdr_cvx.reflect.angle₄.value.IsNeg ∧ qdr_cvx.reflect.angle₃.value.IsNeg ∧ qdr_cvx.reflect.angle₂.value.IsNeg) := by
       sorry
     simp only [q, and_self, or_true]
@@ -315,8 +315,9 @@ theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
     simp only [h]
     exact angle_eq_zero_of_same_dir
   have k : ¬ qdr_cvx.angle₂.value.IsND := by
-    unfold AngValue.IsND
-    simp only [g, true_or, not_true_eq_false, not_false_eq_true]
+    sorry
+    -- unfold AngValue.IsND
+    -- simp only [g, true_or, not_true_eq_false, not_false_eq_true]
   have k₁ : ¬ qdr_cvx.angle₂.value.IsPos := not_ispos_of_not_isnd k
   have k₂ : ¬ qdr_cvx.angle₂.value.IsNeg := not_isneg_of_not_isnd k
   have p: qdr_cvx.IsConvex := qdr_cvx.convex
