@@ -275,47 +275,22 @@ theorem cu_neg (u v w : Vec) : cu u v (- w) = - cu u v w := by
   rw [cu, cu, neg_mul_eq_mul_neg, map_neg]
   rfl
 
-theorem Vec.det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : Vec.det u v = 0 ↔ (∃ (t : ℝ), v = t • u) := by
-  have h : u.1 ≠ 0 ∨ u.2 ≠ 0
-  · contrapose! hu
-    obtain ⟨h₁, h₂⟩ := hu
-    apply Vec.ext <;> simp [h₁, h₂]
-  constructor
-  · intro e
-    match h with
-    | Or.inl h₁ =>
-      use u.1⁻¹ * v.1
-      rw [mul_smul, eq_inv_smul_iff₀ h₁]
-      rw [det_apply, sub_eq_zero] at e
-      apply ext
-      · simp [mul_comm]
-      · simp [e, mul_comm]
-    | Or.inr h₂ =>
-      use u.2⁻¹ * v.2
-      rw [mul_smul, eq_inv_smul_iff₀ h₂]
-      rw [det_apply, sub_eq_zero] at e
-      apply ext
-      · simp [e, mul_comm]
-      · simp [mul_comm]
-  · rintro ⟨t, rfl⟩
-    simp
-
-theorem Vec.linear_combination_of_not_colinear' {u v w : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : w = (cu u v w) • u + (cv u v w) • v := by
-  have : u.fst * v.snd - u.snd * v.fst ≠ 0 := (det_eq_zero_iff_eq_smul _ _ hu).not.mpr h'
+theorem Vec.linear_combination_of_not_colinear' {u v w : Vec} (hu : v ≠ 0) (h' : ¬(∃ (t : ℝ), u = t • v)) : w = cu u v w • u + cv u v w • v := by
+  have : u.fst * v.snd - u.snd * v.fst ≠ 0 := (det_eq_zero_iff_eq_smul_right.not.mpr (not_or.mpr ⟨hu, h'⟩))
   dsimp [cu, cv, det_apply]
   apply Vec.ext <;>
   · field_simp
     ring
 
 theorem Vec.linear_combination_of_not_colinear_vecND {u v : VecND} (w : Vec) (h' : VecND.toProj u ≠ VecND.toProj v) : w = (cu u.1 v.1 w) • u.1 + (cv u.1 v.1 w) • v.1 := by
-  have h₁ : ¬(∃ (t : ℝ), v.1 = t • u.1)
+  have h₁ : ¬(∃ (t : ℝ), u.1 = t • v.1)
   · by_contra h₂
     let _ := VecND.toProj_eq_toProj_iff.2 h₂
     tauto
-  exact @linear_combination_of_not_colinear' u.1 v.1 w u.2 h₁
+  exact @linear_combination_of_not_colinear' u.1 v.1 w v.2 h₁
 
 theorem Vec.linear_combination_of_not_colinear_dir {u v : Dir} (w : Vec) (h' : u.toProj ≠ v.toProj) : w = (cu u.unitVec v.unitVec w) • u.unitVec + (cv u.unitVec v.unitVec w) • v.unitVec := by
-  have h₁ : (u.toProj ≠ v.toProj) → ¬(∃ (t : ℝ), v.unitVec = t • u.unitVec)
+  have h₁ : (u.toProj ≠ v.toProj) → ¬(∃ (t : ℝ), u.unitVec = t • v.unitVec)
   · by_contra h
     push_neg at h
     let u' := u.unitVecND

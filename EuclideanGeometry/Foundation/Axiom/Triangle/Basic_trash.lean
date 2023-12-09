@@ -1,8 +1,8 @@
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 
-open Real.Angle
 namespace EuclidGeom
+open AngValue
 
 variable {P : Type _} [EuclideanPlane P]
 

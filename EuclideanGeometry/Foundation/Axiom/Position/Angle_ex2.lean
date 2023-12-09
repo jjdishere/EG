@@ -13,9 +13,9 @@ section AngleValue
 
 
 /- theorem - π < angle.value, angle.value ≤ π,  -/
-theorem val_gt_neg_pi (ang : Angle P) : -π < ↑ang.value := sorry
+theorem val_gt_neg_pi (ang : Angle P) : -π < ang.value.toReal := sorry
 
-theorem val_le_pi (ang : Angle P) : ↑ang.value < π := sorry
+theorem val_le_pi (ang : Angle P) : ang.value.toReal < π := sorry
 
 /- theorem when angle > 0, IsInt means lies left of start ray + right of end ray; when angle < 0, ...  -/
 

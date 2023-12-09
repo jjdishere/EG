@@ -742,7 +742,7 @@ def cu (u v w: Vec) : ℝ := (det u v)⁻¹ * (w.1 * v.2 - v.1 * w.2)
 
 def cv (u v w: Vec) : ℝ := (det u v)⁻¹ * (u.1 * w.2 - w.1 * u.2)
 
-theorem det_eq_zero_iff_eq_smul (u v : Vec) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.1 = 0 ↔ (∃ (t : ℝ), v = t • u) := by
+theorem det_eq_zero_iff_eq_smul_left (u v : Vec) (hu : u ≠ 0) : u.1 * v.2 - u.2 * v.1 = 0 ↔ (∃ (t : ℝ), v = t • u) := by
   have h : (u.1 ≠ 0) ∨ (u.2 ≠ 0) := by
     by_contra _
     have h₁ : u.1 = 0 := by tauto
@@ -785,7 +785,7 @@ theorem linear_combination_of_not_colinear' {u v w : Vec} (hu : u ≠ 0) (h' : �
   have h₁ : (¬ (∃ (t : ℝ), v = t • u)) → (¬ (u.1 * v.2 - u.2 * v.1 = 0)) := by
     intro _
     by_contra h₂
-    let _ := (det_eq_zero_iff_eq_smul u v hu).1 h₂
+    let _ := (det_eq_zero_iff_eq_smul_left u v hu).1 h₂
     tauto
   let d := u.1 * v.2 - u.2 * v.1
   have h₃ : d ≠ 0 := h₁ h'

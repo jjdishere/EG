@@ -147,8 +147,8 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   rw[h₀]
   have h₁:(TRI_nd A B C hnd).angle₁.1=(SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay:=rfl
   rw[h₁]
-  apply @Ray.source_int_toray_eq_ray P _ (SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay
-  apply SegND.lies_int_toray_of_lies_int
+  apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay
+  apply SegND.lies_int_toRay_of_lies_int
   apply (Seg.lies_int_iff).mpr
   constructor
   exact (@b_ne_a P _ A B C hnd)
@@ -160,8 +160,8 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   rw[h₂]
   have h₃:(TRI_nd A B C hnd).angle₁.2=(SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay:=rfl
   rw[h₃]
-  apply @Ray.source_int_toray_eq_ray P _ (SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay
-  apply SegND.lies_int_toray_of_lies_int
+  apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay
+  apply SegND.lies_int_toRay_of_lies_int
   apply (Seg.lies_int_iff).mpr
   constructor
   exact (@c_ne_a P _ A B C hnd)

@@ -131,7 +131,7 @@ section angle
 namespace Angle
 open Classical
 
-noncomputable def angle_of_three_points' {P : Type _} [h : EuclideanPlane P] (A O B : P) : ℝ := if ((A = O) ∨ (B = O)) then 0 else Real.Angle.toReal (value (mk_pt_pt_pt A O B sorry sorry))
+noncomputable def angle_of_three_points' {P : Type _} [h : EuclideanPlane P] (A O B : P) : ℝ := if ((A = O) ∨ (B = O)) then 0 else AngValue.toReal (value (mk_pt_pt_pt A O B sorry sorry))
 end Angle
 end angle
 
