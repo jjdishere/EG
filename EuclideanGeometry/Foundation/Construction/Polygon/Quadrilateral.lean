@@ -314,12 +314,8 @@ theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
     unfold Quadrilateral_nd.angle₂
     simp only [h]
     exact angle_eq_zero_of_same_dir
-  have k : ¬ qdr_cvx.angle₂.value.IsND := by
-    sorry
-    -- unfold AngValue.IsND
-    -- simp only [g, true_or, not_true_eq_false, not_false_eq_true]
-  have k₁ : ¬ qdr_cvx.angle₂.value.IsPos := not_ispos_of_not_isnd k
-  have k₂ : ¬ qdr_cvx.angle₂.value.IsNeg := not_isneg_of_not_isnd k
+  have k₁ : ¬ qdr_cvx.angle₂.value.IsPos := AngValue.not_ispos_of_eq_zero g
+  have k₂ : ¬ qdr_cvx.angle₂.value.IsNeg := AngValue.not_isneg_of_eq_zero g
   have p: qdr_cvx.IsConvex := qdr_cvx.convex
   unfold Quadrilateral_nd.IsConvex at p
   simp only [k₁, false_and, and_false, k₂, or_self] at p
