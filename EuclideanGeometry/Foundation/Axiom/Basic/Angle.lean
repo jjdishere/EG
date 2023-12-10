@@ -364,12 +364,12 @@ theorem isNeg_iff {θ : AngValue} : θ.IsNeg ↔ (θ.toReal < 0) :=
 
 theorem not_isNeg_iff {θ : AngValue} : ¬ θ.IsNeg ↔ (0 ≤ θ.toReal) := (θ.isNeg_iff).not.trans not_lt
 
-theorem isnd_iff' {θ : AngValue} : θ.IsND ↔ (θ.toReal ≠ 0 ∧ θ.toReal ≠ π) := ⟨
+theorem isND_iff' {θ : AngValue} : θ.IsND ↔ (θ.toReal ≠ 0 ∧ θ.toReal ≠ π) := ⟨
   fun h ↦ ⟨toReal_eq_zero_iff.not.mpr h.1, toReal_eq_pi_iff.not.mpr h.2⟩,
   fun h ↦ ⟨toReal_eq_zero_iff.not.mp h.1 ,toReal_eq_pi_iff.not.mp h.2⟩⟩
 
-theorem not_isnd_iff' {θ : AngValue} : ¬ θ.IsND ↔ (θ.toReal = 0 ∨ θ.toReal = π) :=
-  isnd_iff'.not.trans (not_and_or.trans (or_congr not_ne_iff not_ne_iff))
+theorem not_isND_iff' {θ : AngValue} : ¬ θ.IsND ↔ (θ.toReal = 0 ∨ θ.toReal = π) :=
+  isND_iff'.not.trans (not_and_or.trans (or_congr not_ne_iff not_ne_iff))
 
 end toReal
 
@@ -575,32 +575,33 @@ namespace AngValue
 
 section half
 
-def half (θ : AngValue) : AngValue := (2⁻¹ : ℝ) * θ.toReal
+def half (θ : AngValue) : AngValue := ∠[θ.toReal/2]
 
 theorem smul_two_half {θ : AngValue} : 2 • θ.half = θ := by
   unfold half
   norm_cast
-  simp
+  simp only [nsmul_eq_mul, Nat.cast_ofNat]
+  ring_nf
+  simp only [coe_toReal]
 
 theorem sub_half_eq_half {θ : AngValue} : θ - θ.half = θ.half :=
   sub_eq_of_eq_add (smul_two_half.symm.trans (two_nsmul θ.half))
 
-theorem half_toReal {θ : AngValue} : θ.half.toReal = 2⁻¹ * θ.toReal := by
+theorem half_toReal {θ : AngValue} : θ.half.toReal = θ.toReal / 2 := by
   rw [half, toReal_coe, toIocMod_eq_self]
   simp
   have := θ.neg_pi_lt_toReal
   have := θ.toReal_le_pi
   constructor <;>
-  · field_simp
-    linarith
+  · linarith
 
-theorem half_toReal_le_two_inv_mul_pi {θ : AngValue} : θ.half.toReal ≤ 2⁻¹ * π := by
+theorem half_toReal_le_two_inv_mul_pi {θ : AngValue} : θ.half.toReal ≤ π / 2 := by
   rw [θ.half_toReal]
-  exact (mul_le_mul_left (by norm_num)).mpr θ.toReal_le_pi
+  exact (div_le_div_right (by norm_num)).mpr θ.toReal_le_pi
 
-theorem neg_two_inv_mul_pi_lt_half_toReal {θ : AngValue} : - 2⁻¹ * π < θ.half.toReal := by
-  rw [θ.half_toReal, neg_mul_comm]
-  exact (mul_lt_mul_left (by norm_num)).mpr θ.neg_pi_lt_toReal
+theorem neg_two_inv_mul_pi_lt_half_toReal {θ : AngValue} : -π/2 < θ.half.toReal := by
+  rw [θ.half_toReal]
+  exact (div_lt_div_right (by norm_num)).mpr θ.neg_pi_lt_toReal
 
 end half
 

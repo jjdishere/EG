@@ -25,7 +25,8 @@ variable {P : Type _} [EuclideanPlane P]
 structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
   eq_source : ang.source = ray.source
   eq_value : (Angle.mk_start_ray ang ray eq_source).value = (Angle.mk_ray_end ang ray eq_source).value
-  same_sgn : ((Angle.mk_start_ray ang ray eq_source).value.IsPos ∧ ang.value.IsPos) ∨ ((Angle.mk_start_ray ang ray eq_source).value.IsNeg ∧ ang.value.IsNeg) ∨ ((Angle.mk_start_ray ang ray eq_source).value = ↑(2⁻¹ * π) ∧ ang.value = π ) ∨ ((Angle.mk_start_ray ang ray eq_source).value = 0 ∧ ang.value = 0)
+  -- `the definition of same_sgn can be rewrite, using btw`
+  same_sgn : ((Angle.mk_start_ray ang ray eq_source).value.IsPos ∧ ang.value.IsPos) ∨ ((Angle.mk_start_ray ang ray eq_source).value.IsNeg ∧ ang.value.IsNeg) ∨ ((Angle.mk_start_ray ang ray eq_source).value = ↑(π/2) ∧ ang.value = π ) ∨ ((Angle.mk_start_ray ang ray eq_source).value = 0 ∧ ang.value = 0)
 
 
 structure IsAngBisLine (ang : Angle P) (l : Line P) : Prop where
@@ -41,13 +42,13 @@ namespace Angle
 /- when the Angle is flat, bis is on the left side-/
 def AngBis (ang : Angle P) : Ray P where
   source := ang.source
-  toDir := sorry --ang.start_ray.toDir * (2⁻¹ * ang.value.toReal).toAngValue.toDir
+  toDir := ang.value.half +ᵥ ang.start_ray.toDir
 
 def AngBisLine (ang : Angle P) : Line P := ang.AngBis.toLine
 
 def ExAngBis (ang : Angle P) : Ray P where
   source := ang.source
-  toDir := sorry --ang.start_ray.toDir * (2⁻¹ * ang.value.toReal + 2⁻¹ * π).toAngValue.toDir
+  toDir := ∠[ang.value.toReal/2 + π/2] +ᵥ ang.start_ray.toDir
 
 def ExAngBisLine (ang : Angle P) : Line P := ang.ExAngBis.toLine
 
@@ -57,33 +58,31 @@ namespace Angle
 
 theorem eq_source {ang : Angle P} : ang.source = ang.AngBis.source := rfl
 
-theorem mk_start_ray_value_eq_half_angvalue {ang : Angle P} : (Angle.mk_start_ray ang ang.AngBis eq_source).value.toReal = 2⁻¹ * ang.value.toReal := by
-  rw [mk_start_ray_value_eq_angdiff eq_source]
-  rw [Dir.AngDiff]
+theorem mk_start_ray_value_eq_half_angvalue {ang : Angle P} : (Angle.mk_start_ray ang ang.AngBis eq_source).value.toReal = ang.value.toReal/2 := by
+  rw [mk_strat_ray_value_eq_vsub]
   unfold AngBis
-  simp
-  have h₁ : (-π < 2⁻¹ * (value ang).toReal) ∧ (2⁻¹ * (value ang).toReal ≤ π) := by simp [neg_half_pi_le_half_angvalue, half_angvalue_le_half_pi]
-  simp [real_eq_toangvalue_toreal_real_iff_neg_pi_le_real_le_pi, h₁]
+  simp only
+  have h₁ : (-π < (value ang).toReal/2) ∧ ((value ang).toReal/2 ≤ π) := by
+    simp only [neg_half_pi_le_half_angvalue, half_angvalue_le_half_pi, and_self]
+  simp only [AngValue.half, vadd_vsub]
+  rw [← real_eq_toangvalue_toreal_real_iff_neg_pi_le_real_le_pi.mpr h₁]
 
 theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
   eq_source := rfl
   eq_value := by
-    sorry
-    /-
-    have h : ang.source = ang.AngBis.source := rfl
-    rw [mk_start_ray_value_eq_angdiff h]
-    rw [mk_ray_end_value_eq_angdiff h]
-    rw [Dir.AngDiff, Dir.AngDiff, ← dir_eq_of_angvalue_eq]
-    rw [AngBis]
-    rw [end_ray_eq_start_ray_mul_value]
-    simp
-    rw [← sub_todir_eq_todir_div]
-    exact congrArg AngValue.toDir (ang.value.sub_half_eq_half).symm-/
+    rw [mk_strat_ray_value_eq_vsub]
+    rw [mk_ray_end_value_eq_vsub]
+    simp only [AngBis, vadd_vsub]
+    rw [vsub_vadd_eq_vsub_sub, ← value]
+    symm
+    exact theta_sub_half_theta_eq_half_theta
   same_sgn := by
-    sorry
-    /-
-    have h : ang.source = ang.AngBis.source := rfl
-    have g : (ang.value.IsPos) ∨ (ang.value.IsNeg) ∨ (ang.value = π) ∨ (ang.value = 0) := by sorry
+    have g : (ang.value.IsPos) ∨ (ang.value.IsNeg) ∨ (ang.value = π) ∨ (ang.value = 0) := by
+      rcases ang.value.not_isnd_or_isPos_or_isNeg with d|_|_
+      simp [AngValue.not_isND_iff'] at d
+      tauto
+      tauto
+      tauto
     rcases g with g₁|g₂|g₃|g₄
     · left
       simp [g₁]
@@ -107,13 +106,9 @@ theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
       right
       right
       constructor
-      · apply AngValue.eq_zero_of_toreal_eq_zero
+      · rw [← AngValue.toReal_inj]
         simp [mk_start_ray_value_eq_half_angvalue, g₄]
       · exact g₄
--/
-
-
-
 
 theorem angbis_iff_angbis {ang : Angle P} {r : Ray P} : IsAngBis ang r ↔ r = ang.AngBis := by
   constructor
@@ -190,7 +185,7 @@ theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : Triangle_nd P} : 
   have sr : A₁.start_ray.toDir = A₂.start_ray.toDir := by
     have h₁ : A₁.start_ray = tri_nd.angle₁.AngBis := rfl
     have h₂ : A₂.start_ray = tri_nd.angle₂.AngBis := rfl
-    rw [Ray.para_iff_para_toline] at g
+    rw [Ray.para_iff_para_toLine] at g
     rw [← h₁] at g
     rw [← h₂] at g
     sorry
@@ -199,7 +194,7 @@ theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : Triangle_nd P} : 
     have h₄ : A₂.end_ray = tri_nd.edge_nd₃.reverse.toRay := rfl
     rw [h₃]
     rw [h₄]
-    have h₅ : tri_nd.edge_nd₃.reverse.toDirLine.reverse = tri_nd.edge_nd₃.reverse.reverse.toDirLine := by rw [Seg_nd.todirline_rev_eq_rev_toline]
+    have h₅ : tri_nd.edge_nd₃.reverse.toDirLine.reverse = tri_nd.edge_nd₃.reverse.reverse.toDirLine := by rw [SegND.toDirLine_rev_eq_rev_toLine]
     have h₆ : tri_nd.edge_nd₃.reverse.reverse.toDirLine = tri_nd.edge_nd₃.toDirLine := rfl
     rw [h₆] at h₅
     exact id h₅.symm
