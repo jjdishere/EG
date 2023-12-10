@@ -14,7 +14,7 @@ namespace Shan_Problem_1_3
 Prove that $CD = 2 \cdot CE$. -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+variable {A B C : P} {hnd : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry

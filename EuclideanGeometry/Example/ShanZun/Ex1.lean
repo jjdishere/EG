@@ -50,7 +50,7 @@ such that $\angle EBC = \angle BCD$.
 Prove that $\angle CDA = \angle BEA$. -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+variable {A B C : P} {hnd : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
 -- Claim: $B \ne A$ and $C \ne A$ and $B \ne C$. This is because vertices of nondegenerate triangles are distinct.
 lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
 lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
@@ -85,7 +85,7 @@ variable (hang : ∠ E B C e_ne_B B_ne_C.symm =  ∠ B C D B_ne_C d_ne_C)
 -- Theorem : $\angle CDA = \angle BEA$
 theorem Shan_Problem_1_2 : ∠ C D A (d_ne_C (hnd := hnd) (hd := hd)).symm (d_ne_a (hnd := hnd) (hd := hd)).symm = ∠ B E A (e_ne_B (hnd := hnd) (he := he)).symm (e_ne_a (hnd := hnd) (he := he)).symm := by
   -- $\angle CBA = \angle ACB$
-  have ang₁ : ∠ C B A (B_ne_C (hnd := hnd)).symm (B_ne_a (hnd := hnd)).symm = ∠ A C B (c_ne_a (hnd := hnd)).symm (B_ne_C (hnd := hnd)) := (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := TRI_nd A B C hnd) ).mp hisoc
+  have ang₁ : ∠ C B A (B_ne_C (hnd := hnd)).symm (B_ne_a (hnd := hnd)).symm = ∠ A C B (c_ne_a (hnd := hnd)).symm (B_ne_C (hnd := hnd)) := (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := TRI_nd A B C hnd) ).mp isoceles_ABC
   -- $\angle CBD = \angle ECB$
   have ang₂ : ∠ C B D (B_ne_C (hnd := hnd)).symm d_ne_B = ∠ E C B e_ne_C (B_ne_C (hnd := hnd)) := sorry
   -- $C,B,D$ are not colinear

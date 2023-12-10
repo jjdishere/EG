@@ -15,4 +15,10 @@ theorem lies_int_seg_nd_of_lies_int_seg (A B C : P) (h1 : B ≠ A) (h2 : C LiesI
 
 theorem lies_on_seg_nd_of_lies_on_seg (A B C : P) (h1 : B ≠ A) (h2 : C LiesOn (SEG A B)) : C LiesOn (SEG_nd A B h1) := by sorry
 
+namespace Ray
+
+theorem snd_pt_lies_int_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesInt (RAY A B h) := by sorry
+
+end Ray
+
 end EuclidGeom

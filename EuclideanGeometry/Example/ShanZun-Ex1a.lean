@@ -13,7 +13,7 @@ namespace Shan_Problem_1_3
 
 Prove that $CD = 2 \cdot CE$. -/
   -- Define an isosceles triangle ABC
-  variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+  variable {A B C : P} {hnd : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
   -- A ≠ B
   lemma A_ne_B : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
   -- Since D is on line AB and AB = BD, it is trivial that D is on ray AB. Position can be determined here.

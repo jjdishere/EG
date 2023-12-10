@@ -15,19 +15,19 @@ Prove that the line through $A$ parallel to $BC$ bisects $\angle EAC$.
 -/
 
 -- Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$
-variable {A B C : Plane} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+variable {A B C : Plane} {not_colinear_ABC : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
 -- Claim $B \ne A$
-lemma B_ne_A : B ≠ A := (ne_of_not_colinear hnd).2.2
+lemma B_ne_A : B ≠ A := (ne_of_not_colinear not_colinear_ABC).2.2
 -- denote the extension of $BA$ as $BA_ext$
 variable {BA_ext : Ray Plane} {hlba : BA_ext = (SEG_nd B A B_ne_A.symm).extension}
 -- Let $E$ be a point on the extension of $BA$
 variable {E : Plane} {E_int_ext : E LiesInt BA_ext}
 -- Claim $C \ne B$
-lemma C_ne_B : C ≠ B := (ne_of_not_colinear hnd).1
+lemma C_ne_B : C ≠ B := (ne_of_not_colinear not_colinear_ABC).1
 -- Claim $E \ne A$
 lemma E_ne_A : E ≠ A := by sorry
 -- Claim $C \ne A$
-lemma C_ne_A : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
+lemma C_ne_A : C ≠ A := (ne_of_not_colinear not_colinear_ABC).2.1.symm
 --Prove that the line through $A$ parallel to $BC$ bisects $\angle EAC$
 --which is equivalent to the line through $A$ parallel to $BC$ is the angle bisector of $\angle EAC$
 --denote the angle $\angle EAC$ as $angle_eac$
@@ -48,7 +48,7 @@ variable {X : Plane} {X_int_la : X LiesInt l_a}
 -- Claim : $X \ne A$
 lemma X_ne_A : X ≠ A := by sorry
 -- Prove that $\angle EAX = \angle XAC$
-theorem Problem1_9_variant : ∠ E A X E_ne_A X_ne_A = ∠ X A C X_ne_A (C_ne_A (hnd:=hnd)) := by
+theorem Problem1_9_variant : ∠ E A X E_ne_A X_ne_A = ∠ X A C X_ne_A (C_ne_A (not_colinear_ABC:=not_colinear_ABC)) := by
 /-
 As $AX$ is has the same direction as $BC$ and that $E$ is on the extension of $BA$, we know that $\angle EAX = \angle ABC$.
 In isoceles triangle $ABC$, $\angle ABC = - \angle ACB$.
@@ -57,11 +57,11 @@ Therefore, $\angle EAX = \angle ABC = - \angle ACB = \angle XAC$.
 -/
   calc
   ∠ E A X E_ne_A X_ne_A
-  _= ∠ A B C ((B_ne_A (hnd:=hnd)).symm) C_ne_B := by
+  _= ∠ A B C ((B_ne_A (not_colinear_ABC:=not_colinear_ABC)).symm) C_ne_B := by
     unfold value_of_angle_of_three_point_nd
     unfold Angle.value
     unfold DirObj.AngDiff
     unfold Dir.AngDiff
-  _= - ∠ A C B (C_ne_A (hnd:=hnd)).symm C_ne_B.symm := by sorry
-  _= ∠ X A C X_ne_A (C_ne_A (hnd:=hnd)) := by sorry
+  _= - ∠ A C B (C_ne_A (not_colinear_ABC:=not_colinear_ABC)).symm C_ne_B.symm := by sorry
+  _= ∠ X A C X_ne_A (C_ne_A (not_colinear_ABC:=not_colinear_ABC)) := by sorry
 end Problem1_9_

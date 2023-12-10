@@ -18,7 +18,7 @@ Let $D$ and $E$ be points on the segment $BC$ such that $BD = CE$.
 Prove that the height of $D$ to $AB$ is the same as the height of $E$ to $AC$.
 -/
 --Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$
-variable {A B C : Plane} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+variable {A B C : Plane} {not_colinear_ABC : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
 --Let $D$ be point on the segment $BC$
 variable {D : Plane} {D_int_BC : D LiesInt (SEG B C)}
 --Let $E$ be point on the segment $BC$
@@ -26,14 +26,14 @@ variable {E : Plane} {E_int_BC : E LiesInt (SEG B C)}
 --such that $BD = CE$
 variable {BD_eq_CE : (SEG B D).length = (SEG C E).length}
 --Claim $B \ne A$
-lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
+lemma B_ne_A : B ≠ A := (ne_of_not_colinear not_colinear_ABC).2.2
 --Claim $C \ne A$
-lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
+lemma C_ne_A : C ≠ A := (ne_of_not_colinear not_colinear_ABC).2.1.symm
 --Prove that the height of $D$ to $AB$ is the same as the height of $E$ to $AC$
 --take the foot of the height of $D$ to $AB$ and denote as $X$
-variable {X : Plane} {hd : X = perp_foot D (LIN A B B_ne_a)}
+variable {X : Plane} {hd : X = perp_foot D (LIN A B (B_ne_A (not_colinear_ABC := not_colinear_ABC)))}
 --take the foot of the height of $E$ to $AB$ and denote as $Y$
-variable {Y : Plane} {he : Y = perp_foot E (LIN A C c_ne_a)}
+variable {Y : Plane} {he : Y = perp_foot E (LIN A C (C_ne_A (not_colinear_ABC := not_colinear_ABC)))}
 theorem Problem1_7_ : (SEG D X).length = (SEG E Y).length := by
 /-
 In isoceles triangle $ABC$, we have $\angle ABC$ and $\angle ACB$ are acute.
@@ -68,9 +68,10 @@ Therefore, $DX = EY$.
   have angle_CBA_eq_neg_angle_BCA : ∠ C B A C_ne_B A_ne_B = - ∠ B C A C_ne_B.symm A_ne_C := by
     calc
     ∠ C B A C_ne_B A_ne_B
-    _= ∠ A C B A_ne_C C_ne_B.symm := is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd A B C hnd)).mp hisoc
+    _= ∠ A C B A_ne_C C_ne_B.symm := is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd A B C not_colinear_ABC)).mp isoceles_ABC
     _= - ∠ B C A C_ne_B.symm A_ne_C := neg_value_of_rev_ang A_ne_C C_ne_B.symm
-  have angle_BXD_eq_neg_angle_CYE : ∠ B X D X_ne_B.symm D_ne_X = - ∠ C Y E Y_ne_C.symm E_ne_Y := by sorry
+  have angle_BXD_eq_neg_angle_CYE : (∠ B X D X_ne_B.symm D_ne_X : AngDValue) = - ∠ C Y E Y_ne_C.symm E_ne_Y := by
+    have BX_perp_XD : := by sorry
   have angle_DBX_eq_neg_angle_ECY : ∠ D B X D_ne_B X_ne_B = - ∠ E C Y E_ne_C Y_ne_C := by
     calc
     ∠ D B X D_ne_B X_ne_B
@@ -79,16 +80,18 @@ Therefore, $DX = EY$.
         apply Seg_nd.lies_int_toray_of_lies_int (seg_nd := (SEG_nd B C C_ne_B))
         exact lies_int_seg_nd_of_lies_int_seg B C D C_ne_B D_int_BC
       have X_int_ray_BA : X LiesInt (RAY B A A_ne_B) := by
-        rw [hd, Line.line_of_pt_pt_eq_rev A_ne_B.symm]
+        simp only [hd]
+        simp only [Line.line_of_pt_pt_eq_rev A_ne_B.symm]
         have angle_ABD_acute :  Angle.IsAcuteAngle (ANG A B D A_ne_B D_ne_B) := by
           have angle_ABD_is_angle_ABC : (ANG A B D A_ne_B D_ne_B) = (ANG A B C A_ne_B C_ne_B) := by
             symm;
             apply eq_ang_of_lieson_lieson A_ne_B C_ne_B A_ne_B D_ne_B
-            · sorry
+            · exact Ray.snd_pt_lies_int_mk_pt_pt A_ne_B
             · exact D_int_ray_BC
           rw [angle_ABD_is_angle_ABC]
-          exact ang_acute_of_is_isoceles' hnd hisoc
-        exact perp_foot_lies_int_ray_of_acute_ang (A := B) (B := A) (C := D) A_ne_B D_ne_B angle_ABD_acute
+          exact ang_acute_of_is_isoceles' not_colinear_ABC isoceles_ABC
+        exact perp_foot_lies_int_ray_of_acute_ang A_ne_B D_ne_B angle_ABD_acute
+
       rw [eq_ang_val_of_lieson_lieson C_ne_B A_ne_B D_ne_B X_ne_B D_int_ray_BC X_int_ray_BA]
     _= - ∠ B C A C_ne_B.symm A_ne_C := angle_CBA_eq_neg_angle_BCA
     _= - ∠ E C Y E_ne_C Y_ne_C := by
@@ -97,7 +100,17 @@ Therefore, $DX = EY$.
         apply lies_int_seg_nd_of_lies_int_seg C B E C_ne_B.symm _
         apply (Seg.lies_int_rev_iff_lies_int (seg := (SEG B C))).mpr
         exact E_int_BC
-      have Y_int_ray_CA : Y LiesInt (RAY C A A_ne_C) := by sorry
+      have Y_int_ray_CA : Y LiesInt (RAY C A A_ne_C) := by
+        simp only [he, Line.line_of_pt_pt_eq_rev A_ne_C.symm]
+        have angle_ACE_acute :  Angle.IsAcuteAngle (ANG A C E A_ne_C E_ne_C) := by
+          have angle_ACE_is_angle_ACB : (ANG A C E A_ne_C E_ne_C) = (ANG A C B A_ne_C C_ne_B.symm) := by
+            symm;
+            apply eq_ang_of_lieson_lieson A_ne_C C_ne_B.symm A_ne_C E_ne_C
+            · exact Ray.snd_pt_lies_int_mk_pt_pt A_ne_C
+            · exact E_int_ray_CB
+          rw [angle_ACE_is_angle_ACB]
+          exact ang_acute_of_is_isoceles_variant not_colinear_ABC isoceles_ABC
+        exact perp_foot_lies_int_ray_of_acute_ang (A := C) (B := A) (C := E) A_ne_C E_ne_C angle_ACE_acute
       rw [eq_ang_val_of_lieson_lieson C_ne_B.symm A_ne_C E_ne_C Y_ne_C E_int_ray_CB Y_int_ray_CA]
   have triangle_XBD_acongr_triangle_YCE : (TRI_nd X B D not_colinear_XBD) ≅ₐ (TRI_nd Y C E not_colinear_YCE) := by
     apply cong_trash.acongr_of_AAS

@@ -30,7 +30,7 @@ namespace Shan_Problem_1_6
 
 Prove that For any point $D$ on the base $BC$, the sum of the the distance of $D$ to $AB$ and to $AC$ is independent of $D$. -/
   -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-  variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+  variable {A B C : P} {hnd : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
   -- Claim: $A \ne B$ and $A \neq C$. This is because vertices of nondegenerate triangles are distinct.
   lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
   lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm

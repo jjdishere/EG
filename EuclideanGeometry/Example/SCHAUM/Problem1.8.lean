@@ -17,13 +17,13 @@ Prove that $AD = BE$
 -/
 
 --Let $\triangle ABC$ be a regular triangle.
-variable {A B C : Plane} {hnd : ¬ colinear A B C} {hreg : (▵ A B C).IsRegular}
+variable {A B C : Plane} {not_colinear_ABC : ¬ colinear A B C} {hreg : (▵ A B C).IsRegular}
 --Claim $A \ne B$
-lemma A_ne_B : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
+lemma A_ne_B : A ≠ B := (ne_of_not_colinear not_colinear_ABC).2.2.symm
 --Claim $B \ne C$
-lemma B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
+lemma B_ne_C : B ≠ C := (ne_of_not_colinear not_colinear_ABC).1.symm
 --Claim $C \ne A$
-lemma C_ne_A : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
+lemma C_ne_A : C ≠ A := (ne_of_not_colinear not_colinear_ABC).2.1.symm
 --let $D$ be point on the extension of $BC$
 variable {D : Plane} {D_int_BC_ext : D LiesInt (SEG_nd B C B_ne_C.symm).extension}
 --let $E$ be point on the extension of $CA$
@@ -66,7 +66,7 @@ Therefore, $BD = CE$.
       · sorry
       · sorry
     _= ∠ A C B A_ne_C B_ne_C := by
-      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd A B C hnd))).mp
+      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd A B C not_colinear_ABC))).mp
       exact Triangle.isoceles_of_regular (▵ A B C) hreg
     _= ∠ E C B E_ne_C B_ne_C := by
       apply eq_ang_val_of_lieson_lieson A_ne_C B_ne_C E_ne_C B_ne_C

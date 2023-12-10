@@ -68,7 +68,7 @@ namespace Shan_Problem_1_10
 Prove that $AD = DC$. -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+variable {A B C : P} {hnd : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma a_ne_b : A ≠ B := sorry
 lemma b_ne_c : B ≠ C := sorry
