@@ -1,5 +1,7 @@
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
+import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex2
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation_trash
+import EuclideanGeometry.Foundation.Axiom.Triangle.IsocelesTriangle_trash
 
 noncomputable section
 namespace EuclidGeom
@@ -16,7 +18,7 @@ variable {P : Type _} [EuclideanPlane P]
 
 namespace Arc
 
-def mk_pt_pt_circle (A B : P) {ω : Circle P} (h : B ≠ A) (ha : A LiesOn ω) (hb : B LiesOn ω) : Arc P where
+protected def mk_pt_pt_circle (A B : P) {ω : Circle P} (h : B ≠ A) (ha : A LiesOn ω) (hb : B LiesOn ω) : Arc P where
   source := A
   target := B
   circle := ω
@@ -72,8 +74,6 @@ def complement (β : Arc P) : Arc P where
   ison := and_comm.mp β.ison
   endpts_ne := β.endpts_ne.symm
 
-theorem liesint_complementary_arc_isnot_arc_endpts {β : Arc P} {p : P} (h : p LiesInt β.complement) : Isnot_arc_endpts p β := and_comm.mp h.2
-
 lemma liesint_arc_not_lieson_dlin {β : Arc P} {p : P} (h : p LiesInt β) : ¬ (p LiesOn (DLIN β.source β.target β.endpts_ne)) := by
   intro hl
   have hl : p LiesOn (LIN β.source β.target β.endpts_ne) := hl
@@ -104,9 +104,9 @@ section angle
 
 namespace Arc
 
-def angle_mk_pt_arc (p : P) (β : Arc P) (h : Isnot_arc_endpts p β) : Angle P := ANG β.source p β.target h.1.symm h.2.symm
+protected def angle_mk_pt_arc (p : P) (β : Arc P) (h : Isnot_arc_endpts p β) : Angle P := ANG β.source p β.target h.1.symm h.2.symm
 
-def cangle (β : Arc P) : Angle P := angle_mk_pt_arc β.circle.center β (arc_center_isnot_arc_endpts β)
+protected def cangle (β : Arc P) : Angle P := Arc.angle_mk_pt_arc β.circle.center β (arc_center_isnot_arc_endpts β)
 
 protected def IsMajor (β : Arc P) : Prop := β.cangle.value.toReal < 0
 
@@ -118,6 +118,15 @@ theorem cangle_of_complementary_arc_are_opposite (β : Arc P) : β.cangle.value 
   show ∠ β.source β.circle.center β.target (arc_center_isnot_arc_endpts β).1.symm (arc_center_isnot_arc_endpts β).2.symm = -∠ β.target β.circle.center β.source (arc_center_isnot_arc_endpts β).2.symm (arc_center_isnot_arc_endpts β).1.symm
   apply neg_value_of_rev_ang
 
+theorem antipode_iff_colinear (A B : P) {ω : Circle P} (h : B ≠ A) (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) : Arc.IsAntipode A B h h₁ h₂ ↔ colinear ω.center A B := by
+  constructor
+  · intro hh
+    unfold Arc.IsAntipode Arc.cangle Arc.mk_pt_pt_circle Arc.angle_mk_pt_arc at hh
+    simp at hh
+    apply colinear_of_angle_eq_pi hh
+  intro hh
+  sorry
+
 end Arc
 
 end angle
@@ -125,26 +134,78 @@ end angle
 
 namespace Arc
 
-theorem inscribed_angle_is_positive {p : P} {β : Arc P} (h : p LiesInt β.complement) : (angle_mk_pt_arc p β (liesint_complementary_arc_isnot_arc_endpts h)).value.IsPos := by
-  unfold angle_mk_pt_arc
+theorem inscribed_angle_is_positive {p : P} {β : Arc P} (h : p LiesInt β.complement) : (Arc.angle_mk_pt_arc p β h.2.symm).value.IsPos := by
+  unfold Arc.angle_mk_pt_arc
   apply liesonleft_angle_ispos β.endpts_ne (liesint_complementary_arc_liesonleft_dlin h)
 
-theorem inscribed_angle_of_complementary_arc_is_negative {p : P} {β : Arc P} (h : p LiesInt β) : (angle_mk_pt_arc p β h.2).value.IsNeg := by
-  unfold angle_mk_pt_arc
+theorem inscribed_angle_of_complementary_arc_is_negative {p : P} {β : Arc P} (h : p LiesInt β) : (Arc.angle_mk_pt_arc p β h.2).value.IsNeg := by
+  unfold Arc.angle_mk_pt_arc
   apply liesonright_angle_isneg β.endpts_ne (liesint_arc_liesonright_dlin h)
 
-theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P} (h₁ : p LiesOn β.circle) (h₂ : Isnot_arc_endpts p β) : β.cangle.value = 2 • (angle_mk_pt_arc p β h₂).value := sorry
+theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P} (h₁ : p LiesOn β.circle) (h₂ : Isnot_arc_endpts p β) : β.cangle.value = 2 • (Arc.angle_mk_pt_arc p β h₂).value := by
+  have ne : p ≠ β.circle.center := Circle.pt_lieson_ne_center h₁
+  have hit₁ : (▵ β.circle.center β.target p).IsIsoceles := by
+    unfold Triangle.IsIsoceles
+    show (SEG p β.circle.center).length = (SEG β.circle.center β.target).length
+    rw [Seg.length_eq_dist, Seg.length_eq_dist, dist_comm, h₁, β.ison.2]
+  have hit₂ : (▵ β.circle.center p β.source).IsIsoceles := by
+    unfold Triangle.IsIsoceles
+    show (SEG β.source β.circle.center).length = (SEG β.circle.center p).length
+    rw [Seg.length_eq_dist, Seg.length_eq_dist, dist_comm, h₁, β.ison.1]
+  have eq₁ : ∠ p β.target β.circle.center h₂.2 (arc_center_isnot_arc_endpts β).2 = ∠ β.circle.center p β.target ne.symm h₂.2.symm := by apply is_isoceles_tri_ang_eq_ang_of_tri hit₁
+  have eq₂ : ∠ β.source p β.circle.center h₂.1.symm ne.symm = ∠ β.circle.center β.source p (arc_center_isnot_arc_endpts β).1 h₂.1 := by apply is_isoceles_tri_ang_eq_ang_of_tri hit₂
+  have π₁ : ∠ β.target β.circle.center p (arc_center_isnot_arc_endpts β).2.symm ne + ∠ p β.target β.circle.center h₂.2 (arc_center_isnot_arc_endpts β).2 + ∠ β.circle.center p β.target ne.symm h₂.2.symm = π := by apply angle_sum_eq_pi_of_tri (▵ β.circle.center β.target p)
+  have π₂ : ∠ p β.circle.center β.source ne (arc_center_isnot_arc_endpts β).1.symm + ∠ β.source p β.circle.center h₂.1.symm ne.symm + ∠ β.circle.center β.source p (arc_center_isnot_arc_endpts β).1 h₂.1 = π := by apply angle_sum_eq_pi_of_tri (▵ β.circle.center p β.source)
+  have hsum₁ : ∠ β.target β.circle.center p (arc_center_isnot_arc_endpts β).2.symm ne + ∠ p β.circle.center β.source ne (arc_center_isnot_arc_endpts β).1.symm = ∠ β.target β.circle.center β.source (arc_center_isnot_arc_endpts β).2.symm (arc_center_isnot_arc_endpts β).1.symm := by
+    have : (ANG β.target β.circle.center p (arc_center_isnot_arc_endpts β).2.symm ne).end_ray = (ANG p β.circle.center β.source ne (arc_center_isnot_arc_endpts β).1.symm).start_ray := rfl
+    have hhs : (Angle.sum_adj this).value = ∠ β.target β.circle.center β.source (arc_center_isnot_arc_endpts β).2.symm (arc_center_isnot_arc_endpts β).1.symm := rfl
+    rw [← hhs, Angle.ang_eq_ang_add_ang_mod_pi_of_adj_ang]
+    rfl
+  have hsum₂ : ∠ β.source p β.circle.center h₂.1.symm ne.symm + ∠ β.circle.center p β.target ne.symm h₂.2.symm = ∠ β.source p β.target h₂.1.symm h₂.2.symm := by
+    have : (ANG β.source p β.circle.center h₂.1.symm ne.symm).end_ray = (ANG β.circle.center p β.target ne.symm h₂.2.symm).start_ray := rfl
+    have hhs : (Angle.sum_adj this).value = ∠ β.source p β.target h₂.1.symm h₂.2.symm := rfl
+    rw [← hhs, Angle.ang_eq_ang_add_ang_mod_pi_of_adj_ang]
+    rfl
+  have eq₃ : ∠ β.target β.circle.center β.source (arc_center_isnot_arc_endpts β).2.symm (arc_center_isnot_arc_endpts β).1.symm + 2 • (∠ β.source p β.target h₂.1.symm h₂.2.symm) = 0 := by
+    calc
+      _ = ∠ β.target β.circle.center p (arc_center_isnot_arc_endpts β).2.symm ne + ∠ p β.circle.center β.source ne (arc_center_isnot_arc_endpts β).1.symm + 2 • (∠ β.source p β.circle.center h₂.1.symm ne.symm + ∠ β.circle.center p β.target ne.symm h₂.2.symm) := by rw [hsum₁, hsum₂]
+      _ = ∠ β.target β.circle.center p (arc_center_isnot_arc_endpts β).2.symm ne + ∠ p β.circle.center β.source ne (arc_center_isnot_arc_endpts β).1.symm + (∠ p β.target β.circle.center h₂.2 (arc_center_isnot_arc_endpts β).2 + ∠ β.circle.center p β.target ne.symm h₂.2.symm) + (∠ β.source p β.circle.center h₂.1.symm ne.symm + ∠ β.circle.center β.source p (arc_center_isnot_arc_endpts β).1 h₂.1) := by
+        rw [← eq₂, eq₁, two_smul]
+        sorry
+      _ = (∠ β.target β.circle.center p (arc_center_isnot_arc_endpts β).2.symm ne + ∠ p β.target β.circle.center h₂.2 (arc_center_isnot_arc_endpts β).2 + ∠ β.circle.center p β.target ne.symm h₂.2.symm) + (∠ p β.circle.center β.source ne (arc_center_isnot_arc_endpts β).1.symm + ∠ β.source p β.circle.center h₂.1.symm ne.symm + ∠ β.circle.center β.source p (arc_center_isnot_arc_endpts β).1 h₂.1) := by
+        rw [add_assoc, add_add_add_comm]
+        sorry
+      _ = 0 := by
+        rw [π₁, π₂, ← AngValue.coe_two_pi, two_mul]
+        simp
+  calc
+    _ = - ∠ β.target β.circle.center β.source (arc_center_isnot_arc_endpts β).2.symm (arc_center_isnot_arc_endpts β).1.symm := by rw [← neg_value_of_rev_ang]; rfl
+    _ = 2 • (∠ β.source p β.target h₂.1.symm h₂.2.symm) := by rw [← zero_sub, ← eq₃, add_sub_cancel']
+    _ = 2 • (Arc.angle_mk_pt_arc p β h₂).value := rfl
 
-theorem inscribed_angle_of_diameter_eq {p : P} {β : Arc P} (h₁ : p LiesInt β.complement) (h₂ : Arc.IsAntipode β.source β.target β.endpts_ne β.ison.1 β.ison.2) : (angle_mk_pt_arc p β h₁.2.symm).value = ((π / 2 : ℝ) : AngValue) := sorry
+theorem inscribed_angle_of_diameter_eq {p : P} {β : Arc P} (h₁ : p LiesInt β.complement) (h₂ : Arc.IsAntipode β.source β.target β.endpts_ne β.ison.1 β.ison.2) : (Arc.angle_mk_pt_arc p β h₁.2.symm).value = ((π / 2 : ℝ) : AngValue) := by
+  have : β.cangle.value = π := h₂
+  have : 2 • (Arc.angle_mk_pt_arc p β h₁.2.symm).value = π := by
+    rw [← this, ← cangle_eq_two_times_inscribed_angle]
+    exact h₁.1.1
+  rcases AngValue.two_nsmul_eq_pi this with h | h
+  · exact h
+  exfalso
+  have : (Arc.angle_mk_pt_arc p β h₁.2.symm).value.IsPos := inscribed_angle_is_positive h₁
+  have : (Arc.angle_mk_pt_arc p β h₁.2.symm).value.toReal > 0 := AngValue.zero_lt_toreal_of_ispos this
+  rw [h] at this
+  simp at this
+  have : π > 0 := Real.pi_pos
+  linarith
 
 /-
 The followings need a modification when the angle modulo π is constructed.
 -/
-theorem inscribed_angle_on_same_arc_is_invariant {A B : P} {β : Arc P} (h₁ : A LiesInt β) (h₂ : B LiesInt β) : (angle_mk_pt_arc A β h₁.2).value = (angle_mk_pt_arc B β h₂.2).value := sorry
+theorem inscribed_angle_on_same_arc_is_invariant {A B : P} {β : Arc P} (h₁ : A LiesInt β) (h₂ : B LiesInt β) : (Arc.angle_mk_pt_arc A β h₁.2).value = (Arc.angle_mk_pt_arc B β h₂.2).value := sorry
 
-theorem inscribed_angle_on_same_complementary_arc_is_invariant {A B : P} {β : Arc P} (h₁ : A LiesInt β.complement) (h₂ : B LiesInt β.complement) : (angle_mk_pt_arc A β (liesint_complementary_arc_isnot_arc_endpts h₁)).value = (angle_mk_pt_arc B β (liesint_complementary_arc_isnot_arc_endpts h₂)).value := sorry
+theorem inscribed_angle_on_same_complementary_arc_is_invariant {A B : P} {β : Arc P} (h₁ : A LiesInt β.complement) (h₂ : B LiesInt β.complement) : (Arc.angle_mk_pt_arc A β h₁.2.symm).value = (Arc.angle_mk_pt_arc B β h₂.2.symm).value := sorry
 
-theorem inscribed_angle_on_complementary_arc_difference_eq_pi {A B : P} {β : Arc P} (h₁ : A LiesInt β) (h₂ : B LiesInt β.complement) : (angle_mk_pt_arc A β h₁.2).value - (angle_mk_pt_arc B β (liesint_complementary_arc_isnot_arc_endpts h₂)).value = π := sorry
+theorem inscribed_angle_on_complementary_arc_difference_eq_pi {A B : P} {β : Arc P} (h₁ : A LiesInt β) (h₂ : B LiesInt β.complement) : (Arc.angle_mk_pt_arc A β h₁.2).value - (Arc.angle_mk_pt_arc B β h₂.2.symm).value = π := sorry
 
 theorem angle_of_osculation : sorry := sorry
 

@@ -94,6 +94,13 @@ theorem pt_liesout_ne_center {p : P} {ω : Circle P} (h : p LiesOut ω) : p ≠ 
   have : ω.radius > 0 := ω.rad_pos
   linarith
 
+theorem pt_lieson_ne_center {p : P} {ω : Circle P} (h : p LiesOn ω) : p ≠ ω.center := by
+  apply dist_pos.mp
+  rw [dist_comm]
+  have : dist ω.center p = ω.radius := h
+  have : ω.radius > 0 := ω.rad_pos
+  linarith
+
 theorem interior_of_circle_iff_inside_not_on_circle (p : P) (ω : Circle P) : p LiesInt ω ↔ (p LiesIn ω) ∧ (¬ p LiesOn ω) := by
   show dist ω.center p < ω.radius ↔ (dist ω.center p ≤ ω.radius) ∧ (¬ dist ω.center p = ω.radius)
   push_neg
