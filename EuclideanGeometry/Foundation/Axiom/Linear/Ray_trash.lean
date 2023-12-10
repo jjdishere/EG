@@ -57,4 +57,11 @@ theorem Ray.pt_lies_int_pt_pt (A B : P) (h : B ≠ A) : B LiesInt (RAY _ _ h) :=
 
 theorem Ray.pt_lies_on_pt_pt (A B : P) (h : B ≠ A) : B LiesOn (RAY _ _ h) := by sorry
 
+/-SegND_eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source should be replaced by the following three
+  midpoint → liesint seg_nd
+  midpoint → dist source = dist target
+  lieson ∧ dist source = dist target → midpoint
+
+  by the way in_seg shoud be renamed by current naming system
+-/
 end EuclidGeom

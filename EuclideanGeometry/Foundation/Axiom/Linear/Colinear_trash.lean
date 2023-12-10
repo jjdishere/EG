@@ -6,6 +6,6 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
 
-theorem not_colinear_of_colinear_not_colinear {A B C D : P} : (h₁ : colinear A B C) →  (h₂ : ¬ colinear D A B) → ¬ colinear D B C := sorry
+
 
 end EuclidGeom
