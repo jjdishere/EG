@@ -68,7 +68,7 @@ variable {E : P} {he : is_inx E (ANG A C B c_ne_a.symm b_ne_c).AngBis (SEG B C)}
 -- $CF$ is median of $\triangle ABC$
 variable {F : P} {hf : F = (SEG B C).midpoint}
 -- We have $\angle ACB = 90^{circ}$
-variable {hright : ∠ A C B c_ne_a.symm b_ne_c = π / 2}
+variable {hright : ∠ A C B c_ne_a.symm b_ne_c = ↑ (π / 2)}
 -- Claim: $D \ne C$, $E \ne C$ and $F \ne C$
 lemma d_ne_c : D ≠ C := sorry
 lemma e_ne_c : E ≠ C := sorry
