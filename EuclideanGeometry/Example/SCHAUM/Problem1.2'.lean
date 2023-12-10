@@ -39,8 +39,8 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   -- Let $Q$ be the foot of perpendicular from $E$ to $BC$.
   Q : Plane
   hQ : Q = perp_foot E (LIN B C B_ne_C.symm)
-
-theorem result (e : Setting Plane) : (SEG e.D e.P).length = (SEG e.E e.Q).length := by
+--Prove that $DP = EQ$.  需要把最开始那个平面加进result里
+theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.D e.P).length = (SEG e.E e.Q).length := by
 /-
   In the isoceles triangle $ABC$, we have $AB = AC$.
   Thus we have $BD = AB - AD = AC - AE = CE$.
