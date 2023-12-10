@@ -4,10 +4,10 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {Plane : Type _} [EuclideanPlane Plane]
-
-namespace Problem1_2_
-/-Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.Let $D$ be a point on $AB$.
+namespace Schaum
+namespace Problem1_2
+/-
+Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.Let $D$ be a point on $AB$.
 Let $E$ be a point on $AC$ such that $AE = AD$.Let $P$ be the foot of perpendicular from $D$ to $BC$.
 Let $Q$ be the foot of perpendicular from $E$ to $BC$.
 
@@ -39,7 +39,39 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   -- Let $Q$ be the foot of perpendicular from $E$ to $BC$.
   Q : Plane
   hQ : Q = perp_foot E (LIN B C B_ne_C.symm)
---Prove that $DP = EQ$.  需要把最开始那个平面加进result里
+
+/- # Another Style of Setting-/
+structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
+  -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
+  A : Plane
+  B : Plane
+  C : Plane
+  not_colinear_ABC : ¬ colinear A B C
+  hisoc : (▵ A B C).IsIsoceles
+  --Let $D$ be a point on $AB$.
+  D : Plane
+  D_int_AB : D LiesInt (SEG A B)
+  --Let $E$ be a point on $AC$,
+  E : Plane
+  E_int_AC: E LiesInt (SEG A C)
+  -- such that $AE = AD$.
+  AE_eq_AD : (SEG A E).length = (SEG A D).length
+
+-- Claim: $B \ne C$.
+lemma B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: e.B ≠ e.C := by
+    -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
+  exact (ne_of_not_colinear e.not_colinear_ABC).1.symm
+
+structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+  B_ne_C : B ≠ C := B_ne_C
+  -- Let $P$ be the foot of perpendicular from $D$ to $BC$.
+  P : Plane
+  hP : P = perp_foot D (LIN B C B_ne_C.symm)
+  -- Let $Q$ be the foot of perpendicular from $E$ to $BC$.
+  Q : Plane
+  hQ : Q = perp_foot E (LIN B C B_ne_C.symm)
+
+-- Prove that $DP = EQ$.
 theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.D e.P).length = (SEG e.E e.Q).length := by
 /-
   In the isoceles triangle $ABC$, we have $AB = AC$.
@@ -48,11 +80,11 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
   Therefore, $\angle DBP = \angle ABC = -\angle ACB = - \angle ECQ$.
   Since $DP$ is perpendicular to $BC$ at $P$, we have $\angle DPB = \pi/2$ or $ - \pi/2$.
   Since $EQ$ is perpendicular to $BC$ at $Q$, we have $\angle EQC = \pi/2$ or $ - \pi/2$.
-  Thus $|\angle DPB| = |\angle EQC|$.
+  Thus $\angle DPB = - \angle EQC \mod \pi$.
   In $\triangle DBP$ and $\triangle EQC$,
-  $\cdot \angle DBP = - \angle ECQ$
-  $\cdot |\angle DPB| = |\angle EQC|$
-  $\cdot BD = CE$
+  $\bullet \qquad \angle DBP = - \angle ECQ$
+  $\bullet \qquad \angle DPB = - \angle EQC \mod \pi$
+  $\bullet \qquad BD = CE$
   Thus $\triangle DPB \congr_a \triangle EQC$ (by AAS).
   Therefore, $DP = EQ$.
 -/
@@ -126,4 +158,6 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
   -- Therefore, $DP = EQ$.
   exact h.edge₂
 
-end Problem1_2_
+end Problem1_2
+end Schaum
+end EuclidGeom
