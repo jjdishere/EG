@@ -24,10 +24,10 @@ def is_inx {P : Type _} [EuclideanPlane P] {α β: Type _} [Carrier P α] [Carri
 
 theorem is_inx.symm {P : Type _} [EuclideanPlane P] {α β: Type _} [Carrier P α] [Carrier P β] {A : P} {F : α} {G : β} (h : is_inx A F G) : is_inx A G F := And.symm h
 
-scoped infix : 50 "LiesOn" => lies_on
-scoped infix : 50 "LiesInt" => lies_int
--- scoped infix : 50 "LiesIn" => lies_in
--- scoped notation A "IsInx" F G => (is_inx A F G) -- this notation doesn't work as imagined
+scoped infix : 50 " LiesOn " => lies_on
+scoped infix : 50 " LiesInt " => lies_int
+-- scoped infix : 50 " LiesIn " => lies_in
+-- scoped notation A " IsInx " F G => (is_inx A F G) -- this notation doesn't work as imagined
 
 section compatibility
 
@@ -67,9 +67,9 @@ instance (α : Type*) [HasCongr α] : IsEquiv α HasCongr.congr where
   trans _ _ _ := HasCongr.trans
   symm _ _ := HasCongr.symm
 
-scoped infix : 50 "≅" => HasCongr.congr
+scoped infix : 50 " ≅ " => HasCongr.congr
 
-scoped infix : 50 "IsCongrTo" => HasCongr.congr
+scoped infix : 50 " IsCongrTo " => HasCongr.congr
 
 class HasACongr (α : Type*) where
   acongr : α → α → Prop
@@ -78,8 +78,8 @@ class HasACongr (α : Type*) where
 instance (α : Type*) [HasACongr α] : IsSymm α HasACongr.acongr where
   symm _ _ := HasACongr.symm
 
-scoped infix : 50 "≅ₐ" => HasACongr.acongr
+scoped infix : 50 " ≅ₐ " => HasACongr.acongr
 
-scoped infix : 50 "IsACongrTo" => HasACongr.acongr
+scoped infix : 50 " IsACongrTo " => HasACongr.acongr
 
 end EuclidGeom
