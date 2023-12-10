@@ -72,6 +72,16 @@ theorem edge_eq_edge_of_perm_vertices_two_times (tr_nd : Triangle_nd P) : tr_nd.
 
 theorem angle_eq_angle_of_perm_vertices_two_times (tr_nd : Triangle_nd P) : tr_nd.angle₁.value = tr_nd.perm_vertices.perm_vertices.angle₃.value ∧ tr_nd.angle₂.value = tr_nd.perm_vertices.perm_vertices.angle₁.value ∧ tr_nd.angle₃.value = tr_nd.perm_vertices.perm_vertices.angle₂.value := by sorry
 
+theorem points_ne_of_colinear_of_not_colinear1 {A B C D : P} (ncolin : ¬ colinear A B C) (colin : colinear D B C) : D ≠ A := sorry
+
+theorem points_ne_of_colinear_of_not_colinear2 {A B C D : P} (ncolin : ¬ colinear A B C) (colin : colinear D C A) : D ≠ B := sorry
+
+theorem points_ne_of_colinear_of_not_colinear3 {A B C D : P} (ncolin : ¬ colinear A B C) (colin : colinear D A B) : D ≠ C := sorry
+
+theorem not_parallel_of_not_colinear_of_colinear_colinear {A B C D E : P} (nd : ¬ colinear A B C) (colindbc : colinear D B C) (colineca : colinear E C A) : ¬ (LIN A D (points_ne_of_colinear_of_not_colinear1 nd colindbc)) ∥ (LIN B E (points_ne_of_colinear_of_not_colinear2 nd colineca)) := sorry
+
+theorem intersection_not_colinear_of_nondegenerate {A B C D E : P} (nd : ¬ colinear A B C) (colindbc : colinear D B C) (colineca : colinear E C A) (dneb : D ≠ B) (dnec : D ≠ C) (enea : E ≠ A) (enec : E ≠ C) (F : P) (fdef : F = Line.inx (LIN A D (points_ne_of_colinear_of_not_colinear1 nd colindbc)) (LIN B E (points_ne_of_colinear_of_not_colinear2 nd colineca)) (not_parallel_of_not_colinear_of_colinear_colinear nd colindbc colineca)) : (¬ colinear A B F) ∧ (¬ colinear B C F) ∧ (¬ colinear C A F) := by sorry
+
 end Triangle_nd
 
 end EuclidGeom
