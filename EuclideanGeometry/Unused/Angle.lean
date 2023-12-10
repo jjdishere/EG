@@ -15,7 +15,7 @@ In this file, we define suitable coversion function between these values.
 ## Main Definitions
 We will use `A.toB` to denote the conversion from `A` to `B`
 ### List of Values
-* `ModValue` : `ℝ⧸2π`, with type `Real.Angle`
+* `ModValue` : `ℝ⧸2π`, with type `AngValue`
 * `RealValue` : `(-π, π]`, with type `ℝ`
 * `PosValue` : `[0, 2π)`, with type `ℝ`
 * `DAngValue` : `ℝ⧸π`, with type `AddCircle π`
@@ -32,9 +32,9 @@ The core is a circle of conversions of `ModValue` `RealValue` `PosValue`, and `M
 noncomputable section
 namespace EuclidGeom
 
-def ModValue.toRealValue : Real.Angle → ℝ := Real.Angle.toReal
+def ModValue.toRealValue : AngValue → ℝ := AngValue.toReal
 
-def RealValue.toModValue : ℝ → Real.Angle := Real.Angle.coe
+def RealValue.toModValue : ℝ → AngValue := AngValue.coe
 
 
 end EuclidGeom

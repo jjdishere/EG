@@ -6,7 +6,6 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
 
-import EuclideanGeometry.Foundation.Axiom.Basic.Angle_trash
 /-!
 
 -/
@@ -42,13 +41,13 @@ namespace Angle
 /- when the Angle is flat, bis is on the left side-/
 def AngBis (ang : Angle P) : Ray P where
   source := ang.source
-  toDir := ang.start_ray.toDir * (2⁻¹ * ang.value.toReal).toAngValue.toDir
+  toDir := sorry --ang.start_ray.toDir * (2⁻¹ * ang.value.toReal).toAngValue.toDir
 
 def AngBisLine (ang : Angle P) : Line P := ang.AngBis.toLine
 
 def ExAngBis (ang : Angle P) : Ray P where
   source := ang.source
-  toDir := ang.start_ray.toDir * (2⁻¹ * ang.value.toReal + 2⁻¹ * π).toAngValue.toDir
+  toDir := sorry --ang.start_ray.toDir * (2⁻¹ * ang.value.toReal + 2⁻¹ * π).toAngValue.toDir
 
 def ExAngBisLine (ang : Angle P) : Line P := ang.ExAngBis.toLine
 
@@ -59,6 +58,8 @@ namespace Angle
 theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
   eq_source := rfl
   eq_value := by
+    sorry
+    /-
     have h : ang.source = ang.AngBis.source := rfl
     rw [mk_strat_ray_value_eq_angdiff ang ang.AngBis h]
     rw [mk_ray_end_value_eq_angdiff ang ang.AngBis h]
@@ -69,8 +70,10 @@ theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
     rw [end_ray_eq_start_ray_mul_value]
     simp
     rw [← sub_todir_eq_todir_div]
-    exact congrArg AngValue.toDir (ang.value.sub_half_eq_half).symm
+    exact congrArg AngValue.toDir (ang.value.sub_half_eq_half).symm-/
   same_sgn := by
+    sorry
+    /-
     have h : ang.source = ang.AngBis.source := rfl
     have g : (Angle.mk_strat_ray ang ang.AngBis h).value.toReal = 2⁻¹ * ang.value.toReal := by
       rw [mk_strat_ray_value_eq_angdiff ang ang.AngBis h]
@@ -82,7 +85,7 @@ theorem angbis_is_angbis (ang : Angle P) : IsAngBis ang ang.AngBis where
       have h₁ : -π < 2⁻¹ * (value ang).toReal := by
         sorry
       sorry
-    sorry
+    sorry-/
 
 
 

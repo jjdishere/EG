@@ -20,12 +20,12 @@ def tri : Triangle P := ▵ A B C
 lemma a_ne_c : A ≠ C := (ne_of_not_colinear hnd).2.1
 lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
 -- Claim: $BC$ is non degenerate. This is because $B \ne C$.
-def seg_nd_ac : Seg_nd P := ⟨(SEG A C), Ne.symm (a_ne_c (hnd := hnd) ) ⟩
-def seg_nd_bc : Seg_nd P := ⟨(SEG B C), Ne.symm (b_ne_c (hnd := hnd) ) ⟩
+def seg_nd_ac : SegND P := ⟨(SEG A C), Ne.symm (a_ne_c (hnd := hnd) ) ⟩
+def seg_nd_bc : SegND P := ⟨(SEG B C), Ne.symm (b_ne_c (hnd := hnd) ) ⟩
 -- Let $D$ be the midpoint of $BC$.
 variable {D : P} {d_mid : D = (SEG B C).midpoint}
 -- $D$ Liesin $BC$. This is because $BC$ is non degenerate.
-lemma d_int_bc : D LiesInt (SEG B C) := by rw [d_mid]; exact Seg_nd.midpt_lies_int (seg_nd := seg_nd_bc (hnd := hnd) )
+lemma d_int_bc : D LiesInt (SEG B C) := by rw [d_mid]; exact SegND.midpt_lies_int (seg_nd := seg_nd_bc (hnd := hnd) )
 lemma a_ne_d : A ≠ D := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_fst_edge (d_int_bc (hnd := hnd) (d_mid := d_mid))).1.symm
 def line_ad : Line P := LIN A D (a_ne_d (hnd := hnd) (d_mid := d_mid)).symm
 variable {E : P} {he : E LiesOn (line_ad (hnd := hnd) (d_mid := d_mid))}
@@ -37,7 +37,7 @@ lemma b_ne_e : B ≠ E := by
   rw [ne_eq]
   rw [(length_eq_zero_iff_deg (seg := SEG B E)).not] at h
   exact Ne.symm h
-def seg_nd_be : Seg_nd P := ⟨SEG B E, Ne.symm (b_ne_e (hnd := hnd) (be_eq_ac := be_eq_ac))⟩
+def seg_nd_be : SegND P := ⟨SEG B E, Ne.symm (b_ne_e (hnd := hnd) (be_eq_ac := be_eq_ac))⟩
 variable {be_not_parallel_ac : ¬ (seg_nd_be (hnd := hnd) (be_eq_ac := be_eq_ac)) ∥ (seg_nd_ac (hnd := hnd))}
 
 -- Theorem : $AF = EF$

@@ -15,7 +15,7 @@ section make
 namespace Parallelogram
 /- 
 construct parallelgram from (protected def)
-1. a point and 2 Vec_nd that is not parallel
+1. a point and 2 VecND that is not parallel
 2. 3 point that is not colinear
 -/
 
