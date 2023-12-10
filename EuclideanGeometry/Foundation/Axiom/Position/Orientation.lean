@@ -139,8 +139,9 @@ def odist {α} [DirFig α P] (A : P) (l : α) : ℝ := Quotient.lift (s := same_
 theorem odist_reverse_eq_neg_odist' (A : P) (ray : Ray P) : odist A (Ray.reverse ray) = - odist A ray := by
   show odist' A (Ray.reverse ray) = - odist' A ray
   unfold odist'
-  have h0 : (Ray.reverse ray).2.1 = -ray.2.1 := rfl
-  rw[h0, det_neg_eq_neg_det]
+  have h0 : (ray.reverse).toDir.unitVec = -ray.toDir.unitVec := by
+    simp only [Ray.reverse_toDir, Dir.neg_unitVec]
+  rw [h0, map_neg]
   rfl
 
 theorem odist_reverse_eq_neg_odist'' (A : P) (dl : DirLine P) : odist A (DirLine.reverse dl) = - odist A dl := by
@@ -154,17 +155,17 @@ theorem odist_reverse_eq_neg_odist'' (A : P) (dl : DirLine P) : odist A (DirLine
   rw [h1, h2, ← odist_reverse_eq_neg_odist' A ray]
   rfl
 
-theorem odist_reverse_eq_neg_odist (A : P) [DirFig α] (df : α P) : odist A (DirFig.reverse df) = - odist A df := by
+theorem odist_reverse_eq_neg_odist {α} (A : P) [DirFig α P] (df : α) : odist A (DirFig.reverse df) = - odist A df := by
   have h0 : odist A (DirFig.reverse df) = odist A (toDirLine (DirFig.reverse df)) := rfl
-  rw [← (DirFig.todirline_rev_eq_to_rev_dirline df)] at h0
+  rw [← DirFig.toDirLine_rev_eq_to_rev_toDirLine] at h0
   rw [h0]
   rw [odist_reverse_eq_neg_odist'' A (toDirLine df)]
   rfl
 
-theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (Seg_nd.mk A B bnea) = odist D (Seg_nd.mk A B bnea)) ↔ (wedge A B C = wedge A B D) := by
-  rw[wedge_eq_odist'_mul_length A B C bnea, wedge_eq_odist'_mul_length A B D bnea]
+theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SEG_nd A B bnea) = odist D (SEG_nd A B bnea)) ↔ (wedge A B C = wedge A B D) := by
+  rw [wedge_eq_odist'_mul_length A B C bnea, wedge_eq_odist'_mul_length A B D bnea]
   have h0 : 0 ≠ Seg.length (SEG A B) := by
-    rw[length_ne_zero_iff_nd]
+    rw [length_ne_zero_iff_nd]
     exact bnea
   field_simp
   tauto
@@ -176,33 +177,15 @@ end oriented_distance
 section point_toray
 variable {α} [DirFig α P]
 
---`Rewrite this part! why use by cases???`
-def odist_sign (A : P) (df : α) : ℝ := by
-  by_cases 0 < odist A df
-  · exact 1
-  by_cases odist A df < 0
-  · exact -1
-  exact 0
+def odist_sign (A : P) (df : α) : ℝ := sign (odist A df)
 
-def IsOnLeftSide (A : P) (df : α) : Prop := by
-  by_cases 0 < odist A df
-  · exact True
-  · exact False
+def IsOnLeftSide (A : P) (df : α) : Prop := 0 < odist A df
 
-def IsOnRightSide (A : P) (df : α) : Prop := by
-  by_cases odist A df < 0
-  · exact True
-  · exact False
+def IsOnRightSide (A : P) (df : α) : Prop := odist A df < 0
 
-def OnLine (A : P) (df : α) : Prop := by
-  by_cases odist A df = 0
-  · exact True
-  · exact False
+def OnLine (A : P) (df : α) : Prop := odist A df = 0
 
-def OffLine (A : P) (df : α) : Prop := by
-  by_cases odist A df = 0
-  · exact False
-  · exact True
+def OffLine (A : P) (df : α) : Prop := ¬ odist A df = 0
 
 theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A ray.toLine := by
   dsimp only [OnLine]
@@ -211,7 +194,7 @@ theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A r
     intro
     exact lies_on_or_rev_iff_exist_real_vec_eq_smul.mpr (odist'_eq_zero_iff_exist_real_vec_eq_smul.mp h)
     intro
-    exact h
+    assumption
   constructor
   intro k
   absurd h k
@@ -236,7 +219,7 @@ theorem online_iff_lies_on_line' (A : P) (dl : DirLine P) :Line.IsOn A (toLine d
   rw[h4]
 
 theorem online_iff_lies_on_line (A : P) [DirFig α P] (df : α) : Line.IsOn A (toLine df) ↔ odist A df = 0 := by
-  have h1 : toLine (toDirLine df) = toLine df := todirline_toline_eq_toline
+  have h1 : toLine (toDirLine df) = toLine df := toDirLine_toLine_eq_toLine
   have h2 : odist A df = odist A (toDirLine df) := rfl
   rw[← h1,h2]
   exact online_iff_lies_on_line' A (toDirLine df)
@@ -250,7 +233,7 @@ end point_toray
 
 section oriented_area
 
-theorem oarea_eq_length_mul_odist_div_two (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (Seg_nd.mk A B bnea)) * (SEG A B).length) / 2:= by
+theorem oarea_eq_length_mul_odist_div_two (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (SEG_nd A B bnea)) * (SEG A B).length) / 2:= by
   unfold oarea
   rw [wedge_eq_odist'_mul_length A B C bnea]
   have h0 : toDirLine (SEG_nd A B bnea) = toDirLine (RAY A B bnea) := rfl
@@ -261,7 +244,7 @@ theorem oarea_eq_length_mul_odist_div_two (A B C : P) (bnea : B ≠ A) : (oarea 
   rw [h2] at h1
   rw[h1]
 
-theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (Seg_nd.mk A B bnea) = odist D (Seg_nd.mk A B bnea)) ↔ oarea A B C = oarea A B D := by
+theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SEG_nd A B bnea) = odist D (SEG_nd A B bnea)) ↔ oarea A B C = oarea A B D := by
   unfold oarea
   field_simp
   exact wedge_eq_wedge_iff_odist_eq_odist_of_ne A B C D bnea
