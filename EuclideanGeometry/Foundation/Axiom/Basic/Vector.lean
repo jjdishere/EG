@@ -987,7 +987,7 @@ lemma sameDir_rotate_angle_right (v₁ v₂ : VecND) :
     SameDir v₁ (VecND.rotate (angle v₂ v₁) v₂) :=
   (sameDir_rotate_angle_left v₂ v₁).symm
 
-theorem norm_mul_cos_angle (v₁ v₂ : VecND) :
+theorem norm_mul_cos (v₁ v₂ : VecND) :
     ‖v₁‖ * ‖v₂‖ * (VecND.angle v₁ v₂).cos = ⟪v₁.1, v₂.1⟫_ℝ := by
   rw [angle, vsub_def, toMul_ofMul, coe_cdiv, AngValue.cos_coe,
     Complex.cos_arg (Vec.cdiv_ne_zero.mpr ⟨VecND.ne_zero _, VecND.ne_zero _⟩), Vec.abs_cdiv,
@@ -997,7 +997,7 @@ theorem norm_mul_cos_angle (v₁ v₂ : VecND) :
   field_simp
   ring
 
-theorem norm_mul_sin_angle (v₁ v₂ : VecND) :
+theorem norm_mul_sin (v₁ v₂ : VecND) :
     ‖v₁‖ * ‖v₂‖ * (VecND.angle v₁ v₂).sin = Vec.det v₁.1 v₂.1 := by
   rw [angle, vsub_def, toMul_ofMul, coe_cdiv, AngValue.sin_coe,
     Complex.sin_arg, Vec.abs_cdiv,
@@ -1007,11 +1007,11 @@ theorem norm_mul_sin_angle (v₁ v₂ : VecND) :
   field_simp
   ring
 
-theorem norm_smul_expMapCircle_angle (v₁ v₂ : VecND) :
+theorem norm_smul_expMapCircle (v₁ v₂ : VecND) :
     (‖v₁‖ * ‖v₂‖) • ((VecND.angle v₁ v₂).expMapCircle : ℂ) = ⟪v₁.1, v₂.1⟫_ℂ := by
   ext
-  · simp [AngValue.coe_expMapCircle, VecND.norm_mul_cos_angle]
-  · simp [AngValue.coe_expMapCircle, VecND.norm_mul_sin_angle]
+  · simp [AngValue.coe_expMapCircle, VecND.norm_mul_cos]
+  · simp [AngValue.coe_expMapCircle, VecND.norm_mul_sin]
 
 end VecND
 
@@ -1297,11 +1297,11 @@ theorem angle_unitVecND (u v : Dir) : VecND.angle u.unitVecND v.unitVecND = v -�
 
 @[simp]
 theorem inner_unitVec (u v : Dir) : ⟪u.unitVec, v.unitVec⟫_ℝ = (v -ᵥ u).cos := by
-  simp [← VecND.norm_mul_cos_angle]
+  simp [← VecND.norm_mul_cos]
 
 @[simp]
 theorem det_unitVec (u v : Dir) : Vec.det u.unitVec v.unitVec = (v -ᵥ u).sin := by
-  simp [← VecND.norm_mul_sin_angle]
+  simp [← VecND.norm_mul_sin]
 
 end Dir
 
