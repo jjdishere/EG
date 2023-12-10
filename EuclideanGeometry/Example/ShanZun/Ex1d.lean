@@ -96,11 +96,11 @@ theorem Shan_Problem_1_10 : (SEG A D).length = (SEG D C).length := by
   -- $CM = CA + AM = CA + EC = AE = BC$
   have cm_eq_bc : (SEG C M).length = (SEG B C).length := by
     rw[← he₂]
-    have c_lies_on_ae : C LiesOn (SEG_nd A E a_ne_e.symm).1 := Seg_nd.lies_on_of_lies_int (Seg_nd.target_lies_int_seg_source_pt_of_pt_lies_int_extn he₁)
+    have c_lies_on_ae : C LiesOn (SEG_nd A E a_ne_e.symm).1 := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn he₁)
     have ae_eq_ac_plus_ce : (SEG A E).length = (SEG A C).length + (SEG C E).length := length_eq_length_add_length c_lies_on_ae
     rw[← Seg.length_of_rev_eq_length (seg := (SEG E C))] at am_eq_ec
     have m_lies_int_ca_extn : M LiesInt (SEG_nd C A c_ne_a.symm).extension := sorry
-    have a_lies_on_cm : A LiesOn (SEG_nd C M m_ne_c).1 := Seg_nd.lies_on_of_lies_int (Seg_nd.target_lies_int_seg_source_pt_of_pt_lies_int_extn m_lies_int_ca_extn)
+    have a_lies_on_cm : A LiesOn (SEG_nd C M m_ne_c).1 := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn m_lies_int_ca_extn)
     have cm_eq_ca_plus_am : (SEG C M).length = (SEG C A).length + (SEG A M).length := length_eq_length_add_length a_lies_on_cm
     rw[ae_eq_ac_plus_ce, cm_eq_ca_plus_am, ← Seg.length_of_rev_eq_length (seg := (SEG A C)), am_eq_ec]
     simp

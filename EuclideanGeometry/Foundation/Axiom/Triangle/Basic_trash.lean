@@ -1,8 +1,8 @@
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 
-open Real.Angle
 namespace EuclidGeom
+open AngValue
 
 variable {P : Type _} [EuclideanPlane P]
 
@@ -14,15 +14,15 @@ structure Triangle_nd.IsAcute (tri_nd : Triangle_nd P) : Prop where
 
 variable {tr_nd₁ tr_nd₂ : Triangle_nd P}
 
-theorem edge_toline_not_para_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : ¬ (SEG_nd A B (ne_of_not_colinear h).2.2) ∥ SEG_nd B C (ne_of_not_colinear h).1 ∧ ¬  (SEG_nd B C (ne_of_not_colinear h).1) ∥ SEG_nd C A (ne_of_not_colinear h).2.1 ∧ ¬  (SEG_nd C A (ne_of_not_colinear h).2.1) ∥ SEG_nd A B (ne_of_not_colinear h).2.2 := by
+theorem edge_toLine_not_para_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : ¬ (SEG_nd A B (ne_of_not_colinear h).2.2) ∥ SEG_nd B C (ne_of_not_colinear h).1 ∧ ¬  (SEG_nd B C (ne_of_not_colinear h).1) ∥ SEG_nd C A (ne_of_not_colinear h).2.1 ∧ ¬  (SEG_nd C A (ne_of_not_colinear h).2.1) ∥ SEG_nd A B (ne_of_not_colinear h).2.2 := by
   constructor
   by_contra h1
   have eq1 : LIN A B (ne_of_not_colinear h).2.2 = LIN B C (ne_of_not_colinear h).1 := by
     apply eq_of_parallel_and_pt_lies_on
-    exact (SEG_nd A B (ne_of_not_colinear h).2.2).target_lies_on_toline
-    exact (SEG_nd B C (ne_of_not_colinear h).1).source_lies_on_toline
+    exact (SEG_nd A B (ne_of_not_colinear h).2.2).target_lies_on_toLine
+    exact (SEG_nd B C (ne_of_not_colinear h).1).source_lies_on_toLine
     exact h1
-  have a_lies_on_ab : A LiesOn (LIN A B (ne_of_not_colinear h).2.2) := (SEG_nd A B (ne_of_not_colinear h).2.2).source_lies_on_toline
+  have a_lies_on_ab : A LiesOn (LIN A B (ne_of_not_colinear h).2.2) := (SEG_nd A B (ne_of_not_colinear h).2.2).source_lies_on_toLine
   have a_not_lies_on_bc := (Line.lies_on_line_of_pt_pt_iff_colinear (ne_of_not_colinear h).1 A).mp.mt (flip_colinear_snd_trd.mt (flip_colinear_fst_snd.mt h))
   simp only[← eq1] at a_not_lies_on_bc
   apply a_not_lies_on_bc
@@ -31,10 +31,10 @@ theorem edge_toline_not_para_of_not_colinear {A B C : P} (h : ¬ colinear A B C)
   by_contra h2
   have eq2 : LIN B C (ne_of_not_colinear h).1 = LIN C A (ne_of_not_colinear h).2.1 := by
     apply eq_of_parallel_and_pt_lies_on
-    exact (SEG_nd B C (ne_of_not_colinear h).1).target_lies_on_toline
-    exact (SEG_nd C A (ne_of_not_colinear h).2.1).source_lies_on_toline
+    exact (SEG_nd B C (ne_of_not_colinear h).1).target_lies_on_toLine
+    exact (SEG_nd C A (ne_of_not_colinear h).2.1).source_lies_on_toLine
     exact h2
-  have b_lies_on_bc : B LiesOn (LIN B C (ne_of_not_colinear h).1) := (SEG_nd B C (ne_of_not_colinear h).1).source_lies_on_toline
+  have b_lies_on_bc : B LiesOn (LIN B C (ne_of_not_colinear h).1) := (SEG_nd B C (ne_of_not_colinear h).1).source_lies_on_toLine
   have b_not_lies_on_ca := (Line.lies_on_line_of_pt_pt_iff_colinear (ne_of_not_colinear h).2.1 B).mp.mt (flip_colinear_fst_snd.mt (flip_colinear_snd_trd.mt h))
   simp only[← eq2] at b_not_lies_on_ca
   apply b_not_lies_on_ca
@@ -42,10 +42,10 @@ theorem edge_toline_not_para_of_not_colinear {A B C : P} (h : ¬ colinear A B C)
   by_contra h3
   have eq3 : LIN C A (ne_of_not_colinear h).2.1 = LIN A B (ne_of_not_colinear h).2.2 := by
     apply eq_of_parallel_and_pt_lies_on
-    exact (SEG_nd C A (ne_of_not_colinear h).2.1).target_lies_on_toline
-    exact (SEG_nd A B (ne_of_not_colinear h).2.2).source_lies_on_toline
+    exact (SEG_nd C A (ne_of_not_colinear h).2.1).target_lies_on_toLine
+    exact (SEG_nd A B (ne_of_not_colinear h).2.2).source_lies_on_toLine
     exact h3
-  have c_lies_on_ca : C LiesOn (LIN C A (ne_of_not_colinear h).2.1) := (SEG_nd C A (ne_of_not_colinear h).2.1).source_lies_on_toline
+  have c_lies_on_ca : C LiesOn (LIN C A (ne_of_not_colinear h).2.1) := (SEG_nd C A (ne_of_not_colinear h).2.1).source_lies_on_toLine
   have c_not_lies_on_ab := (Line.lies_on_line_of_pt_pt_iff_colinear (ne_of_not_colinear h).2.2 C).mp.mt h
   simp only[← eq3] at c_not_lies_on_ab
   apply c_not_lies_on_ab
