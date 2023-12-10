@@ -142,8 +142,9 @@ end oriented_distance
 /- Positions of points on a line, ray, oriented segments. -/
 
 section point_toray
-variable {α} [DirFig α]
+variable {α} [DirFig α P]
 
+--`Rewrite this part! why use by cases???`
 def odist_sign (A : P) (df : α P) : ℝ := by
   by_cases 0 < odist A df
   · exact 1
@@ -232,18 +233,18 @@ theorem odist_eq_odist_of_parallel' (A B : P) (ray : Ray P) (bnea : B ≠ A) (pa
   rw [add_zero] at h1
   exact h1.symm
 
-theorem odist_eq_odist_of_parallel {α} [DirFig α] (A B : P) (df : α P) (bnea : B ≠ A) (para : parallel (SegND.mk A B bnea) df) : odist A df = odist B df := sorry
+theorem odist_eq_odist_of_parallel {α} [DirFig α P] (A B : P) (df : α P) (bnea : B ≠ A) (para : parallel (SegND.mk A B bnea) df) : odist A df = odist B df := sorry
 
 theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (SegND.mk A B bnea) (SegND.mk C D dnec)) ↔ wedge A B C = wedge A B D := sorry
 
-theorem odist_eq_odist_iff_parallel_ne {α} [DirFig α] (A B : P) (df : α P) (bnea : B ≠ A) : (parallel (SegND.mk A B bnea) df) ↔ odist A df = odist B df := sorry
+theorem odist_eq_odist_iff_parallel_ne {α} [DirFig α P] (A B : P) (df : α P) (bnea : B ≠ A) : (parallel (SegND.mk A B bnea) df) ↔ odist A df = odist B df := sorry
 
 theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (SegND.mk A B bnea) (SegND.mk C D dnec)) ↔ oarea A B C = oarea A B D := sorry
 
 end cooperation_with_parallel
 
-scoped infix : 50 "LiesOnLeft" => IsOnLeftSide
-scoped infix : 50 "LiesOnRight" => IsOnRightSide
+scoped infix : 50 " LiesOnLeft " => IsOnLeftSide
+scoped infix : 50 " LiesOnRight " => IsOnRightSide
 
 section handside
 

@@ -56,10 +56,10 @@ instance (α : Type*) [ProjObj α] : IsEquiv α parallel where
   trans _ _ _ := Eq.trans
 
 /-- This is to rewrite \verb|parallel l l'| as \verb|l ParallelTo l'| -/
-scoped infix : 50 "ParallelTo" => parallel
+scoped infix : 50 " ParallelTo " => parallel
 
 /-- This is to rewrite \verb|parallel l l'| as $l \parallel l'$. -/
-scoped infix : 50 "∥" => parallel
+scoped infix : 50 " ∥ " => parallel
 
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coercions, ... -/
 
@@ -180,7 +180,7 @@ end parallel_iff_coercion_parallel
 
 section reverse
 
-variable {α β : (P : Type _) → [EuclideanPlane P] → Type _} [DirFig α] [DirFig β] {l₁ : α P} {l₂ : β P}
+variable {α β : Type*} [DirFig α P] [DirFig β P] {l₁ : α} {l₂ : β}
 
 theorem DirFig.para_rev_of_para (h : l₁ ∥ l₂) : l₁ ∥ reverse l₂ :=
   h.trans (rev_toProj_eq_toProj l₂).symm
