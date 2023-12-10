@@ -101,7 +101,7 @@ theorem Shan_Problem_1_10 : (SEG A D).length = (SEG D C).length := by
         -- $M$ lies in extension of $CA$
         have m_lies_int_ca_extn : M LiesInt (SEG_nd C A c_ne_a.symm).extension := sorry
         -- $A$ lies on $CM$
-        have a_lies_on_cm : A LiesOn (SEG_nd C M m_ne_c).1 := Seg_nd.lies_on_of_lies_int (Seg_nd.target_lies_int_seg_source_pt_of_pt_lies_int_extn m_lies_int_ca_extn)
+        have a_lies_on_cm : A LiesOn (SEG_nd C M m_ne_c).1 := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn m_lies_int_ca_extn)
         exact length_eq_length_add_length a_lies_on_cm
       -- $CA + AM = CA + EC$
       _ = (SEG C A).length + (SEG E C).length := by
@@ -111,7 +111,7 @@ theorem Shan_Problem_1_10 : (SEG A D).length = (SEG D C).length := by
       -- $AC + CE = AE$
       _ = (SEG A E).length := by
         -- $C$ lies on $AE$
-        have c_lies_on_ae : C LiesOn (SEG_nd A E a_ne_e.symm).1 := Seg_nd.lies_on_of_lies_int (Seg_nd.target_lies_int_seg_source_pt_of_pt_lies_int_extn he₁)
+        have c_lies_on_ae : C LiesOn (SEG_nd A E a_ne_e.symm).1 := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn he₁)
         exact (length_eq_length_add_length c_lies_on_ae).symm
       -- $AE = BC$
       _ = (SEG B C).length := he₂

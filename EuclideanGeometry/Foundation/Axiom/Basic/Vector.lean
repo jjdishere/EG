@@ -1125,15 +1125,15 @@ lemma vadd_neg (θ : AngValue) (d : Dir) : θ +ᵥ -d = -(θ +ᵥ d) :=
   map_neg (rotate θ) d
 
 @[simp]
-lemma pi_vadd (d : Dir) : (π : AngValue) +ᵥ d = -d :=
+lemma pi_vadd (d : Dir) : ∠[π] +ᵥ d = -d :=
   rotate_pi_apply d
 
 @[simp]
-lemma neg_vsub_left (d₁ d₂ : Dir) : -d₁ -ᵥ d₂ = d₁ -ᵥ d₂ + (π : AngValue) := by
+lemma neg_vsub_left (d₁ d₂ : Dir) : -d₁ -ᵥ d₂ = d₁ -ᵥ d₂ + ∠[π] := by
   rw [← pi_vadd, vadd_vsub_assoc, add_comm]
 
 @[simp]
-lemma neg_vsub_right (d₁ d₂ : Dir) : d₁ -ᵥ -d₂ = d₁ -ᵥ d₂ + (π : AngValue) := by
+lemma neg_vsub_right (d₁ d₂ : Dir) : d₁ -ᵥ -d₂ = d₁ -ᵥ d₂ + ∠[π] := by
   rw [← pi_vadd, vsub_vadd_eq_vsub_sub, sub_eq_add_neg, AngValue.neg_coe_pi]
 
 protected abbrev normalize {M : Type*} [AddCommGroup M] [Module ℝ M]
@@ -1477,7 +1477,7 @@ instance : AddTorsor AngDValue Proj where
     simp
 
 @[pp_dot]
-def perp (p : Proj) : Proj := ((π / 2 : ℝ) : AngDValue) +ᵥ p
+def perp (p : Proj) : Proj := ∡[π / 2] +ᵥ p
 
 @[simp]
 lemma perp_perp (p : Proj) : p.perp.perp = p := by
