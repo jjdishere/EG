@@ -8,7 +8,7 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
 
-def Triangle_nd.Median1 (tr_nd : Triangle_nd P) : Seg_nd P := sorry
+def Triangle_nd.Median1 (tr_nd : Triangle_nd P) : SegND P := sorry
 
 structure IsCentroid (tr_nd : Triangle_nd P) (G : P) : Prop where
 

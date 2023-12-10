@@ -132,10 +132,10 @@ theorem nd₂₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := by
   simp only [k, dite_false] at h
 
 /-- The non-degenerate diagonal from the first point and third point of a convex quadrilateral -/
-def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃
+def diag_nd₁₃ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃
 
 /-- The non-degenerate diagonal from the second point and fourth point of a convex quadrilateral -/
-def diag_nd₂₄ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄
+def diag_nd₂₄ : SegND P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄
 
 /-- Two diagonals are not parallel to each other -/
 theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := by
@@ -172,12 +172,12 @@ theorem permute_is_convex : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point
   have g: ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := qdr_cvx.diag_not_para
   rw [diag_nd₁₃, diag_nd₂₄] at g
   have g': ¬ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) ∥ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) := by
-    apply Ne.symm (Seg_nd.not_para_rev_of_not_para (Ne.symm g))
+    apply Ne.symm (SegND.not_para_rev_of_not_para (Ne.symm g))
   simp only [g', not_false_eq_true, dite_true]
   have g'': ¬ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) ∥ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) := Ne.symm g'
   have nd₃₁_eq_nd₁₃ : (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine = (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine := by
     exact (Line.line_of_pt_pt_eq_rev qdr_cvx.nd₁₃.symm)
-  have inx_eq : qdr_cvx.diag_inx = LineInx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine (Ne.symm qdr_cvx.diag_not_para) := Eq.symm (Line.inx.symm (Seg_nd.not_para_toline_of_not_para qdr_cvx.diag_nd₁₃ qdr_cvx.diag_nd₂₄ qdr_cvx.diag_not_para))
+  have inx_eq : qdr_cvx.diag_inx = LineInx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine (Ne.symm qdr_cvx.diag_not_para) := Eq.symm (Line.inx.symm (SegND.not_para_toLine_of_not_para qdr_cvx.diag_nd₁₃ qdr_cvx.diag_nd₂₄ qdr_cvx.diag_not_para))
   rcases qdr_cvx.diag_inx_lies_int with ⟨a, b⟩
   have inx_eq' : qdr_cvx.diag_inx = Line.inx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine g'':= by
     rw [inx_eq]
@@ -231,19 +231,19 @@ theorem nd₁₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₁ := by
 
 /-- The edge from the first point to the second point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₁₂ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ (qdr_cvx.nd₁₂)
+def edge_nd₁₂ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ (qdr_cvx.nd₁₂)
 
 /-- The edge from the second point to the third point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₂₃ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃ (qdr_cvx.nd₂₃)
+def edge_nd₂₃ : SegND P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃ (qdr_cvx.nd₂₃)
 
 /-- The edge from the third point to the fourth point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₃₄ : Seg_nd P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ (qdr_cvx.nd₃₄)
+def edge_nd₃₄ : SegND P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ (qdr_cvx.nd₃₄)
 
 /-- The edge from the fourth point to the first point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₁₄ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₄ (qdr_cvx.nd₁₄)
+def edge_nd₁₄ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₄ (qdr_cvx.nd₁₄)
 
 /-- Given a convex quadrilateral qdr_cvx, its 1st, 2nd and 3rd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₁ point₂}$ is not the same as the projective direction of the vector $\overrightarrow{point₁ point₃}$. -/
 theorem not_colinear₁₂₃ : ¬ colinear qdr_cvx.1.1 qdr_cvx.1.2 qdr_cvx.1.3 := sorry
