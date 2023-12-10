@@ -74,6 +74,16 @@ theorem pt_eq_of_ratio_eq_of_ne_ne (A B C D : P) (cned : C ≠ D) (dnea : D ≠ 
     rw [vec_eq_vec_smul_ratio C A D (flip_colinear_fst_snd colinacd) cned.symm, vec_eq_vec_smul_ratio C B D (flip_colinear_fst_snd colinbcd) cned.symm, h0]
   rw [← start_vadd_vec_eq_end C A, h1, start_vadd_vec_eq_end C B]
 
+theorem ratio_eq_zero_of_point_eq1 (A B : P) : divratio A A B = 0 := by
+  unfold divratio
+  rw [vec_same_eq_zero]
+  field_simp
+
+theorem ratio_eq_zero_of_point_eq2 (A B : P) : divratio A B A = 0 := by
+  unfold divratio
+  rw [vec_same_eq_zero]
+  field_simp
+
 end ratio
 
 end EuclidGeom
