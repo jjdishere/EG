@@ -56,10 +56,10 @@ instance (α : Type*) [ProjObj α] : IsEquiv α parallel where
   trans _ _ _ := Eq.trans
 
 /-- This is to rewrite \verb|parallel l l'| as \verb|l ParallelTo l'| -/
-scoped infix : 50 "ParallelTo" => parallel
+scoped infix : 50 " ParallelTo " => parallel
 
 /-- This is to rewrite \verb|parallel l l'| as $l \parallel l'$. -/
-scoped infix : 50 "∥" => parallel
+scoped infix : 50 " ∥ " => parallel
 
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coercions, ... -/
 

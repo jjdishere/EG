@@ -58,8 +58,8 @@ def lies_int [EuclideanPlane P] [Interior α] (A : P) (F : α P) := A ∈ (Inter
 
 -- def lies_in [EuclideanPlane P] [Interior α] (A : P) (F : α P) : Prop := lies_int A F ∨ lies_on A F
 
-scoped infix : 50 "LiesOn" => lies_on -- to make it work compatible with `∧`, binding power should > 35.
-scoped infix : 50 "LiesInt" => lies_int
+scoped infix : 50 " LiesOn " => lies_on -- to make it work compatible with `∧`, binding power should > 35.
+scoped infix : 50 " LiesInt " => lies_int
 -- scoped infix : 50 "LiesIn" => lies_in
 
 instance {P : Type _} [EuclideanPlane P] [IntFig α] (A : P) (F : α P) : Coe (A LiesInt F) (A LiesOn F) where
@@ -67,13 +67,13 @@ instance {P : Type _} [EuclideanPlane P] [IntFig α] (A : P) (F : α P) : Coe (A
 
 def is_inx {P : Type _} [EuclideanPlane P] [Fig α] [Fig β] (A : P) (F : α P) (G : β P) : Prop := A LiesOn F ∧ A LiesOn G
 
-scoped notation:50 A:max "IsInxOf" F:max G:max => (is_inx A F G)
+scoped notation:50 A:max " IsInxOf " F:max G:max => (is_inx A F G)
 
 theorem is_inx.symm {P : Type _} [EuclideanPlane P] [Fig α] [Fig β] {A : P} {F : α P} {G : β P} (h : A IsInxOf F G) : A IsInxOf G F := And.symm h
 
 def intersect {P : Type _} [EuclideanPlane P] [Fig α] [Fig β] (F : α P) (G : β P) : Prop := ∃ A : P, A LiesOn F ∧ A LiesOn G
 
-scoped notation:50 F:max "InxWith" G:max => intersect F G
+scoped notation:50 F:max " InxWith " G:max => intersect F G
 
 theorem intersect.symm {P : Type _} [EuclideanPlane P] [Fig α] [Fig β] {F : α P} {G : β P} (h : F InxWith G) : G InxWith F := Exists.casesOn h fun _ hu => Exists.intro _ hu.symm
 
@@ -116,9 +116,9 @@ instance (α : Type*) [HasCongr α] : IsEquiv α HasCongr.congr where
   trans _ _ _ := HasCongr.trans
   symm _ _ := HasCongr.symm
 
-scoped infix : 50 "≅" => HasCongr.congr
+scoped infix : 50 " ≅ " => HasCongr.congr
 
-scoped infix : 50 "IsCongrTo" => HasCongr.congr
+scoped infix : 50 " IsCongrTo " => HasCongr.congr
 
 class HasACongr (α : Type*) where
   acongr : α → α → Prop
@@ -127,9 +127,9 @@ class HasACongr (α : Type*) where
 instance (α : Type*) [HasACongr α] : IsSymm α HasACongr.acongr where
   symm _ _ := HasACongr.symm
 
-scoped infix : 50 "≅ₐ" => HasACongr.acongr
+scoped infix : 50 " ≅ₐ " => HasACongr.acongr
 
-scoped infix : 50 "IsACongrTo" => HasACongr.acongr
+scoped infix : 50 " IsACongrTo " => HasACongr.acongr
 
 class HasSim (α : Type*) where
   sim : α → α → Prop
@@ -143,10 +143,10 @@ instance (α : Type*) [HasSim α] : IsEquiv α HasSim.sim where
   symm _ _ := HasSim.symm
 
 /-- The similarity relation is denoted by infix $\sim$.-/
-scoped infix : 50 "∼" => HasSim.sim
+scoped infix : 50 " ∼ " => HasSim.sim
 
 /-- The similarity relation is denoted by infix "IsSimTo".-/
-scoped infix : 50 "IsSimTo" => HasSim.sim
+scoped infix : 50 " IsSimTo " => HasSim.sim
 
 class HasASim (α : Type*) where
   asim : α → α → Prop
@@ -156,9 +156,9 @@ instance (α : Type*) [HasACongr α] : IsSymm α HasACongr.acongr where
   symm _ _ := HasACongr.symm
 
 /-- The anti-similarity relation is denoted by infix $\sim_a$.-/
-scoped infix : 50 "∼ₐ" => HasASim.asim
+scoped infix : 50 " ∼ₐ " => HasASim.asim
 
 /-- The anti-similarity relation is denoted by infix "IsASimTo".-/
-scoped infix : 50 "IsASimTo" => HasASim.asim
+scoped infix : 50 " IsASimTo " => HasASim.asim
 
 end EuclidGeom
