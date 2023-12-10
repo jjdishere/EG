@@ -64,6 +64,9 @@ theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B
     rw [h]
     exact triv_colinear A C
 
+theorem not_colinear_iff_wedge_ne_zero (A B C : P) : (¬ colinear A B C) ↔ (wedge A B C ≠ 0) := by
+  rw [colinear_iff_wedge_eq_zero]
+
 theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge A B C) ↔ (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value.IsPos := by
   have h1 : 0 < (SEG A B).length := by
       have abnd : (SEG A B).IsND := (ne_of_not_colinear nd).2.2
@@ -133,9 +136,39 @@ theorem odist'_eq_odist'_of_to_dirline_eq_to_dirline (A : P) (ray ray' : Ray P) 
 
 def odist {α} [DirFig α P] (A : P) (l : α) : ℝ := Quotient.lift (s := same_dir_line.setoid) (fun ray => odist' A ray) (odist'_eq_odist'_of_to_dirline_eq_to_dirline A) (toDirLine l)
 
-theorem odist_reverse_eq_neg_odist {α} [DirFig α P] (A : P) (dl : α) : odist A (DirFig.reverse dl) = - odist A dl := sorry
+theorem odist_reverse_eq_neg_odist' (A : P) (ray : Ray P) : odist A (Ray.reverse ray) = - odist A ray := by
+  show odist' A (Ray.reverse ray) = - odist' A ray
+  unfold odist'
+  have h0 : (ray.reverse).toDir.unitVec = -ray.toDir.unitVec := by
+    simp only [Ray.reverse_toDir, Dir.neg_unitVec]
+  rw [h0, map_neg]
+  rfl
 
-theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SegND.mk A B bnea) = odist D (SegND.mk A B bnea)) ↔ (wedge A B C = wedge A B D) := sorry
+theorem odist_reverse_eq_neg_odist'' (A : P) (dl : DirLine P) : odist A (DirLine.reverse dl) = - odist A dl := by
+  rcases (Quotient.exists_rep dl) with ⟨ray , h0⟩
+  have h1 : odist A dl = odist A ray := by
+    rw [← h0]
+    rfl
+  have h2 : DirLine.reverse dl = Quotient.mk same_dir_line.setoid (Ray.reverse ray) := by
+    rw [← h0]
+    rfl
+  rw [h1, h2, ← odist_reverse_eq_neg_odist' A ray]
+  rfl
+
+theorem odist_reverse_eq_neg_odist {α} (A : P) [DirFig α P] (df : α) : odist A (DirFig.reverse df) = - odist A df := by
+  have h0 : odist A (DirFig.reverse df) = odist A (toDirLine (DirFig.reverse df)) := rfl
+  rw [← DirFig.toDirLine_rev_eq_to_rev_toDirLine] at h0
+  rw [h0]
+  rw [odist_reverse_eq_neg_odist'' A (toDirLine df)]
+  rfl
+
+theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SEG_nd A B bnea) = odist D (SEG_nd A B bnea)) ↔ (wedge A B C = wedge A B D) := by
+  rw [wedge_eq_odist'_mul_length A B C bnea, wedge_eq_odist'_mul_length A B D bnea]
+  have h0 : 0 ≠ Seg.length (SEG A B) := by
+    rw [length_ne_zero_iff_nd]
+    exact bnea
+  field_simp
+  tauto
 
 end oriented_distance
 
@@ -144,44 +177,24 @@ end oriented_distance
 section point_toray
 variable {α} [DirFig α P]
 
---`Rewrite this part! why use by cases???`
-def odist_sign (A : P) (df : α) : ℝ := by
-  by_cases 0 < odist A df
-  · exact 1
-  by_cases odist A df < 0
-  · exact -1
-  exact 0
+def odist_sign (A : P) (df : α) : ℝ := sign (odist A df)
 
-def IsOnLeftSide (A : P) (df : α) : Prop := by
-  by_cases 0 < odist A df
-  · exact True
-  · exact False
+def IsOnLeftSide (A : P) (df : α) : Prop := 0 < odist A df
 
-def IsOnRightSide (A : P) (df : α) : Prop := by
-  by_cases odist A df < 0
-  · exact True
-  · exact False
+def IsOnRightSide (A : P) (df : α) : Prop := odist A df < 0
 
-def OnLine (A : P) (df : α) : Prop := by
-  by_cases odist A df = 0
-  · exact True
-  · exact False
+def OnLine (A : P) (df : α) : Prop := odist A df = 0
 
-def OffLine (A : P) (df : α) : Prop := by
-  by_cases odist A df = 0
-  · exact False
-  · exact True
+def OffLine (A : P) (df : α) : Prop := ¬ odist A df = 0
 
 theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A ray.toLine := by
   dsimp only [OnLine]
   by_cases h : odist' A ray = 0
-  · simp
-    constructor
+  · constructor
     intro
     exact lies_on_or_rev_iff_exist_real_vec_eq_smul.mpr (odist'_eq_zero_iff_exist_real_vec_eq_smul.mp h)
     intro
-    exact h
-  simp
+    assumption
   constructor
   intro k
   absurd h k
@@ -191,9 +204,28 @@ theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A r
   rw [Ray.toLine_carrier_eq_ray_carrier_union_rev_carrier ray] at p
   exact (odist'_eq_zero_iff_exist_real_vec_eq_smul).mpr (lies_on_or_rev_iff_exist_real_vec_eq_smul.mp p)
 
-theorem online_iff_lies_on_line (A : P) (df : α) : Line.IsOn A (toLine df) ↔ odist A df = 0 := sorry
+theorem online_iff_lies_on_line' (A : P) (dl : DirLine P) :Line.IsOn A (toLine dl) ↔ odist A dl = 0 := by
+  rcases (Quotient.exists_rep dl) with ⟨ray , h0⟩
+  have h2 : toLine dl = toLine ray := by
+    rw[← h0]
+    rfl
+  rw[h2]
+  have h3 : Line.IsOn A (toLine ray) ↔ OnLine A ray := (online_iff_online A ray).symm
+  unfold OnLine at h3
+  rw[h3]
+  have h4 : odist A dl = odist A ray := by
+    rw[← h0]
+    rfl
+  rw[h4]
 
-theorem off_line_iff_not_online (A : P) (df : α) : OffLine A df ↔ ¬OnLine A df := sorry
+theorem online_iff_lies_on_line (A : P) [DirFig α P] (df : α) : Line.IsOn A (toLine df) ↔ odist A df = 0 := by
+  have h1 : toLine (toDirLine df) = toLine df := toDirLine_toLine_eq_toLine
+  have h2 : odist A df = odist A (toDirLine df) := rfl
+  rw[← h1,h2]
+  exact online_iff_lies_on_line' A (toDirLine df)
+
+theorem off_line_iff_not_online (A : P) [DirFig α P] (df : α) : OffLine A df ↔ ¬OnLine A df := by
+  rfl
 
 /- Relation of position of points on a ray and directed distance-/
 
@@ -201,15 +233,34 @@ end point_toray
 
 section oriented_area
 
-theorem oarea_eq_length_mul_odist_div_2 (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (SegND.mk A B bnea)) * (SEG A B).length) / 2:= sorry
+theorem oarea_eq_length_mul_odist_div_two (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (SEG_nd A B bnea)) * (SEG A B).length) / 2:= by
+  unfold oarea
+  rw [wedge_eq_odist'_mul_length A B C bnea]
+  have h0 : toDirLine (SEG_nd A B bnea) = toDirLine (RAY A B bnea) := rfl
+  have h1 : odist C (RAY A B bnea) = odist C (SEG_nd A B bnea) := by
+    unfold odist
+    rw[h0]
+  have h2 : odist C (RAY A B bnea) = odist' C (RAY A B bnea) := rfl
+  rw [h2] at h1
+  rw[h1]
 
-theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SegND.mk A B bnea) = odist D (SegND.mk A B bnea)) ↔ oarea A B C = oarea A B D := sorry
+theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SEG_nd A B bnea) = odist D (SEG_nd A B bnea)) ↔ oarea A B C = oarea A B D := by
+  unfold oarea
+  field_simp
+  exact wedge_eq_wedge_iff_odist_eq_odist_of_ne A B C D bnea
 
-theorem oarea_eq_sine_mul_length_mul_length_div_2 (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : oarea A B C = (sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) / 2 := sorry
+theorem oarea_eq_sine_mul_length_mul_length_div_two (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : oarea A B C = (sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) / 2 := by
+  unfold oarea
+  rw[wedge_eq_sine_mul_length_mul_length A B C bnea cnea]
 
-theorem oarea_eq_zero_of_colinear (A B C : P) : oarea A B C = 0 ↔ colinear A B C := sorry
+theorem oarea_eq_zero_iff_colinear (A B C : P) : oarea A B C = 0 ↔ colinear A B C := by
+  unfold oarea
+  field_simp
+  exact (colinear_iff_wedge_eq_zero A B C).symm
 
-theorem oarea_tri_nd_ne_zero (A B C : P) (trind : ¬ colinear A B C) : oarea A B C ≠ 0 := sorry
+theorem oarea_tri_nd_ne_zero (A B C : P) (trind : ¬ colinear A B C) : oarea A B C ≠ 0 := by
+  rw[← oarea_eq_zero_iff_colinear A B C] at trind
+  tauto
 
 end oriented_area
 
@@ -257,6 +308,18 @@ theorem same_odist_sign_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : o
 theorem no_intersect_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l * odist_sign B l = 1) : ∀ (C : P) , Seg.IsOn C (SEG A B) → ¬ Line.IsOn C l := sorry
 
 theorem intersect_of_diff_odist_sign (A B : P) (l : DirLine P) (signdiff : odist_sign A l * odist_sign B l = -1) : ∃ (C : P), Seg.IsOn C (SEG A B) ∧ Line.IsOn C l := sorry
+
+lemma ne_of_isonleft_of_lieson (A B : P) (r : DirLine P) (aliesonr : Line.IsOn A r) (bliesonleft : IsOnLeftSide B r) : B ≠ A := by
+  intro h0
+  rw[← h0] at aliesonr
+  have h1 : DirLine.toLine r = toLine r := rfl
+  rw [h1, online_iff_lies_on_line] at aliesonr
+  have h2 : ¬ 0 < odist B r := by
+    rw [aliesonr]
+    linarith
+  tauto
+
+theorem isonleft_of_isintray_of_isonleft (r : DirLine P) (A B C: P) (aliesonr : Line.IsOn A r) (bliesonleft : IsOnLeftSide B r) (conab : Ray.IsInt C (RAY A B (ne_of_isonleft_of_lieson A B r aliesonr bliesonleft))) : IsOnLeftSide C r := sorry
 
 end handside
 

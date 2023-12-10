@@ -35,7 +35,7 @@ theorem source_eq_source_of_adj {ang₁ ang₂: Angle P} (h : ang₁.end_ray = a
 
 def sum_adj {ang₁ ang₂: Angle P} (h :ang₁.end_ray = ang₂.start_ray) : Angle P := Angle.mk ang₁.start_ray ang₂.end_ray (source_eq_source_of_adj h)
 
-theorem ang_eq_ang_add_ang_mod_pi_of_adj_ang (ang₁ ang₂ : Angle P) (h: ang₁.end_ray = ang₂.start_ray) : (sum_adj h).value = ang₁.value + ang₂.value ∨ (sum_adj h).value = ang₁.value + ang₂.value + π ∨ (sum_adj h).value = ang₁.value + ang₂.value - π := sorry
+theorem ang_eq_ang_add_ang_mod_pi_of_adj_ang (ang₁ ang₂ : Angle P) (h: ang₁.end_ray = ang₂.start_ray) : (sum_adj h).value = ang₁.value + ang₂.value := sorry
 
 end Angle
 

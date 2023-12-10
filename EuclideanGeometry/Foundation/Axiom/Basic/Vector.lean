@@ -508,11 +508,17 @@ lemma add_cdiv (v₁ v₁' v₂ : Vec) : (v₁ + v₁') / v₂ = v₁ / v₂ + v
 lemma neg_cdiv (v₁ v₂ : Vec) : -v₁ / v₂ = -(v₁ / v₂) := by
   simp_rw [cdiv_def, inner_neg_right, neg_div]
 
+lemma cdiv_neg (v₁ v₂ : Vec) : v₁ / -v₂ = -(v₁ / v₂) := by
+  simp_rw [cdiv_def, inner_neg_left, neg_div, norm_neg]
+
 lemma sub_cdiv (v₁ v₁' v₂ : Vec) : (v₁ - v₁') / v₂ = v₁ / v₂ - v₁' / v₂ := by
   rw [sub_eq_add_neg, sub_eq_add_neg, add_cdiv, neg_cdiv]
 
 lemma mul_cdiv (z : ℂ) (v₁ v₂ : Vec) : z * (v₁ / v₂) = z • v₁ / v₂ := by
   simp_rw [cdiv_def, inner_smul_right, mul_div]
+
+lemma smul_cdiv_smul (z₁ z₂ : ℂ) (v₁ v₂ : Vec) : (z₁ • v₁ / z₂ • v₂) = (z₁ / z₂) • v₁ / v₂ := by
+  sorry
 
 @[simp]
 lemma cdiv_smul_cancel (v₁ : Vec) {v₂ : Vec} (hv₂ : v₂ ≠ 0) : (v₁ / v₂) • v₂ = v₁ := by
