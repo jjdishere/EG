@@ -95,11 +95,16 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
   have A_int_ray_BA : e.A LiesInt (RAY e.B e.A e.A_ne_B) := by
     sorry
   have D_int_ray_BC : e.D LiesInt (RAY e.B e.C e.C_ne_B) := by
-    sorry
+    rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
+    apply SegND.lies_int_toRay_of_lies_int
+    exact e.D_Int_BC
   have A_int_ray_CA : e.A LiesInt (RAY e.C e.A e.A_ne_C) := by
     sorry
   have E_int_ray_CB : e.E LiesInt (RAY e.C e.B e.B_ne_C) := by
-    sorry
+    rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
+    apply SegND.lies_int_toRay_of_lies_int
+    apply SegND.lies_int_rev_iff_lies_int.mp
+    exact e.E_Int_BC
   have h₂ : ∠ e.A e.B e.D (e.A_ne_B) (e.D_ne_B) = -∠ e.A e.C e.E (e.A_ne_C) (e.E_ne_C) := by
     have h₂₁ : ∠ e.A e.B e.D (e.A_ne_B) (e.D_ne_B) = -∠ e.C e.B e.A (e.C_ne_B) (e.A_ne_B) := by
       rw [← neg_value_of_rev_ang (e.A_ne_B) (e.C_ne_B)]
@@ -108,14 +113,14 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
         apply eq_ang_val_of_lieson_lieson
         ·exact A_int_ray_BA
         .exact D_int_ray_BC
-      sorry
+      simp only [inner_h₂₁]
     have h₂₂ : ∠ e.A e.C e.E (e.A_ne_C) (e.E_ne_C) = ∠ e.A e.C e.B (e.A_ne_C) (e.B_ne_C) := by
       have inner_h₂₂ : ∠  e.A e.C e.E (e.A_ne_C) (e.E_ne_C) = ∠  e.A e.C e.B (e.A_ne_C) (e.B_ne_C) := by
         symm
         apply eq_ang_val_of_lieson_lieson
         ·exact A_int_ray_CA
         ·exact E_int_ray_CB
-      sorry
+      simp only [inner_h₂₂]
     simp only [h₂₁]
     simp only [h₂₂]
     simp only [← h₂₀]

@@ -106,30 +106,45 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
   have h₅₀ : ∠ e.C e.B e.A (c_ne_b) (a_ne_b) = ∠ e.A e.C e.B (a_ne_c) (b_ne_c) := by
       apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ e.A e.B e.C, e.not_colinear_ABC⟩)).mp
       exact e.isoc_ABC
+  have M_int_BC : e.M LiesInt (SEG_nd e.B e.C c_ne_b) := by
+    sorry
+    --exact (SegND_eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source.mp midpoint_M').1
   have D_int_ray_BA : e.D LiesInt (RAY e.B e.A a_ne_b) := by
-    sorry
+    rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
+    apply SegND.lies_int_toRay_of_lies_int
+    apply SegND.lies_int_rev_iff_lies_int.mp
+    exact e.D_Int_seg
   have M_int_ray_BC : e.M LiesInt (RAY e.B e.C c_ne_b) := by
-    sorry
+    rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
+    apply SegND.lies_int_toRay_of_lies_int
+    exact M_int_BC
   have E_int_ray_CA : e.E LiesInt (RAY e.C e.A a_ne_c) := by
-    sorry
+    rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
+    apply SegND.lies_int_toRay_of_lies_int
+    apply SegND.lies_int_rev_iff_lies_int.mp
+    exact e.E_Int_seg
   have M_int_ray_CB : e.M LiesInt (RAY e.C e.B b_ne_c) := by
-    sorry
+    rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
+    apply SegND.lies_int_toRay_of_lies_int
+    have M_int_CB : e.M LiesInt (SEG_nd e.C e.B b_ne_c) := by
+      apply SegND.lies_int_rev_iff_lies_int.mp
+      exact M_int_BC
   have h₅ : ∠ e.D e.B e.M (d_ne_b) (m_ne_b) = -∠ e.E e.C e.M (e_ne_c) (m_ne_c) := by
     have h₅₁ : -∠ e.E e.C e.M (e_ne_c) (m_ne_c) = -∠ e.A e.C e.B (a_ne_c) (b_ne_c) := by
-      have inner_h₅₁ : ANG  e.E e.C e.M (e_ne_c) (m_ne_c) = ANG e.A e.C e.B (a_ne_c) (b_ne_c) := by
+      have inner_h₅₁ : ∠  e.E e.C e.M (e_ne_c) (m_ne_c) = ∠  e.A e.C e.B (a_ne_c) (b_ne_c) := by
         symm
-        apply eq_ang_of_lieson_lieson
+        apply eq_ang_val_of_lieson_lieson
         · exact E_int_ray_CA
         · exact M_int_ray_CB
-      sorry
+      simp only [inner_h₅₁]
     have h₅₂ : ∠ e.D e.B e.M (d_ne_b) (m_ne_b) = -∠ e.C e.B e.A (c_ne_b) (a_ne_b) := by
       rw [← neg_value_of_rev_ang (a_ne_b) (c_ne_b)]
-      have inner_h₅₂ : ANG e.D e.B e.M (d_ne_b) (m_ne_b) = ANG e.A e.B e.C (a_ne_b) (c_ne_b) := by
+      have inner_h₅₂ : ∠  e.D e.B e.M (d_ne_b) (m_ne_b) = ∠  e.A e.B e.C (a_ne_b) (c_ne_b) := by
         symm
-        apply eq_ang_of_lieson_lieson
+        apply eq_ang_val_of_lieson_lieson
         · exact D_int_ray_BA
         · exact M_int_ray_BC
-      sorry
+      simp only [inner_h₅₂]
     rw [h₅₁]
     rw [h₅₂]
     rw [h₅₀]
