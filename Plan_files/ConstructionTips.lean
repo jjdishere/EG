@@ -15,7 +15,7 @@ Broadly speaking, there are three kind of new concepts in Construction: A new cl
 
 ## Minor Principles
 
-1. We should stick to geometry as much as possible. Please avoid using vector calculations as possible. As a result, one avoids stating theorems using `Vec` or `Vec_nd` (either in conditions or conclusions).
+1. We should stick to geometry as much as possible. Please avoid using vector calculations as possible. As a result, one avoids stating theorems using `Vec` or `VecND` (either in conditions or conclusions).
 
 2. If you are formulating theorems of a class, please ensure your theorems has a version stated in terms of `structure` you defined, not only state in terms of point. But it is ok to have another version of theorem stated.
 
