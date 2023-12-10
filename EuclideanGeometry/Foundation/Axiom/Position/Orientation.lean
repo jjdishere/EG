@@ -22,8 +22,8 @@ def oarea (A B C : P) : ℝ := wedge A B C / 2
 
 theorem wedge213 (A B C : P) : wedge B A C = - wedge A B C := by
   unfold wedge
-  rw [← neg_vec A B, ← neg_one_smul ℝ, map_smul, ← vec_sub_vec A B C, map_sub]
-  simp
+  rw [← neg_vec A B,← vec_sub_vec A B C, map_sub]
+  simp only [map_neg, LinearMap.neg_apply, Vec.det_self, neg_zero, sub_zero]
 
 theorem wedge132 (A B C : P) : wedge A C B = - wedge A B C := by
   unfold wedge
@@ -131,9 +131,9 @@ theorem odist'_eq_odist'_of_to_dirline_eq_to_dirline (A : P) (ray ray' : Ray P) 
   rw [kt, map_add, map_smul]
   simp [h₁]
 
-def odist {α} [DirFig α] (A : P) (l : α P) : ℝ := Quotient.lift (s := same_dir_line.setoid) (fun ray => odist' A ray) (odist'_eq_odist'_of_to_dirline_eq_to_dirline A) (toDirLine l)
+def odist {α} [DirFig α P] (A : P) (l : α) : ℝ := Quotient.lift (s := same_dir_line.setoid) (fun ray => odist' A ray) (odist'_eq_odist'_of_to_dirline_eq_to_dirline A) (toDirLine l)
 
-theorem odist_reverse_eq_neg_odist {α} [DirFig α] (A : P) (dl : α P) : odist A (DirFig.reverse dl) = - odist A dl := sorry
+theorem odist_reverse_eq_neg_odist {α} [DirFig α P] (A : P) (dl : α) : odist A (DirFig.reverse dl) = - odist A dl := sorry
 
 theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SegND.mk A B bnea) = odist D (SegND.mk A B bnea)) ↔ (wedge A B C = wedge A B D) := sorry
 
@@ -145,29 +145,29 @@ section point_toray
 variable {α} [DirFig α P]
 
 --`Rewrite this part! why use by cases???`
-def odist_sign (A : P) (df : α P) : ℝ := by
+def odist_sign (A : P) (df : α) : ℝ := by
   by_cases 0 < odist A df
   · exact 1
   by_cases odist A df < 0
   · exact -1
   exact 0
 
-def IsOnLeftSide (A : P) (df : α P) : Prop := by
+def IsOnLeftSide (A : P) (df : α) : Prop := by
   by_cases 0 < odist A df
   · exact True
   · exact False
 
-def IsOnRightSide (A : P) (df : α P) : Prop := by
+def IsOnRightSide (A : P) (df : α) : Prop := by
   by_cases odist A df < 0
   · exact True
   · exact False
 
-def OnLine (A : P) (df : α P) : Prop := by
+def OnLine (A : P) (df : α) : Prop := by
   by_cases odist A df = 0
   · exact True
   · exact False
 
-def OffLine (A : P) (df : α P) : Prop := by
+def OffLine (A : P) (df : α) : Prop := by
   by_cases odist A df = 0
   · exact False
   · exact True
@@ -191,9 +191,9 @@ theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A r
   rw [Ray.toLine_carrier_eq_ray_carrier_union_rev_carrier ray] at p
   exact (odist'_eq_zero_iff_exist_real_vec_eq_smul).mpr (lies_on_or_rev_iff_exist_real_vec_eq_smul.mp p)
 
-theorem online_iff_lies_on_line (A : P) (df : α P) : Line.IsOn A (toLine df) ↔ odist A df = 0 := sorry
+theorem online_iff_lies_on_line (A : P) (df : α) : Line.IsOn A (toLine df) ↔ odist A df = 0 := sorry
 
-theorem off_line_iff_not_online (A : P) (df : α P) : OffLine A df ↔ ¬OnLine A df := sorry
+theorem off_line_iff_not_online (A : P) (df : α) : OffLine A df ↔ ¬OnLine A df := sorry
 
 /- Relation of position of points on a ray and directed distance-/
 
@@ -233,11 +233,11 @@ theorem odist_eq_odist_of_parallel' (A B : P) (ray : Ray P) (bnea : B ≠ A) (pa
   rw [add_zero] at h1
   exact h1.symm
 
-theorem odist_eq_odist_of_parallel {α} [DirFig α P] (A B : P) (df : α P) (bnea : B ≠ A) (para : parallel (SegND.mk A B bnea) df) : odist A df = odist B df := sorry
+theorem odist_eq_odist_of_parallel {α} [DirFig α P] (A B : P) (df : α) (bnea : B ≠ A) (para : parallel (SegND.mk A B bnea) df) : odist A df = odist B df := sorry
 
 theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (SegND.mk A B bnea) (SegND.mk C D dnec)) ↔ wedge A B C = wedge A B D := sorry
 
-theorem odist_eq_odist_iff_parallel_ne {α} [DirFig α P] (A B : P) (df : α P) (bnea : B ≠ A) : (parallel (SegND.mk A B bnea) df) ↔ odist A df = odist B df := sorry
+theorem odist_eq_odist_iff_parallel_ne {α} [DirFig α P] (A B : P) (df : α) (bnea : B ≠ A) : (parallel (SegND.mk A B bnea) df) ↔ odist A df = odist B df := sorry
 
 theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (SegND.mk A B bnea) (SegND.mk C D dnec)) ↔ oarea A B C = oarea A B D := sorry
 
