@@ -1,4 +1,3 @@
-import EuclideanGeometry.Foundation.Axiom.Basic.Computation
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Position.Angle

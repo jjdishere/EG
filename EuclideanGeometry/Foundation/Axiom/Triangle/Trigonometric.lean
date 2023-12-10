@@ -1,6 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
-import EuclideanGeometry.Foundation.Axiom.Basic.Computation
 
 noncomputable section
 namespace EuclidGeom
