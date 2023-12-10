@@ -136,10 +136,10 @@ protected def carrier (ray : Ray P) : Set P := { X : P | Ray.IsOn X ray }
 protected def interior (ray : Ray P) : Set P := { X : P | Ray.IsInt X ray }
 
 /-- This is to register that a ray is an instance of a class of objects that we may speak of both carrier and interior (and that the interior is a subset of the carrier). -/
-instance : IntFig Ray where
+instance : IntFig (Ray P) P where
   carrier := Ray.carrier
   interior := Ray.interior
-  interior_subset_carrier := fun _ [EuclideanPlane _] _ _ => And.left
+  interior_subset_carrier _ _ := And.left
 
 end Ray
 
@@ -166,10 +166,10 @@ protected def carrier (seg : Seg P) : Set P := { X : P | Seg.IsOn X seg }
 protected def interior (seg : Seg P) : Set P := { X : P | Seg.IsInt X seg }
 
 /-- Instance \verb|IntFig Seg|: This is to register that a segment is an instance of a class of objects that we may speak of both carrier and interior (and that the interior is a subset of the carrier). -/
-instance : IntFig Seg where
+instance : IntFig (Seg P) P where
   carrier := Seg.carrier
   interior := Seg.interior
-  interior_subset_carrier := fun _ [EuclideanPlane _] _ _ => And.left
+  interior_subset_carrier _ _ := And.left
 
 end Seg
 
@@ -221,10 +221,10 @@ protected def carrier (seg_nd : SegND P) : Set P := { X : P | SegND.IsOn X seg_n
 protected def interior (seg_nd : SegND P) : Set P := { X : P | Seg.IsInt X seg_nd }
 
 /-- This is to register that a nondegenerate segment is an instance of a class of objects that we may speak of both carrier and interior (and that the interior is a subset of the carrier). -/
-instance : IntFig SegND where
+instance : IntFig (SegND P) P where
   carrier := SegND.carrier
   interior := SegND.interior
-  interior_subset_carrier := fun _ [EuclideanPlane _] _ _ => And.left
+  interior_subset_carrier _ _ := And.left
 
 end SegND
 
