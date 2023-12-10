@@ -1290,18 +1290,21 @@ theorem _root_.EuclidGeom.angle_toDir_unitVecND_right (v₁ v₂ : VecND) : VecN
   simp
 
 @[simp]
-theorem angle_unitVecND (u v : Dir) : VecND.angle u.unitVecND v.unitVecND = v -ᵥ u := by
-  induction u using Dir.ind
-  induction v using Dir.ind
+theorem angle_unitVecND (d₁ d₂ : Dir) : VecND.angle d₁.unitVecND d₂.unitVecND = d₂ -ᵥ d₁ := by
+  induction d₁ using Dir.ind
+  induction d₂ using Dir.ind
   simp
 
 @[simp]
-theorem inner_unitVec (u v : Dir) : ⟪u.unitVec, v.unitVec⟫_ℝ = (v -ᵥ u).cos := by
+theorem inner_unitVec (d₁ d₂ : Dir) : ⟪d₁.unitVec, d₂.unitVec⟫_ℝ = (d₂ -ᵥ d₁).cos := by
   simp [← VecND.norm_mul_cos]
 
 @[simp]
-theorem det_unitVec (u v : Dir) : Vec.det u.unitVec v.unitVec = (v -ᵥ u).sin := by
+theorem det_unitVec (d₁ d₂ : Dir) : Vec.det d₁.unitVec d₂.unitVec = (d₂ -ᵥ d₁).sin := by
   simp [← VecND.norm_mul_sin]
+
+theorem complex_inner_unitVec (d₁ d₂ : Dir) : ⟪d₁.unitVec, d₂.unitVec⟫_ℂ = (d₂ -ᵥ d₁).expMapCircle := by
+  simp [← VecND.norm_smul_expMapCircle]
 
 end Dir
 
