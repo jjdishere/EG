@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
+import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
 
 namespace EuclidGeom
 
@@ -37,5 +38,7 @@ theorem mk_strat_ray_value_eq_vsub (ang : Angle P) (ray : Ray P) (h : ang.source
 theorem mk_ray_end_value_eq_vsub (ang : Angle P) (ray : Ray P) (h : ang.source = ray.source) : (Angle.mk_ray_end ang ray h).value = ang.end_ray.toDir -ᵥ ray.toDir := sorry
 
 end Angle
+
+theorem dvalue_eq_ang_rays_perp {ang : Angle P} (h : ang.dvalue = ((π / 2 : ℝ) : AngDValue)) : ang.start_ray ⟂ ang.end_ray := sorry
 
 end EuclidGeom

@@ -2,6 +2,7 @@ import EuclideanGeometry.Foundation.Axiom.Circle.Basic
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex2
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation_trash
 import EuclideanGeometry.Foundation.Axiom.Triangle.IsocelesTriangle_trash
+import EuclideanGeometry.Foundation.Axiom.Basic.Angle_trash
 
 noncomputable section
 namespace EuclidGeom
@@ -183,29 +184,27 @@ theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P} (h₁ : p LiesO
     _ = 2 • (∠ β.source p β.target h₂.1.symm h₂.2.symm) := by rw [← zero_sub, ← eq₃, add_sub_cancel']
     _ = 2 • (Arc.angle_mk_pt_arc p β h₂).value := rfl
 
-theorem inscribed_angle_of_diameter_eq {p : P} {β : Arc P} (h₁ : p LiesInt β.complement) (h₂ : Arc.IsAntipode β.source β.target β.endpts_ne β.ison.1 β.ison.2) : (Arc.angle_mk_pt_arc p β h₁.2.symm).value = ((π / 2 : ℝ) : AngValue) := by
+theorem inscribed_angle_of_diameter_eq_mod_pi {p : P} {β : Arc P} (h₁ : p LiesOn β.circle) (h₂ : Arc.IsAntipode β.source β.target β.endpts_ne β.ison.1 β.ison.2) (h₃ : Isnot_arc_endpts p β) : (Arc.angle_mk_pt_arc p β h₃).dvalue = ((π / 2 : ℝ) : AngDValue) := by
   have : β.cangle.value = π := h₂
-  have : 2 • (Arc.angle_mk_pt_arc p β h₁.2.symm).value = π := by
+  have : 2 • (Arc.angle_mk_pt_arc p β h₃).value = π := by
     rw [← this, ← cangle_eq_two_times_inscribed_angle]
-    exact h₁.1.1
+    exact h₁
   rcases AngValue.two_nsmul_eq_pi_iff.mp this with h | h
-  · exact h
-  exfalso
-  have : (Arc.angle_mk_pt_arc p β h₁.2.symm).value.IsPos := inscribed_angle_is_positive h₁
-  have : (Arc.angle_mk_pt_arc p β h₁.2.symm).value.toReal > 0 := AngValue.zero_lt_toReal_of_isPos this
-  rw [h] at this
-  simp at this
-  have : π > 0 := Real.pi_pos
-  linarith
+  · unfold Angle.dvalue
+    rw [h]
+  unfold Angle.dvalue
+  rw [h, neg_div]
+  simp
 
-/-
-The followings need a modification when the angle modulo π is constructed.
--/
-theorem inscribed_angle_on_same_arc_is_invariant {A B : P} {β : Arc P} (h₁ : A LiesInt β) (h₂ : B LiesInt β) : (Arc.angle_mk_pt_arc A β h₁.2).value = (Arc.angle_mk_pt_arc B β h₂.2).value := sorry
+theorem inscribed_angle_on_same_arc_is_invariant_mod_pi {A B : P} {β : Arc P} (h₁ : A LiesOn β.circle) (h₂ : B LiesOn β.circle) (hne₁ : Isnot_arc_endpts A β) (hne₂ : Isnot_arc_endpts B β) : (Arc.angle_mk_pt_arc A β hne₁).dvalue = (Arc.angle_mk_pt_arc B β hne₂).dvalue := by
+  have eq : 2 • (Arc.angle_mk_pt_arc A β hne₁).value = 2 • (Arc.angle_mk_pt_arc B β hne₂).value := by rw [← cangle_eq_two_times_inscribed_angle h₁ hne₁, ← cangle_eq_two_times_inscribed_angle h₂ hne₂]
+  apply (two_smul_value_eq_iff_dvalue_eq _ _).mp eq
 
-theorem inscribed_angle_on_same_complementary_arc_is_invariant {A B : P} {β : Arc P} (h₁ : A LiesInt β.complement) (h₂ : B LiesInt β.complement) : (Arc.angle_mk_pt_arc A β h₁.2.symm).value = (Arc.angle_mk_pt_arc B β h₂.2.symm).value := sorry
 
-theorem inscribed_angle_on_complementary_arc_difference_eq_pi {A B : P} {β : Arc P} (h₁ : A LiesInt β) (h₂ : B LiesInt β.complement) : (Arc.angle_mk_pt_arc A β h₁.2).value - (Arc.angle_mk_pt_arc B β h₂.2.symm).value = π := sorry
+protected def iangle (β : Arc P) : AngDValue := sorry
+
+theorem inscribed_angle_dvalue_eq_iangle {p : P} {β : Arc P} (h₁ : p LiesOn β.circle) (h₂ : Isnot_arc_endpts p β) : (Arc.angle_mk_pt_arc p β h₂).dvalue = β.iangle := by
+  sorry
 
 theorem angle_of_osculation : sorry := sorry
 

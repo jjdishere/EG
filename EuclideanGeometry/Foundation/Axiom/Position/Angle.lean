@@ -37,6 +37,8 @@ def mk_dirline_dirline (l₁ l₂ : DirLine P) (h : ¬ l₁ ∥ l₂) : Angle P 
 
 def value (A : Angle P) : AngValue := A.end_ray.toDir -ᵥ A.start_ray.toDir
 
+def dvalue (A : Angle P) : AngDValue := (A.value : AngDValue)
+
 def IsND (ang : Angle P) : Prop := ang.value ≠ 0 ∧ ang.value ≠ π
 
 protected def source (ang : Angle P) : P := ang.start_ray.source
