@@ -106,10 +106,29 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
   have h₅₀ : ∠ e.C e.B e.A (c_ne_b) (a_ne_b) = ∠ e.A e.C e.B (a_ne_c) (b_ne_c) := by
       apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ e.A e.B e.C, e.not_colinear_ABC⟩)).mp
       exact e.isoc_ABC
+  have D_int_ray_BA : e.D LiesInt (RAY e.B e.A a_ne_b) := by
+    sorry
+  have M_int_ray_BC : e.M LiesInt (RAY e.B e.C c_ne_b) := by
+    sorry
+  have E_int_ray_CA : e.E LiesInt (RAY e.C e.A a_ne_c) := by
+    sorry
+  have M_int_ray_CB : e.M LiesInt (RAY e.C e.B b_ne_c) := by
+    sorry
   have h₅ : ∠ e.D e.B e.M (d_ne_b) (m_ne_b) = -∠ e.E e.C e.M (e_ne_c) (m_ne_c) := by
     have h₅₁ : -∠ e.E e.C e.M (e_ne_c) (m_ne_c) = -∠ e.A e.C e.B (a_ne_c) (b_ne_c) := by
+      have inner_h₅₁ : ANG  e.E e.C e.M (e_ne_c) (m_ne_c) = ANG e.A e.C e.B (a_ne_c) (b_ne_c) := by
+        symm
+        apply eq_ang_of_lieson_lieson
+        · exact E_int_ray_CA
+        · exact M_int_ray_CB
       sorry
     have h₅₂ : ∠ e.D e.B e.M (d_ne_b) (m_ne_b) = -∠ e.C e.B e.A (c_ne_b) (a_ne_b) := by
+      rw [← neg_value_of_rev_ang (a_ne_b) (c_ne_b)]
+      have inner_h₅₂ : ANG e.D e.B e.M (d_ne_b) (m_ne_b) = ANG e.A e.B e.C (a_ne_b) (c_ne_b) := by
+        symm
+        apply eq_ang_of_lieson_lieson
+        · exact D_int_ray_BA
+        · exact M_int_ray_BC
       sorry
     rw [h₅₁]
     rw [h₅₂]

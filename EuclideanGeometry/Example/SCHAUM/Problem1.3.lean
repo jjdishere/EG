@@ -52,12 +52,14 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   B_ne_C : B ≠ C := (ne_of_not_colinear not_colinear_ABC).1.symm
   C_ne_B : C ≠ B := (ne_of_not_colinear not_colinear_ABC).1
 --Points not equal for angles ∠ A B D and ∠ A C E
-lemma D_ne_A : D ≠ A := sorry
-lemma E_ne_A : E ≠ A := sorry
-lemma D_ne_B : D ≠ B := D_Int_BC.2.1
-lemma E_ne_C : E ≠ C := E_Int_BC.2.2
+namespace Setting
+lemma D_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : e.D ≠ e.A := sorry
+lemma E_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : e.E ≠ e.A := sorry
+lemma D_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : e.D ≠ e.B := e.D_Int_BC.2.1
+lemma E_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : e.E ≠ e.C := e.E_Int_BC.2.2
+end Setting
 --Prove that $∠ D A B = ∠ C A E$.
-theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠ e.D e.A e.B (D_ne_A) (B_ne_A)= ∠ e.C e.A e.E (C_ne_A) (E_ne_A) := by
+theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠ e.D e.A e.B (e.D_ne_A) (e.B_ne_A)= ∠ e.C e.A e.E (e.C_ne_A) (e.E_ne_A) := by
   /-In the isoceles triangle $ABC$ we have $AB = AC$.
     Beacause $BD = CE$ we have $DB = EC$.
     In the isoceles triangle $A B C$, we have $\angle A B C = -\angle A C B$.
@@ -74,7 +76,7 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
   have h₀ : (SEG e.B e.A).length = (SEG e.C e.A).length := by
     calc
       _= (SEG e.A e.B).length := length_of_rev_eq_length' --$BA = AB$ by symmetry
-      _= (SEG e.C e.A).length := hisoc.symm -- $AB = CA$ by isoceles.
+      _= (SEG e.C e.A).length := e.isoc_ABC.symm -- $AB = CA$ by isoceles.
   --Triangle B A D nondegenerate.
   have hnd₁ : ¬ colinear e.B e.A e.D := by sorry
   --Triangle C A E nondegenerate.
@@ -83,16 +85,37 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
   have h₁ : (SEG e.D e.B).length = (SEG e.E e.C).length := by
     calc
       _= (SEG e.B e.D).length := length_of_rev_eq_length' --$DB = BD$ by symmetry
-      _= (SEG e.C e.E).length := D_E_seg_position --$BD = CE$
+      _= (SEG e.C e.E).length := e.BD_eq_CE --$BD = CE$
       _= (SEG e.E e.C).length := length_of_rev_eq_length' --$CE = EC$ by symmetry
   --In the isoceles triangle $A B C$, we have $\angle A B C = -\angle A C B$.
-  have h₂₀ : ∠ e.C e.B e.A (C_ne_B) (A_ne_B) = ∠ e.A e.C e.B (A_ne_C) (B_ne_C) := by
-      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ e.A e.B e.C, hnd⟩)).mp
-      exact hisoc
+  have h₂₀ : ∠ e.C e.B e.A (e.C_ne_B) (e.A_ne_B) = ∠ e.A e.C e.B (e.A_ne_C) (e.B_ne_C) := by
+      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ e.A e.B e.C, e.not_colinear_ABC⟩)).mp
+      exact e.isoc_ABC
   --Because $\angle A B C = -\angle A C B$ we have $\angle A B D = -\angle A C E$
-  have h₂ : ∠ e.A e.B e.D (A_ne_B) (D_ne_B) = -∠ e.A e.C e.E (A_ne_C) (E_ne_C (E_Int_BC := E_Int_BC)) := by
-    have h₂₁ : ∠ e.A e.B e.D (A_ne_B) (D_ne_B) = -∠ e.C e.B e.A (C_ne_B) (A_ne_B) := by sorry
-    have h₂₂ : ∠ e.A e.C e.E (A_ne_C) (E_ne_C) = ∠ e.A e.C e.B (A_ne_C) (B_ne_C) := by sorry
+  have A_int_ray_BA : e.A LiesInt (RAY e.B e.A e.A_ne_B) := by
+    sorry
+  have D_int_ray_BC : e.D LiesInt (RAY e.B e.C e.C_ne_B) := by
+    sorry
+  have A_int_ray_CA : e.A LiesInt (RAY e.C e.A e.A_ne_C) := by
+    sorry
+  have E_int_ray_CB : e.E LiesInt (RAY e.C e.B e.B_ne_C) := by
+    sorry
+  have h₂ : ∠ e.A e.B e.D (e.A_ne_B) (e.D_ne_B) = -∠ e.A e.C e.E (e.A_ne_C) (e.E_ne_C) := by
+    have h₂₁ : ∠ e.A e.B e.D (e.A_ne_B) (e.D_ne_B) = -∠ e.C e.B e.A (e.C_ne_B) (e.A_ne_B) := by
+      rw [← neg_value_of_rev_ang (e.A_ne_B) (e.C_ne_B)]
+      have inner_h₂₁ : ∠  e.A e.B e.D (e.A_ne_B) (e.D_ne_B) = ∠  e.A e.B e.C (e.A_ne_B) (e.C_ne_B) := by
+        symm
+        apply eq_ang_val_of_lieson_lieson
+        ·exact A_int_ray_BA
+        .exact D_int_ray_BC
+      sorry
+    have h₂₂ : ∠ e.A e.C e.E (e.A_ne_C) (e.E_ne_C) = ∠ e.A e.C e.B (e.A_ne_C) (e.B_ne_C) := by
+      have inner_h₂₂ : ∠  e.A e.C e.E (e.A_ne_C) (e.E_ne_C) = ∠  e.A e.C e.B (e.A_ne_C) (e.B_ne_C) := by
+        symm
+        apply eq_ang_val_of_lieson_lieson
+        ·exact A_int_ray_CA
+        ·exact E_int_ray_CB
+      sorry
     simp only [h₂₁]
     simp only [h₂₂]
     simp only [← h₂₀]
@@ -103,13 +126,13 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
     · exact h₂
     · exact h₀
   --We have $\angle B A D = -\angle C A E$.
-  have h₄ : ∠ e.D e.A e.B (D_ne_A) (B_ne_A) = -∠ e.E e.A e.C (E_ne_A) (C_ne_A) := by
+  have h₄ : ∠ e.D e.A e.B (e.D_ne_A) (e.B_ne_A) = -∠ e.E e.A e.C (e.E_ne_A) (e.C_ne_A) := by
     exact h₃.angle₂
   --We have $\angle D A B = \angle C A E$.
-  have h₅ : ∠ e.D e.A e.B (D_ne_A) (B_ne_A) = ∠ e.C e.A e.E (C_ne_A) (E_ne_A) := by
+  have h₅ : ∠ e.D e.A e.B (e.D_ne_A) (e.B_ne_A) = ∠ e.C e.A e.E (e.C_ne_A) (e.E_ne_A) := by
     rw[h₄]
     symm
-    exact neg_value_of_rev_ang (C_ne_A) (E_ne_A)
+    exact neg_value_of_rev_ang (e.C_ne_A) (e.E_ne_A)
   exact h₅
 end Problem1_3_
 end Schaum
