@@ -71,10 +71,10 @@ class DirFig (α : Type*) (P : outParam <| Type*) [outParam <| EuclideanPlane P]
 section fig_to_obj
 variable {P : Type _} [EuclideanPlane P]
 
-instance [ProjFig α P] : ProjObj α where
+instance {α} [ProjFig α] : ProjObj (α P) where
   toProj := ProjFig.toProj'
 
-instance [DirFig α P] : DirObj α where
+instance {α} [DirFig α] : DirObj (α P) where
   toDir := DirFig.toDir'
   toDir_toProj_eq_toProj := DirFig.toDir_toProj_eq_toProj
 

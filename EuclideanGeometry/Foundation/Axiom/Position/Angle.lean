@@ -6,7 +6,7 @@ open scoped Real
 
 namespace EuclidGeom
 
-def DirObj.AngDiff [DirObj α] [DirObj β] (F : α) (G : β) : AngValue := toDir G -ᵥ toDir F
+def DirObj.AngDiff {α β} [DirObj α] [DirObj β] (F : α) (G : β) : AngValue := toDir G -ᵥ toDir F
 
 /- Define values of oriented angles, in (-π, π], modulo 2 π. -/
 /- Define oriented angles, ONLY taking in two rays starting at one point!  And define ways to construct oriented angles, by given three points on the plane, and etc.  -/

@@ -38,6 +38,8 @@ In this file, we define classes that will be used in Euclidean geometry. In this
 noncomputable section
 namespace EuclidGeom
 
+variable {P : Type*} {α β γ}
+
 section carrier
 
 /-- The class of plane figures. We say `α` is a plane figure, if for every given Euclidean plane `P`, `α P` is a collection of specific figures on `P`, each equipped with a carrier set of type `Set P`. -/

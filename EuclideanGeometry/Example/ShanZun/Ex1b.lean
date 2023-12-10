@@ -41,7 +41,7 @@ def seg_nd_be : SegND P := ⟨SEG B E, Ne.symm (b_ne_e (hnd := hnd) (be_eq_ac :=
 variable {be_not_parallel_ac : ¬ (seg_nd_be (hnd := hnd) (be_eq_ac := be_eq_ac)) ∥ (seg_nd_ac (hnd := hnd))}
 
 -- Theorem : $AF = EF$
-theorem Shan_Problem_1_5 : (SEG A F).length = (SEG E F).length := by sorry
+theorem Shan_Problem_1_5 {F} : (SEG A F).length = (SEG E F).length := by sorry
 
 end Shan_Problem_1_5
 

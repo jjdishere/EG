@@ -1247,9 +1247,12 @@ theorem length_eq_length_add_length {seg : Seg P} {A : P} (lieson : A LiesOn seg
 end length
 
 section midpoint
+
 /-!
 ## (9) Midpoint
 -/
+
+variable {X A : P}
 
 /-- Given a segment $AB$, this function returns the midpoint of $AB$, defined as moving from $A$ by the vector $\overrightarrow{AB}/2$. -/
 @[pp_dot]

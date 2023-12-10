@@ -687,7 +687,7 @@ theorem arg_coe_angValue_eq_iff_eq_toReal {z : ℂ} {θ : AngValue} :
 theorem arg_coe_angValue_eq_iff {x y : ℂ} : (arg x : AngValue) = arg y ↔ arg x = arg y :=
   arg_coe_angle_eq_iff
 
-theorem continuousAt_arg_coe_angValue (h : x ≠ 0) : ContinuousAt ((↑) ∘ arg : ℂ → AngValue) x :=
+theorem continuousAt_arg_coe_angValue {x : ℂ} (h : x ≠ 0) : ContinuousAt ((↑) ∘ arg : ℂ → AngValue) x :=
   continuousAt_arg_coe_angle h
 
 end Complex
