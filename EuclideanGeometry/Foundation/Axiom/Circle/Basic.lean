@@ -78,9 +78,9 @@ instance : Interior Circle where
 end Circle
 
 /- `One seldom uses Inside a circle in reality.` Should we delete this? Int On Out is enough-/
-scoped infix : 50 "LiesIn" => Circle.IsInside
+scoped infix : 50 " LiesIn " => Circle.IsInside
 
-scoped infix : 50 "LiesOut" => Circle.IsOutside
+scoped infix : 50 " LiesOut " => Circle.IsOutside
 
 namespace Circle
 
@@ -102,7 +102,7 @@ def seg_lies_inside_circle (l : Seg P) (ω : Circle P) : Prop := l.source LiesIn
 
 end Circle
 
-scoped infix : 50 "SegInCir" => Circle.seg_lies_inside_circle
+scoped infix : 50 " SegInCir " => Circle.seg_lies_inside_circle
 
 namespace Circle
 
