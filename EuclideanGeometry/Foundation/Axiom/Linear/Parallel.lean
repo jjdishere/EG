@@ -180,7 +180,7 @@ end parallel_iff_coercion_parallel
 
 section reverse
 
-variable {α β : (P : Type _) → [EuclideanPlane P] → Type _} [DirFig α] [DirFig β] {l₁ : α P} {l₂ : β P}
+variable {α β : Type*} [DirFig α P] [DirFig β P] {l₁ : α} {l₂ : β}
 
 theorem DirFig.para_rev_of_para (h : l₁ ∥ l₂) : l₁ ∥ reverse l₂ :=
   h.trans (rev_toProj_eq_toProj l₂).symm

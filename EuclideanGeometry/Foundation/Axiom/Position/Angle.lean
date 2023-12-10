@@ -93,7 +93,7 @@ protected def carrier (ang : Angle P) : Set P := { p : P | Angle.IsOn p ang}
 
 protected def interior (ang : Angle P) : Set P := { p : P | Angle.IsInt p ang }
 
-instance : Interior Angle where
+instance : Interior (Angle P) P where
   interior := Angle.interior
 
 /-

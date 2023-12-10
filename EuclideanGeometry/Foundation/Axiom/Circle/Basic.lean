@@ -69,10 +69,10 @@ protected def carrier (ω : Circle P) : Set P := { p : P | Circle.IsOn p ω }
 protected def interior (ω : Circle P) : Set P := { p : P | Circle.IsInt p ω }
 --`Interior is NOT a subset of carrier`
 
-instance : Fig Circle where
+instance : Fig (Circle P) P where
   carrier := Circle.carrier
 
-instance : Interior Circle where
+instance : Interior (Circle P) P where
   interior := Circle.interior
 
 end Circle

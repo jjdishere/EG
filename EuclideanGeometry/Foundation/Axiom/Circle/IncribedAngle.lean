@@ -43,10 +43,10 @@ protected def carrier (β : Arc P) : Set P := { p : P | Arc.IsOn p β }
 
 protected def interior (β : Arc P) : Set P := { p : P | Arc.IsInt p β }
 
-instance : Fig Arc where
+instance : Fig (Arc P) P where
   carrier := Arc.carrier
 
-instance : Interior Arc where
+instance : Interior (Arc P) P where
   interior := Arc.interior
 
 def complement (β : Arc P) : Arc P where
