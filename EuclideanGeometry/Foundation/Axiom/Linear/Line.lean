@@ -563,13 +563,13 @@ theorem Line.nontriv (l : Line P) : ∃ (A B : P), A LiesOn l ∧ B LiesOn l ∧
   rcases r.nontriv with ⟨A, B, g⟩
   exact ⟨A, B, ⟨ray_subset_line h g.1, ray_subset_line h g.2.1, g.2.2⟩⟩
 
-theorem Ray.lies_on_ray_or_lies_on_ray_rev_iff : A LiesOn r ∧ A ≠ r.source ∨ A LiesOn r.reverse ∧ A ≠ r.source ∨ A = r.source ↔ A LiesOn r ∨ A LiesOn r.reverse := ⟨
+theorem Ray.lies_on_ray_or_lies_on_ray_rev_iff {A : P} : A LiesOn r ∧ A ≠ r.source ∨ A LiesOn r.reverse ∧ A ≠ r.source ∨ A = r.source ↔ A LiesOn r ∨ A LiesOn r.reverse := ⟨
   fun | .inl h => .inl h.1
       | .inr h => .casesOn h (fun h => .inr h.1) (fun h => .inr (by rw[h]; exact source_lies_on)),
   fun | .inl h => if g : A = r.source then .inr (.inr g) else .inl ⟨h, g⟩
       | .inr h => if g : A = r.source then .inr (.inr g) else .inr (.inl ⟨h, g⟩)⟩
 
-theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source {r : Ray P} : (A LiesOn r.toLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) := by
+theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source {A : P} {r : Ray P} : (A LiesOn r.toLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) := by
   rw [lies_int_def, lies_int_def, source_of_rev_eq_source, lies_on_ray_or_lies_on_ray_rev_iff, lies_on_toLine_iff_lies_on_or_lies_on_rev]
 
 theorem SegND.lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on {A : P} {seg_nd : SegND P} (h : ¬ A LiesInt seg_nd.1) : A LiesOn seg_nd.toLine ↔ (A LiesOn seg_nd.extension) ∨ (A LiesOn seg_nd.reverse.extension) := by
@@ -653,7 +653,7 @@ theorem seg_subset_dirline {s : SegND P} {l : DirLine P} (h : s.toDirLine = l) :
 theorem DirLine.nontriv (l : DirLine P) : ∃ (A B : P), A LiesOn l ∧ B LiesOn l ∧ (B ≠ A) :=
   l.toLine.nontriv
 
-theorem Ray.lies_on_toDirLine_iff_lies_int_or_lies_int_rev_or_eq_source {r : Ray P} : (A LiesOn r.toDirLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) :=
+theorem Ray.lies_on_toDirLine_iff_lies_int_or_lies_int_rev_or_eq_source {A : P} {r : Ray P} : (A LiesOn r.toDirLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) :=
   r.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source
 
 theorem SegND.lies_on_extn_or_rev_extn_iff_lies_on_toDirLine_of_not_lies_on {A : P} {seg_nd : SegND P} (h : ¬ A LiesInt seg_nd.1) : A LiesOn seg_nd.toDirLine ↔ (A LiesOn seg_nd.extension) ∨ (A LiesOn seg_nd.reverse.extension) :=

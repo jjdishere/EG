@@ -72,10 +72,10 @@ section fig_to_obj
 
 variable {P : Type _} [EuclideanPlane P]
 
-instance [ProjFig α] : ProjObj (α P) where
+instance {α} [ProjFig α] : ProjObj (α P) where
   toProj := ProjFig.toProj'
 
-instance [DirFig α] : DirObj (α P) where
+instance {α} [DirFig α] : DirObj (α P) where
   toDir := DirFig.toDir'
   toDir_toProj_eq_toProj := DirFig.toDir_toProj_eq_toProj
 
@@ -169,10 +169,10 @@ open Line DirLine
 
 variable {P : Type _} [EuclideanPlane P]
 
-theorem carrier_toProj_eq_toProj {A B : P} [ProjFig α] {F : α P} (h : B ≠ A) (ha : A LiesOn F) (hb : B LiesOn F) : (SEG_nd A B h).toProj = toProj' F :=
+theorem carrier_toProj_eq_toProj {α} {A B : P} [ProjFig α] {F : α P} (h : B ≠ A) (ha : A LiesOn F) (hb : B LiesOn F) : (SEG_nd A B h).toProj = toProj' F :=
   (toProj_eq_seg_nd_toProj_of_lies_on (carrier_subset_toLine ha) (carrier_subset_toLine hb) h).trans toLine_toProj_eq_toProj
 
-theorem line_of_pt_toProj_eq_to_line {A : P} [ProjFig α] {F : α P} (h : A LiesOn F) : Line.mk_pt_proj A (toProj F) = toLine F :=
+theorem line_of_pt_toProj_eq_to_line {α} {A : P} [ProjFig α] {F : α P} (h : A LiesOn F) : Line.mk_pt_proj A (toProj F) = toLine F :=
   mk_pt_proj_eq_of_eq_toProj (carrier_subset_toLine h) toLine_toProj_eq_toProj.symm
 
 theorem DirFig.rev_toDir_eq_neg_toDir {α : (P : Type _) → [EuclideanPlane P] → Type _} [DirFig α] (l : α P) : toDir' (reverse l) = - toDir' l :=
