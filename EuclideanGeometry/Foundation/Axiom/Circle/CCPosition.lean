@@ -24,11 +24,11 @@ protected def IsInscribed (ω₁ : Circle P) (ω₂ : Circle P) : Prop := (dist 
 
 end Circle
 
-scoped infix : 50 "Separate" => Circle.IsSeparated
-scoped infix : 50 "Intersect" => Circle.IsIntersected
-scoped infix : 50 "Circumscribe" => Circle.IsCircumscribed
-scoped infix : 50 "IncludeIn" => Circle.IsIncluded
-scoped infix : 50 "InscribeIn" => Circle.IsInscribed
+scoped infix : 50 " Separate " => Circle.IsSeparated
+scoped infix : 50 " Intersect " => Circle.IsIntersected
+scoped infix : 50 " Circumscribe " => Circle.IsCircumscribed
+scoped infix : 50 " IncludeIn " => Circle.IsIncluded
+scoped infix : 50 " InscribeIn " => Circle.IsInscribed
 
 namespace Circle
 

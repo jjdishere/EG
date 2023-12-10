@@ -148,7 +148,7 @@ def IsOnDSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DSeg P) : Prop :=
 
 end nondeg
 
-scoped infix : 50 "LiesOnDSeg" => IsOnDSeg
+scoped infix : 50 " LiesOnDSeg " => IsOnDSeg
 
 section nondeg
 
@@ -234,9 +234,9 @@ def IsOnNegSide (A : P) (ray : Ray P) : Prop := by
 
 def IsSource (A : P) (ray : Ray P) : Prop := ray.source = A
 
-scoped infix : 50 "LiesOnPos" => IsOnPosSide
-scoped infix : 50 "LiesOnNeg" => IsOnNegSide
-scoped infix : 50 "LiesAtSource" => IsSource
+scoped infix : 50 " LiesOnPos " => IsOnPosSide
+scoped infix : 50 " LiesOnNeg " => IsOnNegSide
+scoped infix : 50 " LiesAtSource " => IsSource
 
 end pos_neg_ray
 -/
@@ -282,7 +282,7 @@ end Triangle
 
 -/
 
-scoped infix : 50 "IsInsideLTriangle" => Triangle.IsInside
+scoped infix : 50 " IsInsideLTriangle " => Triangle.IsInside
 
 end nondeg_tri
 

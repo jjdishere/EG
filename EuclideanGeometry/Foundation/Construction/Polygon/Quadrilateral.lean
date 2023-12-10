@@ -101,7 +101,7 @@ def mk_is_convex {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qd
   convex := h
 
 section criteria_cvx
-variable {A B C D : P}
+variable {P : Type _} [EuclideanPlane P] {A B C D : P}
 
 -- theorem is_convex_of four inferior angle
 -- theorem is_convex_of both diag divids other pts
