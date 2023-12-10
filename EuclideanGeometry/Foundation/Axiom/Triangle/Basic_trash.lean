@@ -84,4 +84,6 @@ theorem intersection_not_colinear_of_nondegenerate {A B C D E : P} (nd : ¬ coli
 
 end Triangle_nd
 
+theorem angle_sum_eq_pi_of_tri (tri : Triangle P) (h₁ : tri.point₂ ≠ tri.point₃) (h₂ : tri.point₃ ≠ tri.point₁) (h₃ : tri.point₁ ≠ tri.point₂) : ∠ tri.point₂ tri.point₁ tri.point₃ h₃.symm h₂ + ∠ tri.point₃ tri.point₂ tri.point₁ h₁.symm h₃ + ∠ tri.point₁ tri.point₃ tri.point₂ h₂.symm h₁ = π := sorry
+
 end EuclidGeom

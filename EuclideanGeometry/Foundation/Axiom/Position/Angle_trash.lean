@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
+import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
 
 namespace EuclidGeom
 
@@ -62,5 +63,7 @@ theorem ang_value_rev_eq_neg_value {ang : Angle P} :  ang.reverse.value = - ang.
   simp
 
 end Angle
+
+theorem dvalue_eq_ang_rays_perp {ang : Angle P} (h : ang.dvalue = ((π / 2 : ℝ) : AngDValue)) : ang.start_ray ⟂ ang.end_ray := sorry
 
 end EuclidGeom
