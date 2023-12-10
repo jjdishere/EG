@@ -1355,11 +1355,11 @@ theorem SegND.midpt_lies_int {seg_nd : SegND P} :seg_nd.midpoint LiesInt seg_nd 
   Seg.lies_int_iff.mpr ⟨seg_nd.2, ⟨1 / 2, by norm_num; exact seg_nd.vec_source_midpt⟩⟩
 
 /-- The midpoint of a nondegenerate segment is not equal to the source of the segment. -/
-theorem Seg_nd.midpt_ne_source {seg_nd : SegND P} : seg_nd.midpoint ≠ seg_nd.source :=
+theorem SegND.midpt_ne_source {seg_nd : SegND P} : seg_nd.midpoint ≠ seg_nd.source :=
   (seg_nd.midpt_lies_int).2.1
 
 /-- The midpoint of a nondegenerate segment is not equal to the target of the segment. -/
-theorem Seg_nd.midpt_ne_target {seg_nd : SegND P} : seg_nd.midpoint ≠ seg_nd.target :=
+theorem SegND.midpt_ne_target {seg_nd : SegND P} : seg_nd.midpoint ≠ seg_nd.target :=
   (seg_nd.midpt_lies_int).2.2
 
 /-- The midpoint of a nondegenerate segment lies in the interior of the segment. -/
