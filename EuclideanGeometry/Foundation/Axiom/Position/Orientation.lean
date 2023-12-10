@@ -131,9 +131,9 @@ theorem odist'_eq_odist'_of_to_dirline_eq_to_dirline (A : P) (ray ray' : Ray P) 
   rw [kt, map_add, map_smul]
   simp [h₁]
 
-def odist (A : P) [DirFig α] (l : α P) : ℝ := Quotient.lift (s := same_dir_line.setoid) (fun ray => odist' A ray) (odist'_eq_odist'_of_to_dirline_eq_to_dirline A) (toDirLine l)
+def odist (A : P) [DirFig α P] (l : α) : ℝ := Quotient.lift (s := same_dir_line.setoid) (fun ray => odist' A ray) (odist'_eq_odist'_of_to_dirline_eq_to_dirline A) (toDirLine l)
 
-theorem odist_reverse_eq_neg_odist (A : P) [DirFig α] (dl : α P) : odist A (DirFig.reverse dl) = - odist A dl := sorry
+theorem odist_reverse_eq_neg_odist (A : P) [DirFig α P] (dl : α) : odist A (DirFig.reverse dl) = - odist A dl := sorry
 
 theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SegND.mk A B bnea) = odist D (SegND.mk A B bnea)) ↔ (wedge A B C = wedge A B D) := sorry
 
@@ -143,29 +143,29 @@ end oriented_distance
 
 section point_toray
 
-def odist_sign (A : P) [DirFig α] (df : α P) : ℝ := by
+def odist_sign (A : P) [DirFig α P] (df : α) : ℝ := by
   by_cases 0 < odist A df
   · exact 1
   by_cases odist A df < 0
   · exact -1
   exact 0
 
-def IsOnLeftSide (A : P) [DirFig α] (df : α P) : Prop := by
+def IsOnLeftSide (A : P) [DirFig α P] (df : α) : Prop := by
   by_cases 0 < odist A df
   · exact True
   · exact False
 
-def IsOnRightSide (A : P) [DirFig α] (df : α P) : Prop := by
+def IsOnRightSide (A : P) [DirFig α P] (df : α) : Prop := by
   by_cases odist A df < 0
   · exact True
   · exact False
 
-def OnLine (A : P) [DirFig α] (df : α P) : Prop := by
+def OnLine (A : P) [DirFig α P] (df : α) : Prop := by
   by_cases odist A df = 0
   · exact True
   · exact False
 
-def OffLine (A : P) [DirFig α] (df : α P) : Prop := by
+def OffLine (A : P) [DirFig α P] (df : α) : Prop := by
   by_cases odist A df = 0
   · exact False
   · exact True
@@ -189,9 +189,9 @@ theorem online_iff_online (A : P) (ray : Ray P) : OnLine A ray ↔ Line.IsOn A r
   rw [Ray.toLine_carrier_eq_ray_carrier_union_rev_carrier ray] at p
   exact (odist'_eq_zero_iff_exist_real_vec_eq_smul).mpr (lies_on_or_rev_iff_exist_real_vec_eq_smul.mp p)
 
-theorem online_iff_lies_on_line (A : P) [DirFig α] (df : α P) : Line.IsOn A (toLine df) ↔ odist A df = 0 := sorry
+theorem online_iff_lies_on_line (A : P) [DirFig α P] (df : α) : Line.IsOn A (toLine df) ↔ odist A df = 0 := sorry
 
-theorem off_line_iff_not_online (A : P) [DirFig α] (df : α P) : OffLine A df ↔ ¬OnLine A df := sorry
+theorem off_line_iff_not_online (A : P) [DirFig α P] (df : α) : OffLine A df ↔ ¬OnLine A df := sorry
 
 /- Relation of position of points on a ray and directed distance-/
 
@@ -231,18 +231,18 @@ theorem odist_eq_odist_of_parallel' (A B : P) (ray : Ray P) (bnea : B ≠ A) (pa
   rw [add_zero] at h1
   exact h1.symm
 
-theorem odist_eq_odist_of_parallel (A B : P) [DirFig α] (df : α P) (bnea : B ≠ A) (para : parallel (SegND.mk A B bnea) df) : odist A df = odist B df := sorry
+theorem odist_eq_odist_of_parallel (A B : P) [DirFig α P] (df : α) (bnea : B ≠ A) (para : parallel (SegND.mk A B bnea) df) : odist A df = odist B df := sorry
 
 theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (SegND.mk A B bnea) (SegND.mk C D dnec)) ↔ wedge A B C = wedge A B D := sorry
 
-theorem odist_eq_odist_iff_parallel_ne (A B : P) [DirFig α] (df : α P) (bnea : B ≠ A) : (parallel (SegND.mk A B bnea) df) ↔ odist A df = odist B df := sorry
+theorem odist_eq_odist_iff_parallel_ne (A B : P) [DirFig α P] (df : α) (bnea : B ≠ A) : (parallel (SegND.mk A B bnea) df) ↔ odist A df = odist B df := sorry
 
 theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) (bnea : B ≠ A) (dnec : D ≠ C) : (parallel (SegND.mk A B bnea) (SegND.mk C D dnec)) ↔ oarea A B C = oarea A B D := sorry
 
 end cooperation_with_parallel
 
-scoped infix : 50 "LiesOnLeft" => IsOnLeftSide
-scoped infix : 50 "LiesOnRight" => IsOnRightSide
+scoped infix : 50 " LiesOnLeft " => IsOnLeftSide
+scoped infix : 50 " LiesOnRight " => IsOnRightSide
 
 section handside
 

@@ -211,7 +211,7 @@ protected def carrier (l : Line P) : Set P := Quotient.lift (fun ray : Ray P => 
 protected def IsOn (A : P) (l : Line P) : Prop :=
   A ∈ l.carrier
 
-instance : Fig Line where
+instance : Fig (Line P) P where
   carrier := Line.carrier
 
 end Line
@@ -220,7 +220,7 @@ namespace DirLine
 
 protected def carrier (l : DirLine P) : Set P := l.toLine.carrier
 
-instance : Fig DirLine where
+instance : Fig (DirLine P) P where
   carrier := DirLine.carrier
 
 end DirLine

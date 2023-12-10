@@ -69,18 +69,18 @@ protected def carrier (ω : Circle P) : Set P := { p : P | Circle.IsOn p ω }
 protected def interior (ω : Circle P) : Set P := { p : P | Circle.IsInt p ω }
 --`Interior is NOT a subset of carrier`
 
-instance : Fig Circle where
+instance : Fig (Circle P) P where
   carrier := Circle.carrier
 
-instance : Interior Circle where
+instance : Interior (Circle P) P where
   interior := Circle.interior
 
 end Circle
 
 /- `One seldom uses Inside a circle in reality.` Should we delete this? Int On Out is enough-/
-scoped infix : 50 "LiesIn" => Circle.IsInside
+scoped infix : 50 " LiesIn " => Circle.IsInside
 
-scoped infix : 50 "LiesOut" => Circle.IsOutside
+scoped infix : 50 " LiesOut " => Circle.IsOutside
 
 namespace Circle
 
@@ -102,7 +102,7 @@ def seg_lies_inside_circle (l : Seg P) (ω : Circle P) : Prop := l.source LiesIn
 
 end Circle
 
-scoped infix : 50 "SegInCir" => Circle.seg_lies_inside_circle
+scoped infix : 50 " SegInCir " => Circle.seg_lies_inside_circle
 
 namespace Circle
 

@@ -19,7 +19,7 @@ theorem norm_mul_norm_mul_cos_angle_eq_inner_of_VecND (v₁ v₂ : VecND) : ‖v
   rfl
 
 theorem perp_iff_angle_eq_pi_div_two_or_angle_eq_neg_pi_div_two (d₁ d₂ : Dir) :
-    d₁.toProj = d₂.toProj.perp ↔ d₁ = (↑(π / 2) : AngValue) +ᵥ d₂ ∨ d₁ = (↑(-π / 2) : AngValue) +ᵥ d₂ := by
+    d₁.toProj = d₂.toProj.perp ↔ d₁ = ∠[π / 2] +ᵥ d₂ ∨ d₁ = ∠[-π / 2] +ᵥ d₂ := by
   apply Dir.toProj_eq_toProj_iff.trans
   rw [id_eq, Dir.rotate_eq_vadd]
   apply or_congr Iff.rfl

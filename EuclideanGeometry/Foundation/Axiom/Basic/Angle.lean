@@ -15,19 +15,9 @@ In this file, we define suitable coversion function between `ℝ⧸2π`,`ℝ⧸�
 open Real.Angle Classical
 
 noncomputable section
-
 namespace EuclidGeom
 
-section Notation -- no need to open Real when using `π`
-open Lean
-
-syntax (name := piNotation) (priority := high) "π" : term
-
-@[macro piNotation] def piNotationImpl : Macro
-  | `(π) => `(Real.pi)
-  | _ => Macro.throwUnsupported
-
-end Notation
+attribute [pp_dot] AngValue.toReal
 
 open Real
 
@@ -42,15 +32,15 @@ instance : Inhabited AngDValue :=
   inferInstanceAs (Inhabited (AddCircle π))
 
 @[coe]
-def _root_.EuclidGeom.AngValue.toAngDValue' : AngValue → AngDValue :=
+def _root_.EuclidGeom.AngValue.toAngDValue : AngValue → AngDValue :=
   Quotient.map' id (by
     rintro _ _ ⟨⟨v, ⟨k, hv⟩⟩, h⟩
     exact ⟨⟨v, ⟨k * 2, by simpa [mul_assoc] using hv⟩⟩, h⟩)
 
 instance : Coe AngValue AngDValue where
-  coe := AngValue.toAngDValue'
+  coe := AngValue.toAngDValue
 
-def _root_.EuclidGeom.AngValue.toAngDValue : AngValue →+ AngDValue where
+def _root_.EuclidGeom.AngValue.toAngDValueHom : AngValue →+ AngDValue where
   toFun := (↑)
   map_zero' := rfl
   map_add' θ ψ := by
@@ -69,11 +59,11 @@ theorem continuous_coe : Continuous ((↑) : ℝ → AngDValue) :=
   continuous_quotient_mk'
 
 /-- Coercion `ℝ → AngDValue` as an additive homomorphism. -/
-def coeHom : ℝ →+ AngDValue :=
-  QuotientAddGroup.mk' _
+def _root_.Real.toAngDValueHom : ℝ →+ AngDValue :=
+  AngValue.toAngDValueHom.comp AngValue.coeHom
 
 @[simp]
-theorem coe_coeHom : (coeHom : ℝ → AngDValue) = ((↑) : ℝ → AngDValue) :=
+theorem coe_toAngDValueHom : (toAngDValueHom : ℝ → AngDValue) = ((↑) : ℝ → AngDValue) :=
   rfl
 
 /-- An induction principle to deduce results for `AngDValue` from those for `ℝ`, used with
@@ -193,11 +183,36 @@ protected abbrev lift {α : Sort*} (f : AngValue → α) (hf : ∀ θ, f (θ + �
     obtain (h | h) := coe_eq_coe_iff.mp h <;>
       simp [h, hf])
 
-def _root_.Real.toAngDValue : ℝ →+ AngDValue :=
-  AngValue.toAngDValue.comp AngValue.coeHom
-
 end AngDValue
 
+section Notations
+open Lean
+
+section pi -- no need to open Real when using `π`
+syntax (name := piNotation) (priority := high) "π" : term
+
+@[macro piNotation] def piNotationImpl : Macro
+  | `(π) => `(Real.pi)
+  | _ => Macro.throwUnsupported
+
+end pi
+
+@[inherit_doc] notation "∠[" x "]" => AngValue.coe x
+
+open PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `AngValue.coe` -/
+@[delab app.EuclidGeom.AngValue.coe]
+def delabAngValueCoe : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``AngValue.coe 1
+  let x ← withNaryArg 0 delab
+  `(∠[$x])
+
+-- we do not make a delaborator for this notation
+-- because we want everyone to be aware that it's two coercions
+notation "∡[" x "]" => AngValue.toAngDValue (AngValue.coe x)
+
+end Notations
 
 namespace AngValue
 
@@ -207,7 +222,7 @@ section pos_neg_isnd
 def IsPos (θ : AngValue) : Prop := sbtw 0 θ π
 
 @[pp_dot]
-def IsNeg (θ : AngValue) : Prop := sbtw (π : AngValue) θ 0
+def IsNeg (θ : AngValue) : Prop := sbtw ∠[π] θ 0
 
 @[pp_dot]
 structure IsND (θ : AngValue) : Prop where intro ::
@@ -216,11 +231,11 @@ structure IsND (θ : AngValue) : Prop where intro ::
 
 section special_value
 
-theorem zero_not_isPos : ¬ (0 : AngValue).IsPos := sbtw_irrefl_left
+theorem zero_not_isPos : ¬ ∠[0].IsPos := sbtw_irrefl_left
 
-theorem zero_not_isNeg : ¬ (0 : AngValue).IsNeg := sbtw_irrefl_right
+theorem zero_not_isNeg : ¬ ∠[0].IsNeg := sbtw_irrefl_right
 
-theorem zero_not_isnd : ¬ (0 : AngValue).IsND := fun nd ↦ nd.1 rfl
+theorem zero_not_isnd : ¬ ∠[0].IsND := fun nd ↦ nd.1 rfl
 
 theorem not_isPos_of_eq_zero {θ : AngValue} (h : θ = 0) : ¬ θ.IsPos := by
   rw [h]
@@ -236,11 +251,11 @@ theorem ne_zero_of_isNeg {θ : AngValue} (h : θ.IsNeg) : θ ≠ 0 := fun hs ↦
 
 theorem not_isnd_of_eq_zero {θ : AngValue} (h : θ = 0) : ¬ θ.IsND := fun nd ↦ nd.1 h
 
-theorem pi_not_isPos : ¬ (π : AngValue).IsPos := sbtw_irrefl_right
+theorem pi_not_isPos : ¬ ∠[π].IsPos := sbtw_irrefl_right
 
-theorem pi_not_isNeg : ¬ (π : AngValue).IsNeg := sbtw_irrefl_left
+theorem pi_not_isNeg : ¬ ∠[π].IsNeg := sbtw_irrefl_left
 
-theorem pi_not_isnd : ¬ (π : AngValue).IsND := fun nd ↦ nd.2 rfl
+theorem pi_not_isnd : ¬ ∠[π].IsND := fun nd ↦ nd.2 rfl
 
 theorem not_isPos_of_eq_pi {θ : AngValue} (h : θ = π) : ¬ θ.IsPos :=  by
   rw [h]
@@ -411,13 +426,13 @@ end pos_neg_isnd
 section acute_obtuse_right
 
 @[pp_dot]
-def IsAcu (θ : AngValue) : Prop := sbtw ((- π / 2 : ℝ) : AngValue) θ  (π / 2 : ℝ)
+def IsAcu (θ : AngValue) : Prop := sbtw ∠[-π / 2] θ ∠[π / 2]
 
 @[pp_dot]
-def IsObt (θ : AngValue) : Prop := sbtw ((π / 2 : ℝ) : AngValue) θ (- π / 2 : ℝ)
+def IsObt (θ : AngValue) : Prop := sbtw ∠[π / 2] θ ∠[-π / 2]
 
 @[pp_dot]
-def IsRight (θ : AngValue) : Prop := θ = ((- π / 2 : ℝ) : AngValue) ∨ θ = ((π / 2 : ℝ) : AngValue)
+def IsRight (θ : AngValue) : Prop := θ = ∠[-π / 2] ∨ θ = ∠[π / 2]
 
 section special_value
 

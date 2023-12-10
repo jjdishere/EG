@@ -114,7 +114,7 @@ protected def carrier (tr : Triangle P) : Set P := { p : P | Triangle.IsOn p tr 
 protected def interior (tr : Triangle P) : Set P := { p : P | Triangle.IsInt p tr }
 
 
-instance : Interior Triangle where
+instance : Interior (Triangle P) P where
   interior := Triangle.interior
 
 /-

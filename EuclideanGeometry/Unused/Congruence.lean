@@ -23,9 +23,9 @@ def IsCongr (tr₁ tr₂: Triangle P) : Prop := by
     exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length ∧ tr_nd₁.angle₁.value = tr_nd₂.angle₁.value ∧ tr_nd₁.angle₂.value = tr_nd₂.angle₂.value ∧ tr_nd₁.angle₃.value = tr_nd₂.angle₃.value
   · exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length
 
-scoped infix : 50 "IsCongrTo" => IsCongr
+scoped infix : 50 " IsCongrTo " => IsCongr
 
--- scoped infix : 50 "≅" => IsCongr --do we need?
+-- scoped infix : 50 " ≅ " => IsCongr --do we need?
 
 namespace IsCongr
 
@@ -241,9 +241,9 @@ def IsACongr (tr₁ tr₂: Triangle P) : Prop := by
     exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length ∧ tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value ∧ tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value ∧ tr_nd₁.angle₃.value = - tr_nd₂.angle₃.value
   · exact tr₁.edge₁.length = tr₂.edge₁.length ∧ tr₁.edge₂.length = tr₂.edge₂.length ∧ tr₁.edge₃.length = tr₂.edge₃.length
 
-scoped infix : 50 "IsACongrTo" => IsACongr
+scoped infix : 50 " IsACongrTo " => IsACongr
 
--- scoped infix : 50 "≅ₐ" => IsACongr --do we need?
+-- scoped infix : 50 " ≅ₐ " => IsACongr --do we need?
 
 namespace IsACongr
 
