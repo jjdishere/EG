@@ -188,11 +188,11 @@ theorem inscribed_angle_of_diameter_eq {p : P} {β : Arc P} (h₁ : p LiesInt β
   have : 2 • (Arc.angle_mk_pt_arc p β h₁.2.symm).value = π := by
     rw [← this, ← cangle_eq_two_times_inscribed_angle]
     exact h₁.1.1
-  rcases AngValue.two_nsmul_eq_pi this with h | h
+  rcases AngValue.two_nsmul_eq_pi_iff.mp this with h | h
   · exact h
   exfalso
   have : (Arc.angle_mk_pt_arc p β h₁.2.symm).value.IsPos := inscribed_angle_is_positive h₁
-  have : (Arc.angle_mk_pt_arc p β h₁.2.symm).value.toReal > 0 := AngValue.zero_lt_toreal_of_ispos this
+  have : (Arc.angle_mk_pt_arc p β h₁.2.symm).value.toReal > 0 := AngValue.zero_lt_toReal_of_isPos this
   rw [h] at this
   simp at this
   have : π > 0 := Real.pi_pos
