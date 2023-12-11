@@ -33,12 +33,16 @@ theorem ratio_is_real (A B C : P) (colin : colinear A B C) (cnea : C ≠ A) : (V
   have h0 : (divratio A B C : ℂ).re = ((VEC A B)/(VEC A C)).re := rfl
   have h1 : (divratio A B C : ℂ).im = ((VEC A B)/(VEC A C)).im := by
     rw [ratio_is_real' A B C colin cnea]
-    field_simp
+    simp
   exact Complex.ext h0 h1.symm
 
 theorem vec_eq_vec_smul_ratio (A B C : P) (colin : colinear A B C) (cnea : C ≠ A) : VEC A B = (divratio A B C) • (VEC A C) := by
   have h0 : VEC A C ≠ 0 := (ne_iff_vec_ne_zero A C).mp cnea
+<<<<<<< Updated upstream
   have h1 : VEC A B = ((VEC A B) / (VEC A C)) • (VEC A C) := by
+=======
+  have h1 : VEC A B = ((VEC A B) / (VEC A C)) • VEC A C := by
+>>>>>>> Stashed changes
     field_simp
   rw [h1, ratio_is_real A B C colin cnea]
   field_simp
@@ -61,6 +65,7 @@ theorem ratio_eq_ratio_div_ratio_minus_one (A B C : P) (cnea : C ≠ A) (colin :
     have h5 : VEC A C ≠ 0 := (ne_iff_vec_ne_zero A C).mp cnea
     field_simp
     norm_cast
+<<<<<<< Updated upstream
     have h6 : - (divratio A B C - 1) = (1 - divratio A B C) := by
       ring
     rw [← h6]
@@ -76,11 +81,15 @@ theorem ratio_eq_ratio_div_ratio_minus_one (A B C : P) (cnea : C ≠ A) (colin :
         rw [Vec.smul_cdiv_smul]
         rw [Vec.smul_cdiv_cancel _ h5]
         norm_cast
+=======
+    rw [Vec.neg_cdiv, Vec.smul_cdiv, Vec.cdiv_self h5, neg_div, ← div_neg]
+    simp
+>>>>>>> Stashed changes
   conv =>
     lhs
     unfold divratio
   rw [h4]
-  rw[Complex.ofReal_re]
+  rw [Complex.ofReal_re]
 
 theorem pt_eq_of_ratio_eq_of_ne_ne (A B C D : P) (cned : C ≠ D) (dnea : D ≠ A) (dneb : D ≠ B) (colinacd : colinear A C D) (colinbcd : colinear B C D) (req : divratio A C D = divratio B C D) : A = B := by
   have h0 : divratio C A D = divratio C B D := by
