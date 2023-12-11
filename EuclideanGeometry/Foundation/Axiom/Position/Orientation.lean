@@ -163,7 +163,7 @@ theorem odist_reverse_eq_neg_odist {α} (A : P) [DirFig α P] (df : α) : odist 
   rfl
 
 theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SEG_nd A B bnea) = odist D (SEG_nd A B bnea)) ↔ (wedge A B C = wedge A B D) := by
-  rw [wedge_eq_odist'_mul_length A B C bnea, wedge_eq_odist'_mul_length A B D bnea]
+  rw [wedge_eq_length_mul_odist' A B C bnea, wedge_eq_length_mul_odist' A B D bnea]
   have h0 : 0 ≠ Seg.length (SEG A B) := by
     rw [length_ne_zero_iff_nd]
     exact bnea
@@ -233,25 +233,25 @@ end point_toray
 
 section oriented_area
 
-theorem oarea_eq_length_mul_odist_div_two (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (SEG_nd A B bnea)) * (SEG A B).length) / 2:= by
+theorem oarea_eq_length_mul_odist_div_two (A B C : P) (bnea : B ≠ A) : oarea A B C = (SEG A B).length * odist C (SEG_nd A B bnea) / 2 := by
   unfold oarea
-  rw [wedge_eq_odist'_mul_length A B C bnea]
+  rw [wedge_eq_length_mul_odist' A B C bnea]
   have h0 : toDirLine (SEG_nd A B bnea) = toDirLine (RAY A B bnea) := rfl
   have h1 : odist C (RAY A B bnea) = odist C (SEG_nd A B bnea) := by
     unfold odist
     rw[h0]
   have h2 : odist C (RAY A B bnea) = odist' C (RAY A B bnea) := rfl
   rw [h2] at h1
-  rw[h1]
+  rw [h1]
 
-theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SEG_nd A B bnea) = odist D (SEG_nd A B bnea)) ↔ oarea A B C = oarea A B D := by
+theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : odist C (SEG_nd A B bnea) = odist D (SEG_nd A B bnea) ↔ oarea A B C = oarea A B D := by
   unfold oarea
   field_simp
   exact wedge_eq_wedge_iff_odist_eq_odist_of_ne A B C D bnea
 
-theorem oarea_eq_sine_mul_length_mul_length_div_two (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : oarea A B C = (sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) / 2 := by
+theorem oarea_eq_sin_mul_length_mul_length_div_two (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : oarea A B C = (SEG A B).length * (SEG A C).length * sin (Angle.mk_pt_pt_pt B A C bnea cnea).value / 2 := by
   unfold oarea
-  rw[wedge_eq_sine_mul_length_mul_length A B C bnea cnea]
+  rw [wedge_eq_length_mul_length_mul_sin A B C bnea cnea]
 
 theorem oarea_eq_zero_iff_colinear (A B C : P) : oarea A B C = 0 ↔ colinear A B C := by
   unfold oarea
