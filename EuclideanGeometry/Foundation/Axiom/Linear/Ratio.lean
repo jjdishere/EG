@@ -27,7 +27,7 @@ theorem ratio_is_real' (A B C : P) (colin : colinear A B C) (cnea : C ≠ A) : (
     (r • VEC A C / VEC A C).im = ((r : ℂ) • VEC A C / VEC A C).im := rfl
     _ = 0 := by
       rw [Vec.smul_cdiv_cancel _ h2]
-      simp only [Complex.ofReal_im]
+      rfl
 
 theorem ratio_is_real (A B C : P) (colin : colinear A B C) (cnea : C ≠ A) : (VEC A B)/(VEC A C) = divratio A B C := by
   have h0 : (divratio A B C : ℂ).re = ((VEC A B)/(VEC A C)).re := rfl
