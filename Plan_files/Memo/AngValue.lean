@@ -43,7 +43,7 @@ File Basic.Angle :
       section composite
       section special_value
       section group_hom `for simp direction`
-    section pos_neg_isnd
+    section pos_neg_isND
       section trichotomy
       section neg
       section toreal

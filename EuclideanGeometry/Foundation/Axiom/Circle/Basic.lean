@@ -49,7 +49,7 @@ end Circle
 section coercion
 
 -- this should not live here, this belongs to construction.
--- def Triangle_nd.toCir (tr_nd : Triangle_nd P) : Circle P := sorry
+-- def TriangleND.toCir (tr_nd : TriangleND P) : Circle P := sorry
 
 end coercion
 

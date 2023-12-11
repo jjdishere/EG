@@ -124,7 +124,7 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   let tri_nd_ADE := TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)
   let tri_nd_ABC := TRI_nd A B C hnd
   apply sim_of_SAS
-  simp only [Triangle_nd.edge₂,Triangle_nd.edge₃, Triangle.edge₂,Triangle.edge₃]
+  simp only [TriangleND.edge₂,TriangleND.edge₃, Triangle.edge₂,Triangle.edge₃]
   have tr13: tri_nd_ADE.1.point₃=E:= rfl
   have tr23: tri_nd_ABC.1.point₃ =C:= rfl
   have tr11: tri_nd_ADE.1.point₁=A:= rfl
