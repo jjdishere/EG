@@ -57,6 +57,21 @@ theorem Ray.pt_lies_int_pt_pt (A B : P) (h : B ≠ A) : B LiesInt (RAY _ _ h) :=
 
 theorem Ray.pt_lies_on_pt_pt (A B : P) (h : B ≠ A) : B LiesOn (RAY _ _ h) := by sorry
 
+theorem Ray.lieson_eq_dist {A : P} {r : Ray P} (h : A LiesOn r) : VEC r.1 A = (dist r.1 A) • r.2.unitVec := by
+  by_cases heq : A = r.1
+  · rw [← heq, vec_same_eq_zero, dist_self, zero_smul]
+  push_neg at heq
+  have h : A LiesInt r := ⟨h, heq⟩
+  have h₁ : RAY r.1 A h.2 = r := Ray.pt_pt_eq_ray h
+  calc
+    _ = (VEC_nd r.1 A h.2).1 := rfl
+    _ = ‖VEC_nd r.1 A h.2‖ • (VEC_nd r.1 A h.2).toDir.unitVec := by simp
+    _ = (dist r.1 A) • (VEC_nd r.1 A h.2).toDir.unitVec := by
+      rw [dist_comm, NormedAddTorsor.dist_eq_norm']
+      rfl
+    _ = (dist r.1 A) • (RAY r.1 A h.2).2.unitVec := rfl
+    _ = (dist r.1 A) • r.2.unitVec := by rw [h₁]
+
 /-SegND_eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source should be replaced by the following three
   midpoint → liesint seg_nd
   midpoint → dist source = dist target
@@ -64,4 +79,5 @@ theorem Ray.pt_lies_on_pt_pt (A B : P) (h : B ≠ A) : B LiesOn (RAY _ _ h) := b
 
   by the way in_seg shoud be renamed by current naming system
 -/
+
 end EuclidGeom

@@ -66,7 +66,7 @@ class DirFig (α : Type*) (P : outParam <| Type*) [outParam <| EuclideanPlane P]
   toDirLine_toLine_eq_toLine {F}: (toDirLine F).toLine = toLine F
   reverse : α → α
   rev_rev {F}: (reverse (reverse F) = F)
-  toDirLine_rev_eq_to_rev_dirline {F} : ((toDirLine F).reverse = toDirLine (reverse F))
+  toDirLine_rev_eq_to_rev_toDirLine {F} : ((toDirLine F).reverse = toDirLine (reverse F))
 
 section fig_to_obj
 variable {P : Type _} [EuclideanPlane P]
@@ -119,7 +119,7 @@ instance : DirFig (SegND P) P where
   toDirLine_toLine_eq_toLine := rfl
   reverse := SegND.reverse
   rev_rev := SegND.rev_rev_eq_self
-  toDirLine_rev_eq_to_rev_dirline := SegND.toDirLine_rev_eq_rev_toLine
+  toDirLine_rev_eq_to_rev_toDirLine := SegND.toDirLine_rev_eq_rev_toLine
 
 instance : DirFig (Ray P) P where
   carrier := Ray.carrier
@@ -135,7 +135,7 @@ instance : DirFig (Ray P) P where
   toDirLine_toLine_eq_toLine := rfl
   reverse := Ray.reverse
   rev_rev := Ray.rev_rev_eq_self
-  toDirLine_rev_eq_to_rev_dirline := Ray.toDirLine_rev_eq_rev_toLine
+  toDirLine_rev_eq_to_rev_toDirLine := Ray.toDirLine_rev_eq_rev_toLine
 
 instance : DirFig (DirLine P) P where
   carrier := DirLine.carrier
@@ -151,7 +151,7 @@ instance : DirFig (DirLine P) P where
   toDirLine_toLine_eq_toLine := rfl
   reverse := DirLine.reverse
   rev_rev := DirLine.rev_rev_eq_self
-  toDirLine_rev_eq_to_rev_dirline := by simp only [id_eq, implies_true, forall_const]
+  toDirLine_rev_eq_to_rev_toDirLine := by simp only [id_eq, implies_true, forall_const]
 
 instance : ProjFig (Line P) P where
   carrier := Line.carrier
@@ -176,7 +176,7 @@ theorem line_of_pt_toProj_eq_to_line {α} {A : P} [ProjFig α P] {F : α} (h : A
   mk_pt_proj_eq_of_eq_toProj (carrier_subset_toLine h) toLine_toProj_eq_toProj.symm
 
 theorem DirFig.rev_toDir_eq_neg_toDir {α : Type*} [DirFig α P] (l : α) : toDir' (reverse l) = - toDir' l :=
-  toDirLine_toDir_eq_toDir.symm.trans <| (congrArg toDir toDirLine_rev_eq_to_rev_dirline.symm).trans <|
+  toDirLine_toDir_eq_toDir.symm.trans <| (congrArg toDir toDirLine_rev_eq_to_rev_toDirLine.symm).trans <|
     rev_toDir_eq_neg_toDir.trans (neg_inj.mpr toDirLine_toDir_eq_toDir)
 
 theorem DirFig.rev_toProj_eq_toProj {α : Type*} [DirFig α P] (l : α) : toProj (reverse l) = toProj l :=
