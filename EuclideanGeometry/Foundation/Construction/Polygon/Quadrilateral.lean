@@ -363,10 +363,10 @@ theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
 theorem nd₂₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := (qdr_cvx.permute).nd₁₃
 
 /-- The non-degenerate diagonal from the first point and third point of a convex quadrilateral -/
-def diag_nd₁₃ : Seg_nd P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃
+def diag_nd₁₃ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃
 
 /-- The non-degenerate diagonal from the second point and fourth point of a convex quadrilateral -/
-def diag_nd₂₄ : Seg_nd P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄
+def diag_nd₂₄ : SegND P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄
 
 /-- Two diagonals are not parallel to each other -/
 theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := by
