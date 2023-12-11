@@ -582,16 +582,11 @@ lemma sub_cdiv (v₁ v₁' v₂ : Vec) : (v₁ - v₁') / v₂ = v₁ / v₂ - v
 lemma complex_smul_cdiv (z : ℂ) (v₁ v₂ : Vec) : z • v₁ / v₂ = z * (v₁ / v₂) := by
   simp_rw [cdiv_def, inner_smul_right, mul_div]
 
-<<<<<<< Updated upstream
-lemma smul_cdiv_smul (z₁ z₂ : ℂ) (v₁ v₂ : Vec) : (z₁ • v₁ / z₂ • v₂) = (z₁ / z₂) • v₁ / v₂ := by
-  sorry
-=======
 lemma mul_cdiv (z : ℂ) (v₁ v₂ : Vec) : z * (v₁ / v₂) = z • v₁ / v₂ :=
   (complex_smul_cdiv z v₁ v₂).symm
 
 lemma smul_cdiv {𝕜 : Type*} [IsROrC 𝕜] (z : 𝕜) (v₁ v₂ : Vec) : z • v₁ / v₂ = z • (v₁ / v₂) :=
   complex_smul_cdiv z v₁ v₂
->>>>>>> Stashed changes
 
 @[simp]
 lemma cdiv_smul_cancel (v₁ : Vec) {v₂ : Vec} (hv₂ : v₂ ≠ 0) : (v₁ / v₂) • v₂ = v₁ := by
@@ -1346,37 +1341,6 @@ instance : CircularOrder Dir where
 
 end CircularOrder
 
-<<<<<<< Updated upstream
-=======
-@[simp]
-theorem _root_.EuclidGeom.angle_toDir_unitVecND_left (v₁ v₂ : VecND) : VecND.angle v₁.toDir.unitVecND v₂ = VecND.angle v₁ v₂ := by
-  rw [← vsub_toDir, ← vsub_toDir]
-  simp
-
-@[simp]
-theorem _root_.EuclidGeom.angle_toDir_unitVecND_right (v₁ v₂ : VecND) : VecND.angle v₁ v₂.toDir.unitVecND = VecND.angle v₁ v₂ := by
-  rw [← vsub_toDir, ← vsub_toDir]
-  simp
-
-@[simp]
-theorem angle_unitVecND (d₁ d₂ : Dir) : VecND.angle d₁.unitVecND d₂.unitVecND = d₂ -ᵥ d₁ := by
-  induction d₁ using Dir.ind
-  induction d₂ using Dir.ind
-  simp
-
-@[simp]
-theorem inner_unitVec (d₁ d₂ : Dir) : ⟪d₁.unitVec, d₂.unitVec⟫_ℝ = (d₂ -ᵥ d₁).cos := by
-  simp [← VecND.norm_mul_cos]
-
-@[simp]
-theorem det_unitVec (d₁ d₂ : Dir) : Vec.det d₁.unitVec d₂.unitVec = (d₂ -ᵥ d₁).sin := by
-  simp [← VecND.norm_mul_sin]
-
-@[simp]
-theorem complex_inner_unitVec (d₁ d₂ : Dir) : ⟪d₁.unitVec, d₂.unitVec⟫_ℂ = (d₂ -ᵥ d₁).expMapCircle := by
-  simp [← VecND.norm_smul_expMapCircle]
-
->>>>>>> Stashed changes
 end Dir
 
 -- def Proj := Projectivization ℝ Vec
