@@ -731,11 +731,14 @@ theorem acongr_of_SAS (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length)
     constructor
     . intro cc
       have pos : (Angle.value (angle₁ tr_nd₁)).IsPos := (tr_nd₁.angle_pos_of_cclock cc).1
-      have pos' : (Angle.value (angle₁ tr_nd₂)).IsNeg := by rw [a₁] at pos ; exact AngValue.isNeg_of_neg_isPos pos
+      have pos' : (Angle.value (angle₁ tr_nd₂)).IsNeg := by
+        rw [a₁] at pos
+        exact AngValue.neg_isPos_iff_isNeg.mp pos
       exact tr_nd₂.clock_of_neg_angle (.inl pos')
     intro c
-    have neg : (Angle.value (angle₁ tr_nd₂)).IsNeg := (tr_nd₂.angle_neg_of_clock c).1
-    have neg' : (Angle.value (angle₁ tr_nd₁)).IsPos := by rw [a₁] ; exact AngValue.neg_isPos_of_isNeg neg
+    have neg' : (Angle.value (angle₁ tr_nd₁)).IsPos := by
+      rw [a₁]
+      exact AngValue.neg_isPos_iff_isNeg.mpr (tr_nd₂.angle_neg_of_clock c).1
     exact tr_nd₁.cclock_of_pos_angle (.inl neg')
   exact acongr_of_SSS_of_ne_orientation cosn₁ e₂ e₃ c
 
@@ -785,7 +788,7 @@ theorem acongr_of_ASA (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.valu
       have c₂ : ¬ tr_nd₂.is_cclock := by
         have temp := (tr_nd₁.angle_pos_of_cclock c).2.1
         simp only [a₂, Left.neg_pos_iff] at temp
-        exact Triangle_nd.clock_of_neg_angle _ (.inr (.inl (AngValue.isNeg_of_neg_isPos temp)))
+        exact Triangle_nd.clock_of_neg_angle _ (.inr (.inl (AngValue.neg_isPos_iff_isNeg.mp temp)))
       simp only [a₂, a₃] at a
       have b := tr_nd₂.angle_sum_eq_neg_pi_of_clock c₂
       sorry
@@ -793,7 +796,7 @@ theorem acongr_of_ASA (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.valu
       have c₂ : tr_nd₂.is_cclock := by
         have temp := (tr_nd₁.angle_neg_of_clock c).2.1
         simp only [a₂, Left.neg_neg_iff] at temp
-        exact Triangle_nd.cclock_of_pos_angle _ (.inr (.inl (AngValue.isPos_of_neg_isNeg temp)))
+        exact Triangle_nd.cclock_of_pos_angle _ (.inr (.inl (AngValue.neg_isNeg_iff_isPos.mp temp)))
       simp only [a₂, a₃] at a
       have b := tr_nd₂.angle_sum_eq_pi_of_cclock c₂
       sorry
