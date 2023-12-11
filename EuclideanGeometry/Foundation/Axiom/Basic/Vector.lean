@@ -993,6 +993,32 @@ lemma sameDir_rotate_angle_right (v₁ v₂ : VecND) :
     SameDir v₁ (VecND.rotate (angle v₂ v₁) v₂) :=
   (sameDir_rotate_angle_left v₂ v₁).symm
 
+theorem norm_mul_cos (v₁ v₂ : VecND) :
+    ‖v₁‖ * ‖v₂‖ * (VecND.angle v₁ v₂).cos = ⟪v₁.1, v₂.1⟫_ℝ := by
+  rw [angle, vsub_def, toMul_ofMul, coe_cdiv, AngValue.cos_coe,
+    Complex.cos_arg (Vec.cdiv_ne_zero.mpr ⟨VecND.ne_zero _, VecND.ne_zero _⟩), Vec.abs_cdiv,
+    Vec.cdiv_def, Vec.complex_inner_apply, Vec.real_inner_apply, Vec.det_apply]
+  norm_cast
+  rw [Complex.div_ofReal_re]
+  field_simp
+  ring
+
+theorem norm_mul_sin (v₁ v₂ : VecND) :
+    ‖v₁‖ * ‖v₂‖ * (VecND.angle v₁ v₂).sin = Vec.det v₁.1 v₂.1 := by
+  rw [angle, vsub_def, toMul_ofMul, coe_cdiv, AngValue.sin_coe,
+    Complex.sin_arg, Vec.abs_cdiv,
+    Vec.cdiv_def, Vec.complex_inner_apply, Vec.real_inner_apply, Vec.det_apply]
+  norm_cast
+  rw [Complex.div_ofReal_im]
+  field_simp
+  ring
+
+theorem norm_smul_expMapCircle (v₁ v₂ : VecND) :
+    (‖v₁‖ * ‖v₂‖) • ((VecND.angle v₁ v₂).expMapCircle : ℂ) = ⟪v₁.1, v₂.1⟫_ℂ := by
+  ext
+  · simp [AngValue.coe_expMapCircle, VecND.norm_mul_cos]
+  · simp [AngValue.coe_expMapCircle, VecND.norm_mul_sin]
+
 end VecND
 
 abbrev Dir := Module.Ray ℝ Vec
@@ -1127,6 +1153,9 @@ instance : AddTorsor AngValue Dir where
 lemma rotate_eq_vadd (θ : AngValue) (d : Dir) : rotate θ d = θ +ᵥ d := rfl
 
 @[simp]
+lemma vsub_toDir (v₁ v₂ : VecND) : v₂.toDir -ᵥ v₁.toDir = VecND.angle v₁ v₂ := rfl
+
+@[simp]
 lemma vadd_neg (θ : AngValue) (d : Dir) : θ +ᵥ -d = -(θ +ᵥ d) :=
   map_neg (rotate θ) d
 
@@ -1255,6 +1284,33 @@ instance : CircularOrder Dir where
   btw_total := sorry
 
 end CircularOrder
+
+@[simp]
+theorem _root_.EuclidGeom.angle_toDir_unitVecND_left (v₁ v₂ : VecND) : VecND.angle v₁.toDir.unitVecND v₂ = VecND.angle v₁ v₂ := by
+  rw [← vsub_toDir, ← vsub_toDir]
+  simp
+
+@[simp]
+theorem _root_.EuclidGeom.angle_toDir_unitVecND_right (v₁ v₂ : VecND) : VecND.angle v₁ v₂.toDir.unitVecND = VecND.angle v₁ v₂ := by
+  rw [← vsub_toDir, ← vsub_toDir]
+  simp
+
+@[simp]
+theorem angle_unitVecND (d₁ d₂ : Dir) : VecND.angle d₁.unitVecND d₂.unitVecND = d₂ -ᵥ d₁ := by
+  induction d₁ using Dir.ind
+  induction d₂ using Dir.ind
+  simp
+
+@[simp]
+theorem inner_unitVec (d₁ d₂ : Dir) : ⟪d₁.unitVec, d₂.unitVec⟫_ℝ = (d₂ -ᵥ d₁).cos := by
+  simp [← VecND.norm_mul_cos]
+
+@[simp]
+theorem det_unitVec (d₁ d₂ : Dir) : Vec.det d₁.unitVec d₂.unitVec = (d₂ -ᵥ d₁).sin := by
+  simp [← VecND.norm_mul_sin]
+
+theorem complex_inner_unitVec (d₁ d₂ : Dir) : ⟪d₁.unitVec, d₂.unitVec⟫_ℂ = (d₂ -ᵥ d₁).expMapCircle := by
+  simp [← VecND.norm_smul_expMapCircle]
 
 end Dir
 

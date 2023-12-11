@@ -1,6 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
-import EuclideanGeometry.Foundation.Axiom.Basic.Computation
 
 noncomputable section
 namespace EuclidGeom
@@ -17,7 +16,7 @@ theorem cosine_rule' (A B C : P) (hab : B ≠ A) (hac : C ≠ A) :
     2 * (‖VEC_nd A B hab‖ * ‖VEC_nd A C hac‖ *
       cos (VecND.angle (VEC_nd A B hab) (VEC_nd A C hac))) =
       Seg.length (SEG A B) ^ 2 + Seg.length (SEG A C) ^ 2 - Seg.length (SEG B C) ^ 2 := by
-  rw [norm_mul_norm_mul_cos_angle_eq_inner_of_VecND, length_sq_eq_inner_toVec_toVec,
+  rw [VecND.norm_mul_cos, length_sq_eq_inner_toVec_toVec,
     length_sq_eq_inner_toVec_toVec, length_sq_eq_inner_toVec_toVec, seg_toVec_eq_vec,
     seg_toVec_eq_vec, seg_toVec_eq_vec, ← vec_sub_vec A B C, inner_sub_sub_self,
     ← InnerProductSpace.conj_symm, IsROrC.conj_to_real]
