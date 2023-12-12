@@ -59,7 +59,11 @@ lemma tangent_circle_intersected {ω : Circle P} {p : P} (h : p LiesOut ω) : (C
   by_cases hi : ω.radius - dist (SEG p ω.center).midpoint ω.center ≥ 0
   · rw [abs_of_nonneg hi]
     apply sub_lt_iff_lt_add.mpr
-    rw [← two_mul, Seg.midpt_target_length_eq, dist_comm]
+    rw [← two_mul]
+    unfold Seg.midpoint
+    rw [NormedAddTorsor.dist_eq_norm', ← show ‖(2 : ℝ)‖ = 2 by norm_num, ← norm_smul, vadd_vsub_assoc, smul_add, smul_smul]
+    norm_num
+    rw [two_smul, ← add_assoc, ← Vec.mkPtPt, vec_add_vec, vec_same_eq_zero, zero_add, Vec.mkPtPt, ← NormedAddTorsor.dist_eq_norm', dist_comm]
     exact h
   push_neg at hi
   rw [abs_of_neg hi, ← zero_sub]

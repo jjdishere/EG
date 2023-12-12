@@ -33,6 +33,7 @@ import EuclideanGeometry.Foundation.Axiom.Circle.Basic
 import EuclideanGeometry.Foundation.Axiom.Circle.CCPosition
 import EuclideanGeometry.Foundation.Axiom.Circle.LCPosition
 import EuclideanGeometry.Foundation.Axiom.Circle.IncribedAngle
+import EuclideanGeometry.Foundation.Axiom.Circle.CirclePower
 
 /- Tactic -/
 /- Tactic.Congruence -/
