@@ -34,15 +34,15 @@ def edge₃ (tr : Triangle P) : Seg P := Seg.mk tr.1 tr.2
 def area (tr : Triangle P) : ℝ := sorry
 
 @[pp_dot]
-def is_nd (tr : Triangle P) : Prop := ¬ colinear tr.1 tr.2 tr.3
+def IsND (tr : Triangle P) : Prop := ¬ colinear tr.1 tr.2 tr.3
 
 end Triangle
 
-def Triangle_nd (P : Type u) [EuclideanPlane P] := { tr : Triangle P // tr.is_nd }
+def TriangleND (P : Type u) [EuclideanPlane P] := { tr : Triangle P // tr.IsND }
 
-namespace Triangle_nd
+namespace TriangleND
 
-variable {P : Type u} [EuclideanPlane P] (tr_nd : Triangle_nd P)
+variable {P : Type u} [EuclideanPlane P] (tr_nd : TriangleND P)
 
 @[pp_dot]
 def point₁ : P := tr_nd.1.1
@@ -69,13 +69,13 @@ def edge₂ : Seg P := tr_nd.1.edge₂
 def edge₃ : Seg P := tr_nd.1.edge₃
 
 @[pp_dot]
-def edge_nd₁ : Seg_nd P := ⟨tr_nd.1.edge₁, tr_nd.nontriv₁⟩
+def edge_nd₁ : SegND P := ⟨tr_nd.1.edge₁, tr_nd.nontriv₁⟩
 
 @[pp_dot]
-def edge_nd₂ : Seg_nd P := ⟨tr_nd.1.edge₂, tr_nd.nontriv₂⟩
+def edge_nd₂ : SegND P := ⟨tr_nd.1.edge₂, tr_nd.nontriv₂⟩
 
 @[pp_dot]
-def edge_nd₃ : Seg_nd P := ⟨tr_nd.1.edge₃, tr_nd.nontriv₃⟩
+def edge_nd₃ : SegND P := ⟨tr_nd.1.edge₃, tr_nd.nontriv₃⟩
 
 @[pp_dot]
 def area : ℝ := tr_nd.1.area
@@ -93,7 +93,7 @@ def angle₂ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₁) (tr_nd.nont
 @[pp_dot]
 def angle₃ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₂) (tr_nd.nontriv₁).symm
 
-end Triangle_nd
+end TriangleND
 
 variable {P : Type u} [EuclideanPlane P]
 
@@ -102,10 +102,10 @@ namespace Triangle
 -- When we have DirFig, rewrite this definition.
 protected def IsInt (A : P) (tr : Triangle P) : Prop := by
   by_cases h : colinear tr.1 tr.2 tr.3
-  -- why not using ¬ tr.is_nd?
+  -- why not using ¬ tr.IsND?
   · exact False
-  · let tr_nd : Triangle_nd P := ⟨tr, h⟩
-    exact (if tr_nd.is_cclock then A LiesOnLeft Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩ else A LiesOnRight Seg_nd.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩)
+  · let tr_nd : TriangleND P := ⟨tr, h⟩
+    exact (if tr_nd.is_cclock then A LiesOnLeft SegND.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnLeft SegND.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnLeft SegND.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩ else A LiesOnRight SegND.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnRight SegND.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnRight SegND.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩)
 
 protected def IsOn (A : P) (tr : Triangle P) : Prop := Triangle.IsInt A tr ∨ A LiesOn tr.edge₁ ∨ A LiesOn tr.edge₂ ∨ A LiesOn tr.edge₃
 
@@ -114,7 +114,7 @@ protected def carrier (tr : Triangle P) : Set P := { p : P | Triangle.IsOn p tr 
 protected def interior (tr : Triangle P) : Set P := { p : P | Triangle.IsInt p tr }
 
 
-instance : Interior Triangle where
+instance : Interior (Triangle P) P where
   interior := Triangle.interior
 
 /-
@@ -125,12 +125,12 @@ instance : IntFig Triangle where
 
 end Triangle
 
-namespace Triangle_nd
+namespace TriangleND
 
-protected def IsInt (A : P) (tr_nd : Triangle_nd P) : Prop := by
-  exact (if tr_nd.is_cclock then A LiesOnLeft Seg_nd.toRay ⟨tr_nd.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr_nd.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnLeft Seg_nd.toRay ⟨tr_nd.edge₃, tr_nd.nontriv₃⟩ else A LiesOnRight Seg_nd.toRay ⟨tr_nd.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr_nd.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnRight Seg_nd.toRay ⟨tr_nd.edge₃, tr_nd.nontriv₃⟩)
+protected def IsInt (A : P) (tr_nd : TriangleND P) : Prop := by
+  exact (if tr_nd.is_cclock then A LiesOnLeft SegND.toRay ⟨tr_nd.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnLeft SegND.toRay ⟨tr_nd.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnLeft SegND.toRay ⟨tr_nd.edge₃, tr_nd.nontriv₃⟩ else A LiesOnRight SegND.toRay ⟨tr_nd.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnRight SegND.toRay ⟨tr_nd.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnRight SegND.toRay ⟨tr_nd.edge₃, tr_nd.nontriv₃⟩)
 
-protected def IsOn (A : P) (tr_nd : Triangle_nd P) : Prop := Triangle_nd.IsInt A tr_nd ∨ A LiesOn tr_nd.edge₁ ∨ A LiesOn tr_nd.edge₂ ∨ A LiesOn tr_nd.edge₃
+protected def IsOn (A : P) (tr_nd : TriangleND P) : Prop := TriangleND.IsInt A tr_nd ∨ A LiesOn tr_nd.edge₁ ∨ A LiesOn tr_nd.edge₂ ∨ A LiesOn tr_nd.edge₃
 
 protected def carrier (tr_nd : Triangle P) : Set P := { p : P | Triangle.IsOn p tr_nd }
 
@@ -147,20 +147,20 @@ instance : IntFig Triangle where
   interior_subset_carrier := fun _ [EuclideanPlane _] _ _ => Or.inl
 -/
 
-end Triangle_nd
+end TriangleND
 
-def Triangle_nd.mk (A B C : P) (h : ¬ colinear A B C) : Triangle_nd P := Subtype.mk (Triangle.mk A B C) h
+def TriangleND.mk (A B C : P) (h : ¬ colinear A B C) : TriangleND P := Subtype.mk (Triangle.mk A B C) h
 
 scoped notation "TRI" => Triangle.mk
 scoped notation "▵" => Triangle.mk
-scoped notation "TRI_nd" A:max B:max C:max h:max => EuclidGeom.Triangle_nd.mk A B C h
+scoped notation "TRI_nd" A:max B:max C:max h:max => EuclidGeom.TriangleND.mk A B C h
 
 
 namespace Triangle
 
-variable (tr : Triangle P) (tr_nd : Triangle_nd P)
+variable (tr : Triangle P) (tr_nd : TriangleND P)
 
--- The following theorems are only related to tr_nd, so I move them to namespace Triangle_nd
+-- The following theorems are only related to tr_nd, so I move them to namespace TriangleND
 
 /-
 theorem angle_pos_of_cclock (cclock : tr_nd.is_cclock) : 0 < tr_nd.angle₁.value ∧ 0 < tr_nd.angle₂.value ∧ 0 < tr_nd.angle₃.value := by sorry
@@ -171,7 +171,7 @@ theorem cclock_of_pos_angle (h : 0 < tr_nd.angle₁.value ∨ 0 < tr_nd.angle₂
 
 theorem clock_of_neg_angle (h : tr_nd.angle₁.value < 0 ∨ tr_nd.angle₂.value < 0 ∨ tr_nd.angle₃.value < 0) :¬ tr_nd.is_cclock := sorry
 
-theorem pos_pos_or_neg_neg_of_iff_cclock {tr_nd₁ tr_nd₂ : Triangle_nd P} : (tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) ↔ (0 < tr_nd₁.angle₁.value ∧ 0 < tr_nd₂.angle₁.value) ∨ (tr_nd₁.angle₁.value < 0 ∧ tr_nd₂.angle₁.value < 0) := by
+theorem pos_pos_or_neg_neg_of_iff_cclock {tr_nd₁ tr_nd₂ : TriangleND P} : (tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) ↔ (0 < tr_nd₁.angle₁.value ∧ 0 < tr_nd₂.angle₁.value) ∨ (tr_nd₁.angle₁.value < 0 ∧ tr_nd₂.angle₁.value < 0) := by
   constructor
   · intro k
     by_cases tr_nd₁.is_cclock
@@ -207,28 +207,31 @@ theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.len
   rw [l₃, ← neg_vec tr.point₂ _, norm_neg, ← vec_add_vec tr.point₂ tr.point₃ tr.point₁]
   exact norm_add_le _ _
 
-theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr.edge₃.length → ¬ tr.is_nd  := by
+theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr.edge₃.length → ¬ tr.IsND  := by
   let A := tr.point₁
   let B := tr.point₂
   let C := tr.point₃
   have l₃ : tr.edge₃.length = norm (VEC A B) := rfl
   rw [l₃, ← neg_vec B _, norm_neg, ← vec_add_vec B C A]
   intro eq
-  unfold is_nd
-  let g := Complex.sameRay_iff.2 ((Complex.abs_add_eq_iff).1 eq.symm)
+  unfold IsND
+  rw [not_not]
   by_cases h₁ : VEC B C = 0
-  · simp only [(eq_iff_vec_eq_zero B C).2 h₁, not_not]
+  · simp only [(eq_iff_vec_eq_zero B C).2 h₁]
     apply flip_colinear_fst_trd
     exact triv_colinear _ _
   · by_cases h₂ : VEC C A = 0
-    · simp only [(eq_iff_vec_eq_zero C A).2 h₂, not_not]
+    · simp only [(eq_iff_vec_eq_zero C A).2 h₂]
       apply flip_colinear_snd_trd
       exact triv_colinear _ _
-    · rcases SameRay.exists_pos g h₁ h₂ with ⟨_, ⟨_, ⟨_, ⟨_, g⟩⟩⟩⟩
+    · have g : SameRay ℝ (VEC B C) (VEC C A)
+      · rw [sameRay_iff_norm_add, ← eq]
+        rfl
+      rcases SameRay.exists_pos g h₁ h₂ with ⟨_, ⟨_, ⟨_, ⟨_, g⟩⟩⟩⟩
       rw [← neg_vec C B, ← neg_one_smul ℝ, ← mul_smul, mul_neg_one, ← eq_inv_smul_iff₀ (by linarith), ← mul_smul] at g
-      exact not_not.2 (perm_colinear_snd_trd_fst (colinear_of_vec_eq_smul_vec g))
+      exact perm_colinear_snd_trd_fst (colinear_of_vec_eq_smul_vec g)
 
-theorem triangle_ineq' (nontriv : tr.is_nd) : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length := by
+theorem triangle_ineq' (nontriv : tr.IsND) : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length := by
   have ne : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length := by
     by_contra h
     let g := trivial_of_edge_sum_eq_edge tr h
@@ -239,9 +242,9 @@ theorem triangle_ineq' (nontriv : tr.is_nd) : tr.edge₁.length + tr.edge₂.len
 
 /- The following two theorems are totally wrong:
 
-theorem nontrivial_of_edge_sum_ne_edge : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length → tr.is_nd  := by
+theorem nontrivial_of_edge_sum_ne_edge : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length → tr.IsND  := by
 
-theorem nontrivial_of_edge_sum_gt_edge : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length → tr.is_nd  := sorry
+theorem nontrivial_of_edge_sum_gt_edge : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length → tr.IsND  := sorry
 
 So funny. Can you get it? -/
 
@@ -250,9 +253,9 @@ theorem edge_sum_eq_edge_iff_colinear :  colinear tr.1 tr.2 tr.3 ↔ (tr.edge₁
 
 end Triangle
 
-namespace Triangle_nd
+namespace TriangleND
 
-variable (tr_nd : Triangle_nd P)
+variable (tr_nd : TriangleND P)
 --`Rewrite this Part!!!!`
 theorem angle_pos_of_cclock (cclock : tr_nd.is_cclock) : tr_nd.angle₁.value.IsPos ∧ tr_nd.angle₂.value.IsPos ∧ tr_nd.angle₃.value.IsPos := by sorry
 
@@ -262,7 +265,7 @@ theorem cclock_of_pos_angle (h : tr_nd.angle₁.value.IsPos ∨ tr_nd.angle₂.v
 
 theorem clock_of_neg_angle (h : tr_nd.angle₁.value.IsNeg ∨ tr_nd.angle₂.value.IsNeg ∨ tr_nd.angle₃.value.IsNeg) :¬ tr_nd.is_cclock := sorry
 
-theorem pos_pos_or_neg_neg_of_iff_cclock {tr_nd₁ tr_nd₂ : Triangle_nd P} : (tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) ↔ (tr_nd₁.angle₁.value.IsPos ∧ tr_nd₂.angle₁.value.IsPos) ∨ (tr_nd₁.angle₁.value.IsNeg ∧ tr_nd₂.angle₁.value.IsNeg) := by
+theorem pos_pos_or_neg_neg_of_iff_cclock {tr_nd₁ tr_nd₂ : TriangleND P} : (tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) ↔ (tr_nd₁.angle₁.value.IsPos ∧ tr_nd₂.angle₁.value.IsPos) ∨ (tr_nd₁.angle₁.value.IsNeg ∧ tr_nd₂.angle₁.value.IsNeg) := by
   constructor
   · intro k
     by_cases h : tr_nd₁.is_cclock
@@ -295,6 +298,6 @@ theorem angle_sum_eq_neg_pi_of_clock (clock : ¬ tr_nd.is_cclock): tr_nd.angle�
 
 theorem triangle_ineq' : tr_nd.edge₁.length + tr_nd.edge₂.length > tr_nd.edge₃.length := sorry
 
-end Triangle_nd
+end TriangleND
 
 end EuclidGeom

@@ -17,7 +17,7 @@ Prove that $CD = 2 \cdot CE$. -/
   -- A ≠ B
   lemma a_ne_b : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
   -- Since D is on line AB and AB = BD, it is trivial that D is on ray AB. Position can be determined here.
-  variable {D : P} {D_on_ray : D LiesInt (SEG_nd A B a_ne_b).extension }
+  variable {D : P} {D_on_ray : D LiesInt (RAY A B a_ne_b) }
   variable {D_ray_position : (SEG A B).length = (SEG B D).length }
   -- As E is on AB, AE = EB, we can do the same with regard to E.
   variable {E : P} {E_midpoint : E = (SEG A B).midpoint}
@@ -50,9 +50,9 @@ Prove that $BD = AC + CD$.-/
   -- Direct from the problem statement
   variable (hang : 2 * ∠ C B A c_ne_b a_ne_b = ∠ A C B a_ne_c b_ne_c)
   -- Define segment AD, with A ≠ D
-  variable {height : Seg_nd P} {defheight : height = (SEG A D)}
+  variable {height : SegND P} {defheight : height = (SEG A D)}
   -- Define base BC. Possible improvement here.
-  variable {base : Seg_nd P} {defbase : base = (SEG B C)}
+  variable {base : SegND P} {defbase : base = (SEG B C)}
   -- Perpendicular base and height, directly stated
   variable {heightproperty : height ⟂ base}
   -- Main theorem statement
