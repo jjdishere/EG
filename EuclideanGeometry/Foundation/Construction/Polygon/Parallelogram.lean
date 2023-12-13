@@ -82,30 +82,73 @@ theorem Parallelogram_not_colinear₁₂₃ (P : Type _) [EuclideanPlane P] (qdr
      exact (ne_of_not_colinear h).1.symm
    have hca: qdr_nd.1.3 ≠ qdr_nd.1.1 :=by
      exact (ne_of_not_colinear h).2.1.symm
+   have had : qdr_nd.1.1 ≠ qdr_nd.1.4 := by sorry
+   have hbd : qdr_nd.1.2 ≠ qdr_nd.1.4 := by sorry
+   have hcd : qdr_nd.1.3 ≠ qdr_nd.1.4 := by sorry
 
    have t : ¬ colinear qdr_nd.point₂ qdr_nd.point₁ qdr_nd.point₃ := by
      by_contra k
-     simp [flip_colinear_fst_snd k] at h
+     simp only [flip_colinear_fst_snd k, not_true_eq_false] at h
    have x : ¬ colinear_of_nd hbc hba.symm := by
      unfold colinear at t
-     simp [hbc,hba.symm,hca] at t
-     simp [t]
-
+     simp only [hca, hbc, hba.symm, or_self, dite_false] at t
+     simp only [t, not_false_eq_true]
+   have l₁ : qdr_nd.edge_nd₁₂.toProj=Vec_nd.toProj ⟨VEC qdr_nd.1.1 qdr_nd.1.2, (ne_iff_vec_ne_zero _ _).mp hba⟩ := by rfl
+   have l₁' : qdr_nd.edge_nd₁₂.toProj=Vec_nd.toProj ⟨VEC qdr_nd.1.2 qdr_nd.1.1, (ne_iff_vec_ne_zero _ _).mp hba.symm⟩ := by
+     have y₁:Vec_nd.toProj ⟨VEC qdr_nd.1.2 qdr_nd.1.1, (ne_iff_vec_ne_zero _ _).mp hba.symm⟩=Vec_nd.toProj ⟨VEC qdr_nd.1.1 qdr_nd.1.2, (ne_iff_vec_ne_zero _ _).mp hba⟩ := by
+       have z₁: VEC qdr_nd.1.2 qdr_nd.1.1 = (-1)•VEC qdr_nd.1.1 qdr_nd.1.2 := by sorry
+       sorry
+     simp only [l₁, ne_eq, y₁]
+   have l₂ : qdr_nd.edge_nd₂₃.toProj=Vec_nd.toProj ⟨VEC qdr_nd.1.2 qdr_nd.1.3, (ne_iff_vec_ne_zero _ _).mp hbc.symm⟩ := by rfl
+   have l₂' : qdr_nd.edge_nd₂₃.toProj=Vec_nd.toProj ⟨VEC qdr_nd.1.3 qdr_nd.1.2, (ne_iff_vec_ne_zero _ _).mp hbc⟩ := by sorry
+   have l₃ : qdr_nd.edge_nd₃₄.toProj=Vec_nd.toProj ⟨VEC qdr_nd.1.3 qdr_nd.1.4, (ne_iff_vec_ne_zero _ _).mp hcd.symm⟩ := by rfl
+   have l₃' : qdr_nd.edge_nd₃₄.toProj=Vec_nd.toProj ⟨VEC qdr_nd.1.4 qdr_nd.1.3, (ne_iff_vec_ne_zero _ _).mp hcd⟩ := by sorry
+   have l₄ : qdr_nd.edge_nd₁₄.toProj=Vec_nd.toProj ⟨VEC qdr_nd.1.1 qdr_nd.1.4, (ne_iff_vec_ne_zero _ _).mp had.symm⟩ := by rfl
+   have l₄' : qdr_nd.edge_nd₁₄.toProj=Vec_nd.toProj ⟨VEC qdr_nd.1.4 qdr_nd.1.1, (ne_iff_vec_ne_zero _ _).mp had⟩ := by sorry
    have s : ¬ qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₂₃.toProj := by
      unfold colinear_of_nd at x
-     sorry
-   have v₁ : qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₃₄.toProj := by sorry
+     simp only [l₁', ne_eq, l₂, x, not_false_eq_true]
+   have v₁ : qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₃₄.toProj := by
+     unfold Quadrilateral.IsParallelogram at para
+   have v₁₁ : toProj qdr_nd.edge_nd₁₂ = toProj qdr_nd.edge_nd₃₄ := by exact v₁
    have v₂ : qdr_nd.edge_nd₂₃.toProj = qdr_nd.edge_nd₁₄.toProj := by sorry
+   have v₂₁ : toProj qdr_nd.edge_nd₂₃ = toProj qdr_nd.edge_nd₁₄ := by exact v₂
    have s₁ : ¬ qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₂₃.toProj := by sorry
    have s₂ : ¬ qdr_nd.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj := by sorry
    have s₃ : ¬ qdr_nd.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.toProj := by sorry
+   have s₄ : ¬ qdr_nd.edge_nd₁₄.toProj = qdr_nd.edge_nd₁₂.toProj := by sorry
    constructor
-   sorry
    constructor
-   sorry
-   sorry
-   sorry
-   sorry
+   unfold parallel
+   simp only [v₁₁]
+   unfold parallel
+   simp only [v₂₁]
+   constructor
+   simp only [h, not_false_eq_true]
+   by_contra m₃
+   have m₂ :  ¬ colinear qdr_nd.point₃ qdr_nd.point₂ qdr_nd.point₄ := by
+     by_contra k₁
+     unfold colinear at k₁
+     simp [hbd.symm,hcd,hbc] at k₁
+     unfold colinear_of_nd at k₁
+     simp [s₂,l₂'.symm,l₃.symm] at k₁
+   simp [flip_colinear_fst_snd m₃] at m₂
+   by_contra m₅
+   have m₄ :  ¬ colinear qdr_nd.point₄ qdr_nd.point₃ qdr_nd.point₁ := by
+     by_contra k₂
+     unfold colinear at k₂
+     simp [hca.symm,hcd,had.symm] at k₂
+     unfold colinear_of_nd at k₂
+     simp [s₃,l₄'.symm,l₃'.symm] at k₂
+   simp [flip_colinear_fst_snd m₅] at m₄
+   by_contra m₇
+   have m₆ :  ¬ colinear qdr_nd.point₁ qdr_nd.point₄ qdr_nd.point₂ := by
+     by_contra k₃
+     unfold colinear at k₃
+     simp [hbd,hba.symm,had.symm] at k₃
+     unfold colinear_of_nd at k₃
+     simp [s₄,l₄.symm,l₁.symm] at k₃
+   simp [flip_colinear_fst_snd m₇] at m₆
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 2nd, 3rd and 4th points are not colinear, then qdr_nd is a parallelogram_nd.-/
 theorem Parallelogram_not_colinear₂₃₄ (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (para: qdr_nd.1 IsParallelogram) (h: ¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd IsParallelogram_nd := by
