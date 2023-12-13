@@ -2,9 +2,11 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Basic.Angle
 
 noncomputable section
+open scoped Real
+
 namespace EuclidGeom
 
-def DirObj.AngDiff [DirObj α] [DirObj β] (F : α) (G : β) : AngValue := Dir.AngDiff (toDir F) (toDir G)
+def DirObj.AngDiff [DirObj α] [DirObj β] (F : α) (G : β) : AngValue := toDir G -ᵥ toDir F
 
 /- Define values of oriented angles, in (-π, π], modulo 2 π. -/
 /- Define oriented angles, ONLY taking in two rays starting at one point!  And define ways to construct oriented angles, by given three points on the plane, and etc.  -/
@@ -29,22 +31,24 @@ def mk_ray_pt (ray : Ray P) (A : P) (h : A ≠ ray.source ) : Angle P where
   source_eq_source := rfl
 
 def mk_dirline_dirline (l₁ l₂ : DirLine P) (h : ¬ l₁ ∥ l₂) : Angle P where
-  start_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toline_of_not_para _ _ h) ) l₁ (Line.inx_lies_on_fst (DirLine.not_para_toline_of_not_para _ _ h))
-  end_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toline_of_not_para _ _ h) ) l₂ (Line.inx_lies_on_snd (DirLine.not_para_toline_of_not_para _ _ h))
+  start_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toLine_of_not_para _ _ h) ) l₁ (Line.inx_lies_on_fst (DirLine.not_para_toLine_of_not_para _ _ h))
+  end_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toLine_of_not_para _ _ h) ) l₂ (Line.inx_lies_on_snd (DirLine.not_para_toLine_of_not_para _ _ h))
   source_eq_source := rfl
 
-def value (A : Angle P) : AngValue := DirObj.AngDiff A.start_ray A.end_ray
+def value (A : Angle P) : AngValue := A.end_ray.toDir -ᵥ A.start_ray.toDir
 
-def is_nd (ang : Angle P) : Prop := ang.value ≠ 0 ∧ ang.value ≠ π
+def IsND (ang : Angle P) : Prop := ang.value ≠ 0 ∧ ang.value ≠ π
 
 protected def source (ang : Angle P) : P := ang.start_ray.source
 
 end Angle
 
-theorem angle_value_eq_dir_angle (r r' : Ray P) (h : r.source = r'.source) : (Angle.mk r r' h).value = Dir.AngDiff r.toDir r'.toDir := rfl
+theorem angle_value_eq_dir_angle (r r' : Ray P) (h : r.source = r'.source) : (Angle.mk r r' h).value = r'.toDir -ᵥ r.toDir := rfl
 
-def value_of_angle_of_three_point_nd (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): AngValue :=
-(Angle.mk_pt_pt_pt _ _ _ h₁ h₂).value
+def value_of_angle_of_three_point_nd (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O) : AngValue :=
+  (Angle.mk_pt_pt_pt _ _ _ h₁ h₂).value
+
+def value_of_angle_of_two_ray_of_eq_source (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : AngValue := (Angle.mk start_ray end_ray h).value
 
 scoped notation "ANG" => Angle.mk_pt_pt_pt
 
@@ -103,12 +107,14 @@ end Angle
 theorem eq_end_ray_of_eq_value_eq_start_ray {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (v : ang₁.value = ang₂.value) : ang₁.end_ray = ang₂.end_ray := by
   ext : 1
   rw [← ang₁.source_eq_source, ← ang₂.source_eq_source, (congrArg (fun z => z.source)) h]
+  sorry
+  /-
   let g := (congrArg (fun z => AngValue.toDir z)) v
   unfold Angle.value DirObj.AngDiff Dir.AngDiff at g
   simp only [div_toangvalue_eq_toangvalue_sub, sub_todir_eq_todir_div, toangvalue_todir_eq_self] at g
   rw [h] at g
   simp only [div_left_inj] at g
-  exact g
+  exact g-/
 
 theorem eq_start_ray_of_eq_value_eq_end_ray {ang₁ ang₂ : Angle P} (h : ang₁.end_ray = ang₂.end_ray) (v : ang₁.value = ang₂.value) : ang₁.start_ray = ang₂.start_ray := sorry
 

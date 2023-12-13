@@ -17,7 +17,7 @@ Prove that $AF = EF$. -/
   variable {A B C : P} {hnd : ¬ colinear A B C}
   lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
   variable {D : P} {median_D_position : D = (SEG B C).midpoint}
-  variable {median : Seg_nd P} {defmedian: median = (SEG A D)}
+  variable {median : SegND P} {defmedian: median = (SEG A D)}
   variable {E : P} {E_on_ray : E LiesInt (SEG A D)}
   variable {E_ray_position : (SEG B E).length = (SEG A C).length}
   variable {F : P} {intersection_bridge : F LiesInt (SEG A C) ∧ F LiesInt (SEG B E)}
