@@ -6,7 +6,7 @@ open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic Qq
 
 section congr
 
-def liftOrElse [Monad m] (xs : m $ Option A) (ys : m $ Option A) : m (Option A) := do
+def liftOrElse {m A} [Monad m] (xs : m $ Option A) (ys : m $ Option A) : m (Option A) := do
   match <- xs with
   | .some x => return x
   | .none => match <- ys with
@@ -33,9 +33,9 @@ def getCongrDeclNames : TacticM (List Name) := withMainContext do
     | .none => acc
 
 def congrSaLemmas : List Name :=
-  [ ``Triangle_nd.congr_of_SAS
-  , ``Triangle_nd.congr_of_ASA
-  , ``Triangle_nd.congr_of_AAS
+  [ ``TriangleND.congr_of_SAS
+  , ``TriangleND.congr_of_ASA
+  , ``TriangleND.congr_of_AAS
   ]
 
 syntax (name := congr_sa) "congr_sa" : tactic
@@ -80,9 +80,9 @@ def getACongrDeclNames : TacticM (List Name) := withMainContext do
     | .none => acc
 
 def acongrSaLemmas : List Name :=
-  [ ``Triangle_nd.acongr_of_SAS
-  , ``Triangle_nd.acongr_of_ASA
-  , ``Triangle_nd.acongr_of_AAS
+  [ ``TriangleND.acongr_of_SAS
+  , ``TriangleND.acongr_of_ASA
+  , ``TriangleND.acongr_of_AAS
   ]
 
 syntax (name := acongr_sa) "acongr_sa" : tactic
@@ -113,7 +113,7 @@ end acongr
 
 section examples
 
-variable {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : Triangle_nd P}
+variable {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : TriangleND P}
 
 example (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length)
   (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsCongr tr_nd₂ := by

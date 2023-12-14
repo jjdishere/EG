@@ -8,12 +8,12 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
 
-def Triangle_nd.Height1 (tr_nd : Triangle_nd P) : SegND P := sorry
+def TriangleND.Height1 (tr_nd : TriangleND P) : SegND P := sorry
 
-structure IsOrthocenter (tr_nd : Triangle_nd P) (H : P) : Prop where
+structure IsOrthocenter (tr_nd : TriangleND P) (H : P) : Prop where
 
-def Triangle_nd.Orthocenter (tr_nd : Triangle_nd P) : P := sorry
+def TriangleND.Orthocenter (tr_nd : TriangleND P) : P := sorry
 
-theorem Triangle_nd.orthocenter_is_orthocenter (tr_nd : Triangle_nd P) : IsOrthocenter tr_nd tr_nd.Orthocenter := sorry
+theorem TriangleND.orthocenter_is_orthocenter (tr_nd : TriangleND P) : IsOrthocenter tr_nd tr_nd.Orthocenter := sorry
 
 end EuclidGeom

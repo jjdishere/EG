@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
+import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
 
 namespace EuclidGeom
 
@@ -18,6 +19,8 @@ theorem eq_ang_of_lies_int_liesint {A A' B B' O: P} (h₁ : A ≠ O) (h₂ : B �
 
 theorem eq_ang_value_of_lies_int_lies_int {A A' B B' O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) (h₁' : A' ≠ O) (h₂' : B' ≠ O) (LiesInt1 : A' LiesInt (RAY O A h₁) )  (LiesInt2 :  B' LiesInt (RAY O B h₂) ) : ∠  A O B h₁ h₂ = ∠  A' O B' h₁' h₂' := sorry
 
+theorem eq_ang_val_of_lieson_lieson {A A' B B' O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) (h₁' : A' ≠ O) (h₂' : B' ≠ O) (LiesInt1 : A' LiesInt (RAY O A h₁) )  (LiesInt2 :  B' LiesInt (RAY O B h₂) ) : ∠  A O B h₁ h₂ = ∠  A' O B' h₁' h₂' := sorry
+--Nailin Guan
 theorem neg_value_of_rev_ang {A B O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) : ∠ A O B h₁ h₂ = -∠ B O A h₂ h₁ := sorry
 
 namespace Angle
@@ -60,5 +63,7 @@ theorem ang_value_rev_eq_neg_value {ang : Angle P} :  ang.reverse.value = - ang.
   simp
 
 end Angle
+
+theorem dvalue_eq_ang_rays_perp {ang : Angle P} (h : ang.dvalue = ((π / 2 : ℝ) : AngDValue)) : ang.start_ray ⟂ ang.end_ray := sorry
 
 end EuclidGeom

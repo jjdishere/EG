@@ -101,7 +101,7 @@ def mk_is_convex {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qd
   convex := h
 
 section criteria_cvx
-variable {A B C D : P}
+variable {P : Type _} [EuclideanPlane P] {A B C D : P}
 
 -- theorem is_convex_of four inferior angle
 -- theorem is_convex_of both diag divids other pts
@@ -295,19 +295,19 @@ def angle₄ : Angle P := ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁
 
 /--triangle point₄ point₁ point₂, which includes angle₁-/
 @[pp_dot]
-def triangle₁ : Triangle_nd P := TRI_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.not_colinear₄₁₂
+def triangle₁ : TriangleND P := TRI_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.not_colinear₄₁₂
 
 /--triangle point₁ point₂ point₃, which includes angle₂-/
 @[pp_dot]
-def triangle₂ : Triangle_nd P := TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃
+def triangle₂ : TriangleND P := TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃
 
 /--triangle point₂ point₃ point₄, which includes angle₃-/
 @[pp_dot]
-def triangle₃ : Triangle_nd P := TRI_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.not_colinear₂₃₄
+def triangle₃ : TriangleND P := TRI_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.not_colinear₂₃₄
 
 /--triangle point₃ point₄ point₁, which includes angle₄-/
 @[pp_dot]
-def triangle₄ : Triangle_nd P := TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁
+def triangle₄ : TriangleND P := TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁
 
 theorem cclock_eq : qdr_cvx.triangle₁.is_cclock ↔ qdr_cvx.triangle₃.is_cclock := sorry
 

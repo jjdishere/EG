@@ -59,11 +59,11 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
     rw [length_pos_iff_nd]
     exact b_ne_c
   -- $D$ lies on $BF$
-  have d_lies_on_bf : D LiesOn (SEG_nd B F f_ne_b) :=  Seg_nd.lies_on_of_lies_int (Seg_nd.target_lies_int_seg_source_pt_of_pt_lies_int_extn f_lies_int_bd_extn)
+  have d_lies_on_bf : D LiesOn (SEG_nd B F f_ne_b) :=  SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn f_lies_int_bd_extn)
   -- $C$ lies on $BF$
   have c_lies_on_bf : C LiesOn (SEG_nd B F f_ne_b) := sorry
   -- $A$ lies on $BE$
-  have a_lies_on_be : A LiesOn (SEG_nd B E e_ne_b) := Seg_nd.lies_on_of_lies_int (Seg_nd.target_lies_int_seg_source_pt_of_pt_lies_int_extn he)
+  have a_lies_on_be : A LiesOn (SEG_nd B E e_ne_b) := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn he)
   -- $BF = BD + DF = AE + AB = BE$
   have bf_eq_be : (SEG B F).length = (SEG B E).length := by
     calc
@@ -90,10 +90,10 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
   have ang₁ : ∠ F B E f_ne_b e_ne_b = ∠ C B A c_ne_a a_ne_b := by
     apply eq_ang_value_of_lies_int_lies_int
     constructor
-    exact Seg_nd.lies_on_toray_of_lies_on c_lies_on_bf
+    exact SegND.lies_on_toray_of_lies_on c_lies_on_bf
     exact b_ne_c.symm
     constructor
-    exact Seg_nd.lies_on_toray_of_lies_on a_lies_on_be
+    exact SegND.lies_on_toray_of_lies_on a_lies_on_be
     exact a_ne_b
   -- $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
   have ang_ebf_eq_sixty : ∠ F B E f_ne_b e_ne_b = ↑ (π / 3) ∨  ∠ F B E f_ne_b e_ne_b = ↑ (- π / 3) := by
@@ -137,7 +137,7 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
   have bec_not_colinear : ¬ colinear B E C := sorry
   have fed_not_colinear : ¬ colinear F E D := sorry
   -- $\triangle BCE$ is anti-congruence to $\triangle FDE$
-  have cong : (TRI_nd B E C bec_not_colinear) ≅ₐ (TRI_nd F E D fed_not_colinear) := Triangle_nd.acongr_of_SAS df_eq_cb.symm ang₂ fe_eq_be.symm
+  have cong : (TRI_nd B E C bec_not_colinear) ≅ₐ (TRI_nd F E D fed_not_colinear) := TriangleND.acongr_of_SAS df_eq_cb.symm ang₂ fe_eq_be.symm
   -- $EC = ED$ because $\triangle BCE \cong \triangle FDE$
   have ec_eq_ed : (SEG E C).length = (SEG E D).length := cong.edge₁
   rw[length_of_rev_eq_length', ec_eq_ed]
@@ -212,7 +212,7 @@ such that $AE = 2 EC$
 Prove that $AF = 3 FB$ -/
 
 -- We have acute triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C} {hacute : Triangle_nd.IsAcute (TRI_nd A B C hnd)}
+variable {A B C : P} {hnd : ¬ colinear A B C} {hacute : TriangleND.IsAcute (TRI_nd A B C hnd)}
 -- 这个题应该需要加锐角三角形的限制，否则需要条件中的$AE = 2 EC$是有向线段的相等
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma a_ne_b : A ≠ B := sorry

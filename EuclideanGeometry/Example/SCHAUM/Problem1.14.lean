@@ -69,10 +69,11 @@ theorem SCHAUM_Problem_1_14 : (SEG P M).length = (SEG Q N).length ∧ ((SEG_nd P
   · unfold parallel
     have h₁ : (LIN P M m_ne_p) ⟂ (LIN B D (d_ne_b (hprg := hprg))) := by
       rw [hm]
-      apply pt_to_perp_foot_perp_line (hp1 (hprg := hprg))
-    have h₂ : (LIN Q N m_ne_p) ⟂ (LIN B D (d_ne_b (hprg := hprg))) := by
-      rw [hn]
-      apply pt_to_perp_foot_perp_line (hp2 (hprg := hprg))
+      apply line_of_self_perp_foot_perp_line_of_not_lies_on (hp1 (hprg := hprg))
+      · sorry
+      · sorry
+      · sorry
+    have h₂ : (LIN Q N m_ne_p) ⟂ (LIN B D (d_ne_b (hprg := hprg))) := by sorry
     calc
       _ = toProj (LIN P M m_ne_p) := by sorry
       _ = (toProj (LIN B D (d_ne_b (hprg := hprg)))).perp := h₁
