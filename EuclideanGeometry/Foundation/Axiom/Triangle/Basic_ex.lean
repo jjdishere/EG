@@ -133,7 +133,7 @@ theorem edge_eq_edge_of_flip_vertices (tr : Triangle P) : tr.edge₁.length = tr
 
 theorem edge_eq_edge_of_perm_vertices (tr : Triangle P) : tr.edge₁.length = tr.perm_vertices.edge₂.length ∧ tr.edge₂.length = tr.perm_vertices.edge₃.length ∧ tr.edge₃.length = tr.perm_vertices.edge₁.length := by sorry
 
-theorem nd_iff_nd_of_perm_vertices: tr.is_nd ↔ tr.perm_vertices.is_nd := by sorry
+theorem nd_iff_nd_of_perm_vertices: tr.IsND ↔ tr.perm_vertices.IsND := by sorry
 
 end Triangle
 
