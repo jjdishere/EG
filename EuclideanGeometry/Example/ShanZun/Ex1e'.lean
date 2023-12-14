@@ -3,28 +3,46 @@ import EuclideanGeometry.Foundation.Index
 noncomputable section
 
 namespace EuclidGeom
-
-variable {P : Type _} [EuclideanPlane P]
+namespace ShanZun
 
 namespace Shan_Problem_2_13
 /- In $\triangle ABC$. Let $D$ be the midpoint of segment $BC$,
 the perpendicular line passing through $D$ of the bisector of $\angle BAC$ intersects $AB,AC$ at $E,F$ respectively.
 Prove that $BE=CF=\frac{1}{2}|AB-AC|$.  -/
 
--- We have triagngle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
--- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
-lemma c_ne_a : C ≠ A := sorry
--- $D$ is the midpoint of $BC$
-variable {D : P} {hd : D = (SEG B C).midpoint}
--- the perpendicular line passing through $D$ of the bisector of $\angle BAC$ intersects $AB,AC$ at $E,F$ respectively.
--- Introduce two points colinear and the orthogonality. The colinear condition is not helpful.
-variable {E F : P} {l : Line P} {hl : l = perp_line D (ANG B A C a_ne_b.symm c_ne_a).AngBis.toLine} {he : is_inx E (LIN A B a_ne_b.symm) l} {hf : is_inx F (LIN A C c_ne_a) l}
+structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+  -- Let $\triangle ABC$ be a nontrivial triangle
+  A : Plane
+  B : Plane
+  C : Plane
+  not_colinear_ABC : ¬ colinear A B C
+  -- Claim :$C \ne A$
+  C_ne_A : C ≠ A :=
+    -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.
+    (ne_of_not_colinear not_colinear_ABC).2.1.symm
+  -- Claim $B \ne C$
+  B_ne_C : B ≠ C :=
+    -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
+    (ne_of_not_colinear not_colinear_ABC).1.symm
+  B_ne_A : B ≠ A :=
+    -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
+    (ne_of_not_colinear not_colinear_ABC).2.2
+  -- D is the midpoint of the segment $BC$
+  D : Plane
+  hD : D = (SEG B C).midpoint
+  --l is the perpendicular line passing through $D$ of the bisector of $\angle BAC$
+  l : Line Plane
+  hl : l = perp_line D (ANG B A C B_ne_A C_ne_A).AngBis.toLine
+  --E is the intersection of $l$ and $AB$
+  E : Plane
+  hE : is_inx E (LIN A B B_ne_A) l
+  --F is the intersection of $l$ and $AC$
+  F : Plane
+  hF : is_inx F (LIN A C C_ne_A) l
+
 
 -- Theorem : $BE=CF=\frac{1}{2}|AB-AC|$
-theorem Shan_Problem_2_13 : (SEG B E).length=|((SEG A B).length-(SEG A C).length)|/2 ∧ (SEG C F).length = |((SEG A B).length-(SEG A C).length)|/2 := sorry
+theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) :(SEG e.B e.E).length=|((SEG e.A e.B).length-(SEG e.A e.C).length)|/2 ∧ (SEG e.C e.F).length = |((SEG e.A e.B).length-(SEG e.A e.C).length)|/2 := sorry
 
 end Shan_Problem_2_13
 
@@ -33,48 +51,49 @@ namespace Shan_Problem_2_18
  $CE$ be the bisector of $\angle ACB$ and $CF$ be the median.
 Prove that $E$ liesInt $DF$ -/
 
--- We have triagngle $\triangle ABC$ such that $AC < BC$
-variable {A B C : P} {hnd : ¬ colinear A B C} {hedge : (SEG A C).length < (SEG B C).length}
--- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
-lemma c_ne_a : C ≠ A := sorry
--- $CD$ is height of $\triangle ABC$
-variable {D : P} {hd : D = perp_foot A (LIN B C b_ne_c.symm)}
--- $CE$ is the angle bisector of $\angle ACB$
-variable {E : P} {he : is_inx E (ANG A C B c_ne_a.symm b_ne_c).AngBis (SEG B C)}
--- $CF$ is median of $\triangle ABC$
-variable {F : P} {hf : F = (SEG B C).midpoint}
+structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+  -- Let $\triangle ABC$ be a nontrivial triangle
+  A : Plane
+  B : Plane
+  C : Plane
+  not_colinear_ABC : ¬ colinear A B C
+  -- Claim :$C \ne A$
+  C_ne_A : C ≠ A :=
+    -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.
+    (ne_of_not_colinear not_colinear_ABC).2.1.symm
+  -- Claim $B \ne C$
+  C_ne_B : C ≠ B :=
+    -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
+    (ne_of_not_colinear not_colinear_ABC).1
+  B_ne_A : B ≠ A :=
+    -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
+    (ne_of_not_colinear not_colinear_ABC).2.2
+  -- We have triagngle $\triangle ABC$ such that $AC < BC$
+  hedge : (SEG_nd A C C_ne_A).length < (SEG_nd B C C_ne_B).length
+  --$D$ is the perpendicular foot from $A$ to line $BC$
+  D : Plane
+  hD : D = perp_foot A (LIN B C C_ne_B)
+  -- $E$ is the intersection of the angle bisector of $\angle ACB$ and $AB$
+  E : Plane
+  hE : is_inx E (ANG A C B C_ne_A.symm C_ne_B.symm).AngBis (SEG A B)
+  -- $F$ is the midpoint of $AB$
+  F : Plane
+  hF : F = (SEG A B).midpoint
+  --Claim : $D\ne C$
+  D_ne_C : D ≠ C := sorry
+  --Claim : $E\ne C$
+  E_ne_C : E ≠ C := sorry
+  --Claim : $F\ne C$
+  F_ne_C : F ≠ C := sorry
 
-theorem Shan_Problem_2_18 : E LiesInt (SEG D F) := sorry
+theorem result1 {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : e.E LiesInt (SEG e.D e.F) := sorry
+
+
+-- Theorem : $CE$ is the bisector of $\angle FCD$
+theorem result2 {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠ e.F e.C e.E e.F_ne_C e.E_ne_C = ∠ e.E e.C e.D e.E_ne_C e.D_ne_C := sorry
+
 
 end Shan_Problem_2_18
 
-namespace Shan_Problem_2_18'
-/- In $\triangle ABC$, $AC < BC$. Let $CD$ be the height,
- $CE$ be the bisector of $\angle ACB$ and $CF$ be the median.
-If $\angle ACB = 90^{circ}$, prove that $CE$ is the bisector of $\angle FCD$.  -/
-
--- We have triagngle $\triangle ABC$ such that $AC < BC$
-variable {A B C : P} {hnd : ¬ colinear A B C} {hedge : (SEG A C).length < (SEG B C).length}
--- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
-lemma c_ne_a : C ≠ A := sorry
--- $CD$ is height of $\triangle ABC$
-variable {D : P} {hd : D = perp_foot A (LIN B C b_ne_c.symm)}
--- $CE$ is the angle bisector of $\angle ACB$
-variable {E : P} {he : is_inx E (ANG A C B c_ne_a.symm b_ne_c).AngBis (SEG B C)}
--- $CF$ is median of $\triangle ABC$
-variable {F : P} {hf : F = (SEG B C).midpoint}
--- We have $\angle ACB = 90^{circ}$
-variable {hright : ∠ A C B c_ne_a.symm b_ne_c = ↑ (π / 2)}
--- Claim: $D \ne C$, $E \ne C$ and $F \ne C$
-lemma d_ne_c : D ≠ C := sorry
-lemma e_ne_c : E ≠ C := sorry
-lemma f_ne_c : F ≠ C := sorry
-
--- Theorem : $CE$ is the bisector of $\angle FCD$
-theorem Shan_Problem_2_18' : ∠ F C E f_ne_c e_ne_c = ∠ E C D e_ne_c d_ne_c := sorry
-
-end Shan_Problem_2_18'
+end ShanZun
+end EuclidGeom
