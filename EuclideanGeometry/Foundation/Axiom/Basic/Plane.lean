@@ -83,7 +83,12 @@ theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = t
 
 def VecND.mkPtPt (A B : P) (h : B ≠ A) : VecND := ⟨Vec.mkPtPt A B, (ne_iff_vec_ne_zero A B).mp h⟩
 
-scoped notation "VEC_nd" => VecND.mkPtPt
+@[inherit_doc VecND.mkPtPt]
+scoped syntax "VEC_nd" ws term:max ws term:max (ws term:max)? : term
+
+macro_rules
+  | `(VEC_nd $A $B) => `(VecND.mkPtPt $A $B (@Fact.out _ inferInstance))
+  | `(VEC_nd $A $B $h) => `(VecND.mkPtPt $A $B $h)
 
 @[simp]
 lemma VecND.coe_mkPtPt (A B : P) (h : B ≠ A) : VEC_nd A B h = VEC A B := rfl
