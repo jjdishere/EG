@@ -112,7 +112,7 @@ macro_rules
 /-- Given two distinct points $A$ and $B$, this function returns the ray starting from $A$ in the direction of $B$.  By definition, the direction of the ray is given by the normalization of the vector from $A$ to $B$, using \verb|toDir| function. -/
 def Ray.mk_pt_pt (A B : P) (h : B ≠ A) : Ray P where
   source := A
-  toDir := VecND.toDir (VEC_nd A B h)
+  toDir := VecND.toDir ⟨VEC A B, (vsub_ne_zero.mpr h)⟩
 
 /-- This is to abbreviate \verb|Ray.mk_pt_pt| into \verb|RAY|. -/
 @[inherit_doc Ray.mk_pt_pt]
@@ -278,7 +278,7 @@ theorem toVec_eq_zero_of_deg {l : Seg P} : (l.target = l.source) ↔ l.toVec = 0
 /-- Given two distinct points $A$ and $B$, the direction of ray $AB$ is same as the negative direction of ray $BA$ -/
 theorem Ray.toDir_eq_neg_toDir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toDir = -(RAY B A h.symm).toDir := by
   simp only [Ray.mk_pt_pt, ne_eq]
-  rw [← VecND.neg_toDir, VecND.mkPtPt, VecND.mkPtPt, ← VecND.mk_neg]
+  rw [← VecND.neg_toDir, ← VecND.mk_neg]
   congr
   rw [neg_vec]
 
