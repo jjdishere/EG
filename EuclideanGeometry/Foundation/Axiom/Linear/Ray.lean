@@ -137,7 +137,7 @@ macro_rules
   | `(RAY $A $B $h) => `(Ray.mk_pt_pt $A $B $h)
 
 open Lean PrettyPrinter.Delaborator SubExpr in
-/-- Delaborator for `SegND.mk` -/
+/-- Delaborator for `Ray.mk_pt_pt` -/
 @[delab app.EuclidGeom.Ray.mk_pt_pt]
 def delabRayMkPtPt : Delab := do
   let e ← getExpr
