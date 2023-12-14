@@ -90,7 +90,24 @@ macro_rules
   | `(VEC_nd $A $B) => `(VecND.mkPtPt $A $B (@Fact.out _ inferInstance))
   | `(VEC_nd $A $B $h) => `(VecND.mkPtPt $A $B $h)
 
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `VecND.mkPtPt` -/
+@[delab app.EuclidGeom.VecND.mkPtPt]
+def delabVecNDMkPtPt : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``VecND.mkPtPt 5
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  withNaryArg 4 do
+    if (← getExpr).isAppOfArity' ``Fact.out 2 then
+      `(VEC_nd $A $B)
+    else
+      `(VEC_nd $A $B $(← delab))
+
 @[simp]
 lemma VecND.coe_mkPtPt (A B : P) (h : B ≠ A) : VEC_nd A B h = VEC A B := rfl
+
+@[simp]
+lemma VecND.coe_mPtPt (A B : P) [Fact <| B ≠ A] : VEC_nd A B = VEC A B := rfl
 
 end EuclidGeom
