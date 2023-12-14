@@ -95,15 +95,26 @@ theorem Shan_Problem_1_10 : (SEG A D).length = (SEG D C).length := by
   have b_ne_m : B ≠ M := sorry
   -- $CM = CA + AM = CA + EC = AE = BC$
   have cm_eq_bc : (SEG C M).length = (SEG B C).length := by
-    rw[← he₂]
-    have c_lies_on_ae : C LiesOn (SEG_nd A E a_ne_e.symm).1 := Seg_nd.lies_on_of_lies_int (Seg_nd.target_lies_int_seg_source_pt_of_pt_lies_int_extn he₁)
-    have ae_eq_ac_plus_ce : (SEG A E).length = (SEG A C).length + (SEG C E).length := length_eq_length_add_length c_lies_on_ae
-    rw[← Seg.length_of_rev_eq_length (seg := (SEG E C))] at am_eq_ec
-    have m_lies_int_ca_extn : M LiesInt (SEG_nd C A c_ne_a.symm).extension := sorry
-    have a_lies_on_cm : A LiesOn (SEG_nd C M m_ne_c).1 := Seg_nd.lies_on_of_lies_int (Seg_nd.target_lies_int_seg_source_pt_of_pt_lies_int_extn m_lies_int_ca_extn)
-    have cm_eq_ca_plus_am : (SEG C M).length = (SEG C A).length + (SEG A M).length := length_eq_length_add_length a_lies_on_cm
-    rw[ae_eq_ac_plus_ce, cm_eq_ca_plus_am, ← Seg.length_of_rev_eq_length (seg := (SEG A C)), am_eq_ec]
-    simp
+    calc
+      -- $CM = CA + AM$
+      _ = (SEG C A).length + (SEG A M).length := by
+        -- $M$ lies in extension of $CA$
+        have m_lies_int_ca_extn : M LiesInt (SEG_nd C A c_ne_a.symm).extension := sorry
+        -- $A$ lies on $CM$
+        have a_lies_on_cm : A LiesOn (SEG_nd C M m_ne_c).1 := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn m_lies_int_ca_extn)
+        exact length_eq_length_add_length a_lies_on_cm
+      -- $CA + AM = CA + EC$
+      _ = (SEG C A).length + (SEG E C).length := by
+        rw[am_eq_ec]
+      -- $CA + EC = AC + CE$ by symmetry
+      _ = (SEG A C).length + (SEG C E).length := by simp only [length_of_rev_eq_length']
+      -- $AC + CE = AE$
+      _ = (SEG A E).length := by
+        -- $C$ lies on $AE$
+        have c_lies_on_ae : C LiesOn (SEG_nd A E a_ne_e.symm).1 := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn he₁)
+        exact (length_eq_length_add_length c_lies_on_ae).symm
+      -- $AE = BC$
+      _ = (SEG B C).length := he₂
   -- $\angle BMC = 2\pi / 5$
   have ang₁ : ∠ B M C b_ne_m m_ne_c.symm = ↑ (2 * π / 5) := sorry
   -- $BAM$ is not colinear

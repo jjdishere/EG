@@ -25,7 +25,7 @@ variable {hrt : (ANG A C B c_ne_a.symm B_ne_C).IsRightAngle}
 variable {D : P} {hd : D = (SEG A B).midpoint}
 lemma d_ne_a: D ≠ A := by
   rw[hd]
-  apply (Seg_nd.midpt_lies_int (seg_nd := SEG_nd A B (B_ne_a).symm)).2.1
+  apply (SegND.midpt_lies_int (seg_nd := SEG_nd A B (b_ne_a).symm)).2.1
   use C
   by_contra h
   have : colinear A B C :=by
@@ -35,24 +35,24 @@ lemma d_ne_a: D ≠ A := by
 variable {E : P} {he : E=  (SEG A C).midpoint}
 lemma e_ne_a: E ≠ A := by
   rw[he]
-  apply (Seg_nd.midpt_lies_int (seg_nd := SEG_nd A C c_ne_a)).2.1
+  apply (SegND.midpt_lies_int (seg_nd := SEG_nd A C c_ne_a)).2.1
   use B
   exact hnd
 lemma e_ne_C: E ≠ C := by
   rw[he]
-  apply (Seg_nd.midpt_lies_int (seg_nd := SEG_nd A C c_ne_a)).2.2
+  apply (SegND.midpt_lies_int (seg_nd := SEG_nd A C c_ne_a)).2.2
   use B
   exact hnd
 --midpoint lies on the segment
 lemma adb_colinear : colinear A D B := by
   apply colinear_of_vec_eq_smul_vec'
   use 2
-  simp only [hd,Seg.midpoint,one_div, seg_tovec_eq_vec, vec_of_pt_vadd_pt_eq_vec,smul_smul]
+  simp only [hd,Seg.midpoint,one_div, seg_toVec_eq_vec, vec_of_pt_vadd_pt_eq_vec,smul_smul]
   norm_num
 lemma aec_colinear : colinear A E C := by
   apply colinear_of_vec_eq_smul_vec'
   use 2
-  simp only [he,Seg.midpoint,one_div, seg_tovec_eq_vec, vec_of_pt_vadd_pt_eq_vec,smul_smul]
+  simp only [he,Seg.midpoint,one_div, seg_toVec_eq_vec, vec_of_pt_vadd_pt_eq_vec,smul_smul]
   norm_num
 
 lemma midpt_half_length : (SEG A D).length = (SEG A B).length/2:=by
@@ -124,7 +124,7 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   let tri_nd_ADE := TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)
   let tri_nd_ABC := TRI_nd A B C hnd
   apply sim_of_SAS
-  simp only [Triangle_nd.edge₂,Triangle_nd.edge₃, Triangle.edge₂,Triangle.edge₃]
+  simp only [TriangleND.edge₂,TriangleND.edge₃, Triangle.edge₂,Triangle.edge₃]
   have tr13: tri_nd_ADE.1.point₃=E:= rfl
   have tr23: tri_nd_ABC.1.point₃ =C:= rfl
   have tr11: tri_nd_ADE.1.point₁=A:= rfl
@@ -147,8 +147,8 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   rw[h₀]
   have h₁:(TRI_nd A B C hnd).angle₁.1=(SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay:=rfl
   rw[h₁]
-  apply @Ray.source_int_toray_eq_ray P _ (SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay
-  apply Seg_nd.lies_int_toray_of_lies_int
+  apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay
+  apply SegND.lies_int_toRay_of_lies_int
   apply (Seg.lies_int_iff).mpr
   constructor
   exact (@b_ne_a P _ A B C hnd)
@@ -160,8 +160,8 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   rw[h₂]
   have h₃:(TRI_nd A B C hnd).angle₁.2=(SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay:=rfl
   rw[h₃]
-  apply @Ray.source_int_toray_eq_ray P _ (SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay
-  apply Seg_nd.lies_int_toray_of_lies_int
+  apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay
+  apply SegND.lies_int_toRay_of_lies_int
   apply (Seg.lies_int_iff).mpr
   constructor
   exact (@c_ne_a P _ A B C hnd)
