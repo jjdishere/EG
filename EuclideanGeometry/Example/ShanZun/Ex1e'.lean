@@ -16,6 +16,10 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   B : Plane
   C : Plane
   not_colinear_ABC : ¬ colinear A B C
+  -- Claim : $B \ne A$
+  B_ne_A : B ≠ A :=
+    -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
+    (ne_of_not_colinear not_colinear_ABC).2.2
   -- Claim :$C \ne A$
   C_ne_A : C ≠ A :=
     -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.
@@ -24,9 +28,6 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   B_ne_C : B ≠ C :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
     (ne_of_not_colinear not_colinear_ABC).1.symm
-  B_ne_A : B ≠ A :=
-    -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.2
   -- D is the midpoint of the segment $BC$
   D : Plane
   hD : D = (SEG B C).midpoint
