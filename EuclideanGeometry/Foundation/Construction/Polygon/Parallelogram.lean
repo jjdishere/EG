@@ -78,7 +78,7 @@ theorem is_prg_nd_of_para_para (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd
   exact h₂
 
 /-- Given four points ABCD and Quadrilateral ABCD IsConvex, AB ∥ CD and AD ∥ BC, Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem is_prg_nd_of_para_para_variant (h₁ : (SEG_nd A B (Quadrilateral_cvx.nd₁₂ (Quadrilateral_cvx.mk_is_convex h))) ∥ (SEG_nd C D (Quadrilateral_cvx.nd₃₄ (Quadrilateral_cvx.mk_is_convex h)))) (h₂ : (SEG_nd A D (Quadrilateral_cvx.nd₁₄ (Quadrilateral_cvx.mk_is_convex h))) ∥ (SEG_nd B C (Quadrilateral_cvx.nd₂₃ (Quadrilateral_cvx.mk_is_convex h)))) : QDR A B C D IsPRG_nd := by
+theorem is_prg_nd_of_para_para_variant (h₁ : (SEG_nd A B (Quadrilateral_cvx.nd₁₂ (Quadrilateral_cvx.mk_is_convex h)).out) ∥ (SEG_nd C D (Quadrilateral_cvx.nd₃₄ (Quadrilateral_cvx.mk_is_convex h)).out)) (h₂ : (SEG_nd A D (Quadrilateral_cvx.nd₁₄ (Quadrilateral_cvx.mk_is_convex h)).out) ∥ (SEG_nd B C (Quadrilateral_cvx.nd₂₃ (Quadrilateral_cvx.mk_is_convex h)).out)) : QDR A B C D IsPRG_nd := by
   unfold Quadrilateral.IsParallelogram_nd
   rw [dif_pos h]
   unfold Quadrilateral_cvx.IsParallelogram_nd
@@ -93,22 +93,22 @@ theorem is_prg_nd_of_eq_length_eq_length (h₁ : (qdr_cvx.edge_nd₁₂).1.lengt
   unfold Quadrilateral_cvx.edge_nd₃₄ at h₁
   unfold Quadrilateral_cvx.edge_nd₁₄ at h₂
   unfold Quadrilateral_cvx.edge_nd₂₃ at h₂
-  have prep₁: (qdr_cvx.triangle₁).1.edge₁ = SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.nd₁₂ := rfl
-  have prep₂: (qdr_cvx.triangle₃).1.edge₁ = SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.nd₃₄ := rfl
+  have prep₁: (qdr_cvx.triangle₁).1.edge₁ = SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ := rfl
+  have prep₂: (qdr_cvx.triangle₃).1.edge₁ = SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ := rfl
   have t₁: (qdr_cvx.triangle₁).1.edge₁.length = (qdr_cvx.triangle₃).1.edge₁.length := by
     rw [prep₁, prep₂]
     exact h₁
-  have prep₃: (qdr_cvx.triangle₁).1.edge₂.length = (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).1.length := rfl
-  have prep₄: (qdr_cvx.triangle₃).1.edge₂.length = (SEG_nd qdr_cvx.point₄ qdr_cvx.point₂ qdr_cvx.nd₂₄.symm).1.length := rfl
-  have prep₅: (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).1.length = (SEG_nd qdr_cvx.point₄ qdr_cvx.point₂ qdr_cvx.nd₂₄.symm).1.length := by
+  have prep₃: (qdr_cvx.triangle₁).1.edge₂.length = (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄).1.length := rfl
+  have prep₄: (qdr_cvx.triangle₃).1.edge₂.length = (SEG_nd qdr_cvx.point₄ qdr_cvx.point₂).1.length := rfl
+  have prep₅: (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄).1.length = (SEG_nd qdr_cvx.point₄ qdr_cvx.point₂).1.length := by
     apply SegND.length_of_rev_eq_length.symm
-  have prep₈: (SEG_nd qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.nd₁₄).1.length = (SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₁₄.symm).1.length := by
+  have prep₈: (SEG_nd qdr_cvx.point₁ qdr_cvx.point₄).1.length = (SEG_nd qdr_cvx.point₄ qdr_cvx.point₁).1.length := by
     apply SegND.length_of_rev_eq_length.symm
   have t₂: (qdr_cvx.triangle₁).1.edge₂.length = (qdr_cvx.triangle₃).1.edge₂.length := by
     rw [prep₃, prep₄]
     exact prep₅
-  have prep₆: (qdr_cvx.triangle₁).1.edge₃ = SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₁₄.symm := rfl
-  have prep₇: (qdr_cvx.triangle₃).1.edge₃ = SEG_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.nd₂₃ := rfl
+  have prep₆: (qdr_cvx.triangle₁).1.edge₃ = SEG_nd qdr_cvx.point₄ qdr_cvx.point₁ := rfl
+  have prep₇: (qdr_cvx.triangle₃).1.edge₃ = SEG_nd qdr_cvx.point₂ qdr_cvx.point₃ := rfl
   have t₃: (qdr_cvx.triangle₁).1.edge₃.length = (qdr_cvx.triangle₃).1.edge₃.length := by
     rw [prep₆, prep₇, prep₈.symm]
     exact h₂
@@ -200,10 +200,10 @@ theorem is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.ed
   have diag_ng_para: ¬ qdr_cvx.diag_nd₁₃.toProj = qdr_cvx.diag_nd₂₄.toProj := qdr_cvx.diag_not_para
   rcases h with case_not_convex | case_convex
   -- Case that is not convex, goal is prove contra
-  have angle₁_eq_angle₄: (ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₃₄.symm qdr_cvx.nd₁₄.symm).value = (ANG qdr_cvx.point₂ qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.nd₁₂ qdr_cvx.nd₁₄).value := by
+  have angle₁_eq_angle₄: (ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁).value = (ANG qdr_cvx.point₂ qdr_cvx.point₁ qdr_cvx.point₄).value := by
     apply ang_eq_ang_of_toDir_rev_toDir
-    have ray₁₂_toDir_eq_SegND₁₂_toDir: qdr_cvx.edge_nd₁₂.toDir = (ANG qdr_cvx.point₂ qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.nd₁₂ qdr_cvx.nd₁₄).start_ray.toDir := by rfl
-    have ray₄₃_toDir_eq_SegND₃₄_rev_toDir: qdr_cvx.edge_nd₃₄.reverse.toDir = (ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₃₄.symm qdr_cvx.nd₁₄.symm).start_ray.toDir := by rfl
+    have ray₁₂_toDir_eq_SegND₁₂_toDir: qdr_cvx.edge_nd₁₂.toDir = (ANG qdr_cvx.point₂ qdr_cvx.point₁ qdr_cvx.point₄).start_ray.toDir := by rfl
+    have ray₄₃_toDir_eq_SegND₃₄_rev_toDir: qdr_cvx.edge_nd₃₄.reverse.toDir = (ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁).start_ray.toDir := by rfl
     have SegND₄₃_toDir_neg_SegND₃₄_rev_toDir: qdr_cvx.edge_nd₃₄.reverse.toDir = - qdr_cvx.edge_nd₃₄.toDir := by apply SegND.toDir_of_rev_eq_neg_toDir
     rw [ray₁₂_toDir_eq_SegND₁₂_toDir.symm, ray₄₃_toDir_eq_SegND₃₄_rev_toDir.symm, SegND₄₃_toDir_neg_SegND₃₄_rev_toDir, case_not_convex]
     exact qdr_cvx.edge_nd₁₄.toDir_of_rev_eq_neg_toDir
@@ -290,7 +290,7 @@ theorem is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.ed
   -- Done!
 
 /-- Given four points ABCD and Quadrilateral ABCD IsConvex, and AB ∥ CD and AB = CD, Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem is_prg_nd_of_para_eq_length_variant (h₁ : (SEG_nd A B (Quadrilateral_cvx.nd₁₂ (Quadrilateral_cvx.mk_is_convex h))) ∥ (SEG_nd C D (Quadrilateral_cvx.nd₃₄ (Quadrilateral_cvx.mk_is_convex h)))) (h₂ : (SEG A B).length = (SEG C D).length) : QDR A B C D IsPRG_nd := by
+theorem is_prg_nd_of_para_eq_length_variant (h₁ : (SEG_nd A B (Quadrilateral_cvx.nd₁₂ (Quadrilateral_cvx.mk_is_convex h)).out) ∥ (SEG_nd C D (Quadrilateral_cvx.nd₃₄ (Quadrilateral_cvx.mk_is_convex h)).out)) (h₂ : (SEG A B).length = (SEG C D).length) : QDR A B C D IsPRG_nd := by
   unfold Quadrilateral.IsParallelogram_nd
   by_cases j: QDR A B C D IsConvex
   simp only [j, dite_true]
@@ -336,7 +336,7 @@ theorem is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.e
   exact h₁
 
 /-- Given four points ABCD and Quadrilateral ABCD IsConvex, and AD ∥ BC and AD = BC, Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem is_prg_nd_of_para_eq_length'_variant (h₁ : (SEG_nd A D (Quadrilateral_cvx.nd₁₄ (Quadrilateral_cvx.mk_is_convex h))) ∥ (SEG_nd B C (Quadrilateral_cvx.nd₂₃ (Quadrilateral_cvx.mk_is_convex h)))) (h₂ : (SEG A D).length = (SEG B C).length) : QDR A B C D IsPRG_nd := by
+theorem is_prg_nd_of_para_eq_length'_variant (h₁ : (SEG_nd A D (Quadrilateral_cvx.nd₁₄ (Quadrilateral_cvx.mk_is_convex h)).out) ∥ (SEG_nd B C (Quadrilateral_cvx.nd₂₃ (Quadrilateral_cvx.mk_is_convex h)).out)) (h₂ : (SEG A D).length = (SEG B C).length) : QDR A B C D IsPRG_nd := by
   unfold Quadrilateral.IsParallelogram_nd
   by_cases j: QDR A B C D IsConvex
   simp only [j, dite_true]
@@ -351,7 +351,7 @@ theorem is_prg_nd_of_eq_angle_value_eq_angle_value (h₁ : qdr_cvx.angle₁ = qd
   sorry
 
 /-- Given four points ABCD and Quadrilateral ABCD IsConvex, and ∠DAB = ∠BCD and ∠ABC = ∠CDA, Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem is_prg_of_eq_angle_value_eq_angle_value_variant (h₁ : (ANG D A B (Quadrilateral_cvx.nd₁₄ (Quadrilateral_cvx.mk_is_convex h)) (Quadrilateral_cvx.nd₁₂ (Quadrilateral_cvx.mk_is_convex h))) = (ANG B C D (Quadrilateral_cvx.nd₂₃ (Quadrilateral_cvx.mk_is_convex h)).symm (Quadrilateral_cvx.nd₃₄ (Quadrilateral_cvx.mk_is_convex h)))) (h₂ : (ANG A B C (Quadrilateral_cvx.nd₁₂ (Quadrilateral_cvx.mk_is_convex h)).symm (Quadrilateral_cvx.nd₂₃ (Quadrilateral_cvx.mk_is_convex h))) = (ANG C D A (Quadrilateral_cvx.nd₃₄ (Quadrilateral_cvx.mk_is_convex h)).symm (Quadrilateral_cvx.nd₁₄ (Quadrilateral_cvx.mk_is_convex h)).symm)) : QDR A B C D IsPRG_nd := by
+theorem is_prg_of_eq_angle_value_eq_angle_value_variant (h₁ : (ANG D A B (Quadrilateral_cvx.nd₁₄ (Quadrilateral_cvx.mk_is_convex h)).out (Quadrilateral_cvx.nd₁₂ (Quadrilateral_cvx.mk_is_convex h)).out) = (ANG B C D (Quadrilateral_cvx.nd₂₃ (Quadrilateral_cvx.mk_is_convex h)).out.symm (Quadrilateral_cvx.nd₃₄ (Quadrilateral_cvx.mk_is_convex h)).out)) (h₂ : (ANG A B C (Quadrilateral_cvx.nd₁₂ (Quadrilateral_cvx.mk_is_convex h)).out.symm (Quadrilateral_cvx.nd₂₃ (Quadrilateral_cvx.mk_is_convex h)).out) = (ANG C D A (Quadrilateral_cvx.nd₃₄ (Quadrilateral_cvx.mk_is_convex h)).out.symm (Quadrilateral_cvx.nd₁₄ (Quadrilateral_cvx.mk_is_convex h)).out.symm)) : QDR A B C D IsPRG_nd := by
   unfold Quadrilateral.IsParallelogram_nd
   by_cases j: QDR A B C D IsConvex
   simp only [j, dite_true]
@@ -466,42 +466,42 @@ theorem nd₂₄_of_is_prg_nd_variant (h : QDR A B C D IsPRG_nd) : D ≠ B := by
 /-- Given Quadrilateral qdr IsPRG_nd, qdr.point₂ ≠ qdr.point₁. -/
 theorem nd₁₂_of_is_prg_nd (h : qdr.IsParallelogram_nd) : qdr.point₂ ≠ qdr.point₁ := by
   have s : qdr.IsConvex:= is_convex_of_is_prg_nd qdr h
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₁₂
+  exact (Quadrilateral_cvx.mk_is_convex s).nd₁₂.out
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG_nd, B ≠ A. -/
 theorem nd₁₂_of_is_prg_nd_variant (h : QDR A B C D IsPRG_nd) : B ≠ A := by
   have s : (QDR A B C D) IsConvex:= is_convex_of_is_prg_nd_variant h
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₁₂
+  exact (Quadrilateral_cvx.mk_is_convex s).nd₁₂.out
 
 /-- Given Quadrilateral qdr IsPRG_nd, qdr.point₃ ≠ qdr.point₂. -/
 theorem nd₂₃_of_is_prg_nd (h : qdr.IsParallelogram_nd) : qdr.point₃ ≠ qdr.point₂ := by
   have s : qdr.IsConvex:= is_convex_of_is_prg_nd qdr h
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₂₃
+  exact (Quadrilateral_cvx.mk_is_convex s).nd₂₃.out
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG_nd, C ≠ B. -/
 theorem nd₂₃_of_is_prg_nd_variant (h : QDR A B C D IsPRG_nd) : C ≠ B := by
   have s : (QDR A B C D) IsConvex:= is_convex_of_is_prg_nd_variant h
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₂₃
+  exact (Quadrilateral_cvx.mk_is_convex s).nd₂₃.out
 
 /-- Given Quadrilateral qdr IsPRG_nd, qdr.point₄ ≠ qdr.point₃. -/
 theorem nd₃₄_of_is_prg_nd (h : qdr.IsParallelogram_nd) : qdr.point₄ ≠ qdr.point₃ := by
   have s : qdr.IsConvex:= is_convex_of_is_prg_nd qdr h
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₃₄
+  exact (Quadrilateral_cvx.mk_is_convex s).nd₃₄.out
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG_nd, D ≠ C. -/
 theorem nd₃₄_of_is_prg_nd_variant (h : QDR A B C D IsPRG_nd) : D ≠ C := by
   have s : (QDR A B C D) IsConvex:= is_convex_of_is_prg_nd_variant h
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₃₄
+  exact (Quadrilateral_cvx.mk_is_convex s).nd₃₄.out
 
 /-- Given Quadrilateral qdr IsPRG_nd, qdr.point₄ ≠ qdr.point₁. -/
 theorem nd₁₄_of_is_prg_nd (h : qdr.IsParallelogram_nd) : qdr.point₄ ≠ qdr.point₁ := by
   have s : qdr.IsConvex:= is_convex_of_is_prg_nd qdr h
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₁₄
+  exact (Quadrilateral_cvx.mk_is_convex s).nd₁₄.out
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG_nd, D ≠ A. -/
 theorem nd₁₄_of_is_prg_nd_variant (h : QDR A B C D IsPRG_nd) : D ≠ A := by
   have s : (QDR A B C D) IsConvex:= is_convex_of_is_prg_nd_variant h
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₁₄
+  exact (Quadrilateral_cvx.mk_is_convex s).nd₁₄.out
 
 /-- Given Quadrilateral qdr IsPRG_nd, the opposite sides are parallel namely (SEG_nd qdr.point₁ qdr.point₂ (nd₁₂_of_is_prg_abstract qdr h)) ∥ (SEG_nd qdr.point₃ qdr.point₄ (nd₃₄_of_is_prg_abstract qdr h)). -/
 theorem para_of_is_prg_nd (h : qdr.IsParallelogram_nd) : (SEG_nd qdr.point₁ qdr.point₂ (nd₁₂_of_is_prg_nd qdr h)) ∥ (SEG_nd qdr.point₃ qdr.point₄ (nd₃₄_of_is_prg_nd qdr h)):= by

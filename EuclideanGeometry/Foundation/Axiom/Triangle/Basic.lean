@@ -53,11 +53,11 @@ def point₂ : P := tr_nd.1.2
 @[pp_dot]
 def point₃ : P := tr_nd.1.3
 
-def nontriv₁ : tr_nd.point₃ ≠ tr_nd.point₂ := (ne_of_not_colinear tr_nd.2).1
+instance nontriv₁ : PtNe tr_nd.point₃ tr_nd.point₂ := ⟨(ne_of_not_colinear tr_nd.2).1⟩
 
-def nontriv₂ : tr_nd.point₁ ≠ tr_nd.point₃ := (ne_of_not_colinear tr_nd.2).2.1
+instance nontriv₂ : PtNe tr_nd.point₁ tr_nd.point₃ := ⟨(ne_of_not_colinear tr_nd.2).2.1⟩
 
-def nontriv₃ : tr_nd.point₂ ≠ tr_nd.point₁ := (ne_of_not_colinear tr_nd.2).2.2
+instance nontriv₃ : PtNe tr_nd.point₂ tr_nd.point₁ := ⟨(ne_of_not_colinear tr_nd.2).2.2⟩
 
 @[pp_dot]
 def edge₁ : Seg P := tr_nd.1.edge₁
@@ -69,29 +69,29 @@ def edge₂ : Seg P := tr_nd.1.edge₂
 def edge₃ : Seg P := tr_nd.1.edge₃
 
 @[pp_dot]
-def edge_nd₁ : SegND P := ⟨tr_nd.1.edge₁, tr_nd.nontriv₁⟩
+def edge_nd₁ : SegND P := ⟨tr_nd.1.edge₁, tr_nd.nontriv₁.out⟩
 
 @[pp_dot]
-def edge_nd₂ : SegND P := ⟨tr_nd.1.edge₂, tr_nd.nontriv₂⟩
+def edge_nd₂ : SegND P := ⟨tr_nd.1.edge₂, tr_nd.nontriv₂.out⟩
 
 @[pp_dot]
-def edge_nd₃ : SegND P := ⟨tr_nd.1.edge₃, tr_nd.nontriv₃⟩
+def edge_nd₃ : SegND P := ⟨tr_nd.1.edge₃, tr_nd.nontriv₃.out⟩
 
 @[pp_dot]
 def area : ℝ := tr_nd.1.area
 
 /- Only nondegenerate triangles can talk about orientation -/
 @[pp_dot]
-def is_cclock : Prop := tr_nd.1.3 LiesOnLeft (Ray.mk_pt_pt tr_nd.1.1 tr_nd.1.2 (tr_nd.nontriv₃))
+def is_cclock : Prop := tr_nd.1.3 LiesOnLeft (Ray.mk_pt_pt tr_nd.1.1 tr_nd.1.2 (tr_nd.nontriv₃.out))
 
 @[pp_dot]
-def angle₁ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₃) (tr_nd.nontriv₂).symm
+def angle₁ : Angle P := ANG tr_nd.point₂ tr_nd.point₁ tr_nd.point₃
 
 @[pp_dot]
-def angle₂ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₁) (tr_nd.nontriv₃).symm
+def angle₂ : Angle P := ANG tr_nd.point₃ tr_nd.point₂ tr_nd.point₁
 
 @[pp_dot]
-def angle₃ : Angle P := Angle.mk_pt_pt_pt _ _ _ (tr_nd.nontriv₂) (tr_nd.nontriv₁).symm
+def angle₃ : Angle P := ANG tr_nd.point₁ tr_nd.point₃ tr_nd.point₂
 
 end TriangleND
 
@@ -105,7 +105,7 @@ protected def IsInt (A : P) (tr : Triangle P) : Prop := by
   -- why not using ¬ tr.IsND?
   · exact False
   · let tr_nd : TriangleND P := ⟨tr, h⟩
-    exact (if tr_nd.is_cclock then A LiesOnLeft SegND.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnLeft SegND.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnLeft SegND.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩ else A LiesOnRight SegND.toRay ⟨tr.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnRight SegND.toRay ⟨tr.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnRight SegND.toRay ⟨tr.edge₃, tr_nd.nontriv₃⟩)
+    exact (if tr_nd.is_cclock then A LiesOnLeft SegND.toRay ⟨tr.edge₁, tr_nd.nontriv₁.out⟩ ∧ A LiesOnLeft SegND.toRay ⟨tr.edge₂, tr_nd.nontriv₂.out⟩ ∧ A LiesOnLeft SegND.toRay ⟨tr.edge₃, tr_nd.nontriv₃.out⟩ else A LiesOnRight SegND.toRay ⟨tr.edge₁, tr_nd.nontriv₁.out⟩ ∧ A LiesOnRight SegND.toRay ⟨tr.edge₂, tr_nd.nontriv₂.out⟩ ∧ A LiesOnRight SegND.toRay ⟨tr.edge₃, tr_nd.nontriv₃.out⟩)
 
 protected def IsOn (A : P) (tr : Triangle P) : Prop := Triangle.IsInt A tr ∨ A LiesOn tr.edge₁ ∨ A LiesOn tr.edge₂ ∨ A LiesOn tr.edge₃
 
@@ -128,7 +128,7 @@ end Triangle
 namespace TriangleND
 
 protected def IsInt (A : P) (tr_nd : TriangleND P) : Prop := by
-  exact (if tr_nd.is_cclock then A LiesOnLeft SegND.toRay ⟨tr_nd.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnLeft SegND.toRay ⟨tr_nd.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnLeft SegND.toRay ⟨tr_nd.edge₃, tr_nd.nontriv₃⟩ else A LiesOnRight SegND.toRay ⟨tr_nd.edge₁, tr_nd.nontriv₁⟩ ∧ A LiesOnRight SegND.toRay ⟨tr_nd.edge₂, tr_nd.nontriv₂⟩ ∧ A LiesOnRight SegND.toRay ⟨tr_nd.edge₃, tr_nd.nontriv₃⟩)
+  exact (if tr_nd.is_cclock then A LiesOnLeft SegND.toRay ⟨tr_nd.edge₁, tr_nd.nontriv₁.out⟩ ∧ A LiesOnLeft SegND.toRay ⟨tr_nd.edge₂, tr_nd.nontriv₂.out⟩ ∧ A LiesOnLeft SegND.toRay ⟨tr_nd.edge₃, tr_nd.nontriv₃.out⟩ else A LiesOnRight SegND.toRay ⟨tr_nd.edge₁, tr_nd.nontriv₁.out⟩ ∧ A LiesOnRight SegND.toRay ⟨tr_nd.edge₂, tr_nd.nontriv₂.out⟩ ∧ A LiesOnRight SegND.toRay ⟨tr_nd.edge₃, tr_nd.nontriv₃.out⟩)
 
 protected def IsOn (A : P) (tr_nd : TriangleND P) : Prop := TriangleND.IsInt A tr_nd ∨ A LiesOn tr_nd.edge₁ ∨ A LiesOn tr_nd.edge₂ ∨ A LiesOn tr_nd.edge₃
 

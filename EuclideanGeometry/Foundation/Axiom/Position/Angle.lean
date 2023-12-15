@@ -52,9 +52,55 @@ def value_of_angle_of_three_point_nd (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ 
 
 def value_of_angle_of_two_ray_of_eq_source (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : AngValue := (Angle.mk start_ray end_ray h).value
 
-scoped notation "ANG" => Angle.mk_pt_pt_pt
+@[inherit_doc Angle.mk_pt_pt_pt]
+scoped syntax "ANG" ws term:max ws term:max ws term:max (ws term:max ws term:max)? : term
 
-scoped notation "∠" => value_of_angle_of_three_point_nd
+macro_rules
+  | `(ANG $A $B $C) => `(Angle.mk_pt_pt_pt $A $B $C (@Fact.out _ inferInstance) (@Fact.out _ inferInstance))
+  | `(ANG $A $B $C $h₁ $h₂) => `(Angle.mk_pt_pt_pt $A $B $C $h₁ $h₂)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `Angle.mk_pt_pt_pt` -/
+@[delab app.EuclidGeom.Angle.mk_pt_pt_pt]
+def delabAngleMkPtPtPt : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``Angle.mk_pt_pt_pt 7
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  let C ← withNaryArg 4 delab
+  let ⟨b₁, h₁⟩ ← withNaryArg 5 do
+    return ((← getExpr).isAppOfArity' ``Fact.out 2, ← delab)
+  let ⟨b₂, h₂⟩ ← withNaryArg 6 do
+    return ((← getExpr).isAppOfArity' ``Fact.out 2, ← delab)
+  if b₁ && b₂ then
+    `(ANG $A $B $C)
+  else
+    `(ANG $A $B $C $h₁ $h₂)
+
+@[inherit_doc value_of_angle_of_three_point_nd]
+scoped syntax "∠" ws term:max ws term:max ws term:max (ws term:max ws term:max)? : term
+
+macro_rules
+  | `(∠ $A $B $C) => `(value_of_angle_of_three_point_nd $A $B $C (@Fact.out _ inferInstance) (@Fact.out _ inferInstance))
+  | `(∠ $A $B $C $h₁ $h₂) => `(value_of_angle_of_three_point_nd $A $B $C $h₁ $h₂)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `value_of_angle_of_three_point_nd` -/
+@[delab app.EuclidGeom.value_of_angle_of_three_point_nd]
+def delabValueOfAngleOfThreePointND : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``value_of_angle_of_three_point_nd 7
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  let C ← withNaryArg 4 delab
+  let ⟨b₁, h₁⟩ ← withNaryArg 5 do
+    return ((← getExpr).isAppOfArity' ``Fact.out 2, ← delab)
+  let ⟨b₂, h₂⟩ ← withNaryArg 6 do
+    return ((← getExpr).isAppOfArity' ``Fact.out 2, ← delab)
+  if b₁ && b₂ then
+    `(∠ $A $B $C)
+  else
+    `(∠ $A $B $C $h₁ $h₂)
 
 namespace Angle
 

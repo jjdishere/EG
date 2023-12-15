@@ -381,13 +381,13 @@ theorem third_point_same_of_two_point_same (h : tr_nd₁.IsCongr tr_nd₂) (p₁
     simp only [<-p₂, <-p₁] ; rfl
     exact h.5
   have l₁ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₁.end_ray.toLine :=
-    .inl (Ray.snd_pt_lies_on_mk_pt_pt tr_nd₁.nontriv₂.symm)
+    .inl Ray.snd_pt_lies_on_mk_pt_pt
   have l₂ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₂.start_ray.toLine :=
-    .inl (Ray.snd_pt_lies_on_mk_pt_pt tr_nd₁.nontriv₁)
+    .inl Ray.snd_pt_lies_on_mk_pt_pt
   have l₃ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₁.end_ray.toLine :=
-    .inl (Ray.snd_pt_lies_on_mk_pt_pt tr_nd₂.nontriv₂.symm)
+    .inl Ray.snd_pt_lies_on_mk_pt_pt
   have l₄ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₂.start_ray.toLine :=
-    .inl (Ray.snd_pt_lies_on_mk_pt_pt tr_nd₂.nontriv₁)
+    .inl Ray.snd_pt_lies_on_mk_pt_pt
   have np₁ : ¬ tr_nd₁.angle₁.end_ray.toLine ∥ tr_nd₁.angle₂.start_ray.toLine := by
     by_contra pl
     have l₅ : tr_nd₁.point₁ LiesOn tr_nd₁.angle₁.end_ray.toLine := by
