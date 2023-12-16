@@ -6,8 +6,7 @@ open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic Qq
 
 section congr
 
-/-
-def liftOrElse [Monad m] (xs : m $ Option A) (ys : m $ Option A) : m (Option A) := do
+def liftOrElse {m A} [Monad m] (xs : m $ Option A) (ys : m $ Option A) : m (Option A) := do
   match <- xs with
   | .some x => return x
   | .none => match <- ys with

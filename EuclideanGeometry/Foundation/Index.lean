@@ -27,6 +27,7 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence -- `to avoid ambig
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
 import EuclideanGeometry.Foundation.Axiom.Triangle.Similarity
+import EuclideanGeometry.Foundation.Axiom.Triangle.IsocelesTriangle
 /- Axiom.Circle -/
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
 import EuclideanGeometry.Foundation.Axiom.Circle.CCPosition
@@ -50,7 +51,6 @@ import EuclideanGeometry.Foundation.Construction.Triangle.AngleBisector
 import EuclideanGeometry.Foundation.Construction.Triangle.PerpendicularBisector
 import EuclideanGeometry.Foundation.Construction.Triangle.Orthocenter
 import EuclideanGeometry.Foundation.Construction.Triangle.Centroid
-import EuclideanGeometry.Foundation.Construction.Triangle.IsocelesTriangle
 /- Construction.Polygon -/
 import EuclideanGeometry.Foundation.Construction.Polygon.Quadrilateral
 import EuclideanGeometry.Foundation.Construction.Polygon.Parallelogram
