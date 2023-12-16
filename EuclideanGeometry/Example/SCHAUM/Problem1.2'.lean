@@ -148,7 +148,7 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
   have ang1 : (∠ e.B e.P e.D P_ne_B.symm P_ne_D.symm) = - (∠ e.C e.Q e.E Q_ne_C.symm Q_ne_E.symm) := by sorry
   -- $\triangle DPB \congr_a \triangle EQC$ (by AAS).
   have h : (TRI_nd e.P e.B e.D not_colinear_PBD) ≅ₐ (TRI_nd e.Q e.C e.E not_colinear_QCE) := by
-    apply Triangle_nd.acongr_of_AAS
+    apply TriangleND.acongr_of_AAS
     -- $\cdot \angle DBP = - \angle ECQ$
     · exact ang1
     -- $\cdot |\angle DPB| = |\angle EQC|$
