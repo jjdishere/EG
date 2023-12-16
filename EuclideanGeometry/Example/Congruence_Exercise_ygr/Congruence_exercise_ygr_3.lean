@@ -18,7 +18,7 @@ structure Setting  (Plane : Type _) [EuclideanPlane Plane] where
   B : Plane
   C : Plane
   D : Plane
-  hcvx : (A B D C).IsConvex
+  hcvx : (QDR A B D C).IsConvex
   he1 : (SEG A B).length = (SEG A C).length
   he2 : (SEG B D).length = (SEG C D).length
   --$A \ne B$ and $D \ne B$ for $\angle A B D$
@@ -27,8 +27,8 @@ structure Setting  (Plane : Type _) [EuclideanPlane Plane] where
   --$A \ne C$ and $D \ne B$ for $\angle A C D$
   A_ne_C : A ≠ C := sorry
   D_ne_C : D ≠ C := sorry
-theorem Result : ∠  A B D (A_ne_B) (D_ne_B) = -∠  A C D (A_ne_C) (D_ne_C):= by
-have h₁ : ¬ colinear A B C := by sorry
-have h₂ : ¬ colinear D B C := by sorry
-sorry
+theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠  e.A e.B e.D (e.A_ne_B) (e.D_ne_B) = - ∠ e.A e.C e.D (e.A_ne_C) (e.D_ne_C):= by
+  have h₁ : ¬ colinear e.A e.B e.C := by sorry
+  have h₂ : ¬ colinear e.D e.B e.C := by sorry
+  sorry
 end Congruence_exercise_ygr_3

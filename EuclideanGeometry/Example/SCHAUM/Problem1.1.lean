@@ -108,7 +108,6 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
       exact e.isoc_ABC
   have M_int_BC : e.M LiesInt (SEG_nd e.B e.C c_ne_b) := by
     sorry
-    --exact (SegND_eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source.mp midpoint_M').1
   have D_int_ray_BA : e.D LiesInt (RAY e.B e.A a_ne_b) := by
     rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
     apply SegND.lies_int_toRay_of_lies_int
@@ -129,6 +128,7 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
     have M_int_CB : e.M LiesInt (SEG_nd e.C e.B b_ne_c) := by
       apply SegND.lies_int_rev_iff_lies_int.mp
       exact M_int_BC
+    exact M_int_CB
   have h₅ : ∠ e.D e.B e.M (d_ne_b) (m_ne_b) = -∠ e.E e.C e.M (e_ne_c) (m_ne_c) := by
     have h₅₁ : -∠ e.E e.C e.M (e_ne_c) (m_ne_c) = -∠ e.A e.C e.B (a_ne_c) (b_ne_c) := by
       have inner_h₅₁ : ∠  e.E e.C e.M (e_ne_c) (m_ne_c) = ∠  e.A e.C e.B (a_ne_c) (b_ne_c) := by
