@@ -134,8 +134,10 @@ theorem Parallelogram_not_colinear₁₂₃ (P : Type _) [EuclideanPlane P] (qdr
      unfold colinear at k₁
      simp [hbd.symm,hcd,hbc] at k₁
      unfold colinear_of_nd at k₁
-     
-     sorry
+     have p₄:qdr_nd.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj  := by
+       rw[l₂',l₃]
+       exact k₁
+     simp[p₄] at s₂
    simp [flip_colinear_fst_snd m₃] at m₂
    by_contra m₅
    have m₄ :  ¬ colinear qdr_nd.point₄ qdr_nd.point₃ qdr_nd.point₁ := by
@@ -143,7 +145,11 @@ theorem Parallelogram_not_colinear₁₂₃ (P : Type _) [EuclideanPlane P] (qdr
      unfold colinear at k₂
      simp [hca.symm,hcd,had.symm] at k₂
      unfold colinear_of_nd at k₂
-     simp [s₃,l₄'.symm,l₃'.symm] at k₂
+     have p₅:qdr_nd.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.toProj := by
+       rw[l₄',l₃']
+       exact k₂
+     simp[p₅] at s₃
+
    simp [flip_colinear_fst_snd m₅] at m₄
    by_contra m₇
    have m₆ :  ¬ colinear qdr_nd.point₁ qdr_nd.point₄ qdr_nd.point₂ := by
@@ -151,7 +157,10 @@ theorem Parallelogram_not_colinear₁₂₃ (P : Type _) [EuclideanPlane P] (qdr
      unfold colinear at k₃
      simp [hbd,hba.symm,had.symm] at k₃
      unfold colinear_of_nd at k₃
-     simp [s₄,l₄.symm,l₁.symm] at k₃
+     have p₆:qdr_nd.edge_nd₁₄.toProj = qdr_nd.edge_nd₁₂.toProj := by
+       rw[l₄,l₁]
+       exact k₃
+     simp [p₆] at s₄
    simp [flip_colinear_fst_snd m₇] at m₆
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 2nd, 3rd and 4th points are not colinear, then qdr_nd is a parallelogram_nd.-/
