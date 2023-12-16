@@ -29,7 +29,7 @@ variable {N : Plane} {hn : N = perp_foot Q (LIN B D d_ne_B)}
 -- State the main goal.
 lemma m_ne_p : M ≠ P := by sorry
 lemma n_ne_q : N ≠ Q := by sorry
-theorem SCHAUM_Problem_1_14 : (SEG P M).length = (SEG Q N).length ∧ ((SEG_nd P M m_ne_p) ∥ (SEG_nd Q N n_ne_q)) := by
+theorem SCHAUM_Problem_1_14 : (SEG P M).length = (SEG Q N).length ∧ ((SegND P M m_ne_p) ∥ (SegND Q N n_ne_q)) := by
   constructor
   · sorry
   · unfold parallel
@@ -44,6 +44,6 @@ theorem SCHAUM_Problem_1_14 : (SEG P M).length = (SEG Q N).length ∧ ((SEG_nd P
       _ = toProj (LIN P M m_ne_p) := by sorry
       _ = (toProj (LIN B D (d_ne_B (hprg := hprg)))).perp := by sorry
       _ = toProj (LIN Q N n_ne_q) := by sorry
-      _ = toProj (SEG_nd Q N n_ne_q) := by sorry
+      _ = toProj (SegND Q N n_ne_q) := by sorry
 -/
 end SCHAUM_Problem_1_14

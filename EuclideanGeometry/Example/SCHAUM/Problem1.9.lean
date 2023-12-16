@@ -19,7 +19,7 @@ variable {A B C : Plane} {not_colinear_ABC : ¬ colinear A B C} {isoceles_ABC : 
 -- Claim $B \ne A$
 lemma B_ne_A : B ≠ A := (ne_of_not_colinear not_colinear_ABC).2.2
 -- denote the extension of $BA$ as $BA_ext$
-variable {BA_ext : Ray Plane} {hlba : BA_ext = (SEG_nd B A B_ne_A.symm).extension}
+variable {BA_ext : Ray Plane} {hlba : BA_ext = (SegND B A B_ne_A.symm).extension}
 -- Let $E$ be a point on the extension of $BA$
 variable {E : Plane} {E_int_ext : E LiesInt BA_ext}
 -- Claim $C \ne B$
@@ -35,7 +35,7 @@ variable {angle_eac : Angle Plane} {heac : angle_eac = Angle.mk_pt_pt_pt E A C E
 --denote the angle bisector of $\angle EAC$ as $l_bis$
 variable {l_bis : Ray Plane} {hleac : l_bis = Angle.AngBis angle_eac}
 -- denote segment $BC$ as $BC$
-variable {BC : Seg_nd Plane} {hbc : BC = SEG_nd B C C_ne_B}
+variable {BC : SegND Plane} {hbc : BC = SegND B C C_ne_B}
 -- denote the ray from $A$ which has the same direction as $BC$ as $l_a$
 variable {l_a : Ray Plane} {hla : l_a = Ray.mk A (BC.toDir)}
 --Prove that $l_a = l_bis$

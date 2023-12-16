@@ -25,7 +25,7 @@ variable {hrt : (ANG A C B c_ne_a.symm B_ne_C).IsRightAngle}
 variable {D : P} {hd : D = (SEG A B).midpoint}
 lemma d_ne_a: D ≠ A := by
   rw[hd]
-  apply (SegND.midpt_lies_int (seg_nd := SEG_nd A B (b_ne_a).symm)).2.1
+  apply (SegND.midpt_lies_int (SegND := SegND A B (b_ne_a).symm)).2.1
   use C
   by_contra h
   have : colinear A B C :=by
@@ -35,12 +35,12 @@ lemma d_ne_a: D ≠ A := by
 variable {E : P} {he : E=  (SEG A C).midpoint}
 lemma e_ne_a: E ≠ A := by
   rw[he]
-  apply (SegND.midpt_lies_int (seg_nd := SEG_nd A C c_ne_a)).2.1
+  apply (SegND.midpt_lies_int (SegND := SegND A C c_ne_a)).2.1
   use B
   exact hnd
 lemma e_ne_C: E ≠ C := by
   rw[he]
-  apply (SegND.midpt_lies_int (seg_nd := SEG_nd A C c_ne_a)).2.2
+  apply (SegND.midpt_lies_int (SegND := SegND A C c_ne_a)).2.2
   use B
   exact hnd
 --midpoint lies on the segment
@@ -143,11 +143,11 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
 --rays equal, respectively
   congr 1
   apply Angle.ext
-  have h₀:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.1=(SEG_nd A D (@d_ne_a P _ A B C hnd D hd)).toRay := rfl
+  have h₀:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.1=(SegND A D (@d_ne_a P _ A B C hnd D hd)).toRay := rfl
   rw[h₀]
-  have h₁:(TRI_nd A B C hnd).angle₁.1=(SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay:=rfl
+  have h₁:(TRI_nd A B C hnd).angle₁.1=(SegND A B (@b_ne_a P _ A B C hnd)).toRay:=rfl
   rw[h₁]
-  apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay
+  apply @Ray.source_int_toRay_eq_ray P _ (SegND A B (@b_ne_a P _ A B C hnd)).toRay
   apply SegND.lies_int_toRay_of_lies_int
   apply (Seg.lies_int_iff).mpr
   constructor
@@ -156,11 +156,11 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   norm_num
   simp only [Seg.toVec,hd]
   apply Seg.vec_source_midpt
-  have h₂:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.2=(SEG_nd A E (@e_ne_a P _ A B C hnd E he)).toRay := rfl
+  have h₂:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.2=(SegND A E (@e_ne_a P _ A B C hnd E he)).toRay := rfl
   rw[h₂]
-  have h₃:(TRI_nd A B C hnd).angle₁.2=(SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay:=rfl
+  have h₃:(TRI_nd A B C hnd).angle₁.2=(SegND A C (@c_ne_a P _ A B C hnd)).toRay:=rfl
   rw[h₃]
-  apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay
+  apply @Ray.source_int_toRay_eq_ray P _ (SegND A C (@c_ne_a P _ A B C hnd)).toRay
   apply SegND.lies_int_toRay_of_lies_int
   apply (Seg.lies_int_iff).mpr
   constructor
@@ -224,6 +224,6 @@ lemma g_ne_f: G ≠ F := sorry
 --Failed to use the notation ⟂
 
 -- Theorem : $FG \perp DE$
-theorem Shan_Problem_1_8 : (SEG_nd F G g_ne_f) ⟂ (SEG_nd D E e_ne_d) := sorry
+theorem Shan_Problem_1_8 : (SegND F G g_ne_f) ⟂ (SegND D E e_ne_d) := sorry
 
 end Shan_Problem_1_8

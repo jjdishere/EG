@@ -15,11 +15,6 @@ theorem lies_int_seg_nd_of_lies_int_seg (A B C : P) (h1 : B ≠ A) (h2 : C LiesI
 
 theorem lies_on_seg_nd_of_lies_on_seg (A B C : P) (h1 : B ≠ A) (h2 : C LiesOn (SEG A B)) : C LiesOn (SEG_nd A B h1) := by sorry
 
-namespace Ray
-
-theorem snd_pt_lies_int_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesInt (RAY A B h) := by sorry
-
-end Ray
 theorem same_dist_eq_or_eq_neg {A B C : P} (hne : B ≠ A) (h : C LiesOn (LIN A B hne)) (heq : dist A C = dist A B) : (C = B) ∨ (VEC A C = VEC B A) := by
   have : LIN A B hne = (RAY A B hne).toLine := rfl
   rw [this] at h

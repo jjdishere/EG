@@ -56,7 +56,7 @@ lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
 lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
 lemma B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
 -- Let $D$ and $e$ be points on the extension of the nondegenerate segments of $AB$ and $AC$, respectively.
-variable {D E : P} {hd : D LiesInt (SEG_nd A B (B_ne_a (hnd := hnd))).extension} {he : E LiesInt (SEG_nd A C (c_ne_a (hnd := hnd))).extension}
+variable {D E : P} {hd : D LiesInt (SegND A B (B_ne_a (hnd := hnd))).extension} {he : E LiesInt (SegND A C (c_ne_a (hnd := hnd))).extension}
 -- Claim: $E \ne B$ and $D \ne C$. This is because $E$ lies on line $AC$, but $B$ doesn't lies on $AC$; $D$ lies on line $AB$, but $C$ doesn't lies on $AB$.
 lemma e_ne_B : E ≠ B := by -- for $E \ne B$
   have b_not_lieson_ac := (Line.lies_on_line_of_pt_pt_iff_colinear (c_ne_a (hnd := hnd)) B).mp.mt (flip_colinear_snd_trd.mt hnd) -- $B$ doesn't lies on line $AC$ because $A, B, C$ not colinear
@@ -68,12 +68,12 @@ lemma d_ne_c : D ≠ C := by -- for $D \ne C$
   exact ne_of_lieson_and_not_lieson d_lieson_ab c_not_lieson_ab -- $D \ne C$ because $D$ lies on line $AB$, but $C$ doesn't lies on line $AB$
 -- Claim: $A \ne D$ and $A \ne E$. This is because $E$ lies on extension of $AC$, but $A$ doesn't lies on extension of $AC$; $D$ lies on extension of $AB$, but $A$ doesn't lies on extension of $AB$
 lemma d_ne_a : D ≠ A := by -- for $D \ne A$
-  have a_lies_on_ab : A LiesOn (SEG_nd A B (b_ne_a (hnd := hnd))).1 := Seg.source_lies_on
-  --have a_lies_on_ab := Seg.source_lies_on (SEG_nd A B (b_ne_a (hnd := hnd))).1 -- $A$ lieson segment $AB$ because $A$ is the source of segment $AB$
+  have a_lies_on_ab : A LiesOn (SegND A B (b_ne_a (hnd := hnd))).1 := Seg.source_lies_on
+  --have a_lies_on_ab := Seg.source_lies_on (SegND A B (b_ne_a (hnd := hnd))).1 -- $A$ lieson segment $AB$ because $A$ is the source of segment $AB$
   have a_not_lies_int_ab_extn := SegND.not_lies_int_extn_of_lies_on a_lies_on_ab -- $A$ doesn't lies in the extension of $AB$ because $A$ lies on segment $AB$
   exact ne_of_liesint_and_not_liesint hd a_not_lies_int_ab_extn -- $D \ne A$ because $D$ lies in the extension of $AB$, but $A$ doesn't liesint the extension of $AB$
 lemma e_ne_a : E ≠ A := by -- for $E \ne A$
-  have a_lies_on_ac : A LiesOn (SEG_nd A C (c_ne_a (hnd := hnd))).1 := Seg.source_lies_on  -- $A$ lieson segment $AC$ because $A$ is the source of segment $AC$
+  have a_lies_on_ac : A LiesOn (SegND A C (c_ne_a (hnd := hnd))).1 := Seg.source_lies_on  -- $A$ lieson segment $AC$ because $A$ is the source of segment $AC$
   have a_not_lies_int_ac_extn := SegND.not_lies_int_extn_of_lies_on a_lies_on_ac -- $A$ doesn't lies in the extension of $AC$ because $A$ lies on segment $AC$
   exact ne_of_liesint_and_not_liesint he a_not_lies_int_ac_extn -- $E \ne A$ because $E$ lies in the extension of $AC$, but $A$ doesn't liesint the extension of $AC$
   -- Claim : $D \ne B$ and $E \ne C$.

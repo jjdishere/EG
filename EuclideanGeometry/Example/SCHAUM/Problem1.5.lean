@@ -80,21 +80,21 @@ As a consequence, we know that $PQRS$ is a parallelogram.
   -- We have that $APCR$ is a parallelogram.
   have isprgnd_APCR : (QDR A P C R) IsPRG_nd := by
     -- We have that $AP, RC$ are of the same direction.
-    have dir_ap_eq_dir_rc_rev : (SEG_nd A P P_ne_A).toDir = (SEG_nd R C R_ne_C.symm).toDir := by
+    have dir_ap_eq_dir_rc_rev : (SegND A P P_ne_A).toDir = (SegND R C R_ne_C.symm).toDir := by
       calc
-      (SEG_nd A P P_ne_A).toDir
+      (SegND A P P_ne_A).toDir
       -- Since $P$ lies on $AB$, we have $AP, AB$ are of the same direction,
-      _= (SEG_nd A B B_ne_A).toDir := by
+      _= (SegND A B B_ne_A).toDir := by
         symm;
-        exact eq_todir_of_lies_int_seg_nd A B P B_ne_A P_int_AB
+        exact eq_todir_of_lies_int_SegND A B P B_ne_A P_int_AB
       -- in parallelogram $ABCD$, we have $AB, DC$ are of the same direction,
-      _= (SEG_nd D C C_ne_D).toDir := prg_trash.todir_eq_of_is_prg_nd A B C D hprgnd B_ne_A C_ne_D
+      _= (SegND D C C_ne_D).toDir := prg_trash.todir_eq_of_is_prg_nd A B C D hprgnd B_ne_A C_ne_D
       -- $CD, DC$ are of the opposite direction because of symmetry,
-      _= - (SEG_nd C D C_ne_D.symm).toDir := by apply Seg_nd.todir_of_rev_eq_neg_todir (seg_nd := (SEG_nd C D C_ne_D.symm))
+      _= - (SegND C D C_ne_D.symm).toDir := by apply SegND.todir_of_rev_eq_neg_todir (SegND := (SegND C D C_ne_D.symm))
       -- since $R$ lies on $CD$, we have $CR, CD$ are of the same direction,
-      _= - (SEG_nd C R R_ne_C).toDir := by rw [eq_todir_of_lies_int_seg_nd C D R C_ne_D.symm R_int_CD]
+      _= - (SegND C R R_ne_C).toDir := by rw [eq_todir_of_lies_int_SegND C D R C_ne_D.symm R_int_CD]
       -- $CR, RC$ are of the opposite direction because of symmetry.
-      _= (SEG_nd R C R_ne_C.symm).toDir := by symm; apply Seg_nd.todir_of_rev_eq_neg_todir (seg_nd := (SEG_nd C R R_ne_C))
+      _= (SegND R C R_ne_C.symm).toDir := by symm; apply SegND.todir_of_rev_eq_neg_todir (SegND := (SegND C R R_ne_C))
     -- We have $AP = RC$.
     have AP_eq_RC : (SEG A P).length = (SEG R C).length := by
       calc
@@ -110,21 +110,21 @@ As a consequence, we know that $PQRS$ is a parallelogram.
   -- We have that $ASCQ$ is a parallelogram.
   have isprgnd_ASCQ : (QDR A S C Q) IsPRG_nd := by
     -- We have that $AS, QC$ are of the same direction.
-    have dir_as_eq_dir_qc_rev : (SEG_nd A S S_ne_A).toDir = (SEG_nd Q C Q_ne_C.symm).toDir := by
+    have dir_as_eq_dir_qc_rev : (SegND A S S_ne_A).toDir = (SegND Q C Q_ne_C.symm).toDir := by
       calc
-      (SEG_nd A S S_ne_A).toDir
+      (SegND A S S_ne_A).toDir
       -- Since $S$ lies on $AD$, we have $AS, AD$ are of the same direction,
-      _= (SEG_nd A D D_ne_A).toDir := by
+      _= (SegND A D D_ne_A).toDir := by
         symm;
-        exact eq_todir_of_lies_int_seg_nd A D S D_ne_A S_int_AD
+        exact eq_todir_of_lies_int_SegND A D S D_ne_A S_int_AD
       -- in parallelogram $ABCD$, we have $AD, BC$ are of the same direction,
-      _= (SEG_nd B C C_ne_B).toDir := prg_trash.todir_eq_of_is_prg_nd_variant A B C D hprgnd D_ne_A C_ne_B
+      _= (SegND B C C_ne_B).toDir := prg_trash.todir_eq_of_is_prg_nd_variant A B C D hprgnd D_ne_A C_ne_B
       -- $BC, CB$ are of the opposite direction because of symmetry,
-      _= - (SEG_nd C B C_ne_B.symm).toDir := by apply Seg_nd.todir_of_rev_eq_neg_todir (seg_nd := (SEG_nd C B C_ne_B.symm))
+      _= - (SegND C B C_ne_B.symm).toDir := by apply SegND.todir_of_rev_eq_neg_todir (SegND := (SegND C B C_ne_B.symm))
       -- since $Q$ lies on $CB$, we have $CQ, CB$ are of the same direction,
-      _= - (SEG_nd C Q Q_ne_C).toDir := by rw [eq_todir_of_lies_int_seg_nd C B Q C_ne_B.symm Q_int_CB]
+      _= - (SegND C Q Q_ne_C).toDir := by rw [eq_todir_of_lies_int_SegND C B Q C_ne_B.symm Q_int_CB]
       -- $CQ, QC$ are of the opposite direction because of symmetry.
-      _= (SEG_nd Q C Q_ne_C.symm).toDir := by symm; apply Seg_nd.todir_of_rev_eq_neg_todir (seg_nd := (SEG_nd C Q Q_ne_C))
+      _= (SegND Q C Q_ne_C.symm).toDir := by symm; apply SegND.todir_of_rev_eq_neg_todir (SegND := (SegND C Q Q_ne_C))
     -- We have $AS = QC$.
     have AS_eq_QC : (SEG A S).length = (SEG Q C).length := by
       calc

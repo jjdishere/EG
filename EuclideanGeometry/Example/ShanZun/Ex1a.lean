@@ -20,7 +20,7 @@ lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $D$ is a point in the extension of $AB$
-variable {D : P} {hd_1 : D LiesInt (SEG_nd A B A_ne_B).extension}
+variable {D : P} {hd_1 : D LiesInt (SegND A B A_ne_B).extension}
 -- We have $BD=AB$
 {hd_2 : (SEG B D).length = (SEG A B).length}
 -- $E$ is the midpoint of $AB$
@@ -29,9 +29,9 @@ variable {E : P} {he : E = (SEG A B).midpoint}
 -- Theorem : $CD = 2 \cdot CE$
 theorem Shan_Problem_1_3 : (SEG C D).length = 2 * (SEG C E).length := by
   -- Extend $AC$ to $F$ such that $CF = AC$
-  let F := Ray.extpoint (SEG_nd A C c_ne_a).extension (SEG A C).length
+  let F := Ray.extpoint (SegND A C c_ne_a).extension (SEG A C).length
   have cf_eq_ac : (SEG C F).length = (SEG A C).length := by
-    apply seg_length_eq_dist_of_extpoint (SEG_nd A C c_ne_a).extension
+    apply seg_length_eq_dist_of_extpoint (SegND A C c_ne_a).extension
     simp
     exact length_nonneg
   -- $\triangle A B F$ is congruent to $\triangle A C D$, so $BF = CD$
@@ -62,9 +62,9 @@ variable {D : P} {hd : D = perp_foot A (LIN B C B_ne_C.symm)}
 -- Theorem : $BD = AC + CD$
 theorem Shan_Problem_1_4 : (SEG B D).length = (SEG A C).length + (SEG C D).length := by
   -- Extend $BC$ to $E$ such that $CE = CA$
-  let E := Ray.extpoint (SEG_nd B C b_ne_c.symm).extension (SEG C A).length
+  let E := Ray.extpoint (SegND B C b_ne_c.symm).extension (SEG C A).length
   have ce_eq_ca : (SEG C E).length = (SEG C A).length := by
-    apply seg_length_eq_dist_of_extpoint (SEG_nd B C b_ne_c.symm).extension
+    apply seg_length_eq_dist_of_extpoint (SegND B C b_ne_c.symm).extension
     simp
     exact length_nonneg
   -- $DE = AC + CD$

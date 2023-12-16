@@ -46,8 +46,8 @@ lemma e_ne_d : E ≠ D :=by
   apply Seg.colinear_of_lies_on a_on_s f_on_s d_on_s
 lemma e_ne_f : E ≠ F := (ne_of_not_colinear E_off_lin).1
 --such that EF ∥ AC and ED ∥ BC.
-variable {EF_AC_para: (SEG_nd E F e_ne_f)∥(SEG_nd A C c_ne_a.symm)}
-variable {ED_BC_para: (SEG_nd E D e_ne_d)∥(SEG_nd B C c_ne_B.symm)}
+variable {EF_AC_para: (SegND E F e_ne_f)∥(SegND A C c_ne_a.symm)}
+variable {ED_BC_para: (SegND E D e_ne_d)∥(SegND B C c_ne_B.symm)}
 --(Opposite side is already implied by the known, also the theorem about sides of a line is not complete)
 
 --Prove that $BC =DE$ and $AC =EF$.

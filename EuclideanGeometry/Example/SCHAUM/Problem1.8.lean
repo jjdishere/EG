@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Index
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 
 noncomputable section
 
@@ -25,9 +26,9 @@ lemma B_ne_C : B ≠ C := (ne_of_not_colinear not_colinear_ABC).1.symm
 --Claim $C \ne A$
 lemma C_ne_A : C ≠ A := (ne_of_not_colinear not_colinear_ABC).2.1.symm
 --let $D$ be point on the extension of $BC$
-variable {D : Plane} {D_int_BC_ext : D LiesInt (SEG_nd B C B_ne_C.symm).extension}
+variable {D : Plane} {D_int_BC_ext : D LiesInt (SEG_nd B C (B_ne_C (hnd:=hnd)).symm).extension}
 --let $E$ be point on the extension of $CA$
-variable {E : Plane} {E_int_CA_ext : E LiesInt (SEG_nd C A C_ne_A.symm).extension}
+variable {E : Plane} {E_int_CA_ext : E LiesInt (SEG_nd C A (C_ne_A (hnd:=hnd)).symm).extension}
 --such that $CD = AE$
 variable {CD_eq_AE : ((SEG C D).length = (SEG A E).length)}
 --Prove that $AD = BE$
@@ -62,16 +63,17 @@ Therefore, $BD = CE$.
     calc
     ∠ D B A D_ne_B A_ne_B
     _= ∠ C B A B_ne_C.symm A_ne_B := by
-      apply eq_ang_val_of_lieson_lieson D_ne_B A_ne_B (B_ne_C.symm) A_ne_B
-      · sorry
-      · sorry
+      symm;
+      apply eq_ang_val_of_lieson_lieson (B_ne_C.symm) A_ne_B D_ne_B A_ne_B
+      · exact lies_int_toray_of_lies_int_ext_of_seg_nd B C D B_ne_C.symm D_int_BC_ext
+      · exact Ray.snd_pt_lies_int_mk_pt_pt B A A_ne_B
     _= ∠ A C B A_ne_C B_ne_C := by
       apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd A B C not_colinear_ABC))).mp
       exact Triangle.isoceles_of_regular (▵ A B C) hreg
     _= ∠ E C B E_ne_C B_ne_C := by
       apply eq_ang_val_of_lieson_lieson A_ne_C B_ne_C E_ne_C B_ne_C
-      · sorry
-      · sorry
+      · exact lies_int_toray_of_lies_int_ext_of_seg_nd C A E A_ne_C E_int_CA_ext
+      · exact Ray.snd_pt_lies_int_mk_pt_pt C B B_ne_C
   have BD_eq_CE : (SEG B D).length = (SEG C E).length := by
     calc
     (SEG B D).length
@@ -83,8 +85,8 @@ Therefore, $BD = CE$.
     _= (SEG C E).length := by
       symm;apply length_eq_length_add_length
       exact A_on_CE
-  have trngl_BDA_congr_trngl_CEB : Triangle_nd.IsCongr (TRI_nd B D A not_colinear_BDA) (TRI_nd C E B not_colinear_CEB) := by
-    apply Triangle_nd.congr_of_SAS
+  have trngl_BDA_congr_trngl_CEB : TriangleND.IsCongr (TRI_nd B D A not_colinear_BDA) (TRI_nd C E B not_colinear_CEB) := by
+    apply TriangleND.congr_of_SAS
     · exact AB_eq_BC
     · exact angle_DBA_eq_angle_ECB
     · exact BD_eq_CE
