@@ -93,7 +93,11 @@ lemma tangents_ne_pt {ω : Circle P} {p : P} (h : p LiesOut ω) : ((pt_tangent_c
   have h₂ : dist ω.center p = ω.radius := this
   linarith
 
-theorem line_tangent_circle {ω : Circle P} {p : P} (h : p LiesOut ω) : ((DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1) Tangent ω) ∧ ((DLIN p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2) Tangent ω) := sorry
+theorem line_tangent_circle {ω : Circle P} {p : P} (h : p LiesOut ω) : ((DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1) Tangent ω) ∧ ((DLIN p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2) Tangent ω) := by
+  constructor
+  · show dist_pt_line ω.center (DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1) = ω.radius
+    sorry
+  sorry
 
 theorem tangent_pts_eq_tangents {ω : Circle P} {p : P} (h : p LiesOut ω) : (DirLC_Tangent_pt (line_tangent_circle h).1 = (pt_tangent_circle_pts h).left) ∧ (DirLC_Tangent_pt (line_tangent_circle h).2 = (pt_tangent_circle_pts h).right) := sorry
 

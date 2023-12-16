@@ -113,16 +113,16 @@ protected def IsMajor (β : Arc P) : Prop := β.cangle.value.toReal < 0
 
 protected def IsMinor (β : Arc P) : Prop := β.cangle.value.toReal > 0
 
-protected def IsAntipode (A B : P) {ω : Circle P} (h : B ≠ A) (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) : Prop := (ARC A B h h₁ h₂).cangle.value = π
+def IsAntipode (A B : P) {ω : Circle P} (h : B ≠ A) (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) : Prop := (ARC A B h h₁ h₂).cangle.value = π
 
 theorem cangle_of_complementary_arc_are_opposite (β : Arc P) : β.cangle.value = - β.complement.cangle.value := by
   show ∠ β.source β.circle.center β.target (arc_center_isnot_arc_endpts β).1.symm (arc_center_isnot_arc_endpts β).2.symm = -∠ β.target β.circle.center β.source (arc_center_isnot_arc_endpts β).2.symm (arc_center_isnot_arc_endpts β).1.symm
   apply neg_value_of_rev_ang
 
-theorem antipode_iff_colinear (A B : P) {ω : Circle P} (h : B ≠ A) (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) : Arc.IsAntipode A B h h₁ h₂ ↔ colinear ω.center A B := by
+theorem antipode_iff_colinear (A B : P) {ω : Circle P} (h : B ≠ A) (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) : IsAntipode A B h h₁ h₂ ↔ colinear ω.center A B := by
   constructor
   · intro hh
-    unfold Arc.IsAntipode Arc.cangle Arc.mk_pt_pt_circle Arc.angle_mk_pt_arc at hh
+    unfold IsAntipode Arc.cangle Arc.mk_pt_pt_circle Arc.angle_mk_pt_arc at hh
     simp at hh
     apply colinear_of_angle_eq_pi hh
   intro hh
@@ -184,7 +184,7 @@ theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P} (h₁ : p LiesO
     _ = 2 • (∠ β.source p β.target h₂.1.symm h₂.2.symm) := by rw [← zero_sub, ← eq₃, add_sub_cancel']
     _ = 2 • (Arc.angle_mk_pt_arc p β h₂).value := rfl
 
-theorem inscribed_angle_of_diameter_eq_mod_pi {p : P} {β : Arc P} (h₁ : p LiesOn β.circle) (h₂ : Arc.IsAntipode β.source β.target β.endpts_ne β.ison.1 β.ison.2) (h₃ : Isnot_arc_endpts p β) : (Arc.angle_mk_pt_arc p β h₃).dvalue = ((π / 2 : ℝ) : AngDValue) := by
+theorem inscribed_angle_of_diameter_eq_mod_pi {p : P} {β : Arc P} (h₁ : p LiesOn β.circle) (h₂ : IsAntipode β.source β.target β.endpts_ne β.ison.1 β.ison.2) (h₃ : Isnot_arc_endpts p β) : (Arc.angle_mk_pt_arc p β h₃).dvalue = ∡[π / 2] := by
   have : β.cangle.value = π := h₂
   have : 2 • (Arc.angle_mk_pt_arc p β h₃).value = π := by
     rw [← this, ← cangle_eq_two_times_inscribed_angle]
@@ -195,6 +195,13 @@ theorem inscribed_angle_of_diameter_eq_mod_pi {p : P} {β : Arc P} (h₁ : p Lie
   unfold Angle.dvalue
   rw [h, neg_div]
   simp
+
+theorem inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt {A B C : P} {ω : Circle P} (hne₁ : A ≠ B) (hne₂ : B ≠ C) (hne₃ : C ≠ A) (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) (h₃ : C LiesOn ω) (h : IsAntipode A B hne₁.symm h₁ h₂) : ∠ A C B hne₃.symm hne₂ = ∡[π / 2] := by
+  let β : Arc P := ARC A B hne₁.symm h₁ h₂
+  have hh₁ : C LiesOn β.circle := h₃
+  have hh₂ : IsAntipode β.source β.target β.endpts_ne β.ison.1 β.ison.2 := h
+  have hh₃ : Isnot_arc_endpts C β := ⟨hne₃,hne₂.symm⟩
+  apply inscribed_angle_of_diameter_eq_mod_pi hh₁ hh₂ hh₃
 
 theorem inscribed_angle_on_same_arc_is_invariant_mod_pi {A B : P} {β : Arc P} (h₁ : A LiesOn β.circle) (h₂ : B LiesOn β.circle) (hne₁ : Isnot_arc_endpts A β) (hne₂ : Isnot_arc_endpts B β) : (Arc.angle_mk_pt_arc A β hne₁).dvalue = (Arc.angle_mk_pt_arc B β hne₂).dvalue := by
   have eq : 2 • (Arc.angle_mk_pt_arc A β hne₁).value = 2 • (Arc.angle_mk_pt_arc B β hne₂).value := by rw [← cangle_eq_two_times_inscribed_angle h₁ hne₁, ← cangle_eq_two_times_inscribed_angle h₂ hne₂]
