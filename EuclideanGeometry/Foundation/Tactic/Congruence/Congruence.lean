@@ -12,7 +12,7 @@ def liftOrElse {m A} [Monad m] (xs : m $ Option A) (ys : m $ Option A) : m (Opti
   | .none => match <- ys with
     | .some y => return y
     | .none => return .none
--/
+
 
 def extractCongSa (expr : Q(Prop)) : MetaM (Option Expr) :=
   match expr with
@@ -47,6 +47,9 @@ def congrSaLemmas : List Name :=
   [ ``TriangleND.congr_of_SAS
   , ``TriangleND.congr_of_ASA
   , ``TriangleND.congr_of_AAS
+  , ``TriangleND.acongr_of_SAS
+  , ``TriangleND.acongr_of_ASA
+  , ``TriangleND.acongr_of_AAS
   ]
 
 -- input t (Name), output [t, t.symm] (Term)
@@ -68,7 +71,7 @@ def combine_syntax (thm : Term) (l : List (List Term)) : List Term :=
 
 -- #eval List.length (construct_syntax [mkIdent ``id, mkIdent ``Eq.symm] [[Syntax.mkApp ( mkIdent ``Eq.refl) #[mkIdent ``Nat.zero]], [Syntax.mkApp (mkIdent ``Eq.refl) #[mkIdent ``Real.pi]]]) --4
 
--- input a theorem and [[x0, x0.symm], [x1, x1.symm], [x2, x2.symm]], output 8 conbined terms
+-- input a theorem and [[x0, x0.symm], [x1, x1.symm], [x2, x2.symm]], output 8 combined terms
 def symm_syntax (thm : Term) (l : List (List Term)) : List Term := combine_syntax thm (product l)
 
 syntax (name := congr_sa) "congr_sa" : tactic
@@ -149,9 +152,10 @@ section examples
 
 variable {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : TriangleND P}
 
-example (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₂ : tr_nd₂.edge₂.length = tr_nd₁.edge₂.length)
-  (e₃ : tr_nd₂.edge₃.length = tr_nd₁.edge₃.length) : tr_nd₁.IsCongr tr_nd₂ := by
-    congr_sa
+example (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsCongr tr_nd₂ := by
+--    exact TriangleND.congr_of_SAS e₂ a₁ e₃
+  congr_sa
+
 /-
 -- `This tactic fails now, fix it!!!`
 example (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value)
@@ -165,8 +169,7 @@ example (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (e₂ : tr_
 example (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value)
   (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) : tr_nd₁.IsACongr tr_nd₂ := by
     acongr_sa
-
+-/
 end examples
 
 end EuclidGeom
--/
