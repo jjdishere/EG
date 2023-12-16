@@ -18,6 +18,8 @@ def extractCongSa (expr : Q(Prop)) : MetaM (Option Expr) :=
   match expr with
   | ~q(@EuclidGeom.Angle.value _ (_) _ = @EuclidGeom.Angle.value _ (_) _) =>
       return .some expr
+  | ~q(@EuclidGeom.SegND.length _ (_) _ = @EuclidGeom.SegND.length _ (_) _) =>
+      return .some expr
   | ~q(@EuclidGeom.Seg.length _ (_) _ = @EuclidGeom.Seg.length _ (_) _) =>
       return .some expr
   | _ => return .none
@@ -53,15 +55,14 @@ def congrSaLemmas : List Name :=
   ]
 
 -- input t (Name), output [t, t.symm] (Term)
-def symm_term (t : Name) : List Term := [mkIdent t, Syntax.mkApp (mkIdent ``Eq.symm) #[mkIdent t]]
+def symm_term (t : Name) : List Term := [mkIdent t, (Syntax.mkApp (mkIdent ``Eq.symm) #[mkIdent t])]
 
 -- input [[a,b], [c,d,e]], returns [[a,c], [a,d], [a,e], [b,c], [b,d], [b,e]]
 def product {α : Type _} (l : List (List α)) : List (List α) :=
   match l with
   | [] => [[]]
   | x :: xs =>
-    List.foldl (fun acc a => acc ++ (List.map (a :: ·) (product xs)))
-      (init := []) x
+    List.foldl (fun acc a => acc ++ (List.map (a :: ·) (product xs))) (init := []) x
 
 #eval product [[(1 : ℕ) ,2], [3,4], [5,6]]
 
@@ -152,8 +153,8 @@ section examples
 
 variable {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : TriangleND P}
 
-example (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsCongr tr_nd₂ := by
---    exact TriangleND.congr_of_SAS e₂ a₁ e₃
+example  (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁ ≅ tr_nd₂ := by
+--  exact TriangleND.congr_of_SAS e₂ a₁ e₃
   congr_sa
 
 /-
