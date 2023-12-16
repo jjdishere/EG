@@ -78,7 +78,7 @@ theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
     exact theta_sub_half_theta_eq_half_theta
   same_sgn := by
     have g : (ang.value.IsPos) ∨ (ang.value.IsNeg) ∨ (ang.value = π) ∨ (ang.value = 0) := by
-      rcases ang.value.not_isnd_or_isPos_or_isNeg with d|_|_
+      rcases ang.value.not_isND_or_isPos_or_isNeg with d|_|_
       simp [AngValue.not_isND_iff'] at d
       tauto
       tauto
@@ -168,17 +168,17 @@ theorem lie_on_angbis_of_lie_on_angbisline_inside_angle (ang : Angle P)  : sorry
 
 /-a triangle_nd admit an unique intercenter-/
 
-structure IsIncenter (tri_nd : Triangle_nd P) (I : P) : Prop where
+structure IsIncenter (tri_nd : TriangleND P) (I : P) : Prop where
 
-structure IsExcenter1 (tri_nd : Triangle_nd P) (E : P) : Prop where
+structure IsExcenter1 (tri_nd : TriangleND P) (E : P) : Prop where
 
-structure IsIncircle (tri_nd : Triangle_nd P) (cir : Circle P) : Prop where
+structure IsIncircle (tri_nd : TriangleND P) (cir : Circle P) : Prop where
 
-structure IsExcircle1 (tri_nd : Triangle_nd P) (cir : Circle P) : Prop where
+structure IsExcircle1 (tri_nd : TriangleND P) (cir : Circle P) : Prop where
 
-namespace Triangle_nd
+namespace TriangleND
 
-theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : Triangle_nd P} : ¬ tri_nd.angle₁.AngBis.toLine ∥ tri_nd.angle₂.AngBis.toLine := by
+theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : TriangleND P} : ¬ tri_nd.angle₁.AngBis.toLine ∥ tri_nd.angle₂.AngBis.toLine := by
   by_contra g
   let A₁ := (Angle.mk_start_ray tri_nd.angle₁ tri_nd.angle₁.AngBis tri_nd.angle₁.eq_source).reverse
   let A₂ := Angle.mk_ray_end tri_nd.angle₂ tri_nd.angle₂.AngBis tri_nd.angle₂.eq_source
@@ -206,18 +206,18 @@ theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : Triangle_nd P} : 
   sorry
 
 
-def Incenter (tri_nd : Triangle_nd P) : P := Line.inx tri_nd.angle₁.AngBis.toLine tri_nd.angle₂.AngBis.toLine angbisline_of_angle₁_angle₂_not_parallel
+def Incenter (tri_nd : TriangleND P) : P := Line.inx tri_nd.angle₁.AngBis.toLine tri_nd.angle₂.AngBis.toLine angbisline_of_angle₁_angle₂_not_parallel
 
 
-def Excenter1 (tri_nd : Triangle_nd P) : P := sorry
+def Excenter1 (tri_nd : TriangleND P) : P := sorry
 
-def Incircle (tri_nd : Triangle_nd P) : Circle P := sorry
+def Incircle (tri_nd : TriangleND P) : Circle P := sorry
 
-def Excircle1 (tri_nd : Triangle_nd P) : Circle P := sorry
+def Excircle1 (tri_nd : TriangleND P) : Circle P := sorry
 
-end Triangle_nd
+end TriangleND
 
-namespace Triangle_nd
+namespace TriangleND
 
 theorem incenter_is_incenter : sorry := sorry
 
@@ -227,10 +227,10 @@ theorem incircle_is_incircle : sorry := sorry
 
 theorem excircle1_is_excircle1 : sorry := sorry
 
-end Triangle_nd
+end TriangleND
 
 /-the intercenter lies inside of the triangle-/
 
-theorem incenter_lies_int_triangle (triangle_nd : Triangle_nd P): sorry := sorry
+theorem incenter_lies_int_triangle (triangle_nd : TriangleND P): sorry := sorry
 
 end EuclidGeom

@@ -3,7 +3,7 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P] (tr : Triangle P) (tr_nd : Triangle_nd P)
+variable {P : Type _} [EuclideanPlane P] (tr : Triangle P) (tr_nd : TriangleND P)
 
 namespace Triangle
 
@@ -37,11 +37,11 @@ theorem is_inside_of_is_inside_flip_vertices (tr : Triangle P) (p : P) (inside :
 
 end Triangle
 
-namespace Triangle_nd
+namespace TriangleND
 
-def perm_vertices : (Triangle_nd P) := ⟨tr_nd.1.perm_vertices, flip_colinear_snd_trd.mt $ flip_colinear_fst_snd.mt tr_nd.2⟩
+def perm_vertices : (TriangleND P) := ⟨tr_nd.1.perm_vertices, flip_colinear_snd_trd.mt $ flip_colinear_fst_snd.mt tr_nd.2⟩
 
-def flip_vertices : (Triangle_nd P) := ⟨tr_nd.1.flip_vertices, flip_colinear_snd_trd.mt tr_nd.2⟩
+def flip_vertices : (TriangleND P) := ⟨tr_nd.1.flip_vertices, flip_colinear_snd_trd.mt tr_nd.2⟩
 
 theorem eq_self_of_perm_vertices_three_times : tr_nd.perm_vertices.perm_vertices.perm_vertices = tr_nd := rfl
   --exact tr_nd.1.eq_self_of_perm_vertices_three_times
@@ -60,7 +60,7 @@ theorem is_inside_of_is_inside_perm_vertices (tr_nd : Triangle P) (p : P) (insid
 
 theorem is_inside_of_is_inside_flip_vertices (tr_nd : Triangle P) (p : P) (inside : p LiesInt tr_nd) : p LiesInt tr_nd.flip_vertices := by sorry
 
-end Triangle_nd
+end TriangleND
 
 
 /-
@@ -102,13 +102,13 @@ theorem lie_on_fst_and_snd_edge_of_trd_vertex (tr : Triangle P) : tr.point₁ Li
 
 end Triangle
 
-namespace Triangle_nd
+namespace TriangleND
 
-theorem ne_vertex_of_lies_int_fst_edge (tr_nd : Triangle_nd P) {A : P} (h : A LiesInt tr_nd.edge₁) : A ≠ tr_nd.point₁ ∧  A ≠ tr_nd.point₂ ∧ A ≠ tr_nd.point₃ := sorry
+theorem ne_vertex_of_lies_int_fst_edge (tr_nd : TriangleND P) {A : P} (h : A LiesInt tr_nd.edge₁) : A ≠ tr_nd.point₁ ∧  A ≠ tr_nd.point₂ ∧ A ≠ tr_nd.point₃ := sorry
 
-theorem ne_vertex_of_lies_int_snd_edge (tr_nd : Triangle_nd P) {A : P} (h : A LiesInt tr_nd.edge₂) : A ≠ tr_nd.point₁ ∧  A ≠ tr_nd.point₂ ∧ A ≠ tr_nd.point₃ := sorry
+theorem ne_vertex_of_lies_int_snd_edge (tr_nd : TriangleND P) {A : P} (h : A LiesInt tr_nd.edge₂) : A ≠ tr_nd.point₁ ∧  A ≠ tr_nd.point₂ ∧ A ≠ tr_nd.point₃ := sorry
 
-theorem ne_vertex_of_lies_int_trd_edge (tr_nd : Triangle_nd P) {A : P} (h : A LiesInt tr_nd.edge₃) : A ≠ tr_nd.point₁ ∧  A ≠ tr_nd.point₂ ∧ A ≠ tr_nd.point₃ := sorry
+theorem ne_vertex_of_lies_int_trd_edge (tr_nd : TriangleND P) {A : P} (h : A LiesInt tr_nd.edge₃) : A ≠ tr_nd.point₁ ∧  A ≠ tr_nd.point₂ ∧ A ≠ tr_nd.point₃ := sorry
 
 theorem lie_on_snd_and_trd_edge_of_fst_vertex (tr_nd : Triangle P) : tr_nd.point₁ LiesOn tr_nd.edge₂ ∧ tr_nd.point₁ LiesOn tr_nd.edge₃ := by sorry
 
@@ -118,14 +118,14 @@ theorem lie_on_fst_and_snd_edge_of_trd_vertex (tr_nd : Triangle P) : tr_nd.point
 
 /- Given a nondegenerate triangle, any point that lies in the interior of the first edge does not lie on the second or the third edge. -/
 
-theorem not_lie_on_snd_and_trd_of_int_fst (trind : Triangle_nd P){A : P} (h: A LiesInt trind.1.edge₁) : (¬ A LiesOn trind.1.edge₂) ∧ (¬ A LiesOn trind.1.edge₃) := sorry
+theorem not_lie_on_snd_and_trd_of_int_fst (trind : TriangleND P){A : P} (h: A LiesInt trind.1.edge₁) : (¬ A LiesOn trind.1.edge₂) ∧ (¬ A LiesOn trind.1.edge₃) := sorry
 
-theorem not_lie_on_trd_and_fst_of_int_snd (trind : Triangle_nd P) {A : P} (h: A LiesInt trind.1.edge₂) : (¬ A LiesOn trind.1.edge₃) ∧ (¬ A LiesOn trind.1.edge₁) := sorry
+theorem not_lie_on_trd_and_fst_of_int_snd (trind : TriangleND P) {A : P} (h: A LiesInt trind.1.edge₂) : (¬ A LiesOn trind.1.edge₃) ∧ (¬ A LiesOn trind.1.edge₁) := sorry
 
-theorem not_lie_on_fst_and_snd_of_int_trd (trind : Triangle_nd P){A : P} (h: A LiesInt trind.1.edge₃) : (¬ A LiesOn trind.1.edge₁) ∧ (¬ A LiesOn trind.1.edge₂) := sorry
+theorem not_lie_on_fst_and_snd_of_int_trd (trind : TriangleND P){A : P} (h: A LiesInt trind.1.edge₃) : (¬ A LiesOn trind.1.edge₁) ∧ (¬ A LiesOn trind.1.edge₂) := sorry
 
 
-end Triangle_nd
+end TriangleND
 
 namespace Triangle
 
@@ -137,16 +137,16 @@ theorem nd_iff_nd_of_perm_vertices: tr.IsND ↔ tr.perm_vertices.IsND := by sorr
 
 end Triangle
 
-namespace Triangle_nd
+namespace TriangleND
 
-theorem edge_eq_edge_of_flip_vertices (tr_nd : Triangle_nd P) : tr_nd.edge₁.length = tr_nd.flip_vertices.edge₁.length ∧ tr_nd.edge₂.length = tr_nd.flip_vertices.edge₃.length ∧ tr_nd.edge₃.length = tr_nd.flip_vertices.edge₂.length := by sorry
+theorem edge_eq_edge_of_flip_vertices (tr_nd : TriangleND P) : tr_nd.edge₁.length = tr_nd.flip_vertices.edge₁.length ∧ tr_nd.edge₂.length = tr_nd.flip_vertices.edge₃.length ∧ tr_nd.edge₃.length = tr_nd.flip_vertices.edge₂.length := by sorry
 
-theorem edge_eq_edge_of_perm_vertices (tr_nd : Triangle_nd P) : tr_nd.edge₁.length = tr_nd.perm_vertices.edge₂.length ∧ tr_nd.edge₂.length = tr_nd.perm_vertices.edge₃.length ∧ tr_nd.edge₃.length = tr_nd.perm_vertices.edge₁.length := by sorry
+theorem edge_eq_edge_of_perm_vertices (tr_nd : TriangleND P) : tr_nd.edge₁.length = tr_nd.perm_vertices.edge₂.length ∧ tr_nd.edge₂.length = tr_nd.perm_vertices.edge₃.length ∧ tr_nd.edge₃.length = tr_nd.perm_vertices.edge₁.length := by sorry
 
-theorem angle_eq_neg_angle_of_flip_vertices (tr_nd : Triangle_nd P) : tr_nd.angle₁.value = - tr_nd.flip_vertices.angle₁.value ∧ tr_nd.angle₂.value = -tr_nd.flip_vertices.angle₃.value ∧ tr_nd.angle₃.value = -tr_nd.flip_vertices.angle₂.value := by sorry
+theorem angle_eq_neg_angle_of_flip_vertices (tr_nd : TriangleND P) : tr_nd.angle₁.value = - tr_nd.flip_vertices.angle₁.value ∧ tr_nd.angle₂.value = -tr_nd.flip_vertices.angle₃.value ∧ tr_nd.angle₃.value = -tr_nd.flip_vertices.angle₂.value := by sorry
 
-theorem angle_eq_angle_of_perm_vertices (tr_nd : Triangle_nd P) : tr_nd.angle₁.value = tr_nd.perm_vertices.angle₂.value ∧ tr_nd.angle₂.value = tr_nd.perm_vertices.angle₃.value ∧ tr_nd.angle₃.value = tr_nd.perm_vertices.angle₁.value := by sorry
+theorem angle_eq_angle_of_perm_vertices (tr_nd : TriangleND P) : tr_nd.angle₁.value = tr_nd.perm_vertices.angle₂.value ∧ tr_nd.angle₂.value = tr_nd.perm_vertices.angle₃.value ∧ tr_nd.angle₃.value = tr_nd.perm_vertices.angle₁.value := by sorry
 
-end Triangle_nd
+end TriangleND
 
 end EuclidGeom

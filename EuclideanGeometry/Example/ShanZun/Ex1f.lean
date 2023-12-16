@@ -137,7 +137,7 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
   have bec_not_colinear : ¬ colinear B E C := sorry
   have fed_not_colinear : ¬ colinear F E D := sorry
   -- $\triangle BCE$ is anti-congruence to $\triangle FDE$
-  have cong : (TRI_nd B E C bec_not_colinear) ≅ₐ (TRI_nd F E D fed_not_colinear) := Triangle_nd.acongr_of_SAS df_eq_cb.symm ang₂ fe_eq_be.symm
+  have cong : (TRI_nd B E C bec_not_colinear) ≅ₐ (TRI_nd F E D fed_not_colinear) := TriangleND.acongr_of_SAS df_eq_cb.symm ang₂ fe_eq_be.symm
   -- $EC = ED$ because $\triangle BCE \cong \triangle FDE$
   have ec_eq_ed : (SEG E C).length = (SEG E D).length := cong.edge₁
   rw[length_of_rev_eq_length', ec_eq_ed]
@@ -212,7 +212,7 @@ such that $AE = 2 EC$
 Prove that $AF = 3 FB$ -/
 
 -- We have acute triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C} {hacute : Triangle_nd.IsAcute (TRI_nd A B C hnd)}
+variable {A B C : P} {hnd : ¬ colinear A B C} {hacute : TriangleND.IsAcute (TRI_nd A B C hnd)}
 -- 这个题应该需要加锐角三角形的限制，否则需要条件中的$AE = 2 EC$是有向线段的相等
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma a_ne_b : A ≠ B := sorry
