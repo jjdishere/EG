@@ -23,9 +23,9 @@ protected def DirLine.IsIntersected (l : DirLine P) (ω : Circle P) : Prop := di
 
 end Circle
 
-scoped infix : 50 "Secant" => Circle.DirLine.IsSecant
-scoped infix : 50 "Tangent" => Circle.DirLine.IsTangent
-scoped infix : 50 "Disjoint" => Circle.DirLine.IsDisjoint
+scoped infix : 50 " Secant " => Circle.DirLine.IsSecant
+scoped infix : 50 " Tangent " => Circle.DirLine.IsTangent
+scoped infix : 50 " Disjoint " => Circle.DirLine.IsDisjoint
 
 namespace Circle
 

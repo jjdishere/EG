@@ -126,7 +126,7 @@ theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
   have ang1 : (∠ B P D p_ne_b.symm p_ne_d.symm) = - (∠ C Q E q_ne_c.symm q_ne_e.symm) := by sorry
   -- $\triangle DPB \congr_a \triangle EQC$ (by AAS).
   have h : (TRI_nd P B D hnd1) ≅ₐ (TRI_nd Q C E hnd2) := by
-    apply Triangle_nd.acongr_of_AAS
+    apply TriangleND.acongr_of_AAS
     -- $\cdot \angle DBP = - \angle ECQ$
     · exact ang1
     -- $\cdot |\angle DPB| = |\angle EQC|$

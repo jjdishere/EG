@@ -5,4 +5,9 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
 
+namespace Parallel
+
+
+end Parallel
+
 end EuclidGeom

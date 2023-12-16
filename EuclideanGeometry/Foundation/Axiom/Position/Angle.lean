@@ -6,7 +6,7 @@ open scoped Real
 
 namespace EuclidGeom
 
-def DirObj.AngDiff [DirObj α] [DirObj β] (F : α) (G : β) : AngValue := toDir G -ᵥ toDir F
+def DirObj.AngDiff {α β} [DirObj α] [DirObj β] (F : α) (G : β) : AngValue := toDir G -ᵥ toDir F
 
 /- Define values of oriented angles, in (-π, π], modulo 2 π. -/
 /- Define oriented angles, ONLY taking in two rays starting at one point!  And define ways to construct oriented angles, by given three points on the plane, and etc.  -/
@@ -36,6 +36,8 @@ def mk_dirline_dirline (l₁ l₂ : DirLine P) (h : ¬ l₁ ∥ l₂) : Angle P 
   source_eq_source := rfl
 
 def value (A : Angle P) : AngValue := A.end_ray.toDir -ᵥ A.start_ray.toDir
+
+def dvalue (A : Angle P) : AngDValue := (A.value : AngDValue)
 
 def IsND (ang : Angle P) : Prop := ang.value ≠ 0 ∧ ang.value ≠ π
 
@@ -93,7 +95,7 @@ protected def carrier (ang : Angle P) : Set P := { p : P | Angle.IsOn p ang}
 
 protected def interior (ang : Angle P) : Set P := { p : P | Angle.IsInt p ang }
 
-instance : Interior Angle where
+instance : Interior (Angle P) P where
   interior := Angle.interior
 
 /-

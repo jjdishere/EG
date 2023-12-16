@@ -35,7 +35,7 @@ theorem SCHAUM_Problem_1_14 : (SEG P M).length = (SEG Q N).length ∧ ((SEG_nd P
   · unfold parallel
     have h₁ : (LIN P M m_ne_p) ⟂ (LIN B D (d_ne_b (hprg := hprg))) := by
       rw [hm]
-      apply pt_to_perp_foot_perp_line (hp1 (hprg := hprg))
+      apply line_of_self_perp_foot_perp_line_of_not_lies_on (hp1 (hprg := hprg))
       · sorry
       · sorry
       · sorry

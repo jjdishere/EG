@@ -146,6 +146,68 @@ theorem inner_self_eq_norm_sq' (x : E) : ⟪x, x⟫ = ‖x‖ ^ 2 := by
 
 end
 
+namespace IsROrC
+variable {𝕜 : Type*} [IsROrC 𝕜]
+open scoped ComplexConjugate
+
+@[coe]
+def toComplex (z : 𝕜) : ℂ := ⟨re z, im z⟩
+
+instance : Coe 𝕜 ℂ := ⟨toComplex⟩
+
+@[simp, norm_cast]
+lemma toComplex_eq_self (z : ℂ) : toComplex z = z := rfl
+
+@[simp, norm_cast]
+lemma toComplex_re (z : 𝕜) : (z : ℂ).re = re z := rfl
+
+@[simp, norm_cast]
+lemma toComplex_im (z : 𝕜) : (z : ℂ).im = im z := rfl
+
+@[simp, norm_cast]
+lemma toComplex_one : ↑(1 : 𝕜) = (1 : ℂ) := by ext <;> simp
+
+@[simp, norm_cast]
+lemma toComplex_zero : ↑(0 : 𝕜) = (0 : ℂ) := by ext <;> simp
+
+@[simp, norm_cast]
+lemma toComplex_mul (z w : 𝕜) : ↑(z * w) = (z * w : ℂ) := by ext <;> simp
+
+@[simp, norm_cast]
+lemma toComplex_add (z w : 𝕜) : ↑(z + w) = (z + w : ℂ) := by ext <;> simp
+
+@[simp]
+lemma normSq_toComplex (z : 𝕜) : Complex.normSq (z : ℂ) = normSq z := by simp [Complex.normSq, normSq]
+
+@[simp, norm_cast]
+lemma toComplex_inv (z : 𝕜) : ↑(z⁻¹) = (z : ℂ)⁻¹ := by ext <;> simp
+
+@[simp, norm_cast]
+lemma abs_toComplex (z : 𝕜) : Complex.abs (z : ℂ) = ‖z‖ := by
+  rw [← pow_left_inj (map_nonneg _ _) (norm_nonneg _) zero_lt_two,
+    Complex.sq_abs, Complex.normSq_apply, norm_sq_eq_def]
+  rfl
+
+instance : SMul 𝕜 ℂ where
+  smul x z := x * z
+
+lemma smul_def (x : 𝕜) (z : ℂ) : x • z = x * z := rfl
+
+instance IsROrC.normedSpaceComplex : NormedSpace 𝕜 ℂ where
+  smul x z := x * z
+  one_smul := by simp [smul_def]
+  mul_smul := by simp [smul_def, mul_assoc]
+  smul_zero := by simp [smul_def]
+  smul_add := by simp [smul_def, mul_add]
+  add_smul := by simp [smul_def, add_mul]
+  zero_smul := by simp [smul_def]
+  norm_smul_le := by simp [smul_def]
+
+example : IsROrC.normedSpaceComplex = IsROrC.innerProductSpace.toNormedSpace := rfl
+example : IsROrC.normedSpaceComplex = IsROrC.innerProductSpace.toNormedSpace.complexToReal := rfl
+
+end IsROrC
+
 noncomputable section
 
 namespace EuclidGeom
@@ -252,17 +314,20 @@ lemma neg_fst (v : Vec) : (-v).fst = -v.fst :=
 lemma neg_snd (v : Vec) : (-v).snd = -v.snd :=
   rfl
 
-instance : NormedSpace ℂ Vec where
-  smul z v := ⟨z.re * v.fst - z.im * v.snd, z.re * v.snd + z.im * v.fst⟩
+open IsROrC in
+instance normedSpace {𝕜 : Type*} [IsROrC 𝕜] : NormedSpace 𝕜 Vec where
+  smul z v := ⟨re z * v.fst - im z * v.snd, re z * v.snd + im z * v.fst⟩
   one_smul v := by simp [(· • ·)]
-  mul_smul z w v := by dsimp [(· • ·)]; ring_nf
+  mul_smul z w v := by dsimp [(· • ·)]; rw [mul_re, mul_im]; ring_nf
   smul_zero z := by simp [(· • ·)]
   smul_add z v₁ v₂ := by dsimp [(· • ·)]; apply ext <;> ring
-  add_smul z w v := by dsimp [(· • ·)]; ring_nf
+  add_smul z w v := by dsimp [(· • ·)]; rw [map_add, map_add]; ring_nf
   zero_smul v := by simp [(· • ·)]
   norm_smul_le z v := le_of_eq <| (sq_eq_sq (norm_nonneg _) (by positivity)).mp <| by
-    simp only [(· • ·), mul_pow, norm_sq, Complex.norm_eq_abs, ← Complex.normSq_eq_abs, Complex.normSq_apply]
+    simp only [(· • ·), mul_pow, norm_sq, norm_sq_eq_def]
     ring
+
+example : normedSpace = normedSpace.complexToReal := rfl
 
 lemma complex_smul_def (s : ℂ) (v : Vec) : s • v = mk (s.re * v.fst - s.im * v.snd) (s.re * v.snd + s.im * v.fst) :=
   rfl
@@ -508,11 +573,20 @@ lemma add_cdiv (v₁ v₁' v₂ : Vec) : (v₁ + v₁') / v₂ = v₁ / v₂ + v
 lemma neg_cdiv (v₁ v₂ : Vec) : -v₁ / v₂ = -(v₁ / v₂) := by
   simp_rw [cdiv_def, inner_neg_right, neg_div]
 
+lemma cdiv_neg (v₁ v₂ : Vec) : v₁ / -v₂ = -(v₁ / v₂) := by
+  simp_rw [cdiv_def, inner_neg_left, neg_div, norm_neg]
+
 lemma sub_cdiv (v₁ v₁' v₂ : Vec) : (v₁ - v₁') / v₂ = v₁ / v₂ - v₁' / v₂ := by
   rw [sub_eq_add_neg, sub_eq_add_neg, add_cdiv, neg_cdiv]
 
-lemma mul_cdiv (z : ℂ) (v₁ v₂ : Vec) : z * (v₁ / v₂) = z • v₁ / v₂ := by
+lemma complex_smul_cdiv (z : ℂ) (v₁ v₂ : Vec) : z • v₁ / v₂ = z * (v₁ / v₂) := by
   simp_rw [cdiv_def, inner_smul_right, mul_div]
+
+lemma mul_cdiv (z : ℂ) (v₁ v₂ : Vec) : z * (v₁ / v₂) = z • v₁ / v₂ :=
+  (complex_smul_cdiv z v₁ v₂).symm
+
+lemma smul_cdiv {𝕜 : Type*} [IsROrC 𝕜] (z : 𝕜) (v₁ v₂ : Vec) : z • v₁ / v₂ = z • (v₁ / v₂) :=
+  complex_smul_cdiv z v₁ v₂
 
 @[simp]
 lemma cdiv_smul_cancel (v₁ : Vec) {v₂ : Vec} (hv₂ : v₂ ≠ 0) : (v₁ / v₂) • v₂ = v₁ := by
@@ -521,7 +595,7 @@ lemma cdiv_smul_cancel (v₁ : Vec) {v₂ : Vec} (hv₂ : v₂ ≠ 0) : (v₁ / 
   rw [smul_smul, inv_mul_cancel (by simpa), one_smul]
 
 @[simp]
-lemma smul_cdiv_cancel (z : ℂ) {v : Vec} (hv : v ≠ 0) : z • v / v = z := by
+lemma complex_smul_cdiv_cancel (z : ℂ) {v : Vec} (hv : v ≠ 0) : z • v / v = z := by
   rw [cdiv_def, inner_smul_right, inner_self_eq_norm_sq']
   exact mul_div_cancel _ (by simpa)
 
@@ -568,7 +642,7 @@ lemma cdiv_left_inj {v₁ v₂ v₃ : Vec} (hv₃ : v₃ ≠ 0) : v₁ / v₃ = 
   rw [← sub_eq_zero, ← sub_cdiv, cdiv_eq_zero, sub_eq_zero, or_iff_left hv₃]
 
 lemma cdiv_eq_iff {v₁ v₂ : Vec} {z : ℂ} (hv₂ : v₂ ≠ 0) : v₁ / v₂ = z ↔ v₁ = z • v₂ := by
-  rw [← smul_cdiv_cancel z hv₂, cdiv_left_inj hv₂, smul_cdiv_cancel z hv₂]
+  rw [← complex_smul_cdiv_cancel z hv₂, cdiv_left_inj hv₂, complex_smul_cdiv_cancel z hv₂]
 
 lemma eq_cdiv_iff {v₁ v₂ : Vec} {z : ℂ} (hv₂ : v₂ ≠ 0) : z = v₁ / v₂ ↔ z • v₂ = v₁ := by
   rw [eq_comm, cdiv_eq_iff hv₂, eq_comm]
@@ -580,11 +654,28 @@ lemma cdiv_eq_one_iff_eq {v₁ v₂ : Vec} (hv₂ : v₂ ≠ 0) : v₁ / v₂ = 
 lemma cdiv_self {v : Vec} (hv : v ≠ 0) : v / v = (1 : ℂ) := by
   rw [cdiv_eq_one_iff_eq hv]
 
-lemma inv_cdiv {v₁ v₂ : Vec} : (v₁ / v₂)⁻¹ = v₂ / v₁ := by
+@[simp]
+lemma smul_cdiv_cancel {𝕜 : Type*} [IsROrC 𝕜] (z : 𝕜) {v : Vec} (hv : v ≠ 0) : z • v / v = (z : ℂ) := by
+  rw [smul_cdiv, cdiv_self hv, IsROrC.smul_def, mul_one]
+
+-- note: why simp do not know to use `smul_cdiv_cancel`?
+@[simp]
+lemma real_smul_cdiv_cancel (z : ℝ) {v : Vec} (hv : v ≠ 0) : z • v / v = (z : ℂ) :=
+  smul_cdiv_cancel z hv
+
+lemma inv_cdiv (v₁ v₂ : Vec) : (v₁ / v₂)⁻¹ = v₂ / v₁ := by
   by_cases hv₁ : v₁ = 0; · simp [hv₁]
   by_cases hv₂ : v₂ = 0; · simp [hv₂]
   apply inv_eq_of_mul_eq_one_left
   rw [mul_cdiv, cdiv_smul_cancel _ hv₁, cdiv_self hv₂]
+
+lemma cdiv_complex_smul (z : ℂ) (v₁ v₂ : Vec) : v₁ / z • v₂ = z⁻¹ * (v₁ / v₂) := by
+  rw [← inv_cdiv v₂, ← mul_inv, mul_cdiv, inv_cdiv]
+
+@[simp]
+lemma cdiv_smul {𝕜 : Type*} [IsROrC 𝕜] (z : 𝕜) (v₁ v₂ : Vec) : v₁ / z • v₂ = z⁻¹ • (v₁ / v₂) := by
+  convert cdiv_complex_smul z v₁ v₂ using 0
+  norm_cast
 
 lemma inner_smul_comm_right (v₁ v₂ v₃ : Vec) : ⟪v₁, v₂⟫_ℂ • v₃ = ⟪v₁, v₃⟫_ℂ • v₂ := by
   apply Vec.ext
@@ -655,7 +746,7 @@ lemma cdiv_of_sameRay {v₁ v₂ : Vec} (h : SameRay ℝ v₁ v₂) :
 @[simp]
 lemma arg_cdiv (θ : AngValue) {v : Vec} (hv : v ≠ 0) :
     (Vec.rotate θ v / v).arg = θ := by
-  rw [← expMapCircle_smul_eq_rotate, circle.smul_def, ← mul_cdiv]
+  rw [← expMapCircle_smul_eq_rotate, circle.smul_def, smul_cdiv]
   simp [hv]
 
 end Vec
@@ -805,10 +896,10 @@ instance : HDiv VecND VecND ℂˣ := ⟨fun v₁ v₂ ↦ .mk0 ((v₁ : Vec) / (
 @[simp, norm_cast]
 lemma coe_cdiv (v₁ v₂ : VecND) : (v₁ / v₂ : ℂ) = (v₁ : Vec) / (v₂ : Vec) := rfl
 
-lemma mul_cdiv (z : ℂˣ) (v₁ v₂ : VecND) : z * (v₁ / v₂) = z • v₁ / v₂ := by
+lemma smul_cdiv (z : ℂˣ) (v₁ v₂ : VecND) : z • v₁ / v₂ = z * (v₁ / v₂) := by
   ext1
   push_cast
-  exact Vec.mul_cdiv _ _ _
+  exact Vec.smul_cdiv _ _ _
 
 @[simp]
 lemma cdiv_smul_cancel (v₁ v₂ : VecND) : (v₁ / v₂) • v₂ = v₁ := by
@@ -987,6 +1078,32 @@ lemma sameDir_rotate_angle_right (v₁ v₂ : VecND) :
     SameDir v₁ (VecND.rotate (angle v₂ v₁) v₂) :=
   (sameDir_rotate_angle_left v₂ v₁).symm
 
+theorem norm_mul_cos (v₁ v₂ : VecND) :
+    ‖v₁‖ * ‖v₂‖ * (VecND.angle v₁ v₂).cos = ⟪v₁.1, v₂.1⟫_ℝ := by
+  rw [angle, vsub_def, toMul_ofMul, coe_cdiv, AngValue.cos_coe,
+    Complex.cos_arg (Vec.cdiv_ne_zero.mpr ⟨VecND.ne_zero _, VecND.ne_zero _⟩), Vec.abs_cdiv,
+    Vec.cdiv_def, Vec.complex_inner_apply, Vec.real_inner_apply, Vec.det_apply]
+  norm_cast
+  rw [Complex.div_ofReal_re]
+  field_simp
+  ring
+
+theorem norm_mul_sin (v₁ v₂ : VecND) :
+    ‖v₁‖ * ‖v₂‖ * (VecND.angle v₁ v₂).sin = Vec.det v₁.1 v₂.1 := by
+  rw [angle, vsub_def, toMul_ofMul, coe_cdiv, AngValue.sin_coe,
+    Complex.sin_arg, Vec.abs_cdiv,
+    Vec.cdiv_def, Vec.complex_inner_apply, Vec.real_inner_apply, Vec.det_apply]
+  norm_cast
+  rw [Complex.div_ofReal_im]
+  field_simp
+  ring
+
+theorem norm_smul_expMapCircle (v₁ v₂ : VecND) :
+    (‖v₁‖ * ‖v₂‖) • ((VecND.angle v₁ v₂).expMapCircle : ℂ) = ⟪v₁.1, v₂.1⟫_ℂ := by
+  ext
+  · simp [AngValue.coe_expMapCircle, VecND.norm_mul_cos]
+  · simp [AngValue.coe_expMapCircle, VecND.norm_mul_sin]
+
 end VecND
 
 abbrev Dir := Module.Ray ℝ Vec
@@ -1121,19 +1238,22 @@ instance : AddTorsor AngValue Dir where
 lemma rotate_eq_vadd (θ : AngValue) (d : Dir) : rotate θ d = θ +ᵥ d := rfl
 
 @[simp]
+lemma vsub_toDir (v₁ v₂ : VecND) : v₂.toDir -ᵥ v₁.toDir = VecND.angle v₁ v₂ := rfl
+
+@[simp]
 lemma vadd_neg (θ : AngValue) (d : Dir) : θ +ᵥ -d = -(θ +ᵥ d) :=
   map_neg (rotate θ) d
 
 @[simp]
-lemma pi_vadd (d : Dir) : (π : AngValue) +ᵥ d = -d :=
+lemma pi_vadd (d : Dir) : ∠[π] +ᵥ d = -d :=
   rotate_pi_apply d
 
 @[simp]
-lemma neg_vsub_left (d₁ d₂ : Dir) : -d₁ -ᵥ d₂ = d₁ -ᵥ d₂ + (π : AngValue) := by
+lemma neg_vsub_left (d₁ d₂ : Dir) : -d₁ -ᵥ d₂ = d₁ -ᵥ d₂ + ∠[π] := by
   rw [← pi_vadd, vadd_vsub_assoc, add_comm]
 
 @[simp]
-lemma neg_vsub_right (d₁ d₂ : Dir) : d₁ -ᵥ -d₂ = d₁ -ᵥ d₂ + (π : AngValue) := by
+lemma neg_vsub_right (d₁ d₂ : Dir) : d₁ -ᵥ -d₂ = d₁ -ᵥ d₂ + ∠[π] := by
   rw [← pi_vadd, vsub_vadd_eq_vsub_sub, sub_eq_add_neg, AngValue.neg_coe_pi]
 
 protected abbrev normalize {M : Type*} [AddCommGroup M] [Module ℝ M]
@@ -1249,6 +1369,33 @@ instance : CircularOrder Dir where
   btw_total := sorry
 
 end CircularOrder
+
+@[simp]
+theorem _root_.EuclidGeom.angle_toDir_unitVecND_left (v₁ v₂ : VecND) : VecND.angle v₁.toDir.unitVecND v₂ = VecND.angle v₁ v₂ := by
+  rw [← vsub_toDir, ← vsub_toDir]
+  simp
+
+@[simp]
+theorem _root_.EuclidGeom.angle_toDir_unitVecND_right (v₁ v₂ : VecND) : VecND.angle v₁ v₂.toDir.unitVecND = VecND.angle v₁ v₂ := by
+  rw [← vsub_toDir, ← vsub_toDir]
+  simp
+
+@[simp]
+theorem angle_unitVecND (d₁ d₂ : Dir) : VecND.angle d₁.unitVecND d₂.unitVecND = d₂ -ᵥ d₁ := by
+  induction d₁ using Dir.ind
+  induction d₂ using Dir.ind
+  simp
+
+@[simp]
+theorem inner_unitVec (d₁ d₂ : Dir) : ⟪d₁.unitVec, d₂.unitVec⟫_ℝ = (d₂ -ᵥ d₁).cos := by
+  simp [← VecND.norm_mul_cos]
+
+@[simp]
+theorem det_unitVec (d₁ d₂ : Dir) : Vec.det d₁.unitVec d₂.unitVec = (d₂ -ᵥ d₁).sin := by
+  simp [← VecND.norm_mul_sin]
+
+theorem complex_inner_unitVec (d₁ d₂ : Dir) : ⟪d₁.unitVec, d₂.unitVec⟫_ℂ = (d₂ -ᵥ d₁).expMapCircle := by
+  simp [← VecND.norm_smul_expMapCircle]
 
 end Dir
 
@@ -1477,7 +1624,7 @@ instance : AddTorsor AngDValue Proj where
     simp
 
 @[pp_dot]
-def perp (p : Proj) : Proj := ((π / 2 : ℝ) : AngDValue) +ᵥ p
+def perp (p : Proj) : Proj := ∡[π / 2] +ᵥ p
 
 @[simp]
 lemma perp_perp (p : Proj) : p.perp.perp = p := by
