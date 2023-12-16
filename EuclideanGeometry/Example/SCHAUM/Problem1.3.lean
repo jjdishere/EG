@@ -93,13 +93,13 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
       exact e.isoc_ABC
   --Because $\angle A B C = -\angle A C B$ we have $\angle A B D = -\angle A C E$
   have A_int_ray_BA : e.A LiesInt (RAY e.B e.A e.A_ne_B) := by
-    apply Ray.pt_lies_int_pt_pt
+    apply Ray.snd_pt_lies_int_mk_pt_pt
   have D_int_ray_BC : e.D LiesInt (RAY e.B e.C e.C_ne_B) := by
     rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
     apply SegND.lies_int_toRay_of_lies_int
     exact e.D_Int_BC
   have A_int_ray_CA : e.A LiesInt (RAY e.C e.A e.A_ne_C) := by
-    apply Ray.pt_lies_int_pt_pt
+    apply Ray.snd_pt_lies_int_mk_pt_pt
   have E_int_ray_CB : e.E LiesInt (RAY e.C e.B e.B_ne_C) := by
     rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
     apply SegND.lies_int_toRay_of_lies_int

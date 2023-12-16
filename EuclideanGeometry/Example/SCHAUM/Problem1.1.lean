@@ -71,16 +71,16 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
   have h₂ : ¬ colinear e.C e.E e.M := by sorry
   --Points not equal for the definition of angle is not invalid.
   --$D \ne B$ and $M \ne B$ for ∠ D B M.
-  have d_ne_b : e.D ≠ e.B := (ne_of_not_colinear h₁).2.2
-  have m_ne_b : e.M ≠ e.B := (ne_of_not_colinear h₁).2.1.symm
+  have D_ne_B : e.D ≠ e.B := (ne_of_not_colinear h₁).2.2
+  have M_ne_B : e.M ≠ e.B := (ne_of_not_colinear h₁).2.1.symm
   --$E \ne C$ and $M \ne C$ for ∠ E C M
-  have e_ne_c : e.E ≠ e.C := (ne_of_not_colinear h₂).2.2
-  have m_ne_c : e.M ≠ e.C := (ne_of_not_colinear h₂).2.1.symm
+  have E_ne_C : e.E ≠ e.C := (ne_of_not_colinear h₂).2.2
+  have M_ne_C : e.M ≠ e.C := (ne_of_not_colinear h₂).2.1.symm
   --$A \ne B$ and $C \ne B$ and $A \ne C$ and $B \ne C$ in nondegenerate triangle $A B C$.
-  have a_ne_b : e.A ≠ e.B := (ne_of_not_colinear e.not_colinear_ABC).2.2.symm
-  have c_ne_b : e.C ≠ e.B := (ne_of_not_colinear e.not_colinear_ABC).1
-  have a_ne_c : e.A ≠ e.C := (ne_of_not_colinear e.not_colinear_ABC).2.1
-  have b_ne_c : e.B ≠ e.C := (ne_of_not_colinear e.not_colinear_ABC).1.symm
+  have A_ne_B : e.A ≠ e.B := (ne_of_not_colinear e.not_colinear_ABC).2.2.symm
+  have C_ne_B : e.C ≠ e.B := (ne_of_not_colinear e.not_colinear_ABC).1
+  have A_ne_C : e.A ≠ e.C := (ne_of_not_colinear e.not_colinear_ABC).2.1
+  have B_ne_C : e.B ≠ e.C := (ne_of_not_colinear e.not_colinear_ABC).1.symm
   --We have $BD = AB - AD = AC - AE = CE$.
   have h₃ : (SEG e.B e.D).length = (SEG e.C e.E).length := by
     calc
@@ -103,43 +103,44 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
     rw [e.midpoint_M]
     apply dist_target_eq_dist_source_of_midpt
   --Because $\angle A B C = -\angle A C B$ we have $\angle D B M = -\angle E C M$
-  have h₅₀ : ∠ e.C e.B e.A (c_ne_b) (a_ne_b) = ∠ e.A e.C e.B (a_ne_c) (b_ne_c) := by
+  have h₅₀ : ∠ e.C e.B e.A (C_ne_B) (A_ne_B) = ∠ e.A e.C e.B (A_ne_C) (B_ne_C) := by
       apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ e.A e.B e.C, e.not_colinear_ABC⟩)).mp
       exact e.isoc_ABC
-  have M_int_BC : e.M LiesInt (SEG_nd e.B e.C c_ne_b) := by
-    sorry
-  have D_int_ray_BA : e.D LiesInt (RAY e.B e.A a_ne_b) := by
+  have M_int_BC : e.M LiesInt (SEG_nd e.B e.C C_ne_B) := by
+    simp only [e.midpoint_M]
+    apply lies_int_of_midpoint_of_seg_nd
+  have D_int_ray_BA : e.D LiesInt (RAY e.B e.A A_ne_B) := by
     rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
     apply SegND.lies_int_toRay_of_lies_int
     apply SegND.lies_int_rev_iff_lies_int.mp
     exact e.D_Int_seg
-  have M_int_ray_BC : e.M LiesInt (RAY e.B e.C c_ne_b) := by
+  have M_int_ray_BC : e.M LiesInt (RAY e.B e.C C_ne_B) := by
     rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
     apply SegND.lies_int_toRay_of_lies_int
     exact M_int_BC
-  have E_int_ray_CA : e.E LiesInt (RAY e.C e.A a_ne_c) := by
+  have E_int_ray_CA : e.E LiesInt (RAY e.C e.A A_ne_C) := by
     rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
     apply SegND.lies_int_toRay_of_lies_int
     apply SegND.lies_int_rev_iff_lies_int.mp
     exact e.E_Int_seg
-  have M_int_ray_CB : e.M LiesInt (RAY e.C e.B b_ne_c) := by
+  have M_int_ray_CB : e.M LiesInt (RAY e.C e.B B_ne_C) := by
     rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
     apply SegND.lies_int_toRay_of_lies_int
-    have M_int_CB : e.M LiesInt (SEG_nd e.C e.B b_ne_c) := by
+    have M_int_CB : e.M LiesInt (SEG_nd e.C e.B B_ne_C) := by
       apply SegND.lies_int_rev_iff_lies_int.mp
       exact M_int_BC
     exact M_int_CB
-  have h₅ : ∠ e.D e.B e.M (d_ne_b) (m_ne_b) = -∠ e.E e.C e.M (e_ne_c) (m_ne_c) := by
-    have h₅₁ : -∠ e.E e.C e.M (e_ne_c) (m_ne_c) = -∠ e.A e.C e.B (a_ne_c) (b_ne_c) := by
-      have inner_h₅₁ : ∠  e.E e.C e.M (e_ne_c) (m_ne_c) = ∠  e.A e.C e.B (a_ne_c) (b_ne_c) := by
+  have h₅ : ∠ e.D e.B e.M (D_ne_B) (M_ne_B) = -∠ e.E e.C e.M (E_ne_C) (M_ne_C) := by
+    have h₅₁ : -∠ e.E e.C e.M (E_ne_C) (M_ne_C) = -∠ e.A e.C e.B (A_ne_C) (B_ne_C) := by
+      have inner_h₅₁ : ∠  e.E e.C e.M (E_ne_C) (M_ne_C) = ∠  e.A e.C e.B (A_ne_C) (B_ne_C) := by
         symm
         apply eq_ang_val_of_lieson_lieson
         · exact E_int_ray_CA
         · exact M_int_ray_CB
       simp only [inner_h₅₁]
-    have h₅₂ : ∠ e.D e.B e.M (d_ne_b) (m_ne_b) = -∠ e.C e.B e.A (c_ne_b) (a_ne_b) := by
-      rw [← neg_value_of_rev_ang (a_ne_b) (c_ne_b)]
-      have inner_h₅₂ : ∠  e.D e.B e.M (d_ne_b) (m_ne_b) = ∠  e.A e.B e.C (a_ne_b) (c_ne_b) := by
+    have h₅₂ : ∠ e.D e.B e.M (D_ne_B) (M_ne_B) = -∠ e.C e.B e.A (C_ne_B) (A_ne_B) := by
+      rw [← neg_value_of_rev_ang (A_ne_B) (C_ne_B)]
+      have inner_h₅₂ : ∠  e.D e.B e.M (D_ne_B) (M_ne_B) = ∠  e.A e.B e.C (A_ne_B) (C_ne_B) := by
         symm
         apply eq_ang_val_of_lieson_lieson
         · exact D_int_ray_BA
