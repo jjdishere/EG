@@ -6,13 +6,24 @@ open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic Qq
 
 section congr
 
+/-
 def liftOrElse [Monad m] (xs : m $ Option A) (ys : m $ Option A) : m (Option A) := do
   match <- xs with
   | .some x => return x
   | .none => match <- ys with
     | .some y => return y
     | .none => return .none
+-/
 
+def extractCongSa (expr : Q(Prop)) : MetaM (Option Expr) :=
+  match expr with
+  | ~q(@EuclidGeom.Angle.value _ (_) _ = @EuclidGeom.Angle.value _ (_) _) =>
+      return .some expr
+  | ~q(@EuclidGeom.Seg.length _ (_) _ = @EuclidGeom.Seg.length _ (_) _) =>
+      return .some expr
+  | _ => return .none
+
+/-
 def extractSegLengthEq (expr : Q(Prop)) : MetaM (Option Expr) :=
   match expr with
   | ~q(@EuclidGeom.Seg.length _ (_) _ = @EuclidGeom.Seg.length _ (_) _) =>
@@ -24,19 +35,42 @@ def extractAngleValueEq (expr : Q(Prop)) : MetaM (Option Expr) :=
   | ~q(@EuclidGeom.Angle.value _ (_) _ = @EuclidGeom.Angle.value _ (_) _) =>
       return .some expr
   | _ => return .none
+-/
 
 def getCongrDeclNames : TacticM (List Name) := withMainContext do
   flip (<- getLCtx).foldlM [] fun acc x => do
-    let type := x.type
-    pure $ match <- liftOrElse (extractSegLengthEq type) (extractAngleValueEq type) with
+    pure $ match <- (extractCongSa x.type) with
     | .some _ => x.userName :: acc
     | .none => acc
+
 
 def congrSaLemmas : List Name :=
   [ ``Triangle_nd.congr_of_SAS
   , ``Triangle_nd.congr_of_ASA
   , ``Triangle_nd.congr_of_AAS
   ]
+
+-- input t (Name), output [t, t.symm] (Term)
+def symm_term (t : Name) : List Term := [mkIdent t, Syntax.mkApp (mkIdent ``Eq.symm) #[mkIdent t]]
+
+-- input [[a,b], [c,d,e]], returns [[a,c], [a,d], [a,e], [b,c], [b,d], [b,e]]
+def product {α : Type _} (l : List (List α)) : List (List α) :=
+  match l with
+  | [] => [[]]
+  | x :: xs =>
+    List.foldl (fun acc a => acc ++ (List.map (a :: ·) (product xs)))
+      (init := []) x
+
+#eval product [[(1 : ℕ) ,2], [3,4], [5,6]]
+
+-- input a list of thm, a list of [a ,b, c], returns a list of terms "thm a b c".
+def combine_syntax (thm : Term) (l : List (List Term)) : List Term :=
+    (l.map (fun s => Syntax.mkApp thm (Array.mk s)) )
+
+-- #eval List.length (construct_syntax [mkIdent ``id, mkIdent ``Eq.symm] [[Syntax.mkApp ( mkIdent ``Eq.refl) #[mkIdent ``Nat.zero]], [Syntax.mkApp (mkIdent ``Eq.refl) #[mkIdent ``Real.pi]]]) --4
+
+-- input a theorem and [[x0, x0.symm], [x1, x1.symm], [x2, x2.symm]], output 8 conbined terms
+def symm_syntax (thm : Term) (l : List (List Term)) : List Term := combine_syntax thm (product l)
 
 syntax (name := congr_sa) "congr_sa" : tactic
 
@@ -49,16 +83,12 @@ def evalCongrSa : Tactic := fun stx =>
         for x0 in congrDeclNames do
           for x1 in congrDeclNames do
             for x2 in congrDeclNames do
-              let lemmaName := mkIdent lemmaName
-              let x0 := mkIdent x0
-              let x1 := mkIdent x1
-              let x2 := mkIdent x2
+              for s in symm_syntax (mkIdent lemmaName) [symm_term x0, symm_term x1, symm_term x2] do
               try
-                let t <- `(tactic| refine $lemmaName $x0 $x1 $x2)
+                let t <- `(tactic| exact $s)
                 evalTactic t
                 return
-              catch
-                _ => continue
+              catch  _ =>  continue
       logInfo "`congr_sa` doesn't close any goals"
   | _ => throwUnsupportedSyntax
 
@@ -75,7 +105,7 @@ def extractNegAngleValueEq (expr : Q(Prop)) : MetaM (Option Expr) :=
 def getACongrDeclNames : TacticM (List Name) := withMainContext do
   flip (<- getLCtx).foldlM [] fun acc x => do
     let type := x.type
-    pure $ match <- liftOrElse (extractSegLengthEq type) (extractNegAngleValueEq type) with
+    pure $ match <- extractCongSa x.type with
     | .some _ => x.userName :: acc
     | .none => acc
 
@@ -105,7 +135,12 @@ def evalACongrSa : Tactic := fun stx =>
                 evalTactic t
                 return
               catch
-                _ => continue
+                _ => try
+                  let t <- `(tactic| exact $lemmaName (mkIndent (``Eq.symm) $x0) $x1 $x2)
+                  evalTactic t
+                  return
+                catch
+                  _ => continue
       logInfo "`acongr_sa` doesn't close any goals"
   | _ => throwUnsupportedSyntax
 
@@ -115,8 +150,8 @@ section examples
 
 variable {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : Triangle_nd P}
 
-example (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length)
-  (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsCongr tr_nd₂ := by
+example (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₂ : tr_nd₂.edge₂.length = tr_nd₁.edge₂.length)
+  (e₃ : tr_nd₂.edge₃.length = tr_nd₁.edge₃.length) : tr_nd₁.IsCongr tr_nd₂ := by
     congr_sa
 /-
 -- `This tactic fails now, fix it!!!`
