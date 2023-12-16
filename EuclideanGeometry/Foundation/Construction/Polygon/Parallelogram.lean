@@ -134,7 +134,7 @@ theorem Parallelogram_not_colinear₁₂₃ (P : Type _) [EuclideanPlane P] (qdr
      unfold colinear at k₁
      simp [hbd.symm,hcd,hbc] at k₁
      unfold colinear_of_nd at k₁
-     
+
      sorry
    simp [flip_colinear_fst_snd m₃] at m₂
    by_contra m₅
@@ -280,7 +280,7 @@ theorem Parallelogram.ParallelogramIs_nd_redef {P : Type _} [EuclideanPlane P] (
 
 variable {P : Type _} [EuclideanPlane P]
 
-section tmp
+section criteria_prg_nd_of_qdr_nd
 
 variable {A B C D : P} (nd : (QDR A B C D).IsND) (cvx : (QDR A B C D).IsConvex)
 variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
@@ -347,7 +347,7 @@ theorem is_prg_nd_of_eq_length_eq_length_eq_angle_sign' (h₁ : qdr_nd.edge_nd�
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, AB = CD, AD = BC, the signs of ∠ABC and ∠CDA are equal, then Quadrilateral ABCD is a Parallelogram_nd. -/
 theorem is_prg_nd_of_eq_length_eq_length_eq_angle_sign'_variant (h₁ : (SEG A B).length = (SEG C D).length) (h₂ : (SEG A D).length = (SEG B C).length) (h : ((ANG A B C (QDR_nd A B C D nd).nd₁₂.symm (QDR_nd A B C D nd).nd₂₃).value.IsPos ∧ (ANG C D A (QDR_nd A B C D nd).nd₃₄.symm (QDR_nd A B C D nd).nd₁₄.symm).value.IsPos) ∨ ((ANG A B C (QDR_nd A B C D nd).nd₁₂.symm (QDR_nd A B C D nd).nd₂₃).value.IsNeg ∧ (ANG C D A (QDR_nd A B C D nd).nd₃₄.symm (QDR_nd A B C D nd).nd₁₄.symm).value.IsNeg)) : (QDR_nd A B C D nd).IsParallelogram_nd := is_prg_nd_of_eq_length_eq_length_eq_angle_sign' (QDR_nd A B C D nd) h₁ h₂ h
 
-end tmp
+end criteria_prg_nd_of_qdr_nd
 
 section criteria_prg_of_qdr_nd
 
