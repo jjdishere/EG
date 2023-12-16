@@ -1,5 +1,4 @@
 import EuclideanGeometry.Foundation.Axiom.Basic.Class
-import EuclideanGeometry.Foundation.Axiom.Basic.Plane
 
 /-!
 # Segments and rays
@@ -103,7 +102,26 @@ def SegND.mk (A B : P) (h : B ≠ A) : SegND P where
   property := h
 
 /-- This is to abbreviate the function \verb|SegND.mk| into \verb|SEG_nd|. -/
-scoped notation "SEG_nd" => SegND.mk
+@[inherit_doc SegND.mk]
+scoped syntax "SEG_nd" ws term:max ws term:max (ws term:max)? : term
+
+macro_rules
+  | `(SEG_nd $A $B) => `(SegND.mk $A $B (@Fact.out _ inferInstance))
+  | `(SEG_nd $A $B $h) => `(SegND.mk $A $B $h)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `SegND.mk` -/
+@[delab app.EuclidGeom.SegND.mk]
+def delabSegNDMk : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``SegND.mk 5
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  withNaryArg 4 do
+    if (← getExpr).isAppOfArity' ``Fact.out 2 then
+      `(SEG_nd $A $B)
+    else
+      `(SEG_nd $A $B $(← delab))
 
 /-- Given two distinct points $A$ and $B$, this function returns the ray starting from $A$ in the direction of $B$.  By definition, the direction of the ray is given by the normalization of the vector from $A$ to $B$, using \verb|toDir| function. -/
 def Ray.mk_pt_pt (A B : P) (h : B ≠ A) : Ray P where
@@ -111,7 +129,26 @@ def Ray.mk_pt_pt (A B : P) (h : B ≠ A) : Ray P where
   toDir := VecND.toDir ⟨VEC A B, (vsub_ne_zero.mpr h)⟩
 
 /-- This is to abbreviate \verb|Ray.mk_pt_pt| into \verb|RAY|. -/
-scoped notation "RAY" => Ray.mk_pt_pt
+@[inherit_doc Ray.mk_pt_pt]
+scoped syntax "RAY" ws term:max ws term:max (ws term:max)? : term
+
+macro_rules
+  | `(RAY $A $B) => `(Ray.mk_pt_pt $A $B (@Fact.out _ inferInstance))
+  | `(RAY $A $B $h) => `(Ray.mk_pt_pt $A $B $h)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `Ray.mk_pt_pt` -/
+@[delab app.EuclidGeom.Ray.mk_pt_pt]
+def delabRayMkPtPt : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``Ray.mk_pt_pt 5
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  withNaryArg 4 do
+    if (← getExpr).isAppOfArity' ``Fact.out 2 then
+      `(RAY $A $B)
+    else
+      `(RAY $A $B $(← delab))
 
 end make
 

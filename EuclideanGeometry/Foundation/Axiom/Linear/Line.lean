@@ -144,9 +144,48 @@ def mk_pt_vec_nd (A : P) (vec_nd : VecND) : Line P := mk_pt_proj A vec_nd.toProj
 
 end Line
 
-scoped notation "LIN" => Line.mk_pt_pt
+@[inherit_doc Line.mk_pt_pt]
+scoped syntax "LIN" ws term:max ws term:max (ws term:max)? : term
 
-scoped notation "DLIN" => DirLine.mk_pt_pt
+macro_rules
+  | `(LIN $A $B) => `(Line.mk_pt_pt $A $B (@Fact.out _ inferInstance))
+  | `(LIN $A $B $h) => `(Line.mk_pt_pt $A $B $h)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `Line.mk_pt_pt` -/
+@[delab app.EuclidGeom.Line.mk_pt_pt]
+def delabLineMkPtPt : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``Line.mk_pt_pt 5
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  withNaryArg 4 do
+    if (← getExpr).isAppOfArity' ``Fact.out 2 then
+      `(LIN $A $B)
+    else
+      `(LIN $A $B $(← delab))
+
+
+@[inherit_doc DirLine.mk_pt_pt]
+scoped syntax "DLIN" ws term:max ws term:max (ws term:max)? : term
+
+macro_rules
+  | `(DLIN $A $B) => `(DirLine.mk_pt_pt $A $B (@Fact.out _ inferInstance))
+  | `(DLIN $A $B $h) => `(DirLine.mk_pt_pt $A $B $h)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `DirLine.mk_pt_pt` -/
+@[delab app.EuclidGeom.DirLine.mk_pt_pt]
+def delabDirLineMkPtPt : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``DirLine.mk_pt_pt 5
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  withNaryArg 4 do
+    if (← getExpr).isAppOfArity' ``Fact.out 2 then
+      `(DLIN $A $B)
+    else
+      `(DLIN $A $B $(← delab))
 
 end make
 
