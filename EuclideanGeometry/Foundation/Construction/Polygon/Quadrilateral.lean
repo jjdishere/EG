@@ -125,19 +125,19 @@ theorem nd₁₄ :  qdr_nd.1.4 ≠ qdr_nd.1.1 := qdr_nd.nd.nd₁₄
 
 /-- The edge from the first point to the second point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₁₂ : Seg_nd P := SEG_nd qdr_nd.point₁ qdr_nd.point₂ (qdr_nd.nd₁₂)
+def edge_nd₁₂ : SegND P := SEG_nd qdr_nd.point₁ qdr_nd.point₂ (qdr_nd.nd₁₂)
 
 /-- The edge from the second point to the third point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₂₃ : Seg_nd P := SEG_nd qdr_nd.point₂ qdr_nd.point₃ (qdr_nd.nd₂₃)
+def edge_nd₂₃ : SegND P := SEG_nd qdr_nd.point₂ qdr_nd.point₃ (qdr_nd.nd₂₃)
 
 /-- The edge from the third point to the fourth point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₃₄ : Seg_nd P := SEG_nd qdr_nd.point₃ qdr_nd.point₄ (qdr_nd.nd₃₄)
+def edge_nd₃₄ : SegND P := SEG_nd qdr_nd.point₃ qdr_nd.point₄ (qdr_nd.nd₃₄)
 
 /-- The edge from the fourth point to the first point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₁₄ : Seg_nd P := SEG_nd qdr_nd.point₁ qdr_nd.point₄ (qdr_nd.nd₁₄)
+def edge_nd₁₄ : SegND P := SEG_nd qdr_nd.point₁ qdr_nd.point₄ (qdr_nd.nd₁₄)
 
 /--angle at point₁ of qdr_nd-/
 @[pp_dot]
@@ -347,8 +347,12 @@ theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
     unfold Quadrilateral_nd.angle₂
     simp only [h]
     exact angle_eq_zero_of_same_dir
-  have k₁ : ¬ qdr_cvx.angle₂.value.IsPos := AngValue.not_ispos_of_eq_zero g
-  have k₂ : ¬ qdr_cvx.angle₂.value.IsNeg := AngValue.not_isneg_of_eq_zero g
+  have k₁ : ¬ qdr_cvx.angle₂.value.IsPos := by
+    rw [g]
+    exact AngValue.zero_not_isPos
+  have k₂ : ¬ qdr_cvx.angle₂.value.IsNeg := by
+    rw [g]
+    exact AngValue.zero_not_isNeg
   have p: qdr_cvx.IsConvex := qdr_cvx.convex
   unfold Quadrilateral_nd.IsConvex at p
   simp only [k₁, false_and, and_false, k₂, or_self] at p
