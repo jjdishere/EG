@@ -11,7 +11,7 @@ variable {P : Type _} [EuclideanPlane P] {α β γ : Type*} [ProjObj α] [ProjOb
 def perpendicular (l₁ : α) (l₂ : β) : Prop :=
   ProjObj.toProj l₁ = (ProjObj.toProj l₂).perp
 
-scoped infix : 50 "IsPerpendicularTo" => perpendicular
+scoped infix : 50 " IsPerpendicularTo " => perpendicular
 
 scoped infix : 50 " ⟂ " => perpendicular
 

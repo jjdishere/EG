@@ -508,11 +508,17 @@ lemma add_cdiv (v₁ v₁' v₂ : Vec) : (v₁ + v₁') / v₂ = v₁ / v₂ + v
 lemma neg_cdiv (v₁ v₂ : Vec) : -v₁ / v₂ = -(v₁ / v₂) := by
   simp_rw [cdiv_def, inner_neg_right, neg_div]
 
+lemma cdiv_neg (v₁ v₂ : Vec) : v₁ / -v₂ = -(v₁ / v₂) := by
+  simp_rw [cdiv_def, inner_neg_left, neg_div, norm_neg]
+
 lemma sub_cdiv (v₁ v₁' v₂ : Vec) : (v₁ - v₁') / v₂ = v₁ / v₂ - v₁' / v₂ := by
   rw [sub_eq_add_neg, sub_eq_add_neg, add_cdiv, neg_cdiv]
 
 lemma mul_cdiv (z : ℂ) (v₁ v₂ : Vec) : z * (v₁ / v₂) = z • v₁ / v₂ := by
   simp_rw [cdiv_def, inner_smul_right, mul_div]
+
+lemma smul_cdiv_smul (z₁ z₂ : ℂ) (v₁ v₂ : Vec) : (z₁ • v₁ / z₂ • v₂) = (z₁ / z₂) • v₁ / v₂ := by
+  sorry
 
 @[simp]
 lemma cdiv_smul_cancel (v₁ : Vec) {v₂ : Vec} (hv₂ : v₂ ≠ 0) : (v₁ / v₂) • v₂ = v₁ := by
@@ -1125,15 +1131,15 @@ lemma vadd_neg (θ : AngValue) (d : Dir) : θ +ᵥ -d = -(θ +ᵥ d) :=
   map_neg (rotate θ) d
 
 @[simp]
-lemma pi_vadd (d : Dir) : (π : AngValue) +ᵥ d = -d :=
+lemma pi_vadd (d : Dir) : ∠[π] +ᵥ d = -d :=
   rotate_pi_apply d
 
 @[simp]
-lemma neg_vsub_left (d₁ d₂ : Dir) : -d₁ -ᵥ d₂ = d₁ -ᵥ d₂ + (π : AngValue) := by
+lemma neg_vsub_left (d₁ d₂ : Dir) : -d₁ -ᵥ d₂ = d₁ -ᵥ d₂ + ∠[π] := by
   rw [← pi_vadd, vadd_vsub_assoc, add_comm]
 
 @[simp]
-lemma neg_vsub_right (d₁ d₂ : Dir) : d₁ -ᵥ -d₂ = d₁ -ᵥ d₂ + (π : AngValue) := by
+lemma neg_vsub_right (d₁ d₂ : Dir) : d₁ -ᵥ -d₂ = d₁ -ᵥ d₂ + ∠[π] := by
   rw [← pi_vadd, vsub_vadd_eq_vsub_sub, sub_eq_add_neg, AngValue.neg_coe_pi]
 
 protected abbrev normalize {M : Type*} [AddCommGroup M] [Module ℝ M]
@@ -1477,7 +1483,7 @@ instance : AddTorsor AngDValue Proj where
     simp
 
 @[pp_dot]
-def perp (p : Proj) : Proj := ((π / 2 : ℝ) : AngDValue) +ᵥ p
+def perp (p : Proj) : Proj := ∡[π / 2] +ᵥ p
 
 @[simp]
 lemma perp_perp (p : Proj) : p.perp.perp = p := by

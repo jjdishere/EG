@@ -238,8 +238,7 @@ def mk_is_convex {P : Type _} [EuclideanPlane P] {qdr_nd : Quadrilateral_nd P} (
   convex := h
 
 section criteria_cvx
-variable {P : Type _} [EuclideanPlane P]
-variable {A B C D : P}
+variable {P : Type _} [EuclideanPlane P] {A B C D : P}
 
 structure is_convex_of_three_sides_two_pts_at_same_side' where
   qdr_nd : Quadrilateral_nd P

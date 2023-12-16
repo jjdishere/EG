@@ -56,10 +56,10 @@ instance (α : Type*) [ProjObj α] : IsEquiv α parallel where
   trans _ _ _ := Eq.trans
 
 /-- This is to rewrite \verb|parallel l l'| as \verb|l ParallelTo l'| -/
-scoped infix : 50 "ParallelTo" => parallel
+scoped infix : 50 " ParallelTo " => parallel
 
 /-- This is to rewrite \verb|parallel l l'| as $l \parallel l'$. -/
-scoped infix : 50 "∥" => parallel
+scoped infix : 50 " ∥ " => parallel
 
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coercions, ... -/
 
@@ -180,7 +180,7 @@ end parallel_iff_coercion_parallel
 
 section reverse
 
-variable {α β : (P : Type _) → [EuclideanPlane P] → Type _} [DirFig α] [DirFig β] {l₁ : α P} {l₂ : β P}
+variable {α β : Type*} [DirFig α P] [DirFig β P] {l₁ : α} {l₂ : β}
 
 theorem DirFig.para_rev_of_para (h : l₁ ∥ l₂) : l₁ ∥ reverse l₂ :=
   h.trans (rev_toProj_eq_toProj l₂).symm
@@ -195,7 +195,7 @@ theorem DirLine.para_rev_of_para {l l' : DirLine P} (h : l ∥ l') : l ∥ l'.re
   DirFig.para_rev_of_para h
 
 theorem DirFig.not_para_rev_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ l₁ ∥ reverse l₂ :=
-  fun hn ↦ h ((para_rev_of_para hn).trans (congrArg ProjObj.toProj (rev_rev l₂)))
+  fun hn ↦ h ((para_rev_of_para hn).trans (congrArg ProjObj.toProj (rev_rev)))
 
 theorem SegND.not_para_rev_of_not_para {s s' : SegND P} (h : ¬ s ∥ s') : ¬ s ∥ s'.reverse :=
   DirFig.not_para_rev_of_not_para h
@@ -219,7 +219,7 @@ theorem DirLine.rev_para_of_para {l l' : DirLine P} (h : l ∥ l') : l.reverse �
   DirFig.rev_para_of_para h
 
 theorem DirFig.not_rev_para_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ l₂ :=
-  fun hn ↦ h ((congrArg ProjObj.toProj (rev_rev l₁)).symm.trans (rev_para_of_para hn) )
+  fun hn ↦ h ((congrArg ProjObj.toProj rev_rev).symm.trans (rev_para_of_para hn) )
 
 theorem SegND.not_rev_para_of_not_para {s s' : SegND P} (h : ¬ s ∥ s') : ¬ s.reverse ∥ s' :=
   DirFig.not_rev_para_of_not_para h

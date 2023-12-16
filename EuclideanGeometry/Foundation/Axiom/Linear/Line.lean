@@ -211,7 +211,7 @@ protected def carrier (l : Line P) : Set P := Quotient.lift (fun ray : Ray P => 
 protected def IsOn (A : P) (l : Line P) : Prop :=
   A ∈ l.carrier
 
-instance : Fig Line where
+instance : Fig (Line P) P where
   carrier := Line.carrier
 
 end Line
@@ -220,7 +220,7 @@ namespace DirLine
 
 protected def carrier (l : DirLine P) : Set P := l.toLine.carrier
 
-instance : Fig DirLine where
+instance : Fig (DirLine P) P where
   carrier := DirLine.carrier
 
 end DirLine
@@ -539,9 +539,7 @@ end coercion
 
 section lieson
 
-variable (r : Ray P) (s : SegND P)
-
-theorem Ray.subset_toLine : r.carrier ⊆ r.toLine.carrier := by
+theorem Ray.subset_toLine {r : Ray P} : r.carrier ⊆ r.toLine.carrier := by
   rw [toLine_carrier_eq_ray_carrier_union_rev_carrier]
   exact Set.subset_union_left r.carrier r.reverse.carrier
 
@@ -552,7 +550,7 @@ theorem ray_subset_line {r : Ray P} {l : Line P} (h : r.toLine = l) : r.carrier 
 theorem seg_lies_on_line {s : SegND P} {A : P} (h : A LiesOn s) : A LiesOn s.toLine :=
   Set.mem_of_subset_of_mem (ray_subset_line rfl) (SegND.lies_on_toRay_of_lies_on h)
 
-theorem SegND.subset_toLine : s.carrier ⊆ s.toLine.carrier := fun _ ↦ seg_lies_on_line
+theorem SegND.subset_toLine {s : SegND P} : s.carrier ⊆ s.toLine.carrier := fun _ ↦ seg_lies_on_line
 
 theorem seg_subset_line {s : SegND P} {l : Line P} (h : s.toLine = l) : s.carrier ⊆ l.carrier := by
   rw [← h]
@@ -563,13 +561,13 @@ theorem Line.nontriv (l : Line P) : ∃ (A B : P), A LiesOn l ∧ B LiesOn l ∧
   rcases r.nontriv with ⟨A, B, g⟩
   exact ⟨A, B, ⟨ray_subset_line h g.1, ray_subset_line h g.2.1, g.2.2⟩⟩
 
-theorem Ray.lies_on_ray_or_lies_on_ray_rev_iff : A LiesOn r ∧ A ≠ r.source ∨ A LiesOn r.reverse ∧ A ≠ r.source ∨ A = r.source ↔ A LiesOn r ∨ A LiesOn r.reverse := ⟨
+theorem Ray.lies_on_ray_or_lies_on_ray_rev_iff {r : Ray P} {A : P} : A LiesOn r ∧ A ≠ r.source ∨ A LiesOn r.reverse ∧ A ≠ r.source ∨ A = r.source ↔ A LiesOn r ∨ A LiesOn r.reverse := ⟨
   fun | .inl h => .inl h.1
       | .inr h => .casesOn h (fun h => .inr h.1) (fun h => .inr (by rw[h]; exact source_lies_on)),
   fun | .inl h => if g : A = r.source then .inr (.inr g) else .inl ⟨h, g⟩
       | .inr h => if g : A = r.source then .inr (.inr g) else .inr (.inl ⟨h, g⟩)⟩
 
-theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source {r : Ray P} : (A LiesOn r.toLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) := by
+theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source {A : P} {r : Ray P} : (A LiesOn r.toLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) := by
   rw [lies_int_def, lies_int_def, source_of_rev_eq_source, lies_on_ray_or_lies_on_ray_rev_iff, lies_on_toLine_iff_lies_on_or_lies_on_rev]
 
 theorem SegND.lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on {A : P} {seg_nd : SegND P} (h : ¬ A LiesInt seg_nd.1) : A LiesOn seg_nd.toLine ↔ (A LiesOn seg_nd.extension) ∨ (A LiesOn seg_nd.reverse.extension) := by
@@ -637,7 +635,7 @@ theorem Line.lies_on_of_exist_real_vec_eq_smul_vec {A B : P} {v : VecND} {t : �
 theorem Line.lies_on_of_exist_real_of_pt_pt {A B C : P} (h : B ≠ A) {t : ℝ} (ht : VEC A C = t • VEC A B) : C LiesOn (LIN A B h) :=
   @lies_on_of_exist_real_vec_eq_smul_vec P _ A C (SEG_nd A B h).toVecND t ht
 
-theorem Ray.subset_toDirLine : r.carrier ⊆ r.toDirLine.carrier := r.subset_toLine
+theorem Ray.subset_toDirLine {r : Ray P}: r.carrier ⊆ r.toDirLine.carrier := r.subset_toLine
 
 theorem ray_subset_dirline {r : Ray P} {l : DirLine P} (h : r.toDirLine = l) : r.carrier ⊆ l.carrier :=
   ray_subset_line (congrArg DirLine.toLine h)
@@ -645,7 +643,7 @@ theorem ray_subset_dirline {r : Ray P} {l : DirLine P} (h : r.toDirLine = l) : r
 theorem seg_lies_on_dirline {s : SegND P} {A : P} (h : A LiesOn s.1) : A LiesOn s.toDirLine :=
   seg_lies_on_line h
 
-theorem SegND.subset_toDirLine : s.carrier ⊆ s.toDirLine.carrier := s.subset_toLine
+theorem SegND.subset_toDirLine {s : SegND P} : s.carrier ⊆ s.toDirLine.carrier := s.subset_toLine
 
 theorem seg_subset_dirline {s : SegND P} {l : DirLine P} (h : s.toDirLine = l) : s.carrier ⊆ l.carrier :=
   seg_subset_line (congrArg DirLine.toLine h)
@@ -653,7 +651,7 @@ theorem seg_subset_dirline {s : SegND P} {l : DirLine P} (h : s.toDirLine = l) :
 theorem DirLine.nontriv (l : DirLine P) : ∃ (A B : P), A LiesOn l ∧ B LiesOn l ∧ (B ≠ A) :=
   l.toLine.nontriv
 
-theorem Ray.lies_on_toDirLine_iff_lies_int_or_lies_int_rev_or_eq_source {r : Ray P} : (A LiesOn r.toDirLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) :=
+theorem Ray.lies_on_toDirLine_iff_lies_int_or_lies_int_rev_or_eq_source {A : P} {r : Ray P} : (A LiesOn r.toDirLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) :=
   r.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source
 
 theorem SegND.lies_on_extn_or_rev_extn_iff_lies_on_toDirLine_of_not_lies_on {A : P} {seg_nd : SegND P} (h : ¬ A LiesInt seg_nd.1) : A LiesOn seg_nd.toDirLine ↔ (A LiesOn seg_nd.extension) ∨ (A LiesOn seg_nd.reverse.extension) :=
