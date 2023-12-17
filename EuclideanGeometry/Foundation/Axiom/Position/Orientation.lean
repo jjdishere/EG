@@ -1,4 +1,3 @@
-import EuclideanGeometry.Foundation.Axiom.Basic.Computation
 import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
@@ -36,11 +35,11 @@ theorem wedge231 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge312, wed
 
 theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, wedge231]
 
-theorem wedge_eq_sine_mul_length_mul_length (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : wedge A B C = (sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) := by
+theorem wedge_eq_length_mul_length_mul_sin (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : wedge A B C = (SEG A B).length * (SEG A C).length * sin (Angle.mk_pt_pt_pt B A C bnea cnea).value := by
   unfold wedge
   have h0 : (Angle.mk_pt_pt_pt B A C bnea cnea).value = VecND.angle (VEC_nd A B bnea) (VEC_nd A C cnea)  := rfl
   rw [h0]
-  apply det_eq_sin_mul_norm_mul_norm (VEC_nd A B bnea) (VEC_nd A C cnea)
+  exact (VecND.norm_mul_sin (VEC_nd A B bnea) (VEC_nd A C cnea)).symm
 
 theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B C = 0) := by
   dsimp only [wedge]
@@ -76,17 +75,17 @@ theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge
       exact length_pos_iff_nd.mpr (acnd)
   constructor
   · intro h0
-    rw [wedge_eq_sine_mul_length_mul_length A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm] at h0
+    rw [wedge_eq_length_mul_length_mul_sin A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm] at h0
     have h3 : 0 < sin (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value := by
       field_simp at h0
       exact h0
     rw [sin_pos_iff_angle_pos] at h3
     exact h3
-  rw [wedge_eq_sine_mul_length_mul_length A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm]
+  rw [wedge_eq_length_mul_length_mul_sin A B C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm]
   intro h0
   have h3 : 0 < sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_angle_pos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
   field_simp
-  exact h2
+  exact h3
 
 end wedge
 
@@ -100,24 +99,25 @@ theorem odist'_eq_zero_iff_exist_real_vec_eq_smul {A : P} {ray : Ray P} : odist'
   rw [Vec.det_eq_zero_iff_eq_smul_left]
   simp
 
-theorem odist'_eq_sine_mul_length (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist' A ray = sin ((Angle.mk_ray_pt ray A h).value) * (SEG ray.source A).length := by
+theorem odist'_eq_length_mul_sin (A : P) (ray : Ray P) (h : A ≠ ray.source) : odist' A ray = (SEG ray.source A).length * sin ((Angle.mk_ray_pt ray A h).value) := by
   rw [odist',Angle.value]
   have h0 : (Angle.mk_ray_pt ray A h).value = VecND.angle ray.2.unitVecND (VEC_nd ray.source A h) := angle_value_eq_angle A ray h
   have h2 : (VEC_nd ray.source A h).1 = VEC ray.source A := rfl
   have h3 : ‖ray.toDir.unitVecND‖ = 1 := by simp
   have h4 : (SEG ray.source A).length = ‖VEC_nd ray.source A h‖ := rfl
-  rw [← h2, det_eq_sin_mul_norm_mul_norm ray.2.unitVecND (VEC_nd ray.source A h),h3,h4,← h0]
+  rw [← h2, ← VecND.norm_mul_sin ray.2.unitVecND (VEC_nd ray.source A h),h3,h4,← h0]
   ring_nf
-  rw [mul_comm]
   rfl
 
-theorem wedge_eq_odist'_mul_length (A B C : P) (bnea : B ≠ A) : (wedge A B C) = ((odist' C (RAY A B bnea)) * (SEG A B).length) := by
-  by_cases p : C ≠ A
-  rw [wedge_eq_sine_mul_length_mul_length A B C bnea p,odist'_eq_sine_mul_length C (RAY A B bnea),mul_assoc (sin ((Angle.mk_ray_pt (RAY A B bnea) C p).value)) ((SEG (RAY A B bnea).source C).length) ((SEG A B).length) ,mul_comm ((SEG (RAY A B bnea).source C).length) ((SEG A B).length),←mul_assoc (sin ((Angle.mk_ray_pt (RAY A B bnea) C p).value)) ((SEG A B).length) ((SEG (RAY A B bnea).source C).length)]
-  congr
-  have vecrayc0 : VEC (RAY A B bnea).source C = 0 := (eq_iff_vec_eq_zero A C).mp (not_not.1 p)
-  dsimp only [wedge, odist']
-  field_simp [(eq_iff_vec_eq_zero A C).mp (not_not.1 p), vecrayc0]
+theorem wedge_eq_length_mul_odist' (A B C : P) (bnea : B ≠ A) : (wedge A B C) = (SEG A B).length * odist' C (RAY A B bnea) := by
+  by_cases p : C = A
+  · have vecrayc0 : VEC (RAY A B bnea).source C = 0 := (eq_iff_vec_eq_zero A C).mp p
+    dsimp only [wedge, odist']
+    field_simp [(eq_iff_vec_eq_zero A C).mp p, vecrayc0]
+  · rw [wedge_eq_length_mul_length_mul_sin A B C bnea p,
+      odist'_eq_length_mul_sin C (RAY A B bnea), ← mul_assoc]
+    rfl
+
 
 theorem odist'_eq_odist'_of_to_dirline_eq_to_dirline (A : P) (ray ray' : Ray P) (h : same_dir_line ray ray') : odist' A ray = odist' A ray' := by
   have h₁ : ray.2.unitVec = ray'.2.unitVec := by
@@ -163,7 +163,7 @@ theorem odist_reverse_eq_neg_odist {α} (A : P) [DirFig α P] (df : α) : odist 
   rfl
 
 theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SEG_nd A B bnea) = odist D (SEG_nd A B bnea)) ↔ (wedge A B C = wedge A B D) := by
-  rw [wedge_eq_odist'_mul_length A B C bnea, wedge_eq_odist'_mul_length A B D bnea]
+  rw [wedge_eq_length_mul_odist' A B C bnea, wedge_eq_length_mul_odist' A B D bnea]
   have h0 : 0 ≠ Seg.length (SEG A B) := by
     rw [length_ne_zero_iff_nd]
     exact bnea
@@ -233,25 +233,25 @@ end point_toray
 
 section oriented_area
 
-theorem oarea_eq_length_mul_odist_div_two (A B C : P) (bnea : B ≠ A) : (oarea A B C) = ((odist C (SEG_nd A B bnea)) * (SEG A B).length) / 2:= by
+theorem oarea_eq_length_mul_odist_div_two (A B C : P) (bnea : B ≠ A) : oarea A B C = (SEG A B).length * odist C (SEG_nd A B bnea) / 2 := by
   unfold oarea
-  rw [wedge_eq_odist'_mul_length A B C bnea]
+  rw [wedge_eq_length_mul_odist' A B C bnea]
   have h0 : toDirLine (SEG_nd A B bnea) = toDirLine (RAY A B bnea) := rfl
   have h1 : odist C (RAY A B bnea) = odist C (SEG_nd A B bnea) := by
     unfold odist
     rw[h0]
   have h2 : odist C (RAY A B bnea) = odist' C (RAY A B bnea) := rfl
   rw [h2] at h1
-  rw[h1]
+  rw [h1]
 
-theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : (odist C (SEG_nd A B bnea) = odist D (SEG_nd A B bnea)) ↔ oarea A B C = oarea A B D := by
+theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) (bnea : B ≠ A) : odist C (SEG_nd A B bnea) = odist D (SEG_nd A B bnea) ↔ oarea A B C = oarea A B D := by
   unfold oarea
   field_simp
   exact wedge_eq_wedge_iff_odist_eq_odist_of_ne A B C D bnea
 
-theorem oarea_eq_sine_mul_length_mul_length_div_two (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : oarea A B C = (sin (Angle.mk_pt_pt_pt B A C bnea cnea).value * (SEG A B).length *(SEG A C).length) / 2 := by
+theorem oarea_eq_sin_mul_length_mul_length_div_two (A B C : P) (bnea : B ≠ A) (cnea : C ≠ A) : oarea A B C = (SEG A B).length * (SEG A C).length * sin (Angle.mk_pt_pt_pt B A C bnea cnea).value / 2 := by
   unfold oarea
-  rw[wedge_eq_sine_mul_length_mul_length A B C bnea cnea]
+  rw [wedge_eq_length_mul_length_mul_sin A B C bnea cnea]
 
 theorem oarea_eq_zero_iff_colinear (A B C : P) : oarea A B C = 0 ↔ colinear A B C := by
   unfold oarea

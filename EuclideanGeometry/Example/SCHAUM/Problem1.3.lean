@@ -126,7 +126,7 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
     simp only [← h₂₀]
   --Then $\triangle B A D \congr_a \triangle B A D$ (by SAS)
   have h₃ : TRI_nd e.B e.A e.D hnd₁ ≅ₐ TRI_nd e.C e.A e.E hnd₂ := by
-    apply Triangle_nd.acongr_of_SAS
+    apply TriangleND.acongr_of_SAS
     · exact h₁
     · exact h₂
     · exact h₀
