@@ -1,6 +1,7 @@
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
 import EuclideanGeometry.Foundation.Axiom.Circle.CCPosition
 import EuclideanGeometry.Foundation.Axiom.Circle.LCPosition
+import EuclideanGeometry.Foundation.Axiom.Circle.IncribedAngle
 
 noncomputable section
 namespace EuclidGeom
@@ -93,13 +94,58 @@ lemma tangents_ne_pt {ω : Circle P} {p : P} (h : p LiesOut ω) : ((pt_tangent_c
   have h₂ : dist ω.center p = ω.radius := this
   linarith
 
+lemma tangents_ne_center {ω : Circle P} {p : P} (h : p LiesOut ω) : ((pt_tangent_circle_pts h).left ≠ ω.center) ∧ ((pt_tangent_circle_pts h).right ≠ ω.center) := by
+  have hpos₁ : dist ω.center (pt_tangent_circle_pts h).left > 0 := by
+    calc
+      _ = ω.radius := (tangents_lieson_circle h).1
+      _ > 0 := ω.rad_pos
+  have hpos₂ : dist ω.center (pt_tangent_circle_pts h).right > 0 := by
+    calc
+      _ = ω.radius := (tangents_lieson_circle h).2
+      _ > 0 := ω.rad_pos
+  constructor
+  · apply dist_pos.mp
+    rw [dist_comm]; exact hpos₁
+  apply dist_pos.mp
+  rw [dist_comm]; exact hpos₂
+
+lemma tangents_perp₁ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1) ⟂ (DLIN ω.center (pt_tangent_circle_pts h).left (tangents_ne_center h).1) := by
+  have heq₁ : ∠ p (pt_tangent_circle_pts h).left ω.center (tangents_ne_pt h).1.symm (tangents_ne_center h).1.symm = ∡[π / 2] := by
+    apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt (Circle.pt_liesout_ne_center h) (tangents_ne_center h).1.symm (tangents_ne_pt h).1 (mk_pt_pt_diam_fst_lieson (pt_liesout_ne_center h).symm)
+    · exact (CC_inx_pts_lieson_circles (tangent_circle_intersected h)).1
+    apply Arc.mk_pt_pt_diam_isantipode
+  show (DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1).toProj = (DLIN ω.center (pt_tangent_circle_pts h).left (tangents_ne_center h).1).toProj.perp
+  calc
+    _ = (RAY p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1).toProj := rfl
+    _ = (RAY (pt_tangent_circle_pts h).left p (tangents_ne_pt h).1.symm).toProj := by apply Ray.toProj_eq_toProj_of_mk_pt_pt
+    _ = (RAY (pt_tangent_circle_pts h).left ω.center (tangents_ne_center h).1.symm).toProj.perp := dvalue_eq_ang_rays_perp heq₁
+    _ = (RAY ω.center (pt_tangent_circle_pts h).left (tangents_ne_center h).1).toProj.perp := by rw [Ray.toProj_eq_toProj_of_mk_pt_pt]
+    _ = (DLIN ω.center (pt_tangent_circle_pts h).left (tangents_ne_center h).1).toProj.perp := rfl
+
+lemma tangents_perp₂ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2) ⟂ (DLIN ω.center (pt_tangent_circle_pts h).right (tangents_ne_center h).2) := by
+  have heq₂ : ∠ p (pt_tangent_circle_pts h).right ω.center (tangents_ne_pt h).2.symm (tangents_ne_center h).2.symm = ∡[π / 2] := by
+    apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt (Circle.pt_liesout_ne_center h) (tangents_ne_center h).2.symm (tangents_ne_pt h).2 (mk_pt_pt_diam_fst_lieson (pt_liesout_ne_center h).symm)
+    · exact (CC_inx_pts_lieson_circles (tangent_circle_intersected h)).2.2.1
+    apply Arc.mk_pt_pt_diam_isantipode
+  show (DLIN p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2).toProj = (DLIN ω.center (pt_tangent_circle_pts h).right (tangents_ne_center h).2).toProj.perp
+  calc
+    _ = (RAY p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2).toProj := rfl
+    _ = (RAY (pt_tangent_circle_pts h).right p (tangents_ne_pt h).2.symm).toProj := by apply Ray.toProj_eq_toProj_of_mk_pt_pt
+    _ = (RAY (pt_tangent_circle_pts h).right ω.center (tangents_ne_center h).2.symm).toProj.perp := dvalue_eq_ang_rays_perp heq₂
+    _ = (RAY ω.center (pt_tangent_circle_pts h).right (tangents_ne_center h).2).toProj.perp := by rw [Ray.toProj_eq_toProj_of_mk_pt_pt]
+    _ = (DLIN ω.center (pt_tangent_circle_pts h).right (tangents_ne_center h).2).toProj.perp := rfl
+
 theorem line_tangent_circle {ω : Circle P} {p : P} (h : p LiesOut ω) : ((DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1) Tangent ω) ∧ ((DLIN p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2) Tangent ω) := by
   constructor
-  · show dist_pt_line ω.center (DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1) = ω.radius
-    sorry
-  sorry
+  · apply pt_pt_perp_tangent h (tangents_lieson_circle h).1 (tangents_perp₁ h)
+  apply pt_pt_perp_tangent h (tangents_lieson_circle h).2 (tangents_perp₂ h)
 
-theorem tangent_pts_eq_tangents {ω : Circle P} {p : P} (h : p LiesOut ω) : (DirLC_Tangent_pt (line_tangent_circle h).1 = (pt_tangent_circle_pts h).left) ∧ (DirLC_Tangent_pt (line_tangent_circle h).2 = (pt_tangent_circle_pts h).right) := sorry
+theorem tangent_pts_eq_tangents {ω : Circle P} {p : P} (h : p LiesOut ω) : (DirLC_Tangent_pt (line_tangent_circle h).1 = (pt_tangent_circle_pts h).left) ∧ (DirLC_Tangent_pt (line_tangent_circle h).2 = (pt_tangent_circle_pts h).right) := by
+  constructor
+  · symm
+    apply pt_pt_perp_eq_tangent_pt h (tangents_lieson_circle h).1 (tangents_perp₁ h)
+  symm
+  apply pt_pt_perp_eq_tangent_pt h (tangents_lieson_circle h).2 (tangents_perp₂ h)
 
 theorem length_of_tangent {ω : Circle P} {p : P} (h : p LiesOut ω) : dist p (pt_tangent_circle_pts h).left = dist p (pt_tangent_circle_pts h).right := sorry
 
