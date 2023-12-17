@@ -1,4 +1,5 @@
-import EuclideanGeometry.Foundation.Axiom.Basic.Angle.FromMathlib
+import EuclideanGeometry.Foundation.Axiom.Basic.Angle.AddToMathlib
+
 /-!
 # Angle Conversions
 
@@ -12,10 +13,12 @@ Recall in Euclidean Geometry, the measure of angle is subtle. The measure of an 
 In this file, we define suitable coversion function between `ℝ⧸2π`,`ℝ⧸π` and `(-π, π]`. Starting from `Dir.toAngValue`, we convert `Dir` to `AngValue`. We shall primarily use `ℝ/2π`, and gives coercion and compatibility theorems with respect to `ℝ⧸π` and `(-π, π]`.
 
 -/
-open Real.Angle Classical Real
 
 noncomputable section
+
 namespace EuclidGeom
+
+open AngValue Classical Real
 
 attribute [pp_dot] AngValue.toReal
 
@@ -47,7 +50,7 @@ def _root_.EuclidGeom.AngValue.toAngDValueHom : AngValue →+ AngDValue where
     rfl
 
 instance : CircularOrder AngDValue :=
-  QuotientAddGroup.circularOrder (hp' := ⟨by norm_num [pi_pos]⟩)
+  QuotientAddGroup.circularOrder (hp' := ⟨by positivity⟩)
 
 theorem coe_def (x : ℝ) : (x : AngDValue) = QuotientAddGroup.mk x :=
   rfl
@@ -436,7 +439,7 @@ end trichotomy
 section toReal
 
 theorem zero_le_toReal_iff : 0 ≤ θ.toReal ↔ btw 0 θ π := by
-  have hp : Fact (0 < 2 * π) := { out := Real.two_pi_pos }
+  haveI hp : Fact (0 < 2 * π) := ⟨Real.two_pi_pos⟩
   rw [← neg_coe_pi, ← θ.coe_toReal]
   refine' Iff.trans _ btw_cyclic.symm
   refine' (Eq.to_iff _).trans QuotientAddGroup.btw_coe_iff.symm
@@ -492,7 +495,7 @@ end toReal
 
 section sin
 
-theorem zero_lt_sin_iff_isNeg : θ.IsNeg ↔ sin θ < 0 :=
+theorem isNeg_iff_sin_lt_zero : θ.IsNeg ↔ sin θ < 0 :=
   isNeg_iff.trans (toReal_neg_iff_sign_neg.trans sign_eq_neg_one_iff)
 
 theorem isND_iff_sin_ne_zero : θ.IsND ↔ sin θ ≠ 0 :=
@@ -501,9 +504,9 @@ theorem isND_iff_sin_ne_zero : θ.IsND ↔ sin θ ≠ 0 :=
 theorem not_isND_iff_sin_eq_zero : ¬ θ.IsND ↔ sin θ = 0 :=
   not_isND_iff.trans (Real.Angle.sign_eq_zero_iff.symm.trans _root_.sign_eq_zero_iff)
 
-theorem sin_lt_zero_of_isNeg (h : θ.IsNeg) : sin θ < 0 := zero_lt_sin_iff_isNeg.mp h
+theorem sin_lt_zero_of_isNeg (h : θ.IsNeg) : sin θ < 0 := isNeg_iff_sin_lt_zero.mp h
 
-theorem isNeg_of_sin_lt_zero (h : sin θ < 0) : θ.IsNeg := zero_lt_sin_iff_isNeg.mpr h
+theorem isNeg_of_sin_lt_zero (h : sin θ < 0) : θ.IsNeg := isNeg_iff_sin_lt_zero.mpr h
 
 theorem sin_eq_zero_of_not_isND (h : ¬ θ.IsND) : sin θ = 0 := not_isND_iff_sin_eq_zero.mp h
 
@@ -513,21 +516,20 @@ theorem sin_ne_zero_of_isND (h : θ.IsND) : sin θ ≠ 0 := isND_iff_sin_ne_zero
 
 theorem isND_of_sin_eq_zero (h : sin θ ≠ 0) : θ.IsND := isND_iff_sin_ne_zero.mpr h
 
-theorem zero_lt_sin_of_isPos (h : θ.IsPos) : 0 < sin θ := by
-  rw [← θ.coe_toReal]
-  exact Real.sin_pos_of_pos_of_lt_pi (zero_lt_toReal_of_isPos h) (toReal_lt_pi_of_isPos h)
+theorem zero_lt_sin_of_isPos (h : θ.IsPos) : 0 < sin θ :=
+  zero_lt_sin_of_zero_lt_toReal_lt_pi (zero_lt_toReal_of_isPos h) (toReal_lt_pi_of_isPos h)
 
 theorem isPos_of_zero_lt_sin (h : 0 < sin θ) : θ.IsPos := by
   contrapose! h
   exact Or.casesOn (not_isPos_iff_not_isND_or_isNeg.mp h)
     (fun h ↦ (sin_eq_zero_of_not_isND h).symm.ge) (fun h ↦ le_of_lt (sin_lt_zero_of_isNeg h))
 
-theorem zero_lt_sin_iff_isPos : θ.IsPos ↔ 0 < sin θ :=
+theorem isPos_iff_zero_lt_sin : θ.IsPos ↔ 0 < sin θ :=
   ⟨zero_lt_sin_of_isPos, isPos_of_zero_lt_sin⟩
 
-theorem zero_le_sin_iff_not_isNeg : 0 ≤ sin θ ↔ ¬ θ.IsNeg := sorry
+theorem not_isNeg_iff_zero_le_sin : ¬ θ.IsNeg ↔ 0 ≤ sin θ  := isNeg_iff_sin_lt_zero.not.trans not_lt
 
-theorem sin_le_zero_iff_not_isPos : sin θ ≤ 0 ↔ ¬ θ.IsPos := sorry
+theorem not_isPos_iff_sin_le_zero : ¬ θ.IsPos ↔ sin θ ≤ 0 := isPos_iff_zero_lt_sin.not.trans not_lt
 
 end sin
 
@@ -545,11 +547,11 @@ section neg
 
 @[simp]
 theorem neg_isPos_iff_isNeg : (-θ).IsPos ↔ θ.IsNeg :=
-  zero_lt_sin_iff_isPos.trans (Iff.trans (by rw [sin_neg, Left.neg_pos_iff]) zero_lt_sin_iff_isNeg.symm)
+  isPos_iff_zero_lt_sin.trans (Iff.trans (by rw [sin_neg, Left.neg_pos_iff]) isNeg_iff_sin_lt_zero.symm)
 
 @[simp]
 theorem neg_isNeg_iff_isPos : (-θ).IsNeg ↔ θ.IsPos :=
-  zero_lt_sin_iff_isNeg.trans (Iff.trans (by rw [sin_neg, Left.neg_neg_iff]) zero_lt_sin_iff_isPos.symm)
+  isNeg_iff_sin_lt_zero.trans (Iff.trans (by rw [sin_neg, Left.neg_neg_iff]) isPos_iff_zero_lt_sin.symm)
 
 @[simp]
 theorem neg_isND_iff_isND : (-θ).IsND ↔ θ.IsND :=
@@ -565,21 +567,21 @@ theorem coe_isPos_of_zero_lt_self_lt_pi {x : ℝ} (h0 : 0 < x) (hp : x < π) : �
   exact ⟨h0, hp⟩
 
 theorem coe_isNeg_of_neg_pi_lt_self_lt_zero {x : ℝ} (hp : - π < x) (h0 : x < 0) : ∠[x].IsNeg :=
-  AngValue.isNeg_iff.mpr ((toReal_coe_eq_self hp (le_of_lt (h0.trans Real.pi_pos))).trans_lt h0)
+  AngValue.isNeg_iff.mpr ((toReal_coe_eq_self hp (le_of_lt (h0.trans pi_pos))).trans_lt h0)
 
 theorem coe_not_isNeg_of_zero_le_self_le_pi {x : ℝ} (h0 : 0 ≤ x) (hp : x ≤ π) : ¬ ∠[x].IsNeg :=
   AngValue.not_isNeg_iff.mpr <|
-    (toReal_coe_eq_self (LT.lt.trans_le (by linarith [Real.pi_pos]) h0) hp).symm.trans_ge h0
+    (toReal_coe_eq_self (LT.lt.trans_le (by linarith [pi_pos]) h0) hp).symm.trans_ge h0
 
 end coe
 
 section add_pi
 
 theorem add_pi_isPos_iff_isNeg : (θ + π).IsPos ↔ θ.IsNeg :=
-  zero_lt_sin_iff_isPos.trans (Iff.trans (by rw [θ.sin_add_pi, neg_pos]) zero_lt_sin_iff_isNeg.symm)
+  isPos_iff_zero_lt_sin.trans (Iff.trans (by rw [θ.sin_add_pi, neg_pos]) isNeg_iff_sin_lt_zero.symm)
 
 theorem add_pi_isNeg_iff_isPos : (θ + π).IsNeg ↔ θ.IsPos :=
-  zero_lt_sin_iff_isNeg.trans (Iff.trans (by rw [θ.sin_add_pi, neg_lt_zero]) zero_lt_sin_iff_isPos.symm)
+  isNeg_iff_sin_lt_zero.trans (Iff.trans (by rw [θ.sin_add_pi, neg_lt_zero]) isPos_iff_zero_lt_sin.symm)
 
 theorem add_pi_isND_iff_isND : (θ + π).IsND ↔ θ.IsND :=
   isND_iff_sin_ne_zero.trans (Iff.trans (by rw [θ.sin_add_pi, neg_ne_zero]) isND_iff_sin_ne_zero.symm)
@@ -675,7 +677,7 @@ end trichotomy
 section toReal
 
 theorem neg_pi_div_two_le_toReal_le_pi_div_two_iff_btw : - π / 2 ≤ θ.toReal ∧ θ.toReal ≤ π / 2 ↔ btw ∠[- π / 2] θ ∠[π / 2] := by
-  have hp : Fact (0 < 2 * π) := { out := Real.two_pi_pos }
+  haveI hp : Fact (0 < 2 * π) := ⟨two_pi_pos⟩
   nth_rw 3 [← θ.coe_toReal]
   refine' Iff.trans _ QuotientAddGroup.btw_coe_iff.symm
   rw [(toIocMod_eq_self hp.1).mpr ⟨by linarith [pi_pos], by linarith [pi_pos]⟩]
@@ -730,13 +732,13 @@ end toReal
 
 section cos
 
-theorem zero_lt_cos_iff_isAcu : 0 < cos θ ↔ θ.IsAcu := sorry
+theorem iff_isAcu_zero_lt_cos : θ.IsAcu ↔ 0 < cos θ := (θ.isAcu_iff).trans (θ.zero_lt_cos_iff).symm
 
-theorem zero_lt_cos_iff_isObt : sin θ < 0 ↔ θ.IsObt := sorry
+theorem isObt_iff_zero_lt_cos : θ.IsObt ↔ cos θ < 0 := (θ.isObt_iff).trans (θ.cos_lt_zero_iff).symm
 
-theorem sin_eq_zero_iff_isRight : cos θ = 0 ↔  θ.IsRight := sorry
+theorem isRight_iff_cos_eq_zero : θ.IsRight ↔ cos θ = 0 := sorry
 
-theorem cos_ne_zero_iff_not_isRight : cos θ ≠ 0 ↔ ¬ θ.IsRight := sorry
+theorem not_isRight_iff_cos_ne_zero : ¬ θ.IsRight ↔ cos θ ≠ 0 := sorry
 
 end cos
 
@@ -771,39 +773,93 @@ theorem add_pi_isRight_iff_isRight : (θ + π).IsRight ↔ θ.IsRight := sorry
 
 end add_pi
 
+section pos_neg_nd
+
+theorem add_pi_div_two_isPos_iff_isAcu : (θ + ∠[π / 2]).IsPos ↔ θ.IsAcu := sorry
+
+theorem add_pi_div_two_isNeg_iff_isObt : (θ + ∠[π / 2]).IsNeg ↔ θ.IsObt := sorry
+
+theorem add_pi_div_two_not_isND_iff_isRight : ¬ (θ + ∠[π / 2]).IsND ↔ θ.IsRight := sorry
+
+theorem add_pi_div_two_isND_iff_not_isRight : (θ + ∠[π / 2]).IsND ↔ ¬ θ.IsRight := sorry
+
+theorem add_pi_div_two_isAcu_iff_isNeg : (θ + ∠[π / 2]).IsAcu ↔ θ.IsNeg := sorry
+
+theorem add_pi_div_two_isObt_iff_isPos : (θ + ∠[π / 2]).IsObt ↔ θ.IsPos := sorry
+
+theorem add_pi_div_two_isRight_iff_not_isND : (θ + ∠[π / 2]).IsRight ↔ ¬ θ.IsND := sorry
+
+theorem add_pi_div_two_not_isRight_iff_isND : ¬ (θ + ∠[π / 2]).IsRight ↔ ¬ θ.IsND := sorry
+
+theorem sub_pi_div_two_isPos_iff_isObt : (θ - ∠[π / 2]).IsPos ↔ θ.IsObt := sorry
+
+theorem sub_pi_div_two_isNeg_iff_isAcu : (θ - ∠[π / 2]).IsNeg ↔ θ.IsAcu := sorry
+
+theorem sub_pi_div_two_not_isND_iff_isRight : ¬ (θ - ∠[π / 2]).IsND ↔ θ.IsRight := sorry
+
+theorem sub_pi_div_two_isND_iff_not_isRight : (θ - ∠[π / 2]).IsND ↔ ¬ θ.IsRight := sorry
+
+theorem sub_pi_div_two_isAcu_iff_isPos : (θ - ∠[π / 2]).IsAcu ↔ θ.IsPos := sorry
+
+theorem sub_pi_div_two_isObt_iff_isNeg : (θ - ∠[π / 2]).IsObt ↔ θ.IsNeg := sorry
+
+theorem sub_pi_div_two_isRight_iff_not_isND : (θ - ∠[π / 2]).IsRight ↔ ¬ θ.IsND := sorry
+
+theorem sub_pi_div_two_not_isRight_iff_isND : ¬ (θ - ∠[π / 2]).IsRight ↔ θ.IsND := sorry
+
+theorem pi_div_two_sub_isPos_iff_isAcu : (∠[π / 2] - θ).IsPos ↔ θ.IsAcu := sorry
+
+theorem pi_div_two_sub_isNeg_iff_isAcu : (∠[π / 2] - θ).IsNeg ↔ θ.IsObt := sorry
+
+theorem pi_div_two_sub_not_isND_iff_isRight : ¬ (∠[π / 2] - θ).IsND ↔ θ.IsRight := sorry
+
+theorem pi_div_two_sub_isND_iff_not_isRight : (∠[π / 2] - θ).IsND ↔ ¬ θ.IsRight := sorry
+
+theorem pi_div_two_sub_isAcu_iff_isPos : (∠[π / 2] - θ).IsAcu ↔ θ.IsPos := sorry
+
+theorem pi_div_two_sub_isObt_iff_isNeg : (∠[π / 2] - θ).IsObt ↔ θ.IsNeg := sorry
+
+theorem pi_div_two_sub_isRight_iff_not_isND : (∠[π / 2] - θ).IsRight ↔ ¬ θ.IsND := sorry
+
+theorem pi_div_two_sub_not_isRight_iff_isND : ¬ (∠[π / 2] - θ).IsRight ↔ θ.IsND := sorry
+
+theorem eq_pi_div_two_of_isRight_of_isPos (hr : θ.IsRight) (h : θ.IsPos) : θ = ∠[π / 2] := sorry
+
+theorem eq_neg_pi_div_two_of_isRight_of_isNeg (hr : θ.IsRight) (h : θ.IsNeg) : θ = - ∠[π / 2] := sorry
+
+theorem eq_zero_of_not_isND_of_isAcu (hr : ¬ θ.IsND) (h : θ.IsAcu) : θ = 0 := sorry
+
+theorem eq_pi_of_not_isND_of_isObt (hr : ¬ θ.IsND) (h : θ.IsObt) : θ = π := sorry
+
+end pos_neg_nd
+
 end acute_obtuse_right
 
-end AngValue
-
--- `a section discussing cos sin, uniqueness with pos neg`
--- `sin >0 implies angle IsPos, cos >0 implies ..., sin = 0 implies ...`
--- `acute, ... also implies uniqueness`
--- sin cos of special values is already at simp
 
 
 section trigonometric
 
-theorem pos_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : AngValue) (hang₁ : ang₁.IsPos) (hang₂ : ang₂.IsPos) : cos ang₁ = cos ang₂ ↔ ang₁ = ang₂ := by
+theorem cos_eq_iff_eq_of_isPos {ang₁ ang₂ : AngValue} (hang₁ : ang₁.IsPos) (hang₂ : ang₂.IsPos) : cos ang₁ = cos ang₂ ↔ ang₁ = ang₂ := by
   rw [cos_eq_iff_eq_or_eq_neg]
   constructor
   intro e
   rcases e with e₁ | e₂
   · exact e₁
-  · exfalso
-    exact AngValue.not_isNeg_of_isPos hang₁ (e₂ ▸ AngValue.neg_isNeg_iff_isPos.mpr hang₂)
+  · exact (not_isNeg_of_isPos hang₁ (e₂ ▸ neg_isNeg_iff_isPos.mpr hang₂)).elim
   exact .inl
 
-theorem neg_angle_eq_angle_iff_cos_eq_cos (ang₁ ang₂ : AngValue) (hang₁ : ang₁.IsNeg) (hang₂ : ang₂.IsNeg) : cos ang₁ = cos ang₂ ↔ ang₁ = ang₂ := by
+theorem cos_eq_iff_eq_of_isNeg {ang₁ ang₂ : AngValue} (hang₁ : ang₁.IsNeg) (hang₂ : ang₂.IsNeg) : cos ang₁ = cos ang₂ ↔ ang₁ = ang₂ := by
   rw [cos_eq_iff_eq_or_eq_neg]
   constructor
   intro e
   rcases e with e₁ | e₂
   · exact e₁
-  · exfalso
-    exact AngValue.not_isPos_of_isNeg hang₁ (e₂ ▸ AngValue.neg_isPos_iff_isNeg.mpr hang₂)
+  · exact (not_isPos_of_isNeg hang₁ (e₂ ▸ neg_isPos_iff_isNeg.mpr hang₂)).elim
   exact .inl
 
 end trigonometric
+
+end AngValue
 
 
 
@@ -812,11 +868,11 @@ namespace AngDValue
 section double
 
 def Double : AngDValue → AngValue :=
-  (AddCircle.equivAddCircle π (2 * π) Real.pi_ne_zero (by norm_num [Real.pi_ne_zero])).toFun
+  (AddCircle.equivAddCircle π (2 * π) pi_ne_zero (ne_of_gt two_pi_pos)).toFun
 -- def AngDValue.Double : AngDValue → AngValue := Quotient.lift (fun x : ℝ => Real.toAngValue (2 * x)) sorry
 
 def DoubleHom : AngDValue →+ AngValue :=
-  (AddCircle.equivAddCircle π (2 * π) Real.pi_ne_zero (by norm_num [Real.pi_ne_zero])).toAddMonoidHom
+  (AddCircle.equivAddCircle π (2 * π) pi_ne_zero (ne_of_gt two_pi_pos)).toAddMonoidHom
 
 @[simp]
 theorem doubleHom_toFun_eq_double : DoubleHom.toFun = Double := rfl
@@ -833,7 +889,7 @@ section special_value
 theorem zero_double : (0 : AngDValue).Double = 0 := map_zero DoubleHom
 
 theorem double_coe_coe_eq_coe_mul_two (x : ℝ) : ∡[x].Double = ∠[x * 2] := by
-  refine' (AddCircle.equivAddCircle_apply_mk π (2 * π) Real.pi_ne_zero _ x).trans _
+  refine' (AddCircle.equivAddCircle_apply_mk π (2 * π) pi_ne_zero _ x).trans _
   field_simp
   rfl
 
@@ -873,7 +929,7 @@ theorem double_zsmul (n : ℤ) {x : AngDValue} : (n • x).Double = n • x.Doub
 
 @[simp]
 theorem double_inj {x y : AngDValue} : x.Double = y.Double ↔ x = y :=
-  (AddCircle.equivAddCircle π (2 * π) Real.pi_ne_zero (by norm_num [Real.pi_ne_zero])).injective.eq_iff
+  (AddCircle.equivAddCircle π (2 * π) pi_ne_zero (ne_of_gt two_pi_pos)).injective.eq_iff
 
 end group_hom
 
@@ -922,7 +978,7 @@ theorem neg_two_inv_mul_pi_lt_half_toReal : -π/2 < θ.half.toReal := by
   exact (div_lt_div_right (by norm_num)).mpr θ.neg_pi_lt_toReal
 
 theorem half_toReal_lt_pi : θ.half.toReal < π :=
-  (θ.half_toReal_le_two_inv_mul_pi).trans_lt (by field_simp [Real.pi_pos])
+  (θ.half_toReal_le_two_inv_mul_pi).trans_lt (by field_simp [pi_pos])
 
 theorem eq_two_mul_coe_of_half_toReal_eq {x : ℝ} (h : θ.half.toReal = x) : θ = ∠[2 * x] := by
   rw [← h, half_toReal, mul_div_cancel' θ.toReal two_ne_zero, θ.coe_toReal]
@@ -950,7 +1006,7 @@ theorem eq_zero_of_half_eq_zero (h : θ.half = 0) : θ = 0 := half_inj (h.trans 
 theorem half_eq_zero_iff_eq_zero : θ.half = 0 ↔ θ = 0 :=
   ⟨eq_zero_of_half_eq_zero, fun h ↦ (half_congr.mpr h).trans zero_half⟩
 
-theorem pi_half : ∠[π].half = ∠[π / 2] := coe_half (by norm_num [Real.pi_pos]) (Eq.ge rfl)
+theorem pi_half : ∠[π].half = ∠[π / 2] := coe_half (by norm_num [pi_pos]) (Eq.ge rfl)
 
 theorem eq_pi_of_half_eq_pi (h : θ.half = ∠[π / 2]) : θ = π :=
   half_inj (h.trans pi_half.symm)
@@ -1007,6 +1063,24 @@ theorem cos_half_sq : (cos θ.half) ^ 2 = (1 + cos θ) / 2 := sorry
 
 end sin_cos
 
+section sum_to_product
+--The sum-to-product formulas should be put here since they use half of angles.
+
+/-
+theorem sin_sub_sin (x : ℝ) (y : ℝ) :
+sin x - sin y = 2 * (sin ((x - y) / 2) * cos ((x + y) / 2))
+
+sin x + sin y = 2 * (sin ((x + y) / 2) * cos ((x - y) / 2))
+
+theorem cos_sub_cos (x : ℝ) (y : ℝ) :
+cos x - cos y = - 2 * (sin ((x + y) / 2) * sin ((x - y) / 2))
+
+theorem cos_add_cos (x : ℝ) (y : ℝ) :
+cos x + cos y = 2 * (cos ((x + y) / 2) * cos ((x - y) / 2))
+-/
+
+end sum_to_product
+
 end half
 
 
@@ -1028,7 +1102,7 @@ theorem zero_le_abs : 0 ≤ θ.abs := abs_nonneg θ.toReal
 theorem abs_le_pi : θ.abs ≤ π := abs_toReal_le_pi θ
 
 theorem neg_pi_lt_abs : - π < θ.abs :=
-  LT.lt.trans_le (by norm_num [Real.pi_pos]) θ.zero_le_abs
+  LT.lt.trans_le (by linarith [pi_pos]) θ.zero_le_abs
 
 theorem coe_abs_eq_abs {x : ℝ} (hn : - π < x) (h : x ≤ π) : ∠[x].abs = |x| :=
   congrArg Abs.abs (toReal_coe_eq_self hn h)
@@ -1036,7 +1110,7 @@ theorem coe_abs_eq_abs {x : ℝ} (hn : - π < x) (h : x ≤ π) : ∠[x].abs = |
 theorem coe_abs_eq_abs_of_abs_le_pi {x : ℝ} (h : |x| ≤ π) : ∠[x].abs = |x| :=
   if hp : x = - π then by
     rw [hp, abs_neg, coe_neg, AngValue.neg_coe_pi]
-    exact coe_abs_eq_abs (by norm_num [Real.pi_pos]) (Eq.ge rfl)
+    exact coe_abs_eq_abs (by linarith [pi_pos]) (Eq.ge rfl)
   else coe_abs_eq_abs (Ne.lt_of_le' hp (neg_le_of_abs_le h)) (le_of_abs_le h)
 
 theorem coe_abs_le_abs (x : ℝ) : ∠[x].abs ≤ |x| :=
