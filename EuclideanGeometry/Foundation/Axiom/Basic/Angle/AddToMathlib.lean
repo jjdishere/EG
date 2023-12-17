@@ -139,22 +139,14 @@ theorem Real.cos_pi :
 Real.cos π = -1
 
 @[simp]
-theorem Real.sin_pi_sub (x : ℝ) :
-Real.sin (π - x) = Real.sin x
-
-@[simp]
-theorem Real.cos_pi_sub (x : ℝ) :
-Real.cos (π - x) = -Real.cos x
-
-@[simp]
 theorem Real.sin_pi_div_two :
 Real.sin (π / 2) = 1
 
+
+-- The following 8 theorems have already been translated. Please refer to the existing content below.
 theorem Real.sin_pos_of_pos_of_lt_pi {x : ℝ} (h0x : 0 < x) (hxp : x < π) :
 0 < Real.sin x
 
-
--- I have translated the following 8 theorems. Please refer to what I have already written.
 theorem Real.sin_nonneg_of_nonneg_of_le_pi {x : ℝ} (h0x : 0 ≤ x) (hxp : x ≤ π) :
 0 ≤ Real.sin x
 
@@ -206,12 +198,6 @@ Real.sin x < Real.sin y
 
 theorem Real.sin_le_sin_of_le_of_le_pi_div_two {x : ℝ} {y : ℝ} (hx₁ : - π / 2 ≤ x) (hy₂ : y ≤ π / 2) (hxy : x ≤ y) :
 Real.sin x ≤ Real.sin y
-
-theorem Real.injOn_sin :
-Set.InjOn Real.sin (Set.Icc (- π / 2) (π / 2))
-
-theorem Real.injOn_cos :
-Set.InjOn Real.cos (Set.Icc 0 π)
 
 theorem Real.surjOn_sin :
 Set.SurjOn Real.sin (Set.Icc (- π / 2) (π / 2)) (Set.Icc (-1) 1)
@@ -328,6 +314,16 @@ theorem Real.tan_pi_div_two_sub (x : ℝ) :
 Real.tan (π / 2 - x) = (Real.tan x)⁻¹
 
 -/
+
+@[simp]
+theorem sin_pi_sub : sin (π - θ) = sin θ := by
+  rw [← θ.coe_toReal]
+  exact (θ.toReal).sin_pi_sub
+
+@[simp]
+theorem cos_pi_sub : cos (π - θ) = - cos θ := by
+  rw [← θ.coe_toReal]
+  exact (θ.toReal).cos_pi_sub
 
 theorem zero_lt_sin_of_zero_lt_toReal_lt_pi (h : 0 < θ.toReal) (hp : θ.toReal < π) : 0 < sin θ :=
   θ.sin_toReal.trans_gt (sin_pos_of_pos_of_lt_pi h hp)
