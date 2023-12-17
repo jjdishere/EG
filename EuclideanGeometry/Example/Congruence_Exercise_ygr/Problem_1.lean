@@ -72,9 +72,10 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : �
         --·exact D_ne_E.symm
       · show (RAY e.B e.C B_ne_C.symm).toDirLine = (RAY e.D e.F D_ne_F.symm).toDirLine
         have line₁: (RAY e.B e.C B_ne_C.symm).toDirLine = (RAY e.B e.F e.B_ne_F.symm).toDirLine := by
+          sorry
+        have line₂: (RAY e.B e.F e.B_ne_F.symm).toDirLine = (RAY e.D e.F D_ne_F.symm).toDirLine := by
           symm
           sorry
-        have line₂: (RAY e.B e.F e.B_ne_F.symm).toDirLine = (RAY e.D e.F D_ne_F.symm).toDirLine := by sorry
         rw [line₁,line₂]
     -- Then $∠ ABC = ∠ EDF = -∠ FDE$.
     calc
