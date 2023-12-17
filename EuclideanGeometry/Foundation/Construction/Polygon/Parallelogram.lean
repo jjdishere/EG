@@ -429,8 +429,8 @@ theorem qdr_nd_is_prg_nd_of_eq_length_eq_length_eq_angle_sign (h₁ : qdr_nd.edg
   have nontriv₄₁₂ : ¬ colinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂ := by sorry
   have nontriv₂₃₄ : ¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄ := by sorry
   have nd₂₄ : qdr_nd.point₄ ≠ qdr_nd.point₂ := by sorry
-  have tr_nd₁ : Triangle_nd P := (TRI_nd qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂ nontriv₄₁₂)
-  have tr_nd₂ : Triangle_nd P := (TRI_nd qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄ nontriv₂₃₄)
+  have tr_nd₁ : TriangleND P := (TRI_nd qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂ nontriv₄₁₂)
+  have tr_nd₂ : TriangleND P := (TRI_nd qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄ nontriv₂₃₄)
   have e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length := sorry
   have e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length := by
     have l₁ : tr_nd₁.edge₂ = (SEG qdr_nd.point₂ qdr_nd.point₄) := by sorry
@@ -438,7 +438,7 @@ theorem qdr_nd_is_prg_nd_of_eq_length_eq_length_eq_angle_sign (h₁ : qdr_nd.edg
     rw [l₁,l₂]
     exact ((SEG qdr_nd.point₂ qdr_nd.point₄).length_of_rev_eq_length).symm
   have e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length := by sorry
-  have Congr_or_ACongr : tr_nd₁ ≅ tr_nd₂ ∨ tr_nd₁ ≅ₐ tr_nd₂ := Triangle_nd.congr_or_acongr_of_SSS e₁ e₂ e₃
+  have Congr_or_ACongr : tr_nd₁ ≅ tr_nd₂ ∨ tr_nd₁ ≅ₐ tr_nd₂ := TriangleND.congr_or_acongr_of_SSS e₁ e₂ e₃
   rcases Congr_or_ACongr with ⟨Congr,ACongr⟩
   · apply qdr_nd_is_prg_nd_of_para_para_not_colinear₄₁₂
     · sorry
