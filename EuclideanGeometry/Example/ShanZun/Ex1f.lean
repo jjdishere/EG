@@ -90,10 +90,10 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
   have ang₁ : ∠ F B E f_ne_b e_ne_b = ∠ C B A c_ne_a a_ne_b := by
     apply eq_ang_value_of_lies_int_lies_int
     constructor
-    exact SegND.lies_on_toray_of_lies_on c_lies_on_bf
+    exact SegND.lies_on_toRay_of_lies_on c_lies_on_bf
     exact b_ne_c.symm
     constructor
-    exact SegND.lies_on_toray_of_lies_on a_lies_on_be
+    exact SegND.lies_on_toRay_of_lies_on a_lies_on_be
     exact a_ne_b
   -- $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
   have ang_ebf_eq_sixty : ∠ F B E f_ne_b e_ne_b = ↑ (π / 3) ∨  ∠ F B E f_ne_b e_ne_b = ↑ (- π / 3) := by
