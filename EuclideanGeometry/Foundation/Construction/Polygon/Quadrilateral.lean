@@ -349,10 +349,10 @@ theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
     exact angle_eq_zero_of_same_dir
   have k₁ : ¬ qdr_cvx.angle₂.value.IsPos := by
     rw [g]
-    exact AngValue.zero_not_isPos
+    exact AngValue.not_zero_isPos
   have k₂ : ¬ qdr_cvx.angle₂.value.IsNeg := by
     rw [g]
-    exact AngValue.zero_not_isNeg
+    exact AngValue.not_zero_isNeg
   have p: qdr_cvx.IsConvex := qdr_cvx.convex
   unfold Quadrilateral_nd.IsConvex at p
   simp only [k₁, false_and, and_false, k₂, or_self] at p
