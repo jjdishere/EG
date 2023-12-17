@@ -150,7 +150,7 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
     rw [h₅₀]
   --Thus $\triangle DBM \congr_a \triangle ECM$ (by SAS).
   have h₆ :  TRI_nd e.B e.D e.M h₁ ≅ₐ TRI_nd e.C e.E e.M h₂ := by
-    apply Triangle_nd.acongr_of_SAS
+    apply TriangleND.acongr_of_SAS
     · exact h₄
     · exact h₅
     · exact h₃

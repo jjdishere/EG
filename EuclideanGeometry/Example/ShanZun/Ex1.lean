@@ -70,11 +70,11 @@ lemma d_ne_c : D ≠ C := by -- for $D \ne C$
 lemma d_ne_a : D ≠ A := by -- for $D \ne A$
   have a_lies_on_ab : A LiesOn (SEG_nd A B (b_ne_a (hnd := hnd))).1 := Seg.source_lies_on
   --have a_lies_on_ab := Seg.source_lies_on (SEG_nd A B (b_ne_a (hnd := hnd))).1 -- $A$ lieson segment $AB$ because $A$ is the source of segment $AB$
-  have a_not_lies_int_ab_extn := (SegND.not_lies_int_extn_and_rev_extn_of_lies_on a_lies_on_ab).1 -- $A$ doesn't lies in the extension of $AB$ because $A$ lies on segment $AB$
+  have a_not_lies_int_ab_extn := SegND.not_lies_int_extn_of_lies_on a_lies_on_ab -- $A$ doesn't lies in the extension of $AB$ because $A$ lies on segment $AB$
   exact ne_of_liesint_and_not_liesint hd a_not_lies_int_ab_extn -- $D \ne A$ because $D$ lies in the extension of $AB$, but $A$ doesn't liesint the extension of $AB$
 lemma e_ne_a : E ≠ A := by -- for $E \ne A$
   have a_lies_on_ac : A LiesOn (SEG_nd A C (c_ne_a (hnd := hnd))).1 := Seg.source_lies_on  -- $A$ lieson segment $AC$ because $A$ is the source of segment $AC$
-  have a_not_lies_int_ac_extn := (SegND.not_lies_int_extn_and_rev_extn_of_lies_on a_lies_on_ac).1 -- $A$ doesn't lies in the extension of $AC$ because $A$ lies on segment $AC$
+  have a_not_lies_int_ac_extn := SegND.not_lies_int_extn_of_lies_on a_lies_on_ac -- $A$ doesn't lies in the extension of $AC$ because $A$ lies on segment $AC$
   exact ne_of_liesint_and_not_liesint he a_not_lies_int_ac_extn -- $E \ne A$ because $E$ lies in the extension of $AC$, but $A$ doesn't liesint the extension of $AC$
   -- Claim : $D \ne B$ and $E \ne C$.
 lemma d_ne_b : D ≠ B := sorry
