@@ -428,7 +428,7 @@ theorem qdr_cvx_is_prg_nd_of_eq_length_eq_length (h₁ : qdr_cvx.edge_nd₁₂.1
   have eq₃: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.not_colinear₄₁₂).edge₃.length = (TRI_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.not_colinear₂₃₄).edge₃.length := by
     rw [heq₁] at h₂
     exact h₂
-  have congrto: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.not_colinear₄₁₂) IsCongrTo (TRI_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.not_colinear₂₃₄) := Triangle_nd.congr_of_SSS_of_eq_orientation eq₁ eq₂ eq₃ qdr_cvx.cclock_eq
+  have congrto: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.not_colinear₄₁₂) IsCongrTo (TRI_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.not_colinear₂₃₄) := TriangleND.congr_of_SSS_of_eq_orientation eq₁ eq₂ eq₃ qdr_cvx.cclock_eq
   rcases congrto with ⟨a,b,c,d,e,f⟩
   have eq_angle₁: (ANG qdr_cvx.point₄ qdr_cvx.point₂ qdr_cvx.point₁ qdr_cvx.nd₂₄ qdr_cvx.nd₁₂.symm).value = (ANG qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.nd₂₄.symm qdr_cvx.nd₃₄.symm).value := f
   have eq_angle₂: (ANG qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.point₂ qdr_cvx.nd₁₄.symm qdr_cvx.nd₂₄.symm).value = (ANG qdr_cvx.point₃ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₃ qdr_cvx.nd₂₄).value := d
@@ -500,7 +500,7 @@ theorem qdr_cvx_is_prg_nd_of_eq_length_eq_length_variant (h₁ : (SEG_nd A B (QD
   have eq₃: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).not_colinear₄₁₂).edge₃.length = (TRI_nd (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_colinear₂₃₄).edge₃.length := by
     rw [heq₁] at h₂
     exact h₂
-  have congrto: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).not_colinear₄₁₂) IsCongrTo (TRI_nd (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_colinear₂₃₄) := Triangle_nd.congr_of_SSS_of_eq_orientation eq₁ eq₂ eq₃ (QDR_cvx A B C D nd cvx).cclock_eq
+  have congrto: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).not_colinear₄₁₂) IsCongrTo (TRI_nd (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_colinear₂₃₄) := TriangleND.congr_of_SSS_of_eq_orientation eq₁ eq₂ eq₃ (QDR_cvx A B C D nd cvx).cclock_eq
   rcases congrto with ⟨a,b,c,d,e,f⟩
   have eq_angle₁: (ANG (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).nd₂₄ (QDR_cvx A B C D nd cvx).nd₁₂.symm).value = (ANG (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).nd₂₄.symm (QDR_cvx A B C D nd cvx).nd₃₄.symm).value := f
   have eq_angle₂: (ANG (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).nd₁₄.symm (QDR_cvx A B C D nd cvx).nd₂₄.symm).value = (ANG (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).nd₂₃ (QDR_cvx A B C D nd cvx).nd₂₄).value := d
@@ -586,8 +586,8 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qd
       have eq_length: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).1.edge₃.length = qdr_cvx.edge_nd₃₄.length := by apply length_of_rev_eq_length'
       rw [eq_length]
       exact h₂.symm
-    apply Triangle_nd.congr_of_SAS edge₂_eq angle₁_eq_angle₄ edge₃_eq
-  unfold Triangle_nd.IsCongr at IsCongrTo₁₄
+    apply TriangleND.congr_of_SAS edge₂_eq angle₁_eq_angle₄ edge₃_eq
+  unfold TriangleND.IsCongr at IsCongrTo₁₄
   -- Use IsCongrTo to prove angle eq
   have prepa₁: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_colinear₁₂₄).angle₃.value = (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_colinear₄₃₁).angle₃.value := by
     rcases IsCongrTo₁₄ with ⟨_, _, _, _, _, propf⟩
@@ -625,8 +625,8 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qd
   -- Prove IsCongrTo
   have prepar₁: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).1.edge₂.length = (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).1.edge₂.length := length_of_rev_eq_length'
   have prepar₂: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).1.edge₃.length = (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).1.edge₃.length := h₂
-  have IsCongrTo₁₃: TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃ IsCongrTo TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁ := Triangle_nd.congr_of_SAS prepar₁ angle₁_eq_angle₃ prepar₂
-  unfold Triangle_nd.IsCongr at IsCongrTo₁₃
+  have IsCongrTo₁₃: TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃ IsCongrTo TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁ := TriangleND.congr_of_SAS prepar₁ angle₁_eq_angle₃ prepar₂
+  unfold TriangleND.IsCongr at IsCongrTo₁₃
   -- Use IsCongrTo to prove angle eq
   have pr₁: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_colinear₁₂₃).angle₃.value = (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_colinear₃₄₁).angle₃.value := by
     rcases IsCongrTo₁₃ with ⟨_, _, _, _, _, propf⟩
@@ -683,8 +683,8 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length_variant (h₁ : (SEG_nd A B (QDR_cvx
       have eq_length: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_colinear₄₃₁).1.edge₃.length = (QDR_cvx A B C D nd cvx).edge_nd₃₄.length := by apply length_of_rev_eq_length'
       rw [eq_length]
       exact h₂.symm
-    apply Triangle_nd.congr_of_SAS edge₂_eq angle₁_eq_angle₄ edge₃_eq
-  unfold Triangle_nd.IsCongr at IsCongrTo₁₄
+    apply TriangleND.congr_of_SAS edge₂_eq angle₁_eq_angle₄ edge₃_eq
+  unfold TriangleND.IsCongr at IsCongrTo₁₄
   -- Use IsCongrTo to prove angle eq
   have prepa₁: (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_colinear₁₂₄).angle₃.value = (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_colinear₄₃₁).angle₃.value := by
     rcases IsCongrTo₁₄ with ⟨_, _, _, _, _, propf⟩
@@ -722,8 +722,8 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length_variant (h₁ : (SEG_nd A B (QDR_cvx
   -- Prove IsCongrTo
   have prepar₁: (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).not_colinear₁₂₃).1.edge₂.length = (TRI_nd (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_colinear₃₄₁).1.edge₂.length := length_of_rev_eq_length'
   have prepar₂: (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).not_colinear₁₂₃).1.edge₃.length = (TRI_nd (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_colinear₃₄₁).1.edge₃.length := h₂
-  have IsCongrTo₁₃: TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).not_colinear₁₂₃ IsCongrTo TRI_nd (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_colinear₃₄₁ := Triangle_nd.congr_of_SAS prepar₁ angle₁_eq_angle₃ prepar₂
-  unfold Triangle_nd.IsCongr at IsCongrTo₁₃
+  have IsCongrTo₁₃: TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).not_colinear₁₂₃ IsCongrTo TRI_nd (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_colinear₃₄₁ := TriangleND.congr_of_SAS prepar₁ angle₁_eq_angle₃ prepar₂
+  unfold TriangleND.IsCongr at IsCongrTo₁₃
   -- Use IsCongrTo to prove angle eq
   have pr₁: (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).not_colinear₁₂₃).angle₃.value = (TRI_nd (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_colinear₃₄₁).angle₃.value := by
     rcases IsCongrTo₁₃ with ⟨_, _, _, _, _, propf⟩
