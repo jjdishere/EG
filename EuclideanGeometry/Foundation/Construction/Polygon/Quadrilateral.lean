@@ -340,20 +340,34 @@ theorem is_convex_iff_permute_is_convex : qdr_nd IsConvex ↔ qdr_nd.permute IsC
 /-- The reflect of quadrilateral_cvx is also quadrilateral_cvx. -/
 theorem reflect_is_convex : qdr_cvx.reflect IsConvex := by
   unfold Quadrilateral_nd.IsConvex
-  have h₁ : qdr_cvx.point₁ = qdr_cvx.reflect.point₁ := by
-    sorry
+  have h₁ : qdr_cvx.point₁ = qdr_cvx.reflect.point₁ := rfl
+  have h₂ : qdr_cvx.point₂ = qdr_cvx.reflect.point₄ := rfl
+  have h₃ : qdr_cvx.point₃ = qdr_cvx.reflect.point₃ := rfl
+  have h₄ : qdr_cvx.point₄ = qdr_cvx.reflect.point₂ := rfl
   have g₁ : - qdr_cvx.angle₁.value = qdr_cvx.reflect.angle₁.value := by
-    unfold Quadrilateral_nd.angle₁ Quadrilateral_nd.reflect
-    sorry
-  have g₂ : - qdr_cvx.angle₂.value = qdr_cvx.reflect.angle₂.value := by
-    unfold Quadrilateral_nd.angle₂ Quadrilateral_nd.reflect
-    sorry
+    unfold Quadrilateral_nd.angle₁
+    have h := neg_value_of_rev_ang qdr_cvx.nd₁₂ qdr_cvx.nd₁₄
+    unfold value_of_angle_of_three_point_nd at h
+    rw [←h]
+    congr
+  have g₂ : - qdr_cvx.angle₂.value = qdr_cvx.reflect.angle₄.value := by
+    unfold Quadrilateral_nd.angle₂
+    have h := neg_value_of_rev_ang qdr_cvx.nd₂₃ qdr_cvx.nd₁₂.symm
+    unfold value_of_angle_of_three_point_nd at h
+    rw [←h]
+    congr
   have g₃ : - qdr_cvx.angle₃.value = qdr_cvx.reflect.angle₃.value := by
-    unfold Quadrilateral_nd.angle₃ Quadrilateral_nd.reflect
-    sorry
-  have g₄ : - qdr_cvx.angle₄.value = qdr_cvx.reflect.angle₄.value := by
-    unfold Quadrilateral_nd.angle₄ Quadrilateral_nd.reflect
-    sorry
+    unfold Quadrilateral_nd.angle₃
+    have h := neg_value_of_rev_ang qdr_cvx.nd₃₄ qdr_cvx.nd₂₃.symm
+    unfold value_of_angle_of_three_point_nd at h
+    rw [←h]
+    congr
+  have g₄ : - qdr_cvx.angle₄.value = qdr_cvx.reflect.angle₂.value := by
+    unfold Quadrilateral_nd.angle₄
+    have h := neg_value_of_rev_ang qdr_cvx.nd₁₄.symm qdr_cvx.nd₃₄.symm
+    unfold value_of_angle_of_three_point_nd at h
+    rw [←h]
+    congr
   by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
   · have q : (qdr_cvx.reflect.angle₁.value.IsNeg ∧ qdr_cvx.reflect.angle₄.value.IsNeg ∧ qdr_cvx.reflect.angle₃.value.IsNeg ∧ qdr_cvx.reflect.angle₂.value.IsNeg) := by
       rw [← g₁,AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₁.value)]
@@ -372,6 +386,16 @@ theorem reflect_is_convex : qdr_cvx.reflect IsConvex := by
       rw [← g₄,AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₄.value)]
       simp only [p, and_self]
     simp only [q, and_self, true_or]
+
+def reflect : Quadrilateral_cvx P := mk_is_convex (reflect_is_convex qdr_cvx)
+
+theorem is_convex_iff_reflect_is_convex : qdr_nd IsConvex ↔ qdr_nd.reflect IsConvex := by
+  constructor
+  intro h
+  exact reflect_is_convex (Quadrilateral_cvx.mk_is_convex h)
+  intro h
+  exact reflect_is_convex (Quadrilateral_cvx.mk_is_convex h)
+
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
 theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
