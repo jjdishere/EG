@@ -6,7 +6,9 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
 
-namespace Congruence_exercise_ygr_3
+namespace Congruence_Exercise_ygr
+
+namespace Problem_3
 
 /-
 In (convex) quadrilateral $A B D C$,$AB = AC$, $BD = CD$.
@@ -83,4 +85,5 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
     simp only [← h']
     simp only[neg_value_of_rev_ang (e.A_ne_B) (e.D_ne_B)]
   exact h
-end Congruence_exercise_ygr_3
+end Problem_3
+end Congruence_Exercise_ygr

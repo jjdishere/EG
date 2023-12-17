@@ -33,7 +33,7 @@ theorem Wuwowuji_Problem_1_6 : (SEG A B).length = (SEG A C).length := by
   have hnd4 : ¬ colinear C E A := by sorry
   -- Use ASA to prove $▵ BDA ≅ₐ ▵ CEA$.
   have h : (TRI_nd B D A hnd3) ≅ₐ (TRI_nd C E A hnd4) := by
-    apply Triangle_nd.acongr_of_ASA
+    apply TriangleND.acongr_of_ASA
     · sorry
     · -- $DA = EA$ by condition.
       calc
