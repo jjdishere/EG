@@ -59,7 +59,7 @@ def evalCongrSa : Tactic := fun stx =>
       logInfo "`congr_sa` doesn't close any goals"
   | _ => throwUnsupportedSyntax
 
-example {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : Triangle_nd P}
+example {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : TriangleND P}
   (e₂ : tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length)
   (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value)
   (e₃ : tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length)

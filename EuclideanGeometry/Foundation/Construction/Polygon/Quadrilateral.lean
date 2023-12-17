@@ -452,19 +452,19 @@ theorem not_colinear₁₂₄ : ¬ colinear qdr_cvx.point₁ qdr_cvx.point₂ qd
 
 /--triangle point₄ point₁ point₂, which includes angle₁-/
 @[pp_dot]
-def triangle_nd₁ : Triangle_nd P := ⟨qdr_cvx.triangle₁,qdr_cvx.not_colinear₄₁₂⟩
+def triangle_nd₁ : TriangleND P := ⟨qdr_cvx.triangle₁,qdr_cvx.not_colinear₄₁₂⟩
 
 /--triangle point₁ point₂ point₃, which includes angle₂-/
 @[pp_dot]
-def triangle_nd₂ : Triangle_nd P := ⟨qdr_cvx.triangle₂,qdr_cvx.not_colinear₁₂₃⟩
+def triangle_nd₂ : TriangleND P := ⟨qdr_cvx.triangle₂,qdr_cvx.not_colinear₁₂₃⟩
 
 /--triangle point₂ point₃ point₄, which includes angle₃-/
 @[pp_dot]
-def triangle_nd₃ : Triangle_nd P := ⟨qdr_cvx.triangle₃,qdr_cvx.not_colinear₂₃₄⟩
+def triangle_nd₃ : TriangleND P := ⟨qdr_cvx.triangle₃,qdr_cvx.not_colinear₂₃₄⟩
 
 /--triangle point₃ point₄ point₁, which includes angle₄-/
 @[pp_dot]
-def triangle_nd₄ : Triangle_nd P := ⟨qdr_cvx.triangle₄,qdr_cvx.not_colinear₃₄₁⟩
+def triangle_nd₄ : TriangleND P := ⟨qdr_cvx.triangle₄,qdr_cvx.not_colinear₃₄₁⟩
 
 theorem cclock_eq : qdr_cvx.triangle_nd₁.is_cclock ↔ qdr_cvx.triangle_nd₃.is_cclock := sorry
 
