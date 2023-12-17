@@ -440,7 +440,7 @@ theorem qdr_nd_is_prg_nd_of_eq_length_eq_length_eq_angle_sign (h₁ : qdr_nd.edg
   have e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length := by sorry
   have Congr_or_ACongr : tr_nd₁ ≅ tr_nd₂ ∨ tr_nd₁ ≅ₐ tr_nd₂ := Triangle_nd.congr_or_acongr_of_SSS e₁ e₂ e₃
   rcases Congr_or_ACongr with ⟨Congr,ACongr⟩
-  · apply is_prg_nd_of_para_para_not_colinear₄₁₂
+  · apply qdr_nd_is_prg_nd_of_para_para_not_colinear₄₁₂
     · sorry
     · sorry
     exact nontriv₄₁₂
