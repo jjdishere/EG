@@ -172,7 +172,7 @@ def triangle₃ : Triangle P := TRI qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point
 def triangle₄ : Triangle P := TRI qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁
 
 /-- The permute of quadrilateral_nd is also quadrilateral_nd. -/
-theorem permute_is_nd : (qdr_nd.1.permute).IsND := by
+theorem permute_is_nd : (qdr_nd.permute).IsND := by
   constructor
   exact qdr_nd.nd₂₃
   exact qdr_nd.nd₃₄
@@ -184,7 +184,7 @@ theorem permute_is_nd : (qdr_nd.1.permute).IsND := by
 def permute : Quadrilateral_nd P := mk_is_nd (permute_is_nd qdr_nd)
 
 /-- The reflect of quadrilateral_nd is also quadrilateral_nd. -/
-theorem reflect_is_nd : (qdr_nd.1.reflect).IsND := by
+theorem reflect_is_nd : (qdr_nd.reflect).IsND := by
   constructor
   exact qdr_nd.nd₁₄
   exact qdr_nd.nd₃₄.symm
@@ -240,18 +240,18 @@ def mk_is_convex {P : Type _} [EuclideanPlane P] {qdr_nd : Quadrilateral_nd P} (
 section criteria_cvx
 variable {P : Type _} [EuclideanPlane P] {A B C D : P}
 
-structure is_convex_of_three_sides_two_pts_at_same_side' where
+structure is_convex_of_three_sides_of_same_side' where
   qdr_nd : Quadrilateral_nd P
   same_side₁ : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = odist_sign qdr_nd.point₂ qdr_nd.edge_nd₃₄
   same_side₂ : odist_sign qdr_nd.point₂ qdr_nd.edge_nd₁₄.reverse = odist_sign qdr_nd.point₃ qdr_nd.edge_nd₁₄.reverse
   same_side₃ : odist_sign qdr_nd.point₃ qdr_nd.edge_nd₁₂ = odist_sign qdr_nd.point₄ qdr_nd.edge_nd₁₂
 
 /- Given Quadrilateral_nd qdr_nd, if qdr_nd.point₁ and qdr_nd.point₂ are at the same side of qdr_nd.nd₃₄, and it also holds for nd₄₁ and nd₁₂, then it's convex. -/
-theorem is_convex_of_three_sides_two_pts_at_same_side (p : is_convex_of_three_sides_two_pts_at_same_side' (P := P)) : p.qdr_nd IsConvex := by
+theorem is_convex_of_three_sides_of_same_side (p : is_convex_of_three_sides_of_same_side' (P := P)) : p.qdr_nd IsConvex := by
   let qdr_nd := p.qdr_nd
   sorry
   -- by_cases h : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = 1
-  -- ·
+  --
 
 structure is_convex_of_diag_inx_lies_int' where
   qdr : Quadrilateral P
@@ -282,10 +282,13 @@ end criteria_cvx
 section property_cvx
 -- properties of convex quadrilateral `to be added`
 
-variable {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
+variable {P : Type _} [EuclideanPlane P]
+variable (qdr : Quadrilateral P)
+variable (qdr_nd : Quadrilateral_nd P)
+variable (qdr_cvx : Quadrilateral_cvx P)
 
 /-- The permute of quadrilateral_cvx is also quadrilateral_cvx. -/
-theorem permute_is_convex : qdr_cvx.1.permute IsConvex := by
+theorem permute_is_convex : qdr_cvx.permute IsConvex := by
   unfold Quadrilateral_nd.IsConvex
   by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
   · have q : (qdr_cvx.permute.angle₄.value.IsPos ∧ qdr_cvx.permute.angle₁.value.IsPos ∧ qdr_cvx.permute.angle₂.value.IsPos ∧ qdr_cvx.permute.angle₃.value.IsPos) := by
@@ -321,24 +324,78 @@ theorem permute_is_convex : qdr_cvx.1.permute IsConvex := by
 /-- The permute quadrilateral_cvx, the first point of the permute is the second point of the origin, etc. -/
 def permute : Quadrilateral_cvx P := mk_is_convex (permute_is_convex qdr_cvx)
 
+theorem is_convex_iff_permute_is_convex : qdr_nd IsConvex ↔ qdr_nd.permute IsConvex := by
+  constructor
+  intro h
+  exact permute_is_convex (Quadrilateral_cvx.mk_is_convex h)
+  intro h
+  let q₁ : Quadrilateral_nd P := qdr_nd.permute.permute
+  have h₁ : q₁ IsConvex := permute_is_convex (Quadrilateral_cvx.mk_is_convex h)
+  let q₂ : Quadrilateral_nd P := qdr_nd.permute.permute.permute
+  have h₂ : q₂ IsConvex := permute_is_convex (Quadrilateral_cvx.mk_is_convex h₁)
+  let q₃ : Quadrilateral_nd P := qdr_nd.permute.permute.permute.permute
+  have h₃ : q₃ IsConvex := permute_is_convex (Quadrilateral_cvx.mk_is_convex h₂)
+  exact h₃
+
 /-- The reflect of quadrilateral_cvx is also quadrilateral_cvx. -/
-theorem reflect_is_convex : qdr_cvx.1.reflect IsConvex := by
+theorem reflect_is_convex : qdr_cvx.reflect IsConvex := by
   unfold Quadrilateral_nd.IsConvex
-  have h₁ : qdr_cvx.point₁ = qdr_cvx.1.reflect.point₁ := by
-    sorry
-  have g₁ : qdr_cvx.angle₁.value.IsPos ↔ qdr_cvx.1.reflect.angle₁.value.IsNeg := by
-    unfold Quadrilateral_nd.angle₁ Quadrilateral_nd.reflect
-    sorry
+  have h₁ : qdr_cvx.point₁ = qdr_cvx.reflect.point₁ := rfl
+  have h₂ : qdr_cvx.point₂ = qdr_cvx.reflect.point₄ := rfl
+  have h₃ : qdr_cvx.point₃ = qdr_cvx.reflect.point₃ := rfl
+  have h₄ : qdr_cvx.point₄ = qdr_cvx.reflect.point₂ := rfl
+  have g₁ : - qdr_cvx.angle₁.value = qdr_cvx.reflect.angle₁.value := by
+    unfold Quadrilateral_nd.angle₁
+    have h := neg_value_of_rev_ang qdr_cvx.nd₁₂ qdr_cvx.nd₁₄
+    unfold value_of_angle_of_three_point_nd at h
+    rw [←h]
+    congr
+  have g₂ : - qdr_cvx.angle₂.value = qdr_cvx.reflect.angle₄.value := by
+    unfold Quadrilateral_nd.angle₂
+    have h := neg_value_of_rev_ang qdr_cvx.nd₂₃ qdr_cvx.nd₁₂.symm
+    unfold value_of_angle_of_three_point_nd at h
+    rw [←h]
+    congr
+  have g₃ : - qdr_cvx.angle₃.value = qdr_cvx.reflect.angle₃.value := by
+    unfold Quadrilateral_nd.angle₃
+    have h := neg_value_of_rev_ang qdr_cvx.nd₃₄ qdr_cvx.nd₂₃.symm
+    unfold value_of_angle_of_three_point_nd at h
+    rw [←h]
+    congr
+  have g₄ : - qdr_cvx.angle₄.value = qdr_cvx.reflect.angle₂.value := by
+    unfold Quadrilateral_nd.angle₄
+    have h := neg_value_of_rev_ang qdr_cvx.nd₁₄.symm qdr_cvx.nd₃₄.symm
+    unfold value_of_angle_of_three_point_nd at h
+    rw [←h]
+    congr
   by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
   · have q : (qdr_cvx.reflect.angle₁.value.IsNeg ∧ qdr_cvx.reflect.angle₄.value.IsNeg ∧ qdr_cvx.reflect.angle₃.value.IsNeg ∧ qdr_cvx.reflect.angle₂.value.IsNeg) := by
-      sorry
+      rw [← g₁,AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₁.value)]
+      rw [← g₂,AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₂.value)]
+      rw [← g₃,AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₃.value)]
+      rw [← g₄,AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₄.value)]
+      simp only [h, and_self]
     simp only [q, and_self, or_true]
   · have p: qdr_cvx.IsConvex := qdr_cvx.convex
     unfold Quadrilateral_nd.IsConvex at p
     simp only [h, false_or] at p
     have q : (qdr_cvx.reflect.angle₁.value.IsPos ∧ qdr_cvx.reflect.angle₄.value.IsPos ∧ qdr_cvx.reflect.angle₃.value.IsPos ∧ qdr_cvx.reflect.angle₂.value.IsPos) := by
-      sorry
+      rw [← g₁,AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₁.value)]
+      rw [← g₂,AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₂.value)]
+      rw [← g₃,AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₃.value)]
+      rw [← g₄,AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₄.value)]
+      simp only [p, and_self]
     simp only [q, and_self, true_or]
+
+def reflect : Quadrilateral_cvx P := mk_is_convex (reflect_is_convex qdr_cvx)
+
+theorem is_convex_iff_reflect_is_convex : qdr_nd IsConvex ↔ qdr_nd.reflect IsConvex := by
+  constructor
+  intro h
+  exact reflect_is_convex (Quadrilateral_cvx.mk_is_convex h)
+  intro h
+  exact reflect_is_convex (Quadrilateral_cvx.mk_is_convex h)
+
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
 theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
@@ -349,10 +406,10 @@ theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
     exact angle_eq_zero_of_same_dir
   have k₁ : ¬ qdr_cvx.angle₂.value.IsPos := by
     rw [g]
-    exact AngValue.zero_not_isPos
+    exact AngValue.not_zero_isPos
   have k₂ : ¬ qdr_cvx.angle₂.value.IsNeg := by
     rw [g]
-    exact AngValue.zero_not_isNeg
+    exact AngValue.not_zero_isNeg
   have p: qdr_cvx.IsConvex := qdr_cvx.convex
   unfold Quadrilateral_nd.IsConvex at p
   simp only [k₁, false_and, and_false, k₂, or_self] at p
@@ -388,7 +445,7 @@ theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := by
 def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.toLine qdr_cvx.diag_not_para
 
 /-- The interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals. -/
-theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄.1
+theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃ ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄
 := by sorry
   -- have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
   -- have k: qdr_cvx.IsConvex := qdr_cvx.convex
@@ -456,19 +513,19 @@ theorem not_colinear₁₂₄ : ¬ colinear qdr_cvx.point₁ qdr_cvx.point₂ qd
 
 /--triangle point₄ point₁ point₂, which includes angle₁-/
 @[pp_dot]
-def triangle_nd₁ : Triangle_nd P := ⟨qdr_cvx.triangle₁,qdr_cvx.not_colinear₄₁₂⟩
+def triangle_nd₁ : TriangleND P := ⟨qdr_cvx.triangle₁,qdr_cvx.not_colinear₄₁₂⟩
 
 /--triangle point₁ point₂ point₃, which includes angle₂-/
 @[pp_dot]
-def triangle_nd₂ : Triangle_nd P := ⟨qdr_cvx.triangle₂,qdr_cvx.not_colinear₁₂₃⟩
+def triangle_nd₂ : TriangleND P := ⟨qdr_cvx.triangle₂,qdr_cvx.not_colinear₁₂₃⟩
 
 /--triangle point₂ point₃ point₄, which includes angle₃-/
 @[pp_dot]
-def triangle_nd₃ : Triangle_nd P := ⟨qdr_cvx.triangle₃,qdr_cvx.not_colinear₂₃₄⟩
+def triangle_nd₃ : TriangleND P := ⟨qdr_cvx.triangle₃,qdr_cvx.not_colinear₂₃₄⟩
 
 /--triangle point₃ point₄ point₁, which includes angle₄-/
 @[pp_dot]
-def triangle_nd₄ : Triangle_nd P := ⟨qdr_cvx.triangle₄,qdr_cvx.not_colinear₃₄₁⟩
+def triangle_nd₄ : TriangleND P := ⟨qdr_cvx.triangle₄,qdr_cvx.not_colinear₃₄₁⟩
 
 theorem cclock_eq : qdr_cvx.triangle_nd₁.is_cclock ↔ qdr_cvx.triangle_nd₃.is_cclock := sorry
 

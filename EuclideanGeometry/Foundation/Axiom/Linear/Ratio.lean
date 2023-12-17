@@ -27,18 +27,18 @@ theorem ratio_is_real' (A B C : P) (colin : colinear A B C) (cnea : C ≠ A) : (
     (r • VEC A C / VEC A C).im = ((r : ℂ) • VEC A C / VEC A C).im := rfl
     _ = 0 := by
       rw [Vec.smul_cdiv_cancel _ h2]
-      simp only [Complex.ofReal_im]
+      rfl
 
 theorem ratio_is_real (A B C : P) (colin : colinear A B C) (cnea : C ≠ A) : (VEC A B)/(VEC A C) = divratio A B C := by
   have h0 : (divratio A B C : ℂ).re = ((VEC A B)/(VEC A C)).re := rfl
   have h1 : (divratio A B C : ℂ).im = ((VEC A B)/(VEC A C)).im := by
     rw [ratio_is_real' A B C colin cnea]
-    field_simp
+    simp
   exact Complex.ext h0 h1.symm
 
 theorem vec_eq_vec_smul_ratio (A B C : P) (colin : colinear A B C) (cnea : C ≠ A) : VEC A B = (divratio A B C) • (VEC A C) := by
   have h0 : VEC A C ≠ 0 := (ne_iff_vec_ne_zero A C).mp cnea
-  have h1 : VEC A B = ((VEC A B) / (VEC A C)) • (VEC A C) := by
+  have h1 : VEC A B = ((VEC A B) / (VEC A C)) • VEC A C := by
     field_simp
   rw [h1, ratio_is_real A B C colin cnea]
   field_simp
@@ -61,26 +61,13 @@ theorem ratio_eq_ratio_div_ratio_minus_one (A B C : P) (cnea : C ≠ A) (colin :
     have h5 : VEC A C ≠ 0 := (ne_iff_vec_ne_zero A C).mp cnea
     field_simp
     norm_cast
-    have h6 : - (divratio A B C - 1) = (1 - divratio A B C) := by
-      ring
-    rw [← h6]
-    calc
-      -(divratio A B C • VEC A C) / -(divratio A B C - 1) • VEC A C = -(divratio A B C • VEC A C) / -((divratio A B C - 1) • VEC A C) := by
-        congr
-        simp [← neg_smul]
-      _ = divratio A B C • VEC A C / (divratio A B C - 1) • VEC A C := by
-        rw [Vec.neg_cdiv, Vec.cdiv_neg, neg_neg]
-      _ = (divratio A B C : ℂ) • VEC A C / (((divratio A B C - 1) : ℝ) : ℂ ) • VEC A C := by
-        rfl
-      _ = ↑(divratio A B C / (divratio A B C - 1)) := by
-        rw [Vec.smul_cdiv_smul]
-        rw [Vec.smul_cdiv_cancel _ h5]
-        norm_cast
+    rw [Vec.neg_cdiv, Vec.smul_cdiv, Vec.cdiv_self h5, neg_div, ← div_neg]
+    simp
   conv =>
     lhs
     unfold divratio
   rw [h4]
-  rw[Complex.ofReal_re]
+  rw [Complex.ofReal_re]
 
 theorem pt_eq_of_ratio_eq_of_ne_ne (A B C D : P) (cned : C ≠ D) (dnea : D ≠ A) (dneb : D ≠ B) (colinacd : colinear A C D) (colinbcd : colinear B C D) (req : divratio A C D = divratio B C D) : A = B := by
   have h0 : divratio C A D = divratio C B D := by
