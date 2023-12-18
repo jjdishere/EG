@@ -529,6 +529,7 @@ theorem zero_le_sin_iff_not_isNeg : 0 ≤ sin θ ↔ ¬ θ.IsNeg := sorry
 
 theorem sin_le_zero_iff_not_isPos : sin θ ≤ 0 ↔ ¬ θ.IsPos := sorry
 
+
 end sin
 
 section pi_div_two

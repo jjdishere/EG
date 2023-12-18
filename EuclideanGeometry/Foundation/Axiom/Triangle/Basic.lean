@@ -298,6 +298,12 @@ theorem angle_sum_eq_neg_pi_of_clock (clock : ¬ tr_nd.is_cclock): tr_nd.angle�
 
 theorem triangle_ineq' : tr_nd.edge₁.length + tr_nd.edge₂.length > tr_nd.edge₃.length := sorry
 
+theorem sum_of_other_angle_same_if_one_angle_same (tr₁ tr₂ : TriangleND P) (a : tr₁.angle₁.value = tr₂.angle₁.value) : tr₁.angle₂.value + tr₁.angle₃.value = tr₂.angle₂.value + tr₂.angle₃.value := by sorry
+
+theorem sum_of_other_angle_same_neg_if_one_angle_same_neg (tr₁ tr₂ : TriangleND P) (a : tr₁.angle₁.value =  - tr₂.angle₁.value) : tr₁.angle₂.value + tr₁.angle₃.value = - (tr₂.angle₂.value + tr₂.angle₃.value ) := by sorry
+
 end TriangleND
+
+
 
 end EuclidGeom
