@@ -1,0 +1,15 @@
+import EuclideanGeometry.Foundation.Index
+
+noncomputable section
+
+namespace EuclidGeom
+
+#check SegND.toDirLine_eq_toray_toLine
+#check eq_toDir_of_source_to_pt_lies_int
+#check eq_toDirLine_of_source_to_pt_lies_int
+#check eq_toDir_of_pt_lies_int_to_target
+#check eq_toDirLine_of_pt_lies_int_to_target
+#check eq_toDir_of_parallel_and_same_side
+#check eq_toDir_of_parallel_and_opposite_side
+
+end EuclidGeom

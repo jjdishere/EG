@@ -4,8 +4,6 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
-
 namespace Congruence_Exercise_ygr
 
 namespace Problem_2
