@@ -287,7 +287,11 @@ theorem asim_of_AA (tr₁ tr₂ :  TriangleND P) (h₂ : tr₁.angle₂.value = 
   exact h₂ ; exact h₃
 
 /- SAS -/
-theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = tr₂.angle₁.value): tr₁ ∼ tr₂ := by
+theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr₂.edge₂.length = tr₁.edge₃.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = tr₂.angle₁.value): tr₁ ∼ tr₂ := by
+  have eq : tr₁.edge₂.length * tr₂.edge₃.length = tr₁.edge₃.length * tr₂.edge₂.length := by
+    exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mp e
+  rw [mul_comm tr₁.edge₃.length  tr₂.edge₂.length] at eq
+  have e' : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mpr eq
   have sine₁ := Triangle.sine_rule₁ tr₁
   have sine₂ := Triangle.sine_rule₁ tr₂
   have sine₁' : tr₁.edge₂.length * AngValue.sin (Angle.value tr₁.angle₃) = AngValue.sin (Angle.value tr₁.angle₂) *  tr₁.edge₃.length := by
@@ -302,8 +306,8 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
         not_false_eq_true]
   have s₁₂ : tr₁.edge₂.length / tr₁.edge₃.length = AngValue.sin (Angle.value tr₁.angle₂) / AngValue.sin (Angle.value tr₁.angle₃) := by exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm ne₁₃).mpr  sine₁'
   have t₁₂ : tr₂.edge₂.length / tr₂.edge₃.length = AngValue.sin (Angle.value tr₂.angle₂) / AngValue.sin (Angle.value tr₂.angle₃) := by exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm ne₂₃).mpr  sine₂'
-  rw [s₁₂,t₁₂] at e
-  have e' := (div_eq_div_iff ne₁₃ ne₂₃).mp e
+  rw [s₁₂,t₁₂] at e'
+  have e'' := (div_eq_div_iff ne₁₃ ne₂₃).mp e'
   have summul := Real.cos_sub_cos ((Angle.value tr₁.angle₂).toReal + (Angle.value tr₂.angle₃).toReal) ((Angle.value tr₁.angle₂).toReal - (Angle.value tr₂.angle₃).toReal)
   field_simp at summul
   unfold AngValue.toReal at summul
@@ -313,7 +317,7 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
   have :  Real.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) - Real.Angle.toReal (Angle.value tr₂.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) - Real.Angle.toReal (Angle.value tr₂.angle₃)) := by rfl
   simp only [Real.Angle.coe_toReal] at this
   rw [this] at summul
-  rw [mul_assoc,e'] at summul
+  rw [mul_assoc,e''] at summul
   have summul' := Real.cos_sub_cos ((Angle.value tr₂.angle₂).toReal + (Angle.value tr₁.angle₃).toReal) ((Angle.value tr₂.angle₂).toReal - (Angle.value tr₁.angle₃).toReal)
   field_simp at summul'
   unfold AngValue.toReal at summul'
@@ -408,7 +412,11 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
   by_contra
   exact nd nd''
 
-theorem asim_of_SAS (tr₁ tr₂ :  TriangleND P) (e : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = - tr₂.angle₁.value): tr₁ ∼ₐ tr₂ := by
+theorem asim_of_SAS (tr₁ tr₂ :  TriangleND P) (e : tr₁.edge₂.length / tr₂.edge₂.length = tr₁.edge₃.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = - tr₂.angle₁.value): tr₁ ∼ₐ tr₂ := by
+  have eq : tr₁.edge₂.length * tr₂.edge₃.length = tr₁.edge₃.length * tr₂.edge₂.length := by
+    exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mp e
+  rw [mul_comm tr₁.edge₃.length  tr₂.edge₂.length] at eq
+  have e' : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mpr eq
   have sine₁ := Triangle.sine_rule₁ tr₁
   have sine₂ := Triangle.sine_rule₁ tr₂
   have sine₁' : tr₁.edge₂.length * AngValue.sin (Angle.value tr₁.angle₃) = AngValue.sin (Angle.value tr₁.angle₂) *  tr₁.edge₃.length := by
@@ -423,8 +431,8 @@ theorem asim_of_SAS (tr₁ tr₂ :  TriangleND P) (e : tr₁.edge₂.length / tr
         not_false_eq_true]
   have s₁₂ : tr₁.edge₂.length / tr₁.edge₃.length = AngValue.sin (Angle.value tr₁.angle₂) / AngValue.sin (Angle.value tr₁.angle₃) := by exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm ne₁₃).mpr  sine₁'
   have t₁₂ : tr₂.edge₂.length / tr₂.edge₃.length = AngValue.sin (Angle.value tr₂.angle₂) / AngValue.sin (Angle.value tr₂.angle₃) := by exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm ne₂₃).mpr  sine₂'
-  rw [s₁₂,t₁₂] at e
-  have e' := (div_eq_div_iff ne₁₃ ne₂₃).mp e
+  rw [s₁₂,t₁₂] at e'
+  have e'' := (div_eq_div_iff ne₁₃ ne₂₃).mp e'
   have summul := Real.cos_sub_cos ((Angle.value tr₁.angle₂).toReal + (Angle.value tr₂.angle₃).toReal) ((Angle.value tr₁.angle₂).toReal - (Angle.value tr₂.angle₃).toReal)
   field_simp at summul
   unfold AngValue.toReal at summul
@@ -434,7 +442,7 @@ theorem asim_of_SAS (tr₁ tr₂ :  TriangleND P) (e : tr₁.edge₂.length / tr
   have :  Real.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) - Real.Angle.toReal (Angle.value tr₂.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) - Real.Angle.toReal (Angle.value tr₂.angle₃)) := by rfl
   simp only [Real.Angle.coe_toReal] at this
   rw [this] at summul
-  rw [mul_assoc,e'] at summul
+  rw [mul_assoc,e''] at summul
   have summul' := Real.cos_sub_cos ((Angle.value tr₂.angle₂).toReal + (Angle.value tr₁.angle₃).toReal) ((Angle.value tr₂.angle₂).toReal - (Angle.value tr₁.angle₃).toReal)
   field_simp at summul'
   unfold AngValue.toReal at summul'
