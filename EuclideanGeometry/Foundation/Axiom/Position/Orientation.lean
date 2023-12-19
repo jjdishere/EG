@@ -177,7 +177,7 @@ end oriented_distance
 section point_toray
 variable {α} [DirFig α P]
 
-def odist_sign (A : P) (df : α) : ℝ := sign (odist A df)
+def odist_sign (A : P) (df : α) : ℝ := SignType.sign (odist A df)
 
 def IsOnLeftSide (A : P) (df : α) : Prop := 0 < odist A df
 
