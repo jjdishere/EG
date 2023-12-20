@@ -185,7 +185,7 @@ theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : TriangleND P} : �
     have h₄ : A₂.end_ray = tri_nd.edge_nd₃.reverse.toRay := rfl
     rw [h₃]
     rw [h₄]
-    have h₅ : tri_nd.edge_nd₃.reverse.toDirLine.reverse = tri_nd.edge_nd₃.reverse.reverse.toDirLine := by rw [SegND.toDirLine_rev_eq_rev_toLine]
+    have h₅ : tri_nd.edge_nd₃.reverse.toDirLine.reverse = tri_nd.edge_nd₃.reverse.reverse.toDirLine := by rw [SegND.toDirLine_rev_eq_rev_toDirLine]
     have h₆ : tri_nd.edge_nd₃.reverse.reverse.toDirLine = tri_nd.edge_nd₃.toDirLine := rfl
     rw [h₆] at h₅
     exact id h₅.symm

@@ -119,7 +119,7 @@ instance : DirFig (SegND P) P where
   toDirLine_toLine_eq_toLine := rfl
   reverse := SegND.reverse
   rev_rev := SegND.rev_rev_eq_self
-  toDirLine_rev_eq_to_rev_toDirLine := SegND.toDirLine_rev_eq_rev_toLine
+  toDirLine_rev_eq_to_rev_toDirLine := SegND.toDirLine_rev_eq_rev_toDirLine
 
 instance : DirFig (Ray P) P where
   carrier := Ray.carrier
