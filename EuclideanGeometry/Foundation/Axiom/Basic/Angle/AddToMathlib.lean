@@ -63,14 +63,22 @@ theorem Real.abs_cos_le_one (x : ℝ) :
 theorem Real.sin_le_one (x : ℝ) :
 Real.sin x ≤ 1
 
+0 ≤ 1 - sin θ
+
 theorem Real.cos_le_one (x : ℝ) :
 Real.cos x ≤ 1
+
+0 ≤ 1 - cos θ
 
 theorem Real.neg_one_le_sin (x : ℝ) :
 -1 ≤ Real.sin x
 
+0 ≤ 1 + cos θ
+
 theorem Real.neg_one_le_cos (x : ℝ) :
 -1 ≤ Real.cos x
+
+0 ≤ 1 + sin θ
 
 theorem Real.cos_two_mul (x : ℝ) :
 Real.cos (2 * x) = 2 * Real.cos x ^ 2 - 1
@@ -79,7 +87,7 @@ theorem Real.cos_two_mul' (x : ℝ) :
 Real.cos (2 * x) = Real.cos x ^ 2 - Real.sin x ^ 2
 
 theorem Real.sin_two_mul (x : ℝ) :
-Real.sin (2 * x) = 2 * Real.sin x * Real.cos x
+Real.sin (2 * x) = 2 * (Real.sin x * Real.cos x)
 
 theorem Real.cos_sq (x : ℝ) :
 Real.cos x ^ 2 = 1 / 2 + Real.cos (2 * x) / 2

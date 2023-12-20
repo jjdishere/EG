@@ -3,14 +3,14 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Angle.AddToMathlib
 /-!
 # Angle Conversions
 
-Recall in Euclidean Geometry, the measure of angle is subtle. The measure of an angle can be treated as a number in `ℝ⧸2π`, `(-π, π]`, `[0, 2π)`, `ℝ⧸π`, or even `[0, π]` (after taking abs). Each of them has their own suitable applications.
+Recall in Euclidean Geometry, the measure of angle is subtle. The measure of an angle can be treated as a number in `ℝ⧸2π`, `(- π, π]`, `[0, 2π)`, `ℝ⧸π`, or even `[0, π]` (after taking abs). Each of them has their own suitable applications.
 * `ℝ⧸2π` : add and sub of angles, angle between dirrcted object;
-* `(-π, π]` : measure of oriented angle, angles of a triangle, positions;
+* `(- π, π]` : measure of oriented angle, angles of a triangle, positions;
 * `[0, 2π)` : length of arc, central angle;
 * `ℝ⧸π` : measure of directed angle when discussing four points concyclic, angle between lines
 * `[0, π]` : cosine theorem, undirected angles.
 
-In this file, we define suitable coversion function between `ℝ⧸2π`,`ℝ⧸π` and `(-π, π]`. Starting from `Dir.toAngValue`, we convert `Dir` to `AngValue`. We shall primarily use `ℝ/2π`, and gives coercion and compatibility theorems with respect to `ℝ⧸π` and `(-π, π]`.
+In this file, we define suitable coversion function between `ℝ⧸2π`,`ℝ⧸π` and `(- π, π]`. Starting from `Dir.toAngValue`, we convert `Dir` to `AngValue`. We shall primarily use `ℝ/2π`, and gives coercion and compatibility theorems with respect to `ℝ⧸π` and `(- π, π]`.
 
 -/
 
@@ -251,9 +251,9 @@ theorem toReal_lt_pi_of_ne_pi (h : θ ≠ π) : θ.toReal < π := by
   contrapose! h
   exact toReal_eq_pi_iff.mp (le_antisymm θ.toReal_le_pi h)
 
-theorem neg_pi_lt_toReal_le_pi : -π < θ.toReal ∧ θ.toReal ≤ π :=
-  AngValue.toReal_mem_Ioc _ -- to make those unfamiliar with Ioc easy to use
-  -- ⟨θ.neg_pi_lt_toReal, θ.toReal_le_pi⟩
+-- to make those unfamiliar with Ioc easy to use
+theorem neg_pi_lt_toReal_le_pi : - π < θ.toReal ∧ θ.toReal ≤ π :=
+  AngValue.toReal_mem_Ioc _
 
 theorem eq_coe_of_toReal_eq {x : ℝ} (h : θ.toReal = x) : θ = ∠[x] :=
   (θ.coe_toReal).symm.trans (congrArg AngValue.coe h)
@@ -265,7 +265,7 @@ end
 section composite
 
 @[simp]
-theorem toReal_coe_eq_self {r : ℝ} (h₁ : -π < r) (h₂ : r ≤ π) : ∠[r].toReal = r :=
+theorem toReal_coe_eq_self {r : ℝ} (h₁ : - π < r) (h₂ : r ≤ π) : ∠[r].toReal = r :=
   toReal_coe_eq_self_iff.mpr ⟨h₁, h₂⟩
 
 -- a variant of `AngValue.eq_iff_two_pi_dvd_sub`
@@ -309,12 +309,12 @@ theorem pi_div_two_ne_neg_pi_div_two : ∠[π / 2] ≠ ∠[- π / 2] := by
 theorem pi_div_two_ne_pi : ∠[π / 2] ≠ ∠[π] := by
   apply sub_ne_zero.mp
   norm_cast
-  apply ne_of_eq_of_ne (b := ∠[-π / 2])
+  apply ne_of_eq_of_ne (b := ∠[- π / 2])
   congr
   ring
   exact neg_pi_div_two_ne_zero
 
-theorem neg_pi_div_two_ne_pi : ∠[-π / 2] ≠ ∠[π] := by
+theorem neg_pi_div_two_ne_pi : ∠[- π / 2] ≠ ∠[π] := by
   rw [← neg_coe_pi]
   apply sub_ne_zero.mp
   norm_cast
@@ -346,12 +346,15 @@ section pos_neg_isND
 -- `Maybe this section should be rewrite using AngValue.sign to have more complete api's`
 -- `Or just check Real.Angle.sign to write more api's, IsPos IsNeg is more similar to human language than sign`
 
+/-- An angle is positive if it is strictly between `0` and `π`. -/
 @[pp_dot]
 def IsPos (θ : AngValue) : Prop := sbtw 0 θ π
 
+/-- An angle is negative if it is strictly between `- π` and `0`. -/
 @[pp_dot]
 def IsNeg (θ : AngValue) : Prop := sbtw ∠[π] θ 0
 
+/-- An angle is non-degenerate if it is not `0` or `π`. -/
 @[pp_dot]
 structure IsND (θ : AngValue) : Prop where
   ne_zero : θ ≠ 0
@@ -697,14 +700,17 @@ end pos_neg_isND
 
 section acute_obtuse_right
 
+/-- An angle is acute if it is strictly between `- π / 2` and `π / 2`. -/
 @[pp_dot]
-def IsAcu (θ : AngValue) : Prop := sbtw ∠[-π / 2] θ ∠[π / 2]
+def IsAcu (θ : AngValue) : Prop := sbtw ∠[- π / 2] θ ∠[π / 2]
 
+/-- An angle is obtuse if it is strictly between `π / 2` and `- π / 2`. -/
 @[pp_dot]
-def IsObt (θ : AngValue) : Prop := sbtw ∠[π / 2] θ ∠[-π / 2]
+def IsObt (θ : AngValue) : Prop := sbtw ∠[π / 2] θ ∠[- π / 2]
 
+/-- An angle is right if it is `- π / 2` or `π / 2`. -/
 @[pp_dot]
-def IsRight (θ : AngValue) : Prop := θ = ∠[-π / 2] ∨ θ = ∠[π / 2]
+def IsRight (θ : AngValue) : Prop := θ = ∠[- π / 2] ∨ θ = ∠[π / 2]
 
 section special_value
 -- Special values for π / 2 and - π / 2.
@@ -1161,6 +1167,24 @@ end AngDValue
 
 
 
+lemma _root_.Real.div_nat_le_self_of_nonnneg {a : ℝ} (n : ℕ) (h : 0 ≤ a) : a / n ≤ a := by
+  show a * (↑n)⁻¹ ≤ a
+  refine' mul_le_of_le_one_right h _
+  by_cases h : n = 0
+  · simp only [h, CharP.cast_eq_zero, inv_zero, zero_le_one]
+  exact inv_le_one (Nat.one_le_cast.mpr (Nat.one_le_iff_ne_zero.mpr h))
+
+lemma _root_.Real.div_nat_le_self_of_pos {a : ℝ} (n : ℕ) (h : 0 < a) : a / n ≤ a :=
+  a.div_nat_le_self_of_nonnneg n (le_of_lt h)
+
+lemma _root_.Real.div_nat_lt_self_of_pos_of_two_le {a : ℝ} {n : ℕ} (h : 0 < a) (hn : 2 ≤ n) : a / n < a :=
+  mul_lt_of_lt_one_right h (inv_lt_one (Nat.one_lt_cast.mpr hn))
+
+lemma _root_.Real.pi_div_nat_nonneg (n : ℕ) : 0 ≤ π / n :=
+  div_nonneg (le_of_lt pi_pos) (Nat.cast_nonneg n)
+
+
+
 namespace AngValue
 
 section abs
@@ -1244,14 +1268,15 @@ theorem abs_lt_pi_iff_ne_pi : θ.abs < π ↔ θ ≠ π :=
   ((θ.abs_le_pi).lt_iff_ne).trans abs_ne_pi_iff_ne_pi
 
 theorem pi_div_two_abs : ∠[π / 2].abs = π / 2 := by
-  rw [abs, toReal_pi_div_two, abs_eq_self.mpr (div_nonneg (le_of_lt Real.pi_pos) zero_le_two)]
+  rw [abs, toReal_pi_div_two]
+  exact abs_eq_self.mpr (pi_div_nat_nonneg 2)
 
 theorem abs_eq_pi_div_two_of_eq_pi_div_two (h : θ = ∠[π / 2]) : θ.abs = π / 2 :=
   (congrArg abs h).trans pi_div_two_abs
 
 theorem neg_pi_div_two_abs : ∠[- π / 2].abs = π / 2 := by
-  rw [abs, toReal_neg_pi_div_two, ← neg_neg (π / 2), neg_div 2 π]
-  norm_num [div_nonneg (le_of_lt pi_pos) zero_le_two]
+  rw [abs, toReal_neg_pi_div_two, ← neg_neg (π / 2), neg_div 2 π, abs_neg, neg_neg, abs_eq_self]
+  exact pi_div_nat_nonneg 2
 
 theorem abs_eq_pi_div_two_of_eq_neg_pi_div_two (h : θ = ∠[- π / 2]) : θ.abs = π / 2 :=
   (congrArg abs h).trans neg_pi_div_two_abs
@@ -1374,11 +1399,16 @@ theorem isObt_iff_pi_div_two_lt_abs : θ.IsObt ↔ π / 2 < θ.abs := by
   rw [neg_div, lt_neg]
   exact lt_abs.symm
 
-theorem not_isObt_iff_abs_le_pi_div_two : ¬ θ.IsObt ↔ θ.abs ≤ π / 2 := sorry
+theorem not_isObt_iff_abs_le_pi_div_two : ¬ θ.IsObt ↔ θ.abs ≤ π / 2 := by
+  refine' (θ.not_isObt_iff).trans _
+  rw [neg_div]
+  exact abs_le.symm
 
-theorem abs_lt_of_isAcu_of_isObt (hs : θ.IsAcu) (hp : θ.IsObt) : θ.abs < ψ.abs := sorry
+theorem abs_lt_of_isAcu_of_isObt (hs : θ.IsAcu) (hp : ψ.IsObt) : θ.abs < ψ.abs :=
+  (isAcu_iff_abs_lt_pi_div_two.mp hs).trans (isObt_iff_pi_div_two_lt_abs.mp hp)
 
-theorem abs_le_of_not_isObt_of_not_isAcu (hs : ¬ θ.IsObt) (hp : ¬ θ.IsAcu) : θ.abs ≤ ψ.abs := sorry
+theorem abs_le_of_not_isObt_of_not_isAcu (hs : ¬ θ.IsObt) (hp : ¬ ψ.IsAcu) : θ.abs ≤ ψ.abs :=
+  (not_isObt_iff_abs_le_pi_div_two.mp hs).trans (not_isAcu_iff_pi_div_two_le_abs.mp hp)
 
 end acute_obtuse
 
@@ -1406,20 +1436,25 @@ end abs
 
 section half
 
-/-- Half of an angle. Note that there are two possible values (their difference is π) when dividing by two in real numbers. We choose the acute angle as the canonical value for half of an angle for angles not equal to π, and the half of π is defined as π / 2. -/
+/-- Half of an angle. Note that there are two possible values when dividing by two in `AngValue` (their difference is `π`). We choose the acute angle as the canonical value for half of an angle for angles not equal to `π`, and the half of `π` is defined as `π / 2`. -/
 def half (θ : AngValue) : AngValue := ∠[θ.toReal / 2]
+-- Do we need the other value obatined by dividing by two, i.e., `θ.half + π`?
 
 theorem coe_half {x : ℝ} (hn : - π < x) (h : x ≤ π) : ∠[x].half = ∠[x / 2] :=
   congrArg AngValue.coe (congrFun (congrArg HDiv.hDiv (toReal_coe_eq_self hn h)) 2)
 
 @[simp]
-theorem smul_two_half : 2 • θ.half = θ := θ.two_nsmul_toReal_div_two
+theorem two_nsmul_half : 2 • θ.half = θ := θ.two_nsmul_toReal_div_two
 
-theorem smul_two_half_add_pi : 2 • (θ.half + π) = θ := by
-  rw [smul_add, two_nsmul_coe_pi, add_zero, smul_two_half]
+theorem two_nsmul_eq_iff_eq_half_or_eq_half_add_pi : 2 • ψ = θ ↔ ψ = θ.half ∨ ψ = θ.half + π := by
+  nth_rw 1 [← θ.two_nsmul_half]
+  exact two_nsmul_eq_iff
+
+theorem two_nsmul_half_add_pi : 2 • (θ.half + π) = θ := by
+  rw [smul_add, two_nsmul_coe_pi, add_zero, two_nsmul_half]
 
 theorem sub_half_eq_half : θ - θ.half = θ.half :=
-  sub_eq_of_eq_add (smul_two_half.symm.trans (two_nsmul θ.half))
+  sub_eq_of_eq_add (two_nsmul_half.symm.trans (two_nsmul θ.half))
 
 @[simp]
 theorem half_toReal : θ.half.toReal = θ.toReal / 2 :=
@@ -1447,28 +1482,53 @@ theorem half_inj {α β : AngValue} (h : α.half = β.half) : α = β :=
 @[simp]
 theorem half_congr {α β : AngValue} : α.half = β.half ↔ α = β := ⟨half_inj, congrArg half⟩
 
-theorem half_neg_of_ne_pi (h : θ ≠ π) : (- θ).half = - θ.half := by
+theorem half_neg (h : θ ≠ π) : (- θ).half = - θ.half := by
   rw [half, half, neg_toReal h, ← coe_neg, neg_div]
 
-theorem half_neg_of_isND (h : θ.IsND) : (- θ).half = - θ.half := half_neg_of_ne_pi h.2
+theorem half_neg_of_isND (h : θ.IsND) : (- θ).half = - θ.half := half_neg h.2
 
 section special_value
 
+@[simp]
 theorem zero_half : (0 : AngValue).half = 0 := by
   rw [half, toReal_zero, zero_div, coe_zero]
 
 theorem eq_zero_of_half_eq_zero (h : θ.half = 0) : θ = 0 := half_inj (h.trans zero_half.symm)
 
+@[simp]
 theorem half_eq_zero_iff_eq_zero : θ.half = 0 ↔ θ = 0 :=
   ⟨eq_zero_of_half_eq_zero, fun h ↦ (half_congr.mpr h).trans zero_half⟩
 
+@[simp]
 theorem pi_half : ∠[π].half = ∠[π / 2] := coe_half (by norm_num [pi_pos]) (Eq.ge rfl)
 
 theorem eq_pi_of_half_eq_pi (h : θ.half = ∠[π / 2]) : θ = π :=
   half_inj (h.trans pi_half.symm)
 
+@[simp]
 theorem half_eq_pi_iff_eq_pi : θ.half = ∠[π / 2] ↔ θ = π :=
   ⟨eq_pi_of_half_eq_pi, fun h ↦ (half_congr.mpr h).trans pi_half⟩
+
+theorem half_pi_div_nat (n : ℕ) : ∠[π / n].half = ∠[π / (n * 2)] :=
+  (coe_half ((neg_lt_zero.2 pi_pos).trans_le (pi_div_nat_nonneg n))
+    (div_nat_le_self_of_pos n pi_pos)).trans (by field_simp)
+
+theorem pi_div_two_half : ∠[π / 2].half = ∠[π / 4] :=
+  (half_pi_div_nat 2).trans (by norm_num)
+
+theorem pi_div_three_half : ∠[π / 3].half = ∠[π / 6] :=
+  (half_pi_div_nat 3).trans (by norm_num)
+
+theorem half_neg_pi_div_nat {n : ℕ} (h : 2 ≤ n) : ∠[- π / n].half = ∠[- π / (n * 2)] := by
+  rw [neg_div]
+  exact (coe_half (neg_lt_neg (div_nat_lt_self_of_pos_of_two_le pi_pos h))
+    ((neg_nonpos.mpr (pi_div_nat_nonneg n)).trans (le_of_lt pi_pos))).trans (by field_simp)
+
+theorem neg_pi_div_two_half : ∠[- π / 2].half = ∠[- π / 4] :=
+  (half_neg_pi_div_nat (le_of_eq rfl)).trans (by norm_num)
+
+theorem neg_pi_div_three_half : ∠[- π / 3].half = ∠[- π / 6] :=
+  (half_neg_pi_div_nat Nat.AtLeastTwo.prop).trans (by norm_num)
 
 end special_value
 
@@ -1487,9 +1547,17 @@ end pos_neg
 
 section acute_obtuse
 
-theorem half_isAcu_of_ne_pi (h : θ ≠ π) : θ.half.IsAcu := sorry
+theorem half_not_isObt : ¬ θ.half.IsObt :=
+  not_isObt_iff.mpr ⟨le_of_lt θ.neg_two_inv_mul_pi_lt_half_toReal, θ.half_toReal_le_two_inv_mul_pi⟩
 
-theorem half_not_isObt : ¬ θ.half.IsObt := sorry
+theorem half_isAcu_of_ne_pi (h : θ ≠ π) : θ.half.IsAcu :=
+  isAcu_iff.mpr ⟨θ.neg_two_inv_mul_pi_lt_half_toReal, half_toReal_lt_two_inv_mul_pi_of_ne_pi h⟩
+
+theorem half_add_pi_not_isAcu : ¬ (θ.half + π).IsAcu :=
+  add_pi_isAcu_iff_isObt.not.mpr (θ.half_not_isObt)
+
+theorem half_add_pi_isObt_of_ne_pi (h : θ ≠ π) : (θ.half + π).IsObt :=
+  add_pi_isObt_iff_isAcu.mpr (half_isAcu_of_ne_pi h)
 
 end acute_obtuse
 
@@ -1498,22 +1566,18 @@ section sin_cos
 theorem abs_sin_half : |sin θ.half| = sqrt ((1 - cos θ) / 2) :=
   (Real.abs_sin_half θ.toReal).trans (by rw [θ.cos_toReal])
 
-theorem sin_half_sq : (sin θ.half) ^ 2 = (1 - cos θ) / 2 := sorry
-
-theorem sin_half_of_not_isNeg (h : ¬ θ.IsNeg): sin θ.half = sqrt ((1 - cos θ) / 2) := sorry
+theorem sin_half_of_not_isNeg (h : ¬ θ.IsNeg) : sin θ.half = sqrt ((1 - cos θ) / 2) :=
+  (abs_of_nonneg (not_isNeg_iff_zero_le_sin.mp (half_isNeg_iff_isNeg.not.mpr h))).symm.trans θ.abs_sin_half
 
 theorem sin_half_of_isPos (h : θ.IsPos) : sin θ.half = sqrt ((1 - cos θ) / 2) :=
   sin_half_of_not_isNeg (not_isNeg_of_isPos h)
 
-theorem sin_half_of_not_isPos (h : ¬ θ.IsPos): sin θ.half = - sqrt ((1 - cos θ) / 2) := sorry
-
 theorem sin_half_of_isNeg (h : θ.IsNeg) : sin θ.half = - sqrt ((1 - cos θ) / 2) :=
-  sin_half_of_not_isPos (not_isPos_of_isNeg h)
+  neg_eq_iff_eq_neg.mp <|
+    (abs_of_neg (sin_lt_zero_of_isNeg (half_isNeg_iff_isNeg.mpr h))).symm.trans θ.abs_sin_half
 
 theorem cos_half : cos θ.half = sqrt ((1 + cos θ) / 2) :=
   (Real.cos_half θ.neg_pi_le_toReal θ.toReal_le_pi).trans (by rw [θ.cos_toReal])
-
-theorem cos_half_sq : (cos θ.half) ^ 2 = (1 + cos θ) / 2 := sorry
 
 -- Do we need tangent half-angle formulas (such as formulas in https://en.wikipedia.org/wiki/Tangent_half-angle_formula)?
 
@@ -1522,15 +1586,37 @@ end sin_cos
 section sum_to_product
 -- The sum-to-product formulas should be put here since they involve half of angles.
 
+variable (ψ : AngValue)
+
 theorem sin_sub_sin : sin θ - sin ψ = 2 * (sin (θ.half - ψ.half) * cos (θ.half + ψ.half)) := by
   rw [← mul_assoc, ← sin_toReal, ← sin_toReal, half, half, ← coe_add, ← coe_sub, ← sub_div, ← add_div]
   exact (θ.toReal).sin_sub_sin ψ.toReal
 
-theorem sin_add_sin : sin θ + sin ψ = 2 * (sin (θ.half + ψ.half) * cos (θ.half - ψ.half)) := sorry
+theorem cos_half_mul_sin_half : 2 * (cos θ.half * sin θ.half) = sin θ := by
+  have h := θ.sin_sub_sin π
+  simp only [sin_coe, sin_pi, sub_zero, pi_half, sin_sub_pi_div_two, cos_add_pi_div_two, mul_neg,
+    neg_mul, neg_neg] at h
+  exact h.symm
 
-theorem cos_sub_cos : cos θ - cos ψ = - 2 * (sin (θ.half + ψ.half) * sin (θ.half + ψ.half)) := sorry
+theorem sin_half_mul_cos_half : 2 * (sin θ.half * cos θ.half) = sin θ := by
+  rw [mul_comm (sin (half θ)) (cos (half θ))]
+  exact θ.cos_half_mul_sin_half
 
-theorem cos_add_cos : cos θ + cos ψ = 2 * (cos (θ.half + ψ.half) * cos (θ.half - ψ.half)) := sorry
+theorem sin_add_sin : sin θ + sin ψ = 2 * (sin (θ.half + ψ.half) * cos (θ.half - ψ.half)) := by
+  by_cases h : ψ = π
+  · simp only [h, sin_coe, sin_pi, add_zero, pi_half, sin_add_pi_div_two, cos_sub_pi_div_two]
+    exact (θ.cos_half_mul_sin_half).symm
+  · have eq := θ.sin_sub_sin (- ψ)
+    simp only [sin_neg, sub_neg_eq_add, half_neg h] at eq
+    exact eq
+
+theorem cos_sub_cos : cos θ - cos ψ = - 2 * (sin (θ.half + ψ.half) * sin (θ.half - ψ.half)) := by
+  rw [← mul_assoc, ← cos_toReal, ← cos_toReal, half, half, ← coe_add, ← coe_sub, ← sub_div, ← add_div]
+  exact (θ.toReal).cos_sub_cos ψ.toReal
+
+theorem cos_add_cos : cos θ + cos ψ = 2 * (cos (θ.half + ψ.half) * cos (θ.half - ψ.half)) := by
+  rw [← mul_assoc, ← cos_toReal, ← cos_toReal, half, half, ← coe_add, ← coe_sub, ← sub_div, ← add_div]
+  exact (θ.toReal).cos_add_cos ψ.toReal
 
 end sum_to_product
 
@@ -1540,9 +1626,20 @@ theorem half_abs : θ.half.abs = θ.abs / 2 :=
   (congrArg Abs.abs θ.half_toReal).trans <| (abs_mul θ.toReal 2⁻¹).trans <|
     congrArg (HMul.hMul θ.abs) (abs_of_pos (by norm_num))
 
-theorem half_abs_le_half_add_pi_abs : θ.half.abs ≤ (θ.half + π).abs := sorry
+theorem half_abs_le_pi_div_two : θ.half.abs ≤ π / 2 :=
+  not_isObt_iff_abs_le_pi_div_two.mp θ.half_not_isObt
 
-theorem half_abs_min (h : 2 • ψ = θ) : θ.abs ≤ ψ.abs := sorry
+theorem half_abs_lt_pi_div_two_of_ne_pi (h : θ ≠ π) : θ.half.abs < π / 2 :=
+  isAcu_iff_abs_lt_pi_div_two.mp (half_isAcu_of_ne_pi h)
+
+theorem half_abs_le_half_add_pi_abs : θ.half.abs ≤ (θ.half + π).abs :=
+  abs_le_of_not_isObt_of_not_isAcu θ.half_not_isObt θ.half_add_pi_not_isAcu
+
+theorem half_abs_min (h : 2 • ψ = θ) : θ.half.abs ≤ ψ.abs :=
+  (two_nsmul_eq_iff_eq_half_or_eq_half_add_pi.mp h).casesOn (fun h ↦ Eq.ge (congrArg abs h)) <| by
+  intro h
+  rw [h]
+  exact half_abs_le_half_add_pi_abs
 
 end abs
 
