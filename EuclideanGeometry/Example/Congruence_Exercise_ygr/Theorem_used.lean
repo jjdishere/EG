@@ -10,6 +10,5 @@ namespace EuclidGeom
 #check eq_toDir_of_pt_lies_int_to_target
 #check eq_toDirLine_of_pt_lies_int_to_target
 #check eq_toDir_of_parallel_and_same_side
-#check eq_toDir_of_parallel_and_opposite_side
-
+#check neg_toDir_of_parallel_and_opposite_side
 end EuclidGeom
