@@ -144,9 +144,48 @@ def mk_pt_vec_nd (A : P) (vec_nd : VecND) : Line P := mk_pt_proj A vec_nd.toProj
 
 end Line
 
-scoped notation "LIN" => Line.mk_pt_pt
+@[inherit_doc Line.mk_pt_pt]
+scoped syntax "LIN" ws term:max ws term:max (ws term:max)? : term
 
-scoped notation "DLIN" => DirLine.mk_pt_pt
+macro_rules
+  | `(LIN $A $B) => `(Line.mk_pt_pt $A $B (@Fact.out _ inferInstance))
+  | `(LIN $A $B $h) => `(Line.mk_pt_pt $A $B $h)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `Line.mk_pt_pt` -/
+@[delab app.EuclidGeom.Line.mk_pt_pt]
+def delabLineMkPtPt : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``Line.mk_pt_pt 5
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  withNaryArg 4 do
+    if (← getExpr).isAppOfArity' ``Fact.out 2 then
+      `(LIN $A $B)
+    else
+      `(LIN $A $B $(← delab))
+
+
+@[inherit_doc DirLine.mk_pt_pt]
+scoped syntax "DLIN" ws term:max ws term:max (ws term:max)? : term
+
+macro_rules
+  | `(DLIN $A $B) => `(DirLine.mk_pt_pt $A $B (@Fact.out _ inferInstance))
+  | `(DLIN $A $B $h) => `(DirLine.mk_pt_pt $A $B $h)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `DirLine.mk_pt_pt` -/
+@[delab app.EuclidGeom.DirLine.mk_pt_pt]
+def delabDirLineMkPtPt : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``DirLine.mk_pt_pt 5
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  withNaryArg 4 do
+    if (← getExpr).isAppOfArity' ``Fact.out 2 then
+      `(DLIN $A $B)
+    else
+      `(DLIN $A $B $(← delab))
 
 end make
 
@@ -270,7 +309,7 @@ theorem SegND.target_lies_on_toDirLine : s.1.target LiesOn s.toDirLine :=
 
 end carrier
 
-section dirline_toray
+section dirline_toRay
 
 -- the assumption h is for properties, not for construction
 -- this def have to appear after carrier is defined
@@ -284,7 +323,7 @@ theorem ray_of_pt_dirline_toDirLine_eq_dirline (A : P) (l : DirLine P) (h : A Li
 
 theorem ray_of_pt_dirline_toDirLine_toDir_eq_dirline_toDir (A : P) (l : DirLine P) (h : A LiesOn l) : (Ray.mk_pt_dirline A l h).toDir = l.toDir := rfl
 
-end dirline_toray
+end dirline_toRay
 
 namespace DirLine
 
@@ -505,7 +544,7 @@ section coercion
 theorem Ray.toLine_eq_rev_toLine {r : Ray P} : r.toLine = r.reverse.toLine :=
   (Quotient.eq (r := same_extn_line.setoid)).mpr same_extn_line.ray_rev_of_same_extn_line
 
-theorem SegND.toLine_eq_toray_toLine {s : SegND P} : s.toRay.toLine = s.toLine := rfl
+theorem SegND.toLine_eq_toRay_toLine {s : SegND P} : s.toRay.toLine = s.toLine := rfl
 
 theorem SegND.toLine_eq_rev_toLine {s : SegND P} : s.toLine = s.reverse.toLine :=
   line_of_pt_pt_eq_rev s.2
@@ -521,9 +560,9 @@ theorem seg_nd_of_pt_pt_toLine_eq_line_of_pt_pt {A B : P} (h : B ≠ A) : (SEG_n
 theorem Ray.toDirLine_rev_eq_rev_toLine {r : Ray P} : r.toDirLine.reverse = r.reverse.toDirLine :=
   (Quotient.eq (r := same_dir_line.setoid)).mpr ⟨rfl, .inl r.source_lies_on_rev⟩
 
-theorem SegND.toDirLine_eq_toray_toLine {s : SegND P} : s.toRay.toDirLine = s.toDirLine := rfl
+theorem SegND.toDirLine_eq_toRay_toDirLine {s : SegND P} : s.toRay.toDirLine = s.toDirLine := rfl
 
-theorem SegND.toDirLine_rev_eq_rev_toLine {s : SegND P} : s.toDirLine.reverse = s.reverse.toDirLine :=
+theorem SegND.toDirLine_rev_eq_rev_toDirLine {s : SegND P} : s.toDirLine.reverse = s.reverse.toDirLine :=
   (eq_dirline_of_toDir_eq_of_pt_of_ne s.2.symm (DirLine.lies_on_rev_iff_lies_on.mpr target_lies_on_toDirLine)
     ((s.toDir_of_rev_eq_neg_toDir).trans s.toDirLine.rev_toDir_eq_neg_toDir)).symm
 
@@ -582,15 +621,15 @@ theorem SegND.lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on {A : P}
       by_cases ay : A = seg_nd.1.target
       · rw [ay]
         exact .inl Ray.source_lies_on
-      exact .casesOn (lies_on_seg_nd_or_extension_of_lies_on_toray h₁)
+      exact .casesOn (lies_on_seg_nd_or_extension_of_lies_on_toRay h₁)
         (fun h₁ ↦ (h ⟨h₁, ax, ay⟩).elim) (fun h₁ ↦ .inl h₁)
-    rw [rev_extn_eq_toray_rev]
+    rw [rev_extn_eq_toRay_rev]
     exact .inr h₂
   · exact fun hh ↦ .casesOn hh
       (fun h₁ ↦ Eq.mpr (seg_nd.toline_eq_extn_toline ▸ Eq.refl (A LiesOn seg_nd.toLine))
         ((seg_nd.extension.lies_on_toline_iff_lies_on_or_lies_on_rev).mpr (.inl h₁)))
       (fun h₂ ↦ (seg_nd.toRay.lies_on_toline_iff_lies_on_or_lies_on_rev).mpr <| .inr <| by
-        rw [← rev_extn_eq_toray_rev]
+        rw [← rev_extn_eq_toRay_rev]
         exact h₂)
   -/
 

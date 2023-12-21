@@ -258,7 +258,7 @@ theorem SegND.target_lies_on_toLine (s : SegND P) : s.1.target LiesOn s.toLine :
 
 -- The line defined from a nontrivial segment is equal to the line defined from the ray associated this nontrivial segment
 
-theorem SegND.toLine_eq_toray_toLine (seg_nd : SegND P) : seg_nd.toLine = (seg_nd.toRay).toLine := sorry
+theorem SegND.toLine_eq_toRay_toLine (seg_nd : SegND P) : seg_nd.toLine = (seg_nd.toRay).toLine := sorry
 
 theorem line_of_pt_pt_eq_ray_toLine {A B : P} (h : B ≠ A) : LIN A B h = Ray.toLine (RAY A B h) := sorry
 

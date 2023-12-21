@@ -80,7 +80,7 @@ end eq_toProj
 section fig_coecion_parallel
 
 /-- Given a nondegenate segment, it is parallel to the ray associated to this nondegenerate segment. -/
-theorem SegND.para_toray (seg_nd : SegND P) : seg_nd ∥ seg_nd.toRay := rfl
+theorem SegND.para_toRay (seg_nd : SegND P) : seg_nd ∥ seg_nd.toRay := rfl
 
 theorem SegND.para_toDirLine (seg_nd : SegND P) : seg_nd ∥ seg_nd.toDirLine := rfl
 
@@ -104,17 +104,17 @@ end mk_parallel
 -- 6 theorems for each coercion, 6 coercion
 section parallel_iff_coercion_parallel
 
-theorem SegND.para_toray_of_para (seg_nd seg_nd' : SegND P) : seg_nd ∥ seg_nd' → seg_nd.toRay ∥ seg_nd'.toRay := id
+theorem SegND.para_toRay_of_para (seg_nd seg_nd' : SegND P) : seg_nd ∥ seg_nd' → seg_nd.toRay ∥ seg_nd'.toRay := id
 
-theorem SegND.para_of_para_toray (seg_nd seg_nd' : SegND P) : seg_nd.toRay ∥ seg_nd'.toRay → seg_nd ∥ seg_nd' := id
+theorem SegND.para_of_para_toRay (seg_nd seg_nd' : SegND P) : seg_nd.toRay ∥ seg_nd'.toRay → seg_nd ∥ seg_nd' := id
 
-theorem SegND.para_iff_para_toray (seg_nd seg_nd' : SegND P) : seg_nd.toRay ∥ seg_nd'.toRay ↔ seg_nd ∥ seg_nd' := ⟨id, id⟩
+theorem SegND.para_iff_para_toRay (seg_nd seg_nd' : SegND P) : seg_nd.toRay ∥ seg_nd'.toRay ↔ seg_nd ∥ seg_nd' := ⟨id, id⟩
 
-theorem SegND.not_para_toray_of_not_para (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' → ¬ seg_nd.toRay ∥ seg_nd'.toRay := id
+theorem SegND.not_para_toRay_of_not_para (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' → ¬ seg_nd.toRay ∥ seg_nd'.toRay := id
 
-theorem SegND.not_para_of_not_para_toray (seg_nd seg_nd' : SegND P) : ¬ seg_nd.toRay ∥ seg_nd'.toRay → ¬ seg_nd ∥ seg_nd' := id
+theorem SegND.not_para_of_not_para_toRay (seg_nd seg_nd' : SegND P) : ¬ seg_nd.toRay ∥ seg_nd'.toRay → ¬ seg_nd ∥ seg_nd' := id
 
-theorem SegND.not_para_iff_not_para_toray (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' ↔ ¬ seg_nd.toRay ∥ seg_nd'.toRay  := ⟨id, id⟩
+theorem SegND.not_para_iff_not_para_toRay (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' ↔ ¬ seg_nd.toRay ∥ seg_nd'.toRay  := ⟨id, id⟩
 
 theorem SegND.para_toDirLine_of_para (seg_nd seg_nd' : SegND P) : seg_nd ∥ seg_nd' → seg_nd.toDirLine ∥ seg_nd'.toDirLine := id
 
