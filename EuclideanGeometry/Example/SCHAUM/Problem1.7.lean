@@ -89,28 +89,13 @@ Therefore, $DX = EY$.
         exact ang_acute_of_is_isoceles' not_colinear_ABC isoceles_ABC
       exact perp_foot_lies_int_ray_of_acute_ang A_ne_B D_ne_B angle_ABD_acute
     exact eq_ang_val_of_lieson_lieson C_ne_B A_ne_B D_ne_B X_ne_B D_int_ray_BC X_int_ray_BA
-  have angle_BXD_eq_neg_angle_CYE : (∠ B X D X_ne_B.symm D_ne_X) = - ∠ C Y E Y_ne_C.symm E_ne_Y := by
-    have BX_perp_XD : (LIN B X X_ne_B) ⟂ (LIN X D D_ne_X) := by sorry
+  have angle_BXD_eq_neg_angle_CYE : (ANG B X D X_ne_B.symm D_ne_X).dvalue = - (ANG C Y E Y_ne_C.symm E_ne_Y).dvalue := by
+    have BX_perp_XD : (LIN B X X_ne_B) ⟂ (LIN X D D_ne_X) := by
+      symm;
     have CY_perp_YE : (LIN C Y Y_ne_C) ⟂ (LIN Y E E_ne_Y) := by sorry
-    have angle_BXD_eq_pi_div_two_or_neg_pi_div_two : (∠ B X D X_ne_B.symm D_ne_X = ↑ (π / 2)) ∨ (∠ B X D X_ne_B.symm D_ne_X = ↑ (- π / 2)) := by sorry
-    have angle_CYE_eq_pi_div_two_or_neg_pi_div_two : (∠ C Y E Y_ne_C.symm E_ne_Y = ↑ (π / 2)) ∨ (∠ C Y E Y_ne_C.symm E_ne_Y = ↑ (- π / 2)) := by sorry
-    rcases angle_BXD_eq_pi_div_two_or_neg_pi_div_two with h1 | h2
-    · have angle_BXD_is_pos : (∠ B X D X_ne_B.symm D_ne_X).IsPos := by
-        simp only [h1]
-        sorry
-      have triangle_XBD_is_cclock : (TRI_nd X B D not_colinear_XBD).is_cclock := by
-        apply TriangleND.cclock_of_pos_angle (TRI_nd X B D not_colinear_XBD) _
-        left; exact angle_BXD_is_pos
-      have angle_DBX_is_pos : (∠ D B X D_ne_B X_ne_B).IsPos := by
-        exact (TriangleND.angle_pos_of_cclock (TRI_nd X B D not_colinear_XBD) triangle_XBD_is_cclock).2.1
-      have angle_CBA_is_pos : (∠ C B A C_ne_B A_ne_B).IsPos := by
-        simp only [angle_DBX_eq_angle_CBA.symm]
-        exact angle_DBX_is_pos
-      have triangle_ABC_is_cclock : (TRI_nd A B C not_colinear_ABC).is_cclock := by
-        apply TriangleND.cclock_of_pos_angle (TRI_nd A B C not_colinear_ABC) _
-        right; left; exact angle_CBA_is_pos
-      have angle_
-    · sorry
+    have angle_BXD_is_right_angle : (ANG B X D X_ne_B.symm D_ne_X).dvalue = ↑(π / 2) := by sorry
+    have angle_CYE_is_right_angle : (ANG C Y E Y_ne_C.symm E_ne_Y).dvalue = ↑(π / 2) := by sorry
+    simp only[angle_BXD_is_right_angle, angle_CYE_is_right_angle, AngDValue.neg_coe_pi_div_two]
   have angle_DBX_eq_neg_angle_ECY : ∠ D B X D_ne_B X_ne_B = - ∠ E C Y E_ne_C Y_ne_C := by
     calc
     ∠ D B X D_ne_B X_ne_B
@@ -136,7 +121,7 @@ Therefore, $DX = EY$.
         exact perp_foot_lies_int_ray_of_acute_ang (A := C) (B := A) (C := E) A_ne_C E_ne_C angle_ACE_acute
       rw [eq_ang_val_of_lieson_lieson C_ne_B.symm A_ne_C E_ne_C Y_ne_C E_int_ray_CB Y_int_ray_CA]
   have triangle_XBD_acongr_triangle_YCE : (TRI_nd X B D not_colinear_XBD) ≅ₐ (TRI_nd Y C E not_colinear_YCE) := by
-    apply cong_trash.acongr_of_AAS
+    apply acongr_of_AAS_variant
     · exact angle_BXD_eq_neg_angle_CYE
     · exact angle_DBX_eq_neg_angle_ECY
     · exact BD_eq_CE

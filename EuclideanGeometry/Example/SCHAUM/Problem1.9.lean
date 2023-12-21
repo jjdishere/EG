@@ -35,7 +35,7 @@ variable {angle_eac : Angle Plane} {heac : angle_eac = Angle.mk_pt_pt_pt E A C E
 --denote the angle bisector of $\angle EAC$ as $l_bis$
 variable {l_bis : Ray Plane} {hleac : l_bis = Angle.AngBis angle_eac}
 -- denote segment $BC$ as $BC$
-variable {BC : SegND Plane} {hbc : BC = SegND B C C_ne_B}
+variable {BC : SegND Plane} {hbc : BC = SEG_nd B C C_ne_B}
 -- denote the ray from $A$ which has the same direction as $BC$ as $l_a$
 variable {l_a : Ray Plane} {hla : l_a = Ray.mk A (BC.toDir)}
 --Prove that $l_a = l_bis$
@@ -60,8 +60,7 @@ Therefore, $\angle EAX = \angle ABC = - \angle ACB = \angle XAC$.
   _= ∠ A B C ((B_ne_A (not_colinear_ABC:=not_colinear_ABC)).symm) C_ne_B := by
     unfold value_of_angle_of_three_point_nd
     unfold Angle.value
-    unfold DirObj.AngDiff
-    unfold Dir.AngDiff
+    congrArg VSub.vsub
   _= - ∠ A C B (C_ne_A (not_colinear_ABC:=not_colinear_ABC)).symm C_ne_B.symm := by sorry
   _= ∠ X A C X_ne_A (C_ne_A (not_colinear_ABC:=not_colinear_ABC)) := by sorry
 end Problem1_9_
