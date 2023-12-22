@@ -562,6 +562,7 @@ theorem not_isNeg_iff_zero_le_sin : ¬ θ.IsNeg ↔ 0 ≤ sin θ  := isNeg_iff_s
 
 theorem not_isPos_iff_sin_le_zero : ¬ θ.IsPos ↔ sin θ ≤ 0 := isPos_iff_zero_lt_sin.not.trans not_lt
 
+
 end sin
 
 section pi_div_two

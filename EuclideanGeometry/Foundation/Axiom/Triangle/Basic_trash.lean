@@ -82,6 +82,10 @@ theorem not_parallel_of_not_colinear_of_colinear_colinear {A B C D E : P} (nd : 
 
 theorem intersection_not_colinear_of_nondegenerate {A B C D E : P} (nd : ¬ colinear A B C) (colindbc : colinear D B C) (colineca : colinear E C A) (dneb : D ≠ B) (dnec : D ≠ C) (enea : E ≠ A) (enec : E ≠ C) (F : P) (fdef : F = Line.inx (LIN A D (points_ne_of_colinear_of_not_colinear1 nd colindbc)) (LIN B E (points_ne_of_colinear_of_not_colinear2 nd colineca)) (not_parallel_of_not_colinear_of_colinear_colinear nd colindbc colineca)) : (¬ colinear A B F) ∧ (¬ colinear B C F) ∧ (¬ colinear C A F) := by sorry
 
+theorem cclock_of_eq_angle (tr_nd₁ tr_nd₂ : TriangleND P)(a : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) : tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock := by sorry
+
+theorem clock_of_eq_neg_angle (tr_nd₁ tr_nd₂ : TriangleND P)(a : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) : tr_nd₁.is_cclock ↔ ¬ tr_nd₂.is_cclock := by sorry
+
 end TriangleND
 
 theorem angle_sum_eq_pi_of_tri (tri : Triangle P) (h₁ : tri.point₂ ≠ tri.point₃) (h₂ : tri.point₃ ≠ tri.point₁) (h₃ : tri.point₁ ≠ tri.point₂) : ∠ tri.point₂ tri.point₁ tri.point₃ h₃.symm h₂ + ∠ tri.point₃ tri.point₂ tri.point₁ h₁.symm h₃ + ∠ tri.point₁ tri.point₃ tri.point₂ h₂.symm h₁ = π := sorry
