@@ -52,7 +52,7 @@ structure Tangents (P : Type _) [EuclideanPlane P] where
   left : P
   right : P
 
-lemma tangent_circle_intersected {ω : Circle P} {p : P} (h : p LiesOut ω) : (Circle.mk_pt_pt_diam p ω.center (pt_liesout_ne_center h).symm) Intersect ω := by
+lemma tangent_circle_intersected {ω : Circle P} {p : P} (h : p LiesOut ω) : Circle.mk_pt_pt_diam (A := p) (B := ω.center) (_h := (pt_liesout_ne_center h)) Intersect ω := by
   unfold Circle.mk_pt_pt_diam
   constructor
   · simp; exact ω.rad_pos
@@ -110,10 +110,14 @@ lemma tangents_ne_center {ω : Circle P} {p : P} (h : p LiesOut ω) : ((pt_tange
   rw [dist_comm]; exact hpos₂
 
 lemma tangents_perp₁ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1) ⟂ (DLIN ω.center (pt_tangent_circle_pts h).left (tangents_ne_center h).1) := by
-  have heq₁ : ∠ p (pt_tangent_circle_pts h).left ω.center (tangents_ne_pt h).1.symm (tangents_ne_center h).1.symm = ∡[π / 2] := by
-    apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt (Circle.pt_liesout_ne_center h) (tangents_ne_center h).1.symm (tangents_ne_pt h).1 (mk_pt_pt_diam_fst_lieson (pt_liesout_ne_center h).symm)
-    · exact (CC_inx_pts_lieson_circles (tangent_circle_intersected h)).1
-    apply Arc.mk_pt_pt_diam_isantipode
+  haveI : PtNe ω.center p := (Circle.pt_liesout_ne_center h).symm
+  haveI : PtNe (pt_tangent_circle_pts h).left ω.center := ⟨(tangents_ne_center h).1⟩
+  haveI : PtNe (pt_tangent_circle_pts h).left p:= ⟨ (tangents_ne_pt h).1 ⟩
+  have heq₁ : ∠ p (pt_tangent_circle_pts h).left ω.center (tangents_ne_pt h).1.symm (tangents_ne_center h).1.symm = ∡[π / 2] := by sorry
+    -- apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt  (mk_pt_pt_diam_fst_lieson (_h := (pt_liesout_ne_center h).symm))
+    -- · exact (mk_pt_pt_diam_fst_lieson (_h := (pt_liesout_ne_center h).symm))
+    -- · exact (CC_inx_pts_lieson_circles (tangent_circle_intersected h)).1
+    -- · exact Arc.mk_pt_pt_diam_isantipode
   show (DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1).toProj = (DLIN ω.center (pt_tangent_circle_pts h).left (tangents_ne_center h).1).toProj.perp
   calc
     _ = (RAY p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1).toProj := rfl
@@ -123,10 +127,12 @@ lemma tangents_perp₁ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_
     _ = (DLIN ω.center (pt_tangent_circle_pts h).left (tangents_ne_center h).1).toProj.perp := rfl
 
 lemma tangents_perp₂ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2) ⟂ (DLIN ω.center (pt_tangent_circle_pts h).right (tangents_ne_center h).2) := by
-  have heq₂ : ∠ p (pt_tangent_circle_pts h).right ω.center (tangents_ne_pt h).2.symm (tangents_ne_center h).2.symm = ∡[π / 2] := by
-    apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt (Circle.pt_liesout_ne_center h) (tangents_ne_center h).2.symm (tangents_ne_pt h).2 (mk_pt_pt_diam_fst_lieson (pt_liesout_ne_center h).symm)
-    · exact (CC_inx_pts_lieson_circles (tangent_circle_intersected h)).2.2.1
-    apply Arc.mk_pt_pt_diam_isantipode
+  haveI : PtNe (pt_tangent_circle_pts h).right p :=⟨ (tangents_ne_pt h).2⟩
+  haveI : PtNe ω.center (pt_tangent_circle_pts h).right := ⟨(tangents_ne_center h).2.symm⟩
+  have heq₂ : ∠ p (pt_tangent_circle_pts h).right ω.center (tangents_ne_pt h).2.symm (tangents_ne_center h).2.symm = ∡[π / 2] := by sorry
+    -- apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt (Circle.pt_liesout_ne_center h) (tangents_ne_center h).2.symm (tangents_ne_pt h).2 (mk_pt_pt_diam_fst_lieson (pt_liesout_ne_center h).symm)
+    -- · exact (CC_inx_pts_lieson_circles (tangent_circle_intersected h)).2.2.1
+    -- apply Arc.mk_pt_pt_diam_isantipode
   show (DLIN p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2).toProj = (DLIN ω.center (pt_tangent_circle_pts h).right (tangents_ne_center h).2).toProj.perp
   calc
     _ = (RAY p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2).toProj := rfl

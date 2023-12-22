@@ -18,10 +18,10 @@ variable {P : Type _} [EuclideanPlane P]
 
 namespace Circle
 
-def mk_pt_pt (O A : P) (h : A ≠ O) : Circle P where
+def mk_pt_pt (O A : P) [h : PtNe O A] : Circle P where
   center := O
   radius := dist O A
-  rad_pos := dist_pos.mpr h.symm
+  rad_pos := dist_pos.mpr h.out
 
 def mk_pt_pt_pt (A B C: P) (h : ¬ colinear A B C) : Circle P := sorry
 
@@ -38,10 +38,10 @@ def mk_pt_radius (O : P) {r : ℝ} (rpos : r > 0) : Circle P where
   radius := r
   rad_pos := rpos
 
-def mk_pt_pt_diam (A B : P) (h : B ≠ A) : Circle P where
+def mk_pt_pt_diam (A B : P) [_h :PtNe A B] : Circle P where
   center := (SEG A B).midpoint
   radius := dist (SEG A B).midpoint B
-  rad_pos := dist_pos.mpr (SEG_nd A B h).midpt_ne_target
+  rad_pos := dist_pos.mpr (SEG_nd A B).midpt_ne_target
 
 end Circle
 
@@ -86,25 +86,29 @@ scoped infix : 50 " LiesOut " => Circle.IsOutside
 
 namespace Circle
 
-theorem pt_liesout_ne_center {p : P} {ω : Circle P} (h : p LiesOut ω) : p ≠ ω.center := by
+instance pt_liesout_ne_center {p : P} {ω : Circle P} (h : p LiesOut ω) : PtNe p ω.center := ⟨by
   apply dist_pos.mp
   rw [dist_comm]
   have : dist ω.center p > ω.radius := h
   have : ω.radius > 0 := ω.rad_pos
   linarith
+  ⟩
 
-theorem pt_lieson_ne_center {p : P} {ω : Circle P} (h : p LiesOn ω) : p ≠ ω.center := by
+instance pt_lieson_ne_center {p : P} {ω : Circle P} (h : p LiesOn ω) : PtNe p ω.center := ⟨by
   apply dist_pos.mp
   rw [dist_comm]
   have : dist ω.center p = ω.radius := h
   have : ω.radius > 0 := ω.rad_pos
   linarith
+  ⟩
 
-theorem pt_liesout_ne_pt_lieson {A B : P} {ω : Circle P} (h₁ : A LiesOut ω) (h₂ : B LiesOn ω) : A ≠ B := by
+-- this instance does not work due to ω cannot be infered from A B, this should made in tactic ptne in the future
+instance pt_liesout_ne_pt_lieson {A B : P} {ω : Circle P} (h₁ : A LiesOut ω) (h₂ : B LiesOn ω) : PtNe A B := ⟨by
   have hgt : dist ω.center A > ω.radius := h₁
   have heq : dist ω.center B = ω.radius := h₂
   contrapose! hgt
   rw [hgt, heq]
+  ⟩
 
 theorem interior_of_circle_iff_inside_not_on_circle (p : P) (ω : Circle P) : p LiesInt ω ↔ (p LiesIn ω) ∧ (¬ p LiesOn ω) := by
   show dist ω.center p < ω.radius ↔ (dist ω.center p ≤ ω.radius) ∧ (¬ dist ω.center p = ω.radius)
@@ -112,16 +116,16 @@ theorem interior_of_circle_iff_inside_not_on_circle (p : P) (ω : Circle P) : p 
   exact lt_iff_le_and_ne
 
 @[simp]
-theorem mk_pt_pt_lieson {O A : P} (h : A ≠ O) : A LiesOn (CIR O A h) := rfl
+theorem mk_pt_pt_lieson {O A : P} [PtNe O A] : A LiesOn (CIR O A) := rfl
 
 @[simp]
-theorem mk_pt_pt_diam_fst_lieson {A B : P} (h : B ≠ A) : A LiesOn (mk_pt_pt_diam A B h) := by
+theorem mk_pt_pt_diam_fst_lieson {A B : P} [_h : PtNe A B] : A LiesOn (mk_pt_pt_diam A B) := by
   show dist (SEG A B).midpoint A = dist (SEG A B).midpoint B
   rw [dist_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
   apply dist_target_eq_dist_source_of_midpt
 
 @[simp]
-theorem mk_pt_pt_diam_snd_lieson {A B : P} (h : B ≠ A) : B LiesOn (mk_pt_pt_diam A B h) := rfl
+theorem mk_pt_pt_diam_snd_lieson {A B : P} [_h : PtNe A B] : B LiesOn (mk_pt_pt_diam A B) := rfl
 
 -- Define a concept of segment to be entirely contained in a circle, to mean that the two endpoints of a segment to lie inside a circle.
 

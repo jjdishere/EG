@@ -116,27 +116,29 @@ theorem CC_inscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (
         _ = ω₁.radius := by
           rw [norm_smul, Dir.norm_unitVec, mul_one, Real.norm_of_nonneg ω₁.rad_pos.le]
     exact this
+  haveI : PtNe ω₂.center ω₁.center := ⟨h.2.symm⟩
   have : dist ω₂.center (CC_Inscribe_Point h) = ω₂.radius := by
     calc
       _ = ‖VEC (CC_Inscribe_Point h) ω₂.center‖ := by
         rw [NormedAddTorsor.dist_eq_norm']; rfl
       _ = ‖VEC ω₁.center ω₂.center - VEC ω₁.center (CC_Inscribe_Point h)‖ := by rw [vec_sub_vec]
-      _ = ‖VEC ω₁.center ω₂.center - ω₁.radius • (VEC_nd ω₂.center ω₁.center h.2).toDir.unitVec‖ := by
+      _ = ‖VEC ω₁.center ω₂.center - ω₁.radius • (VEC_nd ω₂.center ω₁.center).toDir.unitVec‖ := by
         unfold CC_Inscribe_Point Vec.mkPtPt
         rw [vadd_vsub]
-      _ = ‖(VEC_nd ω₁.center ω₂.center h.2.symm).1 - ω₁.radius • (VEC_nd ω₂.center ω₁.center h.2).toDir.unitVec‖ := rfl
-      _ = ‖(VEC_nd ω₁.center ω₂.center h.2.symm).1 + ω₁.radius • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.unitVec‖ := by
-        have : VEC_nd ω₁.center ω₂.center h.2.symm = - VEC_nd ω₂.center ω₁.center h.2 := by
-          ext; simp
+      _ = ‖(VEC_nd ω₁.center ω₂.center).1 - ω₁.radius • (VEC_nd ω₂.center ω₁.center).toDir.unitVec‖ := rfl
+      _ = ‖(VEC_nd ω₁.center ω₂.center).1 + ω₁.radius • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
+        have : VEC_nd ω₁.center ω₂.center = - VEC_nd ω₂.center ω₁.center := by
+          ext; simp only [ne_eq, RayVector.coe_neg, VecND.coe_mkPtPt]
           rw [neg_vec]
-        have : (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.unitVec = - (VEC_nd ω₂.center ω₁.center h.2).toDir.unitVec := by rw [this]; simp
+        have : (VEC_nd ω₁.center ω₂.center).toDir.unitVec = - (VEC_nd ω₂.center ω₁.center).toDir.unitVec := by rw [this]; simp
         rw [this, smul_neg, sub_eq_add_neg]
-      _ = ‖(‖VEC_nd ω₁.center ω₂.center h.2.symm‖ + ω₁.radius) • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.unitVec‖ := by
+      _ = ‖(‖VEC_nd ω₁.center ω₂.center‖ + ω₁.radius) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
         rw [add_smul, VecND.norm_smul_toDir_unitVec]
-      _ = ‖(dist ω₁.center ω₂.center + ω₁.radius) • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.unitVec‖ := by
+      _ = ‖(dist ω₁.center ω₂.center + ω₁.radius) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
         congr
-        apply Eq.trans _ (dist_comm _ _) -- note: why cannot rw?
-        apply Eq.trans _ (NormedAddTorsor.dist_eq_norm' _ _).symm
+        rw [dist_comm]
+        -- apply Eq.trans _ (dist_comm _ _) -- note: why cannot rw? `fixed`
+        apply Eq.trans _ (NormedAddTorsor.dist_eq_norm' _ _).symm -- `This should be a lemma in simp`
         rfl
       _ = ‖ω₂.radius • (VEC_nd ω₁.center ω₂.center h.2.symm).toDir.unitVec‖ := by
         congr; rw [h.1]; linarith
@@ -258,6 +260,7 @@ theorem CC_inx_pts_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Int
   exact Complex.I_ne_zero
 
 theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : ((CC_Intersected_pts h).left LiesOn ω₁) ∧ ((CC_Intersected_pts h).left LiesOn ω₂) ∧ ((CC_Intersected_pts h).right LiesOn ω₁) ∧ ((CC_Intersected_pts h).right LiesOn ω₂) := by
+  haveI : PtNe ω₁.center ω₂.center := ⟨ (CC_intersected_centers_distinct h) ⟩
   have hlt : (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2 < ω₁.radius ^ 2 := by
     apply sq_lt_sq.mpr
     rw [abs_of_pos ω₁.rad_pos]
@@ -265,7 +268,8 @@ theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω�
   have heq : ω₂.center -ᵥ ω₁.center = (dist ω₁.center ω₂.center) • (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.unitVec := by
     calc
       _ = VEC ω₁.center ω₂.center := rfl
-      _ = ‖VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm‖ • (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.unitVec := by simp
+      _ = ‖VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm‖ • (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.unitVec := by simp only [VecND.norm_smul_toDir_unitVec,
+        ne_eq, VecND.coe_mkPtPt]
       _ = (dist ω₁.center ω₂.center) • (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.unitVec := by
         rw [dist_comm, NormedAddTorsor.dist_eq_norm']
         rfl
