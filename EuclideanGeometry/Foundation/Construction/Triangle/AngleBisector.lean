@@ -152,10 +152,10 @@ theorem exangbisline_is_exangbisline : sorry := sorry
 end Angle
 
 /-definition property: lies on the bis means bisect the angle-/
-theorem lie_on_angbis (ang: Angle P) (A : P) (h : A ≠ ang.source): A LiesOn ang.AngBis ↔ IsAngBis ang (RAY _ _ h) := by
+theorem lie_on_angbis (ang: Angle P) (A : P) [h : PtNe A ang.source]: A LiesOn ang.AngBis ↔ IsAngBis ang (RAY ang.source A) := by
   rw [Angle.angbis_iff_angbis]
-  exact ⟨fun g ↦ (by rw [← Ray.pt_pt_eq_ray ⟨g, h⟩]; rfl),
-    fun g ↦ (by rw [← g]; exact Ray.snd_pt_lies_on_mk_pt_pt h)⟩
+  exact ⟨fun g ↦ (by rw [← Ray.pt_pt_eq_ray ⟨g, h.out⟩]; rfl),
+    fun g ↦ (by rw [← g]; exact Ray.snd_pt_lies_on_mk_pt_pt (h := h))⟩
 
 /- underlying line of bis as the locus satisfying the sum of distance to each ray of the angle is 0 -/
 theorem lie_on_angbisline_of_distance_zero (ang: Angle P) : sorry := sorry
@@ -194,7 +194,7 @@ theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : TriangleND P} : �
     have h₄ : A₂.end_ray = tri_nd.edge_nd₃.reverse.toRay := rfl
     rw [h₃]
     rw [h₄]
-    have h₅ : tri_nd.edge_nd₃.reverse.toDirLine.reverse = tri_nd.edge_nd₃.reverse.reverse.toDirLine := by rw [SegND.toDirLine_rev_eq_rev_toLine]
+    have h₅ : tri_nd.edge_nd₃.reverse.toDirLine.reverse = tri_nd.edge_nd₃.reverse.reverse.toDirLine := by rw [SegND.toDirLine_rev_eq_rev_toDirLine]
     have h₆ : tri_nd.edge_nd₃.reverse.reverse.toDirLine = tri_nd.edge_nd₃.toDirLine := rfl
     rw [h₆] at h₅
     exact id h₅.symm

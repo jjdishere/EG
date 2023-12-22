@@ -13,13 +13,15 @@ structure Arc (P : Type _) [EuclideanPlane P] where
   target : P
   circle : Circle P
   ison : (source LiesOn circle) ∧ (target LiesOn circle)
-  endpts_ne : target ≠ source
+  endpts_ne : PtNe target source
 
 variable {P : Type _} [EuclideanPlane P]
 
 namespace Arc
 
-protected def mk_pt_pt_circle (A B : P) {ω : Circle P} (h : B ≠ A) (ha : A LiesOn ω) (hb : B LiesOn ω) : Arc P where
+attribute [instance] Arc.endpts_ne
+
+protected def mk_pt_pt_circle (A B : P) {ω : Circle P} [h : PtNe B A] (ha : A LiesOn ω) (hb : B LiesOn ω) : Arc P where
   source := A
   target := B
   circle := ω
@@ -35,7 +37,7 @@ section position
 
 namespace Arc
 
-protected def IsOn (p : P) (β : Arc P) : Prop := (p LiesOn β.circle) ∧ (¬ p LiesOnLeft (DLIN β.source β.target β.endpts_ne))
+protected def IsOn (p : P) (β : Arc P) : Prop := (p LiesOn β.circle) ∧ (¬ p LiesOnLeft (DLIN β.source β.target))
 
 def Isnot_arc_endpts (p : P) (β : Arc P) : Prop := (p ≠ β.source) ∧ (p ≠ β.target)
 
@@ -68,6 +70,9 @@ theorem center_isnot_arc_endpts (β : Arc P) : Isnot_arc_endpts β.circle.center
   have : β.circle.radius > 0 := β.circle.rad_pos
   linarith
 
+instance (β : Arc P) : PtNe β.source β.circle.center := ⟨(arc_center_isnot_arc_endpts β).1.symm⟩
+instance (β : Arc P) : PtNe β.target β.circle.center := ⟨(arc_center_isnot_arc_endpts β).2.symm⟩
+
 def complement (β : Arc P) : Arc P where
   source := β.target
   target := β.source
@@ -75,25 +80,25 @@ def complement (β : Arc P) : Arc P where
   ison := and_comm.mp β.ison
   endpts_ne := β.endpts_ne.symm
 
-lemma liesint_arc_not_lieson_dlin {β : Arc P} {p : P} (h : p LiesInt β) : ¬ (p LiesOn (DLIN β.source β.target β.endpts_ne)) := by
+lemma liesint_arc_not_lieson_dlin {β : Arc P} {p : P} (h : p LiesInt β) : ¬ (p LiesOn (DLIN β.source β.target)) := by
   intro hl
-  have hl : p LiesOn (LIN β.source β.target β.endpts_ne) := hl
-  have hco : colinear β.source β.target p := Line.pt_pt_linear β.endpts_ne hl
-  have hco' : ¬ (colinear β.source β.target p) := Circle.three_pts_lieson_circle_not_colinear β.endpts_ne h.2.2 h.2.1.symm β.ison.1 β.ison.2 h.1.1
+  have hl : p LiesOn (LIN β.source β.target) := hl
+  have hco : colinear β.source β.target p := Line.pt_pt_linear hl
+  have hco' : ¬ (colinear β.source β.target p) := Circle.three_pts_lieson_circle_not_colinear (hne₂ := ⟨h.2.2⟩) (hne₃ := ⟨h.2.1.symm⟩) β.ison.1 β.ison.2 h.1.1
   tauto
 
-theorem liesint_arc_liesonright_dlin {β : Arc P} {p : P} (h : p LiesInt β) : p LiesOnRight (DLIN β.source β.target β.endpts_ne) := by
-  have hnl : ¬ (p LiesOn (DLIN β.source β.target β.endpts_ne)) := liesint_arc_not_lieson_dlin h
-  have hnll : ¬ (p LiesOnLeft (DLIN β.source β.target β.endpts_ne)) := h.1.2
-  rcases DirLine.lieson_or_liesonleft_or_liesonright p (DLIN β.source β.target β.endpts_ne) with hh | (hh | hh)
+theorem liesint_arc_liesonright_dlin {β : Arc P} {p : P} (h : p LiesInt β) : p LiesOnRight (DLIN β.source β.target) := by
+  have hnl : ¬ (p LiesOn (DLIN β.source β.target)) := liesint_arc_not_lieson_dlin h
+  have hnll : ¬ (p LiesOnLeft (DLIN β.source β.target)) := h.1.2
+  rcases DirLine.lieson_or_liesonleft_or_liesonright p (DLIN β.source β.target) with hh | (hh | hh)
   · exfalso; tauto
   · exfalso; tauto
   exact hh
 
-theorem liesint_complementary_arc_liesonleft_dlin {β : Arc P} {p : P} (h : p LiesInt β.complement) : p LiesOnLeft (DLIN β.source β.target β.endpts_ne) := by
-  have hh : p LiesOnRight (DLIN β.target β.source β.endpts_ne.symm) := by apply liesint_arc_liesonright_dlin h
+theorem liesint_complementary_arc_liesonleft_dlin {β : Arc P} {p : P} (h : p LiesInt β.complement) : p LiesOnLeft (DLIN β.source β.target) := by
+  have hh : p LiesOnRight (DLIN β.target β.source) := by apply liesint_arc_liesonright_dlin h
   apply liesonleft_iff_liesonright_reverse.mpr
-  rw [← DirLine.pt_pt_rev_eq_rev β.endpts_ne]
+  rw [← DirLine.pt_pt_rev_eq_rev]
   exact hh
 
 end Arc
@@ -113,13 +118,13 @@ protected def IsMajor (β : Arc P) : Prop := β.cangle.value.toReal < 0
 
 protected def IsMinor (β : Arc P) : Prop := β.cangle.value.toReal > 0
 
-def IsAntipode (A B : P) {ω : Circle P} (h : B ≠ A) (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) : Prop := (ARC A B h h₁ h₂).cangle.value = π
+protected def IsAntipode (A B : P) {ω : Circle P} [_h : PtNe B A] (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) : Prop := (ARC A B h₁ h₂).cangle.value = π
 
 theorem cangle_of_complementary_arc_are_opposite (β : Arc P) : β.cangle.value = - β.complement.cangle.value := by
-  show ∠ β.source β.circle.center β.target (center_isnot_arc_endpts β).1.symm (center_isnot_arc_endpts β).2.symm = -∠ β.target β.circle.center β.source (center_isnot_arc_endpts β).2.symm (center_isnot_arc_endpts β).1.symm
+  show (∠ β.source β.circle.center β.target = -∠ β.target β.circle.center β.source)
   apply neg_value_of_rev_ang
 
-theorem antipode_iff_colinear {A B : P} {ω : Circle P} (h : B ≠ A) (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) : IsAntipode A B h h₁ h₂ ↔ colinear ω.center A B := by
+theorem antipode_iff_colinear (A B : P) {ω : Circle P} [h : PtNe B A] (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) : Arc.IsAntipode A B h₁ h₂ ↔ colinear ω.center A B := by
   constructor
   · intro hh
     unfold IsAntipode Arc.cangle Arc.mk_pt_pt_circle Arc.angle_mk_pt_arc at hh
@@ -163,11 +168,11 @@ end angle
 
 theorem inscribed_angle_is_positive {p : P} {β : Arc P} (h : p LiesInt β.complement) : (Arc.angle_mk_pt_arc p β h.2.symm).value.IsPos := by
   unfold Arc.angle_mk_pt_arc
-  apply liesonleft_angle_ispos β.endpts_ne (Arc.liesint_complementary_arc_liesonleft_dlin h)
+  apply liesonleft_angle_ispos (liesint_complementary_arc_liesonleft_dlin h)
 
 theorem inscribed_angle_of_complementary_arc_is_negative {p : P} {β : Arc P} (h : p LiesInt β) : (Arc.angle_mk_pt_arc p β h.2).value.IsNeg := by
   unfold Arc.angle_mk_pt_arc
-  apply liesonright_angle_isneg β.endpts_ne (Arc.liesint_arc_liesonright_dlin h)
+  apply liesonright_angle_isneg (liesint_arc_liesonright_dlin h)
 
 theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P} (h₁ : p LiesOn β.circle) (h₂ : Arc.Isnot_arc_endpts p β) : β.cangle.value = 2 • (Arc.angle_mk_pt_arc p β h₂).value := by
   have ne : p ≠ β.circle.center := Circle.pt_lieson_ne_center h₁
@@ -210,7 +215,7 @@ theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P} (h₁ : p LiesO
     _ = 2 • (∠ β.source p β.target h₂.1.symm h₂.2.symm) := by rw [← zero_sub, ← eq₃, add_sub_cancel']
     _ = 2 • (Arc.angle_mk_pt_arc p β h₂).value := rfl
 
-theorem inscribed_angle_of_diameter_eq_mod_pi {p : P} {β : Arc P} (h₁ : p LiesOn β.circle) (h₂ : Arc.IsAntipode β.source β.target β.endpts_ne β.ison.1 β.ison.2) (h₃ : Arc.Isnot_arc_endpts p β) : (Arc.angle_mk_pt_arc p β h₃).dvalue = ∡[π / 2] := by
+theorem inscribed_angle_of_diameter_eq_mod_pi {p : P} {β : Arc P} (h₁ : p LiesOn β.circle) (h₂ : Arc.IsAntipode β.source β.target β.ison.1 β.ison.2) (h₃ : Isnot_arc_endpts p β) : (Arc.angle_mk_pt_arc p β h₃).dvalue = ∡[π / 2] := by
   have : β.cangle.value = π := h₂
   have : 2 • (Arc.angle_mk_pt_arc p β h₃).value = π := by
     rw [← this, ← cangle_eq_two_times_inscribed_angle]

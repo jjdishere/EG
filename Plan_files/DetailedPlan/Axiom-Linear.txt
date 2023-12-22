@@ -119,9 +119,9 @@ Definition \verb|RAY| as \verb|Ray.mk_pt_pt|: This is to abbreviate \verb|Ray.mk
 
 \begin{itemize}
 \item 
-Theorem \verb|SegND.toDir_eq_toray_toDir|: Given a nondegenerate segment, the direction associated to the nondegenerate segment is the same as the direction associated to the ray associated to the nondegenerate segment.
+Theorem \verb|SegND.toDir_eq_toRay_toDir|: Given a nondegenerate segment, the direction associated to the nondegenerate segment is the same as the direction associated to the ray associated to the nondegenerate segment.
 
-\item Theorem \verb|SegND.toProj_eq_toray_toProj|: Given a nondegenerate segment,  the projective direction associated to the nondegenerate segment is the same as the projective direction associated to the ray associated to the nondegenerate segment.
+\item Theorem \verb|SegND.toProj_eq_toRay_toProj|: Given a nondegenerate segment,  the projective direction associated to the nondegenerate segment is the same as the projective direction associated to the ray associated to the nondegenerate segment.
 
 \item Theorem \verb|Ray.is_in_inter_iff_add_pos_Dir|: Given a ray, a point $A$ lies in the interior of the ray if and only if the vector from the source of the ray to $A$ is a positive multiple of the direction of ray.
 
@@ -163,7 +163,7 @@ Theorem \verb|Ray.source_not_lies_int|: Given a ray, the source of the ray does 
 \item Theorem \verb|SegND.lies_on_toRay_of_lies_on|: For a nondegenerate segment $AB$, every point of the segment $AB$ lies on the ray associated to $AB$. 
 
 \item Theorem
-\verb|SegND.lies_int_toray_of_lies_int|: For a nondegenerate segment $segnd$, every point of the interior of the $segnd$ lies in the interior of the ray associated to the $segnd$.
+\verb|SegND.lies_int_toRay_of_lies_int|: For a nondegenerate segment $segnd$, every point of the interior of the $segnd$ lies in the interior of the ray associated to the $segnd$.
 \vspace{10pt}
 \item\toadd
 Theorem \verb|every_pt_lies_on_seg_of_source_and_target_lies_on_seg|:
@@ -289,7 +289,7 @@ Theorem \verb|Ray.not_lies_on_of_lies_int_rev|: If a point lies in the interior 
 Theorem \verb|Ray.not_lies_int_of_lies_on_rev|: If a point lies on of the reverse of a ray, then it does not lie in the interior of the ray. 
 
 \item 
-Theorem \verb|SegND.lies_on_iff_lies_on_toray_and_rev_toray|: A point lies on a nondegenerate segment $AB$ if and only if it lies on the ray associated to $AB$ and on the ray associated to $BA$.
+Theorem \verb|SegND.lies_on_iff_lies_on_toRay_and_rev_toRay|: A point lies on a nondegenerate segment $AB$ if and only if it lies on the ray associated to $AB$ and on the ray associated to $BA$.
 
 \item
 Theorem
@@ -485,7 +485,7 @@ Definition \verb|Line.IsOn|: Given a point and a line, this function returns whe
 
 \begin{itemize}
 \item 
-Theorem \verb|SegND.toLine_eq_toray_toLine|: The line associated to a given nondegenerate segment is the same as the line associated to the ray associated to this nondegenerate segment. 
+Theorem \verb|SegND.toLine_eq_toRay_toLine|: The line associated to a given nondegenerate segment is the same as the line associated to the ray associated to this nondegenerate segment. 
 
 \item
 Theorem \verb|line_of_pt_pt_eq_ray_toLine|: Given two distinct points $A$ and $B$, the line $AB$ is the same as the line associated to the ray from $A$ to $B$.
@@ -573,7 +573,7 @@ Theorem \verb|eq_of_pt_pt_lies_on_of_ne|: Given two distinct points $A$ and $B$ 
     Ray.source_lies_on_toLine --
     SegND.source_lies_on_toLine --
     SegND.target_lies_on_toLine --
-    SegND.toLine_eq_toray_toLine --
+    SegND.toLine_eq_toRay_toLine --
     line_of_pt_pt_eq_ray_toLine --
     line_of_pt_pt_eq_seg_nd_toLine --
 
@@ -656,7 +656,7 @@ Theorem \verb|ray_parallel_toLine|: Given a ray, the ray is parallel to the line
 
 \item 
 Theorem
-\verb|segnd_parallel_toray|: Given a nondegenate segment, it is parallel to the ray associated to this nondegenerate segment.
+\verb|segnd_parallel_toRay|: Given a nondegenate segment, it is parallel to the ray associated to this nondegenerate segment.
 
 \item \toadd Lots of such similar theorem regarding coercions among linear objects
 \end{itemize}

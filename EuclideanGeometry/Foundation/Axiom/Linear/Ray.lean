@@ -272,10 +272,10 @@ instance : IntFig (SegND P) P where
 end SegND
 
 @[simp]
-lemma Ray.mkPtPt_toDir (A B : P) (h : B ≠ A) : (RAY A B h).toDir = (VEC_nd A B h).toDir := rfl
+lemma Ray.mkPtPt_toDir (A B : P) [_h : PtNe B A] : (RAY A B).toDir = (VEC_nd A B).toDir := rfl
 
 @[simp]
-lemma SegND.mkPtPt_toDir (A B : P) (h : B ≠ A) : (SEG_nd A B h).toDir = (VEC_nd A B h).toDir := rfl
+lemma SegND.mkPtPt_toDir (A B : P) [_h : PtNe B A] : (SEG_nd A B).toDir = (VEC_nd A B).toDir := rfl
 
 end coersion
 
@@ -304,18 +304,18 @@ theorem toVec_eq_zero_of_deg {l : Seg P} : (l.target = l.source) ↔ l.toVec = 0
   rw [Seg.toVec, Vec.mkPtPt, vsub_eq_zero_iff_eq]
 
 /-- Given two distinct points $A$ and $B$, the direction of ray $AB$ is same as the negative direction of ray $BA$ -/
-theorem Ray.toDir_eq_neg_toDir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toDir = -(RAY B A h.symm).toDir := by
+theorem Ray.toDir_eq_neg_toDir_of_mk_pt_pt {A B : P} [h : PtNe B A] : (RAY A B).toDir = -(RAY B A).toDir := by
   simp only [Ray.mk_pt_pt, ne_eq]
   rw [← VecND.neg_toDir, ← VecND.mk_neg]
   congr
   rw [neg_vec]
 
 /-- Given two distinct points $A$ and $B$, the projective direction of ray $AB$ is same as that of ray $BA$. -/
-theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toProj = (RAY B A h.symm).toProj :=
-  Dir.toProj_eq_toProj_iff.mpr (.inr (toDir_eq_neg_toDir_of_mk_pt_pt h))
+theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} [_h : PtNe B A] : (RAY A B).toProj = (RAY B A).toProj :=
+  Dir.toProj_eq_toProj_iff.mpr (.inr toDir_eq_neg_toDir_of_mk_pt_pt)
 
 /-- Given two distinct points $A$ and $B$, the ray associated to the segment $AB$ is same as ray $AB$. -/
-theorem pt_pt_seg_toRay_eq_pt_pt_ray {A B : P} (h : B ≠ A) : (SegND.mk A B h).toRay = Ray.mk_pt_pt A B h := rfl
+theorem pt_pt_seg_toRay_eq_pt_pt_ray {A B : P} [_h : PtNe B A] : (SEG_nd A B).toRay = RAY A B := rfl
 
 /-- Given a segment $AB$, $AB$ is nondegenerate if and only if vector  $\overrightarrow{AB}$ is nonzero. -/
 theorem Seg.IsND_iff_toVec_ne_zero {l : Seg P} : l.IsND ↔ l.toVec ≠ 0 := toVec_eq_zero_of_deg.not
@@ -489,13 +489,13 @@ theorem SegND.lies_int_toRay_of_lies_int {X : P} {seg_nd : SegND P} (h : X LiesI
   ⟨SegND.lies_on_toRay_of_lies_on h.1, h.2.1⟩
 
 /-- Given two distinct points $A$ and $B$, $B$ lies on the ray $AB$. -/
-theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
-  show B LiesOn (SEG_nd A B h).toRay
+theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} [h : PtNe B A] : B LiesOn (RAY A B) := by
+  show B LiesOn (SEG_nd A B).toRay
   exact SegND.lies_on_toRay_of_lies_on Seg.target_lies_on
 
 /-- Given two distinct points $A$ and $B$, $B$ lies in the interior of the ray $AB$. -/
-theorem Ray.snd_pt_lies_int_mk_pt_pt (A B : P) (h : B ≠ A) : B LiesInt (RAY A B h) :=
-  ⟨snd_pt_lies_on_mk_pt_pt h, h⟩
+theorem Ray.snd_pt_lies_int_mk_pt_pt (A B : P) [h : PtNe B A] : B LiesInt (RAY A B) :=
+  ⟨snd_pt_lies_on_mk_pt_pt, h.out⟩
 
 /-- Given a point $A$ on a ray, the direction of the ray is the same as the direction from the source of the ray to $A$. -/
 theorem Ray.pt_pt_toDir_eq_ray_toDir {ray : Ray P} {A : P} (h : A LiesInt ray) : (RAY ray.1 A h.2).toDir = ray.toDir := by
@@ -775,7 +775,7 @@ def SegND.reverse (seg_nd : SegND P) : SegND P := ⟨seg_nd.1.reverse, nd_of_rev
 
 /-- The reverse of a nondegenerate segment $AB$ is the nondegenerate segment $BA$. -/
 @[simp]
-theorem seg_nd_rev {A B : P} (h : B ≠ A) : (SEG_nd A B h).reverse = SEG_nd B A h.symm := rfl
+theorem seg_nd_rev {A B : P} [_h : PtNe B A] : (SEG_nd A B).reverse = SEG_nd B A := rfl
 
 /-- Given a nondegenerate segment, first viewing it as a segment and then reversing it is the same as first reversing it and then viewing it as a segment. -/
 @[simp]
@@ -1085,17 +1085,16 @@ theorem lies_on_or_rev_iff_exist_real_vec_eq_smul {A : P} {ray : Ray P} : (A Lie
     exact ⟨-t, neg_nonneg.mpr k.le, hu⟩
 
 /-- Given two distinct points $A$ and $B$ and a ray, if both $A$ and $B$ lies on the ray or its reversed ray, then the projective direction of the ray is the same as the projective direction of the ray $AB$. -/
-theorem ray_toProj_eq_mk_pt_pt_toProj {A B : P} {ray : Ray P} (h : B ≠ A) (ha : A LiesOn ray ∨ A LiesOn ray.reverse) (hb : B LiesOn ray ∨ B LiesOn ray.reverse) : ray.toProj = (RAY A B h).toProj := by
+theorem ray_toProj_eq_mk_pt_pt_toProj {A B : P} {ray : Ray P} [h : PtNe B A] (ha : A LiesOn ray ∨ A LiesOn ray.reverse) (hb : B LiesOn ray ∨ B LiesOn ray.reverse) : ray.toProj = (RAY A B).toProj := by
   rcases lies_on_or_rev_iff_exist_real_vec_eq_smul.mp ha with ⟨ta, eqa⟩
   rcases lies_on_or_rev_iff_exist_real_vec_eq_smul.mp hb with ⟨tb, eqb⟩
   have heq : VEC A B = (tb - ta) • ray.2.unitVecND := by rw [← vec_sub_vec _ A B, eqa, eqb, sub_smul]
-  have h0 : tb - ta ≠ 0 := (smul_ne_zero_iff.mp (heq.symm.trans_ne (vsub_ne_zero.mpr h))).1
+  have h0 : tb - ta ≠ 0 := (smul_ne_zero_iff.mp (heq.symm.trans_ne (vsub_ne_zero.mpr Fact.out))).1
   apply Dir.toProj_eq_toProj_iff_unitVec.mpr
-  use (tb - ta)⁻¹ * ‖VEC_nd A B h‖
+  use (tb - ta)⁻¹ * ‖VEC_nd A B‖
   simp [← (inv_smul_eq_iff₀ h0).mpr heq, Units.smul_def, mul_smul]
 
 end reverse
-
 
 section extension
 /-!

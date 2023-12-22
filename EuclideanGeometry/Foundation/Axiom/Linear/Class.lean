@@ -119,7 +119,7 @@ instance : DirFig (SegND P) P where
   toDirLine_toLine_eq_toLine := rfl
   reverse := SegND.reverse
   rev_rev := SegND.rev_rev_eq_self
-  toDirLine_rev_eq_to_rev_toDirLine := SegND.toDirLine_rev_eq_rev_toLine
+  toDirLine_rev_eq_to_rev_toDirLine := SegND.toDirLine_rev_eq_rev_toDirLine
 
 instance : DirFig (Ray P) P where
   carrier := Ray.carrier
@@ -169,8 +169,8 @@ open Line DirLine
 
 variable {P : Type _} [EuclideanPlane P]
 
-theorem carrier_toProj_eq_toProj {α} {A B : P} [ProjFig α P] {F : α} (h : B ≠ A) (ha : A LiesOn F) (hb : B LiesOn F) : (SEG_nd A B h).toProj = toProj' F :=
-  (toProj_eq_seg_nd_toProj_of_lies_on (carrier_subset_toLine ha) (carrier_subset_toLine hb) h).trans toLine_toProj_eq_toProj
+theorem carrier_toProj_eq_toProj {α} {A B : P} [ProjFig α P] {F : α} [_h : PtNe B A] (ha : A LiesOn F) (hb : B LiesOn F) : (SEG_nd A B).toProj = toProj' F :=
+  (toProj_eq_seg_nd_toProj_of_lies_on (carrier_subset_toLine ha) (carrier_subset_toLine hb)).trans toLine_toProj_eq_toProj
 
 theorem line_of_pt_toProj_eq_to_line {α} {A : P} [ProjFig α P] {F : α} (h : A LiesOn F) : Line.mk_pt_proj A (toProj F) = toLine F :=
   mk_pt_proj_eq_of_eq_toProj (carrier_subset_toLine h) toLine_toProj_eq_toProj.symm
