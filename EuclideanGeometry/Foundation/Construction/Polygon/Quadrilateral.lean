@@ -116,7 +116,7 @@ section property
 variable {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
+instance nd₁₃ : PtNe qdr_cvx.point₃ qdr_cvx.point₁ := Fact.mk <| by
   have h: qdr_cvx.IsConvex := convex _
   unfold Quadrilateral.IsConvex at h
   by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
@@ -124,7 +124,7 @@ theorem nd₁₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₁ := by
   simp only [k, dite_false] at h
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₂₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := by
+instance nd₂₄ : PtNe qdr_cvx.point₄ qdr_cvx.point₂ := Fact.mk <| by
   have h: qdr_cvx.IsConvex := convex _
   unfold Quadrilateral.IsConvex at h
   by_cases k: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄
@@ -132,17 +132,16 @@ theorem nd₂₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₂ := by
   simp only [k, dite_false] at h
 
 /-- The non-degenerate diagonal from the first point and third point of a convex quadrilateral -/
-def diag_nd₁₃ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃
+def diag_nd₁₃ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₃
 
 /-- The non-degenerate diagonal from the second point and fourth point of a convex quadrilateral -/
-def diag_nd₂₄ : SegND P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄
+def diag_nd₂₄ : SegND P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₄
 
 /-- Two diagonals are not parallel to each other -/
 theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := by
-  have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
   have k: qdr_cvx.IsConvex := convex _
   unfold Quadrilateral.IsConvex at k
-  simp only [ne_eq, h, not_false_eq_true, and_self, dite_true] at k
+  simp only [ne_eq, not_false_eq_true, and_self, dite_true] at k
   by_contra q
   have r: qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := by exact q.symm
   rw [diag_nd₁₃, diag_nd₂₄] at r
@@ -155,31 +154,28 @@ def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.
 /-- The interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals. -/
 theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃.1 ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄.1
 := by
-  have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
   have k: qdr_cvx.IsConvex := convex _
   unfold Quadrilateral.IsConvex at k
-  simp only [ne_eq, h, not_false_eq_true, and_self, dite_true] at k
+  simp only [ne_eq, not_false_eq_true, and_self, dite_true] at k
   have g: ¬ qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := Ne.symm qdr_cvx.diag_not_para
   rw [diag_nd₁₃, diag_nd₂₄] at g
-  simp only [g, dite_true] at k
-  exact k
+  simpa only [g, dite_true, pt_ne] using k
 
 /-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is also convex. -/
 theorem permute_is_convex : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁) IsConvex := by
   unfold Quadrilateral.IsConvex
-  have h : qdr_cvx.point₂ ≠ qdr_cvx.point₄ ∧ qdr_cvx.point₃ ≠ qdr_cvx.point₁ := ⟨qdr_cvx.nd₂₄.symm, qdr_cvx.nd₁₃⟩
-  simp only [ne_eq, h, not_false_eq_true, and_self, dite_true]
+  simp only [ne_eq, pt_ne, not_false_eq_true, and_self, dite_true]
   have g: ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := qdr_cvx.diag_not_para
   rw [diag_nd₁₃, diag_nd₂₄] at g
-  have g': ¬ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) ∥ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) := by
+  have g': ¬ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁) ∥ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄) := by
     apply Ne.symm (SegND.not_para_rev_of_not_para (Ne.symm g))
   simp only [g', not_false_eq_true, dite_true]
-  have g'': ¬ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ h.1.symm) ∥ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ h.2.symm) := Ne.symm g'
-  have nd₃₁_eq_nd₁₃ : (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine = (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine := by
-    exact (Line.line_of_pt_pt_eq_rev qdr_cvx.nd₁₃.symm)
-  have inx_eq : qdr_cvx.diag_inx = LineInx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃ qdr_cvx.nd₁₃).toLine (Ne.symm qdr_cvx.diag_not_para) := Eq.symm (Line.inx.symm (SegND.not_para_toLine_of_not_para qdr_cvx.diag_nd₁₃ qdr_cvx.diag_nd₂₄ qdr_cvx.diag_not_para))
+  have g'': ¬ (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄) ∥ (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁) := Ne.symm g'
+  have nd₃₁_eq_nd₁₃ : (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁).toLine = (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃).toLine := by
+    exact Line.line_of_pt_pt_eq_rev (_h := qdr_cvx.nd₁₃.symm)
+  have inx_eq : qdr_cvx.diag_inx = LineInx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄).toLine (SEG_nd qdr_cvx.point₁ qdr_cvx.point₃).toLine (Ne.symm qdr_cvx.diag_not_para) := Eq.symm (Line.inx.symm (SegND.not_para_toLine_of_not_para qdr_cvx.diag_nd₁₃ qdr_cvx.diag_nd₂₄ qdr_cvx.diag_not_para))
   rcases qdr_cvx.diag_inx_lies_int with ⟨a, b⟩
-  have inx_eq' : qdr_cvx.diag_inx = Line.inx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.nd₂₄).toLine (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.nd₁₃.symm).toLine g'':= by
+  have inx_eq' : qdr_cvx.diag_inx = Line.inx (SEG_nd qdr_cvx.point₂ qdr_cvx.point₄).toLine (SEG_nd qdr_cvx.point₃ qdr_cvx.point₁).toLine g'':= by
     rw [inx_eq]
     congr 1
     exact nd₃₁_eq_nd₁₃.symm
@@ -187,11 +183,10 @@ theorem permute_is_convex : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point
   exact ⟨b, (Seg.lies_int_rev_iff_lies_int.mp a)⟩
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := by
-  have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
+instance nd₁₂ : PtNe qdr_cvx.point₂ qdr_cvx.point₁ := Fact.mk <| by
   have k: qdr_cvx.IsConvex := convex _
   unfold Quadrilateral.IsConvex at k
-  simp only [ne_eq, h, not_false_eq_true, and_self, dite_true] at k
+  simp only [ne_eq, pt_ne, not_false_eq_true, and_self, dite_true] at k
   have g: ¬ qdr_cvx.diag_nd₂₄ ∥ qdr_cvx.diag_nd₁₃ := Ne.symm qdr_cvx.diag_not_para
   rw [diag_nd₁₃, diag_nd₂₄] at g
   simp only [g, dite_true] at k
@@ -209,41 +204,41 @@ theorem nd₁₂ : qdr_cvx.point₂ ≠ qdr_cvx.point₁ := by
   exact point₁_not_lies_int_diag_nd₁₃ point₁_lies_int_diag_nd₁₃
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 2nd point to the 3rd point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₂₃ : qdr_cvx.point₃ ≠ qdr_cvx.point₂ := by
+instance nd₂₃ : PtNe qdr_cvx.point₃ qdr_cvx.point₂ := Fact.mk <| by
   let permute := (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁)
   have h : permute IsConvex := permute_is_convex qdr_cvx
   let permute_convex := mk_is_convex h
-  exact permute_convex.nd₁₂
+  exact permute_convex.nd₁₂.out
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 3rd point to the 4th point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₃₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₃ := by
+instance nd₃₄ : PtNe qdr_cvx.point₄ qdr_cvx.point₃ := Fact.mk <| by
   let permute := (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁)
   have h : permute IsConvex := permute_is_convex qdr_cvx
   let permute_convex := mk_is_convex h
-  exact permute_convex.nd₂₃
+  exact permute_convex.nd₂₃.out
 
 /-- Given a convex quadrilateral qdr_cvx, edge from the 1st point to the 4th point is not degenerate, i.e. the second point is not equal to the first point. -/
-theorem nd₁₄ : qdr_cvx.point₄ ≠ qdr_cvx.point₁ := by
+instance nd₁₄ : PtNe qdr_cvx.point₄ qdr_cvx.point₁ := Fact.mk <| by
   let permute := (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁)
   have h : permute IsConvex := permute_is_convex qdr_cvx
   let permute_convex := mk_is_convex h
-  exact permute_convex.nd₃₄.symm
+  exact permute_convex.nd₃₄.out.symm
 
 /-- The edge from the first point to the second point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₁₂ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂ (qdr_cvx.nd₁₂)
+def edge_nd₁₂ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂
 
 /-- The edge from the second point to the third point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₂₃ : SegND P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃ (qdr_cvx.nd₂₃)
+def edge_nd₂₃ : SegND P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃
 
 /-- The edge from the third point to the fourth point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₃₄ : SegND P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄ (qdr_cvx.nd₃₄)
+def edge_nd₃₄ : SegND P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄
 
 /-- The edge from the fourth point to the first point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₁₄ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₄ (qdr_cvx.nd₁₄)
+def edge_nd₁₄ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₄
 
 /-- Given a convex quadrilateral qdr_cvx, its 1st, 2nd and 3rd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₁ point₂}$ is not the same as the projective direction of the vector $\overrightarrow{point₁ point₃}$. -/
 theorem not_colinear₁₂₃ : ¬ colinear qdr_cvx.1.1 qdr_cvx.1.2 qdr_cvx.1.3 := sorry
@@ -279,19 +274,19 @@ theorem not_colinear₁₂₄ : ¬ colinear qdr_cvx.1.1 qdr_cvx.1.2 qdr_cvx.1.4 
 
 /--angle at point₁ of qdr_cvx-/
 @[pp_dot]
-def angle₁ : Angle P := ANG qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.nd₁₄ qdr_cvx.nd₁₂
+def angle₁ : Angle P := ANG qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂
 
 /--angle at point₂ of qdr_cvx-/
 @[pp_dot]
-def angle₂ : Angle P := ANG qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.nd₁₂.symm qdr_cvx.nd₂₃
+def angle₂ : Angle P := ANG qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃
 
 /--angle at point₃ of qdr_cvx-/
 @[pp_dot]
-def angle₃ : Angle P := ANG qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.nd₂₃.symm qdr_cvx.nd₃₄
+def angle₃ : Angle P := ANG qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄
 
 /--angle at point₄ of qdr_cvx-/
 @[pp_dot]
-def angle₄ : Angle P := ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.nd₃₄.symm qdr_cvx.nd₁₄.symm
+def angle₄ : Angle P := ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁
 
 /--triangle point₄ point₁ point₂, which includes angle₁-/
 @[pp_dot]

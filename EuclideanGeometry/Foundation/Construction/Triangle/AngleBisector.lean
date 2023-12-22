@@ -152,10 +152,10 @@ theorem exangbisline_is_exangbisline : sorry := sorry
 end Angle
 
 /-definition property: lies on the bis means bisect the angle-/
-theorem lie_on_angbis (ang: Angle P) (A : P) (h : A ≠ ang.source): A LiesOn ang.AngBis ↔ IsAngBis ang (RAY _ _ h) := by
+theorem lie_on_angbis (ang: Angle P) (A : P) [h : PtNe A ang.source]: A LiesOn ang.AngBis ↔ IsAngBis ang (RAY ang.source A) := by
   rw [Angle.angbis_iff_angbis]
-  exact ⟨fun g ↦ (by rw [← Ray.pt_pt_eq_ray ⟨g, h⟩]; rfl),
-    fun g ↦ (by rw [← g]; exact Ray.snd_pt_lies_on_mk_pt_pt h)⟩
+  exact ⟨fun g ↦ (by rw [← Ray.pt_pt_eq_ray ⟨g, h.out⟩]; rfl),
+    fun g ↦ (by rw [← g]; exact Ray.snd_pt_lies_on_mk_pt_pt (h := h))⟩
 
 /- underlying line of bis as the locus satisfying the sum of distance to each ray of the angle is 0 -/
 theorem lie_on_angbisline_of_distance_zero (ang: Angle P) : sorry := sorry

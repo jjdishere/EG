@@ -105,6 +105,6 @@ def delabVecNDMkPtPt : Delab := do
       `(VEC_nd $A $B $(← delab))
 
 @[simp]
-lemma VecND.coe_mkPtPt (A B : P) (h : B ≠ A) : VEC_nd A B h = VEC A B := rfl
+lemma VecND.coe_mkPtPt (A B : P) [_h : Fact (B ≠ A)] : VEC_nd A B = VEC A B := rfl
 
 end EuclidGeom

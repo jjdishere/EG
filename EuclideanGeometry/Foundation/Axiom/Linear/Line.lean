@@ -52,8 +52,8 @@ theorem vec_parallel_of_same_extn_line {r r' : Ray P} (h : same_extn_line r r') 
 theorem ray_rev_of_same_extn_line {r : Ray P} : same_extn_line r r.reverse :=
   ⟨Ray.toProj_of_rev_eq_toProj.symm, .inr Ray.source_lies_on⟩
 
-theorem pt_pt_ray_same_extn_line_of_pt_pt_lies_on_line {A B : P} {r : Ray P} (h : B ≠ A) (ha : A LiesOn r ∨ A LiesOn r.reverse) (hb : B LiesOn r ∨ B LiesOn r.reverse) : same_extn_line r (Ray.mk_pt_pt A B h) :=
-  ⟨ray_toProj_eq_mk_pt_pt_toProj h ha hb, ha⟩
+theorem pt_pt_ray_same_extn_line_of_pt_pt_lies_on_line {A B : P} {r : Ray P} [_h : PtNe B A] (ha : A LiesOn r ∨ A LiesOn r.reverse) (hb : B LiesOn r ∨ B LiesOn r.reverse) : same_extn_line r (RAY A B) :=
+  ⟨ray_toProj_eq_mk_pt_pt_toProj ha hb, ha⟩
 
 protected theorem refl (r : Ray P) : same_extn_line r r := ⟨rfl, .inl Ray.source_lies_on⟩
 
@@ -386,47 +386,47 @@ end DirLine
 
 namespace Line
 
-variable (A B : P) (h : B ≠ A) (ray : Ray P) (seg_nd : SegND P)
+variable (A B : P) [h : PtNe B A] (ray : Ray P) (seg_nd : SegND P)
 
 section pt_pt
 
-theorem line_of_pt_pt_eq_rev {A B : P} (h : B ≠ A) : LIN A B h = LIN B A h.symm :=
-  (Quotient.eq (r := same_extn_line.setoid)).mpr ⟨Ray.toProj_eq_toProj_of_mk_pt_pt h, .inl (Ray.snd_pt_lies_on_mk_pt_pt h)⟩
+theorem line_of_pt_pt_eq_rev {A B : P} [_h : PtNe B A] : LIN A B = LIN B A :=
+  (Quotient.eq (r := same_extn_line.setoid)).mpr ⟨Ray.toProj_eq_toProj_of_mk_pt_pt, .inl (Ray.snd_pt_lies_on_mk_pt_pt (B := B))⟩
 
-theorem fst_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := .inl Ray.source_lies_on
+theorem fst_pt_lies_on_mk_pt_pt {A B : P} [_h : PtNe B A] : A LiesOn LIN A B := .inl Ray.source_lies_on
 
-theorem snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn LIN A B h := by
+theorem snd_pt_lies_on_mk_pt_pt {A B : P} [_h : PtNe B A] : B LiesOn LIN A B := by
   rw [line_of_pt_pt_eq_rev]
-  exact fst_pt_lies_on_mk_pt_pt h.symm
+  exact fst_pt_lies_on_mk_pt_pt
 
 -- The first point and the second point in Line.mk_pt_pt LiesOn the line it make.
-theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B h ∧ B LiesOn LIN A B h :=
-  ⟨fst_pt_lies_on_mk_pt_pt h, snd_pt_lies_on_mk_pt_pt h⟩
+theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} [_h : PtNe B A] : A LiesOn LIN A B ∧ B LiesOn LIN A B :=
+  ⟨fst_pt_lies_on_mk_pt_pt, snd_pt_lies_on_mk_pt_pt⟩
 
 -- two point determines a line
-theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : LIN A B h = l := by
+theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} [_h : PtNe B A] (ha : A LiesOn l) (hb : B LiesOn l) : LIN A B = l := by
   revert l
   rintro ⟨r⟩ ha hb
-  exact (Quotient.eq (r := same_extn_line.setoid)).mpr (same_extn_line.symm ⟨ray_toProj_eq_mk_pt_pt_toProj h ha hb, ha⟩)
+  exact (Quotient.eq (r := same_extn_line.setoid)).mpr (same_extn_line.symm ⟨ray_toProj_eq_mk_pt_pt_toProj ha hb, ha⟩)
 
 -- If two lines have two distinct intersection points, then these two lines are identical.
-theorem eq_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l₂ : Line P} (hA₁ : A LiesOn l₁) (hB₁ : B LiesOn l₁) (hA₂ : A LiesOn l₂) (hB₂ : B LiesOn l₂) : l₁ = l₂ := by
-  rw [← eq_line_of_pt_pt_of_ne h hA₁ hB₁]
-  exact eq_line_of_pt_pt_of_ne h hA₂ hB₂
+theorem eq_of_pt_pt_lies_on_of_ne {A B : P} [_h : PtNe B A] {l₁ l₂ : Line P} (hA₁ : A LiesOn l₁) (hB₁ : B LiesOn l₁) (hA₂ : A LiesOn l₂) (hB₂ : B LiesOn l₂) : l₁ = l₂ := by
+  rw [← eq_line_of_pt_pt_of_ne hA₁ hB₁]
+  exact eq_line_of_pt_pt_of_ne hA₂ hB₂
 
-theorem eq_pt_pt_line_iff_lies_on {A B : P} {l : Line P} (h : B ≠ A) : A LiesOn l ∧ B LiesOn l ↔ LIN A B h = l := by
-  refine' ⟨fun ⟨ha, hb⟩ ↦ eq_line_of_pt_pt_of_ne h ha hb, fun lAB ↦ _⟩
+theorem eq_pt_pt_line_iff_lies_on {A B : P} {l : Line P} [_h : PtNe B A] : A LiesOn l ∧ B LiesOn l ↔ LIN A B = l := by
+  refine' ⟨fun ⟨ha, hb⟩ ↦ eq_line_of_pt_pt_of_ne ha hb, fun lAB ↦ _⟩
   rw [← lAB]
-  exact pt_lies_on_line_of_pt_pt_of_ne h
+  exact pt_lies_on_line_of_pt_pt_of_ne
 
-theorem pt_pt_lies_on_iff_ray_toLine {A B : P} {l : Line P} (h : B ≠ A) : A LiesOn l ∧ B LiesOn l ↔ (RAY A B h).toLine = l :=
-  eq_pt_pt_line_iff_lies_on h
+theorem pt_pt_lies_on_iff_ray_toLine {A B : P} {l : Line P} [_h : PtNe B A] : A LiesOn l ∧ B LiesOn l ↔ (RAY A B).toLine = l :=
+  eq_pt_pt_line_iff_lies_on
 
-theorem pt_pt_lies_on_iff_seg_toLine {A B : P} {l : Line P} (h : B ≠ A) : A LiesOn l ∧ B LiesOn l ↔ (SEG_nd A B h).toLine = l :=
-  eq_pt_pt_line_iff_lies_on h
+theorem pt_pt_lies_on_iff_seg_toLine {A B : P} {l : Line P} [_h : PtNe B A] : A LiesOn l ∧ B LiesOn l ↔ (SEG_nd A B).toLine = l :=
+  eq_pt_pt_line_iff_lies_on
 
-theorem toProj_eq_seg_nd_toProj_of_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hb : B LiesOn l) (hab : B ≠ A) : (SEG_nd A B hab).toProj = l.toProj := by
-  rw [← eq_line_of_pt_pt_of_ne hab ha hb]
+theorem toProj_eq_seg_nd_toProj_of_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hb : B LiesOn l) [_hab : PtNe B A] : (SEG_nd A B).toProj = l.toProj := by
+  rw [← eq_line_of_pt_pt_of_ne ha hb]
   rfl
 
 end pt_pt
@@ -474,19 +474,19 @@ section pt_dir
 
 namespace DirLine
 
-variable (A B : P) (h : B ≠ A) (ray : Ray P) (seg_nd : SegND P)
+variable (A B : P) [_h : PtNe B A] (ray : Ray P) (seg_nd : SegND P)
 
-theorem pt_pt_rev_eq_rev {A B : P} (h : B ≠ A) : DLIN B A h.symm = (DLIN A B h).reverse := by
-  refine' (Quotient.eq (r := same_dir_line.setoid)).mpr ⟨_, .inl (Ray.snd_pt_lies_on_mk_pt_pt h.symm)⟩
+theorem pt_pt_rev_eq_rev {A B : P} [_h : PtNe B A] : DLIN B A = (DLIN A B).reverse := by
+  refine' (Quotient.eq (r := same_dir_line.setoid)).mpr ⟨_, .inl (Ray.snd_pt_lies_on_mk_pt_pt (B := A))⟩
   rw [Ray.toDir_of_rev_eq_neg_toDir, Ray.toDir_eq_neg_toDir_of_mk_pt_pt]
 
-theorem fst_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : A LiesOn DLIN A B h := .inl Ray.source_lies_on
+theorem fst_pt_lies_on_mk_pt_pt {A B : P} [_h : PtNe B A] : A LiesOn DLIN A B := .inl Ray.source_lies_on
 
-theorem snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn DLIN A B h := Line.snd_pt_lies_on_mk_pt_pt h
+theorem snd_pt_lies_on_mk_pt_pt {A B : P} [_h : PtNe B A] : B LiesOn DLIN A B := Line.snd_pt_lies_on_mk_pt_pt
 
 -- The first point and the second point in DirLine.mk_pt_pt LiesOn the directed line it make.
-theorem pt_lies_on_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn DLIN A B h ∧ B LiesOn DLIN A B h :=
-  ⟨fst_pt_lies_on_mk_pt_pt h, snd_pt_lies_on_mk_pt_pt h⟩
+theorem pt_lies_on_of_pt_pt_of_ne {A B : P} [_h : PtNe B A] : A LiesOn DLIN A B ∧ B LiesOn DLIN A B :=
+  ⟨fst_pt_lies_on_mk_pt_pt, snd_pt_lies_on_mk_pt_pt⟩
 
 theorem pt_lies_on_of_mk_pt_dir (dir : Dir) : A LiesOn mk_pt_dir A dir :=
   Line.pt_lies_on_of_mk_pt_dir A dir
@@ -509,22 +509,22 @@ theorem mk_pt_dir_eq_of_eq_toDir {A : P} {l : DirLine P} (h : A LiesOn l) {x : D
 theorem eq_of_same_toDir_and_pt_lies_on {A : P} {l₁ l₂ : DirLine P} (h₁ : A LiesOn l₁) (h₂ : A LiesOn l₂) (h : l₁.toDir = l₂.toDir) : l₁ = l₂ := by
   rw [← mk_pt_dir_eq h₁, mk_pt_dir_eq_of_eq_toDir h₂ h]
 
-theorem eq_dirline_of_toDir_eq_of_pt_of_ne {A B : P} {l : DirLine P} (h : B ≠ A) (ha : A LiesOn l) (hd : (SEG_nd A B h).toDir = l.toDir) : DLIN A B h = l :=
-  eq_of_same_toDir_and_pt_lies_on (fst_pt_lies_on_mk_pt_pt h) ha hd
+theorem eq_dirline_of_toDir_eq_of_pt_of_ne {A B : P} {l : DirLine P} [_h : PtNe B A] (ha : A LiesOn l) (hd : (SEG_nd A B).toDir = l.toDir) : DLIN A B = l :=
+  eq_of_same_toDir_and_pt_lies_on fst_pt_lies_on_mk_pt_pt ha hd
 
-theorem eq_dirline_rev_of_toDir_ne_of_pt_pt_of_ne {A B : P} {l : DirLine P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) (hd : (SEG_nd A B h).toDir ≠ l.toDir) : DLIN B A h.symm = l := by
-  refine' (Eq.trans _ (pt_pt_rev_eq_rev h).symm).symm
-  exact (eq_rev_of_toDir_ne_of_toLine_eq (Line.eq_line_of_pt_pt_of_ne h ha hb).symm hd.symm)
+theorem eq_dirline_rev_of_toDir_ne_of_pt_pt_of_ne {A B : P} {l : DirLine P} [_h : PtNe B A] (ha : A LiesOn l) (hb : B LiesOn l) (hd : (SEG_nd A B).toDir ≠ l.toDir) : DLIN B A = l := by
+  refine' (Eq.trans _ pt_pt_rev_eq_rev.symm).symm
+  exact (eq_rev_of_toDir_ne_of_toLine_eq (Line.eq_line_of_pt_pt_of_ne ha hb).symm hd.symm)
 
-theorem eq_dirline_or_rev_of_pt_pt_of_ne {A B : P} {l : DirLine P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : DLIN A B h = l ∨ DLIN B A h.symm = l :=
-  if hd : (SEG_nd A B h).toDir = l.toDir then (.inl (eq_dirline_of_toDir_eq_of_pt_of_ne h ha hd))
-  else (.inr (eq_dirline_rev_of_toDir_ne_of_pt_pt_of_ne h ha hb hd))
+theorem eq_dirline_or_rev_of_pt_pt_of_ne {A B : P} {l : DirLine P} [_h : PtNe B A] (ha : A LiesOn l) (hb : B LiesOn l) : DLIN A B = l ∨ DLIN B A = l :=
+  if hd : (SEG_nd A B).toDir = l.toDir then (.inl (eq_dirline_of_toDir_eq_of_pt_of_ne ha hd))
+  else (.inr (eq_dirline_rev_of_toDir_ne_of_pt_pt_of_ne ha hb hd))
 
-theorem eq_dirline_or_rev_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l₂ : DirLine P} (hA₁ : A LiesOn l₁) (hB₁ : B LiesOn l₁) (hA₂ : A LiesOn l₂) (hB₂ : B LiesOn l₂) : l₁ = l₂ ∨ l₁ = l₂.reverse :=
-  eq_or_eq_rev_of_toLine_eq (Line.eq_of_pt_pt_lies_on_of_ne h hA₁ hB₁ hA₂ hB₂)
+theorem eq_dirline_or_rev_of_pt_pt_lies_on_of_ne {A B : P} [_h : PtNe B A] {l₁ l₂ : DirLine P} (hA₁ : A LiesOn l₁) (hB₁ : B LiesOn l₁) (hA₂ : A LiesOn l₂) (hB₂ : B LiesOn l₂) : l₁ = l₂ ∨ l₁ = l₂.reverse :=
+  eq_or_eq_rev_of_toLine_eq (Line.eq_of_pt_pt_lies_on_of_ne hA₁ hB₁ hA₂ hB₂)
 
-theorem toProj_eq_seg_nd_toProj_of_lies_on {A B : P} {l : DirLine P} (ha : A LiesOn l) (hb : B LiesOn l) (hab : B ≠ A) : (SEG_nd A B hab).toProj = l.toProj :=
-  (Line.toProj_eq_seg_nd_toProj_of_lies_on ha hb hab).trans l.toLine_toProj_eq_toProj
+theorem toProj_eq_seg_nd_toProj_of_lies_on {A B : P} {l : DirLine P} (ha : A LiesOn l) (hb : B LiesOn l) [_h : PtNe B A] : (SEG_nd A B).toProj = l.toProj :=
+  (Line.toProj_eq_seg_nd_toProj_of_lies_on ha hb).trans l.toLine_toProj_eq_toProj
 
 theorem exsit_dirline_pt_lies_on : ∃ l : DirLine P, A LiesOn l := by
   rcases Line.exsit_line_pt_lies_on A with ⟨⟨r⟩, h⟩
@@ -547,32 +547,32 @@ theorem Ray.toLine_eq_rev_toLine {r : Ray P} : r.toLine = r.reverse.toLine :=
 theorem SegND.toLine_eq_toRay_toLine {s : SegND P} : s.toRay.toLine = s.toLine := rfl
 
 theorem SegND.toLine_eq_rev_toLine {s : SegND P} : s.toLine = s.reverse.toLine :=
-  line_of_pt_pt_eq_rev s.2
+  line_of_pt_pt_eq_rev (_h := ⟨s.2⟩)
 
 theorem SegND.toLine_eq_extn_toLine {s : SegND P} : s.toLine = s.extension.toLine :=
   (Quotient.eq (r := same_extn_line.setoid)).mpr ⟨ SegND.extn_toProj.symm,
   .inl (SegND.lies_on_toRay_of_lies_on Seg.target_lies_on)⟩
 
-theorem ray_of_pt_pt_toLine_eq_line_of_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toLine = LIN A B h := rfl
+theorem ray_of_pt_pt_toLine_eq_line_of_pt_pt {A B : P} [_h : PtNe B A] : (RAY A B).toLine = LIN A B := rfl
 
-theorem seg_nd_of_pt_pt_toLine_eq_line_of_pt_pt {A B : P} (h : B ≠ A) : (SEG_nd A B h).toLine = LIN A B h := rfl
+theorem seg_nd_of_pt_pt_toLine_eq_line_of_pt_pt {A B : P} [_h : PtNe B A] : (SEG_nd A B).toLine = LIN A B := rfl
 
 theorem Ray.toDirLine_rev_eq_rev_toLine {r : Ray P} : r.toDirLine.reverse = r.reverse.toDirLine :=
   (Quotient.eq (r := same_dir_line.setoid)).mpr ⟨rfl, .inl r.source_lies_on_rev⟩
 
 theorem SegND.toDirLine_eq_toRay_toDirLine {s : SegND P} : s.toRay.toDirLine = s.toDirLine := rfl
 
-theorem SegND.toDirLine_rev_eq_rev_toDirLine {s : SegND P} : s.toDirLine.reverse = s.reverse.toDirLine :=
-  (eq_dirline_of_toDir_eq_of_pt_of_ne s.2.symm (DirLine.lies_on_rev_iff_lies_on.mpr target_lies_on_toDirLine)
+theorem SegND.toDirLine_rev_eq_rev_toLine {s : SegND P} : s.toDirLine.reverse = s.reverse.toDirLine :=
+  (eq_dirline_of_toDir_eq_of_pt_of_ne (_h := ⟨s.2.symm⟩) (DirLine.lies_on_rev_iff_lies_on.mpr target_lies_on_toDirLine)
     ((s.toDir_of_rev_eq_neg_toDir).trans s.toDirLine.rev_toDir_eq_neg_toDir)).symm
 
 theorem SegND.toDirLine_eq_extn_toDirLine {s : SegND P} : s.toDirLine = s.extension.toDirLine :=
     (Quotient.eq (r := same_dir_line.setoid)).mpr
     ⟨s.extn_toDir, .inl (s.lies_on_toRay_of_lies_on s.1.target_lies_on)⟩
 
-theorem ray_of_pt_pt_toDirLine_eq_dirline_of_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toDirLine = DLIN A B h := rfl
+theorem ray_of_pt_pt_toDirLine_eq_dirline_of_pt_pt {A B : P} [_h : PtNe B A] : (RAY A B).toDirLine = DLIN A B := rfl
 
-theorem seg_nd_of_pt_pt_toDirLine_eq_dirline_of_pt_pt {A B : P} (h : B ≠ A) : (SEG_nd A B h).toDirLine = DLIN A B h := rfl
+theorem seg_nd_of_pt_pt_toDirLine_eq_dirline_of_pt_pt {A B : P} [_h : PtNe B A] : (SEG_nd A B).toDirLine = DLIN A B := rfl
 
 end coercion
 
@@ -644,12 +644,12 @@ theorem lies_on_iff_lies_on_iff_line_eq_line (l₁ l₂ : Line P) : (∀ A : P, 
   · revert l₁ l₂
     rintro ⟨r₁⟩ ⟨r₂⟩ h
     rcases r₁.toLine.nontriv with ⟨X, Y, Xrl₁, Yrl₁, neq⟩
-    exact eq_of_pt_pt_lies_on_of_ne neq Xrl₁ Yrl₁ ((h X).mp Xrl₁) ((h Y).mp Yrl₁)
+    exact eq_of_pt_pt_lies_on_of_ne (_h := ⟨neq⟩) Xrl₁ Yrl₁ ((h X).mp Xrl₁) ((h Y).mp Yrl₁)
   · exact fun h A ↦ Iff.of_eq (congrArg (lies_on A) h)
 
-theorem Line.lies_on_iff_eq_toProj_of_lies_on {A B : P} {l : Line P} (h : B ≠ A) (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B h).toProj = l.toProj := by
-  refine' ⟨fun hB ↦ toProj_eq_seg_nd_toProj_of_lies_on hA hB h, fun eq ↦ _⟩
-  rw [← eq_of_same_toProj_and_pt_lies_on (SegND.lies_on_toLine_of_lie_on (@Seg.source_lies_on _ _ (SEG_nd A B h).1)) hA eq]
+theorem Line.lies_on_iff_eq_toProj_of_lies_on {A B : P} {l : Line P} [_h : PtNe B A] (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B).toProj = l.toProj := by
+  refine' ⟨fun hB ↦ toProj_eq_seg_nd_toProj_of_lies_on hA hB, fun eq ↦ _⟩
+  rw [← eq_of_same_toProj_and_pt_lies_on (SegND.lies_on_toLine_of_lie_on (@Seg.source_lies_on _ _ (SEG_nd A B).1)) hA eq]
   exact SegND.lies_on_toLine_of_lie_on Seg.target_lies_on
 
 theorem Line.exist_real_vec_eq_smul_of_lies_on {A B : P} {dir : Dir} (h : B LiesOn (mk_pt_dir A dir)) : ∃ t : ℝ, VEC A B = t • dir.unitVec :=
@@ -657,10 +657,10 @@ theorem Line.exist_real_vec_eq_smul_of_lies_on {A B : P} {dir : Dir} (h : B Lies
 
 theorem Line.exist_real_vec_eq_smul_vec_of_lies_on {A B : P} {v : VecND} (hb : B LiesOn (mk_pt_vec_nd A v)) : ∃ t : ℝ, VEC A B = t • v.1 :=
   if h : VEC A B = 0 then ⟨0, h.trans (zero_smul ℝ v.1).symm⟩
-  else VecND.toProj_eq_toProj_iff.mp (toProj_eq_seg_nd_toProj_of_lies_on (pt_lies_on_of_mk_pt_vec_nd A v) hb (vsub_ne_zero.mp h))
+  else VecND.toProj_eq_toProj_iff.mp (toProj_eq_seg_nd_toProj_of_lies_on (pt_lies_on_of_mk_pt_vec_nd A v) hb (_hab := ⟨vsub_ne_zero.mp h⟩))
 
-theorem Line.exist_real_of_lies_on_of_pt_pt {A B C : P} (h : B ≠ A) (hc : C LiesOn (LIN A B h)) : ∃ t : ℝ, VEC A C = t • VEC A B :=
-  @exist_real_vec_eq_smul_vec_of_lies_on P _ A C (SEG_nd A B h).toVecND hc
+theorem Line.exist_real_of_lies_on_of_pt_pt {A B C : P} [_h : PtNe B A] (hc : C LiesOn (LIN A B)) : ∃ t : ℝ, VEC A C = t • VEC A B :=
+  @exist_real_vec_eq_smul_vec_of_lies_on P _ A C (SEG_nd A B).toVecND hc
 
 theorem Line.lies_on_of_exist_real_vec_eq_smul {A B : P} {dir : Dir} {t : ℝ} (h : VEC A B = t • dir.unitVec) : B LiesOn (mk_pt_dir A dir) :=
   (@pt_lies_on_line_from_ray_iff_vec_parallel P _ B ⟨A, dir⟩).mpr ⟨t, h⟩
@@ -671,8 +671,8 @@ theorem Line.lies_on_of_exist_real_vec_eq_smul_vec {A B : P} {v : VecND} {t : �
     rw [mul_smul, VecND.norm_smul_toDir_unitVec]
   lies_on_of_exist_real_vec_eq_smul h'
 
-theorem Line.lies_on_of_exist_real_of_pt_pt {A B C : P} (h : B ≠ A) {t : ℝ} (ht : VEC A C = t • VEC A B) : C LiesOn (LIN A B h) :=
-  @lies_on_of_exist_real_vec_eq_smul_vec P _ A C (SEG_nd A B h).toVecND t ht
+theorem Line.lies_on_of_exist_real_of_pt_pt {A B C : P} [_h : PtNe B A] {t : ℝ} (ht : VEC A C = t • VEC A B) : C LiesOn (LIN A B) :=
+  @lies_on_of_exist_real_vec_eq_smul_vec P _ A C (SEG_nd A B).toVecND t ht
 
 theorem Ray.subset_toDirLine {r : Ray P}: r.carrier ⊆ r.toDirLine.carrier := r.subset_toLine
 
@@ -702,8 +702,8 @@ theorem SegND.lies_on_toDirLine_of_lies_on_extn {X : P} {seg_nd : SegND P} (h : 
 theorem DirLine.lies_on_iff_lies_on_iff_toLine_eq_toLine (l₁ l₂ : DirLine P) : (∀ A : P, A LiesOn l₁ ↔ A LiesOn l₂) ↔ l₁.toLine = l₂.toLine :=
   lies_on_iff_lies_on_iff_line_eq_line l₁.toLine l₂.toLine
 
-theorem DirLine.lies_on_iff_eq_toProj_of_lies_on {A B : P} {l : DirLine P} (h : B ≠ A) (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B h).toProj = l.toProj :=
-  (Line.lies_on_iff_eq_toProj_of_lies_on h hA).trans (Eq.congr rfl l.toLine_toProj_eq_toProj)
+theorem DirLine.lies_on_iff_eq_toProj_of_lies_on {A B : P} {l : DirLine P} [_h : PtNe B A] (hA : A LiesOn l) : B LiesOn l ↔ (SEG_nd A B).toProj = l.toProj :=
+  (Line.lies_on_iff_eq_toProj_of_lies_on hA).trans (Eq.congr rfl l.toLine_toProj_eq_toProj)
 
 theorem DirLine.exist_real_vec_eq_smul_of_lies_on {A B : P} {dir : Dir} (h : B LiesOn (mk_pt_dir A dir)) : ∃ t : ℝ, VEC A B = t • dir.unitVec :=
   lies_on_or_rev_iff_exist_real_vec_eq_smul.mp h
@@ -711,8 +711,8 @@ theorem DirLine.exist_real_vec_eq_smul_of_lies_on {A B : P} {dir : Dir} (h : B L
 theorem DirLine.exist_real_vec_eq_smul_vec_of_lies_on {A B : P} {v : VecND} (h : B LiesOn (mk_pt_vec_nd A v)) : ∃ t : ℝ, VEC A B = t • v.1 :=
   Line.exist_real_vec_eq_smul_vec_of_lies_on h
 
-theorem DirLine.exist_real_of_lies_on_of_pt_pt {A B C : P} (h : B ≠ A) (hc : C LiesOn (DLIN A B h)) : ∃ t : ℝ, VEC A C = t • VEC A B :=
-  Line.exist_real_of_lies_on_of_pt_pt h hc
+theorem DirLine.exist_real_of_lies_on_of_pt_pt {A B C : P} [_h : PtNe B A] (hc : C LiesOn (DLIN A B)) : ∃ t : ℝ, VEC A C = t • VEC A B :=
+  Line.exist_real_of_lies_on_of_pt_pt hc
 
 theorem DirLine.exist_real_vec_eq_smul_toDir_of_lies_on {A B : P} {l : DirLine P} (ha : A LiesOn l) (hb : B LiesOn l) : ∃ t : ℝ, VEC A B = t • l.toDir.unitVec := by
   rw [← mk_pt_dir_eq ha]
@@ -725,8 +725,8 @@ theorem DirLine.lies_on_of_exist_real_vec_eq_smul {A B : P} {dir : Dir} {t : ℝ
 theorem DirLine.lies_on_of_exist_real_vec_eq_smul_vec {A B : P} {v : VecND} {t : ℝ} (h : VEC A B = t • v.1) : B LiesOn (mk_pt_vec_nd A v):=
   Line.lies_on_of_exist_real_vec_eq_smul_vec h
 
-theorem DirLine.lies_on_of_exist_real_of_pt_pt {A B C : P} (h : B ≠ A) {t : ℝ} (ht : VEC A C = t • VEC A B) : C LiesOn (DLIN A B h) :=
-  Line.lies_on_of_exist_real_of_pt_pt h ht
+theorem DirLine.lies_on_of_exist_real_of_pt_pt {A B C : P} [_h : PtNe B A] {t : ℝ} (ht : VEC A C = t • VEC A B) : C LiesOn (DLIN A B) :=
+  Line.lies_on_of_exist_real_of_pt_pt ht
 
 theorem DirLine.lies_on_of_exist_real_vec_eq_smul_toDir {A B : P} {l : DirLine P} (ha : A LiesOn l) {t : ℝ} (ht : VEC A B = t • l.toDir.unitVec) : B LiesOn l := by
   rw [← mk_pt_dir_eq ha]
@@ -740,12 +740,14 @@ section colinear
 
 namespace Line
 
-theorem pt_pt_linear {A B C : P} (h : B ≠ A) (hc : C LiesOn (LIN A B h) ) : colinear A B C :=
+theorem pt_pt_linear {A B C : P} [_h : PtNe B A] (hc : C LiesOn (LIN A B)) : colinear A B C :=
   if hcb : C = B then colinear_of_trd_eq_snd A hcb
   else if hac : A = C then colinear_of_fst_eq_snd B hac
-  else perm_colinear_trd_fst_snd <| (dite_prop_iff_or _).mpr <| .inr ⟨by push_neg; exact ⟨hac, h, hcb⟩,
-    ((lies_on_iff_eq_toProj_of_lies_on hcb (snd_pt_lies_on_mk_pt_pt h)).mp hc).trans <|
-      congrArg toProj (line_of_pt_pt_eq_rev h)⟩
+  else
+    haveI : PtNe C B := ⟨hcb⟩
+    perm_colinear_trd_fst_snd <| (dite_prop_iff_or _).mpr <| .inr ⟨by push_neg; exact ⟨hac, Fact.out, hcb⟩,
+    ((lies_on_iff_eq_toProj_of_lies_on snd_pt_lies_on_mk_pt_pt).mp hc).trans <|
+      congrArg toProj line_of_pt_pt_eq_rev⟩
 
 theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h₃ : C LiesOn l) : colinear A B C := by
   revert l
@@ -807,43 +809,47 @@ theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) 
       | inr c =>
         exact Ray.colinear_of_lies_on a b c
 
-theorem pt_pt_maximal {A B C : P} (h : B ≠ A) (Co : colinear A B C) : C LiesOn (LIN A B h) :=
+theorem pt_pt_maximal {A B C : P} [_h : PtNe B A] (Co : colinear A B C) : C LiesOn (LIN A B) :=
   if hcb : C = B then by
     rw [hcb]
-    exact snd_pt_lies_on_mk_pt_pt h
-  else (lies_on_iff_eq_toProj_of_lies_on hcb (snd_pt_lies_on_mk_pt_pt h)).mpr <|
-    (toProj_eq_of_colinear hcb h.symm (perm_colinear_snd_trd_fst Co)).trans <|
-      congrArg Line.toProj (line_of_pt_pt_eq_rev h).symm
+    exact snd_pt_lies_on_mk_pt_pt
+  else
+    haveI : PtNe C B := ⟨hcb⟩
+    (lies_on_iff_eq_toProj_of_lies_on snd_pt_lies_on_mk_pt_pt).mpr <|
+    (toProj_eq_of_colinear (perm_colinear_snd_trd_fst Co)).trans <|
+      congrArg Line.toProj (line_of_pt_pt_eq_rev (_h := _h)).symm
 
-theorem maximal {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h : B ≠ A) (Co : colinear A B C) : C LiesOn l := by
-  rw [← eq_line_of_pt_pt_of_ne h h₁ h₂]
-  exact pt_pt_maximal h Co
+theorem maximal {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) [_h : PtNe B A] (Co : colinear A B C) : C LiesOn l := by
+  rw [← eq_line_of_pt_pt_of_ne h₁ h₂]
+  exact pt_pt_maximal Co
 
-theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) (X : P) : (X LiesOn (LIN A B h)) ↔ colinear A B X := ⟨
-  fun hx ↦ (LIN A B h).linear (fst_pt_lies_on_mk_pt_pt h) (snd_pt_lies_on_mk_pt_pt h) hx,
-  fun c ↦ (LIN A B h).maximal (fst_pt_lies_on_mk_pt_pt h) (snd_pt_lies_on_mk_pt_pt h) h c⟩
+theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} [_h : PtNe B A] (X : P) : (X LiesOn (LIN A B)) ↔ colinear A B X := ⟨
+  fun hx ↦ (LIN A B).linear fst_pt_lies_on_mk_pt_pt snd_pt_lies_on_mk_pt_pt hx,
+  fun c ↦ (LIN A B).maximal fst_pt_lies_on_mk_pt_pt snd_pt_lies_on_mk_pt_pt c⟩
 
 -- This is also a typical proof that shows how to use linear, maximal, nontriv of a line. Please write it shorter in future.
 
-theorem lies_on_iff_colinear_of_ne_lies_on_lies_on {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) (C : P) : (C LiesOn l) ↔ colinear A B C :=
-  ⟨fun hc ↦ l.linear ha hb hc, fun c ↦ l.maximal ha hb h c⟩
+theorem lies_on_iff_colinear_of_ne_lies_on_lies_on {A B : P} {l : Line P} [_h : PtNe B A] (ha : A LiesOn l) (hb : B LiesOn l) (C : P) : (C LiesOn l) ↔ colinear A B C :=
+  ⟨fun hc ↦ l.linear ha hb hc, fun c ↦ l.maximal ha hb c⟩
 
 theorem colinear_iff_exist_line_lies_on (A B C : P) : colinear A B C ↔ ∃ l : Line P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) := by
   constructor
   · intro c
-    by_cases h : B ≠ A
-    · exact ⟨(LIN A B h), fst_pt_lies_on_mk_pt_pt h, snd_pt_lies_on_mk_pt_pt h,
-        (lies_on_line_of_pt_pt_iff_colinear h C).mpr c⟩
-    rw [ne_eq, not_not] at h
-    by_cases hh : C ≠ B
-    · use LIN B C hh
+    by_cases h : PtNe B A
+    · exact ⟨LIN A B, fst_pt_lies_on_mk_pt_pt, snd_pt_lies_on_mk_pt_pt,
+        (lies_on_line_of_pt_pt_iff_colinear C).mpr c⟩
+    rw [PtNe, fact_iff, ne_eq, not_not] at h
+    by_cases hh : PtNe C B
+    · use LIN B C hh.out
       rw [← h, and_self_left]
-      exact ⟨fst_pt_lies_on_mk_pt_pt hh, snd_pt_lies_on_mk_pt_pt hh⟩
-    rw [ne_eq, not_not] at hh
+      exact ⟨fst_pt_lies_on_mk_pt_pt, snd_pt_lies_on_mk_pt_pt⟩
+    rw [PtNe, fact_iff, ne_eq, not_not] at hh
     simp only [hh, h, and_self, exsit_line_pt_lies_on A]
   · intro ⟨l, ha, hb, hc⟩
-    if h : B = A then simp only [h, colinear, or_true, dite_true]
-    else exact (lies_on_iff_colinear_of_ne_lies_on_lies_on h ha hb C).mp hc
+    if h : PtNe B A then exact (lies_on_iff_colinear_of_ne_lies_on_lies_on ha hb C).mp hc
+    else
+      simp [PtNe, fact_iff] at h
+      simp only [h, colinear, or_true, dite_true]
 
 end Line
 
@@ -852,17 +858,17 @@ namespace DirLine
 theorem linear {l : DirLine P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h₃ : C LiesOn l) : colinear A B C :=
   Line.linear h₁ h₂ h₃
 
-theorem pt_pt_maximal {A B C : P} (h : B ≠ A) (Co : colinear A B C) : C LiesOn (DLIN A B h) :=
-  Line.pt_pt_maximal h Co
+theorem pt_pt_maximal {A B C : P} [_h : PtNe B A] (Co : colinear A B C) : C LiesOn (DLIN A B) :=
+  Line.pt_pt_maximal Co
 
-theorem maximal {l : DirLine P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h : B ≠ A) (Co : colinear A B C) : C LiesOn l :=
-  Line.maximal  h₁ h₂ h Co
+theorem maximal {l : DirLine P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) [_h : PtNe B A] (Co : colinear A B C) : C LiesOn l :=
+  Line.maximal h₁ h₂ Co
 
-theorem lies_on_dirline_of_pt_pt_iff_colinear {A B : P} (h : B ≠ A) (X : P) : (X LiesOn (DLIN A B h)) ↔ colinear A B X :=
-  Line.lies_on_line_of_pt_pt_iff_colinear h X
+theorem lies_on_dirline_of_pt_pt_iff_colinear {A B : P} [_h : PtNe B A] (X : P) : (X LiesOn (DLIN A B)) ↔ colinear A B X :=
+  Line.lies_on_line_of_pt_pt_iff_colinear X
 
-theorem lies_on_iff_colinear_of_ne_lies_on_lies_on {A B : P} {l : DirLine P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) (C : P) : (C LiesOn l) ↔ colinear A B C :=
-  Line.lies_on_iff_colinear_of_ne_lies_on_lies_on h ha hb C
+theorem lies_on_iff_colinear_of_ne_lies_on_lies_on {A B : P} {l : DirLine P} [_h : PtNe B A] (ha : A LiesOn l) (hb : B LiesOn l) (C : P) : (C LiesOn l) ↔ colinear A B C :=
+  Line.lies_on_iff_colinear_of_ne_lies_on_lies_on ha hb C
 
 theorem colinear_iff_exist_dirline_lies_on (A B C : P) : colinear A B C ↔ ∃ l : Line P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) :=
   Line.colinear_iff_exist_line_lies_on A B C
@@ -882,21 +888,21 @@ theorem exists_ne_pt_pt_lies_on (A : P) {l : Line P} : ∃ B : P, B LiesOn l ∧
   rcases l.nontriv with ⟨X, Y, hx, hy, ne⟩
   exact if h : A = X then ⟨Y, hy, ne.trans_eq h.symm⟩ else ⟨X, hx, ne_comm.mp h⟩
 
-theorem lies_on_of_SegND_toProj_eq_toProj {A B : P} {l : Line P} (ha : A LiesOn l) (hab : B ≠ A) (hp : (SEG_nd A B hab).toProj = l.toProj) : B LiesOn l :=
-  (lies_on_iff_eq_toProj_of_lies_on hab ha).mpr hp
+theorem lies_on_of_SegND_toProj_eq_toProj {A B : P} {l : Line P} (ha : A LiesOn l) [_hab : PtNe B A] (hp : (SEG_nd A B).toProj = l.toProj) : B LiesOn l :=
+  (lies_on_iff_eq_toProj_of_lies_on ha).mpr hp
 
-theorem vec_vadd_pt_lies_on_line {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B LiesOn l) (h : B ≠ A) : (VEC A B) +ᵥ B LiesOn l := by
-  rw [← eq_line_of_pt_pt_of_ne h hA hB]
+theorem vec_vadd_pt_lies_on_line {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B LiesOn l) [_h : PtNe B A] : (VEC A B) +ᵥ B LiesOn l := by
+  rw [← eq_line_of_pt_pt_of_ne hA hB]
   refine' Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev.mpr
     (.inl ⟨2 * ‖VEC A B‖, mul_nonneg zero_le_two (norm_nonneg (VEC A B)), _⟩)
   have eq : VEC A (VEC A B +ᵥ B) = (2 : ℝ) • (VEC A B) := (vadd_vsub_assoc _ B A).trans (two_smul _ _).symm
   simp [Ray.mk_pt_pt, eq, mul_smul]
 
-theorem exist_pt_beyond_pt_right {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B LiesOn l) (h : B ≠ A) : ∃ C : P, C LiesOn l ∧ B LiesInt (SEG A C) :=
-  ⟨VEC A B +ᵥ B, vec_vadd_pt_lies_on_line hA hB h, (SEG_nd A B h).target_lies_int_seg_source_vec_vadd_target⟩
+theorem exist_pt_beyond_pt_right {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B LiesOn l) [_h : PtNe B A] : ∃ C : P, C LiesOn l ∧ B LiesInt (SEG A C) :=
+  ⟨VEC A B +ᵥ B, vec_vadd_pt_lies_on_line hA hB, (SEG_nd A B).target_lies_int_seg_source_vec_vadd_target⟩
 
-theorem exist_pt_beyond_pt_left {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B LiesOn l) (h : B ≠ A) : ∃ C : P, C LiesOn l ∧ A LiesInt (SEG C B) := by
-  rcases exist_pt_beyond_pt_right hB hA h.symm with ⟨C, cl, acb⟩
+theorem exist_pt_beyond_pt_left {A B : P} {l : Line P} (hA : A LiesOn l) (hB : B LiesOn l) [_h : PtNe B A] : ∃ C : P, C LiesOn l ∧ A LiesInt (SEG C B) := by
+  rcases exist_pt_beyond_pt_right hB hA with ⟨C, cl, acb⟩
   exact ⟨C, cl, Seg.lies_int_rev_iff_lies_int.mp acb⟩
 
 end Line
@@ -907,14 +913,14 @@ namespace DirLine
 theorem exists_ne_pt_pt_lies_on (A : P) {l : DirLine P} : ∃ B : P, B LiesOn l ∧ B ≠ A :=
   l.toLine.exists_ne_pt_pt_lies_on A
 
-theorem lies_on_of_SegND_toProj_eq_toProj {A B : P} {l : DirLine P} (ha : A LiesOn l) (hab : B ≠ A) (hp : (SEG_nd A B hab).toDir = l.toDir) : B LiesOn l :=
-  Line.lies_on_of_SegND_toProj_eq_toProj ha hab ((congrArg Dir.toProj hp).trans l.toLine_toProj_eq_toProj.symm)
+theorem lies_on_of_SegND_toProj_eq_toProj {A B : P} {l : DirLine P} (ha : A LiesOn l) [_hab : PtNe B A] (hp : (SEG_nd A B).toDir = l.toDir) : B LiesOn l :=
+  Line.lies_on_of_SegND_toProj_eq_toProj ha ((congrArg Dir.toProj hp).trans l.toLine_toProj_eq_toProj.symm)
 
-theorem exist_pt_beyond_pt_right {A B : P} {l : DirLine P} (hA : A LiesOn l) (hB : B LiesOn l) (h : B ≠ A) : ∃ C : P, C LiesOn l ∧ B LiesInt (SEG A C) :=
-  Line.exist_pt_beyond_pt_right hA hB h
+theorem exist_pt_beyond_pt_right {A B : P} {l : DirLine P} (hA : A LiesOn l) (hB : B LiesOn l) [_h : PtNe B A] : ∃ C : P, C LiesOn l ∧ B LiesInt (SEG A C) :=
+  Line.exist_pt_beyond_pt_right hA hB
 
-theorem exist_pt_beyond_pt_left {A B : P} {l : DirLine P} (hA : A LiesOn l) (hB : B LiesOn l) (h : B ≠ A) : ∃ C : P, C LiesOn l ∧ A LiesInt (SEG C B) :=
-  Line.exist_pt_beyond_pt_left hA hB h
+theorem exist_pt_beyond_pt_left {A B : P} {l : DirLine P} (hA : A LiesOn l) (hB : B LiesOn l) [_h : PtNe B A] : ∃ C : P, C LiesOn l ∧ A LiesInt (SEG C B) :=
+  Line.exist_pt_beyond_pt_left hA hB
 
 end DirLine
 
