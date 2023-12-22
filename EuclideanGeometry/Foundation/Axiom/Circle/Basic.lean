@@ -1,7 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
-import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Line_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
 
@@ -101,10 +100,28 @@ theorem pt_lieson_ne_center {p : P} {ω : Circle P} (h : p LiesOn ω) : p ≠ ω
   have : ω.radius > 0 := ω.rad_pos
   linarith
 
+theorem pt_liesout_ne_pt_lieson {A B : P} {ω : Circle P} (h₁ : A LiesOut ω) (h₂ : B LiesOn ω) : A ≠ B := by
+  have hgt : dist ω.center A > ω.radius := h₁
+  have heq : dist ω.center B = ω.radius := h₂
+  contrapose! hgt
+  rw [hgt, heq]
+
 theorem interior_of_circle_iff_inside_not_on_circle (p : P) (ω : Circle P) : p LiesInt ω ↔ (p LiesIn ω) ∧ (¬ p LiesOn ω) := by
   show dist ω.center p < ω.radius ↔ (dist ω.center p ≤ ω.radius) ∧ (¬ dist ω.center p = ω.radius)
   push_neg
   exact lt_iff_le_and_ne
+
+@[simp]
+theorem mk_pt_pt_lieson {O A : P} (h : A ≠ O) : A LiesOn (CIR O A h) := rfl
+
+@[simp]
+theorem mk_pt_pt_diam_fst_lieson {A B : P} (h : B ≠ A) : A LiesOn (mk_pt_pt_diam A B h) := by
+  show dist (SEG A B).midpoint A = dist (SEG A B).midpoint B
+  rw [dist_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
+  apply dist_target_eq_dist_source_of_midpt
+
+@[simp]
+theorem mk_pt_pt_diam_snd_lieson {A B : P} (h : B ≠ A) : B LiesOn (mk_pt_pt_diam A B h) := rfl
 
 -- Define a concept of segment to be entirely contained in a circle, to mean that the two endpoints of a segment to lie inside a circle.
 
