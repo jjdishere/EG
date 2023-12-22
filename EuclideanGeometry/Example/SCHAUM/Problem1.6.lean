@@ -4,6 +4,8 @@ noncomputable section
 
 namespace EuclidGeom
 
+namespace Schaum
+
 namespace Problem1_6
 
 /-
@@ -46,7 +48,7 @@ Therefore, $PB = AB - AP = CD - CQ = QD$.
     exact e.P_int_AB
   -- $AB - AP = CD - CQ$ since $AB = CD$ and $AP = CQ$,
   _= (SEG e.C e.D).length - (SEG e.C e.Q).length := by
-    rw [e.AP_eq_CQ, AB_eq_CD]
+    simp only [e.AP_eq_CQ, AB_eq_CD]
   -- $CD - CQ = (CQ + QD) - CQ$ because $Q$ lies on $CD$,
   _= ((SEG e.C e.Q).length + (SEG e.Q e.D).length) - (SEG e.C e.Q).length := by
     congr;
@@ -56,3 +58,5 @@ Therefore, $PB = AB - AP = CD - CQ = QD$.
   -- $(CQ + QD) - CQ = QD$.
   _= (SEG e.Q e.D).length := by ring
 end Problem1_6
+end Schaum
+end EuclidGeom
