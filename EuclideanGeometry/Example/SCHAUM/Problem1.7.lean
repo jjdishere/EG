@@ -52,20 +52,52 @@ $\cdot BD = CE$
 Thus, $\triangle XBD \cong_a \triangle YEC$ (by AAS)
 Therefore, $DX = EY$.
 -/
-  have not_colinear_XBD : ¬ colinear X B D := by sorry
-  have not_colinear_YCE : ¬ colinear Y C E := by sorry
-  -- We have that $X, B, D$ are pairwise distinct.
-  have X_ne_B : X ≠ B := by sorry
-  have D_ne_X : D ≠ X := by sorry
   have D_ne_B : D ≠ B := by sorry
-  -- We have that $Y, C, E$ are pairwise distinct.
-  have Y_ne_C : Y ≠ C := by sorry
-  have E_ne_Y : E ≠ Y := by sorry
   have E_ne_C : E ≠ C := by sorry
   -- We have that $A, B, C$ are pairwise distinct.
   have A_ne_B : A ≠ B := by sorry
   have C_ne_B : C ≠ B := by sorry
   have A_ne_C : A ≠ C := by sorry
+
+  have E_int_ray_CB : E LiesInt (RAY C B C_ne_B.symm) := by
+    apply SegND.lies_int_toRay_of_lies_int (seg_nd := (SEG_nd C B C_ne_B.symm))
+    apply lies_int_seg_nd_of_lies_int_seg C B E C_ne_B.symm _
+    apply (Seg.lies_int_rev_iff_lies_int (seg := (SEG B C))).mpr
+    exact E_int_BC
+  have Y_int_ray_CA : Y LiesInt (RAY C A A_ne_C) := by
+    simp only [he, Line.line_of_pt_pt_eq_rev A_ne_C.symm]
+    have angle_ACE_acute :  Angle.IsAcuteAngle (ANG A C E A_ne_C E_ne_C) := by
+      have angle_ACE_is_angle_ACB : (ANG A C E A_ne_C E_ne_C) = (ANG A C B A_ne_C C_ne_B.symm) := by
+        symm;
+        apply eq_ang_of_lies_int_liesint A_ne_C C_ne_B.symm A_ne_C E_ne_C
+        · exact Ray.snd_pt_lies_int_mk_pt_pt C A A_ne_C
+        · exact E_int_ray_CB
+      rw [angle_ACE_is_angle_ACB]
+      exact ang_acute_of_is_isoceles_variant not_colinear_ABC isoceles_ABC
+    exact perp_foot_lies_int_ray_of_acute_ang (A := C) (B := A) (C := E) A_ne_C E_ne_C angle_ACE_acute
+  have not_colinear_YCE : ¬ colinear Y C E := by sorry
+  have Y_ne_C : Y ≠ C := by sorry
+  have E_ne_Y : E ≠ Y := by sorry
+
+  have D_int_ray_BC : D LiesInt (RAY B C C_ne_B) := by
+    apply SegND.lies_int_toRay_of_lies_int (seg_nd := (SEG_nd B C C_ne_B))
+    exact lies_int_seg_nd_of_lies_int_seg B C D C_ne_B D_int_BC
+  have X_int_ray_BA : X LiesInt (RAY B A A_ne_B) := by
+    simp only [hd]
+    simp only [Line.line_of_pt_pt_eq_rev A_ne_B.symm]
+    have angle_ABD_acute :  Angle.IsAcuteAngle (ANG A B D A_ne_B D_ne_B) := by
+      have angle_ABD_is_angle_ABC : (ANG A B D A_ne_B D_ne_B) = (ANG A B C A_ne_B C_ne_B) := by
+        symm;
+        apply eq_ang_of_lies_int_liesint A_ne_B C_ne_B A_ne_B D_ne_B
+        · exact Ray.snd_pt_lies_int_mk_pt_pt B A A_ne_B
+        · exact D_int_ray_BC
+      rw [angle_ABD_is_angle_ABC]
+      exact ang_acute_of_is_isoceles' not_colinear_ABC isoceles_ABC
+    exact perp_foot_lies_int_ray_of_acute_ang A_ne_B D_ne_B angle_ABD_acute
+  have not_colinear_XBD : ¬ colinear X B D := by sorry
+  have X_ne_B : X ≠ B := by sorry
+  have D_ne_X : D ≠ X := by sorry
+
   have angle_CBA_eq_neg_angle_BCA : ∠ C B A C_ne_B A_ne_B = - ∠ B C A C_ne_B.symm A_ne_C := by
     calc
     ∠ C B A C_ne_B A_ne_B
@@ -73,25 +105,9 @@ Therefore, $DX = EY$.
     _= - ∠ B C A C_ne_B.symm A_ne_C := neg_value_of_rev_ang A_ne_C C_ne_B.symm
   have angle_DBX_eq_angle_CBA : (∠ D B X D_ne_B X_ne_B) = (∠ C B A C_ne_B A_ne_B) := by
     symm;
-    have D_int_ray_BC : D LiesInt (RAY B C C_ne_B) := by
-      apply SegND.lies_int_toRay_of_lies_int (seg_nd := (SEG_nd B C C_ne_B))
-      exact lies_int_seg_nd_of_lies_int_seg B C D C_ne_B D_int_BC
-    have X_int_ray_BA : X LiesInt (RAY B A A_ne_B) := by
-      simp only [hd]
-      simp only [Line.line_of_pt_pt_eq_rev A_ne_B.symm]
-      have angle_ABD_acute :  Angle.IsAcuteAngle (ANG A B D A_ne_B D_ne_B) := by
-        have angle_ABD_is_angle_ABC : (ANG A B D A_ne_B D_ne_B) = (ANG A B C A_ne_B C_ne_B) := by
-          symm;
-          apply eq_ang_of_lies_int_liesint A_ne_B C_ne_B A_ne_B D_ne_B
-          · exact Ray.snd_pt_lies_int_mk_pt_pt B A A_ne_B
-          · exact D_int_ray_BC
-        rw [angle_ABD_is_angle_ABC]
-        exact ang_acute_of_is_isoceles' not_colinear_ABC isoceles_ABC
-      exact perp_foot_lies_int_ray_of_acute_ang A_ne_B D_ne_B angle_ABD_acute
     exact eq_ang_val_of_lieson_lieson C_ne_B A_ne_B D_ne_B X_ne_B D_int_ray_BC X_int_ray_BA
   have angle_BXD_eq_neg_angle_CYE : (ANG B X D X_ne_B.symm D_ne_X).dvalue = - (ANG C Y E Y_ne_C.symm E_ne_Y).dvalue := by
-    have BX_perp_XD : (LIN B X X_ne_B) ⟂ (LIN X D D_ne_X) := by
-      symm;
+    have BX_perp_XD : (LIN B X X_ne_B) ⟂ (LIN X D D_ne_X) := by sorry
     have CY_perp_YE : (LIN C Y Y_ne_C) ⟂ (LIN Y E E_ne_Y) := by sorry
     have angle_BXD_is_right_angle : (ANG B X D X_ne_B.symm D_ne_X).dvalue = ↑(π / 2) := by sorry
     have angle_CYE_is_right_angle : (ANG C Y E Y_ne_C.symm E_ne_Y).dvalue = ↑(π / 2) := by sorry
@@ -103,22 +119,6 @@ Therefore, $DX = EY$.
       exact angle_DBX_eq_angle_CBA
     _= - ∠ B C A C_ne_B.symm A_ne_C := angle_CBA_eq_neg_angle_BCA
     _= - ∠ E C Y E_ne_C Y_ne_C := by
-      have E_int_ray_CB : E LiesInt (RAY C B C_ne_B.symm) := by
-        apply SegND.lies_int_toRay_of_lies_int (seg_nd := (SEG_nd C B C_ne_B.symm))
-        apply lies_int_seg_nd_of_lies_int_seg C B E C_ne_B.symm _
-        apply (Seg.lies_int_rev_iff_lies_int (seg := (SEG B C))).mpr
-        exact E_int_BC
-      have Y_int_ray_CA : Y LiesInt (RAY C A A_ne_C) := by
-        simp only [he, Line.line_of_pt_pt_eq_rev A_ne_C.symm]
-        have angle_ACE_acute :  Angle.IsAcuteAngle (ANG A C E A_ne_C E_ne_C) := by
-          have angle_ACE_is_angle_ACB : (ANG A C E A_ne_C E_ne_C) = (ANG A C B A_ne_C C_ne_B.symm) := by
-            symm;
-            apply eq_ang_of_lies_int_liesint A_ne_C C_ne_B.symm A_ne_C E_ne_C
-            · exact Ray.snd_pt_lies_int_mk_pt_pt C A A_ne_C
-            · exact E_int_ray_CB
-          rw [angle_ACE_is_angle_ACB]
-          exact ang_acute_of_is_isoceles_variant not_colinear_ABC isoceles_ABC
-        exact perp_foot_lies_int_ray_of_acute_ang (A := C) (B := A) (C := E) A_ne_C E_ne_C angle_ACE_acute
       rw [eq_ang_val_of_lieson_lieson C_ne_B.symm A_ne_C E_ne_C Y_ne_C E_int_ray_CB Y_int_ray_CA]
   have triangle_XBD_acongr_triangle_YCE : (TRI_nd X B D not_colinear_XBD) ≅ₐ (TRI_nd Y C E not_colinear_YCE) := by
     apply acongr_of_AAS_variant
