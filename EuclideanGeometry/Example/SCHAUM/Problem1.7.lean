@@ -58,6 +58,8 @@ Therefore, $DX = EY$.
   have A_ne_B : A ≠ B := by sorry
   have C_ne_B : C ≠ B := by sorry
   have A_ne_C : A ≠ C := by sorry
+  have D_not_on_AB : ¬ D LiesOn (LIN A B (B_ne_A (not_colinear_ABC := not_colinear_ABC))) := by sorry
+  have E_not_on_AC : ¬ E LiesOn (LIN A C (C_ne_A (not_colinear_ABC := not_colinear_ABC))) := by sorry
 
   have E_int_ray_CB : E LiesInt (RAY C B C_ne_B.symm) := by
     apply SegND.lies_int_toRay_of_lies_int (seg_nd := (SEG_nd C B C_ne_B.symm))
@@ -75,8 +77,8 @@ Therefore, $DX = EY$.
       rw [angle_ACE_is_angle_ACB]
       exact ang_acute_of_is_isoceles_variant not_colinear_ABC isoceles_ABC
     exact perp_foot_lies_int_ray_of_acute_ang (A := C) (B := A) (C := E) A_ne_C E_ne_C angle_ACE_acute
-  have not_colinear_YCE : ¬ colinear Y C E := by sorry
-  have Y_ne_C : Y ≠ C := by sorry
+  have Y_ne_C : Y ≠ C := Y_int_ray_CA.2
+  have not_colinear_YCE : ¬ colinear Y C E := by exact not_colinear_with_perp_foot_of_ne_perp_foot E C Y (LIN A C (C_ne_A (not_colinear_ABC := not_colinear_ABC))) (Line.snd_pt_lies_on_mk_pt_pt (C_ne_A (not_colinear_ABC := not_colinear_ABC))) E_not_on_AC he (Y_ne_C).symm
   have E_ne_Y : E ≠ Y := by sorry
 
   have D_int_ray_BC : D LiesInt (RAY B C C_ne_B) := by
@@ -94,8 +96,9 @@ Therefore, $DX = EY$.
       rw [angle_ABD_is_angle_ABC]
       exact ang_acute_of_is_isoceles' not_colinear_ABC isoceles_ABC
     exact perp_foot_lies_int_ray_of_acute_ang A_ne_B D_ne_B angle_ABD_acute
-  have not_colinear_XBD : ¬ colinear X B D := by sorry
-  have X_ne_B : X ≠ B := by sorry
+  have X_ne_B : X ≠ B := X_int_ray_BA.2
+  have not_colinear_XBD : ¬ colinear X B D := by
+    exact not_colinear_with_perp_foot_of_ne_perp_foot D B X (LIN A B (B_ne_A (not_colinear_ABC := not_colinear_ABC))) (Line.snd_pt_lies_on_mk_pt_pt (B_ne_A (not_colinear_ABC := not_colinear_ABC))) D_not_on_AB hd (X_ne_B).symm
   have D_ne_X : D ≠ X := by sorry
 
   have angle_CBA_eq_neg_angle_BCA : ∠ C B A C_ne_B A_ne_B = - ∠ B C A C_ne_B.symm A_ne_C := by
@@ -107,10 +110,22 @@ Therefore, $DX = EY$.
     symm;
     exact eq_ang_val_of_lieson_lieson C_ne_B A_ne_B D_ne_B X_ne_B D_int_ray_BC X_int_ray_BA
   have angle_BXD_eq_neg_angle_CYE : (ANG B X D X_ne_B.symm D_ne_X).dvalue = - (ANG C Y E Y_ne_C.symm E_ne_Y).dvalue := by
-    have BX_perp_XD : (LIN B X X_ne_B) ⟂ (LIN X D D_ne_X) := by sorry
-    have CY_perp_YE : (LIN C Y Y_ne_C) ⟂ (LIN Y E E_ne_Y) := by sorry
-    have angle_BXD_is_right_angle : (ANG B X D X_ne_B.symm D_ne_X).dvalue = ↑(π / 2) := by sorry
-    have angle_CYE_is_right_angle : (ANG C Y E Y_ne_C.symm E_ne_Y).dvalue = ↑(π / 2) := by sorry
+    have angle_BXD_is_right_angle : (ANG B X D X_ne_B.symm D_ne_X).dvalue = ↑(π / 2) := by
+      calc
+      (ANG B X D X_ne_B.symm D_ne_X).dvalue
+      _= - (ANG D X B D_ne_X X_ne_B.symm).dvalue := by exact neg_dvalue_of_rev_ang X_ne_B.symm D_ne_X
+      _= - ↑ (π / 2) := by
+        apply neg_inj.mpr
+        exact angle_dval_eq_pi_div_two_at_perp_foot D B X (LIN A B (B_ne_A (not_colinear_ABC := not_colinear_ABC))) (Line.snd_pt_lies_on_mk_pt_pt (B_ne_A (not_colinear_ABC := not_colinear_ABC))) D_not_on_AB hd (X_ne_B).symm
+      _= ↑ (π / 2) := by simp
+    have angle_CYE_is_right_angle : (ANG C Y E Y_ne_C.symm E_ne_Y).dvalue = ↑(π / 2) := by
+      calc
+      (ANG C Y E Y_ne_C.symm E_ne_Y).dvalue
+      _= - (ANG E Y C E_ne_Y Y_ne_C.symm).dvalue := by exact neg_dvalue_of_rev_ang Y_ne_C.symm E_ne_Y
+      _= - ↑ (π / 2) := by
+        apply neg_inj.mpr
+        exact angle_dval_eq_pi_div_two_at_perp_foot E C Y (LIN A C (C_ne_A (not_colinear_ABC := not_colinear_ABC))) (Line.snd_pt_lies_on_mk_pt_pt (C_ne_A (not_colinear_ABC := not_colinear_ABC))) E_not_on_AC he (Y_ne_C).symm
+      _= ↑ (π / 2) := by simp
     simp only[angle_BXD_is_right_angle, angle_CYE_is_right_angle, AngDValue.neg_coe_pi_div_two]
   have angle_DBX_eq_neg_angle_ECY : ∠ D B X D_ne_B X_ne_B = - ∠ E C Y E_ne_C Y_ne_C := by
     calc

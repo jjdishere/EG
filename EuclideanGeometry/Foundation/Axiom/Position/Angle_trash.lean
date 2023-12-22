@@ -23,6 +23,8 @@ theorem eq_ang_val_of_lieson_lieson {A A' B B' O: P} (h₁ : A ≠ O) (h₂ : B 
 --Nailin Guan
 theorem neg_value_of_rev_ang {A B O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) : ∠ A O B h₁ h₂ = -∠ B O A h₂ h₁ := sorry
 
+theorem neg_dvalue_of_rev_ang {A B O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) : (ANG A O B h₁ h₂).dvalue = -(ANG B O A h₂ h₁).dvalue := sorry
+-- WangJingTing
 namespace Angle
 
 theorem end_ray_eq_value_vadd_start_ray (ang : Angle P) : ang.end_ray.toDir = ang.value +ᵥ ang.start_ray.toDir := sorry
