@@ -175,10 +175,10 @@ end oriented_distance
 
 /- Positions of points on a line, ray, oriented segments. -/
 
-section point_toray
+section point_toRay
 variable {α} [DirFig α P]
 
-def odist_sign (A : P) (df : α) : ℝ := sign (odist A df)
+def odist_sign (A : P) (df : α) : ℝ := SignType.sign (odist A df)
 
 def IsOnLeftSide (A : P) (df : α) : Prop := 0 < odist A df
 
@@ -230,7 +230,7 @@ theorem off_line_iff_not_online (A : P) [DirFig α P] (df : α) : OffLine A df �
 
 /- Relation of position of points on a ray and directed distance-/
 
-end point_toray
+end point_toRay
 
 section oriented_area
 
@@ -325,12 +325,12 @@ theorem isonleft_of_isintray_of_isonleft (r : DirLine P) (A B C: P) (aliesonr : 
 end handside
 
 /- Position of two rays -/
-section ray_toray
+section ray_toRay
 
 /- Statement of his theorem should change, since ray₀.source ≠ ray₂.source. -/
 theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < (Angle.mk ray₀ ray₁ rfl).value.toReal) ∧ ((Angle.mk ray₀ ray₁ rfl).value.toReal < (Angle.mk ray₀ ray₂ sorry).value.toReal) ∧ ((Angle.mk ray₀ ray₂ sorry).value.toReal < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
 
-end ray_toray
+end ray_toRay
 
 
 
