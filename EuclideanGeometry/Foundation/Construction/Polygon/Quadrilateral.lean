@@ -506,22 +506,6 @@ instance nd₁₄ : PtNe qdr_cvx.point₄ qdr_cvx.point₁ := Fact.mk <| by
   let permute_convex := mk_is_convex h
   exact permute_convex.nd₃₄.out.symm
 
-/-- The edge from the first point to the second point of a quadrilateral -/
-@[pp_dot]
-def edge_nd₁₂ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂
-
-/-- The edge from the second point to the third point of a quadrilateral -/
-@[pp_dot]
-def edge_nd₂₃ : SegND P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃
-
-/-- The edge from the third point to the fourth point of a quadrilateral -/
-@[pp_dot]
-def edge_nd₃₄ : SegND P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄
-
-/-- The edge from the fourth point to the first point of a quadrilateral -/
-@[pp_dot]
-def edge_nd₁₄ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₄
-
 /-- Given a convex quadrilateral qdr_cvx, its 1st, 2nd and 3rd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₁ point₂}$ is not the same as the projective direction of the vector $\overrightarrow{point₁ point₃}$. -/
 theorem not_colinear₁₂₃ : ¬ colinear qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ := sorry
 
