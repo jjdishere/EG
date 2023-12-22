@@ -166,7 +166,7 @@ instance {P : Type _} [EuclideanPlane P] : Coe (DSeg P) (Seg P) where
 
 -- theorems "if p LiesOnDSeg l, then p LiesOn l.toRay and p LiesOn l.toSeg"
 
--- theorem DSeg.pt_on_toray_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toRay := sorry
+-- theorem DSeg.pt_on_toRay_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toRay := sorry
 
 theorem DSeg.pt_on_toseg_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toSeg := sorry
 

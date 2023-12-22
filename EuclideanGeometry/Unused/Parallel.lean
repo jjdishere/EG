@@ -86,7 +86,7 @@ section parallel_theorem
 
 theorem ray_parallel_toLine_assoc_ray (ray : Ray P) :  parallel (LinearObj.ray ray) ray.toLine := sorry
 
-theorem seg_parallel_toray_assoc_seg_of_nontriv (seg_nd : SegND P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := sorry
+theorem seg_parallel_toRay_assoc_seg_of_nontriv (seg_nd : SegND P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := sorry
 
 end parallel_theorem
 
