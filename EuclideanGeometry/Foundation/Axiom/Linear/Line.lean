@@ -562,7 +562,7 @@ theorem Ray.toDirLine_rev_eq_rev_toLine {r : Ray P} : r.toDirLine.reverse = r.re
 
 theorem SegND.toDirLine_eq_toRay_toDirLine {s : SegND P} : s.toRay.toDirLine = s.toDirLine := rfl
 
-theorem SegND.toDirLine_rev_eq_rev_toLine {s : SegND P} : s.toDirLine.reverse = s.reverse.toDirLine :=
+theorem SegND.toDirLine_rev_eq_rev_toDirLine {s : SegND P} : s.toDirLine.reverse = s.reverse.toDirLine :=
   (eq_dirline_of_toDir_eq_of_pt_of_ne (_h := ⟨s.2.symm⟩) (DirLine.lies_on_rev_iff_lies_on.mpr target_lies_on_toDirLine)
     ((s.toDir_of_rev_eq_neg_toDir).trans s.toDirLine.rev_toDir_eq_neg_toDir)).symm
 
