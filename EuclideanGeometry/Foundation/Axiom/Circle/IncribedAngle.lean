@@ -7,6 +7,8 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Angle_trash
 noncomputable section
 namespace EuclidGeom
 
+open AngValue
+
 @[ext]
 structure Arc (P : Type _) [EuclideanPlane P] where
   source : P
@@ -182,7 +184,7 @@ theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P} (h₁ : p LiesO
         rw [add_assoc, add_add_add_comm]
         abel
       _ = 0 := by
-        rw [π₁, π₂, ← AngValue.coe_two_pi, two_mul]
+        rw [π₁, π₂, ← coe_two_pi, two_mul]
         simp
   calc
     _ = - ∠ β.target β.circle.center β.source (arc_center_isnot_arc_endpts β).2.symm (arc_center_isnot_arc_endpts β).1.symm := by rw [← neg_value_of_rev_ang]; rfl
@@ -194,7 +196,7 @@ theorem inscribed_angle_of_diameter_eq_mod_pi {p : P} {β : Arc P} (h₁ : p Lie
   have : 2 • (Arc.angle_mk_pt_arc p β h₃).value = π := by
     rw [← this, ← cangle_eq_two_times_inscribed_angle]
     exact h₁
-  rcases AngValue.two_nsmul_eq_pi_iff.mp this with h | h
+  rcases two_nsmul_eq_pi_iff.mp this with h | h
   · unfold Angle.dvalue
     rw [h]
   unfold Angle.dvalue
@@ -203,7 +205,7 @@ theorem inscribed_angle_of_diameter_eq_mod_pi {p : P} {β : Arc P} (h₁ : p Lie
 
 theorem inscribed_angle_on_same_arc_is_invariant_mod_pi {A B : P} {β : Arc P} (h₁ : A LiesOn β.circle) (h₂ : B LiesOn β.circle) (hne₁ : Isnot_arc_endpts A β) (hne₂ : Isnot_arc_endpts B β) : (Arc.angle_mk_pt_arc A β hne₁).dvalue = (Arc.angle_mk_pt_arc B β hne₂).dvalue := by
   have eq : 2 • (Arc.angle_mk_pt_arc A β hne₁).value = 2 • (Arc.angle_mk_pt_arc B β hne₂).value := by rw [← cangle_eq_two_times_inscribed_angle h₁ hne₁, ← cangle_eq_two_times_inscribed_angle h₂ hne₂]
-  apply (two_smul_value_eq_iff_dvalue_eq _ _).mp eq
+  exact coe_eq_coe_iff_two_nsmul_eq.mpr eq
 
 
 protected def iangle (β : Arc P) : AngDValue := sorry
