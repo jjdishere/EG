@@ -72,42 +72,57 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
 -- Prove that $\angle EAX = \angle XAC$
 theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : ∠ e.E e.A e.X e.E_ne_A e.X_ne_A = ∠ e.X e.A e.C e.X_ne_A e.C_ne_A := by
 /-
-As $AX$ is has the same direction as $BC$ and that $E$ is on the extension of $BA$, we know that $\angle EAX = \angle ABC$.
+As $AX$ has the same direction as $BC$ and that $E$ is on the extension of $BA$, we know that $\angle EAX = \angle ABC$.
 In isoceles triangle $ABC$, $\angle ABC = - \angle ACB$.
 As $AX$ has the opposite direction of $CB$ and $AC$ has the opposite direction of $CA$, we have $\angle ACB = - \angle XAC$
 Therefore, $\angle EAX = \angle ABC = - \angle ACB = \angle XAC$.
 -/
+-- We have that the direction of $AE$ is the same as the direction of $BA$.
   have dir_AE_eq_dir_BA : (RAY e.A e.E e.E_ne_A).toDir = (RAY e.B e.A e.B_ne_A.symm).toDir :=
     calc
     (RAY e.A e.E e.E_ne_A).toDir
+    -- We have that the direction of $AE$ is the same as the direction of the extension of $BA$, since $E$ lies on the extension of $BA$ and $A$ is the source of which.
     _= (e.BA_ext).toDir := by
       have : e.E LiesInt (SEG_nd e.B e.A e.B_ne_A.symm).extension := by
         simp only [e.hlba.symm]; exact e.E_int_ext
       simp only [e.hlba]
       exact Ray.pt_pt_toDir_eq_ray_toDir this
+    -- We have that the direction of the extension of $BA$ is the same as the direction of $BA$ by definition.
     _= (RAY e.B e.A e.B_ne_A.symm).toDir := by
       simp only [e.hlba, SegND.extn_toDir, SegND.mkPtPt_toDir, Ray.mkPtPt_toDir]
+  -- We have that the direction of $AX$ is the same as the direction of $CB$.
   have dir_AX_eq_dir_BC : (RAY e.A e.X e.X_ne_A).toDir = (RAY e.B e.C e.C_ne_B).toDir :=
     calc
     (RAY e.A e.X e.X_ne_A).toDir
+    -- We have that the direction of $AX$ is the same as the direction of $l_a$, since $X$ lies on the $l_a$ and $A$ is the source of which.
     _= e.l_a.toDir := by
       have : e.A = e.l_a.source := by simp only [e.hla]
       simp only [this]
       exact Ray.pt_pt_toDir_eq_ray_toDir e.X_int_la
+    -- We have that the direction of $l_a$ is the same as the direction of the segment $BC$ by definition.
     _= e.BC.toDir := by simp only [e.hla]
+    -- We have that the direction of the segment $BC$ is the same as the direction of ray $BC$ by definition.
     _= (RAY e.B e.C e.C_ne_B).toDir := by
       simp only [e.hbc, SegND.mkPtPt_toDir, Ray.mkPtPt_toDir]
+  -- We have that the direction of $AC$ is opposite to the direction of $CA$ by symmetry.
   have dir_AC_eq_neg_dir_CA : (RAY e.C e.A e.C_ne_A.symm).toDir = - (RAY e.A e.C e.C_ne_A).toDir := Ray.toDir_eq_neg_toDir_of_mk_pt_pt e.C_ne_A.symm
+  -- We have that the direction of $CB$ is opposite to the direction of $BC$ by symmetry.
   have dir_CB_eq_neg_dir_BC : (RAY e.C e.B e.C_ne_B.symm).toDir = - (RAY e.B e.C e.C_ne_B).toDir := Ray.toDir_eq_neg_toDir_of_mk_pt_pt e.C_ne_B.symm
+  -- We have that the direction of $CB$ is opposite to the direction of $AX$ because $AX$ has the same direction as $BC$ and $BC$ has the direction opposite to $CB$.
   have dir_CB_eq_neg_dir_AX : (RAY e.C e.B e.C_ne_B.symm).toDir = - (RAY e.A e.X e.X_ne_A).toDir := by simp only [dir_AX_eq_dir_BC]; exact dir_CB_eq_neg_dir_BC
   calc
   ∠ e.E e.A e.X e.E_ne_A e.X_ne_A
+  -- As $AE$ has the same direction as $BA$ and that $AX$ has the same direction as $BC$, we know that $\angle EAX = \angle ABC$,
   _= ∠ e.A e.B e.C e.B_ne_A.symm e.C_ne_B := ang_eq_ang_of_toDir_eq_toDir dir_AE_eq_dir_BA dir_AX_eq_dir_BC
+  -- $\angle ABC = - \angle CBA$ by symmetry,
   _= - ∠ e.C e.B e.A e.C_ne_B e.B_ne_A.symm := by exact neg_value_of_rev_ang e.B_ne_A.symm e.C_ne_B
+  -- $ - \angle CBA = - \angle ACB$ because $\angle CBA = \angle ACB$ in the isoceles triangle $ABC$,
   _= - ∠ e.A e.C e.B e.C_ne_A.symm e.C_ne_B.symm := by
     simp only [neg_inj] ; exact is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.B e.C e.not_colinear_ABC)).mp e.isoceles_ABC
+  -- as $AC$ has the opposite direction of $CA$ and $AX$ has the opposite direction of $CB$, we have $\angle ACB = - \angle XAC$,
   _= - ∠ e.C e.A e.X e.C_ne_A e.X_ne_A := by
     simp only [neg_inj] ; exact ang_eq_ang_of_toDir_eq_neg_toDir dir_AC_eq_neg_dir_CA dir_CB_eq_neg_dir_AX
+  -- $ - \angle CAX = \angle XAC$ by symmetry.
   _= ∠ e.X e.A e.C e.X_ne_A e.C_ne_A := by symm; exact neg_value_of_rev_ang e.X_ne_A e.C_ne_A
 
 end Problem1_9
