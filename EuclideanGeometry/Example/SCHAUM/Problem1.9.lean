@@ -1,66 +1,115 @@
 import EuclideanGeometry.Foundation.Index
+import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex_trash
 
 noncomputable section
 
 namespace EuclidGeom
 
-variable {Plane : Type _} [EuclideanPlane Plane]
+namespace Schaum
 
-namespace Problem1_9_
+namespace Problem1_9
 
 /-
-Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$. Let $E$ be a point on the extension of $BA$.
+Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$. Let $E$ be a point on the extension of $BA$.Let X be a point on the ray through $A$ with the same direction to $\vec{BC}$.
 
-Prove that the line through $A$ parallel to $BC$ bisects $\angle EAC$.
+Prove that $\angle EAX = \angle XAC$.
 -/
 
--- Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$
-variable {A B C : Plane} {not_colinear_ABC : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
--- Claim $B \ne A$
-lemma B_ne_A : B ≠ A := (ne_of_not_colinear not_colinear_ABC).2.2
--- denote the extension of $BA$ as $BA_ext$
-variable {BA_ext : Ray Plane} {hlba : BA_ext = (SegND B A B_ne_A.symm).extension}
--- Let $E$ be a point on the extension of $BA$
-variable {E : Plane} {E_int_ext : E LiesInt BA_ext}
--- Claim $C \ne B$
-lemma C_ne_B : C ≠ B := (ne_of_not_colinear not_colinear_ABC).1
+structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
+-- Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$.
+  A : Plane
+  B : Plane
+  C : Plane
+  not_colinear_ABC : ¬ colinear A B C
+  isoceles_ABC : (▵ A B C).IsIsoceles
+-- Claim $B \ne A$.
+  B_ne_A : B ≠ A :=
+    -- This is because vertices $A, B$ of a nondegenerate triangle are distinct.
+    (ne_of_not_colinear not_colinear_ABC).2.2
+-- denote the extension of $BA$ as $BA_ext$.
+  BA_ext : Ray Plane
+  hlba : BA_ext = (SEG_nd B A B_ne_A.symm).extension
+-- Let $E$ be a point on the extension of $BA$.
+  E : Plane
+  E_int_ext : E LiesInt BA_ext
+-- Claim $C \ne B$.
+  C_ne_B : C ≠ B :=
+  -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
+    (ne_of_not_colinear not_colinear_ABC).1
+-- Claim $C \ne A$.
+  C_ne_A : C ≠ A :=
+  -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.
+    (ne_of_not_colinear not_colinear_ABC).2.1.symm
+-- denote segment $BC$ as $BC$.
+  BC : SegND Plane
+  hbc : BC = SEG_nd B C C_ne_B
+-- denote the ray from $A$ which has the same direction as $BC$ as $l_a$.
+  l_a : Ray Plane
+  hla : l_a = Ray.mk A (BC.toDir)
+-- Let $X$ be a point on $l_a$.
+  X : Plane
+  X_int_la : X LiesInt l_a
 -- Claim $E \ne A$
-lemma E_ne_A : E ≠ A := by sorry
--- Claim $C \ne A$
-lemma C_ne_A : C ≠ A := (ne_of_not_colinear not_colinear_ABC).2.1.symm
---Prove that the line through $A$ parallel to $BC$ bisects $\angle EAC$
---which is equivalent to the line through $A$ parallel to $BC$ is the angle bisector of $\angle EAC$
---denote the angle $\angle EAC$ as $angle_eac$
-variable {angle_eac : Angle Plane} {heac : angle_eac = Angle.mk_pt_pt_pt E A C E_ne_A C_ne_A}
---denote the angle bisector of $\angle EAC$ as $l_bis$
-variable {l_bis : Ray Plane} {hleac : l_bis = Angle.AngBis angle_eac}
--- denote segment $BC$ as $BC$
-variable {BC : SegND Plane} {hbc : BC = SEG_nd B C C_ne_B}
--- denote the ray from $A$ which has the same direction as $BC$ as $l_a$
-variable {l_a : Ray Plane} {hla : l_a = Ray.mk A (BC.toDir)}
---Prove that $l_a = l_bis$
-theorem Problem1_9_ : l_a =  l_bis := by sorry
---ang_bis is temporarily not available to use in proofs
---So we attempt to prove the following version:
-
--- Let $X$ be a point on $l_a$
-variable {X : Plane} {X_int_la : X LiesInt l_a}
+lemma E_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : e.E ≠ e.A := by
+  -- This is because $E$ lies on the extension of $BA$ and $A$ is the source of that ray.
+  -- We have $E$ is not equal to the source of the extension of $BA$, since $E$ lies on the extension of $BA$.
+  have h1 : e.E ≠ e.BA_ext.source := e.E_int_ext.2
+  -- We have $A$ is the source of the extension of $BA$ by definition.
+  have h2 : e.A = e.BA_ext.source := by simp only [e.hlba]; rfl
+  simp only [h2]; exact h1
 -- Claim : $X \ne A$
-lemma X_ne_A : X ≠ A := by sorry
+lemma X_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : e.X ≠ e.A := by
+  -- This is because $X$ lies on $l_a$ and $A$ is the source of that ray.
+  -- We have $X$ is not equal to the source $l_a$, since $X$ lies on the extension of $BA$.
+  have h1 : e.X ≠ e.l_a.source := e.X_int_la.2
+  -- We have $A$ is the source of $l_a$ by definition.
+  have h2 : e.A = e.l_a.source := by simp only [e.hla]
+  simp only [h2]; exact h1
+structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+  E_ne_A : E ≠ A := E_ne_A
+  X_ne_A : X ≠ A := X_ne_A
+
 -- Prove that $\angle EAX = \angle XAC$
-theorem Problem1_9_variant : ∠ E A X E_ne_A X_ne_A = ∠ X A C X_ne_A (C_ne_A (not_colinear_ABC:=not_colinear_ABC)) := by
+theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : ∠ e.E e.A e.X e.E_ne_A e.X_ne_A = ∠ e.X e.A e.C e.X_ne_A e.C_ne_A := by
 /-
 As $AX$ is has the same direction as $BC$ and that $E$ is on the extension of $BA$, we know that $\angle EAX = \angle ABC$.
 In isoceles triangle $ABC$, $\angle ABC = - \angle ACB$.
-As $AX$ has the opposite direction of $CB$ and $AC$ has the opposite direction of $CA$, we have $\angle ACB = - \angel XAC$
+As $AX$ has the opposite direction of $CB$ and $AC$ has the opposite direction of $CA$, we have $\angle ACB = - \angle XAC$
 Therefore, $\angle EAX = \angle ABC = - \angle ACB = \angle XAC$.
 -/
+  have dir_AE_eq_dir_BA : (RAY e.A e.E e.E_ne_A).toDir = (RAY e.B e.A e.B_ne_A.symm).toDir :=
+    calc
+    (RAY e.A e.E e.E_ne_A).toDir
+    _= (e.BA_ext).toDir := by
+      have : e.E LiesInt (SEG_nd e.B e.A e.B_ne_A.symm).extension := by
+        simp only [e.hlba.symm]; exact e.E_int_ext
+      simp only [e.hlba]
+      exact Ray.pt_pt_toDir_eq_ray_toDir this
+    _= (RAY e.B e.A e.B_ne_A.symm).toDir := by
+      simp only [e.hlba, SegND.extn_toDir, SegND.mkPtPt_toDir, Ray.mkPtPt_toDir]
+  have dir_AX_eq_dir_BC : (RAY e.A e.X e.X_ne_A).toDir = (RAY e.B e.C e.C_ne_B).toDir :=
+    calc
+    (RAY e.A e.X e.X_ne_A).toDir
+    _= e.l_a.toDir := by
+      have : e.A = e.l_a.source := by simp only [e.hla]
+      simp only [this]
+      exact Ray.pt_pt_toDir_eq_ray_toDir e.X_int_la
+    _= e.BC.toDir := by simp only [e.hla]
+    _= (RAY e.B e.C e.C_ne_B).toDir := by
+      simp only [e.hbc, SegND.mkPtPt_toDir, Ray.mkPtPt_toDir]
+  have dir_AC_eq_neg_dir_CA : (RAY e.C e.A e.C_ne_A.symm).toDir = - (RAY e.A e.C e.C_ne_A).toDir := Ray.toDir_eq_neg_toDir_of_mk_pt_pt e.C_ne_A.symm
+  have dir_CB_eq_neg_dir_BC : (RAY e.C e.B e.C_ne_B.symm).toDir = - (RAY e.B e.C e.C_ne_B).toDir := Ray.toDir_eq_neg_toDir_of_mk_pt_pt e.C_ne_B.symm
+  have dir_CB_eq_neg_dir_AX : (RAY e.C e.B e.C_ne_B.symm).toDir = - (RAY e.A e.X e.X_ne_A).toDir := by simp only [dir_AX_eq_dir_BC]; exact dir_CB_eq_neg_dir_BC
   calc
-  ∠ E A X E_ne_A X_ne_A
-  _= ∠ A B C ((B_ne_A (not_colinear_ABC:=not_colinear_ABC)).symm) C_ne_B := by
-    unfold value_of_angle_of_three_point_nd
-    unfold Angle.value
-    congrArg VSub.vsub
-  _= - ∠ A C B (C_ne_A (not_colinear_ABC:=not_colinear_ABC)).symm C_ne_B.symm := by sorry
-  _= ∠ X A C X_ne_A (C_ne_A (not_colinear_ABC:=not_colinear_ABC)) := by sorry
-end Problem1_9_
+  ∠ e.E e.A e.X e.E_ne_A e.X_ne_A
+  _= ∠ e.A e.B e.C e.B_ne_A.symm e.C_ne_B := ang_eq_ang_of_toDir_eq_toDir dir_AE_eq_dir_BA dir_AX_eq_dir_BC
+  _= - ∠ e.C e.B e.A e.C_ne_B e.B_ne_A.symm := by exact neg_value_of_rev_ang e.B_ne_A.symm e.C_ne_B
+  _= - ∠ e.A e.C e.B e.C_ne_A.symm e.C_ne_B.symm := by
+    simp only [neg_inj] ; exact is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.B e.C e.not_colinear_ABC)).mp e.isoceles_ABC
+  _= - ∠ e.C e.A e.X e.C_ne_A e.X_ne_A := by
+    simp only [neg_inj] ; exact ang_eq_ang_of_toDir_eq_neg_toDir dir_AC_eq_neg_dir_CA dir_CB_eq_neg_dir_AX
+  _= ∠ e.X e.A e.C e.X_ne_A e.C_ne_A := by symm; exact neg_value_of_rev_ang e.X_ne_A e.C_ne_A
+
+end Problem1_9
+
+end Schaum

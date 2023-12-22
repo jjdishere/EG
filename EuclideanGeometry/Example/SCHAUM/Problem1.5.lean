@@ -2,6 +2,7 @@ import EuclideanGeometry.Foundation.Index
 import EuclideanGeometry.Foundation.Construction.Polygon.Parallelogram_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Line_trash
+import EuclideanGeometry.Foundation.Axiom.Position.Convex_trash
 
 noncomputable section
 
@@ -80,21 +81,21 @@ As a consequence, we know that $PQRS$ is a parallelogram.
   -- We have that $APCR$ is a parallelogram.
   have isprgnd_APCR : (QDR A P C R) IsPRG_nd := by
     -- We have that $AP, RC$ are of the same direction.
-    have dir_ap_eq_dir_rc_rev : (SegND A P P_ne_A).toDir = (SegND R C R_ne_C.symm).toDir := by
+    have dir_ap_eq_dir_rc_rev : (SEG_nd A P P_ne_A).toDir = (SEG_nd R C R_ne_C.symm).toDir := by
       calc
-      (SegND A P P_ne_A).toDir
+      (SEG_nd A P P_ne_A).toDir
       -- Since $P$ lies on $AB$, we have $AP, AB$ are of the same direction,
-      _= (SegND A B B_ne_A).toDir := by
+      _= (SEG_nd A B B_ne_A).toDir := by
         symm;
-        exact eq_todir_of_lies_int_SegND A B P B_ne_A P_int_AB
+        exact eq_todir_of_lies_int_seg_nd A B P B_ne_A P_int_AB
       -- in parallelogram $ABCD$, we have $AB, DC$ are of the same direction,
-      _= (SegND D C C_ne_D).toDir := prg_trash.todir_eq_of_is_prg_nd A B C D hprgnd B_ne_A C_ne_D
+      _= (SEG_nd D C C_ne_D).toDir := todir_eq_of_is_prg_nd A B C D hprgnd B_ne_A C_ne_D
       -- $CD, DC$ are of the opposite direction because of symmetry,
-      _= - (SegND C D C_ne_D.symm).toDir := by apply SegND.todir_of_rev_eq_neg_todir (SegND := (SegND C D C_ne_D.symm))
+      _= - (SEG_nd C D C_ne_D.symm).toDir := by apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd C D C_ne_D.symm))
       -- since $R$ lies on $CD$, we have $CR, CD$ are of the same direction,
-      _= - (SegND C R R_ne_C).toDir := by rw [eq_todir_of_lies_int_SegND C D R C_ne_D.symm R_int_CD]
+      _= - (SEG_nd C R R_ne_C).toDir := by simp only [eq_todir_of_lies_int_seg_nd C D R C_ne_D.symm R_int_CD]
       -- $CR, RC$ are of the opposite direction because of symmetry.
-      _= (SegND R C R_ne_C.symm).toDir := by symm; apply SegND.todir_of_rev_eq_neg_todir (SegND := (SegND C R R_ne_C))
+      _= (SEG_nd R C R_ne_C.symm).toDir := by symm; apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd C R R_ne_C))
     -- We have $AP = RC$.
     have AP_eq_RC : (SEG A P).length = (SEG R C).length := by
       calc
@@ -104,27 +105,27 @@ As a consequence, we know that $PQRS$ is a parallelogram.
       -- $CR = RC$ by symmetry.
       _= (SEG R C).length := by exact length_of_rev_eq_length' (A := R) (B := C)
     -- We have that $APCR$ is a parallelogram, because $AP, RC$ are of the same direction and $AP = RC$.
-    have isprg_APCR : (QDR A P C R) IsPRG := by exact prg_trash.vec_eq_of_eq_dir_and_eq_length P_ne_A R_ne_C.symm dir_ap_eq_dir_rc_rev AP_eq_RC
+    have isprg_APCR : (QDR A P C R) IsPRG := by exact vec_eq_of_eq_dir_and_eq_length P_ne_A R_ne_C.symm dir_ap_eq_dir_rc_rev AP_eq_RC
     -- Since $A, P, C$ is not colinear, we know that the parallelogram $APCR$ is non-degenerate.
     exact is_prg_nd_of_is_prg_not_colinear₁₂₃ (QDR A P C R) isprg_APCR not_colinear_APC
   -- We have that $ASCQ$ is a parallelogram.
   have isprgnd_ASCQ : (QDR A S C Q) IsPRG_nd := by
     -- We have that $AS, QC$ are of the same direction.
-    have dir_as_eq_dir_qc_rev : (SegND A S S_ne_A).toDir = (SegND Q C Q_ne_C.symm).toDir := by
+    have dir_as_eq_dir_qc_rev : (SEG_nd A S S_ne_A).toDir = (SEG_nd Q C Q_ne_C.symm).toDir := by
       calc
-      (SegND A S S_ne_A).toDir
+      (SEG_nd A S S_ne_A).toDir
       -- Since $S$ lies on $AD$, we have $AS, AD$ are of the same direction,
-      _= (SegND A D D_ne_A).toDir := by
+      _= (SEG_nd A D D_ne_A).toDir := by
         symm;
-        exact eq_todir_of_lies_int_SegND A D S D_ne_A S_int_AD
+        exact eq_todir_of_lies_int_seg_nd A D S D_ne_A S_int_AD
       -- in parallelogram $ABCD$, we have $AD, BC$ are of the same direction,
-      _= (SegND B C C_ne_B).toDir := prg_trash.todir_eq_of_is_prg_nd_variant A B C D hprgnd D_ne_A C_ne_B
+      _= (SEG_nd B C C_ne_B).toDir := todir_eq_of_is_prg_nd_variant A B C D hprgnd D_ne_A C_ne_B
       -- $BC, CB$ are of the opposite direction because of symmetry,
-      _= - (SegND C B C_ne_B.symm).toDir := by apply SegND.todir_of_rev_eq_neg_todir (SegND := (SegND C B C_ne_B.symm))
+      _= - (SEG_nd C B C_ne_B.symm).toDir := by apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd C B C_ne_B.symm))
       -- since $Q$ lies on $CB$, we have $CQ, CB$ are of the same direction,
-      _= - (SegND C Q Q_ne_C).toDir := by rw [eq_todir_of_lies_int_SegND C B Q C_ne_B.symm Q_int_CB]
+      _= - (SEG_nd C Q Q_ne_C).toDir := by simp only [eq_todir_of_lies_int_seg_nd C B Q C_ne_B.symm Q_int_CB]
       -- $CQ, QC$ are of the opposite direction because of symmetry.
-      _= (SegND Q C Q_ne_C.symm).toDir := by symm; apply SegND.todir_of_rev_eq_neg_todir (SegND := (SegND C Q Q_ne_C))
+      _= (SEG_nd Q C Q_ne_C.symm).toDir := by symm; apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd C Q Q_ne_C))
     -- We have $AS = QC$.
     have AS_eq_QC : (SEG A S).length = (SEG Q C).length := by
       calc
@@ -134,7 +135,7 @@ As a consequence, we know that $PQRS$ is a parallelogram.
       -- $CR = RC$ by symmetry.
       _= (SEG Q C).length := by exact length_of_rev_eq_length' (A := Q) (B := C)
     -- We have that $ASCQ$ is a parallelogram, because $AS, QC$ are of the same direction and $AS = QC$.
-    have isprg_ASCQ : (QDR A S C Q) IsPRG := by exact prg_trash.vec_eq_of_eq_dir_and_eq_length S_ne_A Q_ne_C.symm dir_as_eq_dir_qc_rev AS_eq_QC
+    have isprg_ASCQ : (QDR A S C Q) IsPRG := by exact vec_eq_of_eq_dir_and_eq_length S_ne_A Q_ne_C.symm dir_as_eq_dir_qc_rev AS_eq_QC
     -- Since $A, S, C$ is not colinear, we know that the parallelogram $ASCQ$ is non-degenerate.
     exact is_prg_nd_of_is_prg_not_colinear₁₂₃ (QDR A S C Q) isprg_ASCQ not_colinear_ASC
   -- We have that the midpoint of $PR$ is the same as the midpoint of $AC$.
@@ -161,12 +162,13 @@ As a consequence, we know that $PQRS$ is a parallelogram.
       exact eq_midpt_of_diag_inx_of_is_prg_nd'_variant isprgnd_ASCQ
     -- the midpoint of $SQ$ is the same as the midpoint of $QS$ by symmetry.
     _= (SEG Q S).midpoint := midpt_of_rev_eq_midpt S Q
+  have cvx_ABCD : (QDR A B C D).IsConvex := by
+    by_contra h; unfold Quadrilateral.IsParallelogram_nd at hprgnd;
+    absurd hprgnd; simp only [h, dite_false, not_false_eq_true]
+  -- We have that $PQRS$ is convex, since it's inscribed to the parallelogram $ABCD$ which is convex.
+  have cvx_PQRS : (QDR P Q R S).IsConvex := cvx_of_inscribed_to_cvx cvx_ABCD P_int_AB Q_int_BC R_int_CD S_int_DA
   -- We have that $PQRS$ is a parallelogram because the the midpoint of $PR$ and the midpoint of $QS$ are both the same as the midpoint of $AC$.
-  have isprg_PQRS : (QDR P Q R S) IsPRG := by
-    apply prg_trash.is_prg_of_diag_inx_eq_mid_eq_mid_variant_1
-    rw [midpr_eq_midac, midac_eq_midqs]
-  -- We have that $P, Q, R$ is not colinear. Assume the contrary, since $P$ lies on $AB$, $Q$ lies on $BC$ and $R$ lies on $CD$, this will contradict to the fact that $ABCD$ is a convex quadrilateral as it's a parallelogram.
-  have not_colinear_PQR : ¬ colinear P Q R := by sorry
-  -- Since $P, Q, R$ is not colinear, we know that the parallelogram $PQRS$ is non-degenerate.
-  exact is_prg_nd_of_is_prg_not_colinear₁₂₃ (QDR P Q R S) isprg_PQRS not_colinear_PQR
+  apply is_prg_nd_of_diag_inx_eq_mid_eq_mid_variant_1 cvx_PQRS
+  simp only [midpr_eq_midac, midac_eq_midqs]
+  -- Since $PQRS$ is convex, we know that the parallelogram $PQRS$ is non-degenerate.
 end Problem1_5_

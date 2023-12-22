@@ -16,4 +16,6 @@ theorem ang_acute_of_is_isoceles_variant {A B C : P} (not_colinear_ABC : ¬ coli
 
 theorem ang_acute_of_is_isoceles_variant' {A B C : P} (not_colinear_ABC : ¬ colinear A B C) (isoceles_ABC : (▵ A B C).IsIsoceles) : Angle.IsAcuteAngle (ANG B C A (ne_of_not_colinear not_colinear_ABC).1.symm (ne_of_not_colinear not_colinear_ABC).2.1 ) := by sorry
 
+theorem ang_eq_ang_of_toDir_eq_neg_toDir {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = - ang₂.start_ray.toDir) (he : ang₁.end_ray.toDir = - ang₂.end_ray.toDir) : Angle.value ang₁ = Angle.value ang₂ := by sorry
+
 end EuclidGeom

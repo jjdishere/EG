@@ -117,7 +117,7 @@ Therefore, $DX = EY$.
       _= - ↑ (π / 2) := by
         apply neg_inj.mpr
         exact angle_dval_eq_pi_div_two_at_perp_foot D B X (LIN A B (B_ne_A (not_colinear_ABC := not_colinear_ABC))) (Line.snd_pt_lies_on_mk_pt_pt (B_ne_A (not_colinear_ABC := not_colinear_ABC))) D_not_on_AB hd (X_ne_B).symm
-      _= ↑ (π / 2) := by simp
+      _= ↑ (π / 2) := by simp only [AngDValue.neg_coe_pi_div_two]
     have angle_CYE_is_right_angle : (ANG C Y E Y_ne_C.symm E_ne_Y).dvalue = ↑(π / 2) := by
       calc
       (ANG C Y E Y_ne_C.symm E_ne_Y).dvalue
@@ -125,7 +125,7 @@ Therefore, $DX = EY$.
       _= - ↑ (π / 2) := by
         apply neg_inj.mpr
         exact angle_dval_eq_pi_div_two_at_perp_foot E C Y (LIN A C (C_ne_A (not_colinear_ABC := not_colinear_ABC))) (Line.snd_pt_lies_on_mk_pt_pt (C_ne_A (not_colinear_ABC := not_colinear_ABC))) E_not_on_AC he (Y_ne_C).symm
-      _= ↑ (π / 2) := by simp
+      _= ↑ (π / 2) := by simp only [AngDValue.neg_coe_pi_div_two]
     simp only[angle_BXD_is_right_angle, angle_CYE_is_right_angle, AngDValue.neg_coe_pi_div_two]
   have angle_DBX_eq_neg_angle_ECY : ∠ D B X D_ne_B X_ne_B = - ∠ E C Y E_ne_C Y_ne_C := by
     calc
