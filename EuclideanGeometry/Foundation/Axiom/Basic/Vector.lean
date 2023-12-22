@@ -1582,6 +1582,7 @@ theorem map_trans (f g : Dir ≃ Dir) {_ : Dir.NegCommute f} {_ : Dir.NegCommute
     Proj.map (f.trans g) = (Proj.map f).trans (Proj.map g) := by
   ext p
   induction p using Proj.ind
+  
   simp
 
 instance : Nonempty Proj := (nonempty_quotient_iff _).mpr <| inferInstanceAs (Nonempty Dir)
