@@ -4,25 +4,25 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Angle
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P] {tr₁ tr₂ tr₃ :  TriangleND P}
+variable {P : Type _} [EuclideanPlane P] {tr₁ tr₂ tr₃ : TriangleND P}
 
-open  TriangleND
+open TriangleND AngValue
 
-/- The relation of two triangle being similar to each other, i.e. each angle is equal to the corresponding angle.-/
-structure IsSim (tr₁ tr₂ :  TriangleND P) : Prop where intro ::
+/-- The relation of two triangle being similar to each other, i.e. each angle is equal to the corresponding angle.-/
+structure IsSim (tr₁ tr₂ : TriangleND P) : Prop where intro ::
   angle₁ : tr₁.angle₁.value = tr₂.angle₁.value
   angle₂ : tr₁.angle₂.value = tr₂.angle₂.value
   angle₃ : tr₁.angle₃.value = tr₂.angle₃.value
 
-/- The relation of two triangle being anti-similar to each other, i.e. each angle is equal to the negative of corresponding angle.-/
-structure IsASim (tr₁ tr₂ :  TriangleND P) : Prop where intro ::
+/-- The relation of two triangle being anti-similar to each other, i.e. each angle is equal to the negative of corresponding angle.-/
+structure IsASim (tr₁ tr₂ : TriangleND P) : Prop where intro ::
   angle₁ : tr₁.angle₁.value = - tr₂.angle₁.value
   angle₂ : tr₁.angle₂.value = - tr₂.angle₂.value
   angle₃ : tr₁.angle₃.value = - tr₂.angle₃.value
 
 namespace IsSim
 
-protected theorem refl (tr :  TriangleND P): IsSim tr tr where
+protected theorem refl (tr : TriangleND P): IsSim tr tr where
   angle₁ := rfl
   angle₂ := rfl
   angle₃ := rfl
@@ -52,12 +52,10 @@ theorem sim_iff_perm_sim : IsSim tr₁ tr₂ ↔ IsSim (perm_vertices tr₁) (pe
   ⟨fun h ↦ h.perm_sim, fun h ↦ h.perm_sim.perm_sim⟩
 
 theorem is_cclock_of_cclock (h : IsSim tr₁ tr₂) (cc : tr₁.is_cclock) : tr₂.is_cclock := by
-  have : tr₂.angle₁.value.IsPos := by
-    simp only [<- h.1, ( TriangleND.angle_pos_of_cclock tr₁ cc).1]
-  apply  TriangleND.cclock_of_pos_angle
-  left ; exact this
+  refine' cclock_of_pos_angle tr₂ (.inl _)
+  simp only [<- h.1, ( TriangleND.angle_pos_of_cclock tr₁ cc).1]
 
-def ratio (_ : IsSim tr₁ tr₂) : ℝ := tr₁.edge₁.length / tr₂.edge₁.length
+def ratio (_h : IsSim tr₁ tr₂) : ℝ := tr₁.edge₁.length / tr₂.edge₁.length
 
 /- If $tr_1 ∼ tr_2$, then ... -/
 variable (h : IsSim tr₁ tr₂)
@@ -68,10 +66,10 @@ theorem ratio₂ : h.ratio = tr₁.edge₂.length / tr₂.edge₂.length := by
   have sine₁ := Triangle.sine_rule₃ tr₁
   have sine₂ := Triangle.sine_rule₃ tr₂
   rw [h.1,h.2] at sine₁
-  have s₁₂: tr₁.edge₁.length / tr₁.edge₂.length = (Real.Angle.sin (Angle.value tr₂.angle₁)) / (Real.Angle.sin (Angle.value tr₂.angle₂)) := by
+  have s₁₂: tr₁.edge₁.length / tr₁.edge₂.length = (sin (Angle.value tr₂.angle₁)) / (sin (Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₁
     exact ((div_eq_div_iff  (sine_ne_zero_of_nd (perm_vertices tr₂)) (length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm).mpr sine₁).symm
-  have t₁₂: tr₂.edge₁.length / tr₂.edge₂.length = (Real.Angle.sin (Angle.value tr₂.angle₁)) / (Real.Angle.sin (Angle.value tr₂.angle₂)) := by
+  have t₁₂: tr₂.edge₁.length / tr₂.edge₂.length = (sin (Angle.value tr₂.angle₁)) / (sin (Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₂
     exact ((div_eq_div_iff  (sine_ne_zero_of_nd (perm_vertices tr₂)) (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr sine₂).symm
   rw [<-t₁₂] at s₁₂
@@ -81,43 +79,34 @@ theorem ratio₂ : h.ratio = tr₁.edge₂.length / tr₂.edge₂.length := by
   have e₂ : (tr₂.edge_nd₂).1.length = tr₂.edge₂.length := rfl
   have e₁ : (tr₂.edge_nd₁).1.length = tr₂.edge₁.length := rfl
   have e₂' : (tr₁.edge_nd₂).1.length = tr₁.edge₂.length := rfl
-  rw [e₂,e₁] ; rw [e₂, e₂'] at eq
-  simp only [eq, mul_comm]
+  rw [e₂, e₂'] at eq
+  simp only [e₂, e₁, eq, mul_comm]
 
-theorem ratio₃ : h.ratio = tr₁.edge₃.length / tr₂.edge₃.length := by
-  have eq := ratio₂ (perm_sim h)
-  unfold ratio at eq
-  have eq' := ratio₂ h
-  have e₂ : (perm_vertices tr₁).edge₁.length = tr₁.edge₂.length := rfl
-  have e₁ : (perm_vertices tr₁).edge₂.length = tr₁.edge₃.length := rfl
-  have e₂' : (perm_vertices tr₂).edge₁.length = tr₂.edge₂.length := rfl
-  have e₁' : (perm_vertices tr₂).edge₂.length = tr₂.edge₃.length := rfl
-  simp only [e₁,e₂,e₁',e₂',<-eq'] at eq
-  exact eq
+theorem ratio₃ : h.ratio = tr₁.edge₃.length / tr₂.edge₃.length :=
+  (ratio₂ h).trans (ratio₂ (perm_sim h))
 
 theorem ratio₁₂ : tr₁.edge₁.length / tr₁.edge₂.length = tr₂.edge₁.length / tr₂.edge₂.length := by
   have sine₁ := Triangle.sine_rule₃ tr₁
   have sine₂ := Triangle.sine_rule₃ tr₂
   rw [h.1,h.2] at sine₁
-  have s₁₂: tr₁.edge₁.length / tr₁.edge₂.length = (Real.Angle.sin (Angle.value tr₂.angle₁)) / (Real.Angle.sin (Angle.value tr₂.angle₂)) := by
+  have s₁₂: tr₁.edge₁.length / tr₁.edge₂.length = (sin (Angle.value tr₂.angle₁)) / (sin (Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₁
     exact ((div_eq_div_iff  (sine_ne_zero_of_nd (perm_vertices tr₂)) (length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm).mpr sine₁).symm
-  have t₁₂: tr₂.edge₁.length / tr₂.edge₂.length = (Real.Angle.sin (Angle.value tr₂.angle₁)) / (Real.Angle.sin (Angle.value tr₂.angle₂)) := by
+  have t₁₂: tr₂.edge₁.length / tr₂.edge₂.length = (sin (Angle.value tr₂.angle₁)) / (sin (Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₂
     exact ((div_eq_div_iff  (sine_ne_zero_of_nd (perm_vertices tr₂)) (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr sine₂).symm
   rw [<-t₁₂] at s₁₂
   exact s₁₂
 
 theorem ratio₂₃ : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length := by
-  have eq := ratio₁₂ (perm_sim h)
-  exact eq
+  apply ratio₁₂ (perm_sim h)
 
 theorem ratio₃₁ : tr₁.edge₃.length / tr₁.edge₁.length = tr₂.edge₃.length / tr₂.edge₁.length := by
-  have eq := ratio₂₃ (perm_sim h)
-  exact eq
+  apply ratio₂₃ (perm_sim h)
 
--- The proof of this theorem will need to wait until the definition of area is completed.
-theorem area : tr₁.area / tr₂.area = h.ratio * h.ratio := sorry
+theorem oarea : tr₁.oarea / tr₂.oarea = h.ratio ^ 2 := sorry
+
+theorem area : tr₁.area / tr₂.area = h.ratio ^ 2 := sorry
 
 end IsSim
 
@@ -134,13 +123,12 @@ instance instHasASim : HasASim ( TriangleND P) where
   symm := IsASim.symm
 
 theorem not_cclock_of_cclock (h : IsASim tr₁ tr₂) (cc : tr₁.is_cclock) : ¬ tr₂.is_cclock := by
-  have : tr₁.angle₁.value.IsPos := by exact (angle_pos_of_cclock tr₁ cc).1
+  have : tr₁.angle₁.value.IsPos := (angle_pos_of_cclock tr₁ cc).1
   rw [h.1] at this
-  simp only [AngValue.neg_isPos_iff_isNeg] at this
-  apply  TriangleND.clock_of_neg_angle
-  left ; exact this
+  simp only [neg_isPos_iff_isNeg] at this
+  exact clock_of_neg_angle tr₂ (.inl this)
 
-def ratio (_ : IsASim tr₁ tr₂) : ℝ := tr₁.edge₁.length / tr₂.edge₁.length
+def ratio (_h : IsASim tr₁ tr₂) : ℝ := tr₁.edge₁.length / tr₂.edge₁.length
 
 /- If $tr_1 ∼ tr_2$, then ... -/
 variable (h : IsASim tr₁ tr₂)
@@ -157,16 +145,16 @@ theorem ratio₂ : h.ratio = tr₁.edge₂.length / tr₂.edge₂.length := by
   have sine₂ := Triangle.sine_rule₃ tr₂
   rw [h.1,h.2] at sine₁
   have nd := sine_ne_zero_of_nd (flip_vertices (perm_vertices (perm_vertices tr₂)))
-  have : -Angle.value (perm_vertices (perm_vertices tr₂)).angle₁ = Angle.value (flip_vertices (perm_vertices (perm_vertices tr₂))).angle₁ :=by
+  have : -Angle.value (perm_vertices (perm_vertices tr₂)).angle₁ = Angle.value (flip_vertices (perm_vertices (perm_vertices tr₂))).angle₁ := by
     simp only [(angle_eq_neg_angle_of_flip_vertices (perm_vertices (perm_vertices tr₂))).1, neg_neg]
   rw [<-this,<-(angle_eq_angle_of_perm_vertices (perm_vertices tr₂)).2.2,<-(angle_eq_angle_of_perm_vertices  tr₂).2.1] at nd
-  have s₁₂: tr₁.edge₁.length / tr₁.edge₂.length = (Real.Angle.sin (- Angle.value tr₂.angle₁)) / (Real.Angle.sin (-Angle.value tr₂.angle₂)) := by
+  have s₁₂: tr₁.edge₁.length / tr₁.edge₂.length = (sin (- Angle.value tr₂.angle₁)) / (sin (-Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₁
     exact ((div_eq_div_iff nd (length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm).mpr sine₁).symm
-  have t₁₂: tr₂.edge₁.length / tr₂.edge₂.length = (Real.Angle.sin (Angle.value tr₂.angle₁)) / (Real.Angle.sin (Angle.value tr₂.angle₂)) := by
+  have t₁₂: tr₂.edge₁.length / tr₂.edge₂.length = (sin (Angle.value tr₂.angle₁)) / (sin (Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₂
     exact ((div_eq_div_iff (sine_ne_zero_of_nd (perm_vertices tr₂)) (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr sine₂).symm
-  rw [ Real.Angle.sin_neg (Angle.value tr₂.angle₁),Real.Angle.sin_neg (Angle.value tr₂.angle₂),neg_div_neg_eq] at s₁₂
+  rw [sin_neg (Angle.value tr₂.angle₁),sin_neg (Angle.value tr₂.angle₂),neg_div_neg_eq] at s₁₂
   rw [<-t₁₂] at s₁₂
   unfold ratio
   have eq := mul_eq_mul_of_div_eq_div tr₁.edge₁.length tr₂.edge₁.length (length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm s₁₂
@@ -174,46 +162,38 @@ theorem ratio₂ : h.ratio = tr₁.edge₂.length / tr₂.edge₂.length := by
   have e₂ : (tr₂.edge_nd₂).1.length = tr₂.edge₂.length := rfl
   have e₁ : (tr₂.edge_nd₁).1.length = tr₂.edge₁.length := rfl
   have e₂' : (tr₁.edge_nd₂).1.length = tr₁.edge₂.length := rfl
-  rw [e₂,e₁] ; rw [e₂, e₂'] at eq
-  simp only [eq, mul_comm]
+  rw [e₂, e₂'] at eq
+  simp only [e₂, e₁, eq, mul_comm]
 
-theorem ratio₃ : h.ratio = tr₁.edge₃.length / tr₂.edge₃.length := by
-  have eq := ratio₂ (perm_asim h)
-  unfold ratio at eq
-  have eq' := ratio₂ h
-  have e₂ : (perm_vertices tr₁).edge₁.length = tr₁.edge₂.length := rfl
-  have e₁ : (perm_vertices tr₁).edge₂.length = tr₁.edge₃.length := rfl
-  have e₂' : (perm_vertices tr₂).edge₁.length = tr₂.edge₂.length := rfl
-  have e₁' : (perm_vertices tr₂).edge₂.length = tr₂.edge₃.length := rfl
-  simp only [e₁,e₂,e₁',e₂',<-eq'] at eq
-  exact eq
+theorem ratio₃ : h.ratio = tr₁.edge₃.length / tr₂.edge₃.length :=
+  (ratio₂ h).trans (ratio₂ (perm_asim h))
 
 theorem ratio₁₂ : tr₁.edge₁.length / tr₁.edge₂.length = tr₂.edge₁.length / tr₂.edge₂.length := by
   have sine₁ := Triangle.sine_rule₃ tr₁
   have sine₂ := Triangle.sine_rule₃ tr₂
   rw [h.1,h.2] at sine₁
   have nd := sine_ne_zero_of_nd (flip_vertices (perm_vertices (perm_vertices tr₂)))
-  have : -Angle.value (perm_vertices (perm_vertices tr₂)).angle₁ = Angle.value (flip_vertices (perm_vertices (perm_vertices tr₂))).angle₁ :=by
+  have : -Angle.value (perm_vertices (perm_vertices tr₂)).angle₁ = Angle.value (flip_vertices (perm_vertices (perm_vertices tr₂))).angle₁ := by
     simp only [(angle_eq_neg_angle_of_flip_vertices (perm_vertices (perm_vertices tr₂))).1, neg_neg]
   rw [<-this,<-(angle_eq_angle_of_perm_vertices (perm_vertices tr₂)).2.2,<-(angle_eq_angle_of_perm_vertices  tr₂).2.1] at nd
-  have s₁₂: tr₁.edge₁.length / tr₁.edge₂.length = (Real.Angle.sin (- Angle.value tr₂.angle₁)) / (Real.Angle.sin (-Angle.value tr₂.angle₂)) := by
+  have s₁₂: tr₁.edge₁.length / tr₁.edge₂.length = (sin (- Angle.value tr₂.angle₁)) / (sin (-Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₁
     exact ((div_eq_div_iff nd (length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm).mpr sine₁).symm
-  have t₁₂: tr₂.edge₁.length / tr₂.edge₂.length = (Real.Angle.sin (Angle.value tr₂.angle₁)) / (Real.Angle.sin (Angle.value tr₂.angle₂)) := by
+  have t₁₂: tr₂.edge₁.length / tr₂.edge₂.length = (sin (Angle.value tr₂.angle₁)) / (sin (Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₂
     exact ((div_eq_div_iff (sine_ne_zero_of_nd (perm_vertices tr₂)) (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr sine₂).symm
-  rw [Real.Angle.sin_neg (Angle.value tr₂.angle₁),
-    Real.Angle.sin_neg (Angle.value tr₂.angle₂),neg_div_neg_eq] at s₁₂
-  rw [<-t₁₂] at s₁₂
+  rw [sin_neg (Angle.value tr₂.angle₁), sin_neg (Angle.value tr₂.angle₂), neg_div_neg_eq, ← t₁₂] at s₁₂
   exact s₁₂
 
 theorem ratio₂₃ : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length := by
-  have eq := ratio₁₂ (perm_asim h)
-  exact eq
+  apply ratio₁₂ (perm_asim h)
 
 theorem ratio₃₁ : tr₁.edge₃.length / tr₁.edge₁.length = tr₂.edge₃.length / tr₂.edge₁.length := by
-  have eq := ratio₂₃ (perm_asim h)
-  exact eq
+  apply ratio₂₃ (perm_asim h)
+
+theorem oarea : tr₁.oarea / tr₂.oarea = - h.ratio ^ 2 := sorry
+
+theorem area : tr₁.area / tr₂.area = h.ratio ^ 2 := sorry
 
 end IsASim
 
@@ -237,54 +217,52 @@ theorem asim_of_asim_sim (h₁ : IsASim tr₁ tr₂) (h₂ : IsSim tr₂ tr₃) 
 
 section simiarity_criterion
 
-
+-- Add a version of mod π
 /- AA -/
-theorem sim_of_AA (tr₁ tr₂ :  TriangleND P) (h₂ : tr₁.angle₂.value = tr₂.angle₂.value) (h₃ : tr₁.angle₃.value = tr₂.angle₃.value) : tr₁ ∼ tr₂ := by
+theorem sim_of_AA (tr₁ tr₂ : TriangleND P) (h₂ : tr₁.angle₂.value = tr₂.angle₂.value) (h₃ : tr₁.angle₃.value = tr₂.angle₃.value) : tr₁ ∼ tr₂ := by
   constructor
   by_cases cc : tr₁.is_cclock
   . have : tr₂.is_cclock := by
       have : tr₂.angle₂.value.IsPos := by
         simp only [<- h₂, ( TriangleND.angle_pos_of_cclock tr₁ cc).2.1]
-      apply  TriangleND.cclock_of_pos_angle
-      right ; left ; exact this
+      exact cclock_of_pos_angle tr₂ (.inr (.inl this))
     have eq₂ := angle_sum_eq_pi_of_cclock tr₂ this
     simp only [<- angle_sum_eq_pi_of_cclock tr₁ cc, h₂, h₃, add_left_inj] at eq₂
     exact eq₂.symm
   . have : ¬ tr₂.is_cclock := by
       have : tr₂.angle₂.value.IsNeg := by
         simp only [<- h₂, ( TriangleND.angle_neg_of_clock tr₁ cc).2.1]
-      apply  TriangleND.clock_of_neg_angle
-      right ; left ; exact this
+      exact clock_of_neg_angle tr₂ (.inr (.inl this))
     have eq₂ := angle_sum_eq_neg_pi_of_clock tr₂ this
     simp only [<- angle_sum_eq_neg_pi_of_clock tr₁ cc, h₂, h₃, add_left_inj] at eq₂
     exact eq₂.symm
-  exact h₂ ; exact h₃
+  exact h₂
+  exact h₃
 
-theorem asim_of_AA (tr₁ tr₂ :  TriangleND P) (h₂ : tr₁.angle₂.value = - tr₂.angle₂.value) (h₃ : tr₁.angle₃.value = - tr₂.angle₃.value) : tr₁ ∼ₐ tr₂ := by
+theorem asim_of_AA (tr₁ tr₂ : TriangleND P) (h₂ : tr₁.angle₂.value = - tr₂.angle₂.value) (h₃ : tr₁.angle₃.value = - tr₂.angle₃.value) : tr₁ ∼ₐ tr₂ := by
   constructor
   by_cases cc : tr₁.is_cclock
   . have : ¬ tr₂.is_cclock := by
-      have : tr₁.angle₂.value.IsPos := by exact (TriangleND.angle_pos_of_cclock tr₁ cc).2.1
+      have : tr₁.angle₂.value.IsPos := (TriangleND.angle_pos_of_cclock tr₁ cc).2.1
       rw [h₂] at this
-      simp only [AngValue.neg_isPos_iff_isNeg] at this
-      apply TriangleND.clock_of_neg_angle
-      right ; left ; exact this
+      simp only [neg_isPos_iff_isNeg] at this
+      exact clock_of_neg_angle tr₂ (.inr (.inl this))
     have eq₂ := angle_sum_eq_neg_pi_of_clock tr₂ this
     simp only [<- angle_sum_eq_pi_of_cclock tr₁ cc, h₂, h₃, neg_add_rev, neg_neg] at eq₂
     rw [add_comm,add_right_inj,add_comm,add_right_inj] at eq₂
     exact neg_eq_iff_eq_neg.mp (id eq₂.symm)
   . have : tr₂.is_cclock := by
-      have : tr₁.angle₂.value.IsNeg := by exact (TriangleND.angle_neg_of_clock tr₁ cc).2.1
+      have : tr₁.angle₂.value.IsNeg := (TriangleND.angle_neg_of_clock tr₁ cc).2.1
       rw [h₂] at this
-      simp only [AngValue.neg_isNeg_iff_isPos] at this
-      apply TriangleND.cclock_of_pos_angle
-      right ; left ; exact this
+      simp only [neg_isNeg_iff_isPos] at this
+      exact cclock_of_pos_angle tr₂ (.inr (.inl this))
     have eq₂ := angle_sum_eq_pi_of_cclock tr₂ this
     have eq₁ := TriangleND.angle_sum_eq_neg_pi_of_clock tr₁ cc
     simp only [h₂, h₃, <- eq₂, neg_add_rev] at eq₁
     rw [add_comm,add_right_inj,add_comm,add_right_inj] at eq₁
     exact eq₁
-  exact h₂ ; exact h₃
+  exact h₂
+  exact h₃
 
 /- SAS -/
 theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr₂.edge₂.length = tr₁.edge₃.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = tr₂.angle₁.value): tr₁ ∼ tr₂ := by
@@ -294,37 +272,37 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
   have e' : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mpr eq
   have sine₁ := Triangle.sine_rule₁ tr₁
   have sine₂ := Triangle.sine_rule₁ tr₂
-  have sine₁' : tr₁.edge₂.length * AngValue.sin (Angle.value tr₁.angle₃) = AngValue.sin (Angle.value tr₁.angle₂) *  tr₁.edge₃.length := by
-    rw [sine₁] ; simp only [mul_comm]
-  have sine₂' : tr₂.edge₂.length * AngValue.sin (Angle.value tr₂.angle₃) = AngValue.sin (Angle.value tr₂.angle₂) *  tr₂.edge₃.length := by
-    rw [sine₂] ; simp only [mul_comm]
-  have ne₁₃ : AngValue.sin (Angle.value tr₁.angle₃) ≠ 0 := by
+  have sine₁' : tr₁.edge₂.length * sin (Angle.value tr₁.angle₃) = sin (Angle.value tr₁.angle₂) *  tr₁.edge₃.length := by
+    rw [sine₁, mul_comm]
+  have sine₂' : tr₂.edge₂.length * sin (Angle.value tr₂.angle₃) = sin (Angle.value tr₂.angle₂) *  tr₂.edge₃.length := by
+    rw [sine₂, mul_comm]
+  have ne₁₃ : sin (Angle.value tr₁.angle₃) ≠ 0 := by
     simp only [(angle_eq_angle_of_perm_vertices tr₁).2.2, ne_eq,sine_ne_zero_of_nd,
         not_false_eq_true]
-  have ne₂₃ : AngValue.sin (Angle.value tr₂.angle₃) ≠ 0 := by
+  have ne₂₃ : sin (Angle.value tr₂.angle₃) ≠ 0 := by
     simp only [(angle_eq_angle_of_perm_vertices tr₂).2.2,ne_eq, sine_ne_zero_of_nd,
         not_false_eq_true]
-  have s₁₂ : tr₁.edge₂.length / tr₁.edge₃.length = AngValue.sin (Angle.value tr₁.angle₂) / AngValue.sin (Angle.value tr₁.angle₃) := by exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm ne₁₃).mpr  sine₁'
-  have t₁₂ : tr₂.edge₂.length / tr₂.edge₃.length = AngValue.sin (Angle.value tr₂.angle₂) / AngValue.sin (Angle.value tr₂.angle₃) := by exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm ne₂₃).mpr  sine₂'
+  have s₁₂ : tr₁.edge₂.length / tr₁.edge₃.length = sin (Angle.value tr₁.angle₂) / sin (Angle.value tr₁.angle₃) := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm ne₁₃).mpr sine₁'
+  have t₁₂ : tr₂.edge₂.length / tr₂.edge₃.length = sin (Angle.value tr₂.angle₂) / sin (Angle.value tr₂.angle₃) := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm ne₂₃).mpr sine₂'
   rw [s₁₂,t₁₂] at e'
   have e'' := (div_eq_div_iff ne₁₃ ne₂₃).mp e'
   have summul := Real.cos_sub_cos ((Angle.value tr₁.angle₂).toReal + (Angle.value tr₂.angle₃).toReal) ((Angle.value tr₁.angle₂).toReal - (Angle.value tr₂.angle₃).toReal)
   field_simp at summul
-  unfold AngValue.toReal at summul
-  have :  Real.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) + Real.Angle.toReal (Angle.value tr₂.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) + Real.Angle.toReal (Angle.value tr₂.angle₃)) := by rfl
+  unfold toReal at summul
+  have : Real.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) + Real.Angle.toReal (Angle.value tr₂.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) + Real.Angle.toReal (Angle.value tr₂.angle₃)) := rfl
   simp only [Real.Angle.coe_toReal] at this
   rw [this] at summul
-  have :  Real.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) - Real.Angle.toReal (Angle.value tr₂.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) - Real.Angle.toReal (Angle.value tr₂.angle₃)) := by rfl
+  have : Real.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) - Real.Angle.toReal (Angle.value tr₂.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) - Real.Angle.toReal (Angle.value tr₂.angle₃)) := rfl
   simp only [Real.Angle.coe_toReal] at this
   rw [this] at summul
   rw [mul_assoc,e''] at summul
   have summul' := Real.cos_sub_cos ((Angle.value tr₂.angle₂).toReal + (Angle.value tr₁.angle₃).toReal) ((Angle.value tr₂.angle₂).toReal - (Angle.value tr₁.angle₃).toReal)
   field_simp at summul'
-  unfold AngValue.toReal at summul'
-  have :  Real.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) + Real.Angle.toReal (Angle.value tr₁.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) + Real.Angle.toReal (Angle.value tr₁.angle₃)) := by rfl
+  unfold toReal at summul'
+  have : Real.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) + Real.Angle.toReal (Angle.value tr₁.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) + Real.Angle.toReal (Angle.value tr₁.angle₃)) := rfl
   simp only [Real.Angle.coe_toReal] at this
   rw [this] at summul'
-  have :  Real.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) - Real.Angle.toReal (Angle.value tr₁.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) - Real.Angle.toReal (Angle.value tr₁.angle₃)) := by rfl
+  have : Real.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) - Real.Angle.toReal (Angle.value tr₁.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) - Real.Angle.toReal (Angle.value tr₁.angle₃)) := rfl
   simp only [Real.Angle.coe_toReal] at this
   rw [this, mul_assoc, <-summul] at summul'
   have addeq := sum_of_other_angle_same_if_one_angle_same tr₁ tr₂ a
@@ -342,7 +320,7 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
       have := (add_right_inj (Angle.value tr₁.angle₃)).mpr c
       simp only [add_neg_cancel_left] at this
       rw [<-two_smul ℕ (Angle.value tr₁.angle₃), <-two_smul ℕ (Angle.value tr₂.angle₃)] at this
-      have := (AngValue.two_zsmul_eq_iff).mp this
+      have := (two_zsmul_eq_iff).mp this
       rcases this with (e₁|e₂)
       . exact e₁
       have cc_eq := cclock_of_eq_angle tr₁ tr₂ a
@@ -350,26 +328,22 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
       . have pos₁ : tr₁.angle₃.value.IsPos := (angle_pos_of_cclock tr₁ cc).2.2
         rw [cc_eq] at cc
         have pos₂ : tr₂.angle₃.value.IsPos := (angle_pos_of_cclock tr₂ cc).2.2
-        have npos₁ := AngValue.add_pi_isNeg_iff_isPos.mpr pos₂
+        have npos₁ := add_pi_isNeg_iff_isPos.mpr pos₂
         rw [<-e₂] at npos₁
-        have npos₁' := AngValue.not_isPos_of_isNeg npos₁
-        by_contra
-        exact npos₁' pos₁
+        exact (not_isPos_of_isNeg npos₁ pos₁).elim
       . have neg₁ : tr₁.angle₃.value.IsNeg := (angle_neg_of_clock tr₁ cc).2.2
         rw [cc_eq] at cc
         have neg₂ : tr₂.angle₃.value.IsNeg := (angle_neg_of_clock tr₂ cc).2.2
-        have nneg₁ := AngValue.add_pi_isPos_iff_isNeg.mpr neg₂
+        have nneg₁ := add_pi_isPos_iff_isNeg.mpr neg₂
         rw [<-e₂] at nneg₁
-        have nneg₁' := AngValue.not_isNeg_of_isPos nneg₁
-        by_contra
-        exact nneg₁' neg₁
+        exact (not_isNeg_of_isPos nneg₁ neg₁).elim
     have e₂ : Angle.value tr₁.angle₂ = Angle.value tr₂.angle₂ := by
       have sum_eq := sum_of_other_angle_same_if_one_angle_same tr₁ tr₂ a
       simp only [this, add_left_inj] at sum_eq
       exact sum_eq
     exact ⟨a,e₂,this⟩
   have eq_zero : Angle.value tr₂.angle₂ + Angle.value tr₁.angle₃ + Angle.value tr₁.angle₂ + Angle.value tr₂.angle₃ = 0 := by
-    rw [b] ; simp only [neg_add_rev, neg_add_cancel_right, add_left_neg]
+    rw [b, neg_add_rev, neg_add_cancel_right, add_left_neg]
   have eq_zero' : (Angle.value tr₁.angle₂ + Angle.value tr₁.angle₃) + (Angle.value tr₂.angle₂ + Angle.value tr₂.angle₃) = 0 := by
     rw [<-eq_zero] ; abel
   by_cases cc : tr₁.is_cclock
@@ -383,15 +357,10 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
       rw [<-add_zero (Angle.value tr₂.angle₁ + Angle.value tr₂.angle₁), <-eq_zero']
       abel
     rw [<-two_smul ℕ (Angle.value tr₂.angle₁),<-two_smul ℕ _] at this
-    rw [ AngValue.two_nsmul_coe_pi] at this
-    have nd := AngValue.not_isND_iff_two_nsmul_eq_zero.mpr this
+    rw [two_nsmul_coe_pi] at this
+    have nd := not_isND_iff_two_nsmul_eq_zero.mpr this
     rw [cclock_of_eq_angle tr₁ tr₂ a] at cc
-    have nd' := (angle_pos_of_cclock tr₂ cc).1
-    have nd'' : (Angle.value tr₂.angle₁).IsND := by
-      apply AngValue.isND_iff_isPos_or_isNeg.mpr
-      left ; exact nd'
-    by_contra
-    exact nd nd''
+    exact (nd (isND_iff_isPos_or_isNeg.mpr (.inl ((angle_pos_of_cclock tr₂ cc).1)))).elim
   have eq_pi : Angle.value tr₁.angle₂ + Angle.value tr₁.angle₃ = - π - Angle.value tr₁.angle₁ := by
       rw [<-angle_sum_eq_neg_pi_of_clock tr₁ cc] ; abel
   have eq_pi' : Angle.value tr₂.angle₂ + Angle.value tr₂.angle₃ = - π - Angle.value tr₂.angle₁ := by
@@ -402,54 +371,47 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
       rw [<-add_zero (Angle.value tr₂.angle₁ + Angle.value tr₂.angle₁), <-eq_zero']
       abel
   rw [<-two_smul ℕ (Angle.value tr₂.angle₁),<-two_smul ℕ _] at this
-  rw [ AngValue.neg_coe_pi,AngValue.two_nsmul_coe_pi] at this
-  have nd := AngValue.not_isND_iff_two_nsmul_eq_zero.mpr this
+  rw [neg_coe_pi,two_nsmul_coe_pi] at this
+  have nd := not_isND_iff_two_nsmul_eq_zero.mpr this
   rw [cclock_of_eq_angle tr₁ tr₂ a] at cc
-  have nd' := (angle_neg_of_clock tr₂ cc).1
-  have nd'' : (Angle.value tr₂.angle₁).IsND := by
-      apply AngValue.isND_iff_isPos_or_isNeg.mpr
-      right ; exact nd'
-  by_contra
-  exact nd nd''
+  exact (nd (isND_iff_isPos_or_isNeg.mpr (.inr ((angle_neg_of_clock tr₂ cc).1)))).elim
 
-theorem asim_of_SAS (tr₁ tr₂ :  TriangleND P) (e : tr₁.edge₂.length / tr₂.edge₂.length = tr₁.edge₃.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = - tr₂.angle₁.value): tr₁ ∼ₐ tr₂ := by
+theorem asim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr₂.edge₂.length = tr₁.edge₃.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = - tr₂.angle₁.value): tr₁ ∼ₐ tr₂ := by
   have eq : tr₁.edge₂.length * tr₂.edge₃.length = tr₁.edge₃.length * tr₂.edge₂.length := by
     exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mp e
   rw [mul_comm tr₁.edge₃.length  tr₂.edge₂.length] at eq
   have e' : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mpr eq
   have sine₁ := Triangle.sine_rule₁ tr₁
   have sine₂ := Triangle.sine_rule₁ tr₂
-  have sine₁' : tr₁.edge₂.length * AngValue.sin (Angle.value tr₁.angle₃) = AngValue.sin (Angle.value tr₁.angle₂) *  tr₁.edge₃.length := by
-    rw [sine₁] ; simp only [mul_comm]
-  have sine₂' : tr₂.edge₂.length * AngValue.sin (Angle.value tr₂.angle₃) = AngValue.sin (Angle.value tr₂.angle₂) *  tr₂.edge₃.length := by
-    rw [sine₂] ; simp only [mul_comm]
-  have ne₁₃ : AngValue.sin (Angle.value tr₁.angle₃) ≠ 0 := by
-    simp only [(angle_eq_angle_of_perm_vertices tr₁).2.2, ne_eq,sine_ne_zero_of_nd,
-        not_false_eq_true]
-  have ne₂₃ : AngValue.sin (Angle.value tr₂.angle₃) ≠ 0 := by
-    simp only [(angle_eq_angle_of_perm_vertices tr₂).2.2,ne_eq, sine_ne_zero_of_nd,
-        not_false_eq_true]
-  have s₁₂ : tr₁.edge₂.length / tr₁.edge₃.length = AngValue.sin (Angle.value tr₁.angle₂) / AngValue.sin (Angle.value tr₁.angle₃) := by exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm ne₁₃).mpr  sine₁'
-  have t₁₂ : tr₂.edge₂.length / tr₂.edge₃.length = AngValue.sin (Angle.value tr₂.angle₂) / AngValue.sin (Angle.value tr₂.angle₃) := by exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm ne₂₃).mpr  sine₂'
+  have sine₁' : tr₁.edge₂.length * sin (Angle.value tr₁.angle₃) = sin (Angle.value tr₁.angle₂) *  tr₁.edge₃.length := by
+    rw [sine₁, mul_comm]
+  have sine₂' : tr₂.edge₂.length * sin (Angle.value tr₂.angle₃) = sin (Angle.value tr₂.angle₂) *  tr₂.edge₃.length := by
+    rw [sine₂, mul_comm]
+  have ne₁₃ : sin (Angle.value tr₁.angle₃) ≠ 0 := by
+    simp only [(angle_eq_angle_of_perm_vertices tr₁).2.2, ne_eq,sine_ne_zero_of_nd, not_false_eq_true]
+  have ne₂₃ : sin (Angle.value tr₂.angle₃) ≠ 0 := by
+    simp only [(angle_eq_angle_of_perm_vertices tr₂).2.2,ne_eq, sine_ne_zero_of_nd, not_false_eq_true]
+  have s₁₂ : tr₁.edge₂.length / tr₁.edge₃.length = sin (Angle.value tr₁.angle₂) / sin (Angle.value tr₁.angle₃) := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm ne₁₃).mpr  sine₁'
+  have t₁₂ : tr₂.edge₂.length / tr₂.edge₃.length = sin (Angle.value tr₂.angle₂) / sin (Angle.value tr₂.angle₃) := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm ne₂₃).mpr  sine₂'
   rw [s₁₂,t₁₂] at e'
   have e'' := (div_eq_div_iff ne₁₃ ne₂₃).mp e'
   have summul := Real.cos_sub_cos ((Angle.value tr₁.angle₂).toReal + (Angle.value tr₂.angle₃).toReal) ((Angle.value tr₁.angle₂).toReal - (Angle.value tr₂.angle₃).toReal)
   field_simp at summul
-  unfold AngValue.toReal at summul
-  have :  Real.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) + Real.Angle.toReal (Angle.value tr₂.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) + Real.Angle.toReal (Angle.value tr₂.angle₃)) := by rfl
+  unfold toReal at summul
+  have : Real.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) + Real.Angle.toReal (Angle.value tr₂.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) + Real.Angle.toReal (Angle.value tr₂.angle₃)) := rfl
   simp only [Real.Angle.coe_toReal] at this
   rw [this] at summul
-  have :  Real.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) - Real.Angle.toReal (Angle.value tr₂.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) - Real.Angle.toReal (Angle.value tr₂.angle₃)) := by rfl
+  have : Real.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) - Real.Angle.toReal (Angle.value tr₂.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₁.angle₂) - Real.Angle.toReal (Angle.value tr₂.angle₃)) := rfl
   simp only [Real.Angle.coe_toReal] at this
   rw [this] at summul
   rw [mul_assoc,e''] at summul
   have summul' := Real.cos_sub_cos ((Angle.value tr₂.angle₂).toReal + (Angle.value tr₁.angle₃).toReal) ((Angle.value tr₂.angle₂).toReal - (Angle.value tr₁.angle₃).toReal)
   field_simp at summul'
-  unfold AngValue.toReal at summul'
-  have :  Real.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) + Real.Angle.toReal (Angle.value tr₁.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) + Real.Angle.toReal (Angle.value tr₁.angle₃)) := by rfl
+  unfold toReal at summul'
+  have : Real.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) + Real.Angle.toReal (Angle.value tr₁.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) + Real.Angle.toReal (Angle.value tr₁.angle₃)) := rfl
   simp only [Real.Angle.coe_toReal] at this
   rw [this] at summul'
-  have :  Real.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) - Real.Angle.toReal (Angle.value tr₁.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) - Real.Angle.toReal (Angle.value tr₁.angle₃)) := by rfl
+  have : Real.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) - Real.Angle.toReal (Angle.value tr₁.angle₃)) = Real.Angle.cos (Real.Angle.toReal (Angle.value tr₂.angle₂) - Real.Angle.toReal (Angle.value tr₁.angle₃)) := rfl
   simp only [Real.Angle.coe_toReal] at this
   rw [this, mul_assoc, <-summul] at summul'
   have addeq := sum_of_other_angle_same_neg_if_one_angle_same_neg tr₁ tr₂ a
@@ -457,10 +419,10 @@ theorem asim_of_SAS (tr₁ tr₂ :  TriangleND P) (e : tr₁.edge₂.length / tr
     rw [<-add_left_inj (Angle.value tr₁.angle₂) , add_assoc, add_comm (Angle.value tr₁.angle₃),addeq]
     abel
   have coseq : Real.Angle.cos (Angle.value tr₂.angle₂ + Angle.value tr₁.angle₃) = Real.Angle.cos (Angle.value tr₁.angle₂ + Angle.value tr₂.angle₃) := by
-    rw [subeq] ; apply AngValue.cos_eq_iff_coe_eq_or_eq_neg.mpr ; right ; rfl
-  rw [coseq] at summul'
-  simp only [sub_right_inj,Real.Angle.cos_eq_iff_eq_or_eq_neg] at summul'
-  rcases summul' with c|b
+    rw [subeq]
+    exact cos_eq_iff_coe_eq_or_eq_neg.mpr (.inr rfl)
+  rw [coseq, sub_right_inj, Real.Angle.cos_eq_iff_eq_or_eq_neg] at summul'
+  rcases summul' with c | b
   . by_cases cc : tr₁.is_cclock
     . have eq_zero : (Angle.value tr₂.angle₂ + Angle.value tr₂.angle₃) - (Angle.value tr₁.angle₂ + Angle.value tr₁.angle₃)  = 0 := by
         rw [<-add_sub,<-sub_sub,<-neg_neg (Angle.value tr₂.angle₃ - Angle.value tr₁.angle₂),neg_sub,<-c]
@@ -470,20 +432,15 @@ theorem asim_of_SAS (tr₁ tr₂ :  TriangleND P) (e : tr₁.edge₂.length / tr
       have eq_pi' : Angle.value tr₂.angle₂ + Angle.value tr₂.angle₃ = - π - Angle.value tr₂.angle₁ := by
         rw [clock_of_eq_neg_angle tr₁ tr₂ a] at cc
         rw [<-angle_sum_eq_neg_pi_of_clock tr₂ cc] ; abel
-      simp only [eq_pi', AngValue.neg_coe_pi, eq_pi, a, sub_neg_eq_add] at eq_zero
+      simp only [eq_pi', neg_coe_pi, eq_pi, a, sub_neg_eq_add] at eq_zero
       rw [<-sub_sub] at eq_zero
       have comm : ∠[Real.pi] - Angle.value tr₂.angle₁ - ∠[Real.pi] - Angle.value tr₂.angle₁ = ∠[Real.pi] - ∠[Real.pi] - Angle.value tr₂.angle₁ - Angle.value tr₂.angle₁ := by abel
       simp only [comm,sub_self, zero_sub] at eq_zero
       rw [sub_eq_add_neg,<-neg_add] at eq_zero
       rw [<-two_smul ℕ (Angle.value tr₂.angle₁),neg_eq_zero] at eq_zero
-      have nd := AngValue.not_isND_iff_two_nsmul_eq_zero.mpr eq_zero
+      have nd := not_isND_iff_two_nsmul_eq_zero.mpr eq_zero
       rw [clock_of_eq_neg_angle tr₁ tr₂ a] at cc
-      have nd' := (angle_neg_of_clock tr₂ cc).1
-      have nd'' : (Angle.value tr₂.angle₁).IsND := by
-        apply AngValue.isND_iff_isPos_or_isNeg.mpr
-        right ; exact nd'
-      by_contra
-      exact nd nd''
+      exact (nd (isND_iff_isPos_or_isNeg.mpr (.inr (angle_neg_of_clock tr₂ cc).1))).elim
     . have eq_zero : (Angle.value tr₂.angle₂ + Angle.value tr₂.angle₃) - (Angle.value tr₁.angle₂ + Angle.value tr₁.angle₃)  = 0 := by
         rw [<-add_sub,<-sub_sub,<-neg_neg (Angle.value tr₂.angle₃ - Angle.value tr₁.angle₂),neg_sub,<-c]
         abel
@@ -493,21 +450,16 @@ theorem asim_of_SAS (tr₁ tr₂ :  TriangleND P) (e : tr₁.edge₂.length / tr
         rw [clock_of_eq_neg_angle tr₁ tr₂ a] at cc
         push_neg at cc
         rw [<-angle_sum_eq_pi_of_cclock tr₂ cc] ; abel
-      simp only [eq_pi', AngValue.neg_coe_pi, eq_pi, a, sub_neg_eq_add] at eq_zero
+      simp only [eq_pi', neg_coe_pi, eq_pi, a, sub_neg_eq_add] at eq_zero
       rw [<-sub_sub] at eq_zero
       have comm : ∠[Real.pi] - Angle.value tr₂.angle₁ - ∠[Real.pi] - Angle.value tr₂.angle₁ = ∠[Real.pi] - ∠[Real.pi] - Angle.value tr₂.angle₁ - Angle.value tr₂.angle₁ := by abel
       simp only [comm,sub_self, zero_sub] at eq_zero
       rw [sub_eq_add_neg,<-neg_add] at eq_zero
       rw [<-two_smul ℕ (Angle.value tr₂.angle₁),neg_eq_zero] at eq_zero
-      have nd := AngValue.not_isND_iff_two_nsmul_eq_zero.mpr eq_zero
+      have nd := not_isND_iff_two_nsmul_eq_zero.mpr eq_zero
       rw [clock_of_eq_neg_angle tr₁ tr₂ a] at cc
       push_neg at cc
-      have nd' := (angle_pos_of_cclock tr₂ cc).1
-      have nd'' : (Angle.value tr₂.angle₁).IsND := by
-        apply AngValue.isND_iff_isPos_or_isNeg.mpr
-        left ; exact nd'
-      by_contra
-      exact nd nd''
+      exact (nd (isND_iff_isPos_or_isNeg.mpr (.inl (angle_pos_of_cclock tr₂ cc).1))).elim
   . have : tr₁.angle₃.value = - tr₂.angle₃.value := by
       have : tr₁.angle₂.value = - (tr₂.angle₂.value + tr₂.angle₃.value) - tr₁.angle₃.value := by
         rw [<-addeq] ; abel
@@ -518,74 +470,76 @@ theorem asim_of_SAS (tr₁ tr₂ :  TriangleND P) (e : tr₁.edge₂.length / tr
       have b' := eq_neg_of_add_eq_zero_right b.symm
       have : - ((2 : ℕ)  • Angle.value tr₂.angle₃) = 2 • (-Angle.value tr₂.angle₃) := by simp only [smul_neg]
       rw [this] at b'
-      have := (AngValue.two_zsmul_eq_iff).mp b'
-      rcases this with (e₁|e₂)
+      rcases (two_zsmul_eq_iff).mp b' with e₁ | e₂
       . exact e₁
       have cc_eq := clock_of_eq_neg_angle tr₁ tr₂ a
       by_cases cc : tr₁.is_cclock
       . have pos₁ : tr₁.angle₃.value.IsPos := (angle_pos_of_cclock tr₁ cc).2.2
         rw [cc_eq] at cc
         have pos₂ : tr₂.angle₃.value.IsNeg := (angle_neg_of_clock tr₂ cc).2.2
-        have pos₃ : (-tr₂.angle₃.value).IsPos := by simp only [AngValue.neg_isPos_iff_isNeg,
+        have pos₃ : (-tr₂.angle₃.value).IsPos := by simp only [neg_isPos_iff_isNeg,
           pos₂]
-        have npos₁ := AngValue.add_pi_isNeg_iff_isPos.mpr pos₃
+        have npos₁ := add_pi_isNeg_iff_isPos.mpr pos₃
         rw [<-e₂] at npos₁
-        have npos₁' := AngValue.not_isPos_of_isNeg npos₁
-        by_contra
-        exact npos₁' pos₁
+        exact ((not_isPos_of_isNeg npos₁) pos₁).elim
       . have neg₁ : tr₁.angle₃.value.IsNeg := (angle_neg_of_clock tr₁ cc).2.2
         rw [cc_eq] at cc
         push_neg at cc
         have neg₂ : tr₂.angle₃.value.IsPos := (angle_pos_of_cclock tr₂ cc).2.2
-        have neg₃ : (-tr₂.angle₃.value).IsNeg := by simp only [AngValue.neg_isNeg_iff_isPos,
+        have neg₃ : (-tr₂.angle₃.value).IsNeg := by simp only [neg_isNeg_iff_isPos,
           neg₂]
-        have nneg₁ := AngValue.add_pi_isPos_iff_isNeg.mpr neg₃
+        have nneg₁ := add_pi_isPos_iff_isNeg.mpr neg₃
         rw [<-e₂] at nneg₁
-        have nneg₁' := AngValue.not_isNeg_of_isPos nneg₁
-        by_contra
-        exact nneg₁' neg₁
+        exact (not_isNeg_of_isPos nneg₁ neg₁).elim
     have e₂ : Angle.value tr₁.angle₂ = - Angle.value tr₂.angle₂ := by
       have sum_eq := sum_of_other_angle_same_neg_if_one_angle_same_neg tr₁ tr₂ a
       simp only [this, neg_add_rev,add_comm, add_left_inj] at sum_eq
       exact sum_eq
-    exact ⟨a,e₂,this⟩
+    exact ⟨a, e₂, this⟩
 
 end simiarity_criterion
 
 section congr_and_sim
 
-theorem  TriangleND.IsCongr.IsSim (h : tr₁.IsCongr tr₂) : IsSim tr₁ tr₂ where
+theorem TriangleND.IsCongr.IsSim (h : tr₁.IsCongr tr₂) : IsSim tr₁ tr₂ where
   angle₁ := h.angle₁
   angle₂ := h.angle₂
   angle₃ := h.angle₃
 
 theorem IsSim.congr_of_ratio_eq_one (h : IsSim tr₁ tr₂) (hr : h.ratio = 1) : tr₁.IsCongr tr₂ := by
   constructor
-  have := ratio₁ h ; rw [hr] at this
+  have := ratio₁ h
+  rw [hr] at this
   exact (div_eq_one_iff_eq (length_ne_zero_iff_nd.mpr tr₂.edge_nd₁.2).symm).mp this.symm
-  have := ratio₂ h ; rw [hr] at this
+  have := ratio₂ h
+  rw [hr] at this
   exact (div_eq_one_iff_eq (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mp this.symm
-  have := ratio₃ h ; rw [hr] at this
+  have := ratio₃ h
+  rw [hr] at this
   exact (div_eq_one_iff_eq (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mp this.symm
-  exact h.1 ; exact h.2 ; exact h.3
+  exact h.1
+  exact h.2
+  exact h.3
 
-theorem  TriangleND.IsACongr.IsASim (h : tr₁.IsACongr tr₂) : IsASim tr₁ tr₂ where
+theorem TriangleND.IsACongr.IsASim (h : tr₁.IsACongr tr₂) : IsASim tr₁ tr₂ where
   angle₁ := h.angle₁
   angle₂ := h.angle₂
   angle₃ := h.angle₃
 
 theorem IsASim.acongr_of_ratio_eq_one (h : IsASim tr₁ tr₂) (hr : h.ratio = 1) : tr₁.IsACongr tr₂ := by
   constructor
-  have := ratio₁ h ; simp only [hr] at this
-  have := eq_of_div_eq_one this.symm
-  exact this
-  have := ratio₂ h ; simp only [hr] at this
-  have := eq_of_div_eq_one this.symm
-  exact this
-  have := ratio₃ h ; simp only [hr] at this
-  have := eq_of_div_eq_one this.symm
-  exact this
-  exact h.1 ; exact h.2 ; exact h.3
+  have := ratio₁ h
+  simp only [hr] at this
+  exact eq_of_div_eq_one this.symm
+  have := ratio₂ h
+  simp only [hr] at this
+  exact eq_of_div_eq_one this.symm
+  have := ratio₃ h
+  simp only [hr] at this
+  exact eq_of_div_eq_one this.symm
+  exact h.1
+  exact h.2
+  exact h.3
 
 end congr_and_sim
 

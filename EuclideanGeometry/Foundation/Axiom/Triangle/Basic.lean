@@ -31,7 +31,10 @@ def edge₂ (tr : Triangle P) : Seg P := Seg.mk tr.3 tr.1
 def edge₃ (tr : Triangle P) : Seg P := Seg.mk tr.1 tr.2
 
 @[pp_dot]
-def area (tr : Triangle P) : ℝ := sorry
+def oarea (tr : Triangle P) : ℝ := EuclidGeom.oarea tr.1 tr.2 tr.3
+
+@[pp_dot]
+def area (tr : Triangle P) : ℝ := |tr.oarea|
 
 @[pp_dot]
 def IsND (tr : Triangle P) : Prop := ¬ colinear tr.1 tr.2 tr.3
@@ -45,13 +48,13 @@ namespace TriangleND
 variable {P : Type u} [EuclideanPlane P] (tr_nd : TriangleND P)
 
 @[pp_dot]
-def point₁ : P := tr_nd.1.1
+abbrev point₁ : P := tr_nd.1.1
 
 @[pp_dot]
-def point₂ : P := tr_nd.1.2
+abbrev point₂ : P := tr_nd.1.2
 
 @[pp_dot]
-def point₃ : P := tr_nd.1.3
+abbrev point₃ : P := tr_nd.1.3
 
 instance nontriv₁ : PtNe tr_nd.point₃ tr_nd.point₂ := ⟨(ne_of_not_colinear tr_nd.2).1⟩
 
@@ -60,13 +63,13 @@ instance nontriv₂ : PtNe tr_nd.point₁ tr_nd.point₃ := ⟨(ne_of_not_coline
 instance nontriv₃ : PtNe tr_nd.point₂ tr_nd.point₁ := ⟨(ne_of_not_colinear tr_nd.2).2.2⟩
 
 @[pp_dot]
-def edge₁ : Seg P := tr_nd.1.edge₁
+abbrev edge₁ : Seg P := tr_nd.1.edge₁
 
 @[pp_dot]
-def edge₂ : Seg P := tr_nd.1.edge₂
+abbrev edge₂ : Seg P := tr_nd.1.edge₂
 
 @[pp_dot]
-def edge₃ : Seg P := tr_nd.1.edge₃
+abbrev edge₃ : Seg P := tr_nd.1.edge₃
 
 @[pp_dot]
 def edge_nd₁ : SegND P := ⟨tr_nd.1.edge₁, tr_nd.nontriv₁.out⟩
@@ -78,7 +81,10 @@ def edge_nd₂ : SegND P := ⟨tr_nd.1.edge₂, tr_nd.nontriv₂.out⟩
 def edge_nd₃ : SegND P := ⟨tr_nd.1.edge₃, tr_nd.nontriv₃.out⟩
 
 @[pp_dot]
-def area : ℝ := tr_nd.1.area
+abbrev oarea : ℝ := tr_nd.1.oarea
+
+@[pp_dot]
+abbrev area : ℝ := tr_nd.1.area
 
 /- Only nondegenerate triangles can talk about orientation -/
 @[pp_dot]
@@ -248,7 +254,7 @@ theorem nontrivial_of_edge_sum_gt_edge : tr.edge₁.length + tr.edge₂.length >
 
 So funny. Can you get it? -/
 
-theorem edge_sum_eq_edge_iff_colinear :  colinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry
+theorem edge_sum_eq_edge_iff_colinear : colinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry
 /- area ≥ 0, nontrivial → >0, =0 → trivial -/
 
 end Triangle

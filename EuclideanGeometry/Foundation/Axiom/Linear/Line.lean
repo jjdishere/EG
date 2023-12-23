@@ -116,7 +116,7 @@ section make
 
 namespace DirLine
 
--- define a directed line from 2 distinct points
+/-- Given two distinct points $A$ and $B$,  this function returns the directed line starting from $A$ in the direction of $B$. We use $\verb|DLIN|$ to abbreviate $\verb|DirLine.mk_pt_pt|$. -/
 def mk_pt_pt (A B : P) (h : B ≠ A) : DirLine P := Quotient.mk same_dir_line.setoid (RAY A B h)
 
 -- define a directed line from a point and a direction
@@ -128,7 +128,7 @@ end DirLine
 
 namespace Line
 
--- define a line from two points
+/-- Given two distinct points $A$ and $B$, this function returns the line passing through $A$ and $B$. We use $\verb|LIN|$ to abbreviate $\verb|Line.mk_pt_pt|$. -/
 def mk_pt_pt (A B : P) (h : B ≠ A) : Line P := Quotient.mk same_extn_line.setoid (RAY A B h)
 
 -- define a line from a point and a proj
@@ -195,7 +195,7 @@ section coercion
 def DirLine.toDir (l : DirLine P) : Dir := Quotient.lift (s := same_dir_line.setoid) (fun ray => ray.toDir) (fun _ _ h => h.left) l
 
 @[pp_dot]
-def DirLine.toProj (l : DirLine P) : Proj := l.toDir.toProj
+abbrev DirLine.toProj (l : DirLine P) : Proj := l.toDir.toProj
 
 @[pp_dot]
 def DirLine.toLine (l : DirLine P) : Line P := Quotient.lift (⟦·⟧) (fun _ _ h => Quotient.sound $ same_dir_line_le_same_extn_line h) l
@@ -204,7 +204,7 @@ def DirLine.toLine (l : DirLine P) : Line P := Quotient.lift (⟦·⟧) (fun _ _
 def Ray.toDirLine (ray : Ray P) : DirLine P := ⟦ray⟧
 
 @[pp_dot]
-def SegND.toDirLine (seg_nd : SegND P) : DirLine P := seg_nd.toRay.toDirLine
+abbrev SegND.toDirLine (seg_nd : SegND P) : DirLine P := seg_nd.toRay.toDirLine
 
 @[pp_dot]
 def Line.toProj (l : Line P) : Proj := Quotient.lift (s := same_extn_line.setoid) (fun ray : Ray P => ray.toProj) (fun _ _ h => h.left) l
@@ -313,7 +313,7 @@ section dirline_toRay
 
 -- the assumption h is for properties, not for construction
 -- this def have to appear after carrier is defined
-def Ray.mk_pt_dirline (A : P) (l : DirLine P) (h : A LiesOn l) : Ray P := Ray.mk A l.toDir
+def Ray.mk_pt_dirline (A : P) (l : DirLine P) (_h : A LiesOn l) : Ray P := Ray.mk A l.toDir
 
 theorem ray_of_pt_dirline_toDirLine_eq_dirline (A : P) (l : DirLine P) (h : A LiesOn l) : (Ray.mk_pt_dirline A l h).toDirLine = l := by
   revert l
