@@ -261,7 +261,7 @@ structure Quadrilateral_cvx (P : Type _) [EuclideanPlane P] extends Quadrilatera
 `we still need a mk from qdr and adr.IsConvex to make a Qdr_cvx, without nd`
 ` Now every method is from nd`
 -/
-def Quadrilateral_cvx.mk_is_convex {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P where
+def Quadrilateral_cvx.mk_is_convex {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P where
   toQuadrilateral := (QDR A B C D)
   nd := h
   convex := h
