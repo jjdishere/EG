@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 
 namespace EuclidGeom
 
@@ -15,7 +16,7 @@ theorem angle_value_eq_angle (A : P) (ray : Ray P) [h : PtNe A ray.source] : (An
 
 theorem ang_eq_ang_of_toDir_rev_toDir {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = - ang₂.start_ray.toDir) (he : ang₁.end_ray.toDir = - ang₂.end_ray.toDir) : ang₁.value = ang₂.value := sorry
 
-theorem angle_eq_zero_of_same_dir {A O : P} [h₁ : PtNe A O] : ∠ A O A h h = 0 := sorry
+theorem angle_eq_zero_of_same_dir {A O : P} [h₁ : PtNe A O] : ∠ A O A = 0 := sorry
 
 theorem eq_ang_of_lies_int_liesint {A A' B B' O: P} [h₁ : PtNe A O] [h₂ : PtNe B O] [h₁' : PtNe A' O] [h₂' : PtNe B' O] (LiesInt1 : A' LiesInt (RAY O A) )  (LiesInt2 :  B' LiesInt (RAY O B) ) : ANG A O B = ANG A' O B' := sorry
 
@@ -66,6 +67,10 @@ theorem ang_value_rev_eq_neg_value {ang : Angle P} :  ang.reverse.value = - ang.
 
 end Angle
 
-theorem dvalue_eq_ang_rays_perp {ang : Angle P} (h : ang.dvalue = ((π / 2 : ℝ) : AngDValue)) : ang.start_ray ⟂ ang.end_ray := sorry
+theorem dvalue_eq_ang_rays_perp {ang : Angle P} (h : ang.dvalue = ∡[π / 2]) : ang.start_ray ⟂ ang.end_ray := by
+  show ang.start_ray.toProj = ∡[π / 2] +ᵥ ang.end_ray.toProj
+  sorry
+
+theorem liesint_segnd_value_eq_pi {A B C : P} (hne : B ≠ A) (h : C LiesInt (SEG_nd A B hne)) : ∠ A C B (SegND.liesint_ne_source h).symm (SegND.liesint_ne_target h).symm = π := sorry
 
 end EuclidGeom

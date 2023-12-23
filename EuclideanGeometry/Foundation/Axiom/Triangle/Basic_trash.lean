@@ -7,10 +7,10 @@ open AngValue
 variable {P : Type _} [EuclideanPlane P]
 
 -- `IsAcute should be be prepared in Angle!!`
-structure TriangleND.IsAcute (tri_nd : TriangleND P) : Prop where
-  angle₁ : - π / 2 < tri_nd.angle₁.value.toReal ∧ tri_nd.angle₁.value.toReal < π / 2
-  angle₂ : - π / 2 < tri_nd.angle₂.value.toReal ∧ tri_nd.angle₂.value.toReal < π / 2
-  angle₃ : - π / 2 < tri_nd.angle₃.value.toReal ∧ tri_nd.angle₃.value.toReal < π / 2
+structure TriangleND.IsAcute (tr_nd : TriangleND P) : Prop where
+  angle₁ : tr_nd.angle₁.value.IsAcu
+  angle₂ : tr_nd.angle₂.value.IsAcu
+  angle₃ : tr_nd.angle₃.value.IsAcu
 
 variable {tr_nd₁ tr_nd₂ : TriangleND P}
 
@@ -57,10 +57,10 @@ theorem angle_eq_of_cosine_eq_of_cclock (cclock : tr_nd₁.is_cclock ↔ tr_nd�
   rcases g with x | y
   · have x₁ : tr_nd₁.angle₁.value.IsPos := sorry
     have x₂ : tr_nd₂.angle₁.value.IsPos := sorry
-    exact (pos_angle_eq_angle_iff_cos_eq_cos tr_nd₁.angle₁.value tr_nd₂.angle₁.value x₁ x₂).mp cosine
+    exact (cos_eq_iff_eq_of_isPos x₁ x₂).mp cosine
   · have y₁ : tr_nd₁.angle₁.value.IsNeg := sorry
     have y₂ : tr_nd₂.angle₁.value.IsNeg := sorry
-    exact (neg_angle_eq_angle_iff_cos_eq_cos tr_nd₁.angle₁.value tr_nd₂.angle₁.value y₁ y₂).mp cosine
+    exact (cos_eq_iff_eq_of_isNeg y₁ y₂).mp cosine
 
 theorem angle_eq_neg_of_cosine_eq_of_clock (clock : tr_nd₁.is_cclock ↔ ¬ tr_nd₂.is_cclock) (cosine : cos tr_nd₁.angle₁.value = cos tr_nd₂.angle₁.value) : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value := by sorry
 
@@ -81,6 +81,10 @@ theorem points_ne_of_colinear_of_not_colinear3 {A B C D : P} (ncolin : ¬ coline
 theorem not_parallel_of_not_colinear_of_colinear_colinear {A B C D E : P} (nd : ¬ colinear A B C) (colindbc : colinear D B C) (colineca : colinear E C A) : ¬ (LIN A D (points_ne_of_colinear_of_not_colinear1 nd colindbc)) ∥ (LIN B E (points_ne_of_colinear_of_not_colinear2 nd colineca)) := sorry
 
 theorem intersection_not_colinear_of_nondegenerate {A B C D E : P} (nd : ¬ colinear A B C) (colindbc : colinear D B C) (colineca : colinear E C A) (dneb : D ≠ B) (dnec : D ≠ C) (enea : E ≠ A) (enec : E ≠ C) (F : P) (fdef : F = Line.inx (LIN A D (points_ne_of_colinear_of_not_colinear1 nd colindbc)) (LIN B E (points_ne_of_colinear_of_not_colinear2 nd colineca)) (not_parallel_of_not_colinear_of_colinear_colinear nd colindbc colineca)) : (¬ colinear A B F) ∧ (¬ colinear B C F) ∧ (¬ colinear C A F) := by sorry
+
+theorem cclock_of_eq_angle (tr_nd₁ tr_nd₂ : TriangleND P)(a : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) : tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock := by sorry
+
+theorem clock_of_eq_neg_angle (tr_nd₁ tr_nd₂ : TriangleND P)(a : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) : tr_nd₁.is_cclock ↔ ¬ tr_nd₂.is_cclock := by sorry
 
 end TriangleND
 
