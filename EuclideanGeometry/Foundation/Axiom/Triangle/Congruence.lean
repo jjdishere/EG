@@ -848,8 +848,8 @@ theorem congr_of_HL (h₁ : tr_nd₁.angle₁.value = ↑(π / 2)) (h₂ : tr_nd
   have : Seg.length (edge₃ tr_nd₁) * Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) * Seg.length (edge₃ tr_nd₂) := by
     rw [<-sq ,<-sq]
     exact pyth₂.symm
-  have pos : 0 ≤ Seg.length (edge₃ tr_nd₁) := norm_nonneg tr_nd₁.edge₃.toVec
-  have pos' : 0 ≤ Seg.length (edge₃ tr_nd₂) := norm_nonneg tr_nd₂.edge₃.toVec
+  have pos : 0 ≤ Seg.length (edge₃ tr_nd₁) := length_nonneg
+  have pos' : 0 ≤ Seg.length (edge₃ tr_nd₂) := length_nonneg
   have : Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) := (mul_self_inj pos pos').mp this
   rw [<-h₂] at h₁
   exact  congr_of_SAS e₂ h₁ this
@@ -861,8 +861,8 @@ theorem acongr_of_HL (h₁ : tr_nd₁.angle₁.value = ↑(π / 2)) (h₂ : tr_n
   have : Seg.length (edge₃ tr_nd₁) * Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) * Seg.length (edge₃ tr_nd₂) := by
     rw [<-sq ,<-sq]
     exact pyth₂.symm
-  have pos : 0 ≤ Seg.length (edge₃ tr_nd₁) := norm_nonneg tr_nd₁.edge₃.toVec
-  have pos' : 0 ≤ Seg.length (edge₃ tr_nd₂) := norm_nonneg tr_nd₂.edge₃.toVec
+  have pos : 0 ≤ Seg.length (edge₃ tr_nd₁) := length_nonneg
+  have pos' : 0 ≤ Seg.length (edge₃ tr_nd₂) := length_nonneg
   have : Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) := by
     exact (mul_self_inj pos pos').mp this
   have eq_neg : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value := by

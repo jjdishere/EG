@@ -1229,44 +1229,53 @@ section length
 ## (8) Length
 -/
 
-/-- This function gives the length of a given segment, which is the norm of the vector associated to the segment. -/
+/-- This function gives the length of a given segment, which is the distance between the source and target of the segment. -/
 @[pp_dot]
-def Seg.length (seg : Seg P) : ℝ := norm (seg.toVec)
+def Seg.length (seg : Seg P) : ℝ := dist seg.source seg.target
 
 /-- The length of segment $AB$ is the same as the distance form $A$ to $B$. -/
-theorem Seg.length_eq_dist {A B : P} : (SEG A B).length = dist A B :=
-  ((dist_comm A B).trans (NormedAddTorsor.dist_eq_norm' B A)).symm
+@[simp]
+theorem Seg.length_eq_dist {A B : P} : (SEG A B).length = dist A B := rfl
+
+/-- The length of a given segment is the same as the norm of the vector associated to the segment. -/
+theorem Seg.length_eq_norm_toVec {seg : Seg P} : seg.length = norm seg.toVec :=
+  Eq.trans (dist_comm seg.source seg.target) (NormedAddTorsor.dist_eq_norm' _ _)
 
 /-- This function defines the length of a nondegenerate segment, which is just the length of the segment. -/
 abbrev SegND.length (seg_nd : SegND P) : ℝ := seg_nd.1.length
 
 /-- Every segment has nonnegative length. -/
-theorem length_nonneg {seg : Seg P} : 0 ≤ seg.length := norm_nonneg _
+theorem length_nonneg {seg : Seg P} : 0 ≤ seg.length := dist_nonneg
 
 /-- A segment has positive length if and only if it is nondegenerate. -/
-theorem length_pos_iff_nd {seg : Seg P} : 0 < seg.length ↔ seg.IsND := norm_pos_iff.trans toVec_eq_zero_of_deg.symm.not
+theorem length_pos_iff_nd {seg : Seg P} : 0 < seg.length ↔ seg.IsND :=
+  dist_pos.trans ne_comm
+--norm_pos_iff.trans toVec_eq_zero_of_deg.symm.not
 
 /-- The length of a given segment is nonzero if and only if the segment is nondegenerate. -/
 theorem length_ne_zero_iff_nd {seg : Seg P} : 0 ≠ seg.length ↔ seg.IsND :=
-  (ne_iff_lt_iff_le.mpr (norm_nonneg _)).trans length_pos_iff_nd
+  (ne_iff_lt_iff_le.mpr dist_nonneg).trans length_pos_iff_nd
 
 /--  A nondegenerate segment has strictly positive length. -/
 theorem length_pos {seg_nd : SegND P} : 0 < seg_nd.length := length_pos_iff_nd.mpr seg_nd.2
 
 /-- Given a segment, the square of its length is equal to the the inner product of the associated vector with itself. -/
-theorem length_sq_eq_inner_toVec_toVec {seg : Seg P} : seg.length ^ 2 = inner seg.toVec seg.toVec :=
-  (real_inner_self_eq_norm_sq (Seg.toVec seg)).symm
+theorem length_sq_eq_inner_toVec_toVec {seg : Seg P} : seg.length ^ 2 = inner seg.toVec seg.toVec := by
+  rw [Seg.length_eq_norm_toVec]
+  exact (real_inner_self_eq_norm_sq (Seg.toVec seg)).symm
 
 /-- The length of a segment is zero if and only if it is degenerate, i.e. it has same source and target. -/
-theorem length_eq_zero_iff_deg {seg : Seg P} : seg.length = 0 ↔ (seg.target = seg.source) :=
-  ((toVec_eq_zero_of_deg).trans norm_eq_zero.symm).symm
+theorem length_eq_zero_iff_deg {seg : Seg P} : seg.length = 0 ↔ (seg.target = seg.source) := by
+  rw [Seg.length_eq_norm_toVec]
+  exact ((toVec_eq_zero_of_deg).trans norm_eq_zero.symm).symm
 
 
 /-- Reversing a segment does not change its length. -/
 @[simp]
 theorem Seg.length_of_rev_eq_length {seg : Seg P} : seg.reverse.length = seg.length := by
-  unfold Seg.length
+  rw [Seg.length_eq_norm_toVec]
   simp only [Complex.norm_eq_abs, Seg.toVec_of_rev_eq_neg_toVec, norm_neg]
+  exact (seg.length_eq_norm_toVec).symm
 
 /-- Reversing a segment does not change its length. -/
 @[simp]
@@ -1276,9 +1285,10 @@ theorem SegND.length_of_rev_eq_length {seg_nd : SegND P} : seg_nd.reverse.length
 
 /-- The length of segment $AB$ is the same as the length of segment $BA$. -/
 theorem length_of_rev_eq_length' {A B : P} : (SEG B A).length = (SEG A B).length := by
-  unfold Seg.length
+  rw [Seg.length_eq_norm_toVec]
   simp only [seg_toVec_eq_vec, Complex.norm_eq_abs]
   rw [← neg_vec, norm_neg]
+  exact ((SEG A B).length_eq_norm_toVec).symm
 
 /-- Given a segment and a point that lies on the segment, the additional point will separate the segment into two segments, whose lengths add up to the length of the original segment. -/
 theorem length_eq_length_add_length {seg : Seg P} {A : P} (lieson : A LiesOn seg) : seg.length = (SEG seg.source A).length + (SEG A seg.target).length := by
@@ -1288,7 +1298,7 @@ theorem length_eq_length_add_length {seg : Seg P} {A : P} (lieson : A LiesOn seg
     rw [c] at h
     rw [sub_smul, one_smul]
     exact eq_sub_of_add_eq' h.symm
-  rw [Seg.length, Seg.length, Seg.length, seg_toVec_eq_vec, seg_toVec_eq_vec, seg_toVec_eq_vec, c, s,
+  rw [Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec, seg_toVec_eq_vec, seg_toVec_eq_vec, seg_toVec_eq_vec, c, s,
     norm_smul, norm_smul, ← add_mul, Real.norm_of_nonneg a, Real.norm_of_nonneg (sub_nonneg.mpr b)]
   linarith
 
@@ -1406,7 +1416,9 @@ theorem SegND.midpt_iff_same_vector_to_source_and_target {X : P} {seg_nd : SegND
   ⟨fun h ↦ Seg.vec_eq_of_eq_midpt h, fun h ↦ midpt_of_same_vector_to_source_and_target h⟩
 
 /-- The midpoint of a segment has same distance to the source and to the target of the segment. -/
-theorem dist_target_eq_dist_source_of_midpt {seg : Seg P} : (SEG seg.source seg.midpoint).length = (SEG seg.midpoint seg.target).length := congrArg norm seg.vec_midpt_eq
+theorem dist_target_eq_dist_source_of_midpt {seg : Seg P} : (SEG seg.source seg.midpoint).length = (SEG seg.midpoint seg.target).length := by
+  rw [Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec]
+  exact congrArg norm seg.vec_midpt_eq
 
 /-- The midpoint of a segment has same distance to the source and to the target of the segment. -/
 theorem dist_target_eq_dist_source_of_eq_midpt {X : P} {seg : Seg P} (h : X = seg.midpoint) : (SEG seg.1 X).length = (SEG X seg.2).length := by
@@ -1417,7 +1429,8 @@ theorem dist_target_eq_dist_source_of_eq_midpt {X : P} {seg : Seg P} (h : X = se
 theorem eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source {X : P} {seg : Seg P} : X = seg.midpoint ↔ (X LiesOn seg) ∧ (SEG seg.source X).length = (SEG X seg.target).length := by
   refine' ⟨fun h ↦ ⟨Seg.lies_on_of_eq_midpt h, dist_target_eq_dist_source_of_eq_midpt h⟩, _⟩
   intro ⟨⟨t, ht0, ht1, ht⟩, hv⟩
-  have hv : ‖VEC seg.1 X‖ = ‖VEC X seg.2‖ := hv
+  rw [Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec] at hv
+  simp only [seg_toVec_eq_vec] at hv
   by_cases h0 : ‖VEC X seg.2‖ = 0
   · apply midpt_of_same_vector_to_source_and_target
     rw [h0] at hv
@@ -1451,7 +1464,7 @@ theorem target_eq_vec_vadd_target_midpt {seg : Seg P} : seg.2 = (SEG seg.1 (seg.
 theorem SegND.target_eq_vec_vadd_target_midpt {seg_nd : SegND P} : seg_nd.target = (SEG seg_nd.source (seg_nd.toVecND.1 +ᵥ seg_nd.target)).midpoint :=
   midpt_of_same_vector_to_source_and_target (vadd_vsub seg_nd.toVecND.1 seg_nd.target).symm
 
-/-- Given a nondegenerate segment $AB$, B lies in the interior of the segment of $A(B + \overrightarrow{AB})$. -/
+/-- `This theorem should be replaced! B is midpt of A and B + VEC A B, midpt liesint a seg_nd` Given a nondegenerate segment $AB$, B lies in the interior of the segment of $A(B + \overrightarrow{AB})$. -/
 theorem SegND.target_lies_int_seg_source_vec_vadd_target {seg_nd : SegND P} : seg_nd.target LiesInt (SEG seg_nd.source (seg_nd.toVecND.1 +ᵥ seg_nd.target)) := sorry
   /- (SEG_nd seg_nd.1.1  <| fun h ↦ seg_nd.2 <| toVec_eq_zero_of_deg.mpr <| zero_eq_bit0.mp <|
     (vsub_eq_zero_iff_eq.mpr h).symm.trans <| vadd_vsub_assoc seg_nd.1.toVec

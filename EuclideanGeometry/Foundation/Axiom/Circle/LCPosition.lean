@@ -64,12 +64,10 @@ lemma dist_pt_line_ineq {l : DirLine P} {ω : Circle P} (h : DirLine.IsIntersect
     rw [abs_of_nonneg, abs_of_pos]
     exact this
     exact ω.rad_pos
-    unfold dist_pt_line
-    show 0 ≤ ‖VEC ω.center (perp_foot ω.center l.toLine)‖
-    apply norm_nonneg
+    exact length_nonneg
   linarith
 
-def DirLC_Intersected_pts {l : DirLine P} {ω : Circle P} (h : DirLine.IsIntersected l ω) : DirLCInxpts P where
+def DirLC_Intersected_pts {l : DirLine P} {ω : Circle P} (_h : DirLine.IsIntersected l ω) : DirLCInxpts P where
   front := ((Real.sqrt (ω.radius ^ 2 - (dist_pt_line ω.center l.toLine) ^ 2)) • l.toDir.unitVec) +ᵥ (perp_foot ω.center l.toLine)
   back := (- (Real.sqrt (ω.radius ^ 2 - (dist_pt_line ω.center l.toLine) ^ 2)) • l.toDir.unitVec) +ᵥ (perp_foot ω.center l.toLine)
 
@@ -117,10 +115,12 @@ theorem DirLC_intersected_pts_lieson_circle {l : DirLine P} {ω : Circle P} (h :
     apply (sq_eq_sq _ _).mp
     calc
       _ = (dist_pt_line ω.center l.toLine) ^ 2 + (SEG (DirLC_Intersected_pts h).front (perp_foot ω.center l.toLine)).length ^ 2 := by rw [← Seg.length_eq_dist, ← this]
-      _ = (dist_pt_line ω.center l.toLine) ^ 2 + ‖VEC (DirLC_Intersected_pts h).front (perp_foot ω.center l.toLine)‖ ^ 2 := rfl
+      _ = (dist_pt_line ω.center l.toLine) ^ 2 + ‖VEC (DirLC_Intersected_pts h).front (perp_foot ω.center l.toLine)‖ ^ 2 := by
+        rw [Seg.length_eq_norm_toVec]
+        simp only [seg_toVec_eq_vec]
       _ = (dist_pt_line ω.center l.toLine) ^ 2 + ‖(Real.sqrt (ω.radius ^ 2 - (dist_pt_line ω.center l.toLine) ^ 2)) • l.toDir.unitVec‖ ^ 2 := by
         unfold DirLC_Intersected_pts
-        simp
+        simp only [vec_of_vadd_pt_pt_eq_neg_vec, norm_neg]
       _ = ω.radius ^ 2 := by
         rw [norm_smul, Dir.norm_unitVec, mul_one, Real.norm_of_nonneg (Real.sqrt_nonneg _), Real.sq_sqrt]
         ring
@@ -134,10 +134,12 @@ theorem DirLC_intersected_pts_lieson_circle {l : DirLine P} {ω : Circle P} (h :
   apply (sq_eq_sq _ _).mp
   calc
     _ = (dist_pt_line ω.center l.toLine) ^ 2 + (SEG (DirLC_Intersected_pts h).back (perp_foot ω.center l.toLine)).length ^ 2 := by rw [← Seg.length_eq_dist, ← this]
-    _ = (dist_pt_line ω.center l.toLine) ^ 2 + ‖VEC (DirLC_Intersected_pts h).back (perp_foot ω.center l.toLine)‖ ^ 2 := rfl
+    _ = (dist_pt_line ω.center l.toLine) ^ 2 + ‖VEC (DirLC_Intersected_pts h).back (perp_foot ω.center l.toLine)‖ ^ 2 := by
+      rw [Seg.length_eq_norm_toVec]
+      simp only [seg_toVec_eq_vec]
     _ = (dist_pt_line ω.center l.toLine) ^ 2 + ‖(Real.sqrt (ω.radius ^ 2 - (dist_pt_line ω.center l.toLine) ^ 2)) • l.toDir.unitVec‖ ^ 2 := by
         unfold DirLC_Intersected_pts
-        simp
+        simp only [neg_smul, vec_of_vadd_pt_pt_eq_neg_vec, neg_neg]
     _ = ω.radius ^ 2 := by
       rw [norm_smul, Dir.norm_unitVec, mul_one, Real.norm_of_nonneg (Real.sqrt_nonneg _), Real.sq_sqrt]
       ring
@@ -161,8 +163,7 @@ theorem DirLC_inx_pts_same_iff_tangent {l : DirLine P} {ω : Circle P} (h : DirL
       apply (sq_eq_sq _ _).mp
       linarith
       unfold dist_pt_line
-      show 0 ≤ ‖VEC ω.center (perp_foot ω.center l.toLine)‖
-      simp
+      exact length_nonneg
       apply le_iff_lt_or_eq.mpr
       left; exact ω.rad_pos
     exfalso

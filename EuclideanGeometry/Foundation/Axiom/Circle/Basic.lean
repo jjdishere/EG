@@ -122,7 +122,7 @@ theorem mk_pt_pt_lieson {O A : P} [PtNe O A] : A LiesOn (CIR O A) := rfl
 theorem mk_pt_pt_diam_fst_lieson {A B : P} [_h : PtNe A B] : A LiesOn (mk_pt_pt_diam A B) := by
   show dist (SEG A B).midpoint A = dist (SEG A B).midpoint B
   rw [dist_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
-  apply dist_target_eq_dist_source_of_midpt
+  exact dist_target_eq_dist_source_of_midpt (seg := (SEG A B))
 
 @[simp]
 theorem mk_pt_pt_diam_snd_lieson {A B : P} [_h : PtNe A B] : B LiesOn (mk_pt_pt_diam A B) := rfl
