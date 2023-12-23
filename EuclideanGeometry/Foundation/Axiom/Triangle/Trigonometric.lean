@@ -33,11 +33,13 @@ theorem cosine_rule (tr_nd : TriangleND P) : 2 * (tr_nd.edge₃.length * tr_nd.e
   · simp_rw [VecND.mkPtPt, ← neg_vec A C]
     simp
   have h₅ : Seg.length (SEG A C) = Seg.length (SEG C A)
-  · unfold Seg.length Seg.toVec
-    rw [← neg_vec (SEG A C).target (SEG A C).source]
-    simp only [norm_neg, Complex.norm_eq_abs]
+  · rw [Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec]
+    -- unfold Seg.length Seg.toVec
+    exact vec_norm_eq_rev A C
+    -- simp only [norm_neg, Complex.norm_eq_abs]
   rw [h₄, h₅] at h₃
   simp only [ne_eq, Nat.cast_ofNat] at h₃
+  repeat rw [Seg.length_eq_norm_toVec] at *
   exact h₃
 
 theorem cosine_rule'' (tr_nd : TriangleND P) : tr_nd.edge₁.length = (tr_nd.edge₃.length ^ 2 + tr_nd.edge₂.length ^ 2 -  2 * (tr_nd.edge₃.length * tr_nd.edge₂.length * cos tr_nd.angle₁.value)) ^ (1/2) := by sorry
