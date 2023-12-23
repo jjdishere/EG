@@ -112,34 +112,34 @@ lemma tangents_ne_center {ω : Circle P} {p : P} (h : p LiesOut ω) : ((pt_tange
 lemma tangents_perp₁ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1) ⟂ (DLIN ω.center (pt_tangent_circle_pts h).left (tangents_ne_center h).1) := by
   haveI : PtNe ω.center p := (Circle.pt_liesout_ne_center h).symm
   haveI : PtNe (pt_tangent_circle_pts h).left ω.center := ⟨(tangents_ne_center h).1⟩
-  haveI : PtNe (pt_tangent_circle_pts h).left p:= ⟨ (tangents_ne_pt h).1 ⟩
-  have heq₁ : ∠ p (pt_tangent_circle_pts h).left ω.center (tangents_ne_pt h).1.symm (tangents_ne_center h).1.symm = ∡[π / 2] := by sorry
-    -- apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt  (mk_pt_pt_diam_fst_lieson (_h := (pt_liesout_ne_center h).symm))
-    -- · exact (mk_pt_pt_diam_fst_lieson (_h := (pt_liesout_ne_center h).symm))
-    -- · exact (CC_inx_pts_lieson_circles (tangent_circle_intersected h)).1
-    -- · exact Arc.mk_pt_pt_diam_isantipode
-  show (DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1).toProj = (DLIN ω.center (pt_tangent_circle_pts h).left (tangents_ne_center h).1).toProj.perp
+  haveI : PtNe (pt_tangent_circle_pts h).left p := ⟨(tangents_ne_pt h).1⟩
+  have heq₁ : ∠ p (pt_tangent_circle_pts h).left ω.center = ∡[π / 2] := by
+    apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt
+    · exact (CC_inx_pts_lieson_circles (tangent_circle_intersected h)).1
+    exact Arc.mk_pt_pt_diam_isantipode
+  show (DLIN p (pt_tangent_circle_pts h).left).toProj = (DLIN ω.center (pt_tangent_circle_pts h).left).toProj.perp
   calc
-    _ = (RAY p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1).toProj := rfl
-    _ = (RAY (pt_tangent_circle_pts h).left p (tangents_ne_pt h).1.symm).toProj := by apply Ray.toProj_eq_toProj_of_mk_pt_pt
-    _ = (RAY (pt_tangent_circle_pts h).left ω.center (tangents_ne_center h).1.symm).toProj.perp := dvalue_eq_ang_rays_perp heq₁
-    _ = (RAY ω.center (pt_tangent_circle_pts h).left (tangents_ne_center h).1).toProj.perp := by rw [Ray.toProj_eq_toProj_of_mk_pt_pt]
-    _ = (DLIN ω.center (pt_tangent_circle_pts h).left (tangents_ne_center h).1).toProj.perp := rfl
+    _ = (RAY p (pt_tangent_circle_pts h).left).toProj := rfl
+    _ = (RAY (pt_tangent_circle_pts h).left p).toProj := by apply Ray.toProj_eq_toProj_of_mk_pt_pt
+    _ = (RAY (pt_tangent_circle_pts h).left ω.center).toProj.perp := dvalue_eq_ang_rays_perp heq₁
+    _ = (RAY ω.center (pt_tangent_circle_pts h).left).toProj.perp := by rw [Ray.toProj_eq_toProj_of_mk_pt_pt]
+    _ = (DLIN ω.center (pt_tangent_circle_pts h).left).toProj.perp := rfl
 
 lemma tangents_perp₂ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2) ⟂ (DLIN ω.center (pt_tangent_circle_pts h).right (tangents_ne_center h).2) := by
-  haveI : PtNe (pt_tangent_circle_pts h).right p :=⟨ (tangents_ne_pt h).2⟩
+  haveI : PtNe ω.center p := (Circle.pt_liesout_ne_center h).symm
+  haveI : PtNe (pt_tangent_circle_pts h).right p := ⟨(tangents_ne_pt h).2⟩
   haveI : PtNe ω.center (pt_tangent_circle_pts h).right := ⟨(tangents_ne_center h).2.symm⟩
-  have heq₂ : ∠ p (pt_tangent_circle_pts h).right ω.center (tangents_ne_pt h).2.symm (tangents_ne_center h).2.symm = ∡[π / 2] := by sorry
-    -- apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt (Circle.pt_liesout_ne_center h) (tangents_ne_center h).2.symm (tangents_ne_pt h).2 (mk_pt_pt_diam_fst_lieson (pt_liesout_ne_center h).symm)
-    -- · exact (CC_inx_pts_lieson_circles (tangent_circle_intersected h)).2.2.1
-    -- apply Arc.mk_pt_pt_diam_isantipode
-  show (DLIN p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2).toProj = (DLIN ω.center (pt_tangent_circle_pts h).right (tangents_ne_center h).2).toProj.perp
+  have heq₂ : ∠ p (pt_tangent_circle_pts h).right ω.center = ∡[π / 2] := by
+    apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt
+    · exact (CC_inx_pts_lieson_circles (tangent_circle_intersected h)).2.2.1
+    apply Arc.mk_pt_pt_diam_isantipode
+  show (DLIN p (pt_tangent_circle_pts h).right).toProj = (DLIN ω.center (pt_tangent_circle_pts h).right).toProj.perp
   calc
-    _ = (RAY p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2).toProj := rfl
-    _ = (RAY (pt_tangent_circle_pts h).right p (tangents_ne_pt h).2.symm).toProj := by apply Ray.toProj_eq_toProj_of_mk_pt_pt
-    _ = (RAY (pt_tangent_circle_pts h).right ω.center (tangents_ne_center h).2.symm).toProj.perp := dvalue_eq_ang_rays_perp heq₂
-    _ = (RAY ω.center (pt_tangent_circle_pts h).right (tangents_ne_center h).2).toProj.perp := by rw [Ray.toProj_eq_toProj_of_mk_pt_pt]
-    _ = (DLIN ω.center (pt_tangent_circle_pts h).right (tangents_ne_center h).2).toProj.perp := rfl
+    _ = (RAY p (pt_tangent_circle_pts h).right).toProj := rfl
+    _ = (RAY (pt_tangent_circle_pts h).right p).toProj := by apply Ray.toProj_eq_toProj_of_mk_pt_pt
+    _ = (RAY (pt_tangent_circle_pts h).right ω.center).toProj.perp := dvalue_eq_ang_rays_perp heq₂
+    _ = (RAY ω.center (pt_tangent_circle_pts h).right).toProj.perp := by rw [Ray.toProj_eq_toProj_of_mk_pt_pt]
+    _ = (DLIN ω.center (pt_tangent_circle_pts h).right).toProj.perp := rfl
 
 theorem line_tangent_circle {ω : Circle P} {p : P} (h : p LiesOut ω) : ((DLIN p (pt_tangent_circle_pts h).left (tangents_ne_pt h).1) Tangent ω) ∧ ((DLIN p (pt_tangent_circle_pts h).right (tangents_ne_pt h).2) Tangent ω) := by
   constructor
@@ -153,7 +153,25 @@ theorem tangent_pts_eq_tangents {ω : Circle P} {p : P} (h : p LiesOut ω) : (Di
   symm
   apply pt_pt_perp_eq_tangent_pt h (tangents_lieson_circle h).2 (tangents_perp₂ h)
 
-theorem length_of_tangent {ω : Circle P} {p : P} (h : p LiesOut ω) : dist p (pt_tangent_circle_pts h).left = dist p (pt_tangent_circle_pts h).right := sorry
+lemma tangent_length_sq_eq_power {p : P} {l : DirLine P} {ω : Circle P} (h₁ : l Tangent ω) (h₂ : p LiesOn l) : (dist p (DirLC_Tangent_pt h₁)) ^ 2 = power ω p := by
+  calc
+    _ = (dist p (perp_foot ω.center l)) ^ 2 := by rw [DirLC_tangent_pt_eq_perp_foot]
+    _ = (dist ω.center p) ^ 2 - (dist ω.center (perp_foot ω.center l)) ^ 2 := by
+      rw [eq_sub_iff_add_eq, add_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
+      apply Pythagoras_of_perp_foot _ _ h₂
+    _ = (dist ω.center p) ^ 2 - (dist ω.center (DirLC_Tangent_pt h₁)) ^ 2 := by rw [DirLC_tangent_pt_eq_perp_foot]
+    _ = (dist ω.center p) ^ 2 - ω.radius ^ 2 := by
+      congr
+      exact (DirLC_intersected_pts_lieson_circle (DirLC_intersect_iff_tangent_or_secant.mpr (Or.inl h₁))).1
+    _ = power ω p := rfl
+
+theorem length_of_tangent {ω : Circle P} {p : P} (h : p LiesOut ω) : dist p (pt_tangent_circle_pts h).left = dist p (pt_tangent_circle_pts h).right := by
+  apply (sq_eq_sq (by exact dist_nonneg) (by exact dist_nonneg)).mp
+  haveI : PtNe (pt_tangent_circle_pts h).left p := ⟨(tangents_ne_pt h).1⟩
+  haveI : PtNe (pt_tangent_circle_pts h).right p := ⟨(tangents_ne_pt h).2⟩
+  have hl₁ : p LiesOn (DLIN p (pt_tangent_circle_pts h).left) := DirLine.fst_pt_lies_on_mk_pt_pt
+  have hl₂ : p LiesOn (DLIN p (pt_tangent_circle_pts h).right) := DirLine.fst_pt_lies_on_mk_pt_pt
+  rw [← (tangent_pts_eq_tangents h).1, tangent_length_sq_eq_power _ hl₁, ← (tangent_pts_eq_tangents h).2, tangent_length_sq_eq_power _ hl₂]
 
 end Circle
 
@@ -163,7 +181,51 @@ section power
 
 namespace Circle
 
-theorem circle_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) : sorry := sorry
+theorem circle_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) : ⟪VEC p (DirLC_Intersected_pts h₁).front, VEC p (DirLC_Intersected_pts h₁).back⟫_ℝ = power ω p := by
+  rcases DirLC_intersect_iff_tangent_or_secant.mp h₁ with h | h
+  · have heq : (DirLC_Intersected_pts h₁).back = (DirLC_Intersected_pts h₁).front := (DirLC_inx_pts_same_iff_tangent h₁).mpr h
+    rw [heq, Vec.real_inner_apply _ _, ← Vec.norm_sq]
+    calc
+      _ = (dist p (DirLC_Tangent_pt h)) ^ 2 := by
+        rw [dist_comm, NormedAddTorsor.dist_eq_norm']
+        rfl
+      _ = power ω p := tangent_length_sq_eq_power _ h₂
+  haveI : PtNe (DirLC_Intersected_pts h₁).back (DirLC_Intersected_pts h₁).front := ⟨by
+    have h : dist_pt_line ω.center l.toLine < ω.radius := h
+    contrapose! h
+    have : dist_pt_line ω.center l.toLine = ω.radius := (DirLC_inx_pts_same_iff_tangent h₁).mp h
+    rw [this]
+    ⟩
+  have heq : - VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).front = VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).back := by
+    calc
+      _ = VEC (DirLC_Intersected_pts h₁).front (perp_foot ω.center l) := by rw [neg_vec]
+      _ = VEC (DirLC_Intersected_pts h₁).front (perp_foot ω.center (LIN (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back)) := by
+        congr; symm
+        apply Line.eq_line_of_pt_pt_of_ne (DirLC_intersected_pts_lieson_dlin h₁).1 (DirLC_intersected_pts_lieson_dlin h₁).2
+      _ = VEC (perp_foot ω.center (LIN (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back)) (DirLC_Intersected_pts h₁).back := by
+        apply pts_lieson_circle_vec_eq (DirLC_intersected_pts_lieson_circle h₁).1 (DirLC_intersected_pts_lieson_circle h₁).2
+      _ = VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).back := by
+        congr
+        apply Line.eq_line_of_pt_pt_of_ne (DirLC_intersected_pts_lieson_dlin h₁).1 (DirLC_intersected_pts_lieson_dlin h₁).2
+  have eq₁ : (dist p (perp_foot ω.center l)) ^ 2 = (dist ω.center p) ^ 2 - (dist ω.center (perp_foot ω.center l)) ^ 2 := by
+    rw [eq_sub_iff_add_eq, add_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
+    apply Pythagoras_of_perp_foot _ _ h₂
+  have eq₂ : (dist (DirLC_Intersected_pts h₁).front (perp_foot ω.center l)) ^ 2 = (dist ω.center (DirLC_Intersected_pts h₁).front) ^ 2 - (dist ω.center (perp_foot ω.center l)) ^ 2 := by
+    rw [eq_sub_iff_add_eq, add_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
+    apply Pythagoras_of_perp_foot _ _ (DirLC_intersected_pts_lieson_dlin h₁).1
+  calc
+    _ = ⟪VEC p (perp_foot ω.center l) + VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).front, VEC p (perp_foot ω.center l) + VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).back⟫_ℝ := by rw [vec_add_vec, vec_add_vec]
+    _ = ⟪VEC p (perp_foot ω.center l) + VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).front, VEC p (perp_foot ω.center l) - VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).front⟫_ℝ := by rw [← heq, sub_eq_add_neg]
+    _ = ‖VEC p (perp_foot ω.center l)‖ ^ 2 - ‖VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).front‖ ^ 2 := by
+      rw [inner_add_left, inner_sub_right, inner_sub_right, Vec.norm_sq, Vec.norm_sq, ← Vec.real_inner_apply _ _, ← Vec.real_inner_apply _ _, add_comm, real_inner_comm]
+      ring
+    _ = (dist p (perp_foot ω.center l)) ^ 2 - (dist (DirLC_Intersected_pts h₁).front (perp_foot ω.center l)) ^ 2 := by
+      rw [dist_comm, NormedAddTorsor.dist_eq_norm', NormedAddTorsor.dist_eq_norm']
+      rfl
+    _ = ((dist ω.center p) ^ 2 - (dist ω.center (perp_foot ω.center l)) ^ 2) - ((dist ω.center (DirLC_Intersected_pts h₁).front) ^ 2 - (dist ω.center (perp_foot ω.center l)) ^ 2) := by rw [eq₁, eq₂]
+    _ = (dist ω.center p) ^ 2 - (dist ω.center (DirLC_Intersected_pts h₁).front) ^ 2 := by ring
+    _ = (dist ω.center p) ^ 2 - ω.radius ^ 2 := by rw [(DirLC_intersected_pts_lieson_circle h₁).1]
+    _ = power ω p := rfl
 
 theorem chord_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) (h₃ : p LiesInt ω) : (dist p (DirLC_Intersected_pts h₁).front) * (dist p (DirLC_Intersected_pts h₁).back) = - power ω p := sorry
 

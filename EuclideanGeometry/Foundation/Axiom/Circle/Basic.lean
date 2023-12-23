@@ -64,7 +64,7 @@ protected def IsOn (p : P) (ω : Circle P) : Prop := dist ω.center p = ω.radiu
 
 protected def IsInt (p : P) (ω : Circle P) : Prop := dist ω.center p < ω.radius
 
-def IsOutside (p : P) (ω : Circle P) : Prop := ω.radius < dist ω.center p
+protected def IsOutside (p : P) (ω : Circle P) : Prop := ω.radius < dist ω.center p
 
 protected def carrier (ω : Circle P) : Set P := { p : P | Circle.IsOn p ω }
 
@@ -96,10 +96,8 @@ instance pt_liesout_ne_center {p : P} {ω : Circle P} (h : p LiesOut ω) : PtNe 
 
 instance pt_lieson_ne_center {p : P} {ω : Circle P} (h : p LiesOn ω) : PtNe p ω.center := ⟨by
   apply dist_pos.mp
-  rw [dist_comm]
-  have : dist ω.center p = ω.radius := h
-  have : ω.radius > 0 := ω.rad_pos
-  linarith
+  rw [dist_comm, h]
+  exact ω.rad_pos
   ⟩
 
 -- this instance does not work due to ω cannot be infered from A B, this should made in tactic ptne in the future
@@ -159,8 +157,7 @@ lemma pts_lieson_circle_vec_eq {A B : P} {ω : Circle P} [hne : PtNe B A] (hl₁
     rw [← Seg.length_eq_dist, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
     apply Pythagoras_of_perp_foot
     apply Line.snd_pt_lies_on_mk_pt_pt
-  have : PtNe A (perp_foot ω.center (LIN A B))
-  · apply Fact.mk
+  haveI : PtNe A (perp_foot ω.center (LIN A B)) := ⟨by
     intro heq
     have : (dist ω.center B) ^ 2 = ω.radius ^ 2 := by rw [hl₂]
     have : (dist ω.center B) ^ 2 > ω.radius ^ 2 := by
@@ -170,7 +167,7 @@ lemma pts_lieson_circle_vec_eq {A B : P} {ω : Circle P} [hne : PtNe B A] (hl₁
         _ = ω.radius ^ 2 + (dist B A) ^ 2 := by rw [hl₁]
         _ > ω.radius ^ 2 := by
           simp
-    linarith
+    linarith⟩
   apply distinct_pts_same_dist_vec_eq
   · have : (perp_foot ω.center (LIN A B)) LiesOn (LIN A B) := perp_foot_lies_on_line _ _
     have : colinear A B (perp_foot ω.center (LIN A B)) := Line.pt_pt_linear this
@@ -204,6 +201,4 @@ end Circle
 
 end colinear
 
--- ray with circle
--- line with circle
 end EuclidGeom
