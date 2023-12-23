@@ -44,35 +44,35 @@ variable {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P}
 
 /-- Given a quadrilateral qdr, qdr.edge₁₂ is the edge from the first point to the second point of a quadrilateral. -/
 @[pp_dot]
-def edge₁₂ : Seg P := SEG qdr.1 qdr.2
+def edge₁₂ : Seg P := SEG qdr.point₁ qdr.point₂
 
 /-- The edge from the second point to the third point of a quadrilateral -/
 @[pp_dot]
-def edge₂₃ : Seg P := SEG qdr.2 qdr.3
+def edge₂₃ : Seg P := SEG qdr.point₂ qdr.point₃
 
 /-- The edge from the third point to the fourth point of a quadrilateral -/
 @[pp_dot]
-def edge₃₄ : Seg P := SEG qdr.3 qdr.4
+def edge₃₄ : Seg P := SEG qdr.point₃ qdr.point₄
 
 /-- The edge from the 1st point to the 4th point of a quadrilateral -/
 @[pp_dot]
-def edge₁₄ : Seg P := SEG qdr.1 qdr.4
+def edge₁₄ : Seg P := SEG qdr.point₁ qdr.point₄
 
 /-- The diagonal from the first point to the third point of a quadrilateral -/
 @[pp_dot]
-def diag₁₃ : Seg P := SEG qdr.1 qdr.3
+def diag₁₃ : Seg P := SEG qdr.point₁ qdr.point₃
 
 /-- The diagonal from the second point to the fourth point of a quadrilateral -/
 @[pp_dot]
-def diag₂₄ : Seg P := SEG qdr.2 qdr.4
+def diag₂₄ : Seg P := SEG qdr.point₂ qdr.point₄
 
 /-- The permute quadrilateral, the first point of the permute is the second point of the origin, etc. -/
 @[pp_dot]
-def permute : Quadrilateral P := QDR qdr.2 qdr.3 qdr.4 qdr.1
+def permute : Quadrilateral P := QDR qdr.point₂ qdr.point₃ qdr.point₄ qdr.point₁
 
 /-- The reflect quadrilateral, exchanged the second point and the fourth. -/
 @[pp_dot]
-def reflect : Quadrilateral P := QDR qdr.1 qdr.4 qdr.3 qdr.2
+def reflect : Quadrilateral P := QDR qdr.point₁ qdr.point₄ qdr.point₃ qdr.point₂
 
 end Quadrilateral
 
@@ -172,28 +172,46 @@ def triangle₃ : Triangle P := TRI qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point
 def triangle₄ : Triangle P := TRI qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁
 
 /-- The permute of quadrilateral_nd is also quadrilateral_nd. -/
-theorem permute_is_nd : (qdr_nd.permute).IsND := by
-  constructor
-  exact qdr_nd.nd₂₃.out
-  exact qdr_nd.nd₃₄.out
-  exact qdr_nd.nd₁₄.out.symm
-  exact qdr_nd.nd₁₂.out.symm
+theorem permute_is_nd : (qdr_nd.toQuadrilateral.permute).IsND := ⟨ qdr_nd.nd₂₃.out, qdr_nd.nd₃₄.out, qdr_nd.nd₁₄.out.symm, qdr_nd.nd₁₂.out.symm ⟩
 
 /-- The permute quadrilateral_nd, the first point of the permute is the second point of the origin, etc. -/
 @[pp_dot]
 def permute : Quadrilateral_nd P := mk_is_nd (permute_is_nd qdr_nd)
 
 /-- The reflect of quadrilateral_nd is also quadrilateral_nd. -/
-theorem reflect_is_nd : (qdr_nd.reflect).IsND := by
-  constructor
-  exact qdr_nd.nd₁₄.out
-  exact qdr_nd.nd₃₄.out.symm
-  exact qdr_nd.nd₂₃.out.symm
-  exact qdr_nd.nd₁₂.out
+theorem reflect_is_nd : (qdr_nd.toQuadrilateral.reflect).IsND := ⟨ qdr_nd.nd₁₄.out, qdr_nd.nd₃₄.out.symm, qdr_nd.nd₂₃.out.symm, qdr_nd.nd₁₂.out ⟩
 
 /-- The reflect quadrilateral_nd, exchanged the second point and the fourth. -/
 @[pp_dot]
 def reflect : Quadrilateral_nd P := mk_is_nd (reflect_is_nd qdr_nd)
+
+theorem reflect_angle₁_value_eq_neg_angle₁ : qdr_nd.reflect.angle₁.value = - qdr_nd.angle₁.value := by
+  unfold Quadrilateral_nd.angle₁
+  have h := neg_value_of_rev_ang (h₁ := qdr_nd.nd₁₂) (h₂ := qdr_nd.nd₁₄)
+  unfold value_of_angle_of_three_point_nd at h
+  rw [←h]
+  congr 1
+
+theorem reflect_angle₂_value_eq_neg_angle₄ : qdr_nd.reflect.angle₂.value = - qdr_nd.angle₄.value := by
+  unfold Quadrilateral_nd.angle₄
+  have h := neg_value_of_rev_ang (h₁ := qdr_nd.nd₁₄.symm) (h₂ := qdr_nd.nd₃₄.symm)
+  unfold value_of_angle_of_three_point_nd at h
+  rw [←h]
+  congr 1
+
+theorem reflect_angle₃_value_eq_neg_angle₃ : qdr_nd.reflect.angle₃.value = - qdr_nd.angle₃.value := by
+  unfold Quadrilateral_nd.angle₃
+  have h := neg_value_of_rev_ang (h₁ := qdr_nd.nd₃₄) (h₂ := qdr_nd.nd₂₃.symm)
+  unfold value_of_angle_of_three_point_nd at h
+  rw [←h]
+  congr 1
+
+theorem reflect_angle₄_value_eq_neg_angle₂ : qdr_nd.reflect.angle₄.value = - qdr_nd.angle₂.value := by
+  unfold Quadrilateral_nd.angle₂
+  have h := neg_value_of_rev_ang (h₁ := qdr_nd.nd₂₃) (h₂ := qdr_nd.nd₁₂.symm)
+  unfold value_of_angle_of_three_point_nd at h
+  rw [←h]
+  congr 1
 
 end property_nd
 
@@ -205,8 +223,6 @@ A quadrilateral_nd is called convex if four angles are same sign.
 @[pp_dot]
 def Quadrilateral_nd.IsConvex {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : Prop := (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₃.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg)
 
-scoped postfix : 50 "IsConvex" => Quadrilateral_nd.IsConvex
-
 @[pp_dot]
 def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases h : qdr.IsND
@@ -214,6 +230,20 @@ def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral 
   · exact False
 
 scoped postfix : 50 "IsConvex" => Quadrilateral.IsConvex
+
+theorem Quadrilateral.isND_of_is_convex {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr.IsConvex) : qdr.IsND := by
+  by_contra g
+  unfold Quadrilateral.IsConvex at h
+  simp only [g, dite_false] at h
+
+instance {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} : Coe qdr.IsConvex qdr.IsND := {coe := Quadrilateral.isND_of_is_convex}
+
+theorem Quadrilateral_cvx.nd_is_convex_iff_is_convex {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : qdr_nd.IsConvex ↔ qdr_nd.toQuadrilateral.IsConvex := sorry
+
+instance {P : Type _} [EuclideanPlane P] {qdr_nd : Quadrilateral_nd P} : Coe qdr_nd.IsConvex qdr_nd.toQuadrilateral.IsConvex := {coe := (Quadrilateral_cvx.nd_is_convex_iff_is_convex qdr_nd).mp}
+
+instance {P : Type _} [EuclideanPlane P] {qdr_nd : Quadrilateral_nd P} : Coe qdr_nd.toQuadrilateral.IsConvex qdr_nd.IsConvex := {coe := (Quadrilateral_cvx.nd_is_convex_iff_is_convex qdr_nd).mpr}
+
 /-
 `Currently, there are 2 ambiguous interpretation of qdr_cvx.permute IsConvex, lean will choose qdr_nd one.`
 `I think only allow qdr has permute is better, define every concept to the most basic layer. The proof the we need is written in permute_is_convex'`
@@ -224,24 +254,24 @@ Class of Convex Quadrilateral: A convex quadrilateral is quadrilateral with the 
 -/
 @[ext]
 structure Quadrilateral_cvx (P : Type _) [EuclideanPlane P] extends Quadrilateral_nd P where
-  convex : toQuadrilateral_nd IsConvex
+  convex : toQuadrilateral.IsConvex
 
 /- `This need a new name, g is not in the name`-/
 /-
 `we still need a mk from qdr and adr.IsConvex to make a Qdr_cvx, without nd`
 ` Now every method is from nd`
 -/
-def Quadrilateral_cvx.mk_pt_pt_pt_pt_convex {P : Type _} [EuclideanPlane P] (A B C D : P) (g : (QDR A B C D).IsND) (h : (QDR_nd A B C D g) IsConvex): Quadrilateral_cvx P where
+def Quadrilateral_cvx.mk_is_convex {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P where
   toQuadrilateral := (QDR A B C D)
-  nd := g
+  nd := h
   convex := h
 
-scoped notation "QDR_cvx" => Quadrilateral_cvx.mk_pt_pt_pt_pt_convex
+scoped notation "QDR_cvx" => Quadrilateral_cvx.mk_is_convex
 
 namespace Quadrilateral_cvx
 
 /-- Given a property that a quadrilateral qdr is convex, this function returns qdr itself as an object in the class of convex quadrilateral-/
-def mk_is_convex {P : Type _} [EuclideanPlane P] {qdr_nd : Quadrilateral_nd P} (h : qdr_nd IsConvex) : Quadrilateral_cvx P where
+def mk_nd_is_convex {P : Type _} [EuclideanPlane P] {qdr_nd : Quadrilateral_nd P} (h : qdr_nd.IsConvex) : Quadrilateral_cvx P where
   toQuadrilateral := qdr_nd.toQuadrilateral
   nd := qdr_nd.nd
   convex := h
@@ -256,7 +286,7 @@ structure is_convex_of_three_sides_of_same_side' where
   same_side₃ : odist_sign qdr_nd.point₃ qdr_nd.edge_nd₁₂ = odist_sign qdr_nd.point₄ qdr_nd.edge_nd₁₂
 
 /- Given Quadrilateral_nd qdr_nd, if qdr_nd.point₁ and qdr_nd.point₂ are at the same side of qdr_nd.nd₃₄, and it also holds for nd₄₁ and nd₁₂, then it's convex. -/
-theorem is_convex_of_three_sides_of_same_side (p : is_convex_of_three_sides_of_same_side' (P := P)) : p.qdr_nd IsConvex := by
+theorem is_convex_of_three_sides_of_same_side (p : is_convex_of_three_sides_of_same_side' (P := P)) : p.qdr_nd.IsConvex := by
   let qdr_nd := p.qdr_nd
   sorry
   -- by_cases h : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = 1
@@ -297,7 +327,7 @@ variable (qdr_nd : Quadrilateral_nd P)
 variable (qdr_cvx : Quadrilateral_cvx P)
 
 /-- The permute of quadrilateral_cvx is also quadrilateral_cvx. -/
-theorem permute_is_convex : qdr_cvx.permute IsConvex := by
+theorem permute_is_convex : Quadrilateral_nd.IsConvex (Quadrilateral_nd.permute qdr_cvx.toQuadrilateral_nd) := by
   unfold Quadrilateral_nd.IsConvex
   by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
   · have q : (qdr_cvx.permute.angle₄.value.IsPos ∧ qdr_cvx.permute.angle₁.value.IsPos ∧ qdr_cvx.permute.angle₂.value.IsPos ∧ qdr_cvx.permute.angle₃.value.IsPos) := by
@@ -311,79 +341,49 @@ theorem permute_is_convex : qdr_cvx.permute IsConvex := by
     simp only [q, and_self, or_true]
 
 /-- The permute quadrilateral_cvx, the first point of the permute is the second point of the origin, etc. -/
-def permute : Quadrilateral_cvx P := mk_is_convex (permute_is_convex qdr_cvx)
+def permute : Quadrilateral_cvx P := mk_nd_is_convex (permute_is_convex qdr_cvx)
 
-theorem is_convex_iff_permute_is_convex : qdr_nd IsConvex ↔ qdr_nd.permute IsConvex := by
+theorem is_convex_iff_permute_is_convex : qdr_nd.IsConvex ↔ qdr_nd.permute.IsConvex := by
   constructor
   intro h
-  exact permute_is_convex (Quadrilateral_cvx.mk_is_convex h)
+  exact permute_is_convex (Quadrilateral_cvx.mk_nd_is_convex h)
   intro h
   let q₁ : Quadrilateral_nd P := qdr_nd.permute.permute
-  have h₁ : q₁ IsConvex := permute_is_convex (Quadrilateral_cvx.mk_is_convex h)
+  have h₁ : q₁.IsConvex := permute_is_convex (Quadrilateral_cvx.mk_nd_is_convex h)
   let q₂ : Quadrilateral_nd P := qdr_nd.permute.permute.permute
-  have h₂ : q₂ IsConvex := permute_is_convex (Quadrilateral_cvx.mk_is_convex h₁)
-  let q₃ : Quadrilateral_nd P := qdr_nd.permute.permute.permute.permute
-  have h₃ : q₃ IsConvex := permute_is_convex (Quadrilateral_cvx.mk_is_convex h₂)
-  exact h₃
+  have h₂ : q₂.IsConvex := permute_is_convex (Quadrilateral_cvx.mk_nd_is_convex h₁)
+  exact permute_is_convex (Quadrilateral_cvx.mk_nd_is_convex h₂)
 
 /-- The reflect of quadrilateral_cvx is also quadrilateral_cvx. -/
-theorem reflect_is_convex : qdr_cvx.reflect IsConvex := by
+theorem reflect_is_convex : Quadrilateral_nd.IsConvex (Quadrilateral_nd.reflect qdr_cvx.toQuadrilateral_nd) := by
   unfold Quadrilateral_nd.IsConvex
-  have h₁ : qdr_cvx.point₁ = qdr_cvx.reflect.point₁ := rfl
-  have h₂ : qdr_cvx.point₂ = qdr_cvx.reflect.point₄ := rfl
-  have h₃ : qdr_cvx.point₃ = qdr_cvx.reflect.point₃ := rfl
-  have h₄ : qdr_cvx.point₄ = qdr_cvx.reflect.point₂ := rfl
-  have g₁ : - qdr_cvx.angle₁.value = qdr_cvx.reflect.angle₁.value := by
-    unfold Quadrilateral_nd.angle₁
-    have h := neg_value_of_rev_ang (h₁ := qdr_cvx.nd₁₂) (h₂ := qdr_cvx.nd₁₄)
-    unfold value_of_angle_of_three_point_nd at h
-    rw [←h]
-    congr
-  have g₂ : - qdr_cvx.angle₂.value = qdr_cvx.reflect.angle₄.value := by
-    unfold Quadrilateral_nd.angle₂
-    have h := neg_value_of_rev_ang (h₁ := qdr_cvx.nd₂₃) (h₂ := qdr_cvx.nd₁₂.symm)
-    unfold value_of_angle_of_three_point_nd at h
-    rw [←h]
-    congr
-  have g₃ : - qdr_cvx.angle₃.value = qdr_cvx.reflect.angle₃.value := by
-    unfold Quadrilateral_nd.angle₃
-    have h := neg_value_of_rev_ang (h₁ := qdr_cvx.nd₃₄) (h₂ := qdr_cvx.nd₂₃.symm)
-    unfold value_of_angle_of_three_point_nd at h
-    rw [←h]
-    congr
-  have g₄ : - qdr_cvx.angle₄.value = qdr_cvx.reflect.angle₂.value := by
-    unfold Quadrilateral_nd.angle₄
-    have h := neg_value_of_rev_ang (h₁ := qdr_cvx.nd₁₄.symm) (h₂ := qdr_cvx.nd₃₄.symm)
-    unfold value_of_angle_of_three_point_nd at h
-    rw [←h]
-    congr
   by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
   · have q : (qdr_cvx.reflect.angle₁.value.IsNeg ∧ qdr_cvx.reflect.angle₄.value.IsNeg ∧ qdr_cvx.reflect.angle₃.value.IsNeg ∧ qdr_cvx.reflect.angle₂.value.IsNeg) := by
-      rw [← g₁,AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₁.value)]
-      rw [← g₂,AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₂.value)]
-      rw [← g₃,AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₃.value)]
-      rw [← g₄,AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₄.value)]
+      rw [(Quadrilateral_nd.reflect_angle₁_value_eq_neg_angle₁ qdr_cvx.toQuadrilateral_nd), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₁.value)]
+      rw [(Quadrilateral_nd.reflect_angle₄_value_eq_neg_angle₂ qdr_cvx.toQuadrilateral_nd), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₂.value)]
+      rw [(Quadrilateral_nd.reflect_angle₃_value_eq_neg_angle₃ qdr_cvx.toQuadrilateral_nd), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₃.value)]
+      rw [(Quadrilateral_nd.reflect_angle₂_value_eq_neg_angle₄ qdr_cvx.toQuadrilateral_nd), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₄.value)]
       simp only [h, and_self]
     simp only [q, and_self, or_true]
   · have p: qdr_cvx.IsConvex := qdr_cvx.convex
     unfold Quadrilateral_nd.IsConvex at p
     simp only [h, false_or] at p
     have q : (qdr_cvx.reflect.angle₁.value.IsPos ∧ qdr_cvx.reflect.angle₄.value.IsPos ∧ qdr_cvx.reflect.angle₃.value.IsPos ∧ qdr_cvx.reflect.angle₂.value.IsPos) := by
-      rw [← g₁,AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₁.value)]
-      rw [← g₂,AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₂.value)]
-      rw [← g₃,AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₃.value)]
-      rw [← g₄,AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₄.value)]
+      rw [(Quadrilateral_nd.reflect_angle₁_value_eq_neg_angle₁ qdr_cvx.toQuadrilateral_nd), AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₁.value)]
+      rw [(Quadrilateral_nd.reflect_angle₄_value_eq_neg_angle₂ qdr_cvx.toQuadrilateral_nd), AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₂.value)]
+      rw [(Quadrilateral_nd.reflect_angle₃_value_eq_neg_angle₃ qdr_cvx.toQuadrilateral_nd), AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₃.value)]
+      rw [(Quadrilateral_nd.reflect_angle₂_value_eq_neg_angle₄ qdr_cvx.toQuadrilateral_nd), AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₄.value)]
       simp only [p, and_self]
     simp only [q, and_self, true_or]
 
-def reflect : Quadrilateral_cvx P := mk_is_convex (reflect_is_convex qdr_cvx)
+def reflect : Quadrilateral_cvx P := mk_nd_is_convex (reflect_is_convex qdr_cvx)
 
-theorem is_convex_iff_reflect_is_convex : qdr_nd IsConvex ↔ qdr_nd.reflect IsConvex := by
+theorem is_convex_iff_reflect_is_convex : qdr_nd.IsConvex ↔ qdr_nd.reflect.IsConvex := by
   constructor
   intro h
-  exact reflect_is_convex (Quadrilateral_cvx.mk_is_convex h)
+  exact reflect_is_convex (Quadrilateral_cvx.mk_nd_is_convex h)
   intro h
-  exact reflect_is_convex (Quadrilateral_cvx.mk_is_convex h)
+  exact reflect_is_convex (Quadrilateral_cvx.mk_nd_is_convex h)
 
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
@@ -450,36 +450,6 @@ theorem permute_is_convex' : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.poin
     absurd isnd
     exact Quadrilateral_nd.permute_is_nd (qdr_cvx.toQuadrilateral_nd)
 
-/- `The following part is transfered to Quadrilateral_nd, please modify and transfer the comments together, then delete this part`
-/-- Given a convex quadrilateral qdr_cvx, edge from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
-instance nd₁₂ : PtNe qdr_cvx.point₂ qdr_cvx.point₁ := by infer_instance
-
-/-- Given a convex quadrilateral qdr_cvx, edge from the 2nd point to the 3rd point is not degenerate, i.e. the second point is not equal to the first point. -/
-instance nd₂₃ : PtNe qdr_cvx.point₃ qdr_cvx.point₂ := by infer_instance
-
-/-- Given a convex quadrilateral qdr_cvx, edge from the 3rd point to the 4th point is not degenerate, i.e. the second point is not equal to the first point. -/
-instance nd₃₄ : PtNe qdr_cvx.point₄ qdr_cvx.point₃ := by infer_instance
-
-/-- Given a convex quadrilateral qdr_cvx, edge from the 1st point to the 4th point is not degenerate, i.e. the second point is not equal to the first point. -/
-instance nd₁₄ : PtNe qdr_cvx.point₄ qdr_cvx.point₁ := by infer_instance
-
-/-- The edge from the first point to the second point of a quadrilateral -/
-@[pp_dot]
-def edge_nd₁₂ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂
-
-/-- The edge from the second point to the third point of a quadrilateral -/
-@[pp_dot]
-def edge_nd₂₃ : SegND P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃
-
-/-- The edge from the third point to the fourth point of a quadrilateral -/
-@[pp_dot]
-def edge_nd₃₄ : SegND P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄
-
-/-- The edge from the fourth point to the first point of a quadrilateral -/
-@[pp_dot]
-def edge_nd₁₄ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₄
--/
-
 /-- Given a convex quadrilateral qdr_cvx, its 1st, 2nd and 3rd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₁ point₂}$ is not the same as the projective direction of the vector $\overrightarrow{point₁ point₃}$. -/
 theorem not_colinear₁₂₃ : ¬ colinear qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ := sorry
 
@@ -512,23 +482,6 @@ theorem not_colinear₁₂₄ : ¬ colinear qdr_cvx.point₁ qdr_cvx.point₂ qd
 
 -- We need to add a bunch of such theorems as they may be useful in discussing general quadrilaterals, i.e. not convex, even as contradictory in proofs.
 
-/- `This part is transfered to qdr_nd.`
-/--angle at point₁ of qdr_cvx-/
-@[pp_dot]
-def angle₁ : Angle P := ANG qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂
-
-/--angle at point₂ of qdr_cvx-/
-@[pp_dot]
-def angle₂ : Angle P := ANG qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃
-
-/--angle at point₃ of qdr_cvx-/
-@[pp_dot]
-def angle₃ : Angle P := ANG qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄
-
-/--angle at point₄ of qdr_cvx-/
-@[pp_dot]
-def angle₄ : Angle P := ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁
--/
 
 /--triangle point₄ point₁ point₂, which includes angle₁-/
 @[pp_dot]
