@@ -238,7 +238,10 @@ theorem Quadrilateral.isND_of_is_convex {P : Type _} [EuclideanPlane P] {qdr : Q
 
 instance {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} : Coe qdr.IsConvex qdr.IsND := {coe := Quadrilateral.isND_of_is_convex}
 
-theorem Quadrilateral_cvx.nd_is_convex_iff_is_convex {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : qdr_nd.IsConvex ↔ qdr_nd.toQuadrilateral.IsConvex := sorry
+theorem Quadrilateral_cvx.nd_is_convex_iff_is_convex {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : qdr_nd.IsConvex ↔ qdr_nd.toQuadrilateral.IsConvex := by
+  unfold Quadrilateral.IsConvex
+  simp only [qdr_nd.nd, dite_true]
+  rfl
 
 instance {P : Type _} [EuclideanPlane P] {qdr_nd : Quadrilateral_nd P} : Coe qdr_nd.IsConvex qdr_nd.toQuadrilateral.IsConvex := {coe := (Quadrilateral_cvx.nd_is_convex_iff_is_convex qdr_nd).mp}
 
@@ -288,9 +291,9 @@ structure is_convex_of_three_sides_of_same_side' where
 /- Given Quadrilateral_nd qdr_nd, if qdr_nd.point₁ and qdr_nd.point₂ are at the same side of qdr_nd.nd₃₄, and it also holds for nd₄₁ and nd₁₂, then it's convex. -/
 theorem is_convex_of_three_sides_of_same_side (p : is_convex_of_three_sides_of_same_side' (P := P)) : p.qdr_nd.IsConvex := by
   let qdr_nd := p.qdr_nd
-  sorry
-  -- by_cases h : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = 1
-  --
+  by_cases h : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = 1
+  · sorry
+  · sorry
 
 structure is_convex_of_diag_inx_lies_int' where
   qdr : Quadrilateral P
@@ -312,7 +315,7 @@ theorem is_convex_of_diag_inx_lies_int (p : is_convex_of_diag_inx_lies_int' (P :
   4. because nd₂₃ not divid pt₁ and pt₄, then sign of angle₂ = angle₃.
   -/
 
--- theorem is_convex_of four inferior angle
+-- theorem is_convex_of four inferior angle (seems it's obvious via current definition)
 -- theorem is_convex_of both diag divids other pts
 -- `to be added`
 
@@ -330,14 +333,12 @@ variable (qdr_cvx : Quadrilateral_cvx P)
 theorem permute_is_convex : Quadrilateral_nd.IsConvex (Quadrilateral_nd.permute qdr_cvx.toQuadrilateral_nd) := by
   unfold Quadrilateral_nd.IsConvex
   by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
-  · have q : (qdr_cvx.permute.angle₄.value.IsPos ∧ qdr_cvx.permute.angle₁.value.IsPos ∧ qdr_cvx.permute.angle₂.value.IsPos ∧ qdr_cvx.permute.angle₃.value.IsPos) := by
-      exact h
+  · have q : (qdr_cvx.permute.angle₄.value.IsPos ∧ qdr_cvx.permute.angle₁.value.IsPos ∧ qdr_cvx.permute.angle₂.value.IsPos ∧ qdr_cvx.permute.angle₃.value.IsPos) := h
     simp only [q, and_self, true_or]
   · have p: qdr_cvx.IsConvex := qdr_cvx.convex
     unfold Quadrilateral_nd.IsConvex at p
     simp only [h, false_or] at p
-    have q : (qdr_cvx.permute.angle₄.value.IsNeg ∧ qdr_cvx.permute.angle₁.value.IsNeg ∧ qdr_cvx.permute.angle₂.value.IsNeg ∧ qdr_cvx.permute.angle₃.value.IsNeg) := by
-      exact p
+    have q : (qdr_cvx.permute.angle₄.value.IsNeg ∧ qdr_cvx.permute.angle₁.value.IsNeg ∧ qdr_cvx.permute.angle₂.value.IsNeg ∧ qdr_cvx.permute.angle₃.value.IsNeg) := p
     simp only [q, and_self, or_true]
 
 /-- The permute quadrilateral_cvx, the first point of the permute is the second point of the origin, etc. -/
