@@ -201,7 +201,7 @@ abbrev DirLine.toProj (l : DirLine P) : Proj := l.toDir.toProj
 def DirLine.toLine (l : DirLine P) : Line P := Quotient.lift (⟦·⟧) (fun _ _ h => Quotient.sound $ same_dir_line_le_same_extn_line h) l
 
 @[pp_dot]
-def Ray.toDirLine (ray : Ray P) : DirLine P := ⟦ray⟧
+abbrev Ray.toDirLine (ray : Ray P) : DirLine P := ⟦ray⟧
 
 @[pp_dot]
 abbrev SegND.toDirLine (seg_nd : SegND P) : DirLine P := seg_nd.toRay.toDirLine
@@ -210,10 +210,10 @@ abbrev SegND.toDirLine (seg_nd : SegND P) : DirLine P := seg_nd.toRay.toDirLine
 def Line.toProj (l : Line P) : Proj := Quotient.lift (s := same_extn_line.setoid) (fun ray : Ray P => ray.toProj) (fun _ _ h => h.left) l
 
 @[pp_dot]
-def Ray.toLine (ray : Ray P) : Line P := ⟦ray⟧
+abbrev Ray.toLine (ray : Ray P) : Line P := ⟦ray⟧
 
 @[pp_dot]
-def SegND.toLine (seg_nd : SegND P) : Line P := ⟦seg_nd.toRay⟧
+abbrev SegND.toLine (seg_nd : SegND P) : Line P := ⟦seg_nd.toRay⟧
 
 end coercion
 
@@ -257,7 +257,7 @@ end Line
 
 namespace DirLine
 
-protected def carrier (l : DirLine P) : Set P := l.toLine.carrier
+protected abbrev carrier (l : DirLine P) : Set P := l.toLine.carrier
 
 instance : Fig (DirLine P) P where
   carrier := DirLine.carrier
@@ -928,7 +928,7 @@ end Archimedean_property
 
 section dist
 
-instance (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
+instance DirLine.instRealNormedAddTorsor (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
   vadd := fun x ⟨A, ha⟩ ↦ ⟨x • l.toDir.unitVec +ᵥ A, lies_on_of_exist_real_vec_eq_smul_toDir ha (vadd_vsub _ A)⟩
   zero_vadd := by
     intro ⟨A, _⟩
@@ -940,7 +940,7 @@ instance (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
     apply Subtype.val_inj.mp
     show (x + y) • l.toDir.unitVec +ᵥ A = x • l.toDir.unitVec +ᵥ (y • l.toDir.unitVec +ᵥ A)
     rw [add_smul, add_vadd]
-  vsub := fun ⟨A, ha⟩ ⟨B, hb⟩ ↦ inner (A -ᵥ B) l.toDir.unitVec
+  vsub := fun ⟨A, _⟩ ⟨B, _⟩ ↦ inner (A -ᵥ B) l.toDir.unitVec
   nonempty := by
     rcases l.nontriv with ⟨A, _, ha, _⟩
     exact ⟨A, ha⟩
@@ -955,10 +955,16 @@ instance (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
     rw [h]
     exact vsub_vadd A B
   vadd_vsub' := by
-    intro x ⟨A, ha⟩
+    intro x ⟨A, _⟩
     show inner (x • l.toDir.unitVec +ᵥ A -ᵥ A) l.toDir.unitVec = x
     rw [vadd_vsub, real_inner_smul_self_left l.toDir.unitVec x, l.toDir.norm_unitVec, mul_one, mul_one]
-  dist_eq_norm' := sorry
+  dist_eq_norm' := by
+    intro ⟨A, ha⟩ ⟨B, hb⟩
+    refine' (dist_eq_norm_vsub Vec A B).trans _
+    rcases exist_real_vec_eq_smul_toDir_of_lies_on hb ha with ⟨t, h⟩
+    show ‖VEC B A‖ = ‖@inner ℝ _ _ (VEC B A) l.toDir.unitVec‖
+    simp only [h, norm_smul, Real.norm_eq_abs, VecND.norm_coe, Dir.norm_unitVecND, mul_one,
+      real_inner_smul_left, Dir.inner_unitVec, vsub_self, AngValue.cos_zero]
 
 def DirLine.ddist {l : DirLine P} {A : P} {B : P} (ha : A LiesOn l) (hb : B LiesOn l) : ℝ :=
   (⟨B, hb⟩ : l.carrier.Elem) -ᵥ ⟨A, ha⟩
