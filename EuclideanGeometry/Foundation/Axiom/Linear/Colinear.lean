@@ -13,23 +13,23 @@ variable {P : Type _} [EuclideanPlane P]
 section colinear
 
 /-- Given three distinct (ordered) points $A$, $B$, $C$, this function returns whether they are colinear, i.e. whether the projective direction of the vector $\overrightarrow{AB}$ is the same as the projective direction of the vector $\overrightarrow{AC}$. -/
-def colinear_of_nd {A B C : P} (hac : A ≠ C) (hba : B ≠ A) : Prop :=
-  VecND.toProj (VEC_nd A B hba) = VecND.toProj (VEC_nd A C hac.symm)
+def colinear_of_nd {A B C : P} [_hac : PtNe A C] [_hba : PtNe B A] : Prop :=
+  VecND.toProj (VEC_nd A B) = VecND.toProj (VEC_nd A C)
 
 /-- Given three points $A$, $B$, $C$, return whether they are colinear: if at least two of them are equal, then they are considered colinear; if the three points are distinct, we use the earlier definition of colinarity for distinct points. -/
 def colinear (A B C : P) : Prop :=
   if h : (C = B) ∨ (A = C) ∨ (B = A) then True
   else by
     push_neg at h
-    exact colinear_of_nd h.2.1 h.2.2
+    exact colinear_of_nd (_hac := ⟨h.2.1⟩) (_hba := ⟨h.2.2⟩)
 
 -- The definition of colinear now includes two cases: the degenerate case and the nondegenerate case. We use to_dir' to avoid problems involving using conditions of an "if" in its "then" and "else". And we only use VEC to define colinear.
 
-theorem toProj_eq_of_colinear {A B C : P} (hba : B ≠ A) (hca : C ≠ A) (h : colinear A B C) : (SEG_nd A B hba).toProj = (SEG_nd A C hca).toProj :=
+theorem toProj_eq_of_colinear {A B C : P} [hba : PtNe B A] [hca : PtNe C A] (h : colinear A B C) : (SEG_nd A B).toProj = (SEG_nd A C).toProj :=
   if hbc : B = C then by congr
   else ((dite_prop_iff_and _).mp h).2 <| by
     push_neg
-    exact ⟨Ne.symm hbc, hca.symm, hba⟩
+    exact ⟨Ne.symm hbc, Fact.out, Fact.out⟩
 
 /-- Given three points $A$, $B$, $C$ and a real number $t$, if the vector $\overrightarrow{AC}$ is $t$ times the vector $\overrightarrow{AB}$, then $A$, $B$, and $C$ are colinear. -/
 theorem colinear_of_vec_eq_smul_vec {A B C : P} {t : ℝ} (e : VEC A C = t • VEC A B) : colinear A B C := by
@@ -50,7 +50,7 @@ theorem colinear_of_vec_eq_smul_vec' {A B C : P} : (∃ t : ℝ, VEC A C = t •
   exact colinear_of_vec_eq_smul_vec e
 
 /-- Given three points $A$, $B$, $C$ such that $B \neq A$, we have $A$, $B$, $C$ are colinear if and only if the vector $\overrightarrow{AC}$ is a scalar multiple of the vector $\overrightarrow{AB}$. -/
-theorem colinear_iff_eq_smul_vec_of_ne {A B C : P} (g : B ≠ A) : colinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B := by
+theorem colinear_iff_eq_smul_vec_of_ne {A B C : P} [g : PtNe B A] : colinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B := by
   constructor
   · intro c
     rw [← iff_true (colinear A B C), ← eq_iff_iff] at c
@@ -61,7 +61,7 @@ theorem colinear_iff_eq_smul_vec_of_ne {A B C : P} (g : B ≠ A) : colinear A B 
       · use 0
         rw [h]
         simp only [vec_same_eq_zero, zero_smul]
-      · have h : B = C := by tauto
+      · have h : B = C := by have := g.out; tauto
         use 1
         rw [h]
         simp only [one_smul]
@@ -96,8 +96,9 @@ theorem colinear_of_snd_eq_fst {A B : P} (C : P) (h : B = A)  : colinear A B C :
 
 /-- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are colinear (in that order), then $A$, $C$, $B$ are colinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity. -/
 theorem flip_colinear_snd_trd {A B C : P} (c : colinear A B C) : colinear A C B := by
-  by_cases h : (B ≠ A) ∧ (C ≠ A)
-  · rcases (colinear_iff_eq_smul_vec_of_ne h.1).1 c with ⟨t, e⟩
+  by_cases h : B ≠ A ∧ C ≠ A
+  · haveI : PtNe B A := ⟨h.1⟩
+    rcases colinear_iff_eq_smul_vec_of_ne.1 c with ⟨t, e⟩
     have ht : t ≠ 0 := by
       by_contra ht'
       rw [ht', zero_smul] at e
@@ -117,7 +118,8 @@ theorem flip_colinear_fst_snd {A B C : P} (c : colinear A B C) : colinear B A C 
   by_cases h : B = A
   · rw [h]
     exact triv_colinear _ _
-  · rw [colinear_iff_eq_smul_vec_of_ne h] at c
+  · haveI : PtNe B A := ⟨h⟩
+    rw [colinear_iff_eq_smul_vec_of_ne] at c
     rcases c with ⟨r, e⟩
     have e' : VEC B C = (1 - r) • VEC B A := by
       rw [← vec_sub_vec A B C, e, ← neg_vec A B, smul_neg, sub_smul, neg_sub, one_smul]
@@ -134,9 +136,9 @@ theorem flip_colinear_fst_trd {A B C : P} (h : colinear A B C) : colinear C B A 
 
 -- the proof of this theorem using def of line seems to be easier
 /-- Given four points $A$, $B$, $C$, $D$ with $B \neq A$, if $A$, $B$, $C$ are colinear, and if $A$, $B$, $D$ are colinear, then $A$, $C$, $D$ are colinear. -/
-theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h₂ : colinear A B D) (h : B ≠ A) : (colinear A C D) := by
-  have ac : ∃ r : ℝ , VEC A C = r • VEC A B := (colinear_iff_eq_smul_vec_of_ne h).mp h₁
-  have ad : ∃ s : ℝ , VEC A D = s • VEC A B := (colinear_iff_eq_smul_vec_of_ne h).mp h₂
+theorem colinear_of_colinear_colinear_ne {A B C D: P} (h₁ : colinear A B C) (h₂ : colinear A B D) [h : PtNe B A] : (colinear A C D) := by
+  have ac : ∃ r : ℝ , VEC A C = r • VEC A B := colinear_iff_eq_smul_vec_of_ne.mp h₁
+  have ad : ∃ s : ℝ , VEC A D = s • VEC A B := colinear_iff_eq_smul_vec_of_ne.mp h₂
   rcases ac with ⟨r,eq⟩
   rcases ad with ⟨s,eq'⟩
   by_cases nd : r = 0
@@ -214,10 +216,7 @@ theorem nontriv_of_plane {H : Type _} [h : EuclideanPlane H] : ∃ A B C : H, ¬
   let B := (⟨1, 0⟩ : Vec) +ᵥ A
   let C := (⟨0, 1⟩ : Vec) +ᵥ A
   use A, B, C
-  rw [colinear_iff_eq_smul_vec_of_ne]
-  · simp
-  · simp
-    intro h
-    simpa using congr_arg Vec.fst h
+  have : PtNe B A := ⟨by simp; intro h; simpa using congr_arg Vec.fst h⟩
+  simp [colinear_iff_eq_smul_vec_of_ne]
 
 end EuclidGeom

@@ -1582,6 +1582,7 @@ theorem map_trans (f g : Dir ≃ Dir) {_ : Dir.NegCommute f} {_ : Dir.NegCommute
     Proj.map (f.trans g) = (Proj.map f).trans (Proj.map g) := by
   ext p
   induction p using Proj.ind
+  
   simp
 
 instance : Nonempty Proj := (nonempty_quotient_iff _).mpr <| inferInstanceAs (Nonempty Dir)
@@ -1613,7 +1614,7 @@ instance : AddTorsor AngDValue Proj where
     rw [← AngDValue.coe_add]
     simp [- AngDValue.coe_add, add_vadd]
   vsub := Proj.lift (fun d₁ ↦ Proj.lift (fun d₂ ↦ d₁ -ᵥ d₂)
-    (fun d₂ ↦ by simp [AngDValue.coe_eq_coe_iff])) (fun d₁ ↦ by ext d₂; simp)
+    (fun d₂ ↦ by simp [AngValue.coe_eq_coe_iff])) (fun d₁ ↦ by ext d₂; simp)
   vsub_vadd' p₁ p₂ := by
     induction p₁ using Proj.ind
     induction p₂ using Proj.ind

@@ -381,13 +381,13 @@ theorem third_point_same_of_two_point_same (h : tr_nd₁.IsCongr tr_nd₂) (p₁
     simp only [<-p₂, <-p₁] ; rfl
     exact h.5
   have l₁ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₁.end_ray.toLine :=
-    .inl (Ray.snd_pt_lies_on_mk_pt_pt tr_nd₁.nontriv₂.symm)
+    .inl Ray.snd_pt_lies_on_mk_pt_pt
   have l₂ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₂.start_ray.toLine :=
-    .inl (Ray.snd_pt_lies_on_mk_pt_pt tr_nd₁.nontriv₁)
+    .inl Ray.snd_pt_lies_on_mk_pt_pt
   have l₃ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₁.end_ray.toLine :=
-    .inl (Ray.snd_pt_lies_on_mk_pt_pt tr_nd₂.nontriv₂.symm)
+    .inl Ray.snd_pt_lies_on_mk_pt_pt
   have l₄ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₂.start_ray.toLine :=
-    .inl (Ray.snd_pt_lies_on_mk_pt_pt tr_nd₂.nontriv₁)
+    .inl Ray.snd_pt_lies_on_mk_pt_pt
   have np₁ : ¬ tr_nd₁.angle₁.end_ray.toLine ∥ tr_nd₁.angle₂.start_ray.toLine := by
     by_contra pl
     have l₅ : tr_nd₁.point₁ LiesOn tr_nd₁.angle₁.end_ray.toLine := by
@@ -848,8 +848,8 @@ theorem congr_of_HL (h₁ : tr_nd₁.angle₁.value = ↑(π / 2)) (h₂ : tr_nd
   have : Seg.length (edge₃ tr_nd₁) * Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) * Seg.length (edge₃ tr_nd₂) := by
     rw [<-sq ,<-sq]
     exact pyth₂.symm
-  have pos : 0 ≤ Seg.length (edge₃ tr_nd₁) := norm_nonneg tr_nd₁.edge₃.toVec
-  have pos' : 0 ≤ Seg.length (edge₃ tr_nd₂) := norm_nonneg tr_nd₂.edge₃.toVec
+  have pos : 0 ≤ Seg.length (edge₃ tr_nd₁) := length_nonneg
+  have pos' : 0 ≤ Seg.length (edge₃ tr_nd₂) := length_nonneg
   have : Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) := (mul_self_inj pos pos').mp this
   rw [<-h₂] at h₁
   exact  congr_of_SAS e₂ h₁ this
@@ -861,8 +861,8 @@ theorem acongr_of_HL (h₁ : tr_nd₁.angle₁.value = ↑(π / 2)) (h₂ : tr_n
   have : Seg.length (edge₃ tr_nd₁) * Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) * Seg.length (edge₃ tr_nd₂) := by
     rw [<-sq ,<-sq]
     exact pyth₂.symm
-  have pos : 0 ≤ Seg.length (edge₃ tr_nd₁) := norm_nonneg tr_nd₁.edge₃.toVec
-  have pos' : 0 ≤ Seg.length (edge₃ tr_nd₂) := norm_nonneg tr_nd₂.edge₃.toVec
+  have pos : 0 ≤ Seg.length (edge₃ tr_nd₁) := length_nonneg
+  have pos' : 0 ≤ Seg.length (edge₃ tr_nd₂) := length_nonneg
   have : Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) := by
     exact (mul_self_inj pos pos').mp this
   have eq_neg : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value := by
