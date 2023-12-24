@@ -41,4 +41,8 @@ theorem Ray.lieson_eq_dist {A : P} {r : Ray P} (h : A LiesOn r) : VEC r.1 A = (d
   by the way in_seg shoud be renamed by current naming system
 -/
 
+theorem midpt_of_rev_eq_midpt (A B : P) : (SEG A B).midpoint = (SEG B A).midpoint := by sorry
+
+theorem lies_int_toray_of_lies_int_ext_of_seg_nd (A B C : P) (h1 : B ≠ A) (h : C LiesInt ((SEG_nd A B h1).extension)) : C LiesInt (SEG_nd A B h1).toRay := by sorry
+
 end EuclidGeom

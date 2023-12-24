@@ -157,7 +157,7 @@ theorem lie_on_angbis_of_lie_on_angbisline_inside_angle (ang : Angle P)  : sorry
 
 /-construct the intercentor as the intersection of two bis-/
 
-/-a triangle_nd admit an unique intercenter-/
+/-a TriangleND admit an unique intercenter-/
 
 structure IsIncenter (tri_nd : TriangleND P) (I : P) : Prop where
 
@@ -222,6 +222,6 @@ end TriangleND
 
 /-the intercenter lies inside of the triangle-/
 
-theorem incenter_lies_int_triangle (triangle_nd : TriangleND P): sorry := sorry
+theorem incenter_lies_int_triangle (TriangleND : TriangleND P): sorry := sorry
 
 end EuclidGeom

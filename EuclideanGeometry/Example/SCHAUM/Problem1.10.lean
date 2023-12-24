@@ -16,11 +16,11 @@ Prove that $APCQ$ is a rectangle.
 -- Let $ABCD$ be a parallelogram.
 variable {A B C D : Plane} {hprg : Quadrilateral.IsParallelogram (QDR A B C D)}
 -- Let $P$ be the foot of the perpendicular from $A$ to the line $CD$.
-lemma d_ne_c : D ≠ C := sorry
-variable {P : Plane} {hppf : P = perp_foot A (LIN C D d_ne_c)}
+lemma d_ne_C : D ≠ C := sorry
+variable {P : Plane} {hppf : P = perp_foot A (LIN C D d_ne_C)}
 -- Let $Q$ be the foor of the perpendicular from $C$ to the line $AB$.
-lemma b_ne_a : B ≠ A := sorry
-variable {Q : Plane} {hqpf : Q = perp_foot C (LIN A B b_ne_a)}
+lemma B_ne_a : B ≠ A := sorry
+variable {Q : Plane} {hqpf : Q = perp_foot C (LIN A B B_ne_a)}
 -- State the main goal.
 -------- theorem SCHAUM_Problem_1_10 : Quadrilateral.IsRectangle (QDR A P C Q) := by sorry
 

@@ -15,17 +15,17 @@ Theorem: We have $BX = CY$ and $MX = MY$.
 -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+variable {A B C : P} {hnd : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
 -- Claim: $A \ne B$ and $A \neq C$. This is because vertices of nondegenerate triangles are distinct.
-lemma a_ne_b : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
-lemma a_ne_c : A ≠ C := (ne_of_not_colinear hnd).2.1
+lemma A_ne_B : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
+lemma A_ne_C : A ≠ C := (ne_of_not_colinear hnd).2.1
 -- Let $X$ and $Y$ be points on the interior of the segments of $AC$ and $AB$, respectively.
 variable {X Y : P} {hx : X LiesInt (SEG A C)} {hy : Y LiesInt (SEG A B)}
 -- Claim: $X \neq B$ and $Y \neq C$. This is because: $X$ is an interior point of an edge of a triangle, so it is not equal to a vertex $B$ of the triangle; similarly, $Y$ is an interior point of an edge of a triangle, so it is not equal to a vertex $C$ of the triangle.
-lemma x_ne_b : X ≠ B := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_snd_edge (Seg.lies_int_rev_iff_lies_int.mp hx)).2.1
-lemma y_ne_c : Y ≠ C := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_trd_edge hy).2.2
+lemma x_ne_B : X ≠ B := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_snd_edge (Seg.lies_int_rev_iff_lies_int.mp hx)).2.1
+lemma y_ne_C : Y ≠ C := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_trd_edge hy).2.2
 -- We have $\angle XBA = \angle ACY$.
-variable (hang : ∠ X B A x_ne_b a_ne_b = - ∠ A C Y a_ne_c y_ne_c)
+variable (hang : ∠ X B A x_ne_B A_ne_B = - ∠ A C Y A_ne_C y_ne_C)
 
 
 

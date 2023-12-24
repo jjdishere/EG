@@ -20,7 +20,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   B : Plane
   C : Plane
   not_colinear_ABC : ¬ colinear A B C
-  hisoc : (▵ A B C).IsIsoceles
+  isoceles_ABC : (▵ A B C).IsIsoceles
   --Let $D$ be a point on $AB$.
   D : Plane
   D_int_AB : D LiesInt (SEG A B)
@@ -89,10 +89,10 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
   Therefore, $DP = EQ$.
 -/
   -- In the isoceles triangle $ABC$, we have $AB = AC$.
-  have hisoc' : (SEG e.A e.B).length = (SEG e.A e.C).length := by
+  have isoceles_ABC' : (SEG e.A e.B).length = (SEG e.A e.C).length := by
     calc
       -- $AB = CA$ by isoceles,
-      _ = (SEG e.C e.A).length := e.hisoc.symm
+      _ = (SEG e.C e.A).length := e.isoceles_ABC.symm
       -- $CA = AC$ by symmetry.
       _ = (SEG e.A e.C).length := (SEG e.A e.C).length_of_rev_eq_length
   -- Thus we have $BD = AB - AD = AC - AE = CE$.
@@ -105,7 +105,7 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
         rw [← eq_sub_of_add_eq']
         exact sorry -- (length_eq_length_add_length (SEG A B) D (D_on_seg)).symm
       -- $AB - AD = AC - AE$ since $AB = AC$ and $AD = AE$,
-      _ = (SEG e.A e.C).length - (SEG e.A e.E).length := by sorry -- rw [E_ray_position, ← hisoc']
+      _ = (SEG e.A e.C).length - (SEG e.A e.E).length := by sorry -- rw [E_ray_position, ← isoceles_ABC']
       -- $AC - AE = EC$ since $E$ lies on $AC$.
       _ = (SEG e.E e.C).length := by
         rw [← eq_sub_of_add_eq']

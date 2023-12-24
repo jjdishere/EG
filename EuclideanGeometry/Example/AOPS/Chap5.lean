@@ -113,13 +113,13 @@ variable {Q : P} {hq₁ : Q LiesInt (ANG A C B c_ne_a.symm b_ne_c).AngBis}
 lemma q_ne_a : Q ≠ A := sorry
 lemma q_ne_c : Q ≠ C := sorry
 -- We have $AQ \perp CQ$
-variable {hq₂ : (SEG_nd A Q q_ne_a) ⟂ (SEG_nd C Q q_ne_c)}
+variable {hq₂ : (SegND A Q q_ne_a) ⟂ (SegND C Q q_ne_c)}
 -- $M$ is the midpoint of $AB$
 variable {M : P} {hm : M = (SEG A B).midpoint}
 -- Claim : $Q \ne M$
 lemma q_ne_m : Q ≠ M := sorry
 
-theorem AOPS_Problem_5_16 : (SEG_nd M Q q_ne_m) ∥ (SEG_nd B C b_ne_c.symm) := sorry
+theorem AOPS_Problem_5_16 : (SegND M Q q_ne_m) ∥ (SegND B C b_ne_c.symm) := sorry
 
 end AOPS_Problem_5_16
 
