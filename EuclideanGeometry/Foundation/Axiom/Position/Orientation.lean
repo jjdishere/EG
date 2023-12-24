@@ -333,7 +333,32 @@ theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source 
 
 end ray_toRay
 
+section relative_side
 
+/-
+This section would define "LiesOn_same_side" and "LiesOn_opposite_side" for all linear figures.
+(it doesn't need to distinguish the reverse)
+This should be used to determine the unique graph with the least information,to lessen the dependent on graph.
+The following theorems should be included:
+  def A B LiesOn_same_side' dl : odist_sign A dl = odist_sign B dl
+  theorem A B LiesOn_same_side' dl ↔ A B LiesOn_same_side' dl.reverse
+  thus we can give
+  def A B LiesOn_same_side l : A B LiesOn_same_side (one random directing of l)
+ In the similar way
+  def A B LiesOn_opposite_side' dl
+  def A B LiesOn_opposite_side l
+ -would be well defined
+Basic properties:
+  LiesOn_same_side of LiesOn_same_side and LiesOn_same_side
+  LiesOn_same_side of LiesOn_opposite_side and LiesOn_opposite_side
+  LiesOn_opposite_side of LiesOn_same_side and LiesOn_opposite_side
+  LiesOn_opposite_side of LiesOn_opposite_side and LiesOn_same_side
+
+Further properties of "LiesOn_same_side" and "LiesOn_opposite_side would be show along with cclock in Folder Triangle.
+
+-/
+
+end relative_side
 
 /- Position of two lines; need a function to take the intersection of two lines (when they intersect). -/
 

@@ -152,7 +152,12 @@ end TriangleND
 namespace TriangleND
 
 section cclock_and_odist
-
+/-
+Using this section with "odist" and permutation of TriangleND , we are able to convert odist_sign between lines.
+This method together with "same_side" and "opposite_side",(which would be add later)
+can probably solve all the problems we can fore-see currently about
+the uniqueness of the graph and how to use it to determine the orientation.
+-/
 variable (tr_nd : TriangleND P)
 
 theorem iscclock_iff_liesonleft₃ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.3 LiesOnLeft tr_nd.edge_nd₃ := by
