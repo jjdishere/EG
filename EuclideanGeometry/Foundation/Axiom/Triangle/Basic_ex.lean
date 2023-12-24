@@ -151,13 +151,44 @@ end TriangleND
 
 namespace TriangleND
 
-section cclock
+section cclock_and_odist
 
 variable (tr_nd : TriangleND P)
 
---theorem perm_cclock_iff_cclock (tr_nd : TriangleND P) :
+theorem iscclock_iff_liesonleft₃ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.3 LiesOnLeft tr_nd.edge_nd₃ := by
+  unfold is_cclock
+  unfold IsOnLeftSide
+  have h : (0 < tr_nd.oarea) = (0 < odist tr_nd.1.3 tr_nd.edge_nd₃) := by
+    have : EuclidGeom.oarea tr_nd.1.1 tr_nd.1.2 tr_nd.1.3 = tr_nd.edge₃.length * odist tr_nd.1.3 tr_nd.edge_nd₃ /2 := by
+      apply oarea_eq_length_mul_odist_div_two
+    unfold oarea
+    unfold Triangle.oarea
+    have pos : tr_nd.edge_nd₃.length > 0 := by
+      apply EuclidGeom.length_pos
+    simp only [this, eq_iff_iff]
+    symm
+    constructor
+    · intro p
+      positivity
+    · intro p
+      apply pos_of_mul_pos_left (b := tr_nd.edge₃.length/2)
+      · have simp : odist tr_nd.1.3 tr_nd.edge_nd₃ * (tr_nd.edge₃.length / 2) = tr_nd.edge₃.length * odist tr_nd.1.3 tr_nd.edge_nd₃ / 2  := by ring
+        rw [simp]
+        exact p
+      · positivity
+  exact h
+theorem iscclock_iff_liesonleft₁ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.1 LiesOnLeft tr_nd.edge_nd₁ := by
+  have h : tr_nd.is_cclock = (tr_nd.perm_vertices.is_cclock) := by
+    apply same_orient_of_perm_vertices
+  simp only [h]
+  apply iscclock_iff_liesonleft₃
+theorem iscclock_iff_liesonleft₂ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.2 LiesOnLeft tr_nd.edge_nd₂ := by
+  have h : tr_nd.is_cclock = (tr_nd.perm_vertices.is_cclock) := by
+    apply same_orient_of_perm_vertices
+  simp only [h]
+  apply iscclock_iff_liesonleft₁
 
-end cclock
+end cclock_and_odist
 
 end TriangleND
 

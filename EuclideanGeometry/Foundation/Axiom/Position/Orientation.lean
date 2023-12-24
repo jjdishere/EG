@@ -296,8 +296,8 @@ theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) [bnea : PtNe B A] [dnec : P
 
 end cooperation_with_parallel
 
-scoped infix : 50 " LiesOnLeft " => IsOnLeftSide
-scoped infix : 50 " LiesOnRight " => IsOnRightSide
+scoped infix : 55 " LiesOnLeft " => IsOnLeftSide
+scoped infix : 55 " LiesOnRight " => IsOnRightSide
 
 section handside
 

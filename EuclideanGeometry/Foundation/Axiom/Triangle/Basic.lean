@@ -88,7 +88,7 @@ abbrev area : ℝ := tr_nd.1.area
 
 /- Only nondegenerate triangles can talk about orientation -/
 @[pp_dot]
-def is_cclock : Prop := TriangleND.oarea tr_nd > 0
+def is_cclock : Prop := 0 < TriangleND.oarea tr_nd
 
 @[pp_dot]
 def angle₁ : Angle P := ANG tr_nd.point₂ tr_nd.point₁ tr_nd.point₃

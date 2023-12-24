@@ -41,7 +41,27 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}:  �
         _ = _ := length_of_rev_eq_length'
     · exact length_of_rev_eq_length'
     · exact e.h₂
-    · sorry
+    · have clock : ¬ (TRI_nd e.D e.B e.A e.hnd₁).is_cclock := by
+        have : (IsOnLeftSide e.B (SEG_nd e.A e.D e.D_ne_A)) ↔ (TRI_nd e.D e.B e.A e.hnd₁).is_cclock := by
+          simp [TriangleND.iscclock_iff_liesonleft₂]
+          rfl
+        apply this.not.mp
+        unfold IsOnLeftSide
+        have hb : odist e.B (SEG_nd e.A e.D e.D_ne_A) < 0 := by exact e.B_side
+        linarith
+      have cclock : (TRI_nd e.A e.C e.D e.hnd₂).is_cclock := by
+        have : (IsOnLeftSide e.C (SEG_nd e.D e.A e.D_ne_A.symm)) ↔ (TRI_nd e.A e.C e.D e.hnd₂).is_cclock := by
+          simp [TriangleND.iscclock_iff_liesonleft₂]
+          rfl
+        apply this.mp
+        have rev : odist e.C (SEG_nd e.D e.A e.D_ne_A.symm) = - odist e.C (SEG_nd e.A e.D e.D_ne_A) := by
+          have : (SEG_nd e.D e.A e.D_ne_A.symm) = (SEG_nd e.A e.D e.D_ne_A).reverse := by rfl
+          simp only [this]
+          apply odist_reverse_eq_neg_odist (df := (SEG_nd e.A e.D e.D_ne_A))
+        unfold IsOnLeftSide
+        simp only [rev, Left.neg_pos_iff, gt_iff_lt]
+        exact e.C_side
+      simp only [clock, cclock, not_true_eq_false]
   · exact h.angle₂
 
 
