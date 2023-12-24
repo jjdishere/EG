@@ -35,39 +35,39 @@ Prove that $\angle BFD = \pi / 2 - \angle CAB$. -/
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $B \ne A$ and $C \ne A$ and $B \ne C$.
 --This is because vertices of nondegenerate triangles are distinct.
-lemma b_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
+lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
 lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
-lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
+lemma B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
 -- Let $D$ and $E$ be points lies on the nondegenerate segments of $AB$ and $AC$
 variable{D E : P} {hd : D LiesInt SEG A B} {he : E LiesInt SEG A C}
 -- We have $BD=BC$ and $BC=CE$
 variable (hedge : (SEG B D).length = (SEG B C).length ∧ (SEG B C).length = (SEG C E).length)
 -- Claim: $D \ne C, D \ne B, E \ne A, E \ne B$
-lemma d_ne_c : D ≠ C := sorry
-lemma d_ne_b : D ≠ B := sorry
+lemma d_ne_C : D ≠ C := sorry
+lemma d_ne_B : D ≠ B := sorry
 lemma e_ne_a : E ≠ A := sorry
-lemma e_ne_b : E ≠ B := sorry
+lemma e_ne_B : E ≠ B := sorry
 -- The segments $BE$ and $CD$ intersect at $F$.
 variable {F : P} {hf : is_inx F (SEG B E) (SEG C D)}
 -- Claim: $B \ne f$ and $D \ne F$.
-lemma b_ne_f : B ≠ F := by
+lemma B_ne_f : B ≠ F := by
   have d_not_lies_on_bc : ¬ D LiesOn (LIN B C (ne_of_not_colinear hnd).1) := by
     by_contra not
     have line_neq : (LIN A B (b_ne_a (hnd := hnd))).toProj ≠ (LIN B C (b_ne_c (hnd := hnd)).symm).toProj := (edge_toLine_not_para_of_not_colinear hnd).1
-    have aa : D LiesOn (SEG_nd A B (b_ne_a (hnd := hnd))).1 := Seg.lies_on_of_lies_int hd
+    have aa : D LiesOn (SegND A B (b_ne_a (hnd := hnd))).1 := Seg.lies_on_of_lies_int hd
     have inxd : is_inx D (LIN B C (ne_of_not_colinear hnd).1) (LIN A B (ne_of_not_colinear hnd).2.2) := by
       exact ⟨not, SegND.lies_on_toLine_of_lie_on aa⟩
     have inxb : is_inx B (LIN B C (ne_of_not_colinear hnd).1) (LIN A B (ne_of_not_colinear hnd).2.2) := by
-      exact ⟨(SEG_nd B C (ne_of_not_colinear hnd).1).source_lies_on_toLine , (SEG_nd A B (ne_of_not_colinear hnd).2.2).target_lies_on_toLine ⟩
+      exact ⟨(SegND B C (ne_of_not_colinear hnd).1).source_lies_on_toLine , (SegND A B (ne_of_not_colinear hnd).2.2).target_lies_on_toLine ⟩
     exact d_ne_b (unique_of_inx_of_line_of_not_para line_neq inxb.symm inxd.symm)
   have bcd_notcoli : ¬ colinear B C D := (Line.lies_on_line_of_pt_pt_iff_colinear (b_ne_c (hnd := hnd)).symm D).mpr.mt d_not_lies_on_bc
   have b_not_lies_on_cd : ¬ B LiesOn (LIN C D d_ne_c) := (Line.lies_on_line_of_pt_pt_iff_colinear d_ne_c B).mp.mt (flip_colinear_snd_trd.mt (flip_colinear_fst_snd.mt bcd_notcoli))
-  have f_lies_on_seg_cd : F LiesOn (SEG_nd C D d_ne_c).1 := hf.2
+  have f_lies_on_seg_cd : F LiesOn (SegND C D d_ne_c).1 := hf.2
   exact (ne_of_lieson_and_not_lieson (SegND.lies_on_toLine_of_lie_on f_lies_on_seg_cd) b_not_lies_on_cd).symm
 lemma d_ne_f : D ≠ F := sorry
 
 -- Theorem : $\angle BFD = \pi / 2 - \angle CAB$
-theorem Aref_Wernick_Exercise_1_2 : ∠ B F D (b_ne_f (hnd := hnd) (hd := hd) (hf := hf)) d_ne_f = ↑(π / 2) - ∠ C A B (c_ne_a (hnd := hnd)) (b_ne_a (hnd := hnd)) := sorry
+theorem Aref_Wernick_Exercise_1_2 : ∠ B F D (B_ne_f (hnd := hnd) (hd := hd) (hf := hf)) d_ne_f = ↑(π / 2) - ∠ C A B (c_ne_a (hnd := hnd)) (B_ne_a (hnd := hnd)) := sorry
 
 end Aref_Wernick_Exercise_1_2
 

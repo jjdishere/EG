@@ -33,18 +33,6 @@ theorem Ray.lieson_eq_dist {A : P} {r : Ray P} (h : A LiesOn r) : VEC r.1 A = (d
     _ = (dist r.1 A) • (RAY r.1 A h.2).2.unitVec := rfl
     _ = (dist r.1 A) • r.2.unitVec := by rw [h₁]
 
-theorem SegND.liesint_ne_source {A : P} {seg_nd : SegND P} (h : A LiesInt seg_nd) : A ≠ seg_nd.source := by
-  intro heq
-  rw [heq] at h
-  contrapose! h
-  simp
-
-theorem SegND.liesint_ne_target {A : P} {seg_nd : SegND P} (h : A LiesInt seg_nd) : A ≠ seg_nd.target := by
-  intro heq
-  rw [heq] at h
-  contrapose! h
-  simp
-
 /-SegND_eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source should be replaced by the following three
   midpoint → liesint seg_nd
   midpoint → dist source = dist target
@@ -52,5 +40,9 @@ theorem SegND.liesint_ne_target {A : P} {seg_nd : SegND P} (h : A LiesInt seg_nd
 
   by the way in_seg shoud be renamed by current naming system
 -/
+
+theorem midpt_of_rev_eq_midpt (A B : P) : (SEG A B).midpoint = (SEG B A).midpoint := by sorry
+
+theorem lies_int_toray_of_lies_int_ext_of_seg_nd (A B C : P) (h1 : B ≠ A) (h : C LiesInt ((SEG_nd A B h1).extension)) : C LiesInt (SEG_nd A B h1).toRay := by sorry
 
 end EuclidGeom

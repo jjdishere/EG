@@ -26,6 +26,8 @@ theorem eq_ang_val_of_lieson_lieson {A A' B B' O: P} [h₁ : PtNe A O] [h₂ : P
 --Nailin Guan
 theorem neg_value_of_rev_ang {A B O: P} [h₁ : PtNe A O] [h₂ : PtNe B O] : ∠ A O B = -∠ B O A := sorry
 
+theorem neg_dvalue_of_rev_ang {A B O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) : (ANG A O B h₁ h₂).dvalue = -(ANG B O A h₂ h₁).dvalue := sorry
+-- WangJingTing
 namespace Angle
 
 theorem end_ray_eq_value_vadd_start_ray (ang : Angle P) : ang.end_ray.toDir = ang.value +ᵥ ang.start_ray.toDir := sorry
@@ -71,6 +73,6 @@ theorem dvalue_eq_ang_rays_perp {ang : Angle P} (h : ang.dvalue = ∡[π / 2]) :
   show ang.start_ray.toProj = ∡[π / 2] +ᵥ ang.end_ray.toProj
   sorry
 
-theorem liesint_segnd_value_eq_pi {A B C : P} (hne : B ≠ A) (h : C LiesInt (SEG_nd A B hne)) : ∠ A C B (SegND.liesint_ne_source h).symm (SegND.liesint_ne_target h).symm = π := sorry
+theorem liesint_segnd_value_eq_pi {A B C : P} (hne : B ≠ A) (h : C LiesInt (SEG_nd A B hne)) : ∠ A C B h.2.symm h.3.symm = π := sorry
 
 end EuclidGeom

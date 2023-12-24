@@ -16,6 +16,10 @@ import EuclideanGeometry.Example.ShanZun.Ex1d
 
 import EuclideanGeometry.Example.ExerciseXT8
 
+/- SCHAUM -/
+-- import EuclideanGeometry.Example.SCHAUM.Problem1.1
+
+
 /-!
 # Index of Examples
 
