@@ -1,16 +1,19 @@
 import EuclideanGeometry.Foundation.Axiom.Basic.Angle.FromMathlib
 
 /-!
-# More theorems about trigonometric functions in Mathlib
+# Theorems that should exist in Mathlib
 
-These theorems about trigonometric functions mostly exist in Mathlib in the version of `Real.sin`, `Real.cos` or `Real.tan` but not in the version of `Real.Angle.sin`, `Real.Angle.cos` or `Real.Angle.tan`.
-In this file, we will translate these theorems into the version of `EuclidGeom.AngValue.sin`, `EuclidGeom.AngValue.cos` or `EuclidGeom.AngValue.tan`.
 Maybe we can create some PRs to mathlib in the future.
 -/
 
 open Real
 
-noncomputable section
+/-!
+## More theorems about trigonometric functions in Mathlib
+
+These theorems about trigonometric functions mostly exist in Mathlib in the version of `Real.sin`, `Real.cos` or `Real.tan` but not in the version of `Real.Angle.sin`, `Real.Angle.cos` or `Real.Angle.tan`.
+In this file, we will translate these theorems into the version of `EuclidGeom.AngValue.sin`, `EuclidGeom.AngValue.cos` or `EuclidGeom.AngValue.tan`.
+-/
 
 namespace EuclidGeom
 
@@ -384,3 +387,56 @@ end Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 end AngValue
 
 end EuclidGeom
+
+
+
+/-!
+## Compatibility among group, addtorsor and order
+-/
+
+section Mathlib.Algebra.Order.Group.Defs
+
+class CircularOrderAddCommGroup (G : Type*) extends AddCommGroup G, CircularOrder G where
+  btw_add {a b c : G} (h : btw a b c) (t : G) : btw (a + t) (b + t) (c + t)
+
+namespace CircularOrderAddCommGroup
+
+variable {G : Type*} [CircularOrderAddCommGroup G]
+
+@[simp]
+theorem btw_add_iff {a b c t : G} : btw (a + t) (b + t) (c + t) ↔ btw a b c := by
+  refine' ⟨fun h ↦ _, fun h ↦ btw_add h t⟩
+  have h := btw_add h (- t)
+  simp only [add_neg_cancel_right] at h
+  exact h
+
+theorem sbtw_add {a b c : G} (h : sbtw a b c) (t : G) : sbtw (a + t) (b + t) (c + t) := sorry
+
+@[simp]
+theorem sbtw_add_iff {a b c t : G} : sbtw (a + t) (b + t) (c + t) ↔ sbtw a b c := sorry
+
+end CircularOrderAddCommGroup
+
+instance QuotientAddGroup.instCircularOrderAddCommGroup (G : Type*) [LinearOrderedAddCommGroup G] [ha : Archimedean G] {p : G} [hp : Fact (0 < p)] : CircularOrderAddCommGroup (G ⧸ AddSubgroup.zmultiples p) := sorry
+
+section Mathlib.Algebra.Order.Group.Defs
+
+
+
+section Mathlib.Algebra.AddTorsor
+
+variable {V : outParam Type*} {L : Type*} [outParam (AddCommGroup V)] [AddTorsor V L]
+
+section PartialOrder
+
+end PartialOrder
+
+section LinearOrder
+
+end LinearOrder
+
+section CircularOrder
+
+end CircularOrder
+
+end Mathlib.Algebra.AddTorsor

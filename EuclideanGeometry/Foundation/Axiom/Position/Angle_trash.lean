@@ -71,6 +71,6 @@ theorem dvalue_eq_ang_rays_perp {ang : Angle P} (h : ang.dvalue = ∡[π / 2]) :
   show ang.start_ray.toProj = ∡[π / 2] +ᵥ ang.end_ray.toProj
   sorry
 
-theorem liesint_segnd_value_eq_pi {A B C : P} (hne : B ≠ A) (h : C LiesInt (SEG_nd A B hne)) : ∠ A C B (SegND.liesint_ne_source h).symm (SegND.liesint_ne_target h).symm = π := sorry
+theorem liesint_segnd_value_eq_pi {A B C : P} (hne : B ≠ A) (h : C LiesInt (SEG_nd A B hne)) : ∠ A C B h.2.symm h.3.symm = π := sorry
 
 end EuclidGeom
