@@ -33,21 +33,16 @@ lemma c_ne_d {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: e.C �
 -- Prove that $∠B = ∠ C$.
 theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}:  ∠ e.A e.B e.D a_ne_b b_ne_d.symm = -∠ e.D e.C e.A c_ne_d.symm a_ne_c := by
   -- Use SSS to prove that $\triangle DBA \congr \triangle ACD$ or $\triangle DBA \congr_a \triangle ACD$.
-  have h : (TRI_nd e.D e.B e.A e.hnd₁) ≅ (TRI_nd e.A e.C e.D e.hnd₂) ∨ (TRI_nd e.D e.B e.A e.hnd₁) ≅ₐ (TRI_nd e.A e.C e.D e.hnd₂) := by
-    apply TriangleND.congr_or_acongr_of_SSS
+  have h : (TRI_nd e.D e.B e.A e.hnd₁) ≅ₐ (TRI_nd e.A e.C e.D e.hnd₂) := by
+    apply TriangleND.acongr_of_SSS_of_ne_orientation
     · calc
         _ = (SEG e.A e.B).length := length_of_rev_eq_length'
         _ = (SEG e.D e.C).length := e.h₁
         _ = _ := length_of_rev_eq_length'
     · exact length_of_rev_eq_length'
     · exact e.h₂
-  -- In either case we have the absolute value of the angle is equal.
-  rcases h with t | t
-  · have hb : odist e.B (SEG_nd e.A e.D e.D_ne_A) < 0 := by exact e.B_side
-    have hc : odist e.C (SEG_nd e.A e.D e.D_ne_A) < 0 := by exact e.C_side
-    sorry
-    --get a contradiction with the sign of angle_value by the sign of odist
-  · exact t.angle₂
+    · sorry
+  · exact h.angle₂
 
 
 
