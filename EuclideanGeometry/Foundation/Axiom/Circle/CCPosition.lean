@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
+import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence_trash
 
 noncomputable section
 namespace EuclidGeom
@@ -341,6 +342,31 @@ theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω�
       apply Real.sqrt_sq (by linarith [ω₂.rad_pos])
       apply mul_ne_zero (by norm_num) (dist_ne_zero.mpr (CC_intersected_centers_distinct h))
 
+lemma CC_inx_pts_not_colinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (¬ colinear (CC_Intersected_pts h).left ω₁.center ω₂.center) ∧ (¬ colinear (CC_Intersected_pts h).right ω₁.center ω₂.center) := by
+  constructor
+  · intro hc
+    -- Triangle.edge_sum_eq_edge_iff_colinear
+    sorry
+  sorry
+
+theorem CC_inx_pts_tri_acongr {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left) ≅ₐ (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right) := by
+  haveI : PtNe ω₁.center ω₂.center := ⟨CC_intersected_centers_distinct h⟩
+  have he₁ : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left).edge₁.length = (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right).edge₁.length := by
+    show (SEG ω₂.center (CC_Intersected_pts h).left).length = (SEG ω₂.center (CC_Intersected_pts h).right).length
+    simp
+    rw [(CC_inx_pts_lieson_circles h).2.1, (CC_inx_pts_lieson_circles h).2.2.2]
+  have he₂ : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left).edge₂.length = (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right).edge₂.length := by
+    show (SEG (CC_Intersected_pts h).left ω₁.center).length = (SEG (CC_Intersected_pts h).right ω₁.center).length
+    simp
+    rw [dist_comm, (CC_inx_pts_lieson_circles h).1, dist_comm, (CC_inx_pts_lieson_circles h).2.2.1]
+  have he₃ : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left).edge₃.length = (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right).edge₃.length := rfl
+  rcases Triangle.congr_or_acongr_of_SSS he₁ he₂ he₃ with hc | hac
+  · exfalso
+    have heq : (CC_Intersected_pts h).left = (CC_Intersected_pts h).right := by
+      apply Triangle.IsCongr.unique_of_eq_eq hc (by rfl) (by rfl)
+    apply CC_inx_pts_distinct h heq
+  exact hac
+
 theorem CC_inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (LIN (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm) ⟂ (LIN ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm) := by
   haveI : PtNe (CC_Intersected_pts h).left (CC_Intersected_pts h).right := ⟨CC_inx_pts_distinct h⟩
   haveI : PtNe ω₁.center ω₂.center := ⟨CC_intersected_centers_distinct h⟩
@@ -384,11 +410,24 @@ theorem CC_inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (
 
 
 /- different circles have at most two intersections -/
-lemma CC_inx_pt_not_lieson_center_line {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) : ¬(A LiesOn (LIN ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm)) := sorry
-
-theorem CC_inx_pt_liesonleft_center_ray_eq_leftinxpt {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) (h₃ : A LiesOnLeft (RAY ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm)) : A = (CC_Intersected_pts h).left := sorry
-
-theorem CC_inx_pt_liesonright_center_ray_eq_rightinxpt {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) (h₃ : A LiesOnRight (RAY ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm)) : A = (CC_Intersected_pts h).right := sorry
+theorem CC_inx_pts_uniqueness {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) : (A = (CC_Intersected_pts h).left) ∨ (A = (CC_Intersected_pts h).right) := by
+  haveI : PtNe ω₁.center ω₂.center := ⟨CC_intersected_centers_distinct h⟩
+  have hac : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left) ≅ₐ (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right) := CC_inx_pts_tri_acongr h
+  have he₁ : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left).edge₁.length = (▵ ω₁.center ω₂.center A).edge₁.length := by
+    show (SEG ω₂.center (CC_Intersected_pts h).left).length = (SEG ω₂.center A).length
+    simp
+    rw [(CC_inx_pts_lieson_circles h).2.1, h₂]
+  have he₂ : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left).edge₂.length = (▵ ω₁.center ω₂.center A).edge₂.length := by
+    show (SEG (CC_Intersected_pts h).left ω₁.center).length = (SEG A ω₁.center).length
+    simp
+    rw [dist_comm, (CC_inx_pts_lieson_circles h).1, dist_comm, h₁]
+  have he₃ : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left).edge₃.length = (▵ ω₁.center ω₂.center A).edge₃.length := rfl
+  rcases Triangle.congr_or_acongr_of_SSS he₁ he₂ he₃ with hc | hc
+  · left; symm
+    apply Triangle.IsCongr.unique_of_eq_eq hc (by rfl) (by rfl)
+  right
+  have : (▵ ω₁.center ω₂.center A) ≅ (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right) := Triangle.congr_of_acongr_acongr hc.symm hac
+  apply Triangle.IsCongr.unique_of_eq_eq this (by rfl) (by rfl)
 
 end Circle
 

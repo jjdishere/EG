@@ -108,6 +108,13 @@ instance pt_liesout_ne_pt_lieson {A B : P} {ω : Circle P} (h₁ : A LiesOut ω)
   rw [hgt, heq]
   ⟩
 
+instance pt_liesint_ne_pt_lieson {A B : P} {ω : Circle P} (h₁ : A LiesInt ω) (h₂ : B LiesOn ω) : PtNe A B := ⟨by
+  have hgt : dist ω.center A < ω.radius := h₁
+  have heq : dist ω.center B = ω.radius := h₂
+  contrapose! hgt
+  rw [hgt, heq]
+  ⟩
+
 theorem interior_of_circle_iff_inside_not_on_circle (p : P) (ω : Circle P) : p LiesInt ω ↔ (p LiesIn ω) ∧ (¬ p LiesOn ω) := by
   show dist ω.center p < ω.radius ↔ (dist ω.center p ≤ ω.radius) ∧ (¬ dist ω.center p = ω.radius)
   push_neg
@@ -181,6 +188,18 @@ lemma pts_lieson_circle_vec_eq {A B : P} {ω : Circle P} [hne : PtNe B A] (hl₁
     _ = (dist A (perp_foot ω.center (LIN A B))) ^ 2 := by rw [← htri₁]; ring
     _ = (dist (perp_foot ω.center (LIN A B)) A) ^ 2 := by rw [dist_comm]
 
+theorem pts_lieson_circle_perpfoot_eq_midpoint {A B : P} {ω : Circle P} [hne : PtNe B A] (hl₁ : A LiesOn ω) (hl₂ : B LiesOn ω) : perp_foot ω.center (LIN A B) = (SEG A B).midpoint := by
+  have eq₁ : VEC A (perp_foot ω.center (LIN A B)) = (1 / 2 : ℝ) • (VEC A B) := by
+    symm
+    calc
+      _ = (1 / 2 : ℝ) • (VEC A (perp_foot ω.center (LIN A B)) + VEC (perp_foot ω.center (LIN A B)) B) := by rw [vec_add_vec]
+      _ = (1 / 2 : ℝ) • ((2 : ℝ) • VEC A (perp_foot ω.center (LIN A B))) := by rw [← (pts_lieson_circle_vec_eq hl₁ hl₂), two_smul]
+      _ = VEC A (perp_foot ω.center (LIN A B)) := by simp
+  have eq₂ : VEC A (SEG A B).midpoint = (1 / 2 : ℝ) • (VEC A B) := Seg.vec_source_midpt
+  apply (eq_iff_vec_eq_zero _ _).mpr
+  calc
+    _ = VEC A (perp_foot ω.center (LIN A B)) - VEC A (SEG A B).midpoint := by rw [vec_sub_vec]
+    _ = 0 := by rw [eq₁, eq₂]; simp
 
 theorem three_pts_lieson_circle_not_colinear {A B C : P} {ω : Circle P} [hne₁ : PtNe B A] [hne₂ : PtNe C B] [hne₃ : PtNe A C] (hl₁ : A LiesOn ω) (hl₂ : B LiesOn ω) (hl₃ : C LiesOn ω) : ¬ (colinear A B C) := by
   intro h
