@@ -24,7 +24,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   B : Plane
   C : Plane
   D : Plane
-  hprgnd : (QDR A B C D) IsPRG_nd
+  hprgnd : (QDR A B C D).IsParallelogram_nd
 --let $P$ be point on the segment $AB$
   P : Plane
   P_int_AB : P LiesInt (SEG A B)
@@ -42,7 +42,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
 --such that $AS = CQ$
   AS_eq_CQ : (SEG A S).length = (SEG C Q).length
 --Prove that $PQRS$ is a parallelogram
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (QDR e.P e.Q e.R e.S) IsPRG_nd := by
+theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (QDR e.P e.Q e.R e.S).IsParallelogram_nd := by
 /-
 In parallelogram $ABCD$, we have $AB, DC$ are of the same direction.
 Since $P$ lies on $AB$, we have $AP, AB$ are of the same direction.
@@ -87,7 +87,7 @@ As a consequence, we know that $PQRS$ is a parallelogram.
   -- We have that $Q$ lies on $CB$ by applying symmetry to the fact that $Q$ lies on $BC$.
   have Q_int_CB : e.Q LiesInt (SEG e.C e.B) := Seg.lies_int_rev_iff_lies_int.mp e.Q_int_BC
   -- We have that $APCR$ is a parallelogram.
-  have isprgnd_APCR : (QDR e.A e.P e.C e.R) IsPRG_nd := by
+  have isprgnd_APCR : (QDR e.A e.P e.C e.R).IsParallelogram_nd := by
     -- We have that $AP, RC$ are of the same direction.
     have dir_ap_eq_dir_rc_rev : (SEG_nd e.A e.P P_ne_A).toDir = (SEG_nd e.R e.C R_ne_C.symm).toDir := by
       calc
@@ -113,7 +113,7 @@ As a consequence, we know that $PQRS$ is a parallelogram.
       -- $CR = RC$ by symmetry.
       _= (SEG e.R e.C).length := by exact length_of_rev_eq_length' (A := e.R) (B := e.C)
     -- We have that $APCR$ is a parallelogram, because $AP, RC$ are of the same direction and $AP = RC$.
-    have isprg_APCR : (QDR e.A e.P e.C e.R) IsPRG := by exact vec_eq_of_eq_dir_and_eq_length P_ne_A R_ne_C.symm dir_ap_eq_dir_rc_rev AP_eq_RC
+    have isprg_APCR : (QDR e.A e.P e.C e.R).IsParallelogram := by exact vec_eq_of_eq_dir_and_eq_length P_ne_A R_ne_C.symm dir_ap_eq_dir_rc_rev AP_eq_RC
     -- Since $A, P, C$ is not colinear, we know that the parallelogram $APCR$ is non-degenerate.
     exact is_prg_nd_of_is_prg_not_colinear₁₂₃ (QDR e.A e.P e.C e.R) isprg_APCR not_colinear_APC
   -- We have that $ASCQ$ is a parallelogram.
@@ -143,7 +143,7 @@ As a consequence, we know that $PQRS$ is a parallelogram.
       -- $CR = RC$ by symmetry.
       _= (SEG e.Q e.C).length := by exact length_of_rev_eq_length' (A := e.Q) (B := e.C)
     -- We have that $ASCQ$ is a parallelogram, because $AS, e.QC$ are of the same direction and $AS = QC$.
-    have isprg_ASCQ : (QDR e.A e.S e.C e.Q) IsPRG := by exact vec_eq_of_eq_dir_and_eq_length S_ne_A Q_ne_C.symm dir_as_eq_dir_qc_rev AS_eq_QC
+    have isprg_ASCQ : (QDR e.A e.S e.C e.Q).IsParallelogram_nd := by exact vec_eq_of_eq_dir_and_eq_length S_ne_A Q_ne_C.symm dir_as_eq_dir_qc_rev AS_eq_QC
     -- Since $A, S, C$ is not colinear, we know that the parallelogram $ASCQ$ is non-degenerate.
     exact is_prg_nd_of_is_prg_not_colinear₁₂₃ (QDR e.A e.S e.C e.Q) isprg_ASCQ not_colinear_ASC
   -- We have that the midpoint of $PR$ is the same as the midpoint of $AC$.

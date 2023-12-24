@@ -22,9 +22,9 @@ lemma c_ne_B : C ≠ B := sorry
 lemma B_ne_a : B ≠ A := sorry
 lemma A_ne_C : A ≠ C := sorry
 
-variable {X₁ Y₁ Z₁ : P} {hx₁ : X₁ LiesInt (SegND B C c_ne_B).extension} {hy₁ : Y₁ LiesInt (SegND C A A_ne_C).extension} {hz₁ : Z₁ LiesInt (SegND A B B_ne_a).extension}
+variable {X₁ Y₁ Z₁ : P} {hx₁ : X₁ LiesInt (SEG_nd B C c_ne_B).extension} {hy₁ : Y₁ LiesInt (SEG_nd C A A_ne_C).extension} {hz₁ : Z₁ LiesInt (SEG_nd A B B_ne_a).extension}
 
-variable {X₂ Y₂ Z₂ : P} {hx₂ : X₂ LiesInt (SegND C B c_ne_B.symm).extension} {hy₂ : Y₂ LiesInt (SegND A C A_ne_C.symm).extension} {hz₂ : Z₂ LiesInt (SegND B A B_ne_a.symm).extension}
+variable {X₂ Y₂ Z₂ : P} {hx₂ : X₂ LiesInt (SEG_nd C B c_ne_B.symm).extension} {hy₂ : Y₂ LiesInt (SEG_nd A C A_ne_C.symm).extension} {hz₂ : Z₂ LiesInt (SEG_nd B A B_ne_a.symm).extension}
 
 lemma c_ne_x1 : C ≠ X₁ := sorry
 lemma B_ne_x2 : B ≠ X₂:= sorry
