@@ -354,7 +354,7 @@ theorem inx_eq_of_same_extn_line {a₁ b₁ a₂ b₂ : Ray P} (g₁ : same_extn
   rw [ray_toLine_eq_of_same_extn_line g₁] at ha1
   rw [ray_toLine_eq_of_same_extn_line g₂] at hb1
   by_contra hn
-  have heq : a₂.toLine = b₂.toLine := eq_of_pt_pt_lies_on_of_ne hn
+  have heq : a₂.toLine = b₂.toLine := eq_of_pt_pt_lies_on_of_ne (_h := ⟨hn⟩)
     (inx_lies_on_fst_extn_line a₂ b₂ h₂) ha1 (inx_lies_on_snd_extn_line a₂ b₂ h₂) hb1
   exact h₂ (congrArg Line.toProj heq)
 
@@ -397,7 +397,7 @@ section property
 
 /-- Two unparallel lines have only one intersection point -/
 theorem unique_of_inx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) (a : is_inx A l₁ l₂) (b : is_inx B l₁ l₂) : B = A :=
-  Classical.byContradiction fun d ↦ h (congrArg Line.toProj (eq_of_pt_pt_lies_on_of_ne d a.1 b.1 a.2 b.2))
+  Classical.byContradiction fun d ↦ h (congrArg Line.toProj (eq_of_pt_pt_lies_on_of_ne (_h := ⟨d⟩) a.1 b.1 a.2 b.2))
 
 /-- Given two unparallel line $l_1$ $l_2$, the point given by function "Line.inx" is exactly the intersection of these two lines -/
 theorem inx_of_line_eq_inx {A : P} {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) (ha : is_inx A l₁ l₂) :
@@ -415,8 +415,10 @@ theorem eq_of_parallel_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A Lie
 theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : ∃ p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
   rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
   rcases l₂.nontriv with ⟨C, ⟨D, hcd⟩⟩
-  have e' : (SEG_nd A B hab.2.2).toProj ≠ (SEG_nd C D hcd.2.2).toProj := by
-    rw [toProj_eq_seg_nd_toProj_of_lies_on hab.1 hab.2.1 hab.2.2, toProj_eq_seg_nd_toProj_of_lies_on hcd.1 hcd.2.1 hcd.2.2]
+  haveI : PtNe B A := ⟨hab.2.2⟩
+  haveI : PtNe D C := ⟨hcd.2.2⟩
+  have e' : (SEG_nd A B).toProj ≠ (SEG_nd C D).toProj := by
+    rw [toProj_eq_seg_nd_toProj_of_lies_on hab.1 hab.2.1, toProj_eq_seg_nd_toProj_of_lies_on hcd.1 hcd.2.1]
     exact h
   let x := cu (VEC A B) (VEC C D) (VEC A C)
   let y := cv (VEC A B) (VEC C D) (VEC A C)
@@ -425,9 +427,9 @@ theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l�
   have h : VEC C (x • VEC A B +ᵥ A) = - y • VEC C D := by
     rw [← vec_sub_vec A _ _, vec_of_pt_vadd_pt_eq_vec _ _, e]
     simp only [Complex.real_smul, sub_add_cancel', neg_smul]
-  exact ⟨x • VEC A B +ᵥ A, (lies_on_iff_colinear_of_ne_lies_on_lies_on hab.2.2 hab.1 hab.2.1 _).2
+  exact ⟨x • VEC A B +ᵥ A, (lies_on_iff_colinear_of_ne_lies_on_lies_on hab.1 hab.2.1 _).2
     (colinear_of_vec_eq_smul_vec (vec_of_pt_vadd_pt_eq_vec A _)),
-    (lies_on_iff_colinear_of_ne_lies_on_lies_on hcd.2.2 hcd.1 hcd.2.1 _).2 (colinear_of_vec_eq_smul_vec h)⟩
+    (lies_on_iff_colinear_of_ne_lies_on_lies_on hcd.1 hcd.2.1 _).2 (colinear_of_vec_eq_smul_vec h)⟩
 
 /-- If two lines are not parallel, then there exists a unique point in their intersection -/
 theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : ∃! p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
@@ -435,7 +437,7 @@ theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h 
   use X
   simp only [h₁, h₂, and_self, and_imp, true_and]
   exact fun _ h₁' h₂' ↦ Classical.byContradiction fun n ↦
-    h (congrArg toProj (eq_of_pt_pt_lies_on_of_ne n h₁ h₁' h₂ h₂'))
+    h (congrArg toProj (eq_of_pt_pt_lies_on_of_ne (_h := ⟨n⟩) h₁ h₁' h₂ h₂'))
 
 scoped notation "LineInx" => Line.inx
 
