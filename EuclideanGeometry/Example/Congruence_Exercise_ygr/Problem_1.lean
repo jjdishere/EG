@@ -79,8 +79,24 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : 鈭
         路exact e.hpr
         路show odist_sign e.A (SEG_nd e.B e.D) = odist_sign e.E (SEG_nd e.B e.D)
          unfold odist_sign
-         have hA : odist e.A (SEG_nd e.B e.D) > 0 := by sorry
-         have hE : odist e.E (SEG_nd e.B e.D) > 0 := by sorry
+         have hA : odist e.A (SEG_nd e.B e.D) > 0 := by
+          calc
+            odist e.A (SEG_nd e.B e.D) = odist e.A (SEG_nd e.B e.D).toDirLine := by rfl
+            _=odist e.A (SEG_nd e.B e.F).toDirLine := by
+              have : (SEG_nd e.B e.D).toDirLine = (SEG_nd e.B e.F).toDirLine := by
+                apply eq_toDirLine_of_source_to_pt_lies_int (e.D_int)
+              congr
+            _=odist e.A (SEG_nd e.B e.F) := by rfl
+            _>0 := by exact e.A_side
+         have hE : odist e.E (SEG_nd e.B e.D) > 0 := by
+          calc
+            odist e.E (SEG_nd e.B e.D) = odist e.E (SEG_nd e.B e.D).toDirLine := by rfl
+            _=odist e.E (SEG_nd e.B e.F).toDirLine := by
+              have : (SEG_nd e.B e.D).toDirLine = (SEG_nd e.B e.F).toDirLine := by
+                apply eq_toDirLine_of_source_to_pt_lies_int (e.D_int)
+              congr
+            _=odist e.E (SEG_nd e.B e.F) := by rfl
+            _>0 := by exact e.E_side
          simp [hA,hE]
         路exact D_ne_B.out.symm
       路 show (RAY e.B e.C).toDirLine = (RAY e.D e.F).toDirLine
