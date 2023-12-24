@@ -31,6 +31,7 @@ def edge₂ (tr : Triangle P) : Seg P := Seg.mk tr.3 tr.1
 def edge₃ (tr : Triangle P) : Seg P := Seg.mk tr.1 tr.2
 
 @[pp_dot]
+def oarea (tr : Triangle P) : ℝ := EuclidGeom.oarea tr.1 tr.2 tr.3
 def area (tr : Triangle P) : ℝ := sorry
 
 @[pp_dot]
@@ -78,11 +79,12 @@ def edge_nd₂ : SegND P := ⟨tr_nd.1.edge₂, tr_nd.nontriv₂.out⟩
 def edge_nd₃ : SegND P := ⟨tr_nd.1.edge₃, tr_nd.nontriv₃.out⟩
 
 @[pp_dot]
+def oarea : ℝ := tr_nd.1.oarea
 def area : ℝ := tr_nd.1.area
 
 /- Only nondegenerate triangles can talk about orientation -/
 @[pp_dot]
-def is_cclock : Prop := tr_nd.1.3 LiesOnLeft (Ray.mk_pt_pt tr_nd.1.1 tr_nd.1.2 (tr_nd.nontriv₃.out))
+def is_cclock : Prop := TriangleND.oarea tr_nd > 0
 
 @[pp_dot]
 def angle₁ : Angle P := ANG tr_nd.point₂ tr_nd.point₁ tr_nd.point₃
