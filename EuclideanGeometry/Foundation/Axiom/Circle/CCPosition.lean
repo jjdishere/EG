@@ -345,9 +345,75 @@ theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω�
 lemma CC_inx_pts_not_colinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (¬ colinear (CC_Intersected_pts h).left ω₁.center ω₂.center) ∧ (¬ colinear (CC_Intersected_pts h).right ω₁.center ω₂.center) := by
   constructor
   · intro hc
-    -- Triangle.edge_sum_eq_edge_iff_colinear
-    sorry
-  sorry
+    set tri : Triangle P := ▵ (CC_Intersected_pts h).left ω₁.center ω₂.center with tri_def
+    have : colinear tri.1 tri.2 tri.3 := hc
+    rw [Triangle.edge_sum_eq_edge_iff_colinear] at this
+    rcases this with heq | (heq | heq)
+    · rw [tri_def] at heq
+      have heq : dist ω₁.center ω₂.center + dist ω₂.center (CC_Intersected_pts h).left = dist (CC_Intersected_pts h).left ω₁.center := heq
+      have hgt : dist ω₁.center ω₂.center > dist ω₁.center ω₂.center := by
+        calc
+          _ > abs (ω₂.radius - ω₁.radius) := h.2
+          _ = abs (dist ω₂.center (CC_Intersected_pts h).left - dist (CC_Intersected_pts h).left ω₁.center) := by rw [← (CC_inx_pts_lieson_circles h).1, dist_comm, (CC_inx_pts_lieson_circles h).2.1]
+          _ = dist ω₁.center ω₂.center := by
+            rw [← heq]
+            ring_nf
+            rw [abs_neg, abs_of_nonneg dist_nonneg]
+      linarith
+    · rw [tri_def] at heq
+      have heq : dist ω₂.center (CC_Intersected_pts h).left + dist (CC_Intersected_pts h).left ω₁.center = dist ω₁.center ω₂.center := heq
+      have hlt : dist ω₁.center ω₂.center < dist ω₁.center ω₂.center := by
+        calc
+          _ < ω₁.radius + ω₂.radius := h.1
+          _ = dist (CC_Intersected_pts h).left ω₁.center + dist ω₂.center (CC_Intersected_pts h).left := by rw [← (CC_inx_pts_lieson_circles h).1, dist_comm, (CC_inx_pts_lieson_circles h).2.1]
+          _ = dist ω₁.center ω₂.center := by rw [← heq]; ring
+      linarith
+    rw [tri_def] at heq
+    have heq : dist (CC_Intersected_pts h).left ω₁.center + dist ω₁.center ω₂.center = dist ω₂.center (CC_Intersected_pts h).left := heq
+    have hgt : dist ω₁.center ω₂.center > dist ω₁.center ω₂.center := by
+      calc
+        _ > abs (ω₂.radius - ω₁.radius) := h.2
+        _ = abs (dist ω₂.center (CC_Intersected_pts h).left - dist (CC_Intersected_pts h).left ω₁.center) := by rw [← (CC_inx_pts_lieson_circles h).1, dist_comm, (CC_inx_pts_lieson_circles h).2.1]
+        _ = dist ω₁.center ω₂.center := by
+          rw [← heq]
+          ring_nf
+          rw [abs_of_nonneg dist_nonneg]
+    linarith
+  intro hc
+  set tri : Triangle P := ▵ (CC_Intersected_pts h).right ω₁.center ω₂.center with tri_def
+  have : colinear tri.1 tri.2 tri.3 := hc
+  rw [Triangle.edge_sum_eq_edge_iff_colinear] at this
+  rcases this with heq | (heq | heq)
+  · rw [tri_def] at heq
+    have heq : dist ω₁.center ω₂.center + dist ω₂.center (CC_Intersected_pts h).right = dist (CC_Intersected_pts h).right ω₁.center := heq
+    have hgt : dist ω₁.center ω₂.center > dist ω₁.center ω₂.center := by
+      calc
+        _ > abs (ω₂.radius - ω₁.radius) := h.2
+        _ = abs (dist ω₂.center (CC_Intersected_pts h).right - dist (CC_Intersected_pts h).right ω₁.center) := by rw [← (CC_inx_pts_lieson_circles h).2.2.1, dist_comm, (CC_inx_pts_lieson_circles h).2.2.2]
+        _ = dist ω₁.center ω₂.center := by
+          rw [← heq]
+          ring_nf
+          rw [abs_neg, abs_of_nonneg dist_nonneg]
+    linarith
+  · rw [tri_def] at heq
+    have heq : dist ω₂.center (CC_Intersected_pts h).right + dist (CC_Intersected_pts h).right ω₁.center = dist ω₁.center ω₂.center := heq
+    have hlt : dist ω₁.center ω₂.center < dist ω₁.center ω₂.center := by
+      calc
+        _ < ω₁.radius + ω₂.radius := h.1
+        _ = dist (CC_Intersected_pts h).right ω₁.center + dist ω₂.center (CC_Intersected_pts h).right := by rw [← (CC_inx_pts_lieson_circles h).2.2.1, dist_comm, (CC_inx_pts_lieson_circles h).2.2.2]
+        _ = dist ω₁.center ω₂.center := by rw [← heq]; ring
+    linarith
+  rw [tri_def] at heq
+  have heq : dist (CC_Intersected_pts h).right ω₁.center + dist ω₁.center ω₂.center = dist ω₂.center (CC_Intersected_pts h).right := heq
+  have hgt : dist ω₁.center ω₂.center > dist ω₁.center ω₂.center := by
+    calc
+      _ > abs (ω₂.radius - ω₁.radius) := h.2
+      _ = abs (dist ω₂.center (CC_Intersected_pts h).right - dist (CC_Intersected_pts h).right ω₁.center) := by rw [← (CC_inx_pts_lieson_circles h).2.2.1, dist_comm, (CC_inx_pts_lieson_circles h).2.2.2]
+      _ = dist ω₁.center ω₂.center := by
+        rw [← heq]
+        ring_nf
+        rw [abs_of_nonneg dist_nonneg]
+  linarith
 
 theorem CC_inx_pts_tri_acongr {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left) ≅ₐ (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right) := by
   haveI : PtNe ω₁.center ω₂.center := ⟨CC_intersected_centers_distinct h⟩

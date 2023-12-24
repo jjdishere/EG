@@ -94,7 +94,7 @@ theorem midpoint_dist_gt_iff_liesout {A B C : P} [hne : PtNe B C] (h : A LiesOn 
   right
   apply (midpoint_dist_eq_iff_eq_endpts h).mpr
   contrapose! hh'
-  exact ⟨hh, hh'⟩
+  exact ⟨hh, hh'.1, hh'.2⟩
 
 theorem liesint_segnd_iff_lieson_ray_reverse {A B C : P} [hne₁ : PtNe B C] [hne₂ : PtNe A B] (h : A LiesOn (LIN B C)) : A LiesInt (SEG B C) ↔ C LiesOn (RAY A B).reverse := sorry
 
