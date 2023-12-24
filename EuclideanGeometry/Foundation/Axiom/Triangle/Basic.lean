@@ -202,16 +202,16 @@ theorem angle_sum_eq_pi_of_cclock (cclock : tr_nd.is_cclock): tr_nd.angle₁.val
 
 theorem angle_sum_eq_neg_pi_of_clock (clock : ¬ tr_nd.is_cclock): tr_nd.angle₁.value + tr_nd.angle₂.value + tr_nd.angle₃.value = - π := sorry
 -/
-theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.length := by
-  have l₃ : tr.edge₃.length = norm (VEC tr.point₁ tr.point₂) := rfl
-  rw [l₃, ← neg_vec tr.point₂ _, norm_neg, ← vec_add_vec tr.point₂ tr.point₃ tr.point₁]
-  exact norm_add_le _ _
+theorem triangle_ineq : tr.edge₃.length ≤ tr.edge₁.length + tr.edge₂.length := by
+  unfold Seg.length
+  rw [dist_comm]
+  exact dist_triangle _ _ _
 
 theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr.edge₃.length → ¬ tr.IsND  := by
   let A := tr.point₁
   let B := tr.point₂
   let C := tr.point₃
-  have l₃ : tr.edge₃.length = norm (VEC A B) := rfl
+  have l₃ : tr.edge₃.length = norm (VEC A B) := Seg.length_eq_norm_toVec
   rw [l₃, ← neg_vec B _, norm_neg, ← vec_add_vec B C A]
   intro eq
   unfold IsND
@@ -226,7 +226,8 @@ theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr
       exact triv_colinear _ _
     · have g : SameRay ℝ (VEC B C) (VEC C A)
       · rw [sameRay_iff_norm_add, ← eq]
-        rfl
+        congr <;>
+        exact Seg.length_eq_norm_toVec
       rcases SameRay.exists_pos g h₁ h₂ with ⟨_, ⟨_, ⟨_, ⟨_, g⟩⟩⟩⟩
       rw [← neg_vec C B, ← neg_one_smul ℝ, ← mul_smul, mul_neg_one, ← eq_inv_smul_iff₀ (by linarith), ← mul_smul] at g
       exact perm_colinear_snd_trd_fst (colinear_of_vec_eq_smul_vec g)

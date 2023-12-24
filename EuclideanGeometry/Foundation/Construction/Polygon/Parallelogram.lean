@@ -1130,7 +1130,7 @@ theorem qdr_cvx_is_prg_nd_of_diag_inx_eq_mid_eq_mid (h' : qdr_cvx.diag_nd₁₃.
     have h: qdr_cvx.diag_nd₂₄.1.midpoint ≠ qdr_cvx.point₄ := by apply SegND.midpt_ne_target
     rw [qdr_cvx_eq_midpoint_of_diag₂₄] at h
     exact h
-  have prep₁_pre: (SEG_nd qdr_cvx.point₁ midpoint nd₁₅).length = (SEG_nd midpoint qdr_cvx.point₃ nd₃₅.symm).length := by apply dist_target_eq_dist_source_of_midpt
+  have prep₁_pre: (SEG_nd qdr_cvx.point₁ midpoint nd₁₅).length = (SEG_nd midpoint qdr_cvx.point₃ nd₃₅.symm).length :=  dist_target_eq_dist_source_of_midpt (seg := qdr_cvx.diag₁₃)
   have prep₁_pre': (SEG_nd qdr_cvx.point₁ midpoint nd₁₅).length = (SEG_nd midpoint qdr_cvx.point₁ nd₁₅.symm).length := by   apply length_of_rev_eq_length'
   sorry
   constructor
@@ -1534,11 +1534,11 @@ theorem nd_eq_vec_of_is_prg_nd'_variant (h : (QDR A B C D).IsParallelogram_nd) :
 
 /-- Given four points ABCD and Quadrilateral ABCD IsPRG_nd, the sum of the squares of each side equals to the sum of the squares of the diagonals namely 2 * (SEG qdr.point₁ qdr.point₂).length ^ 2 + 2 * (SEG qdr.point₂ qdr.point₃).length ^ 2 = (SEG qdr.point₁ qdr.point₃).length ^ 2 + (SEG qdr.point₂ qdr.point₄).length ^ 2. -/
 theorem nd_parallelogram_law (h : qdr.IsParallelogram_nd) : 2 * (SEG qdr.point₁ qdr.point₂).length ^ 2 + 2 * (SEG qdr.point₂ qdr.point₃).length ^ 2 = (SEG qdr.point₁ qdr.point₃).length ^ 2 + (SEG qdr.point₂ qdr.point₄).length ^ 2 := by
-  repeat rw [Seg.length]
+  repeat rw [Seg.length_eq_norm_toVec]
   repeat rw [seg_tovec_eq_vec]
   dsimp
-  rw [(vec_add_vec qdr.point₁ qdr.point₂ qdr.point₃).symm]
-  rw [(vec_add_vec qdr.point₂ qdr.point₃ qdr.point₄).symm]
+  rw [← vec_add_vec qdr.point₁ qdr.point₂ qdr.point₃]
+  rw [← vec_add_vec qdr.point₂ qdr.point₃ qdr.point₄]
   rw [← neg_vec qdr.point₄ qdr.point₃]
   rw [← eq_vec_of_is_prg_nd qdr h]
   rw [← sub_eq_add_neg (VEC qdr.point₂ qdr.point₃) (VEC qdr.point₁ qdr.point₂)]

@@ -53,8 +53,11 @@ theorem neg_vec (A B : P) : - VEC A B = VEC B A := by
   rw [Vec.mkPtPt, Vec.mkPtPt, neg_vsub_eq_vsub_rev]
 
 @[simp]
-theorem neg_vec_norm_eq (A B : P) : ‖VEC A B‖ = ‖VEC B A‖ := by
-  rw [← neg_vec A B, norm_neg]
+theorem neg_vec_norm_eq (A B : P) : ‖- VEC A B‖ = ‖VEC A B‖ := by
+  rw [norm_neg]
+
+theorem vec_norm_eq_rev (A B : P) : ‖VEC A B‖ = ‖VEC B A‖ := by
+  rw [← neg_vec, neg_vec_norm_eq]
 
 theorem eq_iff_vec_eq_zero (A B : P) : B = A ↔ VEC A B = 0 := vsub_eq_zero_iff_eq.symm
 
@@ -66,6 +69,12 @@ theorem vec_add_vec (A B C : P) : VEC A B + VEC B C = VEC A C := by
 
 @[simp]
 theorem vec_of_pt_vadd_pt_eq_vec (A : P) (v : Vec) : VEC A (v +ᵥ A) = v := vadd_vsub v A
+
+@[simp]
+theorem vec_of_vadd_pt_pt_eq_neg_vec (A : P) (v : Vec) : VEC (v +ᵥ A) A = - v := by
+  rw [← neg_vec]
+  congr
+  exact vec_of_pt_vadd_pt_eq_vec _ _
 
 @[simp]
 theorem vec_sub_vec (O A B: P) : VEC O B - VEC O A = VEC A B := by
