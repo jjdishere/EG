@@ -83,27 +83,12 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : �
          simp [hA,hE]
         ·exact D_ne_B.symm
       · show (RAY e.B e.C B_ne_C.symm).toDirLine = (RAY e.D e.F D_ne_F.symm).toDirLine
-        --by $B C D F$ colinear
-        have line₁: (RAY e.B e.C B_ne_C.symm).toDirLine = (RAY e.B e.F e.B_ne_F.symm).toDirLine := by
-          have coer₁₁ : (RAY e.B e.C B_ne_C.symm).toDirLine = (SEG_nd e.B e.C B_ne_C.symm).toDirLine := by
+        calc
+          _=(SEG_nd e.B e.F e.B_ne_F.symm).toDirLine := by
+            apply eq_toDirLine_of_source_to_pt_lies_int (e.C_int)
+          _=(SEG_nd e.D e.F D_ne_F.symm).toDirLine := by
             symm
-            apply SegND.toDirLine_eq_toRay_toDirLine
-          have coer₁₂ : (RAY e.B e.F e.B_ne_F.symm).toDirLine = (SEG_nd e.B e.F e.B_ne_F.symm).toDirLine := by
-            symm
-            apply SegND.toDirLine_eq_toRay_toDirLine
-          rw [coer₁₁ , coer₁₂]
-          apply eq_toDirLine_of_source_to_pt_lies_int (e.C_int)
-        have line₂: (RAY e.B e.F e.B_ne_F.symm).toDirLine = (RAY e.D e.F D_ne_F.symm).toDirLine := by
-          symm
-          have coer₂₁ : (RAY e.D e.F D_ne_F.symm).toDirLine = (SEG_nd e.D e.F D_ne_F.symm).toDirLine := by
-            symm
-            apply SegND.toDirLine_eq_toRay_toDirLine
-          have coer₂₂ : (RAY e.B e.F e.B_ne_F.symm).toDirLine = (SEG_nd e.B e.F e.B_ne_F.symm).toDirLine := by
-            symm
-            apply SegND.toDirLine_eq_toRay_toDirLine
-          rw [coer₂₂ , coer₂₁]
-          apply eq_toDirLine_of_pt_lies_int_to_target (e.D_int)
-        rw [line₁,line₂]
+            apply eq_toDirLine_of_pt_lies_int_to_target (e.D_int)
     -- Then $∠ ABC = ∠ EDF = -∠ FDE$.
     calc
       _ = ∠ e.E e.D e.F (D_ne_E.symm) (D_ne_F.symm) := eq_value_of_iscorrespondingang hCrsp --corresponding angle

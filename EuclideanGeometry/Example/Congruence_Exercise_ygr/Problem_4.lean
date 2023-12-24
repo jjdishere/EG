@@ -74,22 +74,18 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : �
           unfold odist_sign
           have hD : odist e.D (SEG_nd e.B e.C B_ne_C.symm) < 0 := by exact e.D_side
           have hA : odist e.A (SEG_nd e.B e.C B_ne_C.symm) > 0 := by exact e.A_side
-          simp [hD,hA]
+          simp only [gt_iff_lt, hD, sign_neg, SignType.coe_neg_one, hA, sign_pos, SignType.coe_one]
         · exact B_ne_C
       · show (RAY e.B e.E B_ne_E.symm).toDirLine = (RAY e.C e.B B_ne_C).toDirLine.reverse
-        --by $B E D$ colinear
-        have coer₁ : (RAY e.B e.E B_ne_E.symm).toDirLine = (SEG_nd e.B e.E B_ne_E.symm).toDirLine := by
-          symm
-          apply SegND.toDirLine_eq_toRay_toDirLine
-        have coer₂ : (RAY e.C e.B B_ne_C).toDirLine.reverse = (SEG_nd e.C e.B B_ne_C).toDirLine.reverse := by
-          have coer₂' : (RAY e.C e.B B_ne_C).toDirLine = (SEG_nd e.C e.B B_ne_C).toDirLine := by
+        calc
+          _=(SEG_nd e.B e.C B_ne_C.symm).toDirLine := by
+            apply eq_toDirLine_of_source_to_pt_lies_int (e.E_int)
+          _=(SEG_nd e.C e.B B_ne_C).toDirLine.reverse := by
             symm
-            apply SegND.toDirLine_eq_toRay_toDirLine
-          congr
-        have coer₃ : (SEG_nd e.C e.B B_ne_C).toDirLine.reverse = (SEG_nd e.B e.C B_ne_C.symm).toDirLine := by
-          apply SegND.toDirLine_rev_eq_rev_toDirLine
-        simp only[coer₁,coer₂,coer₃]
-        apply eq_toDirLine_of_source_to_pt_lies_int (e.E_int)
+            apply SegND.toDirLine_rev_eq_rev_toDirLine
+          _=(RAY e.C e.B B_ne_C).toDirLine.reverse := by
+            congr
+
     calc
       _=-∠ e.D e.B e.E D_ne_B B_ne_E.symm := by apply neg_value_of_rev_ang (B_ne_E.symm) (D_ne_B) --anti-symm
       _=-∠ e.A e.C e.B A_ne_C B_ne_C := by --Alternate interior angle
