@@ -149,4 +149,16 @@ theorem angle_eq_angle_of_perm_vertices (tr_nd : TriangleND P) : tr_nd.angle₁.
 
 end TriangleND
 
+namespace TriangleND
+
+section cclock
+
+variable (tr_nd : TriangleND P)
+
+--theorem perm_cclock_iff_cclock (tr_nd : TriangleND P) :
+
+end cclock
+
+end TriangleND
+
 end EuclidGeom

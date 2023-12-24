@@ -307,6 +307,4 @@ theorem sum_of_other_angle_same_neg_if_one_angle_same_neg (tr₁ tr₂ : Triangl
 
 end TriangleND
 
-
-
 end EuclidGeom
