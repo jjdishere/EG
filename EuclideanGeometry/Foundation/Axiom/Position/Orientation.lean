@@ -2,6 +2,7 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
+import EuclideanGeometry.Foundation.Axiom.Linear.Line_trash
 
 /- This file discuss the relative positions of points and rays on a plane. -/
 noncomputable section
@@ -357,6 +358,184 @@ Basic properties:
 Further properties of "LiesOn_same_side" and "LiesOn_opposite_side would be show along with cclock in Folder Triangle.
 
 -/
+
+def IsOnSameSide' (A B : P) (ray : Ray P) : Prop := ((A LiesOnLeft ray) ∧ (B LiesOnLeft ray)) ∨ ((A LiesOnRight ray) ∧ (B LiesOnRight ray))
+
+def IsOnOppositeSide' (A B : P) (ray : Ray P) : Prop := ((A LiesOnLeft ray) ∧ (B LiesOnRight ray)) ∨ ((A LiesOnLeft ray) ∧ (B LiesOnRight ray))
+
+theorem LiesOnSameSide'_of_toline_eq_toline (A B : P) (ray ray' : Ray P) (h : ray.toLine = ray'.toLine) : IsOnSameSide' A B ray = IsOnSameSide' A B ray' := by
+  have Dir : ray.toDirLine = ray'.toDirLine ∨ ray.toDirLine = ray'.toDirLine.reverse := by
+    apply eq_or_eq_rev_of_toLine_eq_toLine
+    simp only [← Ray.toLine_eq_toDirLine_toLine (ray := ray),← Ray.toLine_eq_toDirLine_toLine (ray := ray')]
+    exact h
+  rcases Dir with same|rev
+  · simp only [eq_iff_iff]
+    constructor
+    · intro P
+      rcases P with Pl|Pr
+      · unfold IsOnLeftSide at Pl
+        have hal₁: A LiesOnLeft ray' := by
+          unfold IsOnLeftSide
+          calc
+            odist A ray' = odist A ray'.toDirLine := by rfl
+            _=odist A ray.toDirLine := by congr 1;exact same.symm
+            _=odist A ray := by rfl
+            _>0 := by linarith
+        have hbl₁: B LiesOnLeft ray' := by
+          unfold IsOnLeftSide
+          calc
+            odist B ray' = odist B ray'.toDirLine := by rfl
+            _=odist B ray.toDirLine := by congr 1;exact same.symm
+            _=odist B ray := by rfl
+            _>0 := by linarith
+        unfold IsOnSameSide'
+        simp only [hal₁, hbl₁, and_self, true_or]
+      · unfold IsOnRightSide at Pr
+        have har₁: A LiesOnRight ray' := by
+          unfold IsOnRightSide
+          calc
+            odist A ray' = odist A ray'.toDirLine := by rfl
+            _=odist A ray.toDirLine := by congr 1;exact same.symm
+            _=odist A ray := by rfl
+            _<0 := by linarith
+        have hbr₁: B LiesOnRight ray' := by
+          unfold IsOnRightSide
+          calc
+            odist B ray' = odist B ray'.toDirLine := by rfl
+            _=odist B ray.toDirLine := by congr 1;exact same.symm
+            _=odist B ray := by rfl
+            _<0 := by linarith
+        unfold IsOnSameSide'
+        simp only [har₁, hbr₁, and_self, or_true]
+    --exactly the same only changing ray and ray'
+    · intro P
+      rcases P with Pl|Pr
+      · unfold IsOnLeftSide at Pl
+        have hal₁: A LiesOnLeft ray := by
+          unfold IsOnLeftSide
+          calc
+            odist A ray = odist A ray.toDirLine := by rfl
+            _=odist A ray'.toDirLine := by congr
+            _=odist A ray' := by rfl
+            _>0 := by linarith
+        have hbl₁: B LiesOnLeft ray := by
+          unfold IsOnLeftSide
+          calc
+            odist B ray = odist B ray.toDirLine := by rfl
+            _=odist B ray'.toDirLine := by congr
+            _=odist B ray' := by rfl
+            _>0 := by linarith
+        unfold IsOnSameSide'
+        simp only [hal₁, hbl₁, and_self, true_or]
+      · unfold IsOnRightSide at Pr
+        have hal₁: A LiesOnRight ray := by
+          unfold IsOnRightSide
+          calc
+            odist A ray = odist A ray.toDirLine := by rfl
+            _=odist A ray'.toDirLine := by congr
+            _=odist A ray' := by rfl
+            _<0 := by linarith
+        have hbl₁: B LiesOnRight ray := by
+          unfold IsOnRightSide
+          calc
+            odist B ray = odist B ray.toDirLine := by rfl
+            _=odist B ray'.toDirLine := by congr
+            _=odist B ray' := by rfl
+            _<0 := by linarith
+        unfold IsOnSameSide'
+        simp only [hal₁, hbl₁, and_self, or_true]
+
+  · simp only [eq_iff_iff]
+    constructor
+    · intro P
+      rcases P with Pl|Pr
+      · unfold IsOnLeftSide at Pl
+        have har₂: A LiesOnRight ray' := by
+          unfold IsOnRightSide
+          calc
+            odist A ray' = odist A ray'.toDirLine := by rfl
+            _=-odist A ray'.toDirLine.reverse := by
+              simp only [odist_reverse_eq_neg_odist'' (dl := ray'.toDirLine), neg_neg]
+            _=-odist A ray.toDirLine := by congr;exact id rev.symm
+            _=-odist A ray := by rfl
+            _<0 := by linarith [Pl.1]
+        have hbr₂: B LiesOnRight ray' := by
+          unfold IsOnRightSide
+          calc
+            odist B ray' = odist B ray'.toDirLine := by rfl
+            _=-odist B ray'.toDirLine.reverse := by
+              simp only [odist_reverse_eq_neg_odist'' (dl := ray'.toDirLine), neg_neg]
+            _=-odist B ray.toDirLine := by congr;exact id rev.symm
+            _=-odist B ray := by rfl
+            _<0 := by linarith [Pl.2]
+        unfold IsOnSameSide'
+        simp only [har₂, hbr₂, and_self, or_true]
+      · unfold IsOnRightSide at Pr
+        have hal₂: A LiesOnLeft ray' := by
+          unfold IsOnLeftSide
+          calc
+            odist A ray' = odist A ray'.toDirLine := by rfl
+            _=-odist A ray'.toDirLine.reverse := by
+              simp only [odist_reverse_eq_neg_odist'' (dl := ray'.toDirLine), neg_neg]
+            _=-odist A ray.toDirLine := by congr;exact id rev.symm
+            _=-odist A ray := by rfl
+            _>0 := by linarith
+        have hbl₂: B LiesOnLeft ray' := by
+          unfold IsOnLeftSide
+          calc
+            odist B ray' = odist B ray'.toDirLine := by rfl
+            _=-odist B ray'.toDirLine.reverse := by
+              simp only [odist_reverse_eq_neg_odist'' (dl := ray'.toDirLine), neg_neg]
+            _=-odist B ray.toDirLine := by congr;exact id rev.symm
+            _=-odist B ray := by rfl
+            _>0 := by linarith
+        unfold IsOnSameSide'
+        simp only [hal₂, hbl₂, and_self, true_or]
+    --exactly the same only changing ray and ray'
+    · intro P
+      rcases P with Pl|Pr
+      · unfold IsOnLeftSide at Pl
+        have har₂: A LiesOnRight ray := by
+          unfold IsOnRightSide
+          calc
+            odist A ray = odist A ray.toDirLine := by rfl
+            _=odist A ray'.toDirLine.reverse := by congr
+            _=-odist A ray'.toDirLine := by simp only [odist_reverse_eq_neg_odist'' (dl :=
+                ray'.toDirLine)]
+            _=-odist A ray' := by rfl
+            _<0 := by linarith
+        have hbr₂: B LiesOnRight ray := by
+          unfold IsOnRightSide
+          calc
+            odist B ray = odist B ray.toDirLine := by rfl
+            _=odist B ray'.toDirLine.reverse := by congr
+            _=-odist B ray'.toDirLine := by simp only [odist_reverse_eq_neg_odist'' (dl :=
+                ray'.toDirLine)]
+            _=-odist B ray' := by rfl
+            _<0 := by linarith
+        unfold IsOnSameSide'
+        simp only [har₂, hbr₂, and_self, or_true]
+      · unfold IsOnRightSide at Pr
+        have hal₂: A LiesOnLeft ray := by
+          unfold IsOnLeftSide
+          calc
+            odist A ray = odist A ray.toDirLine := by rfl
+            _=odist A ray'.toDirLine.reverse := by congr
+            _=-odist A ray'.toDirLine := by simp only [odist_reverse_eq_neg_odist'' (dl :=
+                ray'.toDirLine)]
+            _=-odist A ray' := by rfl
+            _>0 := by linarith
+        have hbl₂: B LiesOnLeft ray := by
+          unfold IsOnLeftSide
+          calc
+            odist B ray = odist B ray.toDirLine := by rfl
+            _=odist B ray'.toDirLine.reverse := by congr
+            _=-odist B ray'.toDirLine := by simp only [odist_reverse_eq_neg_odist'' (dl :=
+                ray'.toDirLine)]
+            _=-odist B ray' := by rfl
+            _>0 := by linarith
+        unfold IsOnSameSide'
+        simp only [hal₂, hbl₂, and_self, true_or]
 
 end relative_side
 

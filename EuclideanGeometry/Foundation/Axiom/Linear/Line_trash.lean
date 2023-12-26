@@ -45,4 +45,7 @@ theorem eq_toDir_of_source_to_pt_lies_int {seg_nd : SegND P} {A : P} (h : A Lies
 theorem eq_toDirLine_of_source_to_pt_lies_int {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd seg_nd.source A (ne_vertex_of_lies_int_seg_nd h).1).toDirLine = seg_nd.toDirLine := by sorry
 theorem eq_toDir_of_pt_lies_int_to_target {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target (ne_vertex_of_lies_int_seg_nd h).2.symm).toDir = seg_nd.toDir := by sorry
 theorem eq_toDirLine_of_pt_lies_int_to_target {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target (ne_vertex_of_lies_int_seg_nd h).2.symm).toDirLine = seg_nd.toDirLine := by sorry
+
+theorem eq_or_eq_rev_of_toLine_eq_toLine {dl₁ dl₂ : DirLine P} (h : dl₁.toLine = dl₂.toLine) : (dl₁ = dl₂) ∨ (dl₁ = dl₂.reverse) := by sorry
+
 end EuclidGeom
