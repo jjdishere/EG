@@ -75,4 +75,7 @@ theorem dvalue_eq_ang_rays_perp {ang : Angle P} (h : ang.dvalue = ∡[π / 2]) :
 
 theorem liesint_segnd_value_eq_pi {A B C : P} (hne : B ≠ A) (h : C LiesInt (SEG_nd A B hne)) : ∠ A C B h.2.symm h.3.symm = π := sorry
 
+theorem liesint_segnd_value_eq_pi' {A B C : P} [hne : PtNe B A] (h : C LiesInt (SEG_nd A B)) : ∠ A C B h.2.symm h.3.symm = π := sorry
+
+theorem ang_value_eq_ang_value_add_ang_value (A B C O : P) [hne1 : PtNe A O] [hne2 : PtNe B O] [hne3 : PtNe C O]: (∠ A O B) + (∠ B O C) = (∠ A O C) := sorry
 end EuclidGeom

@@ -64,10 +64,48 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
 theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (SEG e.A e.B).length = (SEG e.A e.C).length := by
   haveI D_ne_B : PtNe e.D e.B := ⟨ne_source_of_lies_int_seg e.B e.C e.D e.D_int_BC⟩
   haveI E_ne_C : PtNe e.E e.C := ⟨ne_source_of_lies_int_seg e.C e.B e.E (Seg.lies_int_rev_iff_lies_int.mp e.E_int_BC)⟩
+  haveI C_ne_D : PtNe e.C e.D := by sorry
+  haveI E_ne_B : PtNe e.E e.B := by sorry
   have not_colinear_BAD : ¬ colinear e.B e.A e.D := by sorry
   have not_colinear_CAE : ¬ colinear e.C e.A e.E := by sorry
-  have angle_ABD_eq_neg_angle_ACE : (ANG e.A e.D e.B).dvalue = - (ANG e.A e.E e.C).dvalue := by sorry
-  have triangle_BAD_acongr_triangle_CAE : (TRI_nd e.B e.A e.D not_colinear_BAD) ≅ₐ (TRI_nd e.C e.A e.E not_colinear_CAE) := by sorry
+  have not_colinear_ADE : ¬ colinear e.A e.D e.E := by sorry
+  haveI D_ne_E : PtNe e.D e.E := by sorry
+  have E_int_DC : e.E LiesInt (SEG_nd e.D e.C) := by sorry
+  have D_int_BE : e.D LiesInt (SEG_nd e.B e.E) := by sorry
+  have isoceles_ADE : (TRI e.A e.D e.E).IsIsoceles := by
+    calc
+    (SEG e.E e.A).length = (SEG e.A e.E).length := by apply length_of_rev_eq_length'
+    _= (SEG e.A e.D).length := e.AD_eq_AE.symm
+  have angle_DAB_eq_neg_angle_EAC : ∠ e.D e.A e.B = - (∠ e.E e.A e.C) := by
+    calc
+    ∠ e.D e.A e.B = - (∠ e.B e.A e.D) := by apply Angle.ang_value_rev_eq_neg_value (ang := ANG e.B e.A e.D)
+    _= ∠ e.C e.A e.E := by simp only [e.angle_BAD_eq_neg_angle_CAE, neg_neg]
+    _= - (∠ e.E e.A e.C) := by apply Angle.ang_value_rev_eq_neg_value (ang := ANG e.E e.A e.C)
+  have angle_BDA_eq_neg_angle_CEA : ∠ e.B e.D e.A = - (∠ e.C e.E e.A) := by
+    calc
+    (∠ e.B e.D e.A)
+    _= ((∠ e.B e.D e.A) + (∠ e.A e.D e.E)) - (∠ e.A e.D e.E) := by abel
+    _= (∠ e.B e.D e.E) - (∠ e.A e.D e.E) := by
+      congr 1; exact ang_value_eq_ang_value_add_ang_value e.B e.A e.E e.D
+    _= ↑ (π) - (∠ e.A e.D e.E) := by
+      congr 1; exact liesint_segnd_value_eq_pi' D_int_BE
+    _= ↑ (π) + (- ∠ e.A e.D e.E) := by abel
+    _= ↑ (π) + (∠ e.E e.D e.A) := by
+      congr 1; symm;
+      exact Angle.ang_value_rev_eq_neg_value (ang := ANG e.A e.D e.E)
+    _= ↑ (π) + (∠ e.A e.E e.D) := by
+      congr 1;
+      exact is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.D e.E not_colinear_ADE)).mp isoceles_ADE
+    _= (∠ e.D e.E e.C) + (∠ e.A e.E e.D) := by
+      congr 1; symm; exact liesint_segnd_value_eq_pi' E_int_DC
+    _= (∠ e.A e.E e.D) + (∠ e.D e.E e.C) := by abel
+    _= (∠ e.A e.E e.C) := by exact ang_value_eq_ang_value_add_ang_value e.A e.D e.C e.E
+    _= - (∠ e.C e.E e.A) := Angle.ang_value_rev_eq_neg_value (ang := ANG e.C e.E e.A)
+  have triangle_BAD_acongr_triangle_CAE : (TRI_nd e.B e.A e.D not_colinear_BAD) ≅ₐ (TRI_nd e.C e.A e.E not_colinear_CAE) := by
+    apply TriangleND.acongr_of_ASA
+    · exact angle_DAB_eq_neg_angle_EAC
+    · exact e.AD_eq_AE
+    · exact angle_BDA_eq_neg_angle_CEA
   calc
   (SEG e.A e.B).length
   _= (SEG e.B e.A).length := by apply length_of_rev_eq_length'
