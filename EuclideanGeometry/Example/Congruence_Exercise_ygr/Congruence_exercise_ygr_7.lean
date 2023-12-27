@@ -11,7 +11,7 @@ Let $A, B, C, D$ be four points on the plane such that $A, B, C$ are not colinea
 If $\angle ACO = - \angle BDO$ and $OA = OB$, Prove that $AD = BC$.
 -/
 
-structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type _) [EuclideanPlane Plane] where
 -- Let $A, B, C, D$ be four points on the plane,
   A : Plane
   B : Plane
@@ -28,17 +28,17 @@ structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
 -- Claim : $C \ne A$.
   C_ne_A : PtNe C A := ⟨(ne_of_not_colinear not_colinear_ABC).2.1.symm⟩
 -- Claim : $D \ne B$.
-  D_ne_B : PtNe D B := ⟨(ne_of_not_colinear not_colinear_ABD).1⟩
+  B_ne_D : PtNe B D := ⟨(ne_of_not_colinear not_colinear_ABD).1.symm⟩
 -- Claim : $O \ne C$.
   O_ne_C : PtNe O C := ⟨ne_source_of_lies_int_seg C B O (Seg.lies_int_rev_iff_lies_int.mpr O_int_BC)⟩
 -- Claim : $O \ne D$.
   O_ne_D : PtNe O D := ⟨ne_source_of_lies_int_seg D A O (Seg.lies_int_rev_iff_lies_int.mpr O_int_AD)⟩
-attribute [instance] Setting1.C_ne_A Setting1.D_ne_B Setting1.O_ne_C Setting1.O_ne_D
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
 -- If $\angle ACO = - \angle BDO$
-  angle_ACO_eq_neg_angle_BDO : ∠ A C O = - ∠ B D O
+  angle_ACO_eq_neg_angle_BDO : ∠ A C O = - (∠ B D O)
 -- and $OA = OB$.
   OA_eq_OB : (SEG O A).length = (SEG O B).length
+
+theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.A e.D).length = (SEG e.B e.C).length := by sorry
 
 
 end Congruence_exercise_ygr_7
