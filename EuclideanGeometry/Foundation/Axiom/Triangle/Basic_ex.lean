@@ -193,6 +193,7 @@ theorem iscclock_iff_liesonleft₂ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr
   simp only [h]
   apply iscclock_iff_liesonleft₁
 
+
 end cclock_and_odist
 
 end TriangleND
