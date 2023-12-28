@@ -230,6 +230,40 @@ theorem online_iff_lies_on_line (A : P) [DirFig α P] (df : α) : Line.IsOn A (t
 theorem off_line_iff_not_online (A : P) [DirFig α P] (df : α) : OffLine A df ↔ ¬OnLine A df := by
   rfl
 
+theorem LiesOnLeft_or_LiesOnRight_or_LiesOn (A : P) [DirFig α P] (df : α) : (IsOnLeftSide A df) ∨ (IsOnRightSide A df) ∨ (A LiesOn (toLine df)) := by
+  have h : (odist A df > 0) ∨ (odist A df < 0) ∨ (odist A df = 0) := by
+    by_contra h'
+    have nl : ¬ (odist A df > 0) := by
+      by_contra nl'
+      absurd h'
+      simp only [gt_iff_lt, nl', true_or]
+    have nr : ¬ (odist A df < 0) := by
+      by_contra nr'
+      absurd h'
+      simp only [gt_iff_lt, nr', true_or, or_true]
+    have no : ¬ (odist A df = 0) := by
+      by_contra no'
+      absurd h'
+      simp only [no', gt_iff_lt, lt_self_iff_false, or_true]
+    simp at nl
+    simp at nr
+    have : odist A df = 0 := by
+      linarith [nl,nr]
+    absurd this
+    exact no
+  rcases h with l|R
+  · have : IsOnLeftSide A df := by exact l
+    simp only [this, true_or]
+  · rcases R with r|o
+    · have : IsOnRightSide A df := by exact r
+      simp only [this, true_or, or_true]
+    · have : Line.IsOn A (toLine df) := by
+        apply (online_iff_lies_on_line A df).mpr
+        exact o
+      have : A LiesOn (toLine df) := by exact this
+      simp only [this, or_true]
+
+
 /- Relation of position of points on a ray and directed distance-/
 
 end point_toRay
