@@ -565,26 +565,71 @@ theorem IsOnSameSide_comm' (A B : P) (ray : Ray P) : IsOnSameSide A B ray →  I
   unfold IsOnSameSide'
   intro P
   rcases P with l|r
-  · sorry
-  · sorry
+  · show (B LiesOnLeft ray ∧ A LiesOnLeft ray) ∨ (B LiesOnRight ray ∧ A LiesOnRight ray)
+    simp only [l.2, l.1, and_self, true_or]
+  · show (B LiesOnLeft ray ∧ A LiesOnLeft ray) ∨ (B LiesOnRight ray ∧ A LiesOnRight ray)
+    simp only [r.2, r.1, and_self, or_true]
+
+theorem IsOnSameSide_comm'' (A B : P) (l : Line P) : IsOnSameSide A B l  →  IsOnSameSide B A l := by
+    rcases (Quotient.exists_rep l) with ⟨ray , h0⟩
+    intro P
+    simp only [← h0] at P
+    have h₁ : IsOnSameSide A B ray := by
+      exact P
+    have h₂ : IsOnSameSide B A ray := by
+      apply IsOnSameSide_comm' A B ray
+      exact h₁
+    simp only [← h0]
+    exact h₂
+
+theorem IsOnSameSide_comm {α} [ProjFig α P] (A B : P) (l : α) : IsOnSameSide A B l = IsOnSameSide B A l := by
+  have h₁ : IsOnSameSide A B l = IsOnSameSide A B (toLine l) := by rfl
+  have h₂ : IsOnSameSide B A l = IsOnSameSide B A (toLine l) := by rfl
+  simp only [eq_iff_iff]
+  simp only [h₁,h₂]
+  constructor
+  · exact IsOnSameSide_comm'' A B (toLine l)
+  · exact IsOnSameSide_comm'' B A (toLine l)
+
+
 theorem IsOnOppositeSide_comm' (A B : P) (ray : Ray P) : IsOnOppositeSide A B ray →  IsOnOppositeSide B A ray := by
   unfold IsOnOppositeSide
   unfold IsOnOppositeSide'
   intro P
   rcases P with l|r
-  · sorry
-  · sorry
+  · show (B LiesOnLeft ray ∧ A LiesOnRight ray) ∨ (B LiesOnRight ray ∧ A LiesOnLeft ray)
+    simp only [l.2, l.1, and_self, or_true]
+  · show (B LiesOnLeft ray ∧ A LiesOnRight ray) ∨ (B LiesOnRight ray ∧ A LiesOnLeft ray)
+    simp only [r.2, r.1, and_self, true_or]
+
+theorem IsOnOppositeSide_comm'' (A B : P) (l : Line P) : IsOnOppositeSide A B l  →  IsOnOppositeSide B A l := by
+    rcases (Quotient.exists_rep l) with ⟨ray , h0⟩
+    intro P
+    simp only [← h0] at P
+    have h₁ : IsOnOppositeSide A B ray := by
+      exact P
+    have h₂ : IsOnOppositeSide B A ray := by
+      apply IsOnOppositeSide_comm' A B ray
+      exact h₁
+    simp only [← h0]
+    exact h₂
+
+theorem IsOnOppositeSide_comm {α} [ProjFig α P] (A B : P) (l : α) : IsOnOppositeSide A B l = IsOnOppositeSide B A l := by
+  have h₁ : IsOnOppositeSide A B l = IsOnOppositeSide A B (toLine l) := by rfl
+  have h₂ : IsOnOppositeSide B A l = IsOnOppositeSide B A (toLine l) := by rfl
+  simp only [eq_iff_iff]
+  simp only [h₁,h₂]
+  constructor
+  · exact IsOnOppositeSide_comm'' A B (toLine l)
+  · exact IsOnOppositeSide_comm'' B A (toLine l)
 
 /-
 trans:
 Basic properties:
   LiesOn_same_side of LiesOn_same_side and LiesOn_same_side
-  LiesOn_same_side of LiesOn_opposite_side and LiesOn_opposite_side
   LiesOn_opposite_side of LiesOn_same_side and LiesOn_opposite_side
   LiesOn_opposite_side of LiesOn_opposite_side and LiesOn_same_side
 -/
-
-theorem IsOnSameSide_trans
 
 end relative_side
 
