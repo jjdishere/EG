@@ -263,6 +263,29 @@ theorem LiesOnLeft_or_LiesOnRight_or_LiesOn (A : P) [DirFig α P] (df : α) : (I
       have : A LiesOn (toLine df) := by exact this
       simp only [this, or_true]
 
+theorem not_colinear_of_LiesOnLeft_or_LiesOnRight (A B C : P) [bnea : PtNe B A] (hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B))) : ¬ colinear A B C := by
+  apply (not_colinear_iff_wedge_ne_zero A B C).mpr
+  have hw : (wedge A B C) = (SEG A B).length * odist' C (RAY A B) := by
+    exact wedge_eq_length_mul_odist' A B C
+  have pos : (SEG A B).length > 0 := by
+    calc
+      _=(SEG_nd A B).length := by rfl
+      _>0 := by apply EuclidGeom.length_pos
+  rcases hlr with l|r
+  · unfold IsOnLeftSide at l
+    have : (wedge A B C) > 0 := by
+      simp only [hw]
+      positivity
+    linarith
+  · unfold IsOnRightSide at r
+    have : -odist C (RAY A B) >0 := by
+      linarith [r]
+    have : -(wedge A B C) > 0 := by
+      simp only [hw]
+      calc
+        _=-odist' C (RAY A B) * (SEG A B).length := by ring
+        _>0 := by positivity
+    linarith
 
 /- Relation of position of points on a ray and directed distance-/
 
@@ -836,6 +859,39 @@ theorem LiesOnLeft_iff_LiesOnLeft_of_IsOnSameSide (A B : P) (dl : DirLine P) (h 
   · exact LiesOnLeft_iff_LiesOnLeft_of_IsOnSameSide' (h:=h)
   · exact LiesOnLeft_iff_LiesOnLeft_of_IsOnSameSide' (h:=h')
 
+theorem not_colinear_of_IsOnSameSide (A B C D : P) [bnea : PtNe B A] (h : IsOnSameSide C D (RAY A B)) : (¬ colinear A B C) ∧ (¬ colinear A B D) := by
+  have hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B)) := by
+    rcases h with l|r
+    · simp only [l.1, true_or]
+    · simp only [r.1, or_true]
+  have hlr' : (IsOnLeftSide D (RAY A B)) ∨ (IsOnRightSide D (RAY A B)) := by
+    rcases h with l|r
+    · simp only [l.2, true_or]
+    · simp only [r.2, or_true]
+  have c : ¬ colinear A B C := by
+    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+    exact hlr
+  have d : ¬ colinear A B D := by
+    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+    exact hlr'
+  simp only [c, not_false_eq_true, d, and_self]
+
+theorem not_colinear_of_IsOnOppositeSide (A B C D : P) [bnea : PtNe B A] (h : IsOnOppositeSide C D (RAY A B)) : (¬ colinear A B C) ∧ (¬ colinear A B D) := by
+  have hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B)) := by
+    rcases h with l|r
+    · simp only [l.1, true_or]
+    · simp only [r.1, or_true]
+  have hlr' : (IsOnLeftSide D (RAY A B)) ∨ (IsOnRightSide D (RAY A B)) := by
+    rcases h with l|r
+    · simp only [l.2, or_true]
+    · simp only [r.2, true_or]
+  have c : ¬ colinear A B C := by
+    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+    exact hlr
+  have d : ¬ colinear A B D := by
+    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+    exact hlr'
+  simp only [c, not_false_eq_true, d, and_self]
 
 end relative_side
 
