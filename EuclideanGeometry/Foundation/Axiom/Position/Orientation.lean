@@ -230,6 +230,8 @@ theorem online_iff_lies_on_line (A : P) [DirFig α P] (df : α) : Line.IsOn A (t
 theorem off_line_iff_not_online (A : P) [DirFig α P] (df : α) : OffLine A df ↔ ¬OnLine A df := by
   rfl
 
+--LiesOnLeft and LiesOnRight and LiesOn should be correct for exact one
+
 theorem LiesOnLeft_or_LiesOnRight_or_LiesOn (A : P) [DirFig α P] (df : α) : (IsOnLeftSide A df) ∨ (IsOnRightSide A df) ∨ (A LiesOn (toLine df)) := by
   have h : (odist A df > 0) ∨ (odist A df < 0) ∨ (odist A df = 0) := by
     by_contra h'
@@ -262,6 +264,12 @@ theorem LiesOnLeft_or_LiesOnRight_or_LiesOn (A : P) [DirFig α P] (df : α) : (I
         exact o
       have : A LiesOn (toLine df) := by exact this
       simp only [this, or_true]
+
+--theorem not_LiesOnRight_and_not_LiesOn_of_LiesOnLeft
+
+--theorem not_LiesOnRight_and_not_LiesOn_of_LiesOnRight
+
+--theorem not_LiesOnTight_and_not_LiesOnRight_of_LiesOn
 
 theorem not_colinear_of_LiesOnLeft_or_LiesOnRight (A B C : P) [bnea : PtNe B A] (hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B))) : ¬ colinear A B C := by
   apply (not_colinear_iff_wedge_ne_zero A B C).mpr
@@ -408,7 +416,7 @@ def IsOnOppositeSide' (A B : P) (ray : Ray P) : Prop := ((A LiesOnLeft ray) ∧ 
 
 theorem LiesOnSameSide'_of_toLine_eq_toLine' (A B : P) (ray ray' : Ray P) (h : ray.toLine = ray'.toLine) : IsOnSameSide' A B ray → IsOnSameSide' A B ray' := by
   have Dir : ray.toDirLine = ray'.toDirLine ∨ ray.toDirLine = ray'.toDirLine.reverse := by
-    apply eq_or_eq_rev_of_toLine_eq_toLine
+    apply EuclidGeom.DirLine.eq_or_eq_rev_of_toLine_eq
     simp only [← Ray.toLine_eq_toDirLine_toLine (ray := ray),← Ray.toLine_eq_toDirLine_toLine (ray := ray')]
     exact h
   rcases Dir with same|rev
@@ -501,7 +509,7 @@ theorem LiesOnSameSide'_of_toLine_eq_toLine (A B : P) (ray ray' : Ray P) (h : ra
 
 theorem LiesOnOppositeSide'_of_toLine_eq_toLine' (A B : P) (ray ray' : Ray P) (h : ray.toLine = ray'.toLine) : IsOnOppositeSide' A B ray → IsOnOppositeSide' A B ray' := by
   have Dir : ray.toDirLine = ray'.toDirLine ∨ ray.toDirLine = ray'.toDirLine.reverse := by
-    apply eq_or_eq_rev_of_toLine_eq_toLine
+    apply EuclidGeom.DirLine.eq_or_eq_rev_of_toLine_eq
     simp only [← Ray.toLine_eq_toDirLine_toLine (ray := ray),← Ray.toLine_eq_toDirLine_toLine (ray := ray')]
     exact h
   rcases Dir with same|rev
@@ -858,6 +866,54 @@ theorem LiesOnLeft_iff_LiesOnLeft_of_IsOnSameSide (A B : P) (dl : DirLine P) (h 
   constructor
   · exact LiesOnLeft_iff_LiesOnLeft_of_IsOnSameSide' (h:=h)
   · exact LiesOnLeft_iff_LiesOnLeft_of_IsOnSameSide' (h:=h')
+
+theorem LiesOnLeft_iff_LiesOnLeft_rev_of_IsOnOppositeSide' (A B : P) (dl : DirLine P) (h : IsOnOppositeSide A B dl) : A LiesOnLeft dl → B LiesOnLeft dl.reverse := by
+  intro P
+  rcases (Quotient.exists_rep dl) with ⟨ray , h0⟩
+  simp only [← h0] at P
+  simp only [← h0]
+  have : A LiesOnLeft ray := by
+    exact P
+  have h₁ : ¬ A LiesOnRight ray := by
+    unfold IsOnRightSide
+    unfold IsOnLeftSide at this
+    linarith
+  have h₂ : IsOnOppositeSide A B ray := by
+    simp only [← h0] at h
+    exact h
+  rcases h₂ with l|r
+  · have : odist B ray.reverse >0 := by
+      calc
+        _=-odist B ray := by apply odist_reverse_eq_neg_odist B ray
+        _>0 := by
+          simp
+          unfold IsOnRightSide at l
+          exact l.2
+    exact this
+  · absurd r
+    simp [h₁]
+
+theorem LiesOnLeft_iff_LiesOnLeft_rev_of_IsOnOppositeSide (A B : P) (dl : DirLine P) (h : IsOnOppositeSide A B dl) : A LiesOnLeft dl = B LiesOnLeft dl.reverse := by
+  simp only [eq_iff_iff]
+  have h' : IsOnOppositeSide B A dl.reverse := by
+    apply (IsOnOppositeSide_symm A B dl.reverse).mp
+    have : dl.reverse.toLine = dl.toLine := by
+      exact EuclidGeom.DirLine.rev_toLine_eq_toLine dl
+    have eq : IsOnOppositeSide A B dl.reverse = IsOnOppositeSide A B dl := by
+      calc
+        IsOnOppositeSide A B dl.reverse = IsOnOppositeSide A B dl.reverse.toLine := by rfl
+        _= IsOnOppositeSide A B dl.toLine := by simp only [this]
+        _= IsOnOppositeSide A B dl := by rfl
+    simp only [eq]
+    exact h
+  constructor
+  · exact LiesOnLeft_iff_LiesOnLeft_rev_of_IsOnOppositeSide' (h:=h)
+  · have h0 : B LiesOnLeft dl.reverse → A LiesOnLeft dl.reverse.reverse := by
+      exact LiesOnLeft_iff_LiesOnLeft_rev_of_IsOnOppositeSide' (h:=h')
+    have : dl.reverse.reverse = dl := by
+      exact  EuclidGeom.DirLine.rev_rev_eq_self
+    simp [this] at h0
+    exact h0
 
 theorem not_colinear_of_IsOnSameSide (A B C D : P) [bnea : PtNe B A] (h : IsOnSameSide C D (RAY A B)) : (¬ colinear A B C) ∧ (¬ colinear A B D) := by
   have hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B)) := by

@@ -193,6 +193,41 @@ theorem iscclock_iff_liesonleft₂ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr
   simp only [h]
   apply iscclock_iff_liesonleft₁
 
+theorem eq_cclock_of_IsOnSameSide (A B C D : P) [hne : PtNe B A] (h : IsOnSameSide C D (RAY A B)) : (TRI_nd A B C (not_colinear_of_IsOnSameSide A B C D h).1).is_cclock = (TRI_nd A B D (not_colinear_of_IsOnSameSide A B C D h).2).is_cclock := by
+  have c : (TRI_nd A B C (not_colinear_of_IsOnSameSide A B C D h).1).is_cclock = C LiesOnLeft (SEG_nd A B) := by
+    apply iscclock_iff_liesonleft₃
+  have d : (TRI_nd A B D (not_colinear_of_IsOnSameSide A B C D h).2).is_cclock = D LiesOnLeft (SEG_nd A B) := by
+    apply iscclock_iff_liesonleft₃
+  have h0 : C LiesOnLeft (SEG_nd A B) = D LiesOnLeft (SEG_nd A B) := by
+    apply LiesOnLeft_iff_LiesOnLeft_of_IsOnSameSide
+    exact h
+  simp only [c, h0, d]
+
+theorem anti_cclock_of_IsOnOppositeSide (A B C D : P) [hne : PtNe B A] (h : IsOnOppositeSide C D (SEG_nd A B)) : (TRI_nd A B C (not_colinear_of_IsOnOppositeSide A B C D h).1).is_cclock → ¬ (TRI_nd A B D (not_colinear_of_IsOnOppositeSide A B C D h).2).is_cclock := by
+  have c : (TRI_nd A B C (not_colinear_of_IsOnOppositeSide A B C D h).1).is_cclock = C LiesOnLeft (SEG_nd A B) := by
+    apply iscclock_iff_liesonleft₃
+  have d : (TRI_nd A B D (not_colinear_of_IsOnOppositeSide A B C D h).2).is_cclock = D LiesOnLeft (SEG_nd A B) := by
+    apply iscclock_iff_liesonleft₃
+  simp only [c,d]
+  have h0 : C LiesOnLeft SEG_nd A B = D LiesOnLeft (SEG_nd A B).reverse := by
+    calc
+      _= C LiesOnLeft (SEG_nd A B).toDirLine := by rfl
+      _= D LiesOnLeft (SEG_nd A B).toDirLine.reverse := by
+        apply LiesOnLeft_iff_LiesOnLeft_rev_of_IsOnOppositeSide
+        exact h
+      _= D LiesOnLeft (SEG_nd A B).reverse.toDirLine := by
+        congr
+        exact EuclidGeom.SegND.toDirLine_rev_eq_rev_toDirLine
+      _= D LiesOnLeft (SEG_nd A B).reverse := by rfl
+  simp only [h0]
+  unfold IsOnLeftSide
+  intro P
+  have : odist D (SEG_nd A B).reverse = - odist D (SEG_nd A B) := by
+    apply odist_reverse_eq_neg_odist
+  rw [this] at P
+  linarith
+
+
 
 end cclock_and_odist
 

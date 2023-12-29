@@ -77,8 +77,7 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : �
         --by $A,E$ are on the same side of line $B F$ and $AB \parallel DE$
         apply eq_toDir_of_parallel_and_same_side
         ·exact e.hpr
-        ·show odist_sign e.A (SEG_nd e.B e.D) = odist_sign e.E (SEG_nd e.B e.D)
-         unfold odist_sign
+        ·show IsOnSameSide e.A e.E (SEG_nd e.B e.D)
          have hA : odist e.A (SEG_nd e.B e.D) > 0 := by
           calc
             odist e.A (SEG_nd e.B e.D) = odist e.A (SEG_nd e.B e.D).toDirLine := by rfl
@@ -97,7 +96,12 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : �
               congr
             _=odist e.E (SEG_nd e.B e.F) := by rfl
             _>0 := by exact e.E_side
-         simp [hA,hE]
+         have hA' : e.A LiesOnLeft (SEG_nd e.B e.D) := by exact hA
+         have hE' : e.E LiesOnLeft (SEG_nd e.B e.D) := by exact hE
+         unfold IsOnSameSide
+         unfold IsOnSameSide'
+         show e.A LiesOnLeft (SEG_nd e.B e.D) ∧ e.E LiesOnLeft (SEG_nd e.B e.D) ∨ e.A LiesOnRight (SEG_nd e.B e.D) ∧ e.E LiesOnRight (SEG_nd e.B e.D)
+         simp only [hA', hE', and_self, true_or]
         ·exact D_ne_B.out.symm
       · show (RAY e.B e.C).toDirLine = (RAY e.D e.F).toDirLine
         calc

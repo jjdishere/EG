@@ -70,11 +70,11 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : �
         -- by $A,D$ are on the opposite side of line $BC$ and $BD \parallel CA$
         apply neg_toDir_of_parallel_and_opposite_side
         · exact e.BD_para_CA
-        · show odist_sign e.D (SEG_nd e.B e.C) = -odist_sign e.A (SEG_nd e.B e.C)
-          unfold odist_sign
-          have hD : odist e.D (SEG_nd e.B e.C) < 0 := by exact e.D_side
-          have hA : odist e.A (SEG_nd e.B e.C) > 0 := by exact e.A_side
-          simp only [gt_iff_lt, hD, sign_neg, SignType.coe_neg_one, hA, sign_pos, SignType.coe_one]
+        · show IsOnOppositeSide e.D e.A (SEG_nd e.B e.C)
+          unfold IsOnOppositeSide
+          unfold IsOnOppositeSide'
+          show e.D LiesOnLeft (SEG_nd e.B e.C) ∧ e.A LiesOnRight (SEG_nd e.B e.C) ∨ e.D LiesOnRight (SEG_nd e.B e.C) ∧ e.A LiesOnLeft (SEG_nd e.B e.C)
+          simp only [e.D_side, e.A_side, and_self, or_true]
         · exact B_ne_C.out
       · show (RAY e.B e.E).toDirLine = (RAY e.C e.B).toDirLine.reverse
         calc
