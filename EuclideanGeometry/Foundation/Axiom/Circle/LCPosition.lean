@@ -215,7 +215,7 @@ theorem DirLC_tangent_pt_eq_perp_foot {l : DirLine P} {ω : Circle P} (h : l Tan
       _ = l.toLine.toProj.perp := DirLC_tangent_pt_center_perp_line h
       _ = l.toProj.perp := by rw [DirLine.toLine_toProj_eq_toProj]
   symm
-  apply perp_foot_unique (DirLC_intersected_pts_lieson_dlin _).1 (DirLC_tangent_pt_ne_center h).symm hp
+  exact perp_foot_unique (DirLC_intersected_pts_lieson_dlin _).1 (hne := ⟨(DirLC_tangent_pt_ne_center h)⟩) hp
 
 
 
@@ -289,7 +289,7 @@ theorem pt_pt_tangent_perp {A B : P} {ω : Circle P} (h₁ : A LiesOut ω) (h₂
     _ = (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm).toLine.toProj.perp := DirLC_tangent_pt_center_perp_line _
 
 theorem pt_pt_perp_tangent {A B : P} {ω : Circle P} (h₁ : A LiesOut ω) (h₂ : B LiesOn ω) (hp : (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) ⟂ (DLIN ω.center B (pt_lieson_ne_center h₂).out)) : (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) Tangent ω := by
-  have heq : perp_foot ω.center (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) = B := perp_foot_unique (DirLine.snd_pt_lies_on_mk_pt_pt (_h := ⟨ (pt_liesout_ne_pt_lieson h₁ h₂).out.symm ⟩ )) (pt_lieson_ne_center h₂).out.symm hp.symm
+  have heq : perp_foot ω.center (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) = B := perp_foot_unique (DirLine.snd_pt_lies_on_mk_pt_pt (_h := ⟨ (pt_liesout_ne_pt_lieson h₁ h₂).out.symm ⟩ )) (hne := (pt_lieson_ne_center h₂)) hp.symm
   show dist_pt_line ω.center (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) = ω.radius
   calc
     _ = (SEG ω.center (perp_foot ω.center (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm))).length := rfl
@@ -299,7 +299,7 @@ theorem pt_pt_perp_tangent {A B : P} {ω : Circle P} (h₁ : A LiesOut ω) (h₂
 
 theorem pt_pt_perp_eq_tangent_pt {A B : P} {ω : Circle P} (h₁ : A LiesOut ω) (h₂ : B LiesOn ω) (hp : (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) ⟂ (DLIN ω.center B (pt_lieson_ne_center h₂).out)) : B = DirLC_Tangent_pt (pt_pt_perp_tangent h₁ h₂ hp) := by
   calc
-    _ = perp_foot ω.center (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) := by rw [perp_foot_unique (DirLine.snd_pt_lies_on_mk_pt_pt (_h := ⟨(pt_liesout_ne_pt_lieson h₁ h₂).out.symm⟩)) (pt_lieson_ne_center h₂).out.symm hp.symm]
+    _ = perp_foot ω.center (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) := by rw [perp_foot_unique (DirLine.snd_pt_lies_on_mk_pt_pt (_h := ⟨(pt_liesout_ne_pt_lieson h₁ h₂).out.symm⟩)) (hne := (pt_lieson_ne_center h₂)) hp.symm]
     _ = DirLC_Tangent_pt (pt_pt_perp_tangent h₁ h₂ hp) := by rw [DirLC_tangent_pt_eq_perp_foot _]
 
 end Circle

@@ -14,7 +14,7 @@ Prove that $∠DAB = ∠CAE$.
 -/
 /--/
 --Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {hnd: ¬ colinear A B C} {hisoc: (▵ A B C).IsIsoceles}
+variable {A B C : P} {not_colinear_ABC: ¬ colinear A B C} {isoceles_ABC: (▵ A B C).IsIsoceles}
 --Let $D$ and $E$ be two points on $BC$
 variable {D : P} {D_Int_BC: D LiesInt (SEG B C)}
 variable {E : P} {E_Int_BC: E LiesInt (SEG B C)}

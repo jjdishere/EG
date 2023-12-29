@@ -13,11 +13,11 @@ namespace Shan_Problem_1_3
 
 Prove that $CD = 2 \cdot CE$. -/
   -- Define an isosceles triangle ABC
-  variable {A B C : P} {hnd : ¬ colinear A B C} {hisoc : (▵ A B C).IsIsoceles}
+  variable {A B C : P} {hnd : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
   -- A ≠ B
-  lemma a_ne_b : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
+  lemma A_ne_B : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
   -- Since D is on line AB and AB = BD, it is trivial that D is on ray AB. Position can be determined here.
-  variable {D : P} {D_on_ray : D LiesInt (RAY A B a_ne_b) }
+  variable {D : P} {D_on_ray : D LiesInt (RAY A B A_ne_B) }
   variable {D_ray_position : (SEG A B).length = (SEG B D).length }
   -- As E is on AB, AE = EB, we can do the same with regard to E.
   variable {E : P} {E_midpoint : E = (SEG A B).midpoint}
@@ -41,14 +41,14 @@ Prove that $BD = AC + CD$.-/
   -- Define a triangle ABC
   variable {A B C : P} {hnd : ¬ colinear A B C}
   -- Possibly needed non-linear conditions
-  lemma a_ne_b : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
-  lemma a_ne_c : A ≠ C := (ne_of_not_colinear hnd).2.1
-  lemma c_ne_b : C ≠ B := (ne_of_not_colinear hnd).1
-  lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
+  lemma A_ne_B : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
+  lemma A_ne_C : A ≠ C := (ne_of_not_colinear hnd).2.1
+  lemma c_ne_B : C ≠ B := (ne_of_not_colinear hnd).1
+  lemma B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
   -- Get a point P on BC
   variable {D : P} {hd : D LiesInt (SEG B C)}
   -- Direct from the problem statement
-  variable (hang : 2 * ∠ C B A c_ne_b a_ne_b = ∠ A C B a_ne_c b_ne_c)
+  variable (hang : 2 * ∠ C B A c_ne_B A_ne_B = ∠ A C B A_ne_C B_ne_C)
   -- Define segment AD, with A ≠ D
   variable {height : SegND P} {defheight : height = (SEG A D)}
   -- Define base BC. Possible improvement here.

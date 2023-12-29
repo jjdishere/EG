@@ -47,5 +47,8 @@ theorem lies_int_of_midpoint_of_seg_nd {seg_nd : SegND P} : seg_nd.midpoint Lies
 theorem dist_source_eq_dist_target_of_midpoint {seg : Seg P} : (SEG seg.midpoint seg.source).length = (SEG seg.midpoint seg.target).length := by sorry
 
 theorem eq_midpoint_of_lies_on_and_dist_source_eq_dist_target {seg : Seg P} {M : P} {h : M LiesOn seg} {heq : (SEG M seg.source).length = (SEG M seg.target).length} : M = seg.midpoint := by sorry
+theorem midpt_of_rev_eq_midpt (A B : P) : (SEG A B).midpoint = (SEG B A).midpoint := by sorry
+
+theorem lies_int_toray_of_lies_int_ext_of_seg_nd (A B C : P) (h1 : B ≠ A) (h : C LiesInt ((SEG_nd A B h1).extension)) : C LiesInt (SEG_nd A B h1).toRay := by sorry
 
 end EuclidGeom
