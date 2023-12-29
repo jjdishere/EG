@@ -39,18 +39,39 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
 -- and $OA = OB$.
   OA_eq_OB : (SEG O A).length = (SEG O B).length
 attribute [instance] Setting.C_ne_A Setting.B_ne_D Setting.O_ne_C Setting.O_ne_D
+
 theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.A e.D).length = (SEG e.B e.C).length := by
+/-
+We have $\angle AOC = \angle DOB$ since they are opposite angles, and $\angle DOB = - \angle BOD$ by symmetry. Therefore, $\angle AOC = - \angle BOD$.
+We already know that $\angle OCA = - \angle ODB$ and $OA = OB$ in the hypothesis.
+In $\triangle COA$ and $\triangle DOB$,
+$\cdot \angle AOC = - \angle BOD$
+$\cdot \angle OCA = - \angle ODB$
+$\cdot OA = OB$
+Thus, $\triangle COA \cong_a \triangle DOB$ (by AAS).
+So, we have $AD = AO + OD = BO + OC = BC$, since $O$ lies on $AD$ and $O$ lies on $BC$.
+-/
+
+  -- We have that $C, O, A$ are not colinear.
   have not_colinear_COA : ¬ colinear e.C e.O e.A := by sorry
+  -- We have that $D, O, B$ are not colinear.
   have not_colinear_DOB : ¬ colinear e.D e.O e.B := by sorry
+  -- We have $O \ne A$.
   haveI O_ne_A : PtNe e.O e.A := ⟨ne_source_of_lies_int_seg e.A e.D e.O e.O_int_AD⟩
+  -- We have $O \ne B$.
   haveI O_ne_B : PtNe e.O e.B := ⟨ne_source_of_lies_int_seg e.B e.C e.O e.O_int_BC⟩
+  -- We have $C \ne B$.
   haveI C_ne_B : PtNe e.C e.B := ⟨(ne_of_not_colinear e.not_colinear_ABC).1⟩
+  -- We have $A \ne D$.
   haveI A_ne_D : PtNe e.A e.D := ⟨((ne_of_not_colinear e.not_colinear_ABD).2.1)⟩
+  -- We have $\angle AOC = - \angle BOD$.
   have angle_AOC_eq_neg_angle_BOD : (∠ e.A e.O e.C) = - (∠ e.B e.O e.D) := by
     calc
     (∠ e.A e.O e.C)
+    -- $\angle AOC = - \angle COA$ by symmetry.
     _= - (∠ e.C e.O e.A) := by
       exact Angle.ang_value_rev_eq_neg_value (ang := ANG e.C e.O e.A)
+    -- $\angle COA = \angle BOD$ since they are opposite angles.
     _= - (∠ e.B e.O e.D) := by
       simp only [neg_inj]
       apply ang_eq_ang_of_toDir_rev_toDir
