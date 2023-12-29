@@ -39,6 +39,6 @@ def Ray.translate (l : Ray P) : Ray P where
 
 theorem reverse_of_trans_eq_trans_of_reverse_of_ray (l : Ray P) : (l.translate v).reverse = l.reverse.translate v := by sorry
 
-theorem trans_of_seg_of_nontriv_toray (seg_nd : SegND P) : (seg_nd.toRay).translate v = (seg_nd.translate v).toRay := sorry
+theorem trans_of_seg_of_nontriv_toRay (seg_nd : SegND P) : (seg_nd.toRay).translate v = (seg_nd.translate v).toRay := sorry
 
 end EuclidGeom

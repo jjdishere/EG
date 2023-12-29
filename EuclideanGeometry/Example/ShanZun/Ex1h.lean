@@ -14,7 +14,7 @@ variable {A B C D : P} {h : (QDR A B C D) IsPRG}
 -- The diagonal is nondegenerate
 lemma c_ne_a : C ≠ A :=sorry
 -- Point E and F lie on the diagonal AC
-variable {E F : P} {he : E LiesInt (SEG_nd A C c_ne_a)} {hf : F LiesInt (SEG_nd A C c_ne_a)}
+variable {E F : P} {he : E LiesInt (SegND A C c_ne_a)} {hf : F LiesInt (SegND A C c_ne_a)}
 -- Extra assumption that $AF=FC$
 variable {hef : (SEG A E).length=(SEG F C).length}
 -- Point B is not A

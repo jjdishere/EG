@@ -48,12 +48,12 @@ Ray.lean -- Define (directed) segments and rays
     Seg.lies_on_of_lies_int -- Given a (seg : Seg P), its interior is a subset of its carrier, i.e. seg.interior ⊂ seg.carrier.
     Ray.lies_on_of_lies_int -- Given a (ray : Ray P), its interior is a subset of its carrier, i.e. ray.interior ⊂ ray.carrier.
     SegND.lies_on_toRay_of_lies_on -- Given a nondegenerate segment (seg_nd : SegND P), its carrier is a subset of the carrier of the associated ray, i.e. seg_nd.1.carrier ⊂ seg_nd.toRay.carrier.
-    SegND.lies_int_toray_of_lies_int -- Given a nondegenerate segment (seg_nd : SegND P), its interior is a subset of the interior of the associated ray, i.e. seg_nd.interior ⊂ seg_nd.toRay.interior.
+    SegND.lies_int_toRay_of_lies_int -- Given a nondegenerate segment (seg_nd : SegND P), its interior is a subset of the interior of the associated ray, i.e. seg_nd.interior ⊂ seg_nd.toRay.interior.
 
     `More to add here, or other place. e.g. the source and target of a seg LiesOn a ray → every other point lies on it `
 
-    SegND.toDir_eq_toray_toDir : Given a nondegenerate segment (seg_nd : SegND P), we have seg_nd.toDir = seg_nd.toRay.toDir
-    SegND.toProj_eq_toray_toProj : Given a nondegenerate segment (seg_nd : SegND P), we have seg_nd.toProj = seg_nd.toRay.toProj
+    SegND.toDir_eq_toRay_toDir : Given a nondegenerate segment (seg_nd : SegND P), we have seg_nd.toDir = seg_nd.toRay.toDir
+    SegND.toProj_eq_toRay_toProj : Given a nondegenerate segment (seg_nd : SegND P), we have seg_nd.toProj = seg_nd.toRay.toProj
 
     Ray.is_in_inter_iff_add_pos_Dir -- Given a (ray : Ray P), a point (p : P) lies in the interior of ray iff  ∃ t : ℝ, 0 < t ∧ VEC ray.source p = t • ray.toDir.toVec .
 
@@ -71,7 +71,7 @@ Ray.lean -- Define (directed) segments and rays
     eq_source_iff_lies_on_ray_lies_on_ray_rev -- Given a (ray : Ray P), the intersection of the carrier of ray and the carrier of the reverse of ray is exactly the source of ray, i.e. (A : P) : A = ray.source ↔ A ∈ ray.carrier ∧ A ∈ ray.reverse.carrier
     not_lies_on_of_lies_int_rev -- Given a (ray : Ray P), the intersection of the carrier of ray and the interior of the reverse of ray is empty.
     not_lies_int_of_lies_on_rev -- Given a (ray : Ray P), the intersection of the interior of ray and the carrier of the reverse of ray is empty.
-    lies_on_iff_lies_on_toray_and_rev_toray -- Given a nondegenerate segment (segnd : SegND P), a point (A : P) lies on segnd if and only if A lies on the ray associated to the segment as well as the ray associated to the reverse of the segment, i.e. A ∈ segnd.toray ∧ A ∈ segnd.reverse.toray.
+    lies_on_iff_lies_on_toRay_and_rev_toRay -- Given a nondegenerate segment (segnd : SegND P), a point (A : P) lies on segnd if and only if A lies on the ray associated to the segment as well as the ray associated to the reverse of the segment, i.e. A ∈ segnd.toRay ∧ A ∈ segnd.reverse.toRay.
     Ray.toDir_of_reverse_eq_neg_toDir --
     Ray.toProj_of_reverse_eq_toProj --
     Seg.toVec_of_reverse_eq_neg_toVec -- Given a (seg : Seg P), seg.reverse.toVec = - seg.toVec
@@ -164,7 +164,7 @@ Line.lean -- Define lines
       eq_line_of_pt_pt_of_ne --
       eq_of_pt_pt_lies_on_of_ne -- 2 ne pts lies on 2 lines implies 2 lines are the same
     coercion : theorems related to coercions 
-      SegND.toLine_eq_toray_toLine --
+      SegND.toLine_eq_toRay_toLine --
       line_of_pt_pt_eq_ray_toLine --
       line_of_pt_pt_eq_seg_nd_toLine --
       Ray.source_lies_on_toLine --

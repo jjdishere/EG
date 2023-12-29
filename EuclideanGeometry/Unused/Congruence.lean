@@ -107,7 +107,7 @@ theorem edge₃ : tr₁.edge₃.length = tr₂.edge₃.length := by
 
 end triangle
 
-section triangle_nd
+section TriangleND
 
 variable (tr_nd₁ tr_nd₂: TriangleND P) (h:tr_nd₁.1 IsCongrTo tr_nd₂.1)
 
@@ -152,7 +152,7 @@ theorem is_cclock : tr_nd₁.is_cclock = tr_nd₂.is_cclock := by
     left
     exact neg_a₁
 
-end triangle_nd
+end TriangleND
 
 end IsCongr
 
@@ -320,7 +320,7 @@ theorem edge₃ : tr₁.edge₃.length = tr₂.edge₃.length := by
 
 end triangle
 
-section triangle_nd
+section TriangleND
 
 variable (tr_nd₁ tr_nd₂: TriangleND P) (h : tr_nd₁.1 IsACongrTo tr_nd₂.1)
 
@@ -367,7 +367,7 @@ theorem is_cclock : tr_nd₁.is_cclock = ¬ tr_nd₂.is_cclock := by
     simp only [Left.neg_neg_iff] at neg_a₁
     exact neg_a₁
 
-end triangle_nd
+end TriangleND
 
 end IsACongr
 

@@ -12,6 +12,8 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Angle_trash
 noncomputable section
 namespace EuclidGeom
 
+open AngValue
+
 variable {P : Type _} [EuclideanPlane P]
 
 -- Feel free to change the name of the theorems and comments into better ones, or add sections to better organize theorems.
@@ -58,14 +60,11 @@ namespace Angle
 
 theorem eq_source {ang : Angle P} : ang.source = ang.AngBis.source := rfl
 
-theorem mk_start_ray_value_eq_half_angvalue {ang : Angle P} : (Angle.mk_start_ray ang ang.AngBis eq_source).value.toReal = ang.value.toReal/2 := by
-  rw [mk_strat_ray_value_eq_vsub]
-  unfold AngBis
-  simp only
-  have h₁ : (-π < (value ang).toReal/2) ∧ ((value ang).toReal/2 ≤ π) := by
-    simp only [neg_half_pi_le_half_angvalue, half_angvalue_le_half_pi, and_self]
-  simp only [AngValue.half, vadd_vsub]
-  rw [← real_eq_toangvalue_toreal_real_iff_neg_pi_le_real_le_pi.mpr h₁]
+theorem value_angBis_eq_half_value {ang : Angle P} : (Angle.mk_start_ray ang ang.AngBis rfl).value = ang.value.half := by
+  simp only [mk_strat_ray_value_eq_vsub, AngBis, vadd_vsub]
+
+theorem  mk_start_ray_value_eq_half_angvalue {ang : Angle P} : (Angle.mk_start_ray ang ang.AngBis rfl).value.toReal = ang.value.toReal / 2 :=
+  (Eq.congr_right (ang.value.half_toReal).symm).mpr (congrArg toReal ang.value_angBis_eq_half_value)
 
 theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
   eq_source := rfl
@@ -74,8 +73,7 @@ theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
     rw [mk_ray_end_value_eq_vsub]
     simp only [AngBis, vadd_vsub]
     rw [vsub_vadd_eq_vsub_sub, ← value]
-    symm
-    exact theta_sub_half_theta_eq_half_theta
+    exact sub_half_eq_half.symm
   same_sgn := by
     have g : (ang.value.IsPos) ∨ (ang.value.IsNeg) ∨ (ang.value = π) ∨ (ang.value = 0) := by
       rcases ang.value.not_isND_or_isPos_or_isNeg with d|_|_
@@ -84,30 +82,23 @@ theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
       tauto
       tauto
     rcases g with g₁|g₂|g₃|g₄
-    · left
-      simp [g₁]
-      apply half_angvalue_is_pos_if_angvalue_is_pos
-      apply mk_start_ray_value_eq_half_angvalue
-      exact g₁
-    · right
-      left
-      simp [g₂]
-      apply half_angvalue_is_neg_if_angvalue_is_neg
-      apply mk_start_ray_value_eq_half_angvalue
-      exact g₂
+    · simp only [g₁, and_true, value_angBis_eq_half_value]
+      exact .inl (half_isPos_of_isPos g₁)
+    · simp only [value_angBis_eq_half_value, g₂, and_true]
+      exact .inr (.inl (half_isNeg_iff_isNeg.mpr g₂))
     · right
       right
       left
       constructor
-      · apply toreal_eq_half_pi_of_eq_half_pi_toangvalue
-        simp [toreal_eq_half_pi_of_eq_half_pi_toangvalue,mk_start_ray_value_eq_half_angvalue, g₃]
+      · apply toReal_eq_pi_div_two_iff.mp
+        simp only [ mk_start_ray_value_eq_half_angvalue, g₃, neg_lt_self_iff, toReal_pi]
       · exact g₃
     · right
       right
       right
       constructor
       · rw [← AngValue.toReal_inj]
-        simp [mk_start_ray_value_eq_half_angvalue, g₄]
+        simp only [ mk_start_ray_value_eq_half_angvalue, g₄, toReal_zero, zero_div]
       · exact g₄
 
 theorem angbis_iff_angbis {ang : Angle P} {r : Ray P} : IsAngBis ang r ↔ r = ang.AngBis := by
@@ -152,10 +143,10 @@ theorem exangbisline_is_exangbisline : sorry := sorry
 end Angle
 
 /-definition property: lies on the bis means bisect the angle-/
-theorem lie_on_angbis (ang: Angle P) (A : P) (h : A ≠ ang.source): A LiesOn ang.AngBis ↔ IsAngBis ang (RAY _ _ h) := by
+theorem lie_on_angbis (ang: Angle P) (A : P) [h : PtNe A ang.source]: A LiesOn ang.AngBis ↔ IsAngBis ang (RAY ang.source A) := by
   rw [Angle.angbis_iff_angbis]
-  exact ⟨fun g ↦ (by rw [← Ray.pt_pt_eq_ray ⟨g, h⟩]; rfl),
-    fun g ↦ (by rw [← g]; exact Ray.snd_pt_lies_on_mk_pt_pt h)⟩
+  exact ⟨fun g ↦ (by rw [← Ray.pt_pt_eq_ray ⟨g, h.out⟩]; rfl),
+    fun g ↦ (by rw [← g]; exact Ray.snd_pt_lies_on_mk_pt_pt (h := h))⟩
 
 /- underlying line of bis as the locus satisfying the sum of distance to each ray of the angle is 0 -/
 theorem lie_on_angbisline_of_distance_zero (ang: Angle P) : sorry := sorry
@@ -166,7 +157,7 @@ theorem lie_on_angbis_of_lie_on_angbisline_inside_angle (ang : Angle P)  : sorry
 
 /-construct the intercentor as the intersection of two bis-/
 
-/-a triangle_nd admit an unique intercenter-/
+/-a TriangleND admit an unique intercenter-/
 
 structure IsIncenter (tri_nd : TriangleND P) (I : P) : Prop where
 
@@ -194,7 +185,7 @@ theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : TriangleND P} : �
     have h₄ : A₂.end_ray = tri_nd.edge_nd₃.reverse.toRay := rfl
     rw [h₃]
     rw [h₄]
-    have h₅ : tri_nd.edge_nd₃.reverse.toDirLine.reverse = tri_nd.edge_nd₃.reverse.reverse.toDirLine := by rw [SegND.toDirLine_rev_eq_rev_toLine]
+    have h₅ : tri_nd.edge_nd₃.reverse.toDirLine.reverse = tri_nd.edge_nd₃.reverse.reverse.toDirLine := by rw [SegND.toDirLine_rev_eq_rev_toDirLine]
     have h₆ : tri_nd.edge_nd₃.reverse.reverse.toDirLine = tri_nd.edge_nd₃.toDirLine := rfl
     rw [h₆] at h₅
     exact id h₅.symm
@@ -231,6 +222,6 @@ end TriangleND
 
 /-the intercenter lies inside of the triangle-/
 
-theorem incenter_lies_int_triangle (triangle_nd : TriangleND P): sorry := sorry
+theorem incenter_lies_int_triangle (TriangleND : TriangleND P): sorry := sorry
 
 end EuclidGeom
