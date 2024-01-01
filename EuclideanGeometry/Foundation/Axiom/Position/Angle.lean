@@ -32,8 +32,8 @@ def mk_ray_pt (ray : Ray P) (A : P) (h : A ≠ ray.source) : Angle P where
   source_eq_source := rfl
 
 def mk_dirline_dirline (l₁ l₂ : DirLine P) (h : ¬ l₁ ∥ l₂) : Angle P where
-  start_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toLine_of_not_para _ _ h) ) l₁ (Line.inx_lies_on_fst (DirLine.not_para_toLine_of_not_para _ _ h))
-  end_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toLine_of_not_para _ _ h) ) l₂ (Line.inx_lies_on_snd (DirLine.not_para_toLine_of_not_para _ _ h))
+  start_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toLine_of_not_para h) ) l₁ (Line.inx_lies_on_fst (DirLine.not_para_toLine_of_not_para h))
+  end_ray := Ray.mk_pt_dirline (Line.inx l₁.toLine l₂.toLine (DirLine.not_para_toLine_of_not_para h) ) l₂ (Line.inx_lies_on_snd (DirLine.not_para_toLine_of_not_para h))
   source_eq_source := rfl
 
 def value (A : Angle P) : AngValue := A.end_ray.toDir -ᵥ A.start_ray.toDir
