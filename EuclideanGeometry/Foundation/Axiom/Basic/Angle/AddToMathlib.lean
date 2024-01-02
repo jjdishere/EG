@@ -36,6 +36,7 @@ Real.sin (x - y) = Real.sin x * Real.cos y - Real.cos x * Real.sin y
 theorem Real.cos_sub (x : ℝ) (y : ℝ) :
 Real.cos (x - y) = Real.cos x * Real.cos y + Real.sin x * Real.sin y
 
+-- The product-to-sum formulas. The version of `Real.sin` and `Real.cos` may need to be proven first.
 cos ⁡ θ * cos ⁡ φ = (cos ⁡ ( θ + φ ) + cos ⁡ ( θ − φ )) / 2
 
 sin ⁡ θ * sin ⁡ φ = (cos ⁡ ( θ − φ ) − cos ⁡ ( θ + φ )) / 2
@@ -580,8 +581,7 @@ instance instCircularOrderedAddCommGroup (G : Type*) [LinearOrderedAddCommGroup 
   btw_add_left := by
     rintro ⟨⟩ ⟨⟩ ⟨⟩ h ⟨⟩
     apply btw_coe_iff'.mpr
-    simp only [add_sub_add_left_eq_sub]
-    exact h
+    simpa only [add_sub_add_left_eq_sub] using h
   btw_neg := by
     rintro ⟨⟩ ⟨⟩ ⟨⟩ h
     apply btw_coe_iff.mpr
@@ -714,9 +714,8 @@ section Class
 
 section PartialOrder
 
-/-- A partial ordered `AddTorsor` of a partially ordered additive commutative group is a structure
-of an `AddTorsor` and orders on the group and the type acted on are compatiable with the additive
-group action.-/
+/-- A partial ordered `AddTorsor` is an `AddTorsor` with partial orders on the group and
+the type acted on, such that both orders are compatiable with the additive group action. -/
 class OrderedAddTorsor (G : outParam Type*) (P : Type*) [outParam (OrderedAddCommGroup G)] extends OrderedAddAction G P, AddTorsor G P where
   vadd_right_le {f g : G} (h : f ≤ g) (a : P) : f +ᵥ a ≤ g +ᵥ a
 
@@ -734,6 +733,8 @@ section LinearOrder
 
 variable (G : outParam Type*) (P : Type*) [outParam (LinearOrderedAddCommGroup G)]
 
+/-- A linearly ordered `AddTorsor` is an `AddTorsor` with linearly orders on the group and
+the type acted on, such that both orders are compatiable with the additive group action. -/
 class LinearOrderedAddTorsor extends LinearOrderedAddAction G P, OrderedAddTorsor G P
 
 variable {G} {P} [outParam (LinearOrderedAddCommGroup G)] [LinearOrderedAddTorsor G P]
@@ -766,6 +767,8 @@ section CircularOrder
 
 variable (G : outParam Type*) (P : Type*) [outParam (CircularOrderedAddCommGroup G)]
 
+/-- A circular ordered `AddTorsor` is an `AddTorsor` with circular orders on the group and
+the type acted on, such that both orders are compatiable with the additive group action. -/
 class CircularOrderedAddTorsor extends CircularOrderedAddAction G P, AddTorsor G P where
   btw_vadd_right {e f g : G} (h : Btw.btw e f g) (a : P) : btw (e +ᵥ a) (f +ᵥ a) (g +ᵥ a)
 
@@ -920,19 +923,17 @@ theorem LinearOrderedAddTorsor_of_LinearOrderedAddCommGroup [outParam (LinearOrd
 circular order on the `AddTorsor` along with a corresponding structure of circular ordered `AddTorsor`
 induced by the circular ordered group. This is not an instance, since we do not want it to
 conflict with other circular order structures that may exist on the `AddTorsor`. -/
-def CircularOrderedAddAction_of_CircularOrderedAddCommGroup [outParam (CircularOrderedAddCommGroup G)] [AddTorsor G P] : CircularOrderedAddTorsor G P where
+def CircularOrderedAddTorsor_of_CircularOrderedAddCommGroup [outParam (CircularOrderedAddCommGroup G)] [AddTorsor G P] : CircularOrderedAddTorsor G P where
   vsub_vadd' := vsub_vadd'
   vadd_vsub' := vadd_vsub'
   btw a b c := btw 0 (b -ᵥ a) (c -ᵥ a)
   sbtw a b c := sbtw 0 (b -ᵥ a) (c -ᵥ a)
   btw_refl a := by simp only [vsub_self, btw_rfl]
   btw_cyclic_left h := btw_cyclic_left ((btw_vsub_fst_iff_btw_vsub_snd _ _ _).mp h)
-  sbtw_iff_btw_not_btw := by
-    intro a b c
+  sbtw_iff_btw_not_btw {a} {b} {c} := by
     simp only [btw_vsub_fst_iff_btw_vsub_trd c b a]
     exact sbtw_iff_btw_not_btw
-  sbtw_trans_left := by
-    intro a b _ _ ha h
+  sbtw_trans_left {a} {b} _ _ ha h := by
     have h := sbtw_add_right h (b -ᵥ a)
     rw [zero_add, vsub_add_vsub_cancel, vsub_add_vsub_cancel] at h
     exact sbtw_trans_left ha h
@@ -940,9 +941,14 @@ def CircularOrderedAddAction_of_CircularOrderedAddCommGroup [outParam (CircularO
     have h := btw_antisymm ha ((btw_vsub_fst_iff_btw_vsub_trd _ _ _).mp h)
     nth_rw 1 [vsub_left_cancel_iff, vsub_eq_zero_iff_eq, eq_comm, vsub_eq_zero_iff_eq, eq_comm] at h
     exact h
-  btw_total := sorry
-  btw_vadd_left := sorry
-  btw_vadd_right := sorry
+  btw_total a b c := by
+    simp only [btw_vsub_fst_iff_btw_vsub_trd c b a]
+    exact btw_total 0 (b -ᵥ a) (c -ᵥ a)
+  btw_vadd_left h _ := by
+    simpa only [vadd_vsub_vadd_cancel_left] using h
+  btw_vadd_right {e} {_} {_} h _ := by
+    simp only [vadd_vsub_vadd_cancel_right, ← sub_self e]
+    exact btw_sub_right h e
 
 end contruction
 
