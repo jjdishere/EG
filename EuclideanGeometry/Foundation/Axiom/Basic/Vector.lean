@@ -1337,7 +1337,7 @@ theorem btw_def₂ {d₁ d₂ d₃ : Dir} : btw d₁ d₂ d₃ ↔ btw (d₁ -�
 theorem btw_def₃ {d₁ d₂ d₃ : Dir} : btw d₁ d₂ d₃ ↔ btw (d₁ -ᵥ d₃) (d₂ -ᵥ d₃) 0 :=
   btw_vsub_fst_iff_btw_vsub_trd d₁ d₂ d₃
 
-theorem btw_def {d₁ d₂ d₃ : Dir} (d : Dir) : btw d₁ d₂ d₃ ↔ btw (d₁ -ᵥ d) (d₂ -ᵥ d) (d₃ -ᵥ d) := by
+theorem btw_iff_btw_vsub {d₁ d₂ d₃ : Dir} (d : Dir) : btw d₁ d₂ d₃ ↔ btw (d₁ -ᵥ d) (d₂ -ᵥ d) (d₃ -ᵥ d) := by
   apply (btw_add_right_iff (g := d₁ -ᵥ d)).symm.trans
   rw [zero_add, vsub_add_vsub_cancel, vsub_add_vsub_cancel]
 
@@ -1349,7 +1349,7 @@ theorem sbtw_def₂ {d₁ d₂ d₃ : Dir} : sbtw d₁ d₂ d₃ ↔ sbtw (d₁ 
 theorem sbtw_def₃ {d₁ d₂ d₃ : Dir} : sbtw d₁ d₂ d₃ ↔ sbtw (d₁ -ᵥ d₃) (d₂ -ᵥ d₃) 0 :=
   sbtw_vsub_fst_iff_sbtw_vsub_trd d₁ d₂ d₃
 
-theorem sbtw_def {d₁ d₂ d₃ : Dir} (d : Dir) : sbtw d₁ d₂ d₃ ↔ sbtw (d₁ -ᵥ d) (d₂ -ᵥ d) (d₃ -ᵥ d) := by
+theorem sbtw_iff_sbtw_vsub {d₁ d₂ d₃ : Dir} (d : Dir) : sbtw d₁ d₂ d₃ ↔ sbtw (d₁ -ᵥ d) (d₂ -ᵥ d) (d₃ -ᵥ d) := by
   apply (sbtw_add_right_iff (g := d₁ -ᵥ d)).symm.trans
   rw [zero_add, vsub_add_vsub_cancel, vsub_add_vsub_cancel]
 

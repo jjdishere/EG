@@ -62,6 +62,8 @@ structure Ray (P : Type _) [EuclideanPlane P] where
 
 attribute [pp_dot] Ray.source Ray.toDir
 
+alias Ray.mk_pt_dir := Ray.mk
+
 /-- A \emph{Segment} consists of a pair of points: the source and the target; it is the segment from the source to the target. (We allow the source and the target to be the same.) -/
 @[ext]
 structure Seg (P : Type _) [EuclideanPlane P] where

@@ -27,7 +27,7 @@ variable {P : Type _} [EuclideanPlane P]
 structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
   eq_source : ang.source = ray.source
   eq_value : (Angle.mk_start_ray ang ray eq_source).value = (Angle.mk_ray_end ang ray eq_source).value
-  -- `the definition of same_sgn can be rewrite, using btw`
+  -- `the definition of same_sgn should be rewrite, using btw`, i.e., `btw ang.dir₁ ray.toDir ang.dir₂`
   same_sgn : ((Angle.mk_start_ray ang ray eq_source).value.IsPos ∧ ang.value.IsPos) ∨ ((Angle.mk_start_ray ang ray eq_source).value.IsNeg ∧ ang.value.IsNeg) ∨ ((Angle.mk_start_ray ang ray eq_source).value = ↑(π/2) ∧ ang.value = π ) ∨ ((Angle.mk_start_ray ang ray eq_source).value = 0 ∧ ang.value = 0)
 
 
@@ -72,7 +72,7 @@ theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
     rw [mk_strat_ray_value_eq_vsub]
     rw [mk_ray_end_value_eq_vsub]
     simp only [AngBis, vadd_vsub]
-    rw [vsub_vadd_eq_vsub_sub, ← value]
+    rw [vsub_vadd_eq_vsub_sub]
     exact sub_half_eq_half.symm
   same_sgn := by
     have g : (ang.value.IsPos) ∨ (ang.value.IsNeg) ∨ (ang.value = π) ∨ (ang.value = 0) := by
@@ -107,20 +107,18 @@ theorem angbis_iff_angbis {ang : Angle P} {r : Ray P} : IsAngBis ang r ↔ r = a
   · exact fun h ↦ (by rw [h]; apply angbis_is_angbis)
 
 
-theorem ang_source_rev_eq_source_bis {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) : ang.reverse.source = r.source := by rw[ang.ang_source_rev_eq_source, h.eq_source]
+theorem ang_source_rev_eq_source_bis {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) : ang.reverse.source = r.source := h.eq_source
 
 theorem nonpi_bisector_eq_bisector_of_rev {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) (nonpi : ang.value ≠ π ): IsAngBis ang.reverse r where
-  eq_source := by rw[h.eq_source.symm, ang.ang_source_rev_eq_source]
+  eq_source := h.eq_source
   eq_value := by
+    unfold mk_start_ray mk_ray_end mk_two_ray_of_eq_source reverse start_ray end_ray value
+    rw [← neg_vsub_eq_vsub_rev ang.dir₂ r.toDir, ← neg_vsub_eq_vsub_rev r.toDir ang.dir₁]
+    exact neg_inj.mpr h.eq_value.symm
+  same_sgn := sorry /- by
     have : (Angle.mk_start_ray ang.reverse r (ang_source_rev_eq_source_bis h)) = (Angle.mk_ray_end ang r h.eq_source).reverse := rfl
-    rw [this, (Angle.mk_ray_end ang r h.eq_source).ang_value_rev_eq_neg_value]
-    have : (Angle.mk_ray_end ang.reverse r (ang_source_rev_eq_source_bis h)) = (Angle.mk_start_ray ang r h.eq_source).reverse := rfl
-    rw [this, (Angle.mk_start_ray ang r h.eq_source).ang_value_rev_eq_neg_value]
-    simp [h.eq_value]
-  same_sgn := by
-    have : (Angle.mk_start_ray ang.reverse r (ang_source_rev_eq_source_bis h)) = (Angle.mk_ray_end ang r h.eq_source).reverse := rfl
-    rw [this, (Angle.mk_ray_end ang r h.eq_source).ang_value_rev_eq_neg_value]
-    rw [ang.ang_value_rev_eq_neg_value]
+    rw [this, (Angle.mk_ray_end ang r h.eq_source).rev_value_eq_neg_value]
+    rw [ang.rev_value_eq_neg_value]
     simp
     rw [h.eq_value.symm]
     rcases h.same_sgn with h₁ | h₂ | h₃ | h₄
@@ -128,7 +126,7 @@ theorem nonpi_bisector_eq_bisector_of_rev {ang : Angle P} {r : Ray P} (h : IsAng
     · exact Or.inl h₂
     · absurd nonpi
       exact h₃.2
-    · exact Or.inr (Or.inr (Or.inr h₄))
+    · exact Or.inr (Or.inr (Or.inr h₄)) -/
 
 
 theorem bisector_eq_bisector_of_rev' {ang : Angle P} : ang.AngBis = ang.reverse.AngBis := by

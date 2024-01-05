@@ -329,7 +329,7 @@ end handside
 section ray_toRay
 
 /- Statement of his theorem should change, since ray₀.source ≠ ray₂.source. -/
-theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < (Angle.mk ray₀ ray₁ rfl).value.toReal) ∧ ((Angle.mk ray₀ ray₁ rfl).value.toReal < (Angle.mk ray₀ ray₂ sorry).value.toReal) ∧ ((Angle.mk ray₀ ray₂ sorry).value.toReal < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
+theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < (Angle.mk_two_ray_of_eq_source ray₀ ray₁ rfl).value.toReal) ∧ ((Angle.mk_two_ray_of_eq_source ray₀ ray₁ rfl).value.toReal < (Angle.mk_two_ray_of_eq_source ray₀ ray₂ sorry).value.toReal) ∧ ((Angle.mk_two_ray_of_eq_source ray₀ ray₂ sorry).value.toReal < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
 
 end ray_toRay
 
