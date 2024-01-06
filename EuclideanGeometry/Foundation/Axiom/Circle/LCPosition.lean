@@ -51,11 +51,14 @@ theorem DirLC_intersect_iff_tangent_or_secant {l : DirLine P} {ω : Circle P} : 
   have : dist_pt_line ω.center l.toLine < ω.radius := h
   linarith
 
+end Circle
 
 @[ext]
 structure DirLCInxpts (P : Type _) [EuclideanPlane P] where
   front : P
   back : P
+
+namespace Circle
 
 lemma dist_pt_line_ineq {l : DirLine P} {ω : Circle P} (h : DirLine.IsIntersected l ω) : ω.radius ^ 2 - (dist_pt_line ω.center l.toLine) ^ 2 ≥ 0 := by
   have : dist_pt_line ω.center l.toLine ≤ ω.radius := h

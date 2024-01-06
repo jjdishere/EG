@@ -115,6 +115,14 @@ instance pt_liesint_ne_pt_lieson {A B : P} {ω : Circle P} (h₁ : A LiesInt ω)
   rw [hgt, heq]
   ⟩
 
+instance pt_liesout_ne_pt_liesint {A B : P} {ω : Circle P} (h₁ : A LiesOut ω) (h₂ : B LiesInt ω) : PtNe A B := ⟨by
+  have hgt : dist ω.center A > ω.radius := h₁
+  have hlt : dist ω.center B < ω.radius := h₂
+  contrapose! hgt
+  rw [hgt]
+  linarith
+  ⟩
+
 theorem interior_of_circle_iff_inside_not_on_circle (p : P) (ω : Circle P) : p LiesInt ω ↔ (p LiesIn ω) ∧ (¬ p LiesOn ω) := by
   show dist ω.center p < ω.radius ↔ (dist ω.center p ≤ ω.radius) ∧ (¬ dist ω.center p = ω.radius)
   push_neg
@@ -219,5 +227,49 @@ theorem three_pts_lieson_circle_not_colinear {A B C : P} {ω : Circle P} [hne₁
 end Circle
 
 end colinear
+
+section antipode
+
+namespace Circle
+
+def antipode (A : P) (ω : Circle P) : P := VEC A ω.center +ᵥ ω.center
+
+@[simp]
+theorem antipode_lieson_circle {A : P} {ω : Circle P} {ha : A LiesOn ω} : (antipode A ω) LiesOn ω := by
+  show dist ω.center (antipode A ω) = ω.radius
+  rw [NormedAddTorsor.dist_eq_norm', antipode,  vsub_vadd_eq_vsub_sub]
+  simp
+  show ‖ω.center -ᵥ A‖ = ω.radius
+  rw [← NormedAddTorsor.dist_eq_norm', ha]
+
+theorem antipode_symm {A B : P} {ω : Circle P} {ha : A LiesOn ω} (h : antipode A ω = B) : antipode B ω = A := by
+  show VEC B ω.center +ᵥ ω.center = A
+  symm
+  apply (eq_vadd_iff_vsub_eq _ _ _).mpr
+  show VEC ω.center A = VEC B ω.center
+  have : VEC ω.center B = VEC A ω.center := by
+    show B -ᵥ ω.center = VEC A ω.center
+    apply (eq_vadd_iff_vsub_eq _ _ _).mp h.symm
+  rw [← neg_vec, ← this, neg_vec]
+
+@[simp]
+theorem antipode_distinct {A : P} {ω : Circle P} {ha : A LiesOn ω} : antipode A ω ≠ A := by
+  intro eq
+  have : VEC ω.center A = VEC A ω.center := by
+    show A -ᵥ ω.center = VEC A ω.center
+    apply (eq_vadd_iff_vsub_eq _ _ _).mp eq.symm
+  have neq : A ≠ ω.center := (pt_lieson_ne_center ha).out
+  contrapose! neq
+  apply (eq_iff_vec_eq_zero _ _).mpr
+  have : 2 • (VEC ω.center A) = 0 := by
+    rw [two_smul]
+    nth_rw 1 [this]
+    rw [vec_add_vec]
+    simp
+  apply (two_nsmul_eq_zero ℝ _).mp this
+
+end Circle
+
+end antipode
 
 end EuclidGeom
