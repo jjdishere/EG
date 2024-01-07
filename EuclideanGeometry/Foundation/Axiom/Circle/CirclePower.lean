@@ -162,7 +162,7 @@ lemma tangent_length_sq_eq_power {p : P} {l : DirLine P} {ω : Circle P} (h₁ :
     _ = (dist ω.center p) ^ 2 - (dist ω.center (DirLC_Tangent_pt h₁)) ^ 2 := by rw [DirLC_tangent_pt_eq_perp_foot]
     _ = (dist ω.center p) ^ 2 - ω.radius ^ 2 := by
       congr
-      exact (DirLC_intersected_pts_lieson_circle (DirLC_intersect_iff_tangent_or_secant.mpr (Or.inl h₁))).1
+      exact (DirLC_inx_pts_lieson_circle (DirLC_intersect_iff_tangent_or_secant.mpr (Or.inl h₁))).1
     _ = power ω p := rfl
 
 theorem length_of_tangent {ω : Circle P} {p : P} (h : p LiesOut ω) : dist p (pt_tangent_circle_pts h).left = dist p (pt_tangent_circle_pts h).right := by
@@ -181,80 +181,80 @@ section position
 
 namespace Circle
 
-lemma liesout_ne_inxpts {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (_h₂ : p LiesOn l) (h₃ : p LiesOut ω) : (p ≠ (DirLC_Intersected_pts h₁).front) ∧ (p ≠ (DirLC_Intersected_pts h₁).back) := by
+lemma liesout_ne_inxpts {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (_h₂ : p LiesOn l) (h₃ : p LiesOut ω) : (p ≠ (DirLC_inx_pts h₁).front) ∧ (p ≠ (DirLC_inx_pts h₁).back) := by
   constructor
-  · apply (pt_liesout_ne_pt_lieson h₃ (DirLC_intersected_pts_lieson_circle h₁).1).out
-  apply (pt_liesout_ne_pt_lieson h₃ (DirLC_intersected_pts_lieson_circle h₁).2).out
+  · apply (pt_liesout_ne_pt_lieson h₃ (DirLC_inx_pts_lieson_circle h₁).1).out
+  apply (pt_liesout_ne_pt_lieson h₃ (DirLC_inx_pts_lieson_circle h₁).2).out
 
-lemma liesint_ne_inxpts {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (_h₂ : p LiesOn l) (h₃ : p LiesInt ω) : (p ≠ (DirLC_Intersected_pts h₁).front) ∧ (p ≠ (DirLC_Intersected_pts h₁).back) := by
+lemma liesint_ne_inxpts {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (_h₂ : p LiesOn l) (h₃ : p LiesInt ω) : (p ≠ (DirLC_inx_pts h₁).front) ∧ (p ≠ (DirLC_inx_pts h₁).back) := by
   constructor
-  · apply (pt_liesint_ne_pt_lieson h₃ (DirLC_intersected_pts_lieson_circle h₁).1).out
-  apply (pt_liesint_ne_pt_lieson h₃ (DirLC_intersected_pts_lieson_circle h₁).2).out
+  · apply (pt_liesint_ne_pt_lieson h₃ (DirLC_inx_pts_lieson_circle h₁).1).out
+  apply (pt_liesint_ne_pt_lieson h₃ (DirLC_inx_pts_lieson_circle h₁).2).out
 
-theorem liesout_back_lieson_ray_front {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) (h₃ : p LiesOut ω) : (DirLC_Intersected_pts h₁).back LiesOn (RAY p (DirLC_Intersected_pts h₁).front (liesout_ne_inxpts h₁ h₂ h₃).1.symm) := by
-  haveI : PtNe p (DirLC_Intersected_pts h₁).front := ⟨(liesout_ne_inxpts h₁ h₂ h₃).1⟩
-  by_cases heq : (DirLC_Intersected_pts h₁).front = (DirLC_Intersected_pts h₁).back
+theorem liesout_back_lieson_ray_front {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) (h₃ : p LiesOut ω) : (DirLC_inx_pts h₁).back LiesOn (RAY p (DirLC_inx_pts h₁).front (liesout_ne_inxpts h₁ h₂ h₃).1.symm) := by
+  haveI : PtNe p (DirLC_inx_pts h₁).front := ⟨(liesout_ne_inxpts h₁ h₂ h₃).1⟩
+  by_cases heq : (DirLC_inx_pts h₁).front = (DirLC_inx_pts h₁).back
   · simp_rw [← heq]
     apply Ray.snd_pt_lies_on_mk_pt_pt
-  haveI : PtNe (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back := ⟨heq⟩
-  have eq₁ : LIN (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back = l := Line.eq_line_of_pt_pt_of_ne (DirLC_intersected_pts_lieson_dlin h₁).1 (DirLC_intersected_pts_lieson_dlin h₁).2
-  have h₂' : p LiesOn (LIN (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back) := by
+  haveI : PtNe (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back := ⟨heq⟩
+  have eq₁ : LIN (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back = l := Line.eq_line_of_pt_pt_of_ne (DirLC_inx_pts_lieson_dlin h₁).1 (DirLC_inx_pts_lieson_dlin h₁).2
+  have h₂' : p LiesOn (LIN (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back) := by
     rw [eq₁]
     exact h₂
-  have eq₂ : perp_foot ω.center l = (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint := by
-    rw [← pts_lieson_circle_perpfoot_eq_midpoint (DirLC_intersected_pts_lieson_circle h₁).1 (DirLC_intersected_pts_lieson_circle h₁).2, eq₁]
-  have trieq₁ : (dist p (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint) ^ 2 = (dist ω.center p) ^ 2 - (dist ω.center (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint) ^ 2 := by
+  have eq₂ : perp_foot ω.center l = (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint := by
+    rw [← pts_lieson_circle_perpfoot_eq_midpoint (DirLC_inx_pts_lieson_circle h₁).1 (DirLC_inx_pts_lieson_circle h₁).2, eq₁]
+  have trieq₁ : (dist p (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint) ^ 2 = (dist ω.center p) ^ 2 - (dist ω.center (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint) ^ 2 := by
     rw [← eq₂, eq_sub_iff_add_eq, add_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
     apply Pythagoras_of_perp_foot _ _ h₂
-  have trieq₂ : (dist (DirLC_Intersected_pts h₁).front (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint) ^ 2 = (dist ω.center (DirLC_Intersected_pts h₁).front) ^ 2 - (dist ω.center (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint) ^ 2 := by
+  have trieq₂ : (dist (DirLC_inx_pts h₁).front (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint) ^ 2 = (dist ω.center (DirLC_inx_pts h₁).front) ^ 2 - (dist ω.center (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint) ^ 2 := by
     rw [← eq₂, eq_sub_iff_add_eq, add_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
-    apply Pythagoras_of_perp_foot _ _ (DirLC_intersected_pts_lieson_dlin h₁).1
-  have hgt : dist p (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint > dist (DirLC_Intersected_pts h₁).front (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint := by
+    apply Pythagoras_of_perp_foot _ _ (DirLC_inx_pts_lieson_dlin h₁).1
+  have hgt : dist p (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint > dist (DirLC_inx_pts h₁).front (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint := by
     calc
-      _ = |dist p (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint| := by rw [abs_of_nonneg dist_nonneg]
-      _ > |dist (DirLC_Intersected_pts h₁).front (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint| := by
+      _ = |dist p (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint| := by rw [abs_of_nonneg dist_nonneg]
+      _ > |dist (DirLC_inx_pts h₁).front (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint| := by
         apply sq_lt_sq.mp
         rw [trieq₁, trieq₂]
         simp
         apply sq_lt_sq.mpr
-        rw [abs_of_nonneg dist_nonneg, abs_of_nonneg dist_nonneg, (DirLC_intersected_pts_lieson_circle h₁).1]
+        rw [abs_of_nonneg dist_nonneg, abs_of_nonneg dist_nonneg, (DirLC_inx_pts_lieson_circle h₁).1]
         exact h₃
-      _ = dist (DirLC_Intersected_pts h₁).front (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint := by rw [abs_of_nonneg dist_nonneg]
+      _ = dist (DirLC_inx_pts h₁).front (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint := by rw [abs_of_nonneg dist_nonneg]
   apply (not_lies_on_segnd_iff_lieson_ray h₂').mp
   apply (midpoint_dist_gt_iff_liesout h₂').mp hgt
 
-theorem liesint_back_lieson_ray_front_reverse {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) (h₃ : p LiesInt ω) : (DirLC_Intersected_pts h₁).back LiesOn (RAY p (DirLC_Intersected_pts h₁).front (liesint_ne_inxpts h₁ h₂ h₃).1.symm).reverse := by
-  haveI : PtNe p (DirLC_Intersected_pts h₁).front := ⟨(liesint_ne_inxpts h₁ h₂ h₃).1⟩
+theorem liesint_back_lieson_ray_front_reverse {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) (h₃ : p LiesInt ω) : (DirLC_inx_pts h₁).back LiesOn (RAY p (DirLC_inx_pts h₁).front (liesint_ne_inxpts h₁ h₂ h₃).1.symm).reverse := by
+  haveI : PtNe p (DirLC_inx_pts h₁).front := ⟨(liesint_ne_inxpts h₁ h₂ h₃).1⟩
   have hs : dist_pt_line ω.center l.toLine < ω.radius := by
     calc
       _ ≤ dist ω.center p := dist_pt_line_shortest _ _ h₂
       _ < ω.radius := h₃
-  haveI : PtNe (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back := ⟨by
+  haveI : PtNe (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back := ⟨by
     contrapose! hs
     rw [(DirLC_inx_pts_same_iff_tangent h₁).mp hs.symm]⟩
-  have eq₁ : LIN (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back = l := Line.eq_line_of_pt_pt_of_ne (DirLC_intersected_pts_lieson_dlin h₁).1 (DirLC_intersected_pts_lieson_dlin h₁).2
-  have h₂' : p LiesOn (LIN (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back) := by
+  have eq₁ : LIN (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back = l := Line.eq_line_of_pt_pt_of_ne (DirLC_inx_pts_lieson_dlin h₁).1 (DirLC_inx_pts_lieson_dlin h₁).2
+  have h₂' : p LiesOn (LIN (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back) := by
     rw [eq₁]
     exact h₂
-  have eq₂ : perp_foot ω.center l = (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint := by
-    rw [← pts_lieson_circle_perpfoot_eq_midpoint (DirLC_intersected_pts_lieson_circle h₁).1 (DirLC_intersected_pts_lieson_circle h₁).2, eq₁]
-  have trieq₁ : (dist p (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint) ^ 2 = (dist ω.center p) ^ 2 - (dist ω.center (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint) ^ 2 := by
+  have eq₂ : perp_foot ω.center l = (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint := by
+    rw [← pts_lieson_circle_perpfoot_eq_midpoint (DirLC_inx_pts_lieson_circle h₁).1 (DirLC_inx_pts_lieson_circle h₁).2, eq₁]
+  have trieq₁ : (dist p (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint) ^ 2 = (dist ω.center p) ^ 2 - (dist ω.center (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint) ^ 2 := by
     rw [← eq₂, eq_sub_iff_add_eq, add_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
     apply Pythagoras_of_perp_foot _ _ h₂
-  have trieq₂ : (dist (DirLC_Intersected_pts h₁).front (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint) ^ 2 = (dist ω.center (DirLC_Intersected_pts h₁).front) ^ 2 - (dist ω.center (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint) ^ 2 := by
+  have trieq₂ : (dist (DirLC_inx_pts h₁).front (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint) ^ 2 = (dist ω.center (DirLC_inx_pts h₁).front) ^ 2 - (dist ω.center (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint) ^ 2 := by
     rw [← eq₂, eq_sub_iff_add_eq, add_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
-    apply Pythagoras_of_perp_foot _ _ (DirLC_intersected_pts_lieson_dlin h₁).1
-  have hgt : dist p (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint < dist (DirLC_Intersected_pts h₁).front (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint := by
+    apply Pythagoras_of_perp_foot _ _ (DirLC_inx_pts_lieson_dlin h₁).1
+  have hgt : dist p (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint < dist (DirLC_inx_pts h₁).front (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint := by
     calc
-      _ = |dist p (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint| := by rw [abs_of_nonneg dist_nonneg]
-      _ < |dist (DirLC_Intersected_pts h₁).front (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint| := by
+      _ = |dist p (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint| := by rw [abs_of_nonneg dist_nonneg]
+      _ < |dist (DirLC_inx_pts h₁).front (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint| := by
         apply sq_lt_sq.mp
         rw [trieq₁, trieq₂]
         simp
         apply sq_lt_sq.mpr
-        rw [abs_of_nonneg dist_nonneg, abs_of_nonneg dist_nonneg, (DirLC_intersected_pts_lieson_circle h₁).1]
+        rw [abs_of_nonneg dist_nonneg, abs_of_nonneg dist_nonneg, (DirLC_inx_pts_lieson_circle h₁).1]
         exact h₃
-      _ = dist (DirLC_Intersected_pts h₁).front (SEG (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back).midpoint := by rw [abs_of_nonneg dist_nonneg]
+      _ = dist (DirLC_inx_pts h₁).front (SEG (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back).midpoint := by rw [abs_of_nonneg dist_nonneg]
   apply (liesint_segnd_iff_lieson_ray_reverse h₂').mp
   apply (midpoint_dist_lt_iff_liesint h₂').mp hgt
 
@@ -266,99 +266,99 @@ section power
 
 namespace Circle
 
-theorem circle_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) : ⟪VEC p (DirLC_Intersected_pts h₁).front, VEC p (DirLC_Intersected_pts h₁).back⟫_ℝ = power ω p := by
+theorem circle_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) : ⟪VEC p (DirLC_inx_pts h₁).front, VEC p (DirLC_inx_pts h₁).back⟫_ℝ = power ω p := by
   rcases DirLC_intersect_iff_tangent_or_secant.mp h₁ with h | h
-  · have heq : (DirLC_Intersected_pts h₁).back = (DirLC_Intersected_pts h₁).front := (DirLC_inx_pts_same_iff_tangent h₁).mpr h
+  · have heq : (DirLC_inx_pts h₁).back = (DirLC_inx_pts h₁).front := (DirLC_inx_pts_same_iff_tangent h₁).mpr h
     rw [heq, Vec.real_inner_apply _ _, ← Vec.norm_sq]
     calc
       _ = (dist p (DirLC_Tangent_pt h)) ^ 2 := by
         rw [dist_comm, NormedAddTorsor.dist_eq_norm']
         rfl
       _ = power ω p := tangent_length_sq_eq_power _ h₂
-  haveI : PtNe (DirLC_Intersected_pts h₁).back (DirLC_Intersected_pts h₁).front := ⟨by
+  haveI : PtNe (DirLC_inx_pts h₁).back (DirLC_inx_pts h₁).front := ⟨by
     have h : dist_pt_line ω.center l.toLine < ω.radius := h
     contrapose! h
     have : dist_pt_line ω.center l.toLine = ω.radius := (DirLC_inx_pts_same_iff_tangent h₁).mp h
     rw [this]
     ⟩
-  have heq : - VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).front = VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).back := by
+  have heq : - VEC (perp_foot ω.center l) (DirLC_inx_pts h₁).front = VEC (perp_foot ω.center l) (DirLC_inx_pts h₁).back := by
     calc
-      _ = VEC (DirLC_Intersected_pts h₁).front (perp_foot ω.center l) := by rw [neg_vec]
-      _ = VEC (DirLC_Intersected_pts h₁).front (perp_foot ω.center (LIN (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back)) := by
+      _ = VEC (DirLC_inx_pts h₁).front (perp_foot ω.center l) := by rw [neg_vec]
+      _ = VEC (DirLC_inx_pts h₁).front (perp_foot ω.center (LIN (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back)) := by
         congr; symm
-        apply Line.eq_line_of_pt_pt_of_ne (DirLC_intersected_pts_lieson_dlin h₁).1 (DirLC_intersected_pts_lieson_dlin h₁).2
-      _ = VEC (perp_foot ω.center (LIN (DirLC_Intersected_pts h₁).front (DirLC_Intersected_pts h₁).back)) (DirLC_Intersected_pts h₁).back := by
-        apply pts_lieson_circle_vec_eq (DirLC_intersected_pts_lieson_circle h₁).1 (DirLC_intersected_pts_lieson_circle h₁).2
-      _ = VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).back := by
+        apply Line.eq_line_of_pt_pt_of_ne (DirLC_inx_pts_lieson_dlin h₁).1 (DirLC_inx_pts_lieson_dlin h₁).2
+      _ = VEC (perp_foot ω.center (LIN (DirLC_inx_pts h₁).front (DirLC_inx_pts h₁).back)) (DirLC_inx_pts h₁).back := by
+        apply pts_lieson_circle_vec_eq (DirLC_inx_pts_lieson_circle h₁).1 (DirLC_inx_pts_lieson_circle h₁).2
+      _ = VEC (perp_foot ω.center l) (DirLC_inx_pts h₁).back := by
         congr
-        apply Line.eq_line_of_pt_pt_of_ne (DirLC_intersected_pts_lieson_dlin h₁).1 (DirLC_intersected_pts_lieson_dlin h₁).2
+        apply Line.eq_line_of_pt_pt_of_ne (DirLC_inx_pts_lieson_dlin h₁).1 (DirLC_inx_pts_lieson_dlin h₁).2
   have eq₁ : (dist p (perp_foot ω.center l)) ^ 2 = (dist ω.center p) ^ 2 - (dist ω.center (perp_foot ω.center l)) ^ 2 := by
     rw [eq_sub_iff_add_eq, add_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
     apply Pythagoras_of_perp_foot _ _ h₂
-  have eq₂ : (dist (DirLC_Intersected_pts h₁).front (perp_foot ω.center l)) ^ 2 = (dist ω.center (DirLC_Intersected_pts h₁).front) ^ 2 - (dist ω.center (perp_foot ω.center l)) ^ 2 := by
+  have eq₂ : (dist (DirLC_inx_pts h₁).front (perp_foot ω.center l)) ^ 2 = (dist ω.center (DirLC_inx_pts h₁).front) ^ 2 - (dist ω.center (perp_foot ω.center l)) ^ 2 := by
     rw [eq_sub_iff_add_eq, add_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
-    apply Pythagoras_of_perp_foot _ _ (DirLC_intersected_pts_lieson_dlin h₁).1
+    apply Pythagoras_of_perp_foot _ _ (DirLC_inx_pts_lieson_dlin h₁).1
   calc
-    _ = ⟪VEC p (perp_foot ω.center l) + VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).front, VEC p (perp_foot ω.center l) + VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).back⟫_ℝ := by rw [vec_add_vec, vec_add_vec]
-    _ = ⟪VEC p (perp_foot ω.center l) + VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).front, VEC p (perp_foot ω.center l) - VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).front⟫_ℝ := by rw [← heq, sub_eq_add_neg]
-    _ = ‖VEC p (perp_foot ω.center l)‖ ^ 2 - ‖VEC (perp_foot ω.center l) (DirLC_Intersected_pts h₁).front‖ ^ 2 := by
+    _ = ⟪VEC p (perp_foot ω.center l) + VEC (perp_foot ω.center l) (DirLC_inx_pts h₁).front, VEC p (perp_foot ω.center l) + VEC (perp_foot ω.center l) (DirLC_inx_pts h₁).back⟫_ℝ := by rw [vec_add_vec, vec_add_vec]
+    _ = ⟪VEC p (perp_foot ω.center l) + VEC (perp_foot ω.center l) (DirLC_inx_pts h₁).front, VEC p (perp_foot ω.center l) - VEC (perp_foot ω.center l) (DirLC_inx_pts h₁).front⟫_ℝ := by rw [← heq, sub_eq_add_neg]
+    _ = ‖VEC p (perp_foot ω.center l)‖ ^ 2 - ‖VEC (perp_foot ω.center l) (DirLC_inx_pts h₁).front‖ ^ 2 := by
       rw [inner_add_left, inner_sub_right, inner_sub_right, Vec.norm_sq, Vec.norm_sq, ← Vec.real_inner_apply _ _, ← Vec.real_inner_apply _ _, add_comm, real_inner_comm]
       ring
-    _ = (dist p (perp_foot ω.center l)) ^ 2 - (dist (DirLC_Intersected_pts h₁).front (perp_foot ω.center l)) ^ 2 := by
+    _ = (dist p (perp_foot ω.center l)) ^ 2 - (dist (DirLC_inx_pts h₁).front (perp_foot ω.center l)) ^ 2 := by
       rw [dist_comm, NormedAddTorsor.dist_eq_norm', NormedAddTorsor.dist_eq_norm']
       rfl
-    _ = ((dist ω.center p) ^ 2 - (dist ω.center (perp_foot ω.center l)) ^ 2) - ((dist ω.center (DirLC_Intersected_pts h₁).front) ^ 2 - (dist ω.center (perp_foot ω.center l)) ^ 2) := by rw [eq₁, eq₂]
-    _ = (dist ω.center p) ^ 2 - (dist ω.center (DirLC_Intersected_pts h₁).front) ^ 2 := by ring
-    _ = (dist ω.center p) ^ 2 - ω.radius ^ 2 := by rw [(DirLC_intersected_pts_lieson_circle h₁).1]
+    _ = ((dist ω.center p) ^ 2 - (dist ω.center (perp_foot ω.center l)) ^ 2) - ((dist ω.center (DirLC_inx_pts h₁).front) ^ 2 - (dist ω.center (perp_foot ω.center l)) ^ 2) := by rw [eq₁, eq₂]
+    _ = (dist ω.center p) ^ 2 - (dist ω.center (DirLC_inx_pts h₁).front) ^ 2 := by ring
+    _ = (dist ω.center p) ^ 2 - ω.radius ^ 2 := by rw [(DirLC_inx_pts_lieson_circle h₁).1]
     _ = power ω p := rfl
 
-theorem chord_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) (h₃ : p LiesInt ω) : (dist p (DirLC_Intersected_pts h₁).front) * (dist p (DirLC_Intersected_pts h₁).back) = - power ω p := by
-  haveI hne : PtNe p (DirLC_Intersected_pts h₁).front := ⟨(liesint_ne_inxpts h₁ h₂ h₃).1⟩
-  have hl : (DirLC_Intersected_pts h₁).back LiesOn (RAY p (DirLC_Intersected_pts h₁).front).reverse := liesint_back_lieson_ray_front_reverse h₁ h₂ h₃
+theorem chord_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) (h₃ : p LiesInt ω) : (dist p (DirLC_inx_pts h₁).front) * (dist p (DirLC_inx_pts h₁).back) = - power ω p := by
+  haveI hne : PtNe p (DirLC_inx_pts h₁).front := ⟨(liesint_ne_inxpts h₁ h₂ h₃).1⟩
+  have hl : (DirLC_inx_pts h₁).back LiesOn (RAY p (DirLC_inx_pts h₁).front).reverse := liesint_back_lieson_ray_front_reverse h₁ h₂ h₃
   rcases pt_lies_on_ray_rev_iff_vec_opposite_dir.mp hl with ⟨t, tnonpos, ht⟩
-  have heq : dist p (DirLC_Intersected_pts h₁).back = -t := by
+  have heq : dist p (DirLC_inx_pts h₁).back = -t := by
     calc
-      _ = ‖VEC p (DirLC_Intersected_pts h₁).back‖ := by rw [dist_comm, NormedAddTorsor.dist_eq_norm']; rfl
-      _ = ‖t • (RAY p (DirLC_Intersected_pts h₁).front).toDir.unitVec‖ := by rw [← ht]; rfl
+      _ = ‖VEC p (DirLC_inx_pts h₁).back‖ := by rw [dist_comm, NormedAddTorsor.dist_eq_norm']; rfl
+      _ = ‖t • (RAY p (DirLC_inx_pts h₁).front).toDir.unitVec‖ := by rw [← ht]; rfl
       _ = -t := by rw [norm_smul, Dir.norm_unitVec, mul_one, Real.norm_of_nonpos tnonpos]
-  have ht' : VEC p (DirLC_Intersected_pts h₁).back = (t * (dist p (DirLC_Intersected_pts h₁).front)⁻¹) • (VEC p (DirLC_Intersected_pts h₁).front) := by
+  have ht' : VEC p (DirLC_inx_pts h₁).back = (t * (dist p (DirLC_inx_pts h₁).front)⁻¹) • (VEC p (DirLC_inx_pts h₁).front) := by
     calc
-      _ = t • (RAY p (DirLC_Intersected_pts h₁).front).toDir.unitVec := by rw [← ht]; rfl
-      _ = t • ((dist p (DirLC_Intersected_pts h₁).front)⁻¹ • (VEC p (DirLC_Intersected_pts h₁).front)) := by rw [dist_comm, NormedAddTorsor.dist_eq_norm']; rfl
-      _ = (t * (dist p (DirLC_Intersected_pts h₁).front)⁻¹) • (VEC p (DirLC_Intersected_pts h₁).front) := by rw [smul_smul]
+      _ = t • (RAY p (DirLC_inx_pts h₁).front).toDir.unitVec := by rw [← ht]; rfl
+      _ = t • ((dist p (DirLC_inx_pts h₁).front)⁻¹ • (VEC p (DirLC_inx_pts h₁).front)) := by rw [dist_comm, NormedAddTorsor.dist_eq_norm']; rfl
+      _ = (t * (dist p (DirLC_inx_pts h₁).front)⁻¹) • (VEC p (DirLC_inx_pts h₁).front) := by rw [smul_smul]
   symm
   calc
-    _ = -⟪VEC p (DirLC_Intersected_pts h₁).front, VEC p (DirLC_Intersected_pts h₁).back⟫_ℝ := by rw [circle_power_thm h₁ h₂]
-    _ = -⟪VEC p (DirLC_Intersected_pts h₁).front, (t * (dist p (DirLC_Intersected_pts h₁).front)⁻¹) • (VEC p (DirLC_Intersected_pts h₁).front)⟫_ℝ := by rw [ht']
-    _ = -(t * (dist p (DirLC_Intersected_pts h₁).front)⁻¹) * ‖VEC p (DirLC_Intersected_pts h₁).front‖ ^ 2 := by
+    _ = -⟪VEC p (DirLC_inx_pts h₁).front, VEC p (DirLC_inx_pts h₁).back⟫_ℝ := by rw [circle_power_thm h₁ h₂]
+    _ = -⟪VEC p (DirLC_inx_pts h₁).front, (t * (dist p (DirLC_inx_pts h₁).front)⁻¹) • (VEC p (DirLC_inx_pts h₁).front)⟫_ℝ := by rw [ht']
+    _ = -(t * (dist p (DirLC_inx_pts h₁).front)⁻¹) * ‖VEC p (DirLC_inx_pts h₁).front‖ ^ 2 := by
       rw [real_inner_smul_right, Vec.real_inner_apply _ _, ← Vec.norm_sq]
       simp
-    _ = (dist p (DirLC_Intersected_pts h₁).front) * (dist p (DirLC_Intersected_pts h₁).back) := by
+    _ = (dist p (DirLC_inx_pts h₁).front) * (dist p (DirLC_inx_pts h₁).back) := by
       unfold Vec.mkPtPt
       rw [← NormedAddTorsor.dist_eq_norm', dist_comm, heq, neg_mul, mul_assoc, mul_comm, pow_two, inv_mul_cancel_left₀]
       simp
       apply dist_ne_zero.mpr hne.out.symm
 
-theorem secant_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) (h₃ : p LiesOut ω) : (dist p (DirLC_Intersected_pts h₁).front) * (dist p (DirLC_Intersected_pts h₁).back) = power ω p := by
-  haveI hne : PtNe p (DirLC_Intersected_pts h₁).front := ⟨(liesout_ne_inxpts h₁ h₂ h₃).1⟩
-  have hl : (DirLC_Intersected_pts h₁).back LiesOn (RAY p (DirLC_Intersected_pts h₁).front) := liesout_back_lieson_ray_front h₁ h₂ h₃
+theorem secant_power_thm {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) (h₃ : p LiesOut ω) : (dist p (DirLC_inx_pts h₁).front) * (dist p (DirLC_inx_pts h₁).back) = power ω p := by
+  haveI hne : PtNe p (DirLC_inx_pts h₁).front := ⟨(liesout_ne_inxpts h₁ h₂ h₃).1⟩
+  have hl : (DirLC_inx_pts h₁).back LiesOn (RAY p (DirLC_inx_pts h₁).front) := liesout_back_lieson_ray_front h₁ h₂ h₃
   rcases Ray.lies_on_iff.mp hl with ⟨t, tnonneg, ht⟩
-  have heq : dist p (DirLC_Intersected_pts h₁).back = t := by
+  have heq : dist p (DirLC_inx_pts h₁).back = t := by
     calc
-      _ = ‖VEC p (DirLC_Intersected_pts h₁).back‖ := by rw [dist_comm, NormedAddTorsor.dist_eq_norm']; rfl
-      _ = ‖t • (RAY p (DirLC_Intersected_pts h₁).front).toDir.unitVec‖ := by rw [← ht]; rfl
+      _ = ‖VEC p (DirLC_inx_pts h₁).back‖ := by rw [dist_comm, NormedAddTorsor.dist_eq_norm']; rfl
+      _ = ‖t • (RAY p (DirLC_inx_pts h₁).front).toDir.unitVec‖ := by rw [← ht]; rfl
       _ = t := by rw [norm_smul, Dir.norm_unitVec, mul_one, Real.norm_of_nonneg tnonneg]
-  have ht' : VEC p (DirLC_Intersected_pts h₁).back = (t * (dist p (DirLC_Intersected_pts h₁).front)⁻¹) • (VEC p (DirLC_Intersected_pts h₁).front) := by
+  have ht' : VEC p (DirLC_inx_pts h₁).back = (t * (dist p (DirLC_inx_pts h₁).front)⁻¹) • (VEC p (DirLC_inx_pts h₁).front) := by
     calc
-      _ = t • (RAY p (DirLC_Intersected_pts h₁).front).toDir.unitVec := by rw [← ht]; rfl
-      _ = t • ((dist p (DirLC_Intersected_pts h₁).front)⁻¹ • (VEC p (DirLC_Intersected_pts h₁).front)) := by rw [dist_comm, NormedAddTorsor.dist_eq_norm']; rfl
-      _ = (t * (dist p (DirLC_Intersected_pts h₁).front)⁻¹) • (VEC p (DirLC_Intersected_pts h₁).front) := by rw [smul_smul]
+      _ = t • (RAY p (DirLC_inx_pts h₁).front).toDir.unitVec := by rw [← ht]; rfl
+      _ = t • ((dist p (DirLC_inx_pts h₁).front)⁻¹ • (VEC p (DirLC_inx_pts h₁).front)) := by rw [dist_comm, NormedAddTorsor.dist_eq_norm']; rfl
+      _ = (t * (dist p (DirLC_inx_pts h₁).front)⁻¹) • (VEC p (DirLC_inx_pts h₁).front) := by rw [smul_smul]
   symm
   calc
-    _ = ⟪VEC p (DirLC_Intersected_pts h₁).front, VEC p (DirLC_Intersected_pts h₁).back⟫_ℝ := by rw [circle_power_thm h₁ h₂]
-    _ = ⟪VEC p (DirLC_Intersected_pts h₁).front, (t * (dist p (DirLC_Intersected_pts h₁).front)⁻¹) • (VEC p (DirLC_Intersected_pts h₁).front)⟫_ℝ := by rw [ht']
-    _ = (t * (dist p (DirLC_Intersected_pts h₁).front)⁻¹) * ‖VEC p (DirLC_Intersected_pts h₁).front‖ ^ 2 := by rw [real_inner_smul_right, Vec.real_inner_apply _ _, ← Vec.norm_sq]
-    _ = (dist p (DirLC_Intersected_pts h₁).front) * (dist p (DirLC_Intersected_pts h₁).back) := by
+    _ = ⟪VEC p (DirLC_inx_pts h₁).front, VEC p (DirLC_inx_pts h₁).back⟫_ℝ := by rw [circle_power_thm h₁ h₂]
+    _ = ⟪VEC p (DirLC_inx_pts h₁).front, (t * (dist p (DirLC_inx_pts h₁).front)⁻¹) • (VEC p (DirLC_inx_pts h₁).front)⟫_ℝ := by rw [ht']
+    _ = (t * (dist p (DirLC_inx_pts h₁).front)⁻¹) * ‖VEC p (DirLC_inx_pts h₁).front‖ ^ 2 := by rw [real_inner_smul_right, Vec.real_inner_apply _ _, ← Vec.norm_sq]
+    _ = (dist p (DirLC_inx_pts h₁).front) * (dist p (DirLC_inx_pts h₁).back) := by
       unfold Vec.mkPtPt
       rw [← NormedAddTorsor.dist_eq_norm', dist_comm, heq, mul_assoc, mul_comm, pow_two, inv_mul_cancel_left₀]
       apply dist_ne_zero.mpr hne.out.symm
