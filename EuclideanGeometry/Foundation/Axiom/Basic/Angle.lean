@@ -32,6 +32,10 @@ instance : NormedAddCommGroup AngDValue :=
 instance : Inhabited AngDValue :=
   inferInstanceAs (Inhabited (AddCircle π))
 
+instance instCircularOrderedAddCommGroup : CircularOrderedAddCommGroup AngDValue :=
+  haveI hp : Fact (0 < π) := ⟨pi_pos⟩
+  QuotientAddGroup.instCircularOrderedAddCommGroup ℝ
+
 @[coe]
 def _root_.EuclidGeom.AngValue.toAngDValue : AngValue → AngDValue :=
   Quotient.map' id (by

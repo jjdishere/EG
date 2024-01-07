@@ -7,7 +7,7 @@ import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 noncomputable section
 namespace EuclidGeom
 
-open Classical AngValue
+open Classical AngValue Angle
 
 variable {P : Type*} [EuclideanPlane P]
 
@@ -80,11 +80,11 @@ theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge
     have h3 : 0 < sin (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value := by
       field_simp at h0
       exact h0
-    rw [sin_pos_iff_angle_pos] at h3
+    rw [sin_pos_iff_isPos] at h3
     exact h3
   rw [wedge_eq_length_mul_length_mul_sin (bnea := ⟨(ne_of_not_colinear nd).2.2⟩) (cnea := ⟨(ne_of_not_colinear nd).2.1.symm⟩)]
   intro h0
-  have h3 : 0 < sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_angle_pos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
+  have h3 : 0 < sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_isPos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
   field_simp
   exact h3
 

@@ -371,7 +371,7 @@ theorem congr_iff_perm_congr (tr_nd₁ tr_nd₂ : TriangleND P) : tr_nd₁ ≅ t
 
 theorem unique_of_eq_eq (h : tr_nd₁.IsCongr tr_nd₂) (p₁ : tr_nd₁.point₁ = tr_nd₂.point₁) (p₂ : tr_nd₁.point₂ = tr_nd₂.point₂) : tr_nd₁.point₃ = tr_nd₂.point₃ := by
   have ray_eq₁ : tr_nd₁.angle₁.end_ray = tr_nd₂.angle₁.end_ray := by
-    apply eq_end_ray_of_eq_value_eq_start_ray
+    apply end_ray_eq_of_value_eq_of_start_ray_eq
     unfold Angle.start_ray TriangleND.angle₁
     simp only [p₂, p₁] ; rfl
     exact h.4
