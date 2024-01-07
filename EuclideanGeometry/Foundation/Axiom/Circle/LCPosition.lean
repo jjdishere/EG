@@ -175,13 +175,30 @@ theorem DirLC_inx_pts_same_iff_tangent {l : DirLine P} {ω : Circle P} (h : DirL
   left; rw [this, sub_self]
   simp
 
+lemma DirLC_inx_pts_ne_center {l : DirLine P} {ω : Circle P} (h : DirLine.IsIntersected l ω) : ((DirLC_inx_pts h).front ≠ ω.center) ∧ ((DirLC_inx_pts h).back ≠ ω.center) := by
+  constructor
+  · apply (pt_lieson_ne_center (DirLC_inx_pts_lieson_circle h).1).out
+  apply (pt_lieson_ne_center (DirLC_inx_pts_lieson_circle h).2).out
+
+theorem DirLC_inxwith_iff_intersect {l : DirLine P} {ω : Circle P} : l InxWith ω ↔ DirLine.IsIntersected l ω := by
+  unfold intersect
+  constructor
+  · rintro ⟨A, ⟨h₁, h₂⟩⟩
+    show dist_pt_line ω.center l.toLine ≤ ω.radius
+    calc
+      _ ≤ dist ω.center A := by apply dist_pt_line_shortest _ _ h₁
+      _ = ω.radius := h₂
+  intro h
+  use (DirLC_inx_pts h).front
+  exact ⟨(DirLC_inx_pts_lieson_dlin h).1, (DirLC_inx_pts_lieson_circle h).1⟩
+
+theorem DirLC_inxwith_iff_tangent_or_secant {l : DirLine P} {ω : Circle P} : l InxWith ω ↔ (l Tangent ω) ∨ (l Secant ω) := Iff.trans DirLC_inxwith_iff_intersect DirLC_intersect_iff_tangent_or_secant
+
+
+/- Tangent point -/
 def DirLC_Tangent_pt {l : DirLine P} {ω : Circle P} (h : l Tangent ω) : P := (DirLC_inx_pts (DirLC_intersect_iff_tangent_or_secant.mpr (Or.inl h))).front
 
-lemma DirLC_tangent_pt_ne_center {l : DirLine P} {ω : Circle P} (h : l Tangent ω) : DirLC_Tangent_pt h ≠ ω.center := by
-  have : DirLC_Tangent_pt h LiesOn ω := by
-    rcases DirLC_inx_pts_lieson_circle (DirLC_intersect_iff_tangent_or_secant.mpr (Or.inl h)) with ⟨h₁, _⟩
-    exact h₁
-  exact (pt_lieson_ne_center this).out
+lemma DirLC_tangent_pt_ne_center {l : DirLine P} {ω : Circle P} (h : l Tangent ω) : DirLC_Tangent_pt h ≠ ω.center := (DirLC_inx_pts_ne_center (DirLC_intersect_iff_tangent_or_secant.mpr (Or.inl h))).1
 
 theorem DirLC_tangent_pt_center_perp_line {l : DirLine P} {ω : Circle P} (h : l Tangent ω) : (LIN ω.center (DirLC_Tangent_pt h) (DirLC_tangent_pt_ne_center h)) ⟂ l.toLine := by
   have h : dist_pt_line ω.center l.toLine = ω.radius := h
@@ -217,21 +234,6 @@ theorem DirLC_tangent_pt_eq_perp_foot {l : DirLine P} {ω : Circle P} (h : l Tan
   exact perp_foot_unique (DirLC_inx_pts_lieson_dlin _).1 hp
 
 
-
-
-theorem DirLC_inxwith_iff_intersect {l : DirLine P} {ω : Circle P} : l InxWith ω ↔ DirLine.IsIntersected l ω := by
-  unfold intersect
-  constructor
-  · rintro ⟨A, ⟨h₁, h₂⟩⟩
-    show dist_pt_line ω.center l.toLine ≤ ω.radius
-    calc
-      _ ≤ dist ω.center A := by apply dist_pt_line_shortest _ _ h₁
-      _ = ω.radius := h₂
-  intro h
-  use (DirLC_inx_pts h).front
-  exact ⟨(DirLC_inx_pts_lieson_dlin h).1, (DirLC_inx_pts_lieson_circle h).1⟩
-
-theorem DirLC_inxwith_iff_tangent_or_secant {l : DirLine P} {ω : Circle P} : l InxWith ω ↔ (l Tangent ω) ∨ (l Secant ω) := Iff.trans DirLC_inxwith_iff_intersect DirLC_intersect_iff_tangent_or_secant
 
 /-
 If we need, we can add some coercion to state that inx_pts with respect to "InxWith".
@@ -280,6 +282,8 @@ theorem pt_pt_tangent_eq_tangent_pt {A B : P} {ω : Circle P} (h₁ : A LiesOut 
   rw [(DirLC_inx_pts_same_iff_tangent _).mpr ht] at heq
   exact heq
 
+
+/- Equivalent condition for tangency -/
 theorem pt_pt_tangent_perp {A B : P} {ω : Circle P} (h₁ : A LiesOut ω) (h₂ : B LiesOn ω) (ht : (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) Tangent ω) : (DLIN ω.center B (pt_lieson_ne_center h₂).out) ⟂ (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) := by
   haveI : PtNe A B := pt_liesout_ne_pt_lieson h₁ h₂
   haveI : PtNe B ω.center := pt_lieson_ne_center h₂
