@@ -68,9 +68,9 @@ def lies_int [Interior α P] (A : P) (F : α) := A ∈ Interior.interior F
 
 -- def lies_in [Interior α] (A : P) (F : α) : Prop := lies_int A F ∨ lies_on A F
 
-scoped infix : 50 " LiesOn " => lies_on -- to make it work compatible with `∧`, binding power should > 35.
-scoped infix : 50 " LiesInt " => lies_int
--- scoped infix : 50 "LiesIn" => lies_in
+scoped infix : 55 " LiesOn " => lies_on -- to make it work compatible with `∧`, binding power should > 35, to be compatible with `=` should > 50.
+scoped infix : 55 " LiesInt " => lies_int
+-- scoped infix : 55 "LiesIn" => lies_in
 
 instance {P : Type*} [IntFig α P] (A : P) (F : α) : Coe (A LiesInt F) (A LiesOn F) where
   coe h := (IntFig.interior_subset_carrier F) h

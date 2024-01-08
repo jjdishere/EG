@@ -8,15 +8,33 @@ variable {Plane : Type _} [EuclideanPlane Plane]
 
 namespace SCHAUM_Problem_1_11
 /-
-If $ABCD$ is a parallelogram and $CDEF$ is a parallelogram, then $ABFE$ is a parallelogram.
+If $ABCD$ is a parallelogram and $EFCD$ is a parallelogram, then $ABFE$ is a parallelogram.
 -/
 
--- $ABCD$ is a parallelogram.
-variable {A B C D : Plane} {hprg1 : Quadrilateral.IsParallelogram (QDR A B C D)}
--- $CDEF$ is a parallelogram.
-variable {E F : Plane} {hprg2 : Quadrilateral.IsParallelogram (QDR C D E F)}
--- State the main goal.
-theorem SCHAUM_Problem_1_11 : Quadrilateral.IsParallelogram (QDR A B F E) := by
-  sorry
+structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+  -- $ABCD$ is a parallelogram.
+  A : Plane
+  B : Plane
+  C : Plane
+  D : Plane
+  ABCD_IsPRG : (QDR A B C D) IsPRG
+  -- $CDEF$ is a parallelogram.
+  E : Plane
+  F : Plane
+  EFCD_IsPRG : (QDR E F C D) IsPRG
+-- Prove that $ABFE$ is a parallelogram.
+theorem result (Plane : Type _) [EuclideanPlane Plane] (e : Setting Plane) : (QDR e.A e.B e.F e.E) IsPRG := by
+  /-
+  Because $ABCD$ is a parallelogram, $\overarrow{AB} = \overarrow{DC}$.
+  Because $EFCD$ is a parallelogram, $\overarrow{EF} = \overarrow{DC}$.
+  Therefore, $\overarrow{AB} = \overarrow{DC} = \overarrow{EF}$, so $ABFE$ is a parallelogram.
+  -/
+  -- $\overarrow{AB} = \overarrow{DC} = \overarrow{EF}$, so $ABFE$ is a parallelogram.
+  calc
+    -- Because $ABCD$ is a parallelogram, $\overarrow{AB} = \overarrow{DC}$.
+    _ = VEC e.D e.C := e.ABCD_IsPRG
+    -- Because $EFCD$ is a parallelogram, $\overarrow{EF} = \overarrow{DC}$.
+    _ = _ := e.EFCD_IsPRG.symm
 
 end SCHAUM_Problem_1_11
+end EuclidGeom
