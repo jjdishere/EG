@@ -1326,47 +1326,40 @@ lemma norm_unitVecND (d : Dir) : ‖d.unitVecND‖ = 1 := by
 
 section CircularOrder
 
-instance : Btw Dir where
-  btw d₁ d₂ d₃ := btw (d₁ -ᵥ d₁) (d₂ -ᵥ d₁) (d₃ -ᵥ d₁)
+instance instCircularOrderedAddTorsor : CircularOrderedAddTorsor AngValue Dir :=
+  AddTorsor.CircularOrderedAddTorsor_of_CircularOrderedAddCommGroup AngValue Dir
+
+theorem btw_def₁ {d₁ d₂ d₃ : Dir} : btw d₁ d₂ d₃ ↔ btw 0 (d₂ -ᵥ d₁) (d₃ -ᵥ d₁) := Iff.rfl
+
+theorem btw_def₂ {d₁ d₂ d₃ : Dir} : btw d₁ d₂ d₃ ↔ btw (d₁ -ᵥ d₂) 0 (d₃ -ᵥ d₂) :=
+  btw_vsub_fst_iff_btw_vsub_snd d₁ d₂ d₃
+
+theorem btw_def₃ {d₁ d₂ d₃ : Dir} : btw d₁ d₂ d₃ ↔ btw (d₁ -ᵥ d₃) (d₂ -ᵥ d₃) 0 :=
+  btw_vsub_fst_iff_btw_vsub_trd d₁ d₂ d₃
+
+theorem btw_iff_btw_vsub {d₁ d₂ d₃ : Dir} (d : Dir) : btw d₁ d₂ d₃ ↔ btw (d₁ -ᵥ d) (d₂ -ᵥ d) (d₃ -ᵥ d) := by
+  apply (btw_add_right_iff (g := d₁ -ᵥ d)).symm.trans
+  rw [zero_add, vsub_add_vsub_cancel, vsub_add_vsub_cancel]
+
+theorem sbtw_def₁ {d₁ d₂ d₃ : Dir} : sbtw d₁ d₂ d₃ ↔ sbtw 0 (d₂ -ᵥ d₁) (d₃ -ᵥ d₁) := Iff.rfl
+
+theorem sbtw_def₂ {d₁ d₂ d₃ : Dir} : sbtw d₁ d₂ d₃ ↔ sbtw (d₁ -ᵥ d₂) 0 (d₃ -ᵥ d₂) :=
+  sbtw_vsub_fst_iff_sbtw_vsub_snd d₁ d₂ d₃
+
+theorem sbtw_def₃ {d₁ d₂ d₃ : Dir} : sbtw d₁ d₂ d₃ ↔ sbtw (d₁ -ᵥ d₃) (d₂ -ᵥ d₃) 0 :=
+  sbtw_vsub_fst_iff_sbtw_vsub_trd d₁ d₂ d₃
+
+theorem sbtw_iff_sbtw_vsub {d₁ d₂ d₃ : Dir} (d : Dir) : sbtw d₁ d₂ d₃ ↔ sbtw (d₁ -ᵥ d) (d₂ -ᵥ d) (d₃ -ᵥ d) := by
+  apply (sbtw_add_right_iff (g := d₁ -ᵥ d)).symm.trans
+  rw [zero_add, vsub_add_vsub_cancel, vsub_add_vsub_cancel]
 
 @[simp]
-lemma btw_vadd_left {θ : AngValue} {d₁ d₂ d₃ : Dir} :
-    btw (θ +ᵥ d₁) (θ +ᵥ d₂) (θ +ᵥ d₃) ↔ btw d₁ d₂ d₃ := by
-  simp only [btw, vadd_vsub_vadd_cancel_left, vsub_self, sub_zero]
+theorem btw_neg {d₁ d₂ d₃ : Dir} : btw (- d₁) (- d₂) (- d₃) ↔ btw d₁ d₂ d₃ := by
+  rw [← pi_vadd, ← pi_vadd, ← pi_vadd, btw_vadd_left_iff]
 
 @[simp]
-lemma btw_vadd_right {θ₁ θ₂ θ₃ : AngValue} {d : Dir} :
-    btw (θ₁ +ᵥ d) (θ₂ +ᵥ d) (θ₃ +ᵥ d) ↔ btw θ₁ θ₂ θ₃ := by
-  simp only [btw, vadd_vsub_vadd_cancel_right, vsub_self, sub_zero]
-
-@[simp]
-lemma btw_vsub_right {d₁ d₂ d₃ d : Dir} :
-    btw (d₁ -ᵥ d) (d₂ -ᵥ d) (d₃ -ᵥ d) ↔ btw d₁ d₂ d₃ := by
-  simp only [btw, vsub_sub_vsub_cancel_right, vsub_self, sub_zero]
-
-@[simp]
-lemma btw_vsub_left {d d₁ d₂ d₃ : Dir} :
-    btw (d -ᵥ d₁) (d -ᵥ d₂) (d -ᵥ d₃) ↔ btw d₃ d₂ d₁ := by
-  rw [← btw_vsub_right (d := d)]
-  simp [btw]
-  sorry
-
-@[simp]
-lemma btw_neg {d₁ d₂ d₃ : Dir} :
-    btw (-d₁) (-d₂) (-d₃) ↔ btw d₁ d₂ d₃ := by
-  rw [← pi_vadd, ← pi_vadd, ← pi_vadd, btw_vadd_left]
-
-instance : CircularOrder Dir where
-  btw d₁ d₂ d₃ := btw (d₁ -ᵥ d₁) (d₂ -ᵥ d₁) (d₃ -ᵥ d₁)
-  sbtw d₁ d₂ d₃ := sbtw (d₁ -ᵥ d₁) (d₂ -ᵥ d₁) (d₃ -ᵥ d₁)
-  btw_refl d := by simpa using btw_refl _
-  btw_cyclic_left {d₁ d₂ d₃} h := by
-    simp [btw]
-    sorry
-  sbtw_iff_btw_not_btw := sorry
-  sbtw_trans_left := sorry
-  btw_antisymm := sorry
-  btw_total := sorry
+theorem sbtw_neg {d₁ d₂ d₃ : Dir} : sbtw (- d₁) (- d₂) (- d₃) ↔ sbtw d₁ d₂ d₃ := by
+  rw [← pi_vadd, ← pi_vadd, ← pi_vadd, sbtw_vadd_left_iff]
 
 end CircularOrder
 
@@ -1582,7 +1575,7 @@ theorem map_trans (f g : Dir ≃ Dir) {_ : Dir.NegCommute f} {_ : Dir.NegCommute
     Proj.map (f.trans g) = (Proj.map f).trans (Proj.map g) := by
   ext p
   induction p using Proj.ind
-  
+
   simp
 
 instance : Nonempty Proj := (nonempty_quotient_iff _).mpr <| inferInstanceAs (Nonempty Dir)

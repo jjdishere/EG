@@ -32,6 +32,10 @@ instance : NormedAddCommGroup AngDValue :=
 instance : Inhabited AngDValue :=
   inferInstanceAs (Inhabited (AddCircle π))
 
+instance instCircularOrderedAddCommGroup : CircularOrderedAddCommGroup AngDValue :=
+  haveI hp : Fact (0 < π) := ⟨pi_pos⟩
+  QuotientAddGroup.instCircularOrderedAddCommGroup ℝ
+
 @[coe]
 def _root_.EuclidGeom.AngValue.toAngDValue : AngValue → AngDValue :=
   Quotient.map' id (by
@@ -259,6 +263,10 @@ theorem eq_coe_of_toReal_eq {x : ℝ} (h : θ.toReal = x) : θ = ∠[x] :=
   (θ.coe_toReal).symm.trans (congrArg AngValue.coe h)
 
 theorem neg_pi_le_toReal : - π ≤ θ.toReal := le_of_lt θ.neg_pi_lt_toReal
+
+instance instCircularOrderedAddCommGroup : CircularOrderedAddCommGroup AngValue :=
+  haveI hp : Fact (0 < 2 * π) := ⟨two_pi_pos⟩
+  QuotientAddGroup.instCircularOrderedAddCommGroup ℝ
 
 end
 
@@ -1198,6 +1206,7 @@ variable (θ : AngValue)
 -- `We shall wait and see what congruence will become`
 -/
 
+/-- The absolute value of an angle $θ$ is the absolute value of $θ.toReal$. -/
 def abs (θ : AngValue) : ℝ := |θ.toReal|
 
 theorem zero_le_abs : 0 ≤ θ.abs := abs_nonneg θ.toReal
@@ -1415,6 +1424,7 @@ end acute_obtuse
 
 section norm
 
+/-- The absolute value of an angle is equal to its norm. -/
 theorem abs_eq_norm : θ.abs = ‖θ‖ := by
   apply le_antisymm
   · refine' le_csInf ⟨θ.abs, θ.toReal, θ.coe_toReal, rfl⟩ (fun a h ↦ _)
@@ -1437,9 +1447,12 @@ end abs
 
 section half
 
-/-- Half of an angle. Note that there are two possible values when dividing by two in `AngValue` (their difference is `π`). We choose the acute angle as the canonical value for half of an angle for angles not equal to `π`, and the half of `π` is defined as `π / 2`. -/
+/-- Half of an angle. Note that there are two possible values when dividing by two in `AngValue`
+(their difference is `π`). We choose the acute angle as the canonical value for half of an angle
+for angles not equal to `π`, and the half of `π` is defined as `π / 2`. -/
 def half (θ : AngValue) : AngValue := ∠[θ.toReal / 2]
 -- Do we need the other value obatined by dividing by two, i.e., `θ.half + π`?
+-- Do we need a class `IsHalf`?
 
 theorem coe_half {x : ℝ} (hn : - π < x) (h : x ≤ π) : ∠[x].half = ∠[x / 2] :=
   congrArg AngValue.coe (congrFun (congrArg HDiv.hDiv (toReal_coe_eq_self hn h)) 2)

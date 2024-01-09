@@ -369,9 +369,9 @@ theorem perm_congr (h : tr_nd₁.IsCongr tr_nd₂) : (perm_vertices tr_nd₁).Is
 theorem congr_iff_perm_congr (tr_nd₁ tr_nd₂ : TriangleND P) : tr_nd₁ ≅ tr_nd₂ ↔ perm_vertices tr_nd₁ ≅ perm_vertices tr_nd₂ :=
   ⟨fun h ↦ h.perm_congr, fun h ↦ h.perm_congr.perm_congr⟩
 
-theorem third_point_same_of_two_point_same (h : tr_nd₁.IsCongr tr_nd₂) (p₁ : tr_nd₁.point₁ = tr_nd₂.point₁) (p₂ : tr_nd₁.point₂ = tr_nd₂.point₂) : tr_nd₁.point₃ = tr_nd₂.point₃ := by
+theorem unique_of_eq_eq (h : tr_nd₁.IsCongr tr_nd₂) (p₁ : tr_nd₁.point₁ = tr_nd₂.point₁) (p₂ : tr_nd₁.point₂ = tr_nd₂.point₂) : tr_nd₁.point₃ = tr_nd₂.point₃ := by
   have ray_eq₁ : tr_nd₁.angle₁.end_ray = tr_nd₂.angle₁.end_ray := by
-    apply eq_end_ray_of_eq_value_eq_start_ray
+    apply end_ray_eq_of_value_eq_of_start_ray_eq
     unfold Angle.start_ray TriangleND.angle₁
     simp only [p₂, p₁] ; rfl
     exact h.4
@@ -380,14 +380,14 @@ theorem third_point_same_of_two_point_same (h : tr_nd₁.IsCongr tr_nd₂) (p₁
     unfold Angle.end_ray TriangleND.angle₂
     simp only [<-p₂, <-p₁] ; rfl
     exact h.5
-  have l₁ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₁.end_ray.toLine :=
-    .inl Ray.snd_pt_lies_on_mk_pt_pt
-  have l₂ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₂.start_ray.toLine :=
-    .inl Ray.snd_pt_lies_on_mk_pt_pt
-  have l₃ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₁.end_ray.toLine :=
-    .inl Ray.snd_pt_lies_on_mk_pt_pt
-  have l₄ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₂.start_ray.toLine :=
-    .inl Ray.snd_pt_lies_on_mk_pt_pt
+  haveI : PtNe tr_nd₁.point₃ tr_nd₁.angle₁.source := (nontriv₂ tr_nd₁).symm
+  haveI : PtNe tr_nd₁.point₃ tr_nd₁.angle₂.source := nontriv₁ tr_nd₁
+  haveI : PtNe tr_nd₂.point₃ tr_nd₂.angle₁.source := (nontriv₂ tr_nd₂).symm
+  haveI : PtNe tr_nd₂.point₃ tr_nd₂.angle₂.source := nontriv₁ tr_nd₂
+  have l₁ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₁.end_ray.toLine := .inl Ray.snd_pt_lies_on_mk_pt_pt
+  have l₂ : tr_nd₁.point₃ LiesOn tr_nd₁.angle₂.start_ray.toLine := .inl Ray.snd_pt_lies_on_mk_pt_pt
+  have l₃ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₁.end_ray.toLine := .inl Ray.snd_pt_lies_on_mk_pt_pt
+  have l₄ : tr_nd₂.point₃ LiesOn tr_nd₂.angle₂.start_ray.toLine := .inl Ray.snd_pt_lies_on_mk_pt_pt
   have np₁ : ¬ tr_nd₁.angle₁.end_ray.toLine ∥ tr_nd₁.angle₂.start_ray.toLine := by
     by_contra pl
     have l₅ : tr_nd₁.point₁ LiesOn tr_nd₁.angle₁.end_ray.toLine := by
