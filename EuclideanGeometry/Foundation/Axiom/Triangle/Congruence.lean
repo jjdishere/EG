@@ -13,7 +13,7 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P] {tr tr₁ tr₂ tr₃ : Triangle P} {tr_nd tr_nd₁ tr_nd₂ tr_nd₃ : TriangleND P}
 
-open Classical AngValue
+open Classical AngValue Angle
 
 -- Do not change `IsCongr, IsACongr` notation into `≅, ≅ₐ` in any theorem with name  `IsCongr.some_theorem, IsACongr.some_theorem`, to use `h.some_theorem` when h is of shape `tr₁ ≅ tr₂`.
 namespace Triangle
