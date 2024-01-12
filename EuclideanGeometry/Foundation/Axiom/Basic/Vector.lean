@@ -184,7 +184,7 @@ lemma toComplex_inv (z : 𝕜) : ↑(z⁻¹) = (z : ℂ)⁻¹ := by ext <;> simp
 
 @[simp, norm_cast]
 lemma abs_toComplex (z : 𝕜) : Complex.abs (z : ℂ) = ‖z‖ := by
-  rw [← pow_left_inj (map_nonneg _ _) (norm_nonneg _) zero_lt_two,
+  rw [← pow_left_inj (map_nonneg _ _) (norm_nonneg _) two_ne_zero,
     Complex.sq_abs, Complex.normSq_apply, norm_sq_eq_def]
   rfl
 
@@ -400,7 +400,7 @@ instance innerProductSpace' : InnerProductSpace ℝ Vec where
   norm_sq_eq_inner v := by simp [norm_sq]
   conj_symm v₁ v₂ := by simp [Complex.conj_ofReal, mul_comm]
   add_left v₁ v₂ v₃ := by dsimp; ring
-  smul_left v₁ v₂ z := by dsimp; ring
+  smul_left v₁ v₂ z := by dsimp; simp only [zero_mul, sub_zero, add_zero, conj_trivial];ring;
 
 lemma real_inner_apply (v₁ v₂ : Vec) :
     ⟪v₁, v₂⟫_ℝ = v₁.fst * v₂.fst + v₁.snd * v₂.snd :=
@@ -694,7 +694,7 @@ lemma cdiv_eq_cdiv_iff_cdiv_eq_cdiv {v₁ v₂ v₃ v₄ : Vec} (hv₂ : v₂ �
 
 @[simp]
 lemma abs_inner (v₁ v₂ : Vec) : Complex.abs ⟪v₁, v₂⟫_ℂ = ‖v₁‖ * ‖v₂‖ := by
-  rw [← pow_left_inj (by simp) (by positivity) zero_lt_two]
+  rw [← pow_left_inj (by simp) (by positivity) two_ne_zero]
   rw [Complex.abs_apply, sq_sqrt (Complex.normSq_nonneg _)]
   dsimp [inner, det]
   rw [mul_pow, norm_sq, norm_sq]

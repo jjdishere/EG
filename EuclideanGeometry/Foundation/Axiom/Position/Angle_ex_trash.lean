@@ -25,5 +25,6 @@ theorem ang_value_eq_ang_value_add_ang_value (A B C O : P) [hne1 : PtNe A O] [hn
   symm;
   apply Angle.ang_eq_ang_add_ang_mod_pi_of_adj_ang (ANG A O B) (ANG B O C) _
   unfold Angle.mk_pt_pt_pt
-  simp only
+  rfl
+
 end EuclidGeom

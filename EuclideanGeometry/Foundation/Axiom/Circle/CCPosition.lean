@@ -250,14 +250,12 @@ theorem CC_inx_pts_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Int
   rw [← sub_smul]
   simp
   push_neg
-  constructor
-  · apply Real.sqrt_ne_zero'.mpr
-    have hlt : (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2 < ω₁.radius ^ 2 := by
-      apply sq_lt_sq.mpr
-      rw [abs_of_pos ω₁.rad_pos]
-      exact radical_axis_dist_lt_radius h
-    linarith
-  exact Complex.I_ne_zero
+  apply Real.sqrt_ne_zero'.mpr
+  have hlt : (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2 < ω₁.radius ^ 2 := by
+    apply sq_lt_sq.mpr
+    rw [abs_of_pos ω₁.rad_pos]
+    exact radical_axis_dist_lt_radius h
+  linarith
 
 theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : ((CC_Intersected_pts h).left LiesOn ω₁) ∧ ((CC_Intersected_pts h).left LiesOn ω₂) ∧ ((CC_Intersected_pts h).right LiesOn ω₁) ∧ ((CC_Intersected_pts h).right LiesOn ω₂) := by
   haveI : PtNe ω₁.center ω₂.center := ⟨ (CC_intersected_centers_distinct h) ⟩
