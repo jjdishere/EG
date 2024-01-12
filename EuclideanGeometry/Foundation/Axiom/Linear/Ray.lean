@@ -1,5 +1,4 @@
 import EuclideanGeometry.Foundation.Axiom.Basic.Class
-import EuclideanGeometry.Foundation.Axiom.Basic.Plane
 
 /-!
 # Segments and rays
@@ -94,24 +93,60 @@ section make
 ## (2) Make
 -/
 
-/-- Given two points $A$ and $B$, this returns the segment with source $A$ and target $B$; it is an abbreviation of  \verb|Seg.mk|. -/
+/-- Given two points $A$ and $B$, this returns the segment with source $A$ and target $B$. It is an abbreviation of $\verb|Seg.mk|$. -/
 scoped notation "SEG" => Seg.mk
 
-/-- Given two distinct points $A$ and $B$, this function returns a nondegenerate segment with source $A$ and target $B$. -/
+/-- Given two distinct points $A$ and $B$, this function returns a nondegenerate segment with source $A$ and target $B$. We use $\verb|SEG_nd|$ to abbreviate $\verb|SegND.mk|$. -/
 def SegND.mk (A B : P) (h : B ≠ A) : SegND P where
   val := SEG A B
   property := h
 
-/-- This is to abbreviate the function \verb|SegND.mk| into \verb|SEG_nd|. -/
-scoped notation "SEG_nd" => SegND.mk
+@[inherit_doc SegND.mk]
+scoped syntax "SEG_nd" ws term:max ws term:max (ws term:max)? : term
 
-/-- Given two distinct points $A$ and $B$, this function returns the ray starting from $A$ in the direction of $B$.  By definition, the direction of the ray is given by the normalization of the vector from $A$ to $B$, using \verb|toDir| function. -/
+macro_rules
+  | `(SEG_nd $A $B) => `(SegND.mk $A $B (@Fact.out _ inferInstance))
+  | `(SEG_nd $A $B $h) => `(SegND.mk $A $B $h)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `SegND.mk` -/
+@[delab app.EuclidGeom.SegND.mk]
+def delabSegNDMk : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``SegND.mk 5
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  withNaryArg 4 do
+    if (← getExpr).isAppOfArity' ``Fact.out 2 then
+      `(SEG_nd $A $B)
+    else
+      `(SEG_nd $A $B $(← delab))
+
+/-- Given two distinct points $A$ and $B$, this function returns the ray starting from $A$ in the direction of $B$. By definition, the direction of the ray is given by the normalization of the vector from $A$ to $B$, using $\verb|toDir|$ function. We use $\verb|RAY|$ to abbreviate $\verb|Ray.mk_pt_pt|$. -/
 def Ray.mk_pt_pt (A B : P) (h : B ≠ A) : Ray P where
   source := A
   toDir := VecND.toDir ⟨VEC A B, (vsub_ne_zero.mpr h)⟩
 
-/-- This is to abbreviate \verb|Ray.mk_pt_pt| into \verb|RAY|. -/
-scoped notation "RAY" => Ray.mk_pt_pt
+@[inherit_doc Ray.mk_pt_pt]
+scoped syntax "RAY" ws term:max ws term:max (ws term:max)? : term
+
+macro_rules
+  | `(RAY $A $B) => `(Ray.mk_pt_pt $A $B (@Fact.out _ inferInstance))
+  | `(RAY $A $B $h) => `(Ray.mk_pt_pt $A $B $h)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `Ray.mk_pt_pt` -/
+@[delab app.EuclidGeom.Ray.mk_pt_pt]
+def delabRayMkPtPt : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``Ray.mk_pt_pt 5
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  withNaryArg 4 do
+    if (← getExpr).isAppOfArity' ``Fact.out 2 then
+      `(RAY $A $B)
+    else
+      `(RAY $A $B $(← delab))
 
 end make
 
@@ -124,7 +159,7 @@ section coersion
 
 namespace Ray
 
-/-- Given a ray, this function returns its projective direction; it is the projective direction of the direction of the ray.  -/
+/-- Given a ray, this function returns its projective direction; it is the projective direction of the direction of the ray. -/
 @[pp_dot]
 def toProj (ray : Ray P) : Proj := (ray.toDir : Proj)
 
@@ -163,7 +198,10 @@ protected def IsOn (X : P) (seg : Seg P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ VEC seg.source X  = t • (VEC seg.source seg.target)
 
 /-- Given a point $X$ and a segment $seg$, this function returns whether $X$ lies in the interior of $seg$; here saying that $X$ lies in the interior of $seg$ means $X$ lies on $seg$ and is different from the source and the target of $seg$. -/
-protected def IsInt (X : P) (seg : Seg P) : Prop := Seg.IsOn X seg ∧ X ≠ seg.source ∧ X ≠ seg.target
+protected structure IsInt (X : P) (seg : Seg P) : Prop where
+  isOn : Seg.IsOn X seg
+  ne_source : X ≠ seg.source
+  ne_target : X ≠ seg.target
 
 /-- Given a segment, this function returns the set of points that lie on the segment. -/
 protected def carrier (seg : Seg P) : Set P := { X : P | Seg.IsOn X seg }
@@ -171,11 +209,11 @@ protected def carrier (seg : Seg P) : Set P := { X : P | Seg.IsOn X seg }
 /-- Given a segment, this function returns the set of points that lie in the interior of the segment. -/
 protected def interior (seg : Seg P) : Set P := { X : P | Seg.IsInt X seg }
 
-/-- Instance \verb|IntFig Seg|: This is to register that a segment is an instance of a class of objects that we may speak of both carrier and interior (and that the interior is a subset of the carrier). -/
+/-- Instance $\verb|IntFig Seg|$ : This is to register that a segment is an instance of a class of objects that we may speak of both carrier and interior (and that the interior is a subset of the carrier). -/
 instance : IntFig (Seg P) P where
   carrier := Seg.carrier
   interior := Seg.interior
-  interior_subset_carrier _ _ := And.left
+  interior_subset_carrier _ _ h := h.1
 
 end Seg
 
@@ -199,7 +237,7 @@ def toVecND (seg_nd : SegND P) : VecND := ⟨VEC seg_nd.source seg_nd.target, (n
 
 /-- Given a nondegenerate segment $AB$, this function returns the direction associated to the segment, defined by normalizing the nondegenerate vector $\overrightarrow{AB}$. -/
 @[pp_dot]
-def toDir (seg_nd : SegND P) : Dir := seg_nd.toVecND.toDir
+abbrev toDir (seg_nd : SegND P) : Dir := seg_nd.toVecND.toDir
 
 /-- Given a nondegenerate segment $AB$, this function returns the ray $AB$, whose source is $A$ in the direction of $B$. -/
 @[pp_dot]
@@ -210,35 +248,35 @@ def toRay (seg_nd : SegND P) : Ray P where
 @[simp]
 lemma toRay_source (s : SegND P) : s.toRay.source = s.source := rfl
 
-/-- Given a nondegenerate segment $AB$, this function returns the projective direction  of $AB$, defined as the projective direction of the nondegenerate vector $\overrightarrow{AB}$.  -/
+/-- Given a nondegenerate segment $AB$, this function returns the projective direction  of $AB$, defined as the projective direction of the nondegenerate vector $\overrightarrow{AB}$. -/
 @[pp_dot]
-def toProj (seg_nd : SegND P) : Proj := seg_nd.toVecND.toProj
+abbrev toProj (seg_nd : SegND P) : Proj := seg_nd.toVecND.toProj
 
 /-- Given a point $A$ and a nondegenerate segment $seg_nd$, this function returns whether $A$ lies on $seg_nd$, namely, whether it lies on the corresponding segment.-/
-protected def IsOn (X : P) (seg_nd : SegND P) : Prop := Seg.IsOn X seg_nd.1
+protected abbrev IsOn (X : P) (seg_nd : SegND P) : Prop := Seg.IsOn X seg_nd.1
 
 /-- Given a point $A$ and a nondegenerate segment $seg_nd$, this function returns whether $A$ lies in the interior of $seg_nd$, namely, whether it lies in the interior of the corresponding segment. -/
-protected def IsInt (X : P) (seg_nd : SegND P) : Prop := Seg.IsInt X seg_nd.1
+protected abbrev IsInt (X : P) (seg_nd : SegND P) : Prop := Seg.IsInt X seg_nd.1
 
 /-- Given a nondegenerate segment, this function returns the set of points that lie on the segment. -/
-protected def carrier (seg_nd : SegND P) : Set P := { X : P | SegND.IsOn X seg_nd }
+protected abbrev carrier (seg_nd : SegND P) : Set P := { X : P | SegND.IsOn X seg_nd }
 
 /-- Given a nondegenerate segment, this function returns the set of points that lie in the interior of the segment. -/
-protected def interior (seg_nd : SegND P) : Set P := { X : P | Seg.IsInt X seg_nd }
+protected abbrev interior (seg_nd : SegND P) : Set P := { X : P | Seg.IsInt X seg_nd }
 
 /-- This is to register that a nondegenerate segment is an instance of a class of objects that we may speak of both carrier and interior (and that the interior is a subset of the carrier). -/
 instance : IntFig (SegND P) P where
   carrier := SegND.carrier
   interior := SegND.interior
-  interior_subset_carrier _ _ := And.left
+  interior_subset_carrier _ _ h := h.1
 
 end SegND
 
 @[simp]
-lemma Ray.mkPtPt_toDir (A B : P) (h : B ≠ A) : (RAY A B h).toDir = (VEC_nd A B h).toDir := rfl
+lemma Ray.mkPtPt_toDir (A B : P) [_h : PtNe B A] : (RAY A B).toDir = (VEC_nd A B).toDir := rfl
 
 @[simp]
-lemma SegND.mkPtPt_toDir (A B : P) (h : B ≠ A) : (SEG_nd A B h).toDir = (VEC_nd A B h).toDir := rfl
+lemma SegND.mkPtPt_toDir (A B : P) [_h : PtNe B A] : (SEG_nd A B).toDir = (VEC_nd A B).toDir := rfl
 
 end coersion
 
@@ -262,23 +300,23 @@ theorem SegND.toRay_toProj_eq_toProj {seg_nd : SegND P} : seg_nd.toRay.toProj = 
 @[simp]
 theorem seg_toVec_eq_vec {A B : P} : (SEG A B).toVec = VEC A B := rfl
 
-/-- Given a segment $AB$, $A$ is same as $B$ if and only if vector $\overrightarrow{AB}$ is zero  -/
+/-- Given a segment $AB$, $A$ is same as $B$ if and only if vector $\overrightarrow{AB}$ is zero. -/
 theorem toVec_eq_zero_of_deg {l : Seg P} : (l.target = l.source) ↔ l.toVec = 0 := by
   rw [Seg.toVec, Vec.mkPtPt, vsub_eq_zero_iff_eq]
 
 /-- Given two distinct points $A$ and $B$, the direction of ray $AB$ is same as the negative direction of ray $BA$ -/
-theorem Ray.toDir_eq_neg_toDir_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toDir = -(RAY B A h.symm).toDir := by
+theorem Ray.toDir_eq_neg_toDir_of_mk_pt_pt {A B : P} [h : PtNe B A] : (RAY A B).toDir = -(RAY B A).toDir := by
   simp only [Ray.mk_pt_pt, ne_eq]
   rw [← VecND.neg_toDir, ← VecND.mk_neg]
   congr
   rw [neg_vec]
 
 /-- Given two distinct points $A$ and $B$, the projective direction of ray $AB$ is same as that of ray $BA$. -/
-theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} (h : B ≠ A) : (RAY A B h).toProj = (RAY B A h.symm).toProj :=
-  Dir.toProj_eq_toProj_iff.mpr (.inr (toDir_eq_neg_toDir_of_mk_pt_pt h))
+theorem Ray.toProj_eq_toProj_of_mk_pt_pt {A B : P} [_h : PtNe B A] : (RAY A B).toProj = (RAY B A).toProj :=
+  Dir.toProj_eq_toProj_iff.mpr (.inr toDir_eq_neg_toDir_of_mk_pt_pt)
 
 /-- Given two distinct points $A$ and $B$, the ray associated to the segment $AB$ is same as ray $AB$. -/
-theorem pt_pt_seg_toRay_eq_pt_pt_ray {A B : P} (h : B ≠ A) : (SegND.mk A B h).toRay = Ray.mk_pt_pt A B h := rfl
+theorem pt_pt_seg_toRay_eq_pt_pt_ray {A B : P} [_h : PtNe B A] : (SEG_nd A B).toRay = RAY A B := rfl
 
 /-- Given a segment $AB$, $AB$ is nondegenerate if and only if vector  $\overrightarrow{AB}$ is nonzero. -/
 theorem Seg.IsND_iff_toVec_ne_zero {l : Seg P} : l.IsND ↔ l.toVec ≠ 0 := toVec_eq_zero_of_deg.not
@@ -350,24 +388,23 @@ theorem SegND.lies_int_iff {X : P} {seg_nd : SegND P}: X LiesInt seg_nd ↔ ∃ 
   · intro ⟨t, tpos, tlt1, ht⟩
     constructor
     · exact ⟨t, by linarith, by linarith, ht⟩
-    · constructor
-      · rw [ne_iff_vec_ne_zero]
-        rw [SegND.source] at ht
-        rw [ht, smul_ne_zero_iff]
-        exact ⟨ by linarith, seg_nd.toVecND.2⟩
-      · simp [SegND.toVecND] at ht
-        rw [ne_iff_vec_ne_zero]
-        have h1 : VEC seg_nd.target X = (t - 1) • seg_nd.toVecND.1 := by
-          rw [sub_smul]
-          simp [SegND.toVecND]
-          rw [← ht]
-          exact (vec_sub_vec _ _ _).symm
-        rw [SegND.target] at h1
-        rw [h1, smul_ne_zero_iff]
-        exact ⟨ by linarith, seg_nd.toVecND.2⟩
+    · rw [ne_iff_vec_ne_zero]
+      rw [SegND.source] at ht
+      rw [ht, smul_ne_zero_iff]
+      exact ⟨ by linarith, seg_nd.toVecND.2⟩
+    · simp [SegND.toVecND] at ht
+      rw [ne_iff_vec_ne_zero]
+      have h1 : VEC seg_nd.target X = (t - 1) • seg_nd.toVecND.1 := by
+        rw [sub_smul]
+        simp [SegND.toVecND]
+        rw [← ht]
+        exact (vec_sub_vec _ _ _).symm
+      rw [SegND.target] at h1
+      rw [h1, smul_ne_zero_iff]
+      exact ⟨by linarith, seg_nd.toVecND.2⟩
 
 /-- For a segment $AB$, if there exists an interior point $X$, then it is nondegenerate. -/
-theorem Seg.isND_of_pt_liesint {seg : Seg P} {X : P} : (X LiesInt seg) → seg.IsND := by sorry
+theorem Seg.isND_of_pt_liesint {seg : Seg P} {X : P} (h : X LiesInt seg) : seg.IsND := by sorry
 
 /-- For a segment $AB$, a point $X$ lies in the interior of $AB$ if and only if $AB$ is nondegenerate, and there exist a real number $t$ satisfying that $0 < t < 1$ and that the vector $\overrightarrow{AX}$ is same as $t \cdot \overrightarrow{AB}$. -/
 theorem Seg.lies_int_iff {X : P} {seg : Seg P}: X LiesInt seg ↔ seg.IsND ∧ (∃ (t : ℝ) , 0 < t ∧ t < 1 ∧ VEC seg.source X = t • seg.toVec) := by
@@ -391,11 +428,11 @@ theorem Seg.target_lies_on {seg : Seg P} : seg.target LiesOn seg := ⟨1, zero_l
 
 /-- Given a segment $AB$, the source $A$ does not belong to the interior of $AB$. -/
 @[simp]
-theorem Seg.source_not_lies_int {seg : Seg P} : ¬ seg.source LiesInt seg := fun h ↦ h.2.1 rfl
+theorem Seg.source_not_lies_int {seg : Seg P} : ¬ seg.source LiesInt seg := fun h ↦ h.2 rfl
 
 /-- Given a segment $AB$, the target $B$ does not belong to the interior of $AB$. -/
 @[simp]
-theorem Seg.target_not_lies_int {seg : Seg P} : ¬ seg.target LiesInt seg := fun h ↦ h.2.2 rfl
+theorem Seg.target_not_lies_int {seg : Seg P} : ¬ seg.target LiesInt seg := fun h ↦ h.3 rfl
 
 /-- For a segment $AB$, every point of the interior of $AB$ lies on the segment $AB$. -/
 @[simp]
@@ -411,11 +448,11 @@ theorem SegND.target_lies_on {seg_nd : SegND P} : seg_nd.target LiesOn seg_nd :=
 
 /-- Given a nondegenerate segment $AB$, the source $A$ does not belong to the interior of $AB$. -/
 @[simp]
-theorem SegND.source_not_lies_int {seg_nd : SegND P} : ¬ seg_nd.source LiesInt seg_nd := fun h ↦ h.2.1 rfl
+theorem SegND.source_not_lies_int {seg_nd : SegND P} : ¬ seg_nd.source LiesInt seg_nd := fun h ↦ h.2 rfl
 
 /-- Given a nondegenerate segment $AB$, the target $B$ does not belong to the interior of $AB$. -/
 @[simp]
-theorem SegND.target_not_lies_int {seg_nd : SegND P} : ¬ seg_nd.target LiesInt seg_nd := fun h ↦ h.2.2 rfl
+theorem SegND.target_not_lies_int {seg_nd : SegND P} : ¬ seg_nd.target LiesInt seg_nd := fun h ↦ h.3 rfl
 
 /-- For a nondegenerate segment $AB$, every point of the interior of $AB$ lies on the segment $AB$. -/
 @[simp]
@@ -438,7 +475,7 @@ theorem Ray.lies_on_of_lies_int {X : P} {ray : Ray P} (h : X LiesInt ray) : X Li
 theorem Ray.lies_int_def {X : P} {ray : Ray P} : X LiesInt ray ↔ X LiesOn ray ∧ X ≠ ray.source := Iff.rfl
 
 
-/-- For a nondegenerate segment $AB$, every point of the segment $AB$ lies on the ray associated to $AB$.  -/
+/-- For a nondegenerate segment $AB$, every point of the segment $AB$ lies on the ray associated to $AB$.. -/
 theorem SegND.lies_on_toRay_of_lies_on {X : P} {seg_nd : SegND P} (h : X LiesOn seg_nd) : X LiesOn seg_nd.toRay := by
   rcases h with ⟨t, ht0, _, h⟩
   refine' ⟨t • ‖VEC seg_nd.source seg_nd.target‖, smul_nonneg ht0 (norm_nonneg _), _⟩
@@ -449,16 +486,16 @@ theorem SegND.lies_on_toRay_of_lies_on {X : P} {seg_nd : SegND P} (h : X LiesOn 
 
 /-- For a nondegenerate segment $seg_nd$, every point of the interior of the $seg_nd$ lies in the interior of the ray associated to the $seg_nd$. -/
 theorem SegND.lies_int_toRay_of_lies_int {X : P} {seg_nd : SegND P} (h : X LiesInt seg_nd) : X LiesInt seg_nd.toRay :=
-  ⟨SegND.lies_on_toRay_of_lies_on h.1, h.2.1⟩
+  ⟨SegND.lies_on_toRay_of_lies_on h.1, h.2⟩
 
 /-- Given two distinct points $A$ and $B$, $B$ lies on the ray $AB$. -/
-theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} (h : B ≠ A) : B LiesOn (RAY A B h) := by
-  show B LiesOn (SEG_nd A B h).toRay
+theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} [h : PtNe B A] : B LiesOn (RAY A B) := by
+  show B LiesOn (SEG_nd A B).toRay
   exact SegND.lies_on_toRay_of_lies_on Seg.target_lies_on
 
 /-- Given two distinct points $A$ and $B$, $B$ lies in the interior of the ray $AB$. -/
-theorem Ray.snd_pt_lies_int_mk_pt_pt (A B : P) (h : B ≠ A) : B LiesInt (RAY A B h) :=
-  ⟨snd_pt_lies_on_mk_pt_pt h, h⟩
+theorem Ray.snd_pt_lies_int_mk_pt_pt (A B : P) [h : PtNe B A] : B LiesInt (RAY A B) :=
+  ⟨snd_pt_lies_on_mk_pt_pt, h.out⟩
 
 /-- Given a point $A$ on a ray, the direction of the ray is the same as the direction from the source of the ray to $A$. -/
 theorem Ray.pt_pt_toDir_eq_ray_toDir {ray : Ray P} {A : P} (h : A LiesInt ray) : (RAY ray.1 A h.2).toDir = ray.toDir := by
@@ -738,7 +775,7 @@ def SegND.reverse (seg_nd : SegND P) : SegND P := ⟨seg_nd.1.reverse, nd_of_rev
 
 /-- The reverse of a nondegenerate segment $AB$ is the nondegenerate segment $BA$. -/
 @[simp]
-theorem seg_nd_rev {A B : P} (h : B ≠ A) : (SEG_nd A B h).reverse = SEG_nd B A h.symm := rfl
+theorem seg_nd_rev {A B : P} [_h : PtNe B A] : (SEG_nd A B).reverse = SEG_nd B A := rfl
 
 /-- Given a nondegenerate segment, first viewing it as a segment and then reversing it is the same as first reversing it and then viewing it as a segment. -/
 @[simp]
@@ -840,25 +877,21 @@ theorem Seg.lies_on_rev_of_lies_on {A : P} {seg : Seg P} : A LiesOn seg → A Li
 @[simp]
 theorem Seg.lies_on_rev_iff_lies_on {A : P} {seg : Seg P} : A LiesOn seg.reverse ↔ A LiesOn seg := ⟨ Seg.lies_on_rev_of_lies_on (seg := seg.reverse), Seg.lies_on_rev_of_lies_on ⟩
 
-
 /-- A point lies in the interior of the reverse of a segment if and only if it lies in the interior of the segment. -/
 @[simp]
-theorem Seg.lies_int_rev_iff_lies_int {A : P} {seg : Seg P} : A LiesInt seg.reverse ↔ A LiesInt seg := by
-  constructor
-  rintro ⟨ha,⟨nonsource,nontarget⟩⟩
-  exact ⟨Seg.lies_on_rev_iff_lies_on.mp ha,⟨nontarget,nonsource⟩⟩
-  rintro ⟨ha,⟨nonrevsource,nonrevtarget⟩⟩
-  exact ⟨Seg.lies_on_rev_iff_lies_on.mpr ha,⟨nonrevtarget,nonrevsource⟩⟩
-
+theorem Seg.lies_int_rev_iff_lies_int {A : P} {seg : Seg P} : A LiesInt seg.reverse ↔ A LiesInt seg := ⟨
+  fun ⟨ha, nonsource, nontarget⟩ ↦ ⟨Seg.lies_on_rev_iff_lies_on.mp ha, nontarget,nonsource⟩,
+  fun ⟨ha, nonrevsource, nonrevtarget⟩ ↦ ⟨Seg.lies_on_rev_iff_lies_on.mpr ha, nonrevtarget,nonrevsource⟩⟩
 
 /-- Given a nondegenerate segment, a point lies on the reverse of the segment if and only if it lies on the segment. -/
 @[simp]
-theorem SegND.lies_on_rev_iff_lies_on {A : P} {seg_nd : SegND P} : A LiesOn seg_nd.reverse ↔ A LiesOn seg_nd := seg_nd.1.lies_on_rev_iff_lies_on
+theorem SegND.lies_on_rev_iff_lies_on {A : P} {seg_nd : SegND P} : A LiesOn seg_nd.reverse ↔ A LiesOn seg_nd :=
+  seg_nd.1.lies_on_rev_iff_lies_on
 
 /-- Given a nondegenerate segment, a point lies in the interior of the reverse of the segment if and only if it lies in the interior of the segment. -/
 @[simp]
-theorem SegND.lies_int_rev_iff_lies_int {A : P} {seg_nd : SegND P} : A LiesInt seg_nd.reverse ↔ A LiesInt seg_nd := seg_nd.1.lies_int_rev_iff_lies_int
-
+theorem SegND.lies_int_rev_iff_lies_int {A : P} {seg_nd : SegND P} : A LiesInt seg_nd.reverse ↔ A LiesInt seg_nd :=
+  seg_nd.1.lies_int_rev_iff_lies_int
 
 /-- Given a ray, a point $A$ lies on the ray if and only if there exists a nonpositive real number $t$ such that the vector from the source of the ray to $A$ is $t$ times the direction vector of the ray. -/
 theorem pt_lies_on_ray_rev_iff_vec_opposite_dir {A : P} {ray : Ray P} : A LiesOn ray.reverse ↔ ∃ t : ℝ, (t ≤ 0) ∧ VEC ray.source A = t • ray.toDir.unitVec := by
@@ -969,7 +1002,6 @@ theorem lies_on_iff_lies_on_toRay_and_rev_toRay {X : P} {seg_nd : SegND P} : X L
   linarith
   linarith
   rw [h, mul_smul, this, ← VecND.norm_smul_toDir_unitVec seg_nd.toVecND, smul_smul, smul_smul, mul_assoc, inv_mul_cancel (VecND.norm_ne_zero seg_nd.toVecND), mul_one]
-  rfl
 
 -- `This theorem really concerns about the total order on a line`
 /-- Let $ray$ be a ray, and let $A$ be a point on $ray$, and $B$ a point on the reverse of $ray$. Then $A$ lies on the ray starting at $B$ in the same direction of $\ray$. -/
@@ -1048,17 +1080,16 @@ theorem lies_on_or_rev_iff_exist_real_vec_eq_smul {A : P} {ray : Ray P} : (A Lie
     exact ⟨-t, neg_nonneg.mpr k.le, hu⟩
 
 /-- Given two distinct points $A$ and $B$ and a ray, if both $A$ and $B$ lies on the ray or its reversed ray, then the projective direction of the ray is the same as the projective direction of the ray $AB$. -/
-theorem ray_toProj_eq_mk_pt_pt_toProj {A B : P} {ray : Ray P} (h : B ≠ A) (ha : A LiesOn ray ∨ A LiesOn ray.reverse) (hb : B LiesOn ray ∨ B LiesOn ray.reverse) : ray.toProj = (RAY A B h).toProj := by
+theorem ray_toProj_eq_mk_pt_pt_toProj {A B : P} {ray : Ray P} [h : PtNe B A] (ha : A LiesOn ray ∨ A LiesOn ray.reverse) (hb : B LiesOn ray ∨ B LiesOn ray.reverse) : ray.toProj = (RAY A B).toProj := by
   rcases lies_on_or_rev_iff_exist_real_vec_eq_smul.mp ha with ⟨ta, eqa⟩
   rcases lies_on_or_rev_iff_exist_real_vec_eq_smul.mp hb with ⟨tb, eqb⟩
   have heq : VEC A B = (tb - ta) • ray.2.unitVecND := by rw [← vec_sub_vec _ A B, eqa, eqb, sub_smul]
-  have h0 : tb - ta ≠ 0 := (smul_ne_zero_iff.mp (heq.symm.trans_ne (vsub_ne_zero.mpr h))).1
+  have h0 : tb - ta ≠ 0 := (smul_ne_zero_iff.mp (heq.symm.trans_ne (vsub_ne_zero.mpr Fact.out))).1
   apply Dir.toProj_eq_toProj_iff_unitVec.mpr
-  use (tb - ta)⁻¹ * ‖VEC_nd A B h‖
+  use (tb - ta)⁻¹ * ‖VEC_nd A B‖
   simp [← (inv_smul_eq_iff₀ h0).mpr heq, Units.smul_def, mul_smul]
 
 end reverse
-
 
 section extension
 /-!
@@ -1198,44 +1229,53 @@ section length
 ## (8) Length
 -/
 
-/-- This function gives the length of a given segment, which is the norm of the vector associated to the segment. -/
+/-- This function gives the length of a given segment, which is the distance between the source and target of the segment. -/
 @[pp_dot]
-def Seg.length (seg : Seg P) : ℝ := norm (seg.toVec)
+def Seg.length (seg : Seg P) : ℝ := dist seg.source seg.target
 
 /-- The length of segment $AB$ is the same as the distance form $A$ to $B$. -/
-theorem Seg.length_eq_dist {A B : P} : (SEG A B).length = dist A B :=
-  ((dist_comm A B).trans (NormedAddTorsor.dist_eq_norm' B A)).symm
+@[simp]
+theorem Seg.length_eq_dist {A B : P} : (SEG A B).length = dist A B := rfl
+
+/-- The length of a given segment is the same as the norm of the vector associated to the segment. -/
+theorem Seg.length_eq_norm_toVec {seg : Seg P} : seg.length = norm seg.toVec :=
+  Eq.trans (dist_comm seg.source seg.target) (NormedAddTorsor.dist_eq_norm' _ _)
 
 /-- This function defines the length of a nondegenerate segment, which is just the length of the segment. -/
-def SegND.length (seg_nd : SegND P) : ℝ := seg_nd.1.length
+abbrev SegND.length (seg_nd : SegND P) : ℝ := seg_nd.1.length
 
 /-- Every segment has nonnegative length. -/
-theorem length_nonneg {seg : Seg P} : 0 ≤ seg.length := norm_nonneg _
+theorem length_nonneg {seg : Seg P} : 0 ≤ seg.length := dist_nonneg
 
 /-- A segment has positive length if and only if it is nondegenerate. -/
-theorem length_pos_iff_nd {seg : Seg P} : 0 < seg.length ↔ seg.IsND := norm_pos_iff.trans toVec_eq_zero_of_deg.symm.not
+theorem length_pos_iff_nd {seg : Seg P} : 0 < seg.length ↔ seg.IsND :=
+  dist_pos.trans ne_comm
+--norm_pos_iff.trans toVec_eq_zero_of_deg.symm.not
 
 /-- The length of a given segment is nonzero if and only if the segment is nondegenerate. -/
 theorem length_ne_zero_iff_nd {seg : Seg P} : 0 ≠ seg.length ↔ seg.IsND :=
-  (ne_iff_lt_iff_le.mpr (norm_nonneg _)).trans length_pos_iff_nd
+  (ne_iff_lt_iff_le.mpr dist_nonneg).trans length_pos_iff_nd
 
 /--  A nondegenerate segment has strictly positive length. -/
 theorem length_pos {seg_nd : SegND P} : 0 < seg_nd.length := length_pos_iff_nd.mpr seg_nd.2
 
 /-- Given a segment, the square of its length is equal to the the inner product of the associated vector with itself. -/
-theorem length_sq_eq_inner_toVec_toVec {seg : Seg P} : seg.length ^ 2 = inner seg.toVec seg.toVec :=
-  (real_inner_self_eq_norm_sq (Seg.toVec seg)).symm
+theorem length_sq_eq_inner_toVec_toVec {seg : Seg P} : seg.length ^ 2 = inner seg.toVec seg.toVec := by
+  rw [Seg.length_eq_norm_toVec]
+  exact (real_inner_self_eq_norm_sq (Seg.toVec seg)).symm
 
 /-- The length of a segment is zero if and only if it is degenerate, i.e. it has same source and target. -/
-theorem length_eq_zero_iff_deg {seg : Seg P} : seg.length = 0 ↔ (seg.target = seg.source) :=
-  ((toVec_eq_zero_of_deg).trans norm_eq_zero.symm).symm
+theorem length_eq_zero_iff_deg {seg : Seg P} : seg.length = 0 ↔ (seg.target = seg.source) := by
+  rw [Seg.length_eq_norm_toVec]
+  exact ((toVec_eq_zero_of_deg).trans norm_eq_zero.symm).symm
 
 
 /-- Reversing a segment does not change its length. -/
 @[simp]
 theorem Seg.length_of_rev_eq_length {seg : Seg P} : seg.reverse.length = seg.length := by
-  unfold Seg.length
+  rw [Seg.length_eq_norm_toVec]
   simp only [Complex.norm_eq_abs, Seg.toVec_of_rev_eq_neg_toVec, norm_neg]
+  exact (seg.length_eq_norm_toVec).symm
 
 /-- Reversing a segment does not change its length. -/
 @[simp]
@@ -1245,9 +1285,10 @@ theorem SegND.length_of_rev_eq_length {seg_nd : SegND P} : seg_nd.reverse.length
 
 /-- The length of segment $AB$ is the same as the length of segment $BA$. -/
 theorem length_of_rev_eq_length' {A B : P} : (SEG B A).length = (SEG A B).length := by
-  unfold Seg.length
+  rw [Seg.length_eq_norm_toVec]
   simp only [seg_toVec_eq_vec, Complex.norm_eq_abs]
   rw [← neg_vec, norm_neg]
+  exact ((SEG A B).length_eq_norm_toVec).symm
 
 /-- Given a segment and a point that lies on the segment, the additional point will separate the segment into two segments, whose lengths add up to the length of the original segment. -/
 theorem length_eq_length_add_length {seg : Seg P} {A : P} (lieson : A LiesOn seg) : seg.length = (SEG seg.source A).length + (SEG A seg.target).length := by
@@ -1257,7 +1298,7 @@ theorem length_eq_length_add_length {seg : Seg P} {A : P} (lieson : A LiesOn seg
     rw [c] at h
     rw [sub_smul, one_smul]
     exact eq_sub_of_add_eq' h.symm
-  rw [Seg.length, Seg.length, Seg.length, seg_toVec_eq_vec, seg_toVec_eq_vec, seg_toVec_eq_vec, c, s,
+  rw [Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec, seg_toVec_eq_vec, seg_toVec_eq_vec, seg_toVec_eq_vec, c, s,
     norm_smul, norm_smul, ← add_mul, Real.norm_of_nonneg a, Real.norm_of_nonneg (sub_nonneg.mpr b)]
   linarith
 
@@ -1275,7 +1316,7 @@ variable {X A : P}
 @[pp_dot]
 def Seg.midpoint (seg : Seg P): P := (1 / 2 : ℝ) • seg.toVec +ᵥ seg.source
 
-def SegND.midpoint (seg_nd : SegND P): P := seg_nd.1.midpoint
+abbrev SegND.midpoint (seg_nd : SegND P): P := seg_nd.1.midpoint
 
 theorem Seg.vec_source_midpt {seg : Seg P} : VEC seg.1 seg.midpoint = (1 / 2 : ℝ) • VEC seg.1 seg.2 := by
   simp only [midpoint, one_div, Complex.real_smul, Complex.ofReal_inv, vec_of_pt_vadd_pt_eq_vec]
@@ -1312,7 +1353,7 @@ theorem Seg.vec_eq_of_eq_midpt {seg : Seg P} (h : X = seg.midpoint) : VEC seg.1 
 theorem SegND.vec_eq_of_eq_midpt {seg_nd : SegND P} (h : A = seg_nd.midpoint) : VEC seg_nd.source A = VEC A seg_nd.target := by
   exact seg_nd.1.vec_eq_of_eq_midpt h
 
-/-- Given a segment $AB$ and a point P, if vector $\overrightarrow{AP}$ is half of vector $\overrightarrow{AB}$, P is the midpoint of $AB$  -/
+/-- Given a segment $AB$ and a point P, if vector $\overrightarrow{AP}$ is half of vector $\overrightarrow{AB}$, P is the midpoint of $AB$. -/
 theorem midpt_of_vector_from_source {seg : Seg P} (h : VEC seg.1 A = (1 / 2 : ℝ) • VEC seg.1 seg.2) :A = seg.midpoint := by
   rw [← start_vadd_vec_eq_end seg.1 A, h, Seg.midpoint]
   norm_num
@@ -1320,7 +1361,7 @@ theorem midpt_of_vector_from_source {seg : Seg P} (h : VEC seg.1 A = (1 / 2 : �
 theorem nd_midpt_of_vector_from_source {seg_nd : SegND P} (h : VEC seg_nd.source A = (1 / 2 : ℝ) • VEC seg_nd.source seg_nd.target) :A = seg_nd.midpoint := by
   exact midpt_of_vector_from_source h
 
-/-- Given a segment $AB$ and a point P, if vector $\overrightarrow{PB}$ is half of vector $\overrightarrow{AB}$, P is the midpoint of $AB$  -/
+/-- Given a segment $AB$ and a point P, if vector $\overrightarrow{PB}$ is half of vector $\overrightarrow{AB}$, P is the midpoint of $AB$. -/
 theorem midpt_of_vector_to_target {seg : Seg P} (h : VEC A seg.2 = (1 / 2 : ℝ) • VEC seg.1 seg.2) :A = seg.midpoint := by
   refine' midpt_of_vector_from_source _
   rw [← add_left_inj (VEC A seg.target), vec_add_vec, h, ← add_smul]
@@ -1329,7 +1370,7 @@ theorem midpt_of_vector_to_target {seg : Seg P} (h : VEC A seg.2 = (1 / 2 : ℝ)
 theorem nd_midpt_of_vector_to_target {seg_nd : SegND P} (h : VEC A seg_nd.target = (1 / 2 : ℝ) • VEC seg_nd.source seg_nd.target) :A = seg_nd.midpoint := by
   exact midpt_of_vector_to_target h
 
-/-- Given a segment $AB$ and a point P, if vector $\overrightarrow{AP}$ is same as vector $\overrightarrow{PB}$, P is the midpoint of $AB$  -/
+/-- Given a segment $AB$ and a point P, if vector $\overrightarrow{AP}$ is same as vector $\overrightarrow{PB}$, P is the midpoint of $AB$. -/
 theorem midpt_of_same_vector_to_source_and_target {seg : Seg P} (h : VEC seg.1 A = VEC A seg.2) :A = seg.midpoint := by
   refine' midpt_of_vector_from_source _
   apply smul_right_injective _ (two_ne_zero' ℝ)
@@ -1356,11 +1397,11 @@ theorem SegND.midpt_lies_int {seg_nd : SegND P} :seg_nd.midpoint LiesInt seg_nd 
 
 /-- The midpoint of a nondegenerate segment is not equal to the source of the segment. -/
 theorem SegND.midpt_ne_source {seg_nd : SegND P} : seg_nd.midpoint ≠ seg_nd.source :=
-  (seg_nd.midpt_lies_int).2.1
+  (seg_nd.midpt_lies_int).2
 
 /-- The midpoint of a nondegenerate segment is not equal to the target of the segment. -/
 theorem SegND.midpt_ne_target {seg_nd : SegND P} : seg_nd.midpoint ≠ seg_nd.target :=
-  (seg_nd.midpt_lies_int).2.2
+  (seg_nd.midpt_lies_int).3
 
 /-- The midpoint of a nondegenerate segment lies in the interior of the segment. -/
 theorem SegND.lies_int_of_eq_midpt {seg_nd : SegND P} (h : A = seg_nd.midpoint) : A LiesInt seg_nd := by
@@ -1375,7 +1416,9 @@ theorem SegND.midpt_iff_same_vector_to_source_and_target {X : P} {seg_nd : SegND
   ⟨fun h ↦ Seg.vec_eq_of_eq_midpt h, fun h ↦ midpt_of_same_vector_to_source_and_target h⟩
 
 /-- The midpoint of a segment has same distance to the source and to the target of the segment. -/
-theorem dist_target_eq_dist_source_of_midpt {seg : Seg P} : (SEG seg.source seg.midpoint).length = (SEG seg.midpoint seg.target).length := congrArg norm seg.vec_midpt_eq
+theorem dist_target_eq_dist_source_of_midpt {seg : Seg P} : (SEG seg.source seg.midpoint).length = (SEG seg.midpoint seg.target).length := by
+  rw [Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec]
+  exact congrArg norm seg.vec_midpt_eq
 
 /-- The midpoint of a segment has same distance to the source and to the target of the segment. -/
 theorem dist_target_eq_dist_source_of_eq_midpt {X : P} {seg : Seg P} (h : X = seg.midpoint) : (SEG seg.1 X).length = (SEG X seg.2).length := by
@@ -1386,7 +1429,8 @@ theorem dist_target_eq_dist_source_of_eq_midpt {X : P} {seg : Seg P} (h : X = se
 theorem eq_midpoint_iff_in_seg_and_dist_target_eq_dist_source {X : P} {seg : Seg P} : X = seg.midpoint ↔ (X LiesOn seg) ∧ (SEG seg.source X).length = (SEG X seg.target).length := by
   refine' ⟨fun h ↦ ⟨Seg.lies_on_of_eq_midpt h, dist_target_eq_dist_source_of_eq_midpt h⟩, _⟩
   intro ⟨⟨t, ht0, ht1, ht⟩, hv⟩
-  have hv : ‖VEC seg.1 X‖ = ‖VEC X seg.2‖ := hv
+  rw [Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec] at hv
+  simp only [seg_toVec_eq_vec] at hv
   by_cases h0 : ‖VEC X seg.2‖ = 0
   · apply midpt_of_same_vector_to_source_and_target
     rw [h0] at hv
@@ -1413,14 +1457,14 @@ section existence_theorem
 ## (10) Existence theorem
 -/
 
-/-- Given a segment $AB$, the midpoint of $A$ and $B + \overrightarrow{AB}$ is B  -/
+/-- Given a segment $AB$, the midpoint of $A$ and $B + \overrightarrow{AB}$ is B. -/
 theorem target_eq_vec_vadd_target_midpt {seg : Seg P} : seg.2 = (SEG seg.1 (seg.toVec +ᵥ seg.2)).midpoint :=
   midpt_of_same_vector_to_source_and_target (vadd_vsub seg.toVec seg.2).symm
 
 theorem SegND.target_eq_vec_vadd_target_midpt {seg_nd : SegND P} : seg_nd.target = (SEG seg_nd.source (seg_nd.toVecND.1 +ᵥ seg_nd.target)).midpoint :=
   midpt_of_same_vector_to_source_and_target (vadd_vsub seg_nd.toVecND.1 seg_nd.target).symm
 
-/-- Given a nondegenerate segment $AB$, B lies in the interior of the segment of $A(B + \overrightarrow{AB})$  -/
+/-- `This theorem should be replaced! B is midpt of A and B + VEC A B, midpt liesint a seg_nd` Given a nondegenerate segment $AB$, B lies in the interior of the segment of $A(B + \overrightarrow{AB})$. -/
 theorem SegND.target_lies_int_seg_source_vec_vadd_target {seg_nd : SegND P} : seg_nd.target LiesInt (SEG seg_nd.source (seg_nd.toVecND.1 +ᵥ seg_nd.target)) := sorry
   /- (SEG_nd seg_nd.1.1  <| fun h ↦ seg_nd.2 <| toVec_eq_zero_of_deg.mpr <| zero_eq_bit0.mp <|
     (vsub_eq_zero_iff_eq.mpr h).symm.trans <| vadd_vsub_assoc seg_nd.1.toVec
@@ -1433,26 +1477,26 @@ theorem SegND.exist_pt_beyond_pt (l : SegND P) : (∃ q : P, l.target LiesInt (S
 /-- Archimedean property II: On an nontrivial directed segment, one can always find a point in its interior.  `This will be moved to later disccusion about midpoint of a segment, as the midpoint is a point in the interior of a nontrivial segment`
     If a segment contains an interior point, then it is nondegenerate-/
 theorem Seg.nd_of_exist_int_pt {X : P} {seg : Seg P} (h : X LiesInt seg) : seg.IsND := by
-  rcases h with ⟨⟨_, ⟨_, _, e⟩⟩, ⟨p_ne_s, _⟩⟩
+  rcases h with ⟨⟨_, ⟨_, _, e⟩⟩, p_ne_s, _⟩
   have t : VEC seg.source X ≠ 0 := (ne_iff_vec_ne_zero seg.source X).mp p_ne_s
   rw [e] at t
   exact Iff.mp vsub_ne_zero (right_ne_zero_of_smul t)
 
-/-- A segment is nondegenerate if and only if it contains an interior point -/
+/-- A segment is nondegenerate if and only if it contains an interior point. -/
 theorem Seg.nd_iff_exist_int_pt {seg : Seg P} : (∃ (X : P), X LiesInt seg) ↔ seg.IsND :=
   ⟨fun ⟨_, b⟩ ↦ nd_of_exist_int_pt b, fun h ↦ ⟨seg.midpoint, SegND.midpt_lies_int (seg_nd :=⟨seg, h⟩)⟩⟩
 
-/-- If a segment is nondegenerate, it contains an interior point -/
+/-- If a segment is nondegenerate, it contains an interior point. -/
 theorem SegND.exist_int_pt {seg_nd : SegND P} : ∃ (X : P), X LiesInt seg_nd := ⟨seg_nd.midpoint, midpt_lies_int⟩
 
-/-- A segment contains an interior point if and only if its length is positive -/
+/-- A segment contains an interior point if and only if its length is positive. -/
 theorem Seg.length_pos_iff_exist_int_pt {seg : Seg P} : 0 < seg.length ↔ (∃ (X : P), X LiesInt seg) :=
   length_pos_iff_nd.trans nd_iff_exist_int_pt.symm
 
 theorem SegND.length_pos_iff_exist_int_pt {seg_nd : SegND P} : 0 < seg_nd.length ↔ (∃ (X : P), X LiesInt seg_nd) := by
   exact Seg.length_pos_iff_exist_int_pt
 
-/-- A r ay contains two distinct points -/
+/-- A ray contains two distinct points. -/
 theorem Ray.nontriv (ray : Ray P) : ∃ (A B : P), (A ∈ ray.carrier) ∧ (B ∈ ray.carrier) ∧ (B ≠ A) :=
   ⟨ray.1, (ray.2.unitVec +ᵥ ray.1), source_lies_on,
   ⟨1 ,zero_le_one ,(vec_of_pt_vadd_pt_eq_vec ray.1 ray.2.unitVecND).trans (one_smul ℝ ray.toDir.unitVec).symm⟩, by

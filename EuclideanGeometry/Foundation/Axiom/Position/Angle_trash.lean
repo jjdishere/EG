@@ -1,5 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
+import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 
 namespace EuclidGeom
 
@@ -11,18 +12,22 @@ theorem end_ray_toDir_rev_toDir_of_ang_rev_ang {ang₁ ang₂ : Angle P} (hs : a
 
 theorem start_ray_toDir_rev_toDir_of_ang_rev_ang {ang₁ ang₂ : Angle P} (hs : ang₁.end_ray.toDir = (ang₂.end_ray).reverse.toDir) (h : ang₁.value = ang₂.value) : ang₁.start_ray.toDir = (ang₂.start_ray).reverse.toDir := sorry
 
-theorem angle_value_eq_angle (A : P) (ray : Ray P) (h : A ≠ ray.1) : (Angle.mk_ray_pt ray A h).value = VecND.angle ray.2.unitVecND (VEC_nd ray.source A h) := sorry
+theorem angle_value_eq_angle (A : P) (ray : Ray P) [h : PtNe A ray.source] : (Angle.mk_ray_pt ray A h.out).value = VecND.angle ray.2.unitVecND (VEC_nd ray.source A) := sorry
 
 theorem ang_eq_ang_of_toDir_rev_toDir {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = - ang₂.start_ray.toDir) (he : ang₁.end_ray.toDir = - ang₂.end_ray.toDir) : ang₁.value = ang₂.value := sorry
 
-theorem eq_ang_of_lies_int_liesint {A A' B B' O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) (h₁' : A' ≠ O) (h₂' : B' ≠ O) (LiesInt1 : A' LiesInt (RAY O A h₁) )  (LiesInt2 :  B' LiesInt (RAY O B h₂) ) : ANG A O B h₁ h₂ = ANG A' O B' h₁' h₂' := sorry
+theorem angle_eq_zero_of_same_dir {A O : P} [h₁ : PtNe A O] : ∠ A O A = 0 := sorry
 
-theorem eq_ang_value_of_lies_int_lies_int {A A' B B' O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) (h₁' : A' ≠ O) (h₂' : B' ≠ O) (LiesInt1 : A' LiesInt (RAY O A h₁) )  (LiesInt2 :  B' LiesInt (RAY O B h₂) ) : ∠  A O B h₁ h₂ = ∠  A' O B' h₁' h₂' := sorry
+theorem eq_ang_of_lies_int_liesint {A A' B B' O: P} [h₁ : PtNe A O] [h₂ : PtNe B O] [h₁' : PtNe A' O] [h₂' : PtNe B' O] (LiesInt1 : A' LiesInt (RAY O A) )  (LiesInt2 :  B' LiesInt (RAY O B) ) : ANG A O B = ANG A' O B' := sorry
 
-theorem eq_ang_val_of_lieson_lieson {A A' B B' O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) (h₁' : A' ≠ O) (h₂' : B' ≠ O) (LiesInt1 : A' LiesInt (RAY O A h₁) )  (LiesInt2 :  B' LiesInt (RAY O B h₂) ) : ∠  A O B h₁ h₂ = ∠  A' O B' h₁' h₂' := sorry
+theorem eq_ang_value_of_lies_int_lies_int {A A' B B' O: P} [h₁ : PtNe A O] [h₂ : PtNe B O] [h₁' : PtNe A' O] [h₂' : PtNe B' O] (LiesInt1 : A' LiesInt (RAY O A) )  (LiesInt2 :  B' LiesInt (RAY O B) ) : ∠  A O B = ∠  A' O B' := sorry
+
+theorem eq_ang_val_of_lieson_lieson {A A' B B' O: P} [h₁ : PtNe A O] [h₂ : PtNe B O] [h₁' : PtNe A' O] [h₂' : PtNe B' O] (LiesInt1 : A' LiesInt (RAY O A) )  (LiesInt2 :  B' LiesInt (RAY O B) ) : ∠  A O B = ∠  A' O B' := sorry
 --Nailin Guan
-theorem neg_value_of_rev_ang {A B O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) : ∠ A O B h₁ h₂ = -∠ B O A h₂ h₁ := sorry
+theorem neg_value_of_rev_ang {A B O: P} [h₁ : PtNe A O] [h₂ : PtNe B O] : ∠ A O B = -∠ B O A := sorry
 
+theorem neg_dvalue_of_rev_ang {A B O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) : (ANG A O B h₁ h₂).dvalue = -(ANG B O A h₂ h₁).dvalue := sorry
+-- WangJingTing
 namespace Angle
 
 theorem end_ray_eq_value_vadd_start_ray (ang : Angle P) : ang.end_ray.toDir = ang.value +ᵥ ang.start_ray.toDir := sorry
@@ -64,6 +69,10 @@ theorem ang_value_rev_eq_neg_value {ang : Angle P} :  ang.reverse.value = - ang.
 
 end Angle
 
-theorem dvalue_eq_ang_rays_perp {ang : Angle P} (h : ang.dvalue = ((π / 2 : ℝ) : AngDValue)) : ang.start_ray ⟂ ang.end_ray := sorry
+theorem dvalue_eq_ang_rays_perp {ang : Angle P} (h : ang.dvalue = ∡[π / 2]) : ang.start_ray ⟂ ang.end_ray := by
+  show ang.start_ray.toProj = ∡[π / 2] +ᵥ ang.end_ray.toProj
+  sorry
+
+theorem liesint_segnd_value_eq_pi {A B C : P} (hne : B ≠ A) (h : C LiesInt (SEG_nd A B hne)) : ∠ A C B h.2.symm h.3.symm = π := sorry
 
 end EuclidGeom

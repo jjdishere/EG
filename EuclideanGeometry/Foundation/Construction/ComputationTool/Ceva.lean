@@ -9,51 +9,42 @@ namespace EuclidGeom
 
 open Classical
 
-variable {P : Type _} [EuclideanPlane P]
+class CevaCfgClass (P : outParam <| Type*) [outParam <| EuclideanPlane P] where
+  --Let $\triangle ABC$ be a (not necessarily nondegenerate) triangle.
+  (A B C : P)
+  --Let $D$ be a point not lying on $AB$, $BC$ and $CA$.
+  D : P
+  abd_nd : ¬colinear A B D
+  bcd_nd : ¬colinear B C D
+  cad_nd : ¬colinear C A D
 
-section Ceva's_theorem
+  a_ne_b : PtNe A B := ⟨(ne_of_not_colinear abd_nd).2.2.symm⟩
+  b_ne_c : PtNe B C := ⟨(ne_of_not_colinear bcd_nd).2.2.symm⟩
+  c_ne_a : PtNe C A := ⟨(ne_of_not_colinear cad_nd).2.2.symm⟩
+  d_ne_a : PtNe D A := ⟨(ne_of_not_colinear abd_nd).2.1.symm⟩
+  d_ne_b : PtNe D B := ⟨(ne_of_not_colinear bcd_nd).2.1.symm⟩
+  d_ne_c : PtNe D C := ⟨(ne_of_not_colinear cad_nd).2.1.symm⟩
 
---Let $\triangle ABC$ be a (not necessarily nondegenerate) triangle.
-variable {A B C : P}
+  --$BA$ is not parallel to $CD$
+  (ba_npara_cd : ¬ LIN B A ∥ LIN C D)
+  --$CB$ is not parallel to $AD$
+  (cb_npara_ad : ¬ LIN C B ∥ LIN A D)
+  --$AC$ is not parallel to $BD$
+  (ac_npara_bd : ¬ LIN A C ∥ LIN B D)
+  --Let $E$ be the intersection of $CB$ and $AD$
+  E : P
+  e_def : E = Line.inx (LIN C B) (LIN A D) cb_npara_ad
+  --Let $F$ be the intersection of $AC$ and $BD$
+  F : P
+  f_def : F = Line.inx (LIN A C) (LIN B D) ac_npara_bd
+  --Let $G$ be the intersection of $BA$ and $CD$
+  G : P
+  g_def : G = Line.inx (LIN B A) (LIN C D) ba_npara_cd
 
---Let $D$ be a point not lying on $AB$, $BC$ and $CA$.
-variable {D : P} (abd_nd : ¬ colinear A B D) (bcd_nd : ¬ colinear B C D) (cad_nd : ¬ colinear C A D)
+namespace CevaCfgClass
+variable {P : Type*} [EuclideanPlane P] [cfg : CevaCfgClass P]
 
---$A \ne B$
-lemma a_ne_b : A ≠ B := (ne_of_not_colinear abd_nd).2.2.symm
-
---$B \ne C$
-lemma b_ne_c : B ≠ C := (ne_of_not_colinear bcd_nd).2.2.symm
-
---$C \ne A$
-lemma c_ne_a : C ≠ A := (ne_of_not_colinear cad_nd).2.2.symm
-
---$D \ne A$
-lemma d_ne_a : D ≠ A := (ne_of_not_colinear abd_nd).2.1.symm
-
---$D \ne B$
-lemma d_ne_b : D ≠ B := (ne_of_not_colinear bcd_nd).2.1.symm
-
---$D \ne C$
-lemma d_ne_c : D ≠ C := (ne_of_not_colinear cad_nd).2.1.symm
-
---$BA$ is not parallel to $CD$
-variable (ba_npara_cd : ¬ (LIN B A (a_ne_b (abd_nd := abd_nd))) ∥ (LIN C D (d_ne_c (cad_nd := cad_nd))))
-
---$CB$ is not parallel to $AD$
-variable (cb_npara_ad : ¬ (LIN C B (b_ne_c (bcd_nd := bcd_nd))) ∥ (LIN A D (d_ne_a (abd_nd := abd_nd))))
-
---$AC$ is not parallel to $BD$
-variable (ac_npara_bd : ¬ (LIN A C (c_ne_a (cad_nd := cad_nd))) ∥ (LIN B D (d_ne_b (bcd_nd := bcd_nd))))
-
---Let $E$ be the intersection of $CB$ and $AD$
-variable (E : P) (e_def : E = Line.inx (LIN C B (b_ne_c (bcd_nd := bcd_nd))) (LIN A D (d_ne_a (abd_nd := abd_nd))) cb_npara_ad)
-
---Let $F$ be the intersection of $AC$ and $BD$
-variable (F : P) (f_def : F = Line.inx (LIN A C (c_ne_a (cad_nd := cad_nd))) (LIN B D (d_ne_b (bcd_nd := bcd_nd))) ac_npara_bd)
-
---Let $G$ be the intersection of $BA$ and $CD$
-variable (G : P) (g_def : G = Line.inx (LIN B A (a_ne_b (abd_nd := abd_nd))) (LIN C D (d_ne_c (cad_nd := cad_nd))) ba_npara_cd)
+attribute [instance] a_ne_b b_ne_c c_ne_a d_ne_a d_ne_b d_ne_c
 
 --$D,C,A$ are not colinear
 lemma ncolin_dca : ¬ colinear D C A := by
@@ -62,27 +53,28 @@ lemma ncolin_dca : ¬ colinear D C A := by
 
 --$E,B,C$ are colinear
 lemma colin_ebc : colinear E B C := by
-  have h : E LiesOn LIN C B (_ : B ≠ C) := by
+  have h : E LiesOn LIN C B := by
     rw [e_def]
     apply Line.inx_lies_on_fst
-  exact flip_colinear_fst_trd (Line.pt_pt_linear (_ : B ≠ C) h)
+  exact flip_colinear_fst_trd (Line.pt_pt_linear h)
 
 --$E,D,A$ are colinear
 lemma colin_eda : colinear E D A := by
-  have h : E LiesOn LIN A D (_ : D ≠ A) := by
+  have h : E LiesOn LIN A D := by
     rw [e_def]
     apply Line.inx_lies_on_snd
-  exact flip_colinear_fst_trd (Line.pt_pt_linear (_ : D ≠ A) h)
+  exact flip_colinear_fst_trd (Line.pt_pt_linear h)
 
 --$C\ne E$
-lemma c_ne_e : C ≠ E := by
-  have h : colinear E D A := (colin_eda (abd_nd := abd_nd) (bcd_nd := bcd_nd) (cb_npara_ad := cb_npara_ad) (e_def := e_def))
+instance c_ne_e : PtNe C E := Fact.mk <| by
+  have h : colinear E D A := colin_eda
   intro k
   rw [←k] at h
-  exact (ncolin_dca (cad_nd := cad_nd)) (flip_colinear_fst_snd h)
+  exact ncolin_dca (flip_colinear_fst_snd h)
 
 --$EB/EC=S_{\trian}DBA/S_{\trian}DCA$
-lemma dratio_ebc_eq_wedge_div_wedge : divratio E B C = (wedge D B A) / (wedge D C A) := ratio_eq_wedge_div_wedge_of_colinear_colinear_notcoliear E B C D A (colin_ebc (abd_nd := abd_nd) (bcd_nd := bcd_nd) (cb_npara_ad := cb_npara_ad) (e_def := e_def)) (c_ne_e (abd_nd := abd_nd) (bcd_nd := bcd_nd) (cad_nd := cad_nd) (cb_npara_ad := cb_npara_ad) (e_def := e_def)) (colin_eda (abd_nd := abd_nd) (bcd_nd := bcd_nd) (cb_npara_ad := cb_npara_ad) (e_def := e_def)) (ncolin_dca (cad_nd := cad_nd))
+lemma dratio_ebc_eq_wedge_div_wedge : divratio E B C = (wedge D B A) / (wedge D C A) :=
+  ratio_eq_wedge_div_wedge_of_colinear_colinear_notcoliear E B C D A colin_ebc colin_eda ncolin_dca
 
 --$D,A,B$ are not colinear
 lemma ncolin_dab : ¬ colinear D A B := by
@@ -91,27 +83,28 @@ lemma ncolin_dab : ¬ colinear D A B := by
 
 --$F,C,A$ are colinear
 lemma colin_fca : colinear F C A := by
-  have h : F LiesOn LIN A C (_ : C ≠ A) := by
+  have h : F LiesOn LIN A C := by
     rw [f_def]
     apply Line.inx_lies_on_fst
-  exact flip_colinear_fst_trd (Line.pt_pt_linear (_ : C ≠ A) h)
+  exact flip_colinear_fst_trd (Line.pt_pt_linear h)
 
 --$F,D,B$ are colinear
 lemma colin_fdb : colinear F D B := by
-  have h : F LiesOn LIN B D (_ : D ≠ B) := by
+  have h : F LiesOn LIN B D := by
     rw [f_def]
     apply Line.inx_lies_on_snd
-  exact flip_colinear_fst_trd (Line.pt_pt_linear (_ : D ≠ B) h)
+  exact flip_colinear_fst_trd (Line.pt_pt_linear h)
 
 --$A\ne F$
-lemma a_ne_f : A ≠ F := by
-  have h : colinear F D B := (colin_fdb (bcd_nd := bcd_nd) (cad_nd := cad_nd) (ac_npara_bd := ac_npara_bd) (f_def := f_def))
+instance a_ne_f : PtNe A F := Fact.mk <| by
+  have h : colinear F D B := colin_fdb
   intro k
   rw [←k] at h
-  exact (ncolin_dab (abd_nd := abd_nd)) (flip_colinear_fst_snd h)
+  exact ncolin_dab (flip_colinear_fst_snd h)
 
 --$FC/FA=S_{\trian}DCB/S_{\trian}DAB$
-lemma dratio_fca_eq_wedge_div_wedge : divratio F C A = (wedge D C B) / (wedge D A B) := ratio_eq_wedge_div_wedge_of_colinear_colinear_notcoliear F C A D B (colin_fca (bcd_nd := bcd_nd) (cad_nd := cad_nd) (ac_npara_bd := ac_npara_bd) (f_def := f_def)) (a_ne_f (bcd_nd := bcd_nd) (cad_nd := cad_nd) (abd_nd := abd_nd) (ac_npara_bd := ac_npara_bd) (f_def := f_def)) (colin_fdb (bcd_nd := bcd_nd) (cad_nd := cad_nd) (ac_npara_bd := ac_npara_bd) (f_def := f_def)) (ncolin_dab (abd_nd := abd_nd))
+lemma dratio_fca_eq_wedge_div_wedge : divratio F C A = (wedge D C B) / (wedge D A B) :=
+  ratio_eq_wedge_div_wedge_of_colinear_colinear_notcoliear F C A D B colin_fca colin_fdb ncolin_dab
 
 --$D,B,C$ are not colinear
 lemma ncolin_dbc : ¬ colinear D B C := by
@@ -120,39 +113,72 @@ lemma ncolin_dbc : ¬ colinear D B C := by
 
 --$G,A,B$ are colinear
 lemma colin_gab : colinear G A B := by
-  have h : G LiesOn LIN B A (_ : A ≠ B) := by
+  have h : G LiesOn LIN B A _ := by
     rw [g_def]
     apply Line.inx_lies_on_fst
-  exact flip_colinear_fst_trd (Line.pt_pt_linear (_ : A ≠ B) h)
+  exact flip_colinear_fst_trd (Line.pt_pt_linear h)
 
 --$G,D,C$ are colinear
 lemma colin_gdc : colinear G D C := by
-  have h : G LiesOn LIN C D (_ : D ≠ C) := by
+  have h : G LiesOn LIN C D _ := by
     rw [g_def]
     apply Line.inx_lies_on_snd
-  exact flip_colinear_fst_trd (Line.pt_pt_linear (_ : D ≠ C) h)
+  exact flip_colinear_fst_trd (Line.pt_pt_linear h)
 
 --$A\ne F$
-lemma b_ne_g : B ≠ G := by
-  have h : colinear G D C := (colin_gdc (cad_nd := cad_nd) (abd_nd := abd_nd) (ba_npara_cd := ba_npara_cd) (g_def := g_def))
+instance b_ne_g : PtNe B G := Fact.mk <| by
+  have h : colinear G D C := colin_gdc
   intro k
   rw [←k] at h
-  exact (ncolin_dbc (bcd_nd := bcd_nd)) (flip_colinear_fst_snd h)
+  exact ncolin_dbc (flip_colinear_fst_snd h)
 
 --$GA/GB=S_{\trian}DAC/S_{\trian}DBC$
-lemma dratio_gab_eq_wedge_div_wedge : divratio G A B = (wedge D A C) / (wedge D B C) := ratio_eq_wedge_div_wedge_of_colinear_colinear_notcoliear G A B D C (colin_gab (cad_nd := cad_nd) (abd_nd := abd_nd) (ba_npara_cd := ba_npara_cd) (g_def := g_def)) (b_ne_g (cad_nd := cad_nd) (abd_nd := abd_nd) (bcd_nd := bcd_nd) (ba_npara_cd := ba_npara_cd) (g_def := g_def)) (colin_gdc (cad_nd := cad_nd) (abd_nd := abd_nd) (ba_npara_cd := ba_npara_cd) (g_def := g_def)) (ncolin_dbc (bcd_nd := bcd_nd))
+lemma dratio_gab_eq_wedge_div_wedge : divratio G A B = (wedge D A C) / (wedge D B C) := ratio_eq_wedge_div_wedge_of_colinear_colinear_notcoliear G A B D C colin_gab colin_gdc ncolin_dbc
 
 lemma wedge_div_wedge_mul_eq_minus_one : (wedge D B A)/(wedge D C A) * ((wedge D C B)/(wedge D A B)) * ((wedge D A C)/(wedge D B C)) = -1 := by
   rw [wedge132 D A B, wedge132 D B C, wedge132 D C A]
-  have h0 : wedge D A B ≠ 0 := (not_colinear_iff_wedge_ne_zero D A B).mp (ncolin_dab (abd_nd := abd_nd))
-  have h1 : wedge D B C ≠ 0 := (not_colinear_iff_wedge_ne_zero D B C).mp (ncolin_dbc (bcd_nd := bcd_nd))
-  have h1 : wedge D C A ≠ 0 := (not_colinear_iff_wedge_ne_zero D C A).mp (ncolin_dca (cad_nd := cad_nd))
+  have h0 : wedge D A B ≠ 0 := (not_colinear_iff_wedge_ne_zero D A B).mp ncolin_dab
+  have h1 : wedge D B C ≠ 0 := (not_colinear_iff_wedge_ne_zero D B C).mp ncolin_dbc
+  have h1 : wedge D C A ≠ 0 := (not_colinear_iff_wedge_ne_zero D C A).mp ncolin_dca
   field_simp
   ring
 
 theorem ceva_theorem : (divratio E B C) * (divratio F C A) * (divratio G A B) = -1 := by
-  rw[dratio_ebc_eq_wedge_div_wedge (abd_nd := abd_nd) (bcd_nd := bcd_nd) (cad_nd := cad_nd) (cb_npara_ad := cb_npara_ad) (e_def := e_def), dratio_fca_eq_wedge_div_wedge (abd_nd := abd_nd) (bcd_nd := bcd_nd) (cad_nd := cad_nd) (ac_npara_bd := ac_npara_bd) (f_def := f_def), dratio_gab_eq_wedge_div_wedge (abd_nd := abd_nd) (bcd_nd := bcd_nd) (cad_nd := cad_nd) (ba_npara_cd := ba_npara_cd) (g_def := g_def), wedge_div_wedge_mul_eq_minus_one (abd_nd := abd_nd) (bcd_nd := bcd_nd) (cad_nd := cad_nd)]
+  rw[dratio_ebc_eq_wedge_div_wedge, dratio_fca_eq_wedge_div_wedge, dratio_gab_eq_wedge_div_wedge, wedge_div_wedge_mul_eq_minus_one]
 
-end Ceva's_theorem
+end CevaCfgClass
+
+def CevaCfg (P : Type*) [EuclideanPlane P] := CevaCfgClass P
+
+lemma CevaCfg.ceva_theorem {P : Type*} [EuclideanPlane P] (cfg : CevaCfg P) :
+    (divratio cfg.E cfg.B cfg.C) * (divratio cfg.F cfg.C cfg.A) * (divratio cfg.G cfg.A cfg.B) = -1 :=
+  CevaCfgClass.ceva_theorem (cfg := cfg)
+
+variable {P : Type*} [EuclideanPlane P] {A B C D : P}
+  (abd_nd : ¬colinear A B D)
+  (bcd_nd : ¬colinear B C D)
+  (cad_nd : ¬colinear C A D)
+  (ba_npara_cd : ¬ LIN B A (ne_of_not_colinear abd_nd).2.2.symm ∥ LIN C D (ne_of_not_colinear cad_nd).2.1.symm)
+  (cb_npara_ad : ¬ LIN C B (ne_of_not_colinear bcd_nd).2.2.symm ∥ LIN A D (ne_of_not_colinear abd_nd).2.1.symm)
+  (ac_npara_bd : ¬ LIN A C (ne_of_not_colinear cad_nd).2.2.symm ∥ LIN B D (ne_of_not_colinear bcd_nd).2.1.symm)
+  (E : P)
+  (e_def : E = Line.inx (LIN C B (ne_of_not_colinear bcd_nd).2.2.symm) (LIN A D (ne_of_not_colinear abd_nd).2.1.symm) cb_npara_ad)
+  (F : P)
+  (f_def : F = Line.inx (LIN A C (ne_of_not_colinear cad_nd).2.2.symm) (LIN B D (ne_of_not_colinear bcd_nd).2.1.symm) ac_npara_bd)
+  (G : P)
+  (g_def : G = Line.inx (LIN B A (ne_of_not_colinear abd_nd).2.2.symm) (LIN C D (ne_of_not_colinear cad_nd).2.1.symm) ba_npara_cd)
+
+theorem ceva_theorem : (divratio E B C) * (divratio F C A) * (divratio G A B) = -1 :=
+  let cfg : CevaCfg P :=
+  { abd_nd := abd_nd
+    bcd_nd := bcd_nd
+    cad_nd := cad_nd
+    ba_npara_cd := ba_npara_cd
+    cb_npara_ad := cb_npara_ad
+    ac_npara_bd := ac_npara_bd
+    e_def := e_def
+    f_def := f_def
+    g_def := g_def }
+  cfg.ceva_theorem
 
 end EuclidGeom

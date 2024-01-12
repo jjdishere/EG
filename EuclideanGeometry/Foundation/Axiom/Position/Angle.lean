@@ -9,7 +9,7 @@ namespace EuclidGeom
 def DirObj.AngDiff {α β} [DirObj α] [DirObj β] (F : α) (G : β) : AngValue := toDir G -ᵥ toDir F
 
 /- Define values of oriented angles, in (-π, π], modulo 2 π. -/
-/- Define oriented angles, ONLY taking in two rays starting at one point!  And define ways to construct oriented angles, by given three points on the plane, and etc.  -/
+/- Define oriented angles, ONLY taking in two rays starting at one point! And define ways to construct oriented angles, by given three points on the plane, and etc.  -/
 @[ext]
 structure Angle (P : Type _) [EuclideanPlane P] where
   start_ray : Ray P
@@ -20,12 +20,13 @@ variable {P : Type _} [EuclideanPlane P]
 
 namespace Angle
 
+/-- Given vertex $O$ and two distinct points $A$ and $B$, this function returns the angle formed by rays $OA$ and $OB$. We use $\verb|ANG|$ to abbreviate $\verb|Angle.mk_pt_pt_pt|$. -/
 def mk_pt_pt_pt (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O): Angle P where
   start_ray := Ray.mk_pt_pt O A h₁
   end_ray := Ray.mk_pt_pt O B h₂
   source_eq_source := rfl
 
-def mk_ray_pt (ray : Ray P) (A : P) (h : A ≠ ray.source ) : Angle P where
+def mk_ray_pt (ray : Ray P) (A : P) (h : A ≠ ray.source) : Angle P where
   start_ray := ray
   end_ray := Ray.mk_pt_pt ray.source A h
   source_eq_source := rfl
@@ -37,9 +38,9 @@ def mk_dirline_dirline (l₁ l₂ : DirLine P) (h : ¬ l₁ ∥ l₂) : Angle P 
 
 def value (A : Angle P) : AngValue := A.end_ray.toDir -ᵥ A.start_ray.toDir
 
-def dvalue (A : Angle P) : AngDValue := (A.value : AngDValue)
+abbrev dvalue (A : Angle P) : AngDValue := (A.value : AngDValue)
 
-def IsND (ang : Angle P) : Prop := ang.value ≠ 0 ∧ ang.value ≠ π
+abbrev IsND (ang : Angle P) : Prop := ang.value.IsND
 
 protected def source (ang : Angle P) : P := ang.start_ray.source
 
@@ -47,14 +48,61 @@ end Angle
 
 theorem angle_value_eq_dir_angle (r r' : Ray P) (h : r.source = r'.source) : (Angle.mk r r' h).value = r'.toDir -ᵥ r.toDir := rfl
 
+/-- The value of $\verb|Angle.mk_pt_pt_pt| A O B$. We use ∠ to abbreviate $\verb|Angle.value_of_angle_of_three_point_nd|$.-/
 def value_of_angle_of_three_point_nd (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O) : AngValue :=
-  (Angle.mk_pt_pt_pt _ _ _ h₁ h₂).value
+  (Angle.mk_pt_pt_pt A O B h₁ h₂).value
 
 def value_of_angle_of_two_ray_of_eq_source (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : AngValue := (Angle.mk start_ray end_ray h).value
 
-scoped notation "ANG" => Angle.mk_pt_pt_pt
+@[inherit_doc Angle.mk_pt_pt_pt]
+scoped syntax "ANG" ws term:max ws term:max ws term:max (ws term:max ws term:max)? : term
 
-scoped notation "∠" => value_of_angle_of_three_point_nd
+macro_rules
+  | `(ANG $A $B $C) => `(Angle.mk_pt_pt_pt $A $B $C (@Fact.out _ inferInstance) (@Fact.out _ inferInstance))
+  | `(ANG $A $B $C $h₁ $h₂) => `(Angle.mk_pt_pt_pt $A $B $C $h₁ $h₂)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `Angle.mk_pt_pt_pt` -/
+@[delab app.EuclidGeom.Angle.mk_pt_pt_pt]
+def delabAngleMkPtPtPt : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``Angle.mk_pt_pt_pt 7
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  let C ← withNaryArg 4 delab
+  let ⟨b₁, h₁⟩ ← withNaryArg 5 do
+    return ((← getExpr).isAppOfArity' ``Fact.out 2, ← delab)
+  let ⟨b₂, h₂⟩ ← withNaryArg 6 do
+    return ((← getExpr).isAppOfArity' ``Fact.out 2, ← delab)
+  if b₁ && b₂ then
+    `(ANG $A $B $C)
+  else
+    `(ANG $A $B $C $h₁ $h₂)
+
+@[inherit_doc value_of_angle_of_three_point_nd]
+scoped syntax "∠" ws term:max ws term:max ws term:max (ws term:max ws term:max)? : term
+
+macro_rules
+  | `(∠ $A $B $C) => `(value_of_angle_of_three_point_nd $A $B $C (@Fact.out _ inferInstance) (@Fact.out _ inferInstance))
+  | `(∠ $A $B $C $h₁ $h₂) => `(value_of_angle_of_three_point_nd $A $B $C $h₁ $h₂)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `value_of_angle_of_three_point_nd` -/
+@[delab app.EuclidGeom.value_of_angle_of_three_point_nd]
+def delabValueOfAngleOfThreePointND : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``value_of_angle_of_three_point_nd 7
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  let C ← withNaryArg 4 delab
+  let ⟨b₁, h₁⟩ ← withNaryArg 5 do
+    return ((← getExpr).isAppOfArity' ``Fact.out 2, ← delab)
+  let ⟨b₂, h₂⟩ ← withNaryArg 6 do
+    return ((← getExpr).isAppOfArity' ``Fact.out 2, ← delab)
+  if b₁ && b₂ then
+    `(∠ $A $B $C)
+  else
+    `(∠ $A $B $C $h₁ $h₂)
 
 namespace Angle
 

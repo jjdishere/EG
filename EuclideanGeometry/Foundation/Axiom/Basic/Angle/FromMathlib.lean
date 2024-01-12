@@ -283,21 +283,27 @@ theorem cos_add (θ₁ θ₂ : AngValue) : cos (θ₁ + θ₂) = cos θ₁ * cos
 theorem cos_sq_add_sin_sq (θ : AngValue) : cos θ ^ 2 + sin θ ^ 2 = 1 :=
   Angle.cos_sq_add_sin_sq _
 
+@[simp]
 theorem sin_add_pi_div_two (θ : AngValue) : sin (θ + ↑(π / 2)) = cos θ :=
   Angle.sin_add_pi_div_two _
 
+@[simp]
 theorem sin_sub_pi_div_two (θ : AngValue) : sin (θ - ↑(π / 2)) = -cos θ :=
   Angle.sin_sub_pi_div_two _
 
+@[simp]
 theorem sin_pi_div_two_sub (θ : AngValue) : sin (↑(π / 2) - θ) = cos θ :=
   Angle.sin_pi_div_two_sub _
 
+@[simp]
 theorem cos_add_pi_div_two (θ : AngValue) : cos (θ + ↑(π / 2)) = -sin θ :=
   Angle.cos_add_pi_div_two _
 
+@[simp]
 theorem cos_sub_pi_div_two (θ : AngValue) : cos (θ - ↑(π / 2)) = sin θ :=
   Angle.cos_sub_pi_div_two _
 
+@[simp]
 theorem cos_pi_div_two_sub (θ : AngValue) : cos (↑(π / 2) - θ) = sin θ :=
   Angle.cos_pi_div_two_sub _
 

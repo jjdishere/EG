@@ -42,6 +42,14 @@ variable {P : Type*} {α β γ}
 
 section carrier
 
+abbrev PtNe [EuclideanPlane P] (A B : P) : Prop :=
+  Fact <| A ≠ B
+
+instance PtNe.symm [EuclideanPlane P] {A B : P} [h : PtNe A B] : PtNe B A := ⟨h.out.symm⟩
+
+@[simp]
+lemma pt_ne [EuclideanPlane P] {A B : P} [h : PtNe A B] : A ≠ B := @Fact.out _ h
+
 /-- The class of plane figures. We say `α` is a plane figure, if for every given Euclidean plane `P`, `α P` is a collection of specific figures on `P`, each equipped with a carrier set of type `Set P`. -/
 class Fig (α : Type*) (P : outParam <| Type*) where
   carrier : α → Set P
@@ -54,9 +62,9 @@ class Interior (α : Type*) (P : outParam <| Type*) where
 class IntFig (α : Type*) (P : outParam <| Type*) extends Fig α P, Interior α P where
     interior_subset_carrier : ∀ (F : α), interior F ⊆ carrier F
 
-def lies_on [Fig α P] (A : P) (F : α) : Prop := A ∈ (Fig.carrier F)
+def lies_on [Fig α P] (A : P) (F : α) : Prop := A ∈ Fig.carrier F
 
-def lies_int [Interior α P] (A : P) (F : α) := A ∈ (Interior.interior F)
+def lies_int [Interior α P] (A : P) (F : α) := A ∈ Interior.interior F
 
 -- def lies_in [Interior α] (A : P) (F : α) : Prop := lies_int A F ∨ lies_on A F
 

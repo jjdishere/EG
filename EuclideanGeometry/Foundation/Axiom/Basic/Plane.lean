@@ -53,8 +53,11 @@ theorem neg_vec (A B : P) : - VEC A B = VEC B A := by
   rw [Vec.mkPtPt, Vec.mkPtPt, neg_vsub_eq_vsub_rev]
 
 @[simp]
-theorem neg_vec_norm_eq (A B : P) : ‖VEC A B‖ = ‖VEC B A‖ := by
-  rw [← neg_vec A B, norm_neg]
+theorem neg_vec_norm_eq (A B : P) : ‖- VEC A B‖ = ‖VEC A B‖ := by
+  rw [norm_neg]
+
+theorem vec_norm_eq_rev (A B : P) : ‖VEC A B‖ = ‖VEC B A‖ := by
+  rw [← neg_vec, neg_vec_norm_eq]
 
 theorem eq_iff_vec_eq_zero (A B : P) : B = A ↔ VEC A B = 0 := vsub_eq_zero_iff_eq.symm
 
@@ -66,6 +69,12 @@ theorem vec_add_vec (A B C : P) : VEC A B + VEC B C = VEC A C := by
 
 @[simp]
 theorem vec_of_pt_vadd_pt_eq_vec (A : P) (v : Vec) : VEC A (v +ᵥ A) = v := vadd_vsub v A
+
+@[simp]
+theorem vec_of_vadd_pt_pt_eq_neg_vec (A : P) (v : Vec) : VEC (v +ᵥ A) A = - v := by
+  rw [← neg_vec]
+  congr
+  exact vec_of_pt_vadd_pt_eq_vec _ _
 
 @[simp]
 theorem vec_sub_vec (O A B: P) : VEC O B - VEC O A = VEC A B := by
@@ -83,9 +92,28 @@ theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = t
 
 def VecND.mkPtPt (A B : P) (h : B ≠ A) : VecND := ⟨Vec.mkPtPt A B, (ne_iff_vec_ne_zero A B).mp h⟩
 
-scoped notation "VEC_nd" => VecND.mkPtPt
+@[inherit_doc VecND.mkPtPt]
+scoped syntax "VEC_nd" ws term:max ws term:max (ws term:max)? : term
+
+macro_rules
+  | `(VEC_nd $A $B) => `(VecND.mkPtPt $A $B (@Fact.out _ inferInstance))
+  | `(VEC_nd $A $B $h) => `(VecND.mkPtPt $A $B $h)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `VecND.mkPtPt` -/
+@[delab app.EuclidGeom.VecND.mkPtPt]
+def delabVecNDMkPtPt : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``VecND.mkPtPt 5
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  withNaryArg 4 do
+    if (← getExpr).isAppOfArity' ``Fact.out 2 then
+      `(VEC_nd $A $B)
+    else
+      `(VEC_nd $A $B $(← delab))
 
 @[simp]
-lemma VecND.coe_mkPtPt (A B : P) (h : B ≠ A) : VEC_nd A B h = VEC A B := rfl
+lemma VecND.coe_mkPtPt (A B : P) [_h : Fact (B ≠ A)] : VEC_nd A B = VEC A B := rfl
 
 end EuclidGeom

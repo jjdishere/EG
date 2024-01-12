@@ -16,11 +16,11 @@ Prove that $CE = DE$ -/
 -- Let $\triangle ABC$ be a regular triangle
 variable {A B C : P} {hnd : ¬ colinear A B C} {hreg : (▵ A B C).IsRegular}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- Let $E$ be a point on the extension of $BA$ and $D$ a point on the extension of $BC$
-variable {D E : P} {he : D LiesInt (SEG_nd B C b_ne_c.symm).extension} {he : E LiesInt (SEG_nd B A a_ne_b).extension}
+variable {D E : P} {he : D LiesInt (SegND B C b_ne_c.symm).extension} {he : E LiesInt (SegND B A a_ne_b).extension}
 -- We have $AE = BD$
 variable {h : (SEG A E).length = (SEG B D).length}
 
@@ -37,12 +37,12 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
   have d_ne_b : D ≠ B := sorry
   have e_ne_b : E ≠ B := sorry
   -- Extend $BD$ to $F$ such that $DF = CB$
-  let F := Ray.extpoint (SEG_nd B D d_ne_b).extension (SEG B C).length
+  let F := Ray.extpoint (SegND B D d_ne_b).extension (SEG B C).length
   have df_eq_cb : (SEG D F).length = (SEG C B).length := by
     calc
       -- $DF = BC$ from above
       _ = (SEG B C).length := by
-        apply seg_length_eq_dist_of_extpoint (SEG_nd B D d_ne_b).extension
+        apply seg_length_eq_dist_of_extpoint (SegND B D d_ne_b).extension
         simp
         exact length_nonneg
       -- $BC = CB$ by symmetry
@@ -53,17 +53,17 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
   have d_ne_f : D ≠ F := sorry
   have e_ne_f : E ≠ F := sorry
   -- $F$ lies in extension of $BD$
-  have f_lies_int_bd_extn : F LiesInt (SEG_nd B D d_ne_b).extension := by
+  have f_lies_int_bd_extn : F LiesInt (SegND B D d_ne_b).extension := by
     apply lies_int_of_pos_extpoint (r := (SEG B C).length)
     simp
     rw [length_pos_iff_nd]
     exact b_ne_c
   -- $D$ lies on $BF$
-  have d_lies_on_bf : D LiesOn (SEG_nd B F f_ne_b) :=  SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn f_lies_int_bd_extn)
+  have d_lies_on_bf : D LiesOn (SegND B F f_ne_b) :=  SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn f_lies_int_bd_extn)
   -- $C$ lies on $BF$
-  have c_lies_on_bf : C LiesOn (SEG_nd B F f_ne_b) := sorry
+  have c_lies_on_bf : C LiesOn (SegND B F f_ne_b) := sorry
   -- $A$ lies on $BE$
-  have a_lies_on_be : A LiesOn (SEG_nd B E e_ne_b) := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn he)
+  have a_lies_on_be : A LiesOn (SegND B E e_ne_b) := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn he)
   -- $BF = BD + DF = AE + AB = BE$
   have bf_eq_be : (SEG B F).length = (SEG B E).length := by
     calc
@@ -90,10 +90,10 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
   have ang₁ : ∠ F B E f_ne_b e_ne_b = ∠ C B A c_ne_a a_ne_b := by
     apply eq_ang_value_of_lies_int_lies_int
     constructor
-    exact SegND.lies_on_toray_of_lies_on c_lies_on_bf
+    exact SegND.lies_on_toRay_of_lies_on c_lies_on_bf
     exact b_ne_c.symm
     constructor
-    exact SegND.lies_on_toray_of_lies_on a_lies_on_be
+    exact SegND.lies_on_toRay_of_lies_on a_lies_on_be
     exact a_ne_b
   -- $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
   have ang_ebf_eq_sixty : ∠ F B E f_ne_b e_ne_b = ↑ (π / 3) ∨  ∠ F B E f_ne_b e_ne_b = ↑ (- π / 3) := by
@@ -153,13 +153,13 @@ Prove that quadrilateral $ABCH$ is parallelogram -/
 -- We have triangle $\triangle ABC$
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $D$ is midpoint of $BA$, $E$ is midpoint of $BC$
 variable {D E : P} {hd : D = (SEG B A).midpoint} {he : E = (SEG B C).midpoint}
 -- $F,G$ are points of trisection of $AC$
-variable {F G : P} {hf : F LiesInt (SEG_nd A C c_ne_a).1} {he : E LiesInt (SEG_nd A C c_ne_a).1} {htri : (SEG A F).length = (SEG F G).length ∧ (SEG F G).length = (SEG G C).length}
+variable {F G : P} {hf : F LiesInt (SegND A C c_ne_a).1} {he : E LiesInt (SegND A C c_ne_a).1} {htri : (SEG A F).length = (SEG F G).length ∧ (SEG F G).length = (SEG G C).length}
 -- Claim: $F \ne D$ and $G \ne E$
 lemma f_ne_d : F ≠ D := sorry
 lemma g_ne_e : G ≠ E := sorry
@@ -181,26 +181,26 @@ Prove that $AG \parallel DC$-/
 -- We have triangle $\triangle ABC$
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $D,E$ are points in $AB,AC$ respectively
-variable {D E : P} {hd : D LiesInt (SEG_nd A B a_ne_b.symm).1} {he : E LiesInt (SEG_nd A C c_ne_a).1}
+variable {D E : P} {hd : D LiesInt (SegND A B A_ne_B.symm).1} {he : E LiesInt (SegND A C c_ne_a).1}
 -- $F,G$ are points lies on line $BC$
-variable {F G : P} {hf : F LiesOn (LIN B C b_ne_c.symm)} {hg : G LiesOn (LIN B C b_ne_c.symm)}
+variable {F G : P} {hf : F LiesOn (LIN B C B_ne_C.symm)} {hg : G LiesOn (LIN B C B_ne_C.symm)}
 -- We have $FB = CG$
 variable {hedge : (SEG F B).length = (SEG C G).length}
 -- Claim : $F \ne A$ and $E \ne B$
 lemma f_ne_a : F ≠ A := sorry
-lemma e_ne_b : E ≠ B := sorry
+lemma e_ne_B : E ≠ B := sorry
 -- We have $AF \parallel BE$
-variable {hpara : (SEG_nd A F f_ne_a) ∥ (SEG_nd B E e_ne_b)}
+variable {hpara : (SegND A F f_ne_a) ∥ (SegND B E e_ne_B)}
 -- Claim: $G \ne A$ and $D \ne C$
 lemma g_ne_a : G ≠ A := sorry
-lemma d_ne_c : D ≠ C := sorry
+lemma d_ne_C : D ≠ C := sorry
 
 -- Theorem : $AG \parallel DC$
-theorem Shan_Problem_2_36 : (SEG_nd A G g_ne_a) ∥ (SEG_nd C D d_ne_c) := sorry
+theorem Shan_Problem_2_36 : (SegND A G g_ne_a) ∥ (SegND C D d_ne_C) := sorry
 
 end Shan_Problem_2_36
 
@@ -215,11 +215,11 @@ Prove that $AF = 3 FB$ -/
 variable {A B C : P} {hnd : ¬ colinear A B C} {hacute : TriangleND.IsAcute (TRI_nd A B C hnd)}
 -- 这个题应该需要加锐角三角形的限制，否则需要条件中的$AE = 2 EC$是有向线段的相等
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $BE, CF$ are heights
-variable {E F : P} {he : E = perp_foot B (LIN A C c_ne_a)} {hf : F = perp_foot C (LIN A B a_ne_b.symm)}
+variable {E F : P} {he : E = perp_foot B (LIN A C c_ne_a)} {hf : F = perp_foot C (LIN A B A_ne_B.symm)}
 -- 之后应该会需要一个锐角三角形中，垂足落在边的内部的定理
 -- We have $AE = 2 EC$
 variable {h : (SEG A E).length = 2 * (SEG E C).length}
@@ -237,22 +237,22 @@ Prove that $EF \parallel BC$-/
 -- We have triangle $\triangle ABC$
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $D$ is the midpoint of $BC$
 variable {D : P} {hd : D = (SEG B C).midpoint}
 -- Claim: $A \ne D$ and $B \ne D$ and $C \ne D$
-lemma a_ne_d : A ≠ D := sorry
-lemma b_ne_d : B ≠ D := sorry
+lemma A_ne_d : A ≠ D := sorry
+lemma B_ne_d : B ≠ D := sorry
 lemma c_ne_d : C ≠ D := sorry
 -- let the angle bisectors of $\angle ADB$ and $\angle ADC$ intersect $AB$ and $AC$ at $E,F$
-variable {E F : P} {he : is_inx E (ANG A D B a_ne_d b_ne_d).AngBis (SEG A B)} {hf : is_inx F (ANG A D C a_ne_d c_ne_d).AngBis (SEG A C)}
+variable {E F : P} {he : is_inx E (ANG A D B A_ne_d B_ne_d).AngBis (SEG A B)} {hf : is_inx F (ANG A D C A_ne_d c_ne_d).AngBis (SEG A C)}
 -- Claim: $F \ne E$
 lemma f_ne_e : F ≠ E := sorry
 
 -- Theorem : $EF \parallel BC$
-theorem Shan_Problem_2_38 : (SEG_nd E F f_ne_e) ∥ (SEG_nd B C b_ne_c.symm) := sorry
+theorem Shan_Problem_2_38 : (SegND E F f_ne_e) ∥ (SegND B C B_ne_C.symm) := sorry
 
 end Shan_Problem_2_38
 
@@ -284,14 +284,14 @@ Prove that $EG + FH = AC$-/
 -- We have triangle $\triangle ABC$
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 -- $E,F$ lies on $AB$ such that $AE = FB$
 variable {E F : P} {he : E LiesInt (SEG A B)} {hf : F LiesInt (SEG A B)} {hef : (SEG A E).length = (SEG F B).length}
 -- 此处以后可能会专门加上过一个点做平行线的定义,从而更改条件的叙述
 -- $l_1,l_2$ are parallel lines to $AC$ of $E,F$ respectively
-variable {l₁ l₂ : Line P} {hl₁ : l₁ ∥ (SEG_nd A C c_ne_a) ∧ E LiesOn l₁} {hl₂ : l₂ ∥ (SEG_nd A C c_ne_a) ∧ F LiesOn l₂}
+variable {l₁ l₂ : Line P} {hl₁ : l₁ ∥ (SegND A C c_ne_a) ∧ E LiesOn l₁} {hl₂ : l₂ ∥ (SegND A C c_ne_a) ∧ F LiesOn l₂}
 -- $l_1,l_2$ intersect $BC$ at $G,H$ respectively
 variable {G H : P} {hg : is_inx G l₁ (SEG B C)} {hh : is_inx H l₂ (SEG B C)}
 
@@ -312,7 +312,7 @@ variable {m n : ℝ} {hpos : m > 0 ∧ n > 0} {hratio : (SEG A B).length / (SEG 
 -- We have line $l₁$ and points $A₁,B₁,C₁$ lies on $l₁$
 variable {l₁ : Line P} {A₁ B₁ C₁ : P} {ha₁ : A₁ LiesOn l₁} {hb₁ : B₁ LiesOn l₁} {hc₁ : C₁ LiesOn l₁}
 -- We have $A \ne A₁$, $B \ne B₁$, $C \ne C₁$ and $AA₁ \parallel BB₁ \parallel CC₁$
-variable {nea : A₁ ≠ A} {neb : B₁ ≠ B} {nec : C₁ ≠ C} {hpara₁ : (SEG_nd A A₁ nea) ∥ (SEG_nd B B₁ neb)} {hpara₂ : (SEG_nd B B₁ neb) ∥ (SEG_nd C C₁ nec)}
+variable {nea : A₁ ≠ A} {neb : B₁ ≠ B} {nec : C₁ ≠ C} {hpara₁ : (SegND A A₁ nea) ∥ (SegND B B₁ neb)} {hpara₂ : (SegND B B₁ neb) ∥ (SegND C C₁ nec)}
 
 -- Theorem : $BB₁ = \frac{n}{m+n} AA₁ + \frac{m}{m+n} CC₁$
 theorem Shan_Problem_2_44 : (SEG B B₁).length = (n / (m+n)) * (SEG A A₁).length + (m/(m+n)) * (SEG C C₁).length := sorry

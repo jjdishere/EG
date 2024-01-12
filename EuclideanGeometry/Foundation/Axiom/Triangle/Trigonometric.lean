@@ -12,9 +12,9 @@ namespace Triangle
 
 -- Cosine rule : for a nontrivial triangle ABC, BC^2 = AB^2 + AC^2 - 2 * AB * AC * cos ANG BAC.
 
-theorem cosine_rule' (A B C : P) (hab : B ≠ A) (hac : C ≠ A) :
-    2 * (‖VEC_nd A B hab‖ * ‖VEC_nd A C hac‖ *
-      cos (VecND.angle (VEC_nd A B hab) (VEC_nd A C hac))) =
+theorem cosine_rule' (A B C : P) [hab : PtNe B A] [hac : PtNe C A] :
+    2 * (‖VEC_nd A B‖ * ‖VEC_nd A C‖ *
+      cos (VecND.angle (VEC_nd A B) (VEC_nd A C))) =
       Seg.length (SEG A B) ^ 2 + Seg.length (SEG A C) ^ 2 - Seg.length (SEG B C) ^ 2 := by
   rw [VecND.norm_mul_cos, length_sq_eq_inner_toVec_toVec,
     length_sq_eq_inner_toVec_toVec, length_sq_eq_inner_toVec_toVec, seg_toVec_eq_vec,
@@ -28,16 +28,18 @@ theorem cosine_rule (tr_nd : TriangleND P) : 2 * (tr_nd.edge₃.length * tr_nd.e
   let A := tr_nd.1.point₁
   let B := tr_nd.1.point₂
   let C := tr_nd.1.point₃
-  let h₃ := cosine_rule' A B C (tr_nd.nontriv₃) (Ne.symm tr_nd.nontriv₂)
-  have h₄ : ‖VEC_nd A C (Ne.symm tr_nd.nontriv₂)‖ = ‖VEC_nd C A (tr_nd.nontriv₂)‖
+  let h₃ := @cosine_rule' _ _ A B C tr_nd.nontriv₃ tr_nd.nontriv₂.symm
+  have h₄ : ‖VEC_nd A C tr_nd.nontriv₂.out.symm‖ = ‖VEC_nd C A tr_nd.nontriv₂.out‖
   · simp_rw [VecND.mkPtPt, ← neg_vec A C]
     simp
   have h₅ : Seg.length (SEG A C) = Seg.length (SEG C A)
-  · unfold Seg.length Seg.toVec
-    rw [← neg_vec (SEG A C).target (SEG A C).source]
-    simp only [norm_neg, Complex.norm_eq_abs]
+  · rw [Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec]
+    -- unfold Seg.length Seg.toVec
+    exact vec_norm_eq_rev A C
+    -- simp only [norm_neg, Complex.norm_eq_abs]
   rw [h₄, h₅] at h₃
   simp only [ne_eq, Nat.cast_ofNat] at h₃
+  repeat rw [Seg.length_eq_norm_toVec] at *
   exact h₃
 
 theorem cosine_rule'' (tr_nd : TriangleND P) : tr_nd.edge₁.length = (tr_nd.edge₃.length ^ 2 + tr_nd.edge₂.length ^ 2 -  2 * (tr_nd.edge₃.length * tr_nd.edge₂.length * cos tr_nd.angle₁.value)) ^ (1/2) := by sorry
