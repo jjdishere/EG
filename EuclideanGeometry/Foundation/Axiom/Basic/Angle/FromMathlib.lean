@@ -1,4 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
+import Mathlib.Data.Int.Parity
 
 /-!
 # APIs about Angle from Mathlib
@@ -7,6 +8,8 @@ We use `AngValue` as an alias of `Real.Angle`.
 -/
 
 noncomputable section
+
+attribute [ext] Complex.ext
 
 open Real
 
