@@ -8,7 +8,7 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Line_trash
 noncomputable section
 namespace EuclidGeom
 
-open Classical AngValue
+open Classical AngValue Angle
 
 variable {P : Type*} [EuclideanPlane P]
 
@@ -81,11 +81,11 @@ theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge
     have h3 : 0 < sin (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value := by
       field_simp at h0
       exact h0
-    rw [sin_pos_iff_angle_pos] at h3
+    rw [sin_pos_iff_isPos] at h3
     exact h3
   rw [wedge_eq_length_mul_length_mul_sin (bnea := ⟨(ne_of_not_colinear nd).2.2⟩) (cnea := ⟨(ne_of_not_colinear nd).2.1.symm⟩)]
   intro h0
-  have h3 : 0 < sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_angle_pos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
+  have h3 : 0 < sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_isPos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
   field_simp
   exact h3
 
@@ -395,7 +395,7 @@ end handside
 section ray_toRay
 
 /- Statement of his theorem should change, since ray₀.source ≠ ray₂.source. -/
-theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < (Angle.mk ray₀ ray₁ rfl).value.toReal) ∧ ((Angle.mk ray₀ ray₁ rfl).value.toReal < (Angle.mk ray₀ ray₂ sorry).value.toReal) ∧ ((Angle.mk ray₀ ray₂ sorry).value.toReal < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
+theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < (Angle.mk_two_ray_of_eq_source ray₀ ray₁ rfl).value.toReal) ∧ ((Angle.mk_two_ray_of_eq_source ray₀ ray₁ rfl).value.toReal < (Angle.mk_two_ray_of_eq_source ray₀ ray₂ sorry).value.toReal) ∧ ((Angle.mk_two_ray_of_eq_source ray₀ ray₂ sorry).value.toReal < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
 
 end ray_toRay
 
