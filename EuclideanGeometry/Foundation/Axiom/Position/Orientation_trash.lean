@@ -67,7 +67,28 @@ theorem neg_toDir_of_parallel_and_opposite_side {A B C D : P} {h : A ≠ B} {h�
   · have : C LiesOnLeft (SEG_nd A B h.symm) ∧ D LiesOnRight (SEG_nd A B h.symm) ∨ C LiesOnRight (SEG_nd A B h.symm) ∧ D LiesOnLeft (SEG_nd A B h.symm) := by
       exact side
     rcases this with lr|rl
-    · sorry
+    · unfold IsOnLeftSide at lr
+      unfold IsOnRightSide at lr
+      have w1 : wedge C A B > 0 := by sorry
+      have w2 : wedge D A B < 0 := by sorry
+      have det1 : Vec.det (VEC A C) (VEC A B) > 0 := by sorry
+      have det2 : Vec.det (VEC B D) (VEC B A) > 0 := by sorry
+      have dir : (VEC_nd A C h₁).toDir = (VEC_nd B D h₂).toDir := by exact eq
+      have dir' : (VEC_nd A C h₁).SameDir (VEC_nd B D h₂) := by
+        apply VecND.toDir_eq_toDir_iff.mp
+        exact dir
+      unfold VecND.SameDir at dir'
+      rcases dir' with ⟨x,h⟩
+      have x_pos : x > 0 := h.1
+      have : Vec.det (VEC A C) (VEC A B) = -x * Vec.det (VEC B D) (VEC B A) := by
+        calc
+          _= x * Vec.det (VEC B D) (VEC A B) := by sorry
+          _=_ := by sorry
+      have triv : x * Vec.det (VEC B D) (VEC B A) > 0 := by positivity
+      absurd det1
+      simp only [gt_iff_lt, not_lt]
+      simp only [this]
+      linarith
     · sorry
   · exact neg
 
