@@ -2,12 +2,13 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
+import EuclideanGeometry.Foundation.Axiom.Linear.Line_trash
 
 /- This file discuss the relative positions of points and rays on a plane. -/
 noncomputable section
 namespace EuclidGeom
 
-open Classical AngValue
+open Classical AngValue Angle
 
 variable {P : Type*} [EuclideanPlane P]
 
@@ -80,11 +81,11 @@ theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge
     have h3 : 0 < sin (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value := by
       field_simp at h0
       exact h0
-    rw [sin_pos_iff_angle_pos] at h3
+    rw [sin_pos_iff_isPos] at h3
     exact h3
   rw [wedge_eq_length_mul_length_mul_sin (bnea := ⟨(ne_of_not_colinear nd).2.2⟩) (cnea := ⟨(ne_of_not_colinear nd).2.1.symm⟩)]
   intro h0
-  have h3 : 0 < sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_angle_pos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
+  have h3 : 0 < sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_isPos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
   field_simp
   exact h3
 
@@ -229,6 +230,71 @@ theorem online_iff_lies_on_line (A : P) [DirFig α P] (df : α) : Line.IsOn A (t
 theorem off_line_iff_not_online (A : P) [DirFig α P] (df : α) : OffLine A df ↔ ¬OnLine A df := by
   rfl
 
+--LiesOnLeft and LiesOnRight and LiesOn should be correct for exact one
+
+theorem LiesOnLeft_or_LiesOnRight_or_LiesOn (A : P) [DirFig α P] (df : α) : (IsOnLeftSide A df) ∨ (IsOnRightSide A df) ∨ (A LiesOn (toLine df)) := by
+  have h : (odist A df > 0) ∨ (odist A df < 0) ∨ (odist A df = 0) := by
+    by_contra h'
+    have nl : ¬ (odist A df > 0) := by
+      by_contra nl'
+      absurd h'
+      simp only [gt_iff_lt, nl', true_or]
+    have nr : ¬ (odist A df < 0) := by
+      by_contra nr'
+      absurd h'
+      simp only [gt_iff_lt, nr', true_or, or_true]
+    have no : ¬ (odist A df = 0) := by
+      by_contra no'
+      absurd h'
+      simp only [no', gt_iff_lt, lt_self_iff_false, or_true]
+    simp at nl
+    simp at nr
+    have : odist A df = 0 := by
+      linarith [nl,nr]
+    absurd this
+    exact no
+  rcases h with l|R
+  · have : IsOnLeftSide A df := by exact l
+    simp only [this, true_or]
+  · rcases R with r|o
+    · have : IsOnRightSide A df := by exact r
+      simp only [this, true_or, or_true]
+    · have : Line.IsOn A (toLine df) := by
+        apply (online_iff_lies_on_line A df).mpr
+        exact o
+      have : A LiesOn (toLine df) := by exact this
+      simp only [this, or_true]
+
+--theorem not_LiesOnRight_and_not_LiesOn_of_LiesOnLeft
+
+--theorem not_LiesOnRight_and_not_LiesOn_of_LiesOnRight
+
+--theorem not_LiesOnTight_and_not_LiesOnRight_of_LiesOn
+
+theorem not_colinear_of_LiesOnLeft_or_LiesOnRight (A B C : P) [bnea : PtNe B A] (hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B))) : ¬ colinear A B C := by
+  apply (not_colinear_iff_wedge_ne_zero A B C).mpr
+  have hw : (wedge A B C) = (SEG A B).length * odist' C (RAY A B) := by
+    exact wedge_eq_length_mul_odist' A B C
+  have pos : (SEG A B).length > 0 := by
+    calc
+      _=(SEG_nd A B).length := by rfl
+      _>0 := by apply EuclidGeom.length_pos
+  rcases hlr with l|r
+  · unfold IsOnLeftSide at l
+    have : (wedge A B C) > 0 := by
+      simp only [hw]
+      positivity
+    linarith
+  · unfold IsOnRightSide at r
+    have : -odist C (RAY A B) >0 := by
+      linarith [r]
+    have : -(wedge A B C) > 0 := by
+      simp only [hw]
+      calc
+        _=-odist' C (RAY A B) * (SEG A B).length := by ring
+        _>0 := by positivity
+    linarith
+
 /- Relation of position of points on a ray and directed distance-/
 
 end point_toRay
@@ -296,8 +362,8 @@ theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) [bnea : PtNe B A] [dnec : P
 
 end cooperation_with_parallel
 
-scoped infix : 50 " LiesOnLeft " => IsOnLeftSide
-scoped infix : 50 " LiesOnRight " => IsOnRightSide
+scoped infix : 55 " LiesOnLeft " => IsOnLeftSide
+scoped infix : 55 " LiesOnRight " => IsOnRightSide
 
 section handside
 
@@ -329,11 +395,561 @@ end handside
 section ray_toRay
 
 /- Statement of his theorem should change, since ray₀.source ≠ ray₂.source. -/
-theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < (Angle.mk ray₀ ray₁ rfl).value.toReal) ∧ ((Angle.mk ray₀ ray₁ rfl).value.toReal < (Angle.mk ray₀ ray₂ sorry).value.toReal) ∧ ((Angle.mk ray₀ ray₂ sorry).value.toReal < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
+theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < (Angle.mk_two_ray_of_eq_source ray₀ ray₁ rfl).value.toReal) ∧ ((Angle.mk_two_ray_of_eq_source ray₀ ray₁ rfl).value.toReal < (Angle.mk_two_ray_of_eq_source ray₀ ray₂ sorry).value.toReal) ∧ ((Angle.mk_two_ray_of_eq_source ray₀ ray₂ sorry).value.toReal < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
 
 end ray_toRay
 
+section relative_side
 
+/-
+This section would define "LiesOn_same_side" and "LiesOn_opposite_side" for all linear figures.
+(it doesn't need to distinguish the reverse)
+This should be used to determine the unique graph with the least information,to lessen the dependent on graph.
+
+Further properties of "LiesOn_same_side" and "LiesOn_opposite_side would be show along with cclock in Folder Triangle.
+
+-/
+
+def IsOnSameSide' (A B : P) (ray : Ray P) : Prop := ((A LiesOnLeft ray) ∧ (B LiesOnLeft ray)) ∨ ((A LiesOnRight ray) ∧ (B LiesOnRight ray))
+
+def IsOnOppositeSide' (A B : P) (ray : Ray P) : Prop := ((A LiesOnLeft ray) ∧ (B LiesOnRight ray)) ∨ ((A LiesOnRight ray) ∧ (B LiesOnLeft ray))
+
+theorem LiesOnSameSide'_of_toLine_eq_toLine' (A B : P) (ray ray' : Ray P) (h : ray.toLine = ray'.toLine) : IsOnSameSide' A B ray → IsOnSameSide' A B ray' := by
+  have Dir : ray.toDirLine = ray'.toDirLine ∨ ray.toDirLine = ray'.toDirLine.reverse := by
+    apply EuclidGeom.DirLine.eq_or_eq_rev_of_toLine_eq
+    simp only [← Ray.toLine_eq_toDirLine_toLine (ray := ray),← Ray.toLine_eq_toDirLine_toLine (ray := ray')]
+    exact h
+  rcases Dir with same|rev
+  · intro P
+    rcases P with Pl|Pr
+    · unfold IsOnLeftSide at Pl
+      have hal₁: A LiesOnLeft ray' := by
+        unfold IsOnLeftSide
+        calc
+          odist A ray' = odist A ray'.toDirLine := by rfl
+          _=odist A ray.toDirLine := by congr 1;exact same.symm
+          _=odist A ray := by rfl
+          _>0 := by linarith
+      have hbl₁: B LiesOnLeft ray' := by
+        unfold IsOnLeftSide
+        calc
+          odist B ray' = odist B ray'.toDirLine := by rfl
+          _=odist B ray.toDirLine := by congr 1;exact same.symm
+          _=odist B ray := by rfl
+          _>0 := by linarith
+      unfold IsOnSameSide'
+      simp only [hal₁, hbl₁, and_self, true_or]
+    · unfold IsOnRightSide at Pr
+      have har₁: A LiesOnRight ray' := by
+        unfold IsOnRightSide
+        calc
+          odist A ray' = odist A ray'.toDirLine := by rfl
+          _=odist A ray.toDirLine := by congr 1;exact same.symm
+          _=odist A ray := by rfl
+          _<0 := by linarith
+      have hbr₁: B LiesOnRight ray' := by
+        unfold IsOnRightSide
+        calc
+          odist B ray' = odist B ray'.toDirLine := by rfl
+          _=odist B ray.toDirLine := by congr 1;exact same.symm
+          _=odist B ray := by rfl
+          _<0 := by linarith
+      unfold IsOnSameSide'
+      simp only [har₁, hbr₁, and_self, or_true]
+  · intro P
+    rcases P with Pl|Pr
+    · unfold IsOnLeftSide at Pl
+      have har₂: A LiesOnRight ray' := by
+        unfold IsOnRightSide
+        calc
+          odist A ray' = odist A ray'.toDirLine := by rfl
+          _=-odist A ray'.toDirLine.reverse := by
+            simp only [odist_reverse_eq_neg_odist'' (dl := ray'.toDirLine), neg_neg]
+          _=-odist A ray.toDirLine := by congr;exact id rev.symm
+          _=-odist A ray := by rfl
+          _<0 := by linarith
+      have hbr₂: B LiesOnRight ray' := by
+        unfold IsOnRightSide
+        calc
+          odist B ray' = odist B ray'.toDirLine := by rfl
+          _=-odist B ray'.toDirLine.reverse := by
+            simp only [odist_reverse_eq_neg_odist'' (dl := ray'.toDirLine), neg_neg]
+          _=-odist B ray.toDirLine := by congr;exact id rev.symm
+          _=-odist B ray := by rfl
+          _<0 := by linarith
+      unfold IsOnSameSide'
+      simp only [har₂, hbr₂, and_self, or_true]
+    · unfold IsOnRightSide at Pr
+      have hal₂: A LiesOnLeft ray' := by
+        unfold IsOnLeftSide
+        calc
+          odist A ray' = odist A ray'.toDirLine := by rfl
+          _=-odist A ray'.toDirLine.reverse := by
+            simp only [odist_reverse_eq_neg_odist'' (dl := ray'.toDirLine), neg_neg]
+          _=-odist A ray.toDirLine := by congr;exact id rev.symm
+          _=-odist A ray := by rfl
+          _>0 := by linarith
+      have hbl₂: B LiesOnLeft ray' := by
+        unfold IsOnLeftSide
+        calc
+          odist B ray' = odist B ray'.toDirLine := by rfl
+          _=-odist B ray'.toDirLine.reverse := by
+            simp only [odist_reverse_eq_neg_odist'' (dl := ray'.toDirLine), neg_neg]
+          _=-odist B ray.toDirLine := by congr;exact id rev.symm
+          _=-odist B ray := by rfl
+          _>0 := by linarith
+      unfold IsOnSameSide'
+      simp only [hal₂, hbl₂, and_self, true_or]
+
+theorem LiesOnSameSide'_of_toLine_eq_toLine (A B : P) (ray ray' : Ray P) (h : ray.toLine = ray'.toLine) : IsOnSameSide' A B ray = IsOnSameSide' A B ray' := by
+  simp only [eq_iff_iff]
+  constructor
+  · apply LiesOnSameSide'_of_toLine_eq_toLine' (h := h)
+  · apply LiesOnSameSide'_of_toLine_eq_toLine' (h := h.symm)
+
+theorem LiesOnOppositeSide'_of_toLine_eq_toLine' (A B : P) (ray ray' : Ray P) (h : ray.toLine = ray'.toLine) : IsOnOppositeSide' A B ray → IsOnOppositeSide' A B ray' := by
+  have Dir : ray.toDirLine = ray'.toDirLine ∨ ray.toDirLine = ray'.toDirLine.reverse := by
+    apply EuclidGeom.DirLine.eq_or_eq_rev_of_toLine_eq
+    simp only [← Ray.toLine_eq_toDirLine_toLine (ray := ray),← Ray.toLine_eq_toDirLine_toLine (ray := ray')]
+    exact h
+  rcases Dir with same|rev
+  · intro P
+    rcases P with Pl|Pr
+    · unfold IsOnLeftSide at Pl
+      unfold IsOnRightSide at Pl
+      have hal₁: A LiesOnLeft ray' := by
+        unfold IsOnLeftSide
+        calc
+          odist A ray' = odist A ray'.toDirLine := by rfl
+          _=odist A ray.toDirLine := by congr 1;exact same.symm
+          _=odist A ray := by rfl
+          _>0 := by linarith
+      have hbr₁: B LiesOnRight ray' := by
+        unfold IsOnRightSide
+        calc
+          odist B ray' = odist B ray'.toDirLine := by rfl
+          _=odist B ray.toDirLine := by congr 1;exact same.symm
+          _=odist B ray := by rfl
+          _<0 := by linarith
+      unfold IsOnOppositeSide'
+      simp only [hal₁, hbr₁, and_self, true_or]
+    · unfold IsOnRightSide at Pr
+      unfold IsOnLeftSide at Pr
+      have har₁: A LiesOnRight ray' := by
+        unfold IsOnRightSide
+        calc
+          odist A ray' = odist A ray'.toDirLine := by rfl
+          _=odist A ray.toDirLine := by congr 1;exact same.symm
+          _=odist A ray := by rfl
+          _<0 := by linarith
+      have hbl₁: B LiesOnLeft ray' := by
+        unfold IsOnLeftSide
+        calc
+          odist B ray' = odist B ray'.toDirLine := by rfl
+          _=odist B ray.toDirLine := by congr 1;exact same.symm
+          _=odist B ray := by rfl
+          _>0 := by linarith
+      unfold IsOnOppositeSide'
+      simp only [har₁, hbl₁, and_self, or_true]
+
+  · intro P
+    rcases P with Pl|Pr
+    · unfold IsOnLeftSide at Pl
+      unfold IsOnRightSide at Pl
+      have har₂: A LiesOnRight ray' := by
+        unfold IsOnRightSide
+        calc
+          odist A ray' = odist A ray'.toDirLine := by rfl
+          _=-odist A ray'.toDirLine.reverse := by
+            simp only [odist_reverse_eq_neg_odist'' (dl := ray'.toDirLine), neg_neg]
+          _=-odist A ray.toDirLine := by congr;exact id rev.symm
+          _=-odist A ray := by rfl
+          _<0 := by linarith
+      have hbr₂: B LiesOnLeft ray' := by
+        unfold IsOnLeftSide
+        calc
+          odist B ray' = odist B ray'.toDirLine := by rfl
+          _=-odist B ray'.toDirLine.reverse := by
+            simp only [odist_reverse_eq_neg_odist'' (dl := ray'.toDirLine), neg_neg]
+          _=-odist B ray.toDirLine := by congr;exact id rev.symm
+          _=-odist B ray := by rfl
+          _>0 := by linarith
+      unfold IsOnOppositeSide'
+      simp only [har₂, hbr₂, and_self, or_true]
+    · unfold IsOnRightSide at Pr
+      unfold IsOnLeftSide at Pr
+      have hal₂: A LiesOnLeft ray' := by
+        unfold IsOnLeftSide
+        calc
+          odist A ray' = odist A ray'.toDirLine := by rfl
+          _=-odist A ray'.toDirLine.reverse := by
+            simp only [odist_reverse_eq_neg_odist'' (dl := ray'.toDirLine), neg_neg]
+          _=-odist A ray.toDirLine := by congr;exact id rev.symm
+          _=-odist A ray := by rfl
+          _>0 := by linarith
+      have hbl₂: B LiesOnRight ray' := by
+        unfold IsOnRightSide
+        calc
+          odist B ray' = odist B ray'.toDirLine := by rfl
+          _=-odist B ray'.toDirLine.reverse := by
+            simp only [odist_reverse_eq_neg_odist'' (dl := ray'.toDirLine), neg_neg]
+          _=-odist B ray.toDirLine := by congr;exact id rev.symm
+          _=-odist B ray := by rfl
+          _<0 := by linarith
+      unfold IsOnOppositeSide'
+      simp only [hal₂, hbl₂, and_self, true_or]
+
+theorem LiesOnOppositeSide'_of_toLine_eq_toLine (A B : P) (ray ray' : Ray P) (h : ray.toLine = ray'.toLine) : IsOnOppositeSide' A B ray = IsOnOppositeSide' A B ray' := by
+  simp only [eq_iff_iff]
+  constructor
+  · apply LiesOnOppositeSide'_of_toLine_eq_toLine' (h := h)
+  · apply LiesOnOppositeSide'_of_toLine_eq_toLine' (h := h.symm)
+
+def IsOnSameSide {α} [ProjFig α P] (A B : P) (l : α) : Prop := Quotient.lift (s := same_extn_line.setoid) (fun ray : Ray P => IsOnSameSide' A B ray) (fun _ _ h => LiesOnSameSide'_of_toLine_eq_toLine A B _ _ (Quotient.sound h) ) (toLine l)
+
+def IsOnOppositeSide {α} [ProjFig α P] (A B : P) (l : α) : Prop := Quotient.lift (s := same_extn_line.setoid) (fun ray : Ray P => IsOnOppositeSide' A B ray) (fun _ _ h => LiesOnOppositeSide'_of_toLine_eq_toLine A B _ _ (Quotient.sound h) ) (toLine l)
+
+--symm and trans of same_side
+
+theorem IsOnSameSide_symm' (A B : P) (ray : Ray P) : IsOnSameSide A B ray →  IsOnSameSide B A ray := by
+  unfold IsOnSameSide
+  unfold IsOnSameSide'
+  intro P
+  rcases P with l|r
+  · show (B LiesOnLeft ray ∧ A LiesOnLeft ray) ∨ (B LiesOnRight ray ∧ A LiesOnRight ray)
+    simp only [l.2, l.1, and_self, true_or]
+  · show (B LiesOnLeft ray ∧ A LiesOnLeft ray) ∨ (B LiesOnRight ray ∧ A LiesOnRight ray)
+    simp only [r.2, r.1, and_self, or_true]
+
+theorem IsOnSameSide_symm'' (A B : P) (l : Line P) : IsOnSameSide A B l  →  IsOnSameSide B A l := by
+    rcases (Quotient.exists_rep l) with ⟨ray , h0⟩
+    intro P
+    simp only [← h0] at P
+    have h₁ : IsOnSameSide A B ray := by
+      exact P
+    have h₂ : IsOnSameSide B A ray := by
+      apply IsOnSameSide_symm' A B ray
+      exact h₁
+    simp only [← h0]
+    exact h₂
+
+theorem IsOnSameSide_symm {α} [ProjFig α P] (A B : P) (l : α) : IsOnSameSide A B l = IsOnSameSide B A l := by
+  have h₁ : IsOnSameSide A B l = IsOnSameSide A B (toLine l) := by rfl
+  have h₂ : IsOnSameSide B A l = IsOnSameSide B A (toLine l) := by rfl
+  simp only [eq_iff_iff]
+  simp only [h₁,h₂]
+  constructor
+  · exact IsOnSameSide_symm'' A B (toLine l)
+  · exact IsOnSameSide_symm'' B A (toLine l)
+
+
+theorem IsOnOppositeSide_symm' (A B : P) (ray : Ray P) : IsOnOppositeSide A B ray →  IsOnOppositeSide B A ray := by
+  unfold IsOnOppositeSide
+  unfold IsOnOppositeSide'
+  intro P
+  rcases P with l|r
+  · show (B LiesOnLeft ray ∧ A LiesOnRight ray) ∨ (B LiesOnRight ray ∧ A LiesOnLeft ray)
+    simp only [l.2, l.1, and_self, or_true]
+  · show (B LiesOnLeft ray ∧ A LiesOnRight ray) ∨ (B LiesOnRight ray ∧ A LiesOnLeft ray)
+    simp only [r.2, r.1, and_self, true_or]
+
+theorem IsOnOppositeSide_symm'' (A B : P) (l : Line P) : IsOnOppositeSide A B l  →  IsOnOppositeSide B A l := by
+    rcases (Quotient.exists_rep l) with ⟨ray , h0⟩
+    intro P
+    simp only [← h0] at P
+    have h₁ : IsOnOppositeSide A B ray := by
+      exact P
+    have h₂ : IsOnOppositeSide B A ray := by
+      apply IsOnOppositeSide_symm' A B ray
+      exact h₁
+    simp only [← h0]
+    exact h₂
+
+theorem IsOnOppositeSide_symm {α} [ProjFig α P] (A B : P) (l : α) : IsOnOppositeSide A B l = IsOnOppositeSide B A l := by
+  have h₁ : IsOnOppositeSide A B l = IsOnOppositeSide A B (toLine l) := by rfl
+  have h₂ : IsOnOppositeSide B A l = IsOnOppositeSide B A (toLine l) := by rfl
+  simp only [eq_iff_iff]
+  simp only [h₁,h₂]
+  constructor
+  · exact IsOnOppositeSide_symm'' A B (toLine l)
+  · exact IsOnOppositeSide_symm'' B A (toLine l)
+
+/-
+trans:
+Basic properties:
+  LiesOn_same_side of LiesOn_same_side and LiesOn_same_side
+  LiesOn_opposite_side of LiesOn_same_side and LiesOn_opposite_side
+  LiesOn_opposite_side of LiesOn_opposite_side and LiesOn_same_side
+-/
+
+theorem IsOnSameSide_trans' (A B C : P) (l : Line P) (h₁ : IsOnSameSide A B l) (h₂ : IsOnSameSide B C l) : IsOnSameSide A C l := by
+  rcases (Quotient.exists_rep l) with ⟨ray , h0⟩
+  simp only [← h0] at h₁
+  simp only [← h0] at h₂
+  have h1 : IsOnSameSide A B ray := by exact h₁
+  have h2 : IsOnSameSide B C ray := by exact h₂
+  have : IsOnSameSide A C ray = IsOnSameSide A C l := by
+    simp only [← h0]
+    rfl
+  simp only [←this]
+  --Converted to ray
+  unfold IsOnSameSide
+  unfold IsOnSameSide'
+  unfold IsOnSameSide at h1
+  unfold IsOnSameSide' at h1
+  unfold IsOnSameSide at h2
+  unfold IsOnSameSide' at h2
+  show A LiesOnLeft ray ∧ C LiesOnLeft ray ∨ A LiesOnRight ray ∧ C LiesOnRight ray
+  rcases h1 with l|r
+  · rcases h2 with l'|r'
+    · simp only [l.1, l'.2, and_self, true_or]
+    · absurd r'
+      have : ¬ B LiesOnRight ray := by
+        unfold IsOnRightSide
+        unfold IsOnLeftSide at l
+        linarith [l.2]
+      simp only [this, false_and, not_false_eq_true]
+  · rcases h2 with l'|r'
+    · absurd l'
+      have : ¬ B LiesOnLeft ray := by
+        unfold IsOnLeftSide
+        unfold IsOnRightSide at r
+        linarith [r.2]
+      simp only [this, false_and, not_false_eq_true]
+    · simp only [r.1, r'.2, and_self, or_true]
+
+theorem IsOnSameSide_trans {α} [ProjFig α P] (A B C : P) (l : α) (h₁ : IsOnSameSide A B l) (h₂ : IsOnSameSide B C l) : IsOnSameSide A C l := by
+  have h1 : IsOnSameSide A B (toLine l) = IsOnSameSide A B l := by rfl
+  have h2 : IsOnSameSide B C (toLine l) = IsOnSameSide B C l := by rfl
+  have h3 : IsOnSameSide A C (toLine l) = IsOnSameSide A C l := by rfl
+  simp only [← h1] at h₁
+  simp only [← h2] at h₂
+  simp only [← h3]
+  apply IsOnSameSide_trans' A B C (toLine l)
+  · exact h₁
+  · exact h₂
+
+theorem IsOnOppositeSide_of_IsOnOppositeSide_and_IsOnSameSide' (A B C : P) (l : Line P) (h₁ : IsOnSameSide A B l) (h₂ : IsOnOppositeSide B C l) : IsOnOppositeSide A C l := by
+  rcases (Quotient.exists_rep l) with ⟨ray , h0⟩
+  simp only [← h0] at h₁
+  simp only [← h0] at h₂
+  have h1 : IsOnSameSide A B ray := by exact h₁
+  have h2 : IsOnOppositeSide B C ray := by exact h₂
+  have : IsOnOppositeSide A C ray = IsOnOppositeSide A C l := by
+    simp only [← h0]
+    rfl
+  simp only [←this]
+  --Converted to ray
+  unfold IsOnOppositeSide
+  unfold IsOnOppositeSide'
+  unfold IsOnSameSide at h1
+  unfold IsOnSameSide' at h1
+  unfold IsOnOppositeSide at h2
+  unfold IsOnOppositeSide' at h2
+  show A LiesOnLeft ray ∧ C LiesOnRight ray ∨ A LiesOnRight ray ∧ C LiesOnLeft ray
+  rcases h1 with l|r
+  · rcases h2 with l'|r'
+    · simp only [l.1, l'.2, and_self, true_or]
+    · absurd r'
+      have : ¬ B LiesOnRight ray := by
+        unfold IsOnRightSide
+        unfold IsOnLeftSide at l
+        linarith [l.2]
+      simp only [this, false_and, not_false_eq_true]
+  · rcases h2 with l'|r'
+    · absurd l'
+      have : ¬ B LiesOnLeft ray := by
+        unfold IsOnLeftSide
+        unfold IsOnRightSide at r
+        linarith [r.2]
+      simp only [this, false_and, not_false_eq_true]
+    · simp only [r.1, r'.2, and_self, or_true]
+
+theorem IsOnOppositeSide_of_IsOnOppositeSide_and_IsOnSameSide {α} [ProjFig α P] (A B C : P) (l : α) (h₁ : IsOnSameSide A B l) (h₂ : IsOnOppositeSide B C l) : IsOnOppositeSide A C l := by
+  have h1 : IsOnSameSide A B (toLine l) = IsOnSameSide A B l := by rfl
+  have h2 : IsOnOppositeSide B C (toLine l) = IsOnOppositeSide B C l := by rfl
+  have h3 : IsOnOppositeSide A C (toLine l) = IsOnOppositeSide A C l := by rfl
+  simp only [← h1] at h₁
+  simp only [← h2] at h₂
+  simp only [← h3]
+  apply IsOnOppositeSide_of_IsOnOppositeSide_and_IsOnSameSide' A B C (toLine l)
+  · exact h₁
+  · exact h₂
+
+theorem IsOnOppositeSide_of_IsOnSameSide_and_IsOnOppositeSide {α} [ProjFig α P] (A B C : P) (l : α) (h₁ : IsOnOppositeSide A B l) (h₂ : IsOnSameSide B C l) : IsOnOppositeSide A C l := by
+  have h1 : IsOnOppositeSide B A l = IsOnOppositeSide A B l := by
+    exact IsOnOppositeSide_symm B A l
+  have h2 : IsOnSameSide C B l = IsOnSameSide B C l := by
+    exact IsOnSameSide_symm C B l
+  simp only [←h1] at h₁
+  simp only [←h2] at h₂
+  have h : IsOnOppositeSide A C l = IsOnOppositeSide C A l := by
+    exact IsOnOppositeSide_symm A C l
+  simp only [h]
+  apply IsOnOppositeSide_of_IsOnOppositeSide_and_IsOnSameSide C B A l
+  · exact h₂
+  · exact h₁
+
+theorem IsOnSameSide_of_IsOnOppositeSide_and_IsOnOppositeSide' (A B C : P) (l : Line P) (h₁ : IsOnOppositeSide A B l) (h₂ : IsOnOppositeSide B C l) : IsOnSameSide A C l := by
+  rcases (Quotient.exists_rep l) with ⟨ray , h0⟩
+  simp only [← h0] at h₁
+  simp only [← h0] at h₂
+  have h1 : IsOnOppositeSide A B ray := by exact h₁
+  have h2 : IsOnOppositeSide B C ray := by exact h₂
+  have : IsOnSameSide A C ray = IsOnSameSide A C l := by
+    simp only [← h0]
+    rfl
+  simp only [←this]
+  --Converted to ray
+  unfold IsOnSameSide
+  unfold IsOnSameSide'
+  unfold IsOnOppositeSide at h1
+  unfold IsOnOppositeSide' at h1
+  unfold IsOnOppositeSide at h2
+  unfold IsOnOppositeSide' at h2
+  show A LiesOnLeft ray ∧ C LiesOnLeft ray ∨ A LiesOnRight ray ∧ C LiesOnRight ray
+  rcases h1 with l|r
+  · rcases h2 with l'|r'
+    · absurd l'
+      have : ¬ B LiesOnLeft ray := by
+        unfold IsOnLeftSide
+        unfold IsOnRightSide at l
+        linarith [l.2]
+      simp only [this, false_and, not_false_eq_true]
+    · simp only [l.1, r'.2, and_self, true_or]
+  · rcases h2 with l'|r'
+    · simp only [r.1, l'.2, and_self, or_true]
+    · absurd r'
+      have : ¬ B LiesOnRight ray := by
+        unfold IsOnRightSide
+        unfold IsOnLeftSide at r
+        linarith [r.2]
+      simp only [this, false_and, not_false_eq_true]
+
+theorem IsOnSameSide_of_IsOnOppositeSide_and_IsOnOppositeSide {α} [ProjFig α P] (A B C : P) (l : α) (h₁ : IsOnOppositeSide A B l) (h₂ : IsOnOppositeSide B C l) : IsOnSameSide A C l := by
+  have h1 : IsOnOppositeSide A B (toLine l) = IsOnOppositeSide A B l := by rfl
+  have h2 : IsOnOppositeSide B C (toLine l) = IsOnOppositeSide B C l := by rfl
+  have h3 : IsOnSameSide A C (toLine l) = IsOnSameSide A C l := by rfl
+  simp only [← h1] at h₁
+  simp only [← h2] at h₂
+  simp only [← h3]
+  apply IsOnSameSide_of_IsOnOppositeSide_and_IsOnOppositeSide' A B C (toLine l)
+  · exact h₁
+  · exact h₂
+
+--this theorem is for the moving of LiesOnLeftSide by IsOnSameSide
+
+theorem LiesOnLeft_iff_LiesOnLeft_of_IsOnSameSide' (A B : P) (dl : DirLine P) (h : IsOnSameSide A B dl) : A LiesOnLeft dl → B LiesOnLeft dl := by
+  intro P
+  rcases (Quotient.exists_rep dl) with ⟨ray , h0⟩
+  simp only [← h0] at P
+  simp only [← h0]
+  have : A LiesOnLeft ray := by
+    exact P
+  have h₁ : ¬ A LiesOnRight ray := by
+    unfold IsOnRightSide
+    unfold IsOnLeftSide at this
+    linarith
+  have h₂ : IsOnSameSide A B ray := by
+    simp only [← h0] at h
+    exact h
+  rcases h₂ with l|r
+  · exact l.2
+  · absurd r
+    simp only [h₁, false_and, not_false_eq_true]
+
+theorem LiesOnLeft_iff_LiesOnLeft_of_IsOnSameSide (A B : P) (dl : DirLine P) (h : IsOnSameSide A B dl) : A LiesOnLeft dl = B LiesOnLeft dl := by
+  simp only [eq_iff_iff]
+  have h' : IsOnSameSide B A dl := by
+    apply (IsOnSameSide_symm A B dl).mp
+    exact h
+  constructor
+  · exact LiesOnLeft_iff_LiesOnLeft_of_IsOnSameSide' (h:=h)
+  · exact LiesOnLeft_iff_LiesOnLeft_of_IsOnSameSide' (h:=h')
+
+theorem LiesOnLeft_iff_LiesOnLeft_rev_of_IsOnOppositeSide' (A B : P) (dl : DirLine P) (h : IsOnOppositeSide A B dl) : A LiesOnLeft dl → B LiesOnLeft dl.reverse := by
+  intro P
+  rcases (Quotient.exists_rep dl) with ⟨ray , h0⟩
+  simp only [← h0] at P
+  simp only [← h0]
+  have : A LiesOnLeft ray := by
+    exact P
+  have h₁ : ¬ A LiesOnRight ray := by
+    unfold IsOnRightSide
+    unfold IsOnLeftSide at this
+    linarith
+  have h₂ : IsOnOppositeSide A B ray := by
+    simp only [← h0] at h
+    exact h
+  rcases h₂ with l|r
+  · have : odist B ray.reverse >0 := by
+      calc
+        _=-odist B ray := by apply odist_reverse_eq_neg_odist B ray
+        _>0 := by
+          simp
+          unfold IsOnRightSide at l
+          exact l.2
+    exact this
+  · absurd r
+    simp [h₁]
+
+theorem LiesOnLeft_iff_LiesOnLeft_rev_of_IsOnOppositeSide (A B : P) (dl : DirLine P) (h : IsOnOppositeSide A B dl) : A LiesOnLeft dl = B LiesOnLeft dl.reverse := by
+  simp only [eq_iff_iff]
+  have h' : IsOnOppositeSide B A dl.reverse := by
+    apply (IsOnOppositeSide_symm A B dl.reverse).mp
+    have : dl.reverse.toLine = dl.toLine := by
+      exact EuclidGeom.DirLine.rev_toLine_eq_toLine dl
+    have eq : IsOnOppositeSide A B dl.reverse = IsOnOppositeSide A B dl := by
+      calc
+        IsOnOppositeSide A B dl.reverse = IsOnOppositeSide A B dl.reverse.toLine := by rfl
+        _= IsOnOppositeSide A B dl.toLine := by simp only [this]
+        _= IsOnOppositeSide A B dl := by rfl
+    simp only [eq]
+    exact h
+  constructor
+  · exact LiesOnLeft_iff_LiesOnLeft_rev_of_IsOnOppositeSide' (h:=h)
+  · have h0 : B LiesOnLeft dl.reverse → A LiesOnLeft dl.reverse.reverse := by
+      exact LiesOnLeft_iff_LiesOnLeft_rev_of_IsOnOppositeSide' (h:=h')
+    have : dl.reverse.reverse = dl := by
+      exact  EuclidGeom.DirLine.rev_rev_eq_self
+    simp [this] at h0
+    exact h0
+
+theorem not_colinear_of_IsOnSameSide (A B C D : P) [bnea : PtNe B A] (h : IsOnSameSide C D (RAY A B)) : (¬ colinear A B C) ∧ (¬ colinear A B D) := by
+  have hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B)) := by
+    rcases h with l|r
+    · simp only [l.1, true_or]
+    · simp only [r.1, or_true]
+  have hlr' : (IsOnLeftSide D (RAY A B)) ∨ (IsOnRightSide D (RAY A B)) := by
+    rcases h with l|r
+    · simp only [l.2, true_or]
+    · simp only [r.2, or_true]
+  have c : ¬ colinear A B C := by
+    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+    exact hlr
+  have d : ¬ colinear A B D := by
+    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+    exact hlr'
+  simp only [c, not_false_eq_true, d, and_self]
+
+theorem not_colinear_of_IsOnOppositeSide (A B C D : P) [bnea : PtNe B A] (h : IsOnOppositeSide C D (RAY A B)) : (¬ colinear A B C) ∧ (¬ colinear A B D) := by
+  have hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B)) := by
+    rcases h with l|r
+    · simp only [l.1, true_or]
+    · simp only [r.1, or_true]
+  have hlr' : (IsOnLeftSide D (RAY A B)) ∨ (IsOnRightSide D (RAY A B)) := by
+    rcases h with l|r
+    · simp only [l.2, or_true]
+    · simp only [r.2, true_or]
+  have c : ¬ colinear A B C := by
+    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+    exact hlr
+  have d : ¬ colinear A B D := by
+    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+    exact hlr'
+  simp only [c, not_false_eq_true, d, and_self]
+
+end relative_side
 
 /- Position of two lines; need a function to take the intersection of two lines (when they intersect). -/
 
