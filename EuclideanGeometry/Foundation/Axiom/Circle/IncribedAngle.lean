@@ -202,12 +202,10 @@ theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P} (h₁ : p LiesO
     have : (ANG β.target β.circle.center p).end_ray = (ANG p β.circle.center β.source).start_ray := rfl
     have hhs : (Angle.sum_adj this).value = ∠ β.target β.circle.center β.source := rfl
     rw [← hhs, Angle.ang_eq_ang_add_ang_mod_pi_of_adj_ang]
-    rfl
   have hsum₂ : ∠ β.source p β.circle.center + ∠ β.circle.center p β.target = ∠ β.source p β.target := by
     have : (ANG β.source p β.circle.center).end_ray = (ANG β.circle.center p β.target).start_ray := rfl
     have hhs : (Angle.sum_adj this).value = ∠ β.source p β.target := rfl
     rw [← hhs, Angle.ang_eq_ang_add_ang_mod_pi_of_adj_ang]
-    rfl
   have eq₃ : ∠ β.target β.circle.center β.source + 2 • (∠ β.source p β.target) = 0 := by
     calc
       _ = ∠ β.target β.circle.center p + ∠ p β.circle.center β.source + 2 • (∠ β.source p β.circle.center + ∠ β.circle.center p β.target) := by rw [hsum₁, hsum₂]

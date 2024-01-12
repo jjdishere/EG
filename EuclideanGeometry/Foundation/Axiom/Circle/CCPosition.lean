@@ -6,37 +6,44 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
 
-section CC
+section position
 
 namespace Circle
 
-protected def IsSeparated (ω₁ : Circle P) (ω₂ : Circle P) : Prop := dist ω₁.center ω₂.center > ω₁.radius + ω₂.radius
+protected def CC.IsSeparated (ω₁ : Circle P) (ω₂ : Circle P) : Prop := dist ω₁.center ω₂.center > ω₁.radius + ω₂.radius
 
-protected def IsIntersected (ω₁ : Circle P) (ω₂ : Circle P) : Prop := (dist ω₁.center ω₂.center < ω₁.radius + ω₂.radius) ∧ (dist ω₁.center ω₂.center > abs (ω₂.radius - ω₁.radius))
+protected def CC.IsIntersected (ω₁ : Circle P) (ω₂ : Circle P) : Prop := (dist ω₁.center ω₂.center < ω₁.radius + ω₂.radius) ∧ (dist ω₁.center ω₂.center > abs (ω₂.radius - ω₁.radius))
 
-protected def IsCircumscribed (ω₁ : Circle P) (ω₂ : Circle P) : Prop := dist ω₁.center ω₂.center = ω₁.radius + ω₂.radius
-
-/- put the smaller circle first -/
-protected def IsIncluded (ω₁ : Circle P) (ω₂ : Circle P) : Prop := dist ω₁.center ω₂.center < ω₂.radius - ω₁.radius
+protected def CC.IsExtangent (ω₁ : Circle P) (ω₂ : Circle P) : Prop := dist ω₁.center ω₂.center = ω₁.radius + ω₂.radius
 
 /- put the smaller circle first -/
-protected def IsInscribed (ω₁ : Circle P) (ω₂ : Circle P) : Prop := (dist ω₁.center ω₂.center = ω₂.radius - ω₁.radius) ∧ (ω₁.center ≠ ω₂.center)
+protected def CC.IsIntangent (ω₁ : Circle P) (ω₂ : Circle P) : Prop := (dist ω₁.center ω₂.center = ω₂.radius - ω₁.radius) ∧ (ω₁.center ≠ ω₂.center)
+
+/- put the smaller circle first -/
+protected def CC.IsIncluded (ω₁ : Circle P) (ω₂ : Circle P) : Prop := dist ω₁.center ω₂.center < ω₂.radius - ω₁.radius
 
 end Circle
 
-scoped infix : 50 " Separate " => Circle.IsSeparated
-scoped infix : 50 " Intersect " => Circle.IsIntersected
-scoped infix : 50 " Circumscribe " => Circle.IsCircumscribed
-scoped infix : 50 " IncludeIn " => Circle.IsIncluded
-scoped infix : 50 " InscribeIn " => Circle.IsInscribed
+scoped infix : 50 " Separate " => Circle.CC.IsSeparated
+scoped infix : 50 " Intersect " => Circle.CC.IsIntersected
+scoped infix : 50 " Extangent " => Circle.CC.IsExtangent
+scoped infix : 50 " Intangent " => Circle.CC.IsIntangent
+scoped infix : 50 " IncludeIn " => Circle.CC.IsIncluded
 
-namespace Circle
+end position
 
-theorem CC_separated_symm (ω₁ : Circle P) (ω₂ : Circle P) : ω₁ Separate ω₂ ↔ ω₂ Separate ω₁ := by
-  unfold Circle.IsSeparated
+
+open Circle
+
+section separate
+
+namespace CC
+
+theorem separate_symm {ω₁ : Circle P} {ω₂ : Circle P} : ω₁ Separate ω₂ ↔ ω₂ Separate ω₁ := by
+  unfold Circle.CC.IsSeparated
   rw [dist_comm, add_comm]
 
-theorem CC_separated_pt_outside_second_circle {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h₁ : ω₁ Separate ω₂) (h₂ : A LiesOn ω₁) : A LiesOut ω₂ := by
+theorem separated_pt_liesout_second_circle {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h₁ : ω₁ Separate ω₂) (h₂ : A LiesOn ω₁) : A LiesOut ω₂ := by
   have : dist ω₂.center A + dist ω₁.center A ≥ dist ω₁.center ω₂.center := by
     rw [add_comm]
     apply dist_triangle_right
@@ -45,35 +52,47 @@ theorem CC_separated_pt_outside_second_circle {ω₁ : Circle P} {ω₂ : Circle
   have : dist ω₂.center A > ω₂.radius := by linarith
   exact this
 
-theorem CC_separated_pt_outside_first_circle {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h₁ : ω₁ Separate ω₂) (h₂ : A LiesOn ω₂) : A LiesOut ω₁ := CC_separated_pt_outside_second_circle ((CC_separated_symm ω₁ ω₂).mp h₁) h₂
+theorem separated_pt_liesout_first_circle {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h₁ : ω₁ Separate ω₂) (h₂ : A LiesOn ω₂) : A LiesOut ω₁ := separated_pt_liesout_second_circle (separate_symm.mp h₁) h₂
+
+end CC
+
+end separate
 
 
-lemma CC_Circumscribe_centers_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Circumscribe ω₂) : ω₁.center ≠ ω₂.center := by
+section extangent
+
+namespace CC
+
+theorem extangent_symm {ω₁ : Circle P} {ω₂ : Circle P} : ω₁ Extangent ω₂ ↔ ω₂ Extangent ω₁ := by
+  unfold Circle.CC.IsExtangent
+  rw [dist_comm, add_comm]
+
+lemma extangent_centers_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Extangent ω₂) : ω₁.center ≠ ω₂.center := by
   have : dist ω₁.center ω₂.center > 0 := by
     calc
       _ = ω₁.radius + ω₂.radius := h
       _ > 0 := by apply add_pos ω₁.rad_pos ω₂.rad_pos
   apply dist_pos.mp this
 
-def CC_Circumscribe_Point {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Circumscribe ω₂) : P := (ω₁.radius • (VEC_nd ω₁.center ω₂.center (CC_Circumscribe_centers_distinct h).symm).toDir.unitVec) +ᵥ ω₁.center
+def Extangentpt {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Extangent ω₂) : P := (ω₁.radius • (VEC_nd ω₁.center ω₂.center (extangent_centers_distinct h).symm).toDir.unitVec) +ᵥ ω₁.center
 
-theorem CC_circumscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Circumscribe ω₂) : ((CC_Circumscribe_Point h) LiesOn ω₁) ∧ ((CC_Circumscribe_Point h) LiesOn ω₂) := by
-  haveI : PtNe ω₁.center ω₂.center := ⟨CC_Circumscribe_centers_distinct h⟩
+theorem extangent_pt_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Extangent ω₂) : ((Extangentpt h) LiesOn ω₁) ∧ ((Extangentpt h) LiesOn ω₂) := by
+  haveI : PtNe ω₁.center ω₂.center := ⟨extangent_centers_distinct h⟩
   constructor
-  · have : dist ω₁.center (CC_Circumscribe_Point h) = ω₁.radius := by
+  · have : dist ω₁.center (Extangentpt h) = ω₁.radius := by
       calc
         _ = ‖ω₁.radius • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
-          unfold CC_Circumscribe_Point
+          unfold Extangentpt
           simp
         _ = ω₁.radius := by
           rw [norm_smul, Dir.norm_unitVec, mul_one, Real.norm_of_nonneg ω₁.rad_pos.le]
     exact this
-  have : dist ω₂.center (CC_Circumscribe_Point h) = ω₂.radius := by
+  have : dist ω₂.center (Extangentpt h) = ω₂.radius := by
     calc
-      _ = ‖VEC (CC_Circumscribe_Point h) ω₂.center‖ := by rw [NormedAddTorsor.dist_eq_norm']; rfl
-      _ = ‖VEC ω₁.center ω₂.center - VEC ω₁.center (CC_Circumscribe_Point h)‖ := by rw [vec_sub_vec]
+      _ = ‖VEC (Extangentpt h) ω₂.center‖ := by rw [NormedAddTorsor.dist_eq_norm']; rfl
+      _ = ‖VEC ω₁.center ω₂.center - VEC ω₁.center (Extangentpt h)‖ := by rw [vec_sub_vec]
       _ = ‖VEC ω₁.center ω₂.center - ω₁.radius • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
-        unfold CC_Circumscribe_Point Vec.mkPtPt
+        unfold Extangentpt Vec.mkPtPt
         rw [vadd_vsub]
       _ = ‖(VEC_nd ω₁.center ω₂.center).1 - ω₁.radius • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := rfl
       _ = ‖(‖VEC_nd ω₁.center ω₂.center‖ - ω₁.radius) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
@@ -87,19 +106,27 @@ theorem CC_circumscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle 
           rw [norm_smul, Dir.norm_unitVec, mul_one, Real.norm_of_nonneg ω₂.rad_pos.le]
   exact this
 
-theorem CC_circumscribe_point_centers_colinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Circumscribe ω₂) : colinear ω₁.center (CC_Circumscribe_Point h) ω₂.center := by
-  haveI : PtNe ω₁.center ω₂.center := ⟨CC_Circumscribe_centers_distinct h⟩
-  have : VEC ω₁.center (CC_Circumscribe_Point h) = (ω₁.radius * ‖VEC ω₁.center ω₂.center‖⁻¹) • (VEC ω₁.center ω₂.center) := by
+theorem extangent_pt_centers_colinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Extangent ω₂) : colinear ω₁.center (Extangentpt h) ω₂.center := by
+  haveI : PtNe ω₁.center ω₂.center := ⟨extangent_centers_distinct h⟩
+  have : VEC ω₁.center (Extangentpt h) = (ω₁.radius * ‖VEC ω₁.center ω₂.center‖⁻¹) • (VEC ω₁.center ω₂.center) := by
     calc
       _ = ω₁.radius • (VEC_nd ω₁.center ω₂.center).toDir.unitVec := by
-        unfold CC_Circumscribe_Point
+        unfold Extangentpt
         simp
       _ = ω₁.radius • (‖VEC ω₁.center ω₂.center‖⁻¹ • (VEC ω₁.center ω₂.center)) := rfl
       _ = (ω₁.radius * ‖VEC ω₁.center ω₂.center‖⁻¹) • (VEC ω₁.center ω₂.center) := by apply smul_smul
   apply flip_colinear_snd_trd (colinear_of_vec_eq_smul_vec this)
 
+end CC
 
-theorem CC_inscribed_pt_inside_second_circle {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h₁ : ω₁ InscribeIn ω₂) (h₂ : A LiesOn ω₁) : A LiesIn ω₂ := by
+end extangent
+
+
+section intangent
+
+namespace CC
+
+theorem intangency_pt_liesin_second_circle {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h₁ : ω₁ Intangent ω₂) (h₂ : A LiesOn ω₁) : A LiesIn ω₂ := by
   have : dist ω₂.center A ≤ ω₂.radius := by
     calc
       _ ≤ dist ω₁.center ω₂.center + dist ω₁.center A := by apply dist_triangle_left
@@ -107,26 +134,26 @@ theorem CC_inscribed_pt_inside_second_circle {ω₁ : Circle P} {ω₂ : Circle 
       _ = ω₂.radius := by linarith
   exact this
 
-def CC_Inscribe_Point {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ InscribeIn ω₂) : P := (ω₁.radius • (VEC_nd ω₂.center ω₁.center h.2).toDir.unitVec) +ᵥ ω₁.center
+def Intangentpt {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intangent ω₂) : P := (ω₁.radius • (VEC_nd ω₂.center ω₁.center h.2).toDir.unitVec) +ᵥ ω₁.center
 
-theorem CC_inscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ InscribeIn ω₂) : ((CC_Inscribe_Point h) LiesOn ω₁) ∧ ((CC_Inscribe_Point h) LiesOn ω₂) := by
+theorem intangent_pt_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intangent ω₂) : ((Intangentpt h) LiesOn ω₁) ∧ ((Intangentpt h) LiesOn ω₂) := by
   haveI : PtNe ω₁.center ω₂.center := ⟨h.2⟩
   constructor
-  · have : dist ω₁.center (CC_Inscribe_Point h) = ω₁.radius := by
+  · have : dist ω₁.center (Intangentpt h) = ω₁.radius := by
       calc
         _ = ‖ω₁.radius • (VEC_nd ω₂.center ω₁.center).toDir.unitVec‖ := by
-          unfold CC_Inscribe_Point
+          unfold Intangentpt
           simp
         _ = ω₁.radius := by
           rw [norm_smul, Dir.norm_unitVec, mul_one, Real.norm_of_nonneg ω₁.rad_pos.le]
     exact this
-  have : dist ω₂.center (CC_Inscribe_Point h) = ω₂.radius := by
+  have : dist ω₂.center (Intangentpt h) = ω₂.radius := by
     calc
-      _ = ‖VEC (CC_Inscribe_Point h) ω₂.center‖ := by
+      _ = ‖VEC (Intangentpt h) ω₂.center‖ := by
         rw [NormedAddTorsor.dist_eq_norm']; rfl
-      _ = ‖VEC ω₁.center ω₂.center - VEC ω₁.center (CC_Inscribe_Point h)‖ := by rw [vec_sub_vec]
+      _ = ‖VEC ω₁.center ω₂.center - VEC ω₁.center (Intangentpt h)‖ := by rw [vec_sub_vec]
       _ = ‖VEC ω₁.center ω₂.center - ω₁.radius • (VEC_nd ω₂.center ω₁.center).toDir.unitVec‖ := by
-        unfold CC_Inscribe_Point Vec.mkPtPt
+        unfold Intangentpt Vec.mkPtPt
         rw [vadd_vsub]
       _ = ‖(VEC_nd ω₁.center ω₂.center).1 - ω₁.radius • (VEC_nd ω₂.center ω₁.center).toDir.unitVec‖ := rfl
       _ = ‖(VEC_nd ω₁.center ω₂.center).1 + ω₁.radius • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
@@ -146,15 +173,15 @@ theorem CC_inscribe_point_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (
         congr; rw [h.1]; linarith
       _ = ω₂.radius := by
           rw [norm_smul, Dir.norm_unitVec, mul_one, Real.norm_of_nonneg ω₂.rad_pos.le] -- note: 我不知道这行出现多少次了，不要复制粘贴，写点lemma
-  show Circle.IsOn (CC_Inscribe_Point h) ω₂
+  show Circle.IsOn (Intangentpt h) ω₂
   exact this
 
-theorem CC_inscribe_point_centers_colinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ InscribeIn ω₂) : colinear ω₁.center ω₂.center (CC_Inscribe_Point h) := by
+theorem intangentpt_centers_colinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intangent ω₂) : colinear ω₁.center ω₂.center (Intangentpt h) := by
   haveI : PtNe ω₁.center ω₂.center := ⟨h.2⟩
-  have : VEC ω₁.center (CC_Inscribe_Point h) = (- ω₁.radius * ‖(VEC ω₁.center ω₂.center)‖⁻¹) • VEC ω₁.center ω₂.center := by
+  have : VEC ω₁.center (Intangentpt h) = (- ω₁.radius * ‖(VEC ω₁.center ω₂.center)‖⁻¹) • VEC ω₁.center ω₂.center := by
     calc
       _ = ω₁.radius • (VEC_nd ω₂.center ω₁.center).toDir.unitVec := by
-        unfold CC_Inscribe_Point
+        unfold Intangentpt
         simp
       _ = ω₁.radius • (- (VEC_nd ω₁.center ω₂.center).toDir.unitVec) := by
         -- note: 为什么没有 neg_vecND
@@ -169,8 +196,16 @@ theorem CC_inscribe_point_centers_colinear {ω₁ : Circle P} {ω₂ : Circle P}
       _ = (- ω₁.radius * ‖VEC ω₁.center ω₂.center‖⁻¹) • VEC ω₁.center ω₂.center := by apply smul_smul
   apply colinear_of_vec_eq_smul_vec this
 
+end CC
 
-theorem CC_included_pt_isint_second_circle {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h₁ : ω₁ IncludeIn ω₂) (h₂ : A LiesOn ω₁) : A LiesInt ω₂ := by
+end intangent
+
+
+section include
+
+namespace CC
+
+theorem included_pt_liesint_second_circle {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h₁ : ω₁ IncludeIn ω₂) (h₂ : A LiesOn ω₁) : A LiesInt ω₂ := by
   have : dist ω₂.center A < ω₂.radius := by
     calc
       _ ≤ dist ω₁.center ω₂.center + dist ω₁.center A := by apply dist_triangle_left
@@ -179,7 +214,7 @@ theorem CC_included_pt_isint_second_circle {ω₁ : Circle P} {ω₂ : Circle P}
       _ = ω₂.radius := by linarith
   exact this
 
-theorem CC_included_pt_outside_first_circle {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h₁ : ω₁ IncludeIn ω₂) (h₂ : A LiesOn ω₂) : A LiesOut ω₁ := by
+theorem included_pt_liesout_first_circle {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h₁ : ω₁ IncludeIn ω₂) (h₂ : A LiesOn ω₂) : A LiesOut ω₁ := by
   have : dist ω₁.center A + dist ω₁.center ω₂.center ≥ dist ω₂.center A := by
     rw [dist_comm ω₂.center A]
     apply dist_triangle_left
@@ -192,12 +227,26 @@ theorem CC_included_pt_outside_first_circle {ω₁ : Circle P} {ω₂ : Circle P
       _ = ω₁.radius := by linarith
   exact this
 
+end CC
 
-lemma CC_intersected_centers_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : ω₁.center ≠ ω₂.center := by
+end include
+
+
+section intersect
+
+namespace CC
+
+theorem intersected_symm {ω₁ : Circle P} {ω₂ : Circle P} : ω₁ Intersect ω₂ ↔ ω₂ Intersect ω₁ := by
+  unfold Circle.CC.IsIntersected
+  rw [dist_comm, add_comm, abs_sub_comm]
+
+lemma intersected_centers_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : ω₁.center ≠ ω₂.center := by
   apply dist_pos.mp
   have : dist ω₁.center ω₂.center > abs (ω₂.radius - ω₁.radius) := h.2
   have : abs (ω₂.radius - ω₁.radius) ≥ 0 := by apply abs_nonneg
   linarith
+
+end CC
 
 @[ext]
 structure CCInxpts (P : Type _) [EuclideanPlane P] where
@@ -205,10 +254,10 @@ structure CCInxpts (P : Type _) [EuclideanPlane P] where
   right : P
 
 /- the following dist has a direction, depending on (VEC O₁ O₂) -/
-def radical_axis_dist_to_the_first (ω₁ : Circle P) (ω₂ : Circle P) : ℝ := (ω₁.radius ^ 2 + (dist ω₁.center ω₂.center) ^ 2 - ω₂.radius ^ 2) / (2 * (dist ω₁.center ω₂.center))
+def Circle.radical_axis_dist_to_the_first (ω₁ : Circle P) (ω₂ : Circle P) : ℝ := (ω₁.radius ^ 2 + (dist ω₁.center ω₂.center) ^ 2 - ω₂.radius ^ 2) / (2 * (dist ω₁.center ω₂.center))
 
-lemma radical_axis_dist_lt_radius {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : abs (radical_axis_dist_to_the_first ω₁ ω₂) < ω₁.radius := by
-  have dpos : 0 < dist ω₁.center ω₂.center := by apply dist_pos.mpr (CC_intersected_centers_distinct h)
+lemma Circle.radical_axis_dist_lt_radius {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : abs (radical_axis_dist_to_the_first ω₁ ω₂) < ω₁.radius := by
+  have dpos : 0 < dist ω₁.center ω₂.center := by apply dist_pos.mpr (CC.intersected_centers_distinct h)
   by_cases h₁ : radical_axis_dist_to_the_first ω₁ ω₂ > 0
   · rw [abs_of_pos h₁]
     unfold radical_axis_dist_to_the_first
@@ -242,13 +291,15 @@ lemma radical_axis_dist_lt_radius {ω₁ : Circle P} {ω₂ : Circle P} (h : ω�
   apply add_pos ω₁.rad_pos dpos
   linarith
 
-def CC_Intersected_pts {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : CCInxpts P where
-  left := (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂)) • (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.unitVec +ᵥ ω₁.center
-  right := (- Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂)) • (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.unitVec +ᵥ ω₁.center
+namespace CC
 
-theorem CC_inx_pts_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (CC_Intersected_pts h).left ≠ (CC_Intersected_pts h).right := by
+def Inxpts {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : CCInxpts P where
+  left := (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂)) • (VEC_nd ω₁.center ω₂.center (intersected_centers_distinct h).symm).toDir.unitVec +ᵥ ω₁.center
+  right := (- Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂)) • (VEC_nd ω₁.center ω₂.center (intersected_centers_distinct h).symm).toDir.unitVec +ᵥ ω₁.center
+
+theorem inx_pts_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (Inxpts h).left ≠ (Inxpts h).right := by
   apply (ne_iff_vec_ne_zero _ _).mpr
-  unfold Vec.mkPtPt CC_Intersected_pts
+  unfold Vec.mkPtPt Inxpts
   simp
   rw [← sub_smul]
   simp
@@ -260,8 +311,8 @@ theorem CC_inx_pts_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Int
     exact radical_axis_dist_lt_radius h
   linarith
 
-theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : ((CC_Intersected_pts h).left LiesOn ω₁) ∧ ((CC_Intersected_pts h).left LiesOn ω₂) ∧ ((CC_Intersected_pts h).right LiesOn ω₁) ∧ ((CC_Intersected_pts h).right LiesOn ω₂) := by
-  haveI : PtNe ω₁.center ω₂.center := ⟨CC_intersected_centers_distinct h⟩
+theorem inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : ((Inxpts h).left LiesOn ω₁) ∧ ((Inxpts h).left LiesOn ω₂) ∧ ((Inxpts h).right LiesOn ω₁) ∧ ((Inxpts h).right LiesOn ω₂) := by
+  haveI cne : PtNe ω₁.center ω₂.center := ⟨intersected_centers_distinct h⟩
   have hlt : (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2 < ω₁.radius ^ 2 := by
     apply sq_lt_sq.mpr
     rw [abs_of_pos ω₁.rad_pos]
@@ -275,10 +326,10 @@ theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω�
         rw [dist_comm, NormedAddTorsor.dist_eq_norm']
         rfl
   constructor
-  · show dist ω₁.center (CC_Intersected_pts h).left = ω₁.radius
+  · show dist ω₁.center (Inxpts h).left = ω₁.radius
     calc
       _ = ‖(Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂)) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
-        unfold CC_Intersected_pts
+        unfold Inxpts
         simp
       _ = ‖Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂)‖ := by
         rw [norm_smul, Dir.norm_unitVec, mul_one]
@@ -288,10 +339,10 @@ theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω�
         simp
       _ = ω₁.radius := Real.sqrt_sq (by linarith [ω₁.rad_pos])
   constructor
-  · show dist ω₂.center (CC_Intersected_pts h).left = ω₂.radius
+  · show dist ω₂.center (Inxpts h).left = ω₂.radius
     calc
       _ = ‖(dist ω₁.center ω₂.center) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec - (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂)) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
-        unfold CC_Intersected_pts
+        unfold Inxpts
         simp
         rw [NormedAddTorsor.dist_eq_norm', vsub_vadd_eq_vsub_sub, heq]
       _ = ‖(dist ω₁.center ω₂.center - (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂))) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by rw [sub_smul]; simp
@@ -306,12 +357,12 @@ theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω�
         rw [sub_sq, mul_div_cancel']
         ring_nf
         apply Real.sqrt_sq (by linarith [ω₂.rad_pos])
-        apply mul_ne_zero (by norm_num) (dist_ne_zero.mpr (CC_intersected_centers_distinct h))
+        apply mul_ne_zero (by norm_num) (dist_ne_zero.mpr cne.out)
   constructor
-  · show dist ω₁.center (CC_Intersected_pts h).right = ω₁.radius
+  · show dist ω₁.center (Inxpts h).right = ω₁.radius
     calc
       _ = ‖(- Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂)) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
-        unfold CC_Intersected_pts
+        unfold Inxpts
         simp
       _ = ‖- Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂)‖ := by
         rw [norm_smul, Dir.norm_unitVec, mul_one]
@@ -320,10 +371,10 @@ theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω�
         rw [add_comm, ← Complex.ofReal_neg, Complex.normSq_add_mul_I, neg_sq, Real.sq_sqrt (by linarith)]
         simp
       _ = ω₁.radius := Real.sqrt_sq (by linarith [ω₁.rad_pos])
-  show dist ω₂.center (CC_Intersected_pts h).right = ω₂.radius
+  show dist ω₂.center (Inxpts h).right = ω₂.radius
   calc
     _ = ‖(dist ω₁.center ω₂.center) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec - (- Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂)) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
-      unfold CC_Intersected_pts
+      unfold Inxpts
       simp
       rw [NormedAddTorsor.dist_eq_norm', vsub_vadd_eq_vsub_sub, heq]
     _ = ‖(dist ω₁.center ω₂.center - (- Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂))) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by rw [sub_smul]; simp
@@ -338,108 +389,108 @@ theorem CC_inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω�
       rw [sub_sq, mul_div_cancel']
       ring_nf
       apply Real.sqrt_sq (by linarith [ω₂.rad_pos])
-      apply mul_ne_zero (by norm_num) (dist_ne_zero.mpr (CC_intersected_centers_distinct h))
+      apply mul_ne_zero (by norm_num) (dist_ne_zero.mpr cne.out)
 
-lemma CC_inx_pts_not_colinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (¬ colinear (CC_Intersected_pts h).left ω₁.center ω₂.center) ∧ (¬ colinear (CC_Intersected_pts h).right ω₁.center ω₂.center) := by
+lemma inx_pts_not_colinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (¬ colinear (Inxpts h).left ω₁.center ω₂.center) ∧ (¬ colinear (Inxpts h).right ω₁.center ω₂.center) := by
   constructor
   · intro hc
-    set tri : Triangle P := ▵ (CC_Intersected_pts h).left ω₁.center ω₂.center with tri_def
+    set tri : Triangle P := ▵ (Inxpts h).left ω₁.center ω₂.center with tri_def
     have : colinear tri.1 tri.2 tri.3 := hc
     rw [Triangle.edge_sum_eq_edge_iff_colinear] at this
     rcases this with heq | (heq | heq)
     · rw [tri_def] at heq
-      have heq : dist ω₁.center ω₂.center + dist ω₂.center (CC_Intersected_pts h).left = dist (CC_Intersected_pts h).left ω₁.center := heq
+      have heq : dist ω₁.center ω₂.center + dist ω₂.center (Inxpts h).left = dist (Inxpts h).left ω₁.center := heq
       have hgt : dist ω₁.center ω₂.center > dist ω₁.center ω₂.center := by
         calc
           _ > abs (ω₂.radius - ω₁.radius) := h.2
-          _ = abs (dist ω₂.center (CC_Intersected_pts h).left - dist (CC_Intersected_pts h).left ω₁.center) := by rw [← (CC_inx_pts_lieson_circles h).1, dist_comm, (CC_inx_pts_lieson_circles h).2.1]
+          _ = abs (dist ω₂.center (Inxpts h).left - dist (Inxpts h).left ω₁.center) := by rw [← (inx_pts_lieson_circles h).1, dist_comm, (inx_pts_lieson_circles h).2.1]
           _ = dist ω₁.center ω₂.center := by
             rw [← heq]
             ring_nf
             rw [abs_neg, abs_of_nonneg dist_nonneg]
       linarith
     · rw [tri_def] at heq
-      have heq : dist ω₂.center (CC_Intersected_pts h).left + dist (CC_Intersected_pts h).left ω₁.center = dist ω₁.center ω₂.center := heq
+      have heq : dist ω₂.center (Inxpts h).left + dist (Inxpts h).left ω₁.center = dist ω₁.center ω₂.center := heq
       have hlt : dist ω₁.center ω₂.center < dist ω₁.center ω₂.center := by
         calc
           _ < ω₁.radius + ω₂.radius := h.1
-          _ = dist (CC_Intersected_pts h).left ω₁.center + dist ω₂.center (CC_Intersected_pts h).left := by rw [← (CC_inx_pts_lieson_circles h).1, dist_comm, (CC_inx_pts_lieson_circles h).2.1]
+          _ = dist (Inxpts h).left ω₁.center + dist ω₂.center (Inxpts h).left := by rw [← (inx_pts_lieson_circles h).1, dist_comm, (inx_pts_lieson_circles h).2.1]
           _ = dist ω₁.center ω₂.center := by rw [← heq]; ring
       linarith
     rw [tri_def] at heq
-    have heq : dist (CC_Intersected_pts h).left ω₁.center + dist ω₁.center ω₂.center = dist ω₂.center (CC_Intersected_pts h).left := heq
+    have heq : dist (Inxpts h).left ω₁.center + dist ω₁.center ω₂.center = dist ω₂.center (Inxpts h).left := heq
     have hgt : dist ω₁.center ω₂.center > dist ω₁.center ω₂.center := by
       calc
         _ > abs (ω₂.radius - ω₁.radius) := h.2
-        _ = abs (dist ω₂.center (CC_Intersected_pts h).left - dist (CC_Intersected_pts h).left ω₁.center) := by rw [← (CC_inx_pts_lieson_circles h).1, dist_comm, (CC_inx_pts_lieson_circles h).2.1]
+        _ = abs (dist ω₂.center (Inxpts h).left - dist (Inxpts h).left ω₁.center) := by rw [← (inx_pts_lieson_circles h).1, dist_comm, (inx_pts_lieson_circles h).2.1]
         _ = dist ω₁.center ω₂.center := by
           rw [← heq]
           ring_nf
           rw [abs_of_nonneg dist_nonneg]
     linarith
   intro hc
-  set tri : Triangle P := ▵ (CC_Intersected_pts h).right ω₁.center ω₂.center with tri_def
+  set tri : Triangle P := ▵ (Inxpts h).right ω₁.center ω₂.center with tri_def
   have : colinear tri.1 tri.2 tri.3 := hc
   rw [Triangle.edge_sum_eq_edge_iff_colinear] at this
   rcases this with heq | (heq | heq)
   · rw [tri_def] at heq
-    have heq : dist ω₁.center ω₂.center + dist ω₂.center (CC_Intersected_pts h).right = dist (CC_Intersected_pts h).right ω₁.center := heq
+    have heq : dist ω₁.center ω₂.center + dist ω₂.center (Inxpts h).right = dist (Inxpts h).right ω₁.center := heq
     have hgt : dist ω₁.center ω₂.center > dist ω₁.center ω₂.center := by
       calc
         _ > abs (ω₂.radius - ω₁.radius) := h.2
-        _ = abs (dist ω₂.center (CC_Intersected_pts h).right - dist (CC_Intersected_pts h).right ω₁.center) := by rw [← (CC_inx_pts_lieson_circles h).2.2.1, dist_comm, (CC_inx_pts_lieson_circles h).2.2.2]
+        _ = abs (dist ω₂.center (Inxpts h).right - dist (Inxpts h).right ω₁.center) := by rw [← (inx_pts_lieson_circles h).2.2.1, dist_comm, (inx_pts_lieson_circles h).2.2.2]
         _ = dist ω₁.center ω₂.center := by
           rw [← heq]
           ring_nf
           rw [abs_neg, abs_of_nonneg dist_nonneg]
     linarith
   · rw [tri_def] at heq
-    have heq : dist ω₂.center (CC_Intersected_pts h).right + dist (CC_Intersected_pts h).right ω₁.center = dist ω₁.center ω₂.center := heq
+    have heq : dist ω₂.center (Inxpts h).right + dist (Inxpts h).right ω₁.center = dist ω₁.center ω₂.center := heq
     have hlt : dist ω₁.center ω₂.center < dist ω₁.center ω₂.center := by
       calc
         _ < ω₁.radius + ω₂.radius := h.1
-        _ = dist (CC_Intersected_pts h).right ω₁.center + dist ω₂.center (CC_Intersected_pts h).right := by rw [← (CC_inx_pts_lieson_circles h).2.2.1, dist_comm, (CC_inx_pts_lieson_circles h).2.2.2]
+        _ = dist (Inxpts h).right ω₁.center + dist ω₂.center (Inxpts h).right := by rw [← (inx_pts_lieson_circles h).2.2.1, dist_comm, (inx_pts_lieson_circles h).2.2.2]
         _ = dist ω₁.center ω₂.center := by rw [← heq]; ring
     linarith
   rw [tri_def] at heq
-  have heq : dist (CC_Intersected_pts h).right ω₁.center + dist ω₁.center ω₂.center = dist ω₂.center (CC_Intersected_pts h).right := heq
+  have heq : dist (Inxpts h).right ω₁.center + dist ω₁.center ω₂.center = dist ω₂.center (Inxpts h).right := heq
   have hgt : dist ω₁.center ω₂.center > dist ω₁.center ω₂.center := by
     calc
       _ > abs (ω₂.radius - ω₁.radius) := h.2
-      _ = abs (dist ω₂.center (CC_Intersected_pts h).right - dist (CC_Intersected_pts h).right ω₁.center) := by rw [← (CC_inx_pts_lieson_circles h).2.2.1, dist_comm, (CC_inx_pts_lieson_circles h).2.2.2]
+      _ = abs (dist ω₂.center (Inxpts h).right - dist (Inxpts h).right ω₁.center) := by rw [← (inx_pts_lieson_circles h).2.2.1, dist_comm, (inx_pts_lieson_circles h).2.2.2]
       _ = dist ω₁.center ω₂.center := by
         rw [← heq]
         ring_nf
         rw [abs_of_nonneg dist_nonneg]
   linarith
 
-theorem CC_inx_pts_tri_acongr {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left) ≅ₐ (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right) := by
-  haveI : PtNe ω₁.center ω₂.center := ⟨CC_intersected_centers_distinct h⟩
-  have he₁ : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left).edge₁.length = (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right).edge₁.length := by
-    show (SEG ω₂.center (CC_Intersected_pts h).left).length = (SEG ω₂.center (CC_Intersected_pts h).right).length
+theorem inx_pts_tri_acongr {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (▵ ω₁.center ω₂.center (Inxpts h).left) ≅ₐ (▵ ω₁.center ω₂.center (Inxpts h).right) := by
+  haveI : PtNe ω₁.center ω₂.center := ⟨intersected_centers_distinct h⟩
+  have he₁ : (▵ ω₁.center ω₂.center (Inxpts h).left).edge₁.length = (▵ ω₁.center ω₂.center (Inxpts h).right).edge₁.length := by
+    show (SEG ω₂.center (Inxpts h).left).length = (SEG ω₂.center (Inxpts h).right).length
     simp
-    rw [(CC_inx_pts_lieson_circles h).2.1, (CC_inx_pts_lieson_circles h).2.2.2]
-  have he₂ : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left).edge₂.length = (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right).edge₂.length := by
-    show (SEG (CC_Intersected_pts h).left ω₁.center).length = (SEG (CC_Intersected_pts h).right ω₁.center).length
+    rw [(inx_pts_lieson_circles h).2.1, (inx_pts_lieson_circles h).2.2.2]
+  have he₂ : (▵ ω₁.center ω₂.center (Inxpts h).left).edge₂.length = (▵ ω₁.center ω₂.center (Inxpts h).right).edge₂.length := by
+    show (SEG (Inxpts h).left ω₁.center).length = (SEG (Inxpts h).right ω₁.center).length
     simp
-    rw [dist_comm, (CC_inx_pts_lieson_circles h).1, dist_comm, (CC_inx_pts_lieson_circles h).2.2.1]
-  have he₃ : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left).edge₃.length = (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right).edge₃.length := rfl
+    rw [dist_comm, (inx_pts_lieson_circles h).1, dist_comm, (inx_pts_lieson_circles h).2.2.1]
+  have he₃ : (▵ ω₁.center ω₂.center (Inxpts h).left).edge₃.length = (▵ ω₁.center ω₂.center (Inxpts h).right).edge₃.length := rfl
   rcases Triangle.congr_or_acongr_of_SSS he₁ he₂ he₃ with hc | hac
   · exfalso
-    have heq : (CC_Intersected_pts h).left = (CC_Intersected_pts h).right := by
+    have heq : (Inxpts h).left = (Inxpts h).right := by
       apply Triangle.IsCongr.unique_of_eq_eq hc (by rfl) (by rfl)
-    apply CC_inx_pts_distinct h heq
+    apply inx_pts_distinct h heq
   exact hac
 
-theorem CC_inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (LIN (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm) ⟂ (LIN ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm) := by
-  haveI : PtNe (CC_Intersected_pts h).left (CC_Intersected_pts h).right := ⟨CC_inx_pts_distinct h⟩
-  haveI : PtNe ω₁.center ω₂.center := ⟨CC_intersected_centers_distinct h⟩
-  show (LIN (CC_Intersected_pts h).left (CC_Intersected_pts h).right).toProj = (LIN ω₁.center ω₂.center).toProj.perp
+theorem inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (LIN (Inxpts h).left (Inxpts h).right (inx_pts_distinct h).symm) ⟂ (LIN ω₁.center ω₂.center (intersected_centers_distinct h).symm) := by
+  haveI : PtNe (Inxpts h).left (Inxpts h).right := ⟨inx_pts_distinct h⟩
+  haveI : PtNe ω₁.center ω₂.center := ⟨intersected_centers_distinct h⟩
+  show (LIN (Inxpts h).left (Inxpts h).right).toProj = (LIN ω₁.center ω₂.center).toProj.perp
   sorry
   /-
-  have hd : Complex.abs ((VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec) = 1 := by apply Dir.norm_of_dir_toVec_eq_one
-  have hn : Vec.norm (VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right) = 2 * (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2)) := by
-    unfold Vec.mk_pt_pt CC_Intersected_pts
+  have hd : Complex.abs ((VEC_nd ω₁.center ω₂.center (intersected_centers_distinct h).symm).toDir.toVec) = 1 := by apply Dir.norm_of_dir_toVec_eq_one
+  have hn : Vec.norm (VEC (Inxpts h).left (Inxpts h).right) = 2 * (Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2)) := by
+    unfold Vec.mk_pt_pt Inxpts
     simp only
     rw [vadd_vsub_assoc, vsub_vadd_eq_vsub_sub, vsub_self, add_zero_sub]
     simp only [neg_smul, Complex.real_smul, ← mul_assoc, neg_sub_left, ← two_mul,
@@ -448,53 +499,53 @@ theorem CC_inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (
     simp only [map_mul, Complex.abs_ofNat, Complex.abs_ofReal, Complex.abs_I, mul_one, hd]
     congr
     exact abs_of_nonneg (Real.sqrt_nonneg _)
-  have : (VEC_nd (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm).toDir.unitVec = (- (Dir.I * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir)).1 := by
+  have : (VEC_nd (Inxpts h).left (Inxpts h).right (inx_pts_distinct h).symm).toDir.unitVec = (- (Dir.I * (VEC_nd ω₁.center ω₂.center (intersected_centers_distinct h).symm).toDir)).1 := by
     calc
-      _ = (Vec.norm (VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right))⁻¹ • (VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right) := rfl
-      _ = (- (Vec.norm (VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right))⁻¹ * (2 * Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2))) • (Complex.I * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir.toVec) := by
-        unfold CC_Intersected_pts Vec.mk_pt_pt
+      _ = (Vec.norm (VEC (Inxpts h).left (Inxpts h).right))⁻¹ • (VEC (Inxpts h).left (Inxpts h).right) := rfl
+      _ = (- (Vec.norm (VEC (Inxpts h).left (Inxpts h).right))⁻¹ * (2 * Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2))) • (Complex.I * (VEC_nd ω₁.center ω₂.center (intersected_centers_distinct h).symm).toDir.toVec) := by
+        unfold Inxpts Vec.mk_pt_pt
         simp
         rw [neg_sub_left, ← two_mul]
         ring
-      _ = - (Dir.I * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir).1 := by
+      _ = - (Dir.I * (VEC_nd ω₁.center ω₂.center (intersected_centers_distinct h).symm).toDir).1 := by
         rw [hn, neg_mul, inv_mul_cancel, neg_one_smul]
         rfl
         rw [← hn]
-        show ‖VEC (CC_Intersected_pts h).left (CC_Intersected_pts h).right‖ ≠ 0
+        show ‖VEC (Inxpts h).left (Inxpts h).right‖ ≠ 0
         apply norm_ne_zero_iff.mpr
-        apply (ne_iff_vec_ne_zero _ _).mp (CC_inx_pts_distinct h).symm
-  have hdir: (VEC_nd (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm).toDir = - (Dir.I * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir) := by
+        apply (ne_iff_vec_ne_zero _ _).mp (inx_pts_distinct h).symm
+  have hdir: (VEC_nd (Inxpts h).left (Inxpts h).right (inx_pts_distinct h).symm).toDir = - (Dir.I * (VEC_nd ω₁.center ω₂.center (intersected_centers_distinct h).symm).toDir) := by
     ext; rw [this]; rw [this]
   calc
-    _ = (VEC_nd (CC_Intersected_pts h).left (CC_Intersected_pts h).right (CC_inx_pts_distinct h).symm).toDir.toProj := rfl
-    _ = (Dir.I * (VEC_nd ω₁.center ω₂.center (CC_intersected_centers_distinct h).symm).toDir).toProj := by
+    _ = (VEC_nd (Inxpts h).left (Inxpts h).right (inx_pts_distinct h).symm).toDir.toProj := rfl
+    _ = (Dir.I * (VEC_nd ω₁.center ω₂.center (intersected_centers_distinct h).symm).toDir).toProj := by
       apply (Dir.toProj_eq_toProj_iff _ _).mpr
       right; exact hdir
   -/
 
 
 /- different circles have at most two intersections -/
-theorem CC_inx_pts_uniqueness {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) : (A = (CC_Intersected_pts h).left) ∨ (A = (CC_Intersected_pts h).right) := by
-  haveI : PtNe ω₁.center ω₂.center := ⟨CC_intersected_centers_distinct h⟩
-  have hac : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left) ≅ₐ (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right) := CC_inx_pts_tri_acongr h
-  have he₁ : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left).edge₁.length = (▵ ω₁.center ω₂.center A).edge₁.length := by
-    show (SEG ω₂.center (CC_Intersected_pts h).left).length = (SEG ω₂.center A).length
+theorem inx_pts_uniqueness {ω₁ : Circle P} {ω₂ : Circle P} {A : P} (h : ω₁ Intersect ω₂) (h₁ : A LiesOn ω₁) (h₂ : A LiesOn ω₂) : (A = (Inxpts h).left) ∨ (A = (Inxpts h).right) := by
+  haveI : PtNe ω₁.center ω₂.center := ⟨intersected_centers_distinct h⟩
+  have hac : (▵ ω₁.center ω₂.center (Inxpts h).left) ≅ₐ (▵ ω₁.center ω₂.center (Inxpts h).right) := inx_pts_tri_acongr h
+  have he₁ : (▵ ω₁.center ω₂.center (Inxpts h).left).edge₁.length = (▵ ω₁.center ω₂.center A).edge₁.length := by
+    show (SEG ω₂.center (Inxpts h).left).length = (SEG ω₂.center A).length
     simp
-    rw [(CC_inx_pts_lieson_circles h).2.1, h₂]
-  have he₂ : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left).edge₂.length = (▵ ω₁.center ω₂.center A).edge₂.length := by
-    show (SEG (CC_Intersected_pts h).left ω₁.center).length = (SEG A ω₁.center).length
+    rw [(inx_pts_lieson_circles h).2.1, h₂]
+  have he₂ : (▵ ω₁.center ω₂.center (Inxpts h).left).edge₂.length = (▵ ω₁.center ω₂.center A).edge₂.length := by
+    show (SEG (Inxpts h).left ω₁.center).length = (SEG A ω₁.center).length
     simp
-    rw [dist_comm, (CC_inx_pts_lieson_circles h).1, dist_comm, h₁]
-  have he₃ : (▵ ω₁.center ω₂.center (CC_Intersected_pts h).left).edge₃.length = (▵ ω₁.center ω₂.center A).edge₃.length := rfl
+    rw [dist_comm, (inx_pts_lieson_circles h).1, dist_comm, h₁]
+  have he₃ : (▵ ω₁.center ω₂.center (Inxpts h).left).edge₃.length = (▵ ω₁.center ω₂.center A).edge₃.length := rfl
   rcases Triangle.congr_or_acongr_of_SSS he₁ he₂ he₃ with hc | hc
   · left; symm
     apply Triangle.IsCongr.unique_of_eq_eq hc (by rfl) (by rfl)
   right
-  have : (▵ ω₁.center ω₂.center A) ≅ (▵ ω₁.center ω₂.center (CC_Intersected_pts h).right) := Triangle.congr_of_acongr_acongr hc.symm hac
+  have : (▵ ω₁.center ω₂.center A) ≅ (▵ ω₁.center ω₂.center (Inxpts h).right) := Triangle.congr_of_acongr_acongr hc.symm hac
   apply Triangle.IsCongr.unique_of_eq_eq this (by rfl) (by rfl)
 
-end Circle
-
 end CC
+
+end intersect
 
 end EuclidGeom
