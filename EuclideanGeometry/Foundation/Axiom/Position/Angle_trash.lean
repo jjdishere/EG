@@ -22,9 +22,6 @@ theorem angle_eq_zero_of_same_dir {A O : P} [h₁ : PtNe A O] : ∠ A O A = 0 :=
 
 theorem eq_ang_of_lies_int_liesint {A A' B B' O: P} [h₁ : PtNe A O] [h₂ : PtNe B O] [h₁' : PtNe A' O] [h₂' : PtNe B' O] (LiesInt1 : A' LiesInt (RAY O A) )  (LiesInt2 :  B' LiesInt (RAY O B) ) : ANG A O B = ANG A' O B' := sorry
 
-theorem eq_ang_value_of_lies_int_lies_int {A A' B B' O: P} [h₁ : PtNe A O] [h₂ : PtNe B O] [h₁' : PtNe A' O] [h₂' : PtNe B' O] (LiesInt1 : A' LiesInt (RAY O A) )  (LiesInt2 :  B' LiesInt (RAY O B) ) : ∠  A O B = ∠  A' O B' := sorry
-
-theorem eq_ang_val_of_lieson_lieson {A A' B B' O: P} [h₁ : PtNe A O] [h₂ : PtNe B O] [h₁' : PtNe A' O] [h₂' : PtNe B' O] (LiesInt1 : A' LiesInt (RAY O A) )  (LiesInt2 :  B' LiesInt (RAY O B) ) : ∠  A O B = ∠  A' O B' := sorry
 --Nailin Guan
 theorem neg_value_of_rev_ang {A B O: P} [h₁ : PtNe A O] [h₂ : PtNe B O] : ∠ A O B = -∠ B O A := sorry
 
@@ -33,30 +30,16 @@ theorem neg_dvalue_of_rev_ang {A B O: P} (h₁ : A ≠ O) (h₂ : B ≠ O) : (AN
 namespace Angle
 
 theorem end_ray_eq_value_vadd_start_ray (ang : Angle P) : ang.dir₂ = ang.value +ᵥ ang.dir₁ := sorry
--- to replace
-/-
-theorem end_ray_eq_start_ray_mul_value {ang : Angle P} : ang.dir₂ = ang.dir₁ * ang.value.toDir := sorry
--/
-
-theorem ang_source_eq_end_ray_source {ang : Angle P} : ang.source = ang.end_ray.source := sorry
 
 def mk_start_ray (ang : Angle P) (ray : Ray P) (h : ang.source = ray.source) : Angle P := Angle.mk_two_ray_of_eq_source ang.start_ray ray h
 
-def mk_end_ray (ang : Angle P) (ray : Ray P) (h : ang.source = ray.source) : Angle P := Angle.mk_two_ray_of_eq_source ray ang.end_ray (by rw[h.symm, ang_source_eq_end_ray_source])
+def mk_end_ray (ang : Angle P) (ray : Ray P) (h : ang.source = ray.source) : Angle P := Angle.mk_two_ray_of_eq_source ray ang.end_ray h.symm
 
 theorem value_eq_vsub (ray₁ : Ray P) (ray₂ : Ray P) (h: ray₁.source = ray₂.source) : (Angle.mk_two_ray_of_eq_source ray₁ ray₂ h).value = ray₂.toDir -ᵥ ray₁.toDir := sorry
 
 theorem mk_strat_ray_value_eq_vsub (ang : Angle P) (ray : Ray P) (h : ang.source = ray.source) : (Angle.mk_start_ray ang ray h).value = ray.toDir -ᵥ ang.dir₁ := sorry
 
 theorem mk_end_ray_value_eq_vsub (ang : Angle P) (ray : Ray P) (h : ang.source = ray.source) : (Angle.mk_end_ray ang ray h).value = ang.dir₂ -ᵥ ray.toDir := sorry
--- to replace
-/-
-theorem value_eq_angdiff {ray₁ : Ray P} {ray₂ : Ray P} (h: ray₁.source = ray₂.source) : (Angle.mk_two_ray_of_eq_source ray₁ ray₂ h).value = Dir.AngDiff ray₁.toDir ray₂.toDir := sorry
-
-theorem mk_start_ray_value_eq_angdiff {ang : Angle P} {ray : Ray P} (h : ang.source = ray.source) : (Angle.mk_start_ray ang ray h).value = Dir.AngDiff ang.dir₁ ray.toDir := sorry
-
-theorem mk_end_ray_value_eq_angdiff {ang : Angle P} {ray : Ray P} (h : ang.source = ray.source) : (Angle.mk_end_ray ang ray h).value = Dir.AngDiff ray.toDir ang.dir₂ := sorry
--/
 
 end Angle
 

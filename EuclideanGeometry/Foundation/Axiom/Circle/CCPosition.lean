@@ -249,9 +249,9 @@ def CC_Intersected_pts {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersec
 theorem CC_inx_pts_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (CC_Intersected_pts h).left ≠ (CC_Intersected_pts h).right := by
   apply (ne_iff_vec_ne_zero _ _).mpr
   unfold Vec.mkPtPt CC_Intersected_pts
-  simp
-  rw [← sub_smul]
-  simp
+  simp only [neg_mul, vadd_vsub_vadd_cancel_right, ne_eq, ← sub_smul]
+  simp only [add_sub_add_right_eq_sub, sub_neg_eq_add, smul_eq_zero, add_self_eq_zero, mul_eq_zero,
+    Complex.ofReal_eq_zero, Complex.I_ne_zero, or_false, VecND.ne_zero]
   push_neg
   apply Real.sqrt_ne_zero'.mpr
   have hlt : (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2 < ω₁.radius ^ 2 := by
