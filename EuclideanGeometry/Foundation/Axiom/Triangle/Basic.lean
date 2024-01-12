@@ -88,7 +88,7 @@ abbrev area : ℝ := tr_nd.1.area
 
 /- Only nondegenerate triangles can talk about orientation -/
 @[pp_dot]
-def is_cclock : Prop := tr_nd.1.3 LiesOnLeft (Ray.mk_pt_pt tr_nd.1.1 tr_nd.1.2 (tr_nd.nontriv₃.out))
+def is_cclock : Prop := 0 < TriangleND.oarea tr_nd
 
 @[pp_dot]
 def angle₁ : Angle P := ANG tr_nd.point₂ tr_nd.point₁ tr_nd.point₃
@@ -310,7 +310,5 @@ theorem sum_of_other_angle_same_if_one_angle_same (tr₁ tr₂ : TriangleND P) (
 theorem sum_of_other_angle_same_neg_if_one_angle_same_neg (tr₁ tr₂ : TriangleND P) (a : tr₁.angle₁.value =  - tr₂.angle₁.value) : tr₁.angle₂.value + tr₁.angle₃.value = - (tr₂.angle₂.value + tr₂.angle₃.value ) := by sorry
 
 end TriangleND
-
-
 
 end EuclidGeom
