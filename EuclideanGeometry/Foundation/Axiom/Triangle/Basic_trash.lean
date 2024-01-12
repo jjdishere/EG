@@ -6,11 +6,10 @@ open AngValue
 
 variable {P : Type _} [EuclideanPlane P]
 
--- `IsAcute should be be prepared in Angle!!`
 structure TriangleND.IsAcute (tr_nd : TriangleND P) : Prop where
-  angle₁ : tr_nd.angle₁.value.IsAcu
-  angle₂ : tr_nd.angle₂.value.IsAcu
-  angle₃ : tr_nd.angle₃.value.IsAcu
+  angle₁ : tr_nd.angle₁.IsAcu
+  angle₂ : tr_nd.angle₂.IsAcu
+  angle₃ : tr_nd.angle₃.IsAcu
 
 variable {tr_nd₁ tr_nd₂ : TriangleND P}
 

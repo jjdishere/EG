@@ -12,7 +12,7 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Angle_trash
 noncomputable section
 namespace EuclidGeom
 
-open AngValue
+open AngValue Angle
 
 variable {P : Type _} [EuclideanPlane P]
 
@@ -26,8 +26,9 @@ variable {P : Type _} [EuclideanPlane P]
 
 structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
   eq_source : ang.source = ray.source
-  eq_value : (Angle.mk_start_ray ang ray eq_source).value = (Angle.mk_ray_end ang ray eq_source).value
-  -- `the definition of same_sgn can be rewrite, using btw`
+  eq_value : (mk_dir₁ ang ray.toDir).value = (mk_dir₂ ang ray.toDir).value
+  -- `the definition of same_sgn should be rewrite, using btw`.
+  -- For example, change it to `sbtw ang.dir₁ ray.toDir ang.dir₂ ∨ (ray.toDir =ang.dir₁ ∧ ray.toDir = ang.dir₂)`.
   same_sgn : ((Angle.mk_start_ray ang ray eq_source).value.IsPos ∧ ang.value.IsPos) ∨ ((Angle.mk_start_ray ang ray eq_source).value.IsNeg ∧ ang.value.IsNeg) ∨ ((Angle.mk_start_ray ang ray eq_source).value = ↑(π/2) ∧ ang.value = π ) ∨ ((Angle.mk_start_ray ang ray eq_source).value = 0 ∧ ang.value = 0)
 
 
@@ -44,13 +45,13 @@ namespace Angle
 /- when the Angle is flat, bis is on the left side-/
 def AngBis (ang : Angle P) : Ray P where
   source := ang.source
-  toDir := ang.value.half +ᵥ ang.start_ray.toDir
+  toDir := ang.value.half +ᵥ ang.dir₁
 
 def AngBisLine (ang : Angle P) : Line P := ang.AngBis.toLine
 
 def ExAngBis (ang : Angle P) : Ray P where
   source := ang.source
-  toDir := ∠[ang.value.toReal/2 + π/2] +ᵥ ang.start_ray.toDir
+  toDir := ∠[ang.value.toReal/2 + π/2] +ᵥ ang.dir₁
 
 def ExAngBisLine (ang : Angle P) : Line P := ang.ExAngBis.toLine
 
@@ -63,16 +64,13 @@ theorem eq_source {ang : Angle P} : ang.source = ang.AngBis.source := rfl
 theorem value_angBis_eq_half_value {ang : Angle P} : (Angle.mk_start_ray ang ang.AngBis rfl).value = ang.value.half := by
   simp only [mk_strat_ray_value_eq_vsub, AngBis, vadd_vsub]
 
-theorem  mk_start_ray_value_eq_half_angvalue {ang : Angle P} : (Angle.mk_start_ray ang ang.AngBis rfl).value.toReal = ang.value.toReal / 2 :=
+theorem mk_start_ray_value_eq_half_angvalue {ang : Angle P} : (Angle.mk_start_ray ang ang.AngBis rfl).value.toReal = ang.value.toReal / 2 :=
   (Eq.congr_right (ang.value.half_toReal).symm).mpr (congrArg toReal ang.value_angBis_eq_half_value)
 
 theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
   eq_source := rfl
   eq_value := by
-    rw [mk_strat_ray_value_eq_vsub]
-    rw [mk_ray_end_value_eq_vsub]
-    simp only [AngBis, vadd_vsub]
-    rw [vsub_vadd_eq_vsub_sub, ← value]
+    simp only [value_mk_dir₁, value_mk_dir₂, AngBis, vadd_vsub, vsub_vadd_eq_vsub_sub]
     exact sub_half_eq_half.symm
   same_sgn := by
     have g : (ang.value.IsPos) ∨ (ang.value.IsNeg) ∨ (ang.value = π) ∨ (ang.value = 0) := by
@@ -91,14 +89,14 @@ theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
       left
       constructor
       · apply toReal_eq_pi_div_two_iff.mp
-        simp only [ mk_start_ray_value_eq_half_angvalue, g₃, neg_lt_self_iff, toReal_pi]
+        simp only [mk_start_ray_value_eq_half_angvalue, g₃, neg_lt_self_iff, toReal_pi]
       · exact g₃
     · right
       right
       right
       constructor
       · rw [← AngValue.toReal_inj]
-        simp only [ mk_start_ray_value_eq_half_angvalue, g₄, toReal_zero, zero_div]
+        simp only [mk_start_ray_value_eq_half_angvalue, g₄, toReal_zero, zero_div]
       · exact g₄
 
 theorem angbis_iff_angbis {ang : Angle P} {r : Ray P} : IsAngBis ang r ↔ r = ang.AngBis := by
@@ -107,20 +105,18 @@ theorem angbis_iff_angbis {ang : Angle P} {r : Ray P} : IsAngBis ang r ↔ r = a
   · exact fun h ↦ (by rw [h]; apply angbis_is_angbis)
 
 
-theorem ang_source_rev_eq_source_bis {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) : ang.reverse.source = r.source := by rw[ang.ang_source_rev_eq_source, h.eq_source]
+theorem ang_source_rev_eq_source_bis {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) : ang.reverse.source = r.source := h.eq_source
 
 theorem nonpi_bisector_eq_bisector_of_rev {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) (nonpi : ang.value ≠ π ): IsAngBis ang.reverse r where
-  eq_source := by rw[h.eq_source.symm, ang.ang_source_rev_eq_source]
+  eq_source := h.eq_source
   eq_value := by
-    have : (Angle.mk_start_ray ang.reverse r (ang_source_rev_eq_source_bis h)) = (Angle.mk_ray_end ang r h.eq_source).reverse := rfl
-    rw [this, (Angle.mk_ray_end ang r h.eq_source).ang_value_rev_eq_neg_value]
-    have : (Angle.mk_ray_end ang.reverse r (ang_source_rev_eq_source_bis h)) = (Angle.mk_start_ray ang r h.eq_source).reverse := rfl
-    rw [this, (Angle.mk_start_ray ang r h.eq_source).ang_value_rev_eq_neg_value]
-    simp [h.eq_value]
-  same_sgn := by
-    have : (Angle.mk_start_ray ang.reverse r (ang_source_rev_eq_source_bis h)) = (Angle.mk_ray_end ang r h.eq_source).reverse := rfl
-    rw [this, (Angle.mk_ray_end ang r h.eq_source).ang_value_rev_eq_neg_value]
-    rw [ang.ang_value_rev_eq_neg_value]
+    simp only [value_mk_dir₁, value_mk_dir₂, reverse]
+    rw [← neg_vsub_eq_vsub_rev ang.dir₂ r.toDir, ← neg_vsub_eq_vsub_rev r.toDir ang.dir₁]
+    exact neg_inj.mpr h.eq_value.symm
+  same_sgn := sorry /- by
+    have : (Angle.mk_start_ray ang.reverse r (ang_source_rev_eq_source_bis h)) = (Angle.mk_end_ray ang r h.eq_source).reverse := rfl
+    rw [this, (Angle.mk_end_ray ang r h.eq_source).rev_value_eq_neg_value]
+    rw [ang.rev_value_eq_neg_value]
     simp
     rw [h.eq_value.symm]
     rcases h.same_sgn with h₁ | h₂ | h₃ | h₄
@@ -128,7 +124,7 @@ theorem nonpi_bisector_eq_bisector_of_rev {ang : Angle P} {r : Ray P} (h : IsAng
     · exact Or.inl h₂
     · absurd nonpi
       exact h₃.2
-    · exact Or.inr (Or.inr (Or.inr h₄))
+    · exact Or.inr (Or.inr (Or.inr h₄)) -/
 
 
 theorem bisector_eq_bisector_of_rev' {ang : Angle P} : ang.AngBis = ang.reverse.AngBis := by
@@ -172,7 +168,7 @@ namespace TriangleND
 theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : TriangleND P} : ¬ tri_nd.angle₁.AngBis.toLine ∥ tri_nd.angle₂.AngBis.toLine := by
   by_contra g
   let A₁ := (Angle.mk_start_ray tri_nd.angle₁ tri_nd.angle₁.AngBis tri_nd.angle₁.eq_source).reverse
-  let A₂ := Angle.mk_ray_end tri_nd.angle₂ tri_nd.angle₂.AngBis tri_nd.angle₂.eq_source
+  let A₂ := Angle.mk_end_ray tri_nd.angle₂ tri_nd.angle₂.AngBis tri_nd.angle₂.eq_source
   have sr : A₁.start_ray.toDir = A₂.start_ray.toDir := by
     have h₁ : A₁.start_ray = tri_nd.angle₁.AngBis := rfl
     have h₂ : A₂.start_ray = tri_nd.angle₂.AngBis := rfl
