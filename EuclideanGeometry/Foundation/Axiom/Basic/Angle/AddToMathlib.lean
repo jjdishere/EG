@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Basic.Angle.FromMathlib
+import Mathlib.Data.Int.Parity
 
 /-!
 # Theorems that should exist in Mathlib
@@ -7,6 +8,7 @@ Maybe we can create some PRs to mathlib in the future.
 -/
 
 open Real Classical
+attribute [ext] Complex.ext
 
 /-!
 ### More theorems about trigonometric functions in Mathlib
