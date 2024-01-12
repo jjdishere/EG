@@ -227,7 +227,29 @@ theorem anti_cclock_of_IsOnOppositeSide (A B C D : P) [hne : PtNe B A] (h : IsOn
   rw [this] at P
   linarith
 
+--LiesOnLeft or LiesOnRight straight to Angle.sign hiding cclock
 
+lemma liesonleft_ne_pts {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (DLIN A B)) : (C ≠ A) ∧ (C ≠ B) := by
+  have h': C LiesOnLeft (RAY A B) := by exact h
+  have : ¬ colinear A B C := by
+    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+    simp only [h', true_or]
+  have c_ne_a : C ≠ A := (ne_of_not_colinear this).2.1.symm
+  have c_ne_b : C ≠ B := (ne_of_not_colinear this).1
+  simp only [ne_eq, c_ne_a, not_false_eq_true, c_ne_b, and_self]
+
+lemma liesonright_ne_pts {A B C : P} [hne : PtNe B A] (h : C LiesOnRight (DLIN A B)) : (C ≠ A) ∧ (C ≠ B) := by
+  have h': C LiesOnRight (RAY A B) := by exact h
+  have : ¬ colinear A B C := by
+    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+    simp only [h', or_true]
+  have c_ne_a : C ≠ A := (ne_of_not_colinear this).2.1.symm
+  have c_ne_b : C ≠ B := (ne_of_not_colinear this).1
+  simp only [ne_eq, c_ne_a, not_false_eq_true, c_ne_b, and_self]
+
+theorem liesonright_angle_isneg {A B C : P} [hne : PtNe B A] (h : C LiesOnRight (DLIN A B)) : (∠ A C B (liesonright_ne_pts h).1.symm (liesonright_ne_pts h).2.symm).IsNeg := sorry
+
+theorem liesonleft_angle_ispos {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (DLIN A B)) : (∠ A C B (liesonleft_ne_pts h).1.symm (liesonleft_ne_pts h).2.symm).IsPos := sorry
 
 end cclock_and_odist
 

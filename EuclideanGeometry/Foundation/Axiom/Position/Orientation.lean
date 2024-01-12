@@ -951,6 +951,9 @@ theorem not_colinear_of_IsOnOppositeSide (A B C D : P) [bnea : PtNe B A] (h : Is
 
 end relative_side
 
+scoped notation A B "LiesOnSameSide" l => IsOnSameSide A B l
+scoped notation A B "LiesOnOppositeSide" l => IsOnOppositeSide A B l
+
 /- Position of two lines; need a function to take the intersection of two lines (when they intersect). -/
 
 
