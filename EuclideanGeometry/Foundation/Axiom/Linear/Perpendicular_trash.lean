@@ -8,6 +8,8 @@ open Line
 
 variable {P : Type _} [EuclideanPlane P]
 
+theorem segnd_perp_line_of_line_perp_line {A B : P} (B_ne_A : B ≠ A) {l : Line P} (h : (SEG_nd A B B_ne_A) ⟂ l) : (LIN A B B_ne_A) ⟂ l := by sorry
+theorem perp_foot_unique' {A B : P} {l : DirLine P} (h : A LiesOn l) (hne : B ≠ A) (hp : (DLIN B A hne.symm) ⟂ l) : perp_foot B l = A := sorry
 lemma perp_foot_ne_self_iff_not_lies_on' (A B : P) (l : Line P) (B_is_perp_foot : B = (perp_foot A l)) : B ≠ A ↔ ¬ A LiesOn l := by
   simp only [B_is_perp_foot]
   exact (perp_foot_ne_self_iff_not_lies_on A l)
