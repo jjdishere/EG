@@ -64,7 +64,7 @@ protected def IsOn (p : P) (ω : Circle P) : Prop := dist ω.center p = ω.radiu
 
 protected def IsInt (p : P) (ω : Circle P) : Prop := dist ω.center p < ω.radius
 
-def IsOutside (p : P) (ω : Circle P) : Prop := ω.radius < dist ω.center p
+protected def IsOutside (p : P) (ω : Circle P) : Prop := ω.radius < dist ω.center p
 
 protected def carrier (ω : Circle P) : Set P := { p : P | Circle.IsOn p ω }
 
@@ -96,10 +96,8 @@ instance pt_liesout_ne_center {p : P} {ω : Circle P} (h : p LiesOut ω) : PtNe 
 
 instance pt_lieson_ne_center {p : P} {ω : Circle P} (h : p LiesOn ω) : PtNe p ω.center := ⟨by
   apply dist_pos.mp
-  rw [dist_comm]
-  have : dist ω.center p = ω.radius := h
-  have : ω.radius > 0 := ω.rad_pos
-  linarith
+  rw [dist_comm, h]
+  exact ω.rad_pos
   ⟩
 
 -- this instance does not work due to ω cannot be infered from A B, this should made in tactic ptne in the future
@@ -108,6 +106,21 @@ instance pt_liesout_ne_pt_lieson {A B : P} {ω : Circle P} (h₁ : A LiesOut ω)
   have heq : dist ω.center B = ω.radius := h₂
   contrapose! hgt
   rw [hgt, heq]
+  ⟩
+
+instance pt_liesint_ne_pt_lieson {A B : P} {ω : Circle P} (h₁ : A LiesInt ω) (h₂ : B LiesOn ω) : PtNe A B := ⟨by
+  have hgt : dist ω.center A < ω.radius := h₁
+  have heq : dist ω.center B = ω.radius := h₂
+  contrapose! hgt
+  rw [hgt, heq]
+  ⟩
+
+instance pt_liesout_ne_pt_liesint {A B : P} {ω : Circle P} (h₁ : A LiesOut ω) (h₂ : B LiesInt ω) : PtNe A B := ⟨by
+  have hgt : dist ω.center A > ω.radius := h₁
+  have hlt : dist ω.center B < ω.radius := h₂
+  contrapose! hgt
+  rw [hgt]
+  linarith
   ⟩
 
 theorem interior_of_circle_iff_inside_not_on_circle (p : P) (ω : Circle P) : p LiesInt ω ↔ (p LiesIn ω) ∧ (¬ p LiesOn ω) := by
@@ -159,8 +172,7 @@ lemma pts_lieson_circle_vec_eq {A B : P} {ω : Circle P} [hne : PtNe B A] (hl₁
     rw [← Seg.length_eq_dist, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
     apply Pythagoras_of_perp_foot
     apply Line.snd_pt_lies_on_mk_pt_pt
-  have : PtNe A (perp_foot ω.center (LIN A B))
-  · apply Fact.mk
+  haveI : PtNe A (perp_foot ω.center (LIN A B)) := ⟨by
     intro heq
     have : (dist ω.center B) ^ 2 = ω.radius ^ 2 := by rw [hl₂]
     have : (dist ω.center B) ^ 2 > ω.radius ^ 2 := by
@@ -170,7 +182,7 @@ lemma pts_lieson_circle_vec_eq {A B : P} {ω : Circle P} [hne : PtNe B A] (hl₁
         _ = ω.radius ^ 2 + (dist B A) ^ 2 := by rw [hl₁]
         _ > ω.radius ^ 2 := by
           simp
-    linarith
+    linarith⟩
   apply distinct_pts_same_dist_vec_eq
   · have : (perp_foot ω.center (LIN A B)) LiesOn (LIN A B) := perp_foot_lies_on_line _ _
     have : colinear A B (perp_foot ω.center (LIN A B)) := Line.pt_pt_linear this
@@ -184,6 +196,18 @@ lemma pts_lieson_circle_vec_eq {A B : P} {ω : Circle P} [hne : PtNe B A] (hl₁
     _ = (dist A (perp_foot ω.center (LIN A B))) ^ 2 := by rw [← htri₁]; ring
     _ = (dist (perp_foot ω.center (LIN A B)) A) ^ 2 := by rw [dist_comm]
 
+theorem pts_lieson_circle_perpfoot_eq_midpoint {A B : P} {ω : Circle P} [hne : PtNe B A] (hl₁ : A LiesOn ω) (hl₂ : B LiesOn ω) : perp_foot ω.center (LIN A B) = (SEG A B).midpoint := by
+  have eq₁ : VEC A (perp_foot ω.center (LIN A B)) = (1 / 2 : ℝ) • (VEC A B) := by
+    symm
+    calc
+      _ = (1 / 2 : ℝ) • (VEC A (perp_foot ω.center (LIN A B)) + VEC (perp_foot ω.center (LIN A B)) B) := by rw [vec_add_vec]
+      _ = (1 / 2 : ℝ) • ((2 : ℝ) • VEC A (perp_foot ω.center (LIN A B))) := by rw [← (pts_lieson_circle_vec_eq hl₁ hl₂), two_smul]
+      _ = VEC A (perp_foot ω.center (LIN A B)) := by simp
+  have eq₂ : VEC A (SEG A B).midpoint = (1 / 2 : ℝ) • (VEC A B) := Seg.vec_source_midpt
+  apply (eq_iff_vec_eq_zero _ _).mpr
+  calc
+    _ = VEC A (perp_foot ω.center (LIN A B)) - VEC A (SEG A B).midpoint := by rw [vec_sub_vec]
+    _ = 0 := by rw [eq₁, eq₂]; simp
 
 theorem three_pts_lieson_circle_not_colinear {A B C : P} {ω : Circle P} [hne₁ : PtNe B A] [hne₂ : PtNe C B] [hne₃ : PtNe A C] (hl₁ : A LiesOn ω) (hl₂ : B LiesOn ω) (hl₃ : C LiesOn ω) : ¬ (colinear A B C) := by
   intro h
@@ -204,6 +228,48 @@ end Circle
 
 end colinear
 
--- ray with circle
--- line with circle
+section antipode
+
+namespace Circle
+
+def antipode (A : P) (ω : Circle P) : P := VEC A ω.center +ᵥ ω.center
+
+@[simp]
+theorem antipode_lieson_circle {A : P} {ω : Circle P} {ha : A LiesOn ω} : (antipode A ω) LiesOn ω := by
+  show dist ω.center (antipode A ω) = ω.radius
+  rw [NormedAddTorsor.dist_eq_norm', antipode,  vsub_vadd_eq_vsub_sub]
+  simp
+  show ‖ω.center -ᵥ A‖ = ω.radius
+  rw [← NormedAddTorsor.dist_eq_norm', ha]
+
+theorem antipode_symm {A B : P} {ω : Circle P} {ha : A LiesOn ω} (h : antipode A ω = B) : antipode B ω = A := by
+  show VEC B ω.center +ᵥ ω.center = A
+  symm
+  apply (eq_vadd_iff_vsub_eq _ _ _).mpr
+  show VEC ω.center A = VEC B ω.center
+  have : VEC ω.center B = VEC A ω.center := by
+    show B -ᵥ ω.center = VEC A ω.center
+    apply (eq_vadd_iff_vsub_eq _ _ _).mp h.symm
+  rw [← neg_vec, ← this, neg_vec]
+
+@[simp]
+theorem antipode_distinct {A : P} {ω : Circle P} {ha : A LiesOn ω} : antipode A ω ≠ A := by
+  intro eq
+  have : VEC ω.center A = VEC A ω.center := by
+    show A -ᵥ ω.center = VEC A ω.center
+    apply (eq_vadd_iff_vsub_eq _ _ _).mp eq.symm
+  have neq : A ≠ ω.center := (pt_lieson_ne_center ha).out
+  contrapose! neq
+  apply (eq_iff_vec_eq_zero _ _).mpr
+  have : 2 • (VEC ω.center A) = 0 := by
+    rw [two_smul]
+    nth_rw 1 [this]
+    rw [vec_add_vec]
+    simp
+  apply (two_nsmul_eq_zero ℝ _).mp this
+
+end Circle
+
+end antipode
+
 end EuclidGeom
