@@ -150,37 +150,48 @@ theorem Ray.not_para_of_not_para_toDirLine (ray ray' : Ray P) : ¬ ray.toDirLine
 
 theorem Ray.not_para_iff_not_para_toDirLine (ray ray' : Ray P) : ¬ ray ∥ ray' ↔ ¬ ray.toDirLine ∥ ray'.toDirLine := ⟨id, id⟩
 
-/-- Given two parallel rays, their extension lines are parallel -/
+/-- Given two parallel rays, their extension lines are parallel. -/
 theorem Ray.para_toLine_of_para (ray ray' : Ray P) : ray ∥ ray' → ray.toLine ∥ ray'.toLine := id
 
 theorem Ray.para_of_para_toLine (ray ray' : Ray P) : ray.toLine ∥ ray'.toLine → ray ∥ ray' := id
 
 theorem Ray.para_iff_para_toLine (ray ray' : Ray P) : ray.toLine ∥ ray'.toLine ↔ ray ∥ ray' := ⟨id, id⟩
 
-/-- Given two rays, if their extension lines are not parallel, they are not parallel -/
+/-- Given two rays, if their extension lines are not parallel, they are not parallel. -/
 theorem Ray.not_para_toLine_of_not_para (ray ray' : Ray P) : ¬ ray ∥ ray' → ¬ ray.toLine ∥ ray'.toLine := id
 
 theorem Ray.not_para_of_not_para_toLine (ray ray' : Ray P) : ¬ ray.toLine ∥ ray'.toLine → ¬ ray ∥ ray' := id
 
 theorem Ray.not_para_iff_not_para_toLine (ray ray' : Ray P) : ¬ ray ∥ ray' ↔ ¬ ray.toLine ∥ ray'.toLine  := ⟨id, id⟩
 
-theorem DirLine.para_toLine_of_para (dirline dirline' : DirLine P) : dirline ∥ dirline' → dirline.toLine ∥ dirline'.toLine := Quotient.ind₂ (fun _ _ => id) dirline dirline'
+theorem DirLine.para_toLine_of_para {l₁ l₂ : DirLine P} (h : l₁ ∥ l₂) : l₁.toLine ∥ l₂.toLine := by
+  induction l₁ using DirLine.ind
+  induction l₂ using DirLine.ind
+  exact h
 
-theorem DirLine.para_of_para_toLine (dirline dirline' : DirLine P) : dirline.toLine ∥ dirline'.toLine → dirline ∥ dirline' := Quotient.ind₂ (fun _ _ => id) dirline dirline'
+theorem DirLine.para_of_para_toLine {l₁ l₂ : DirLine P} (h : l₁.toLine ∥ l₂.toLine) : l₁ ∥ l₂ := by
+  induction l₁ using DirLine.ind
+  induction l₂ using DirLine.ind
+  exact h
 
-theorem DirLine.para_iff_para_toLine (dirline dirline' : DirLine P) : dirline.toLine ∥ dirline'.toLine ↔ dirline ∥ dirline' := ⟨Quotient.ind₂ (fun _ _ => id) dirline dirline', Quotient.ind₂ (fun _ _ => id) dirline dirline'⟩
+theorem DirLine.para_toLine_iff_para (l₁ l₂ : DirLine P) : l₁.toLine ∥ l₂.toLine ↔ l₁ ∥ l₂ :=
+  ⟨para_of_para_toLine, para_toLine_of_para⟩
 
-theorem DirLine.not_para_toLine_of_not_para (dirline dirline' : DirLine P) : ¬ dirline ∥ dirline' → ¬ dirline.toLine ∥ dirline'.toLine := Quotient.ind₂ (fun _ _ => id) dirline dirline'
+theorem DirLine.not_para_toLine_iff_not_para (l₁ l₂ : DirLine P) : ¬ l₁.toLine ∥ l₂.toLine ↔ ¬ l₁ ∥ l₂ :=
+  (para_toLine_iff_para l₁ l₂).not
 
-theorem DirLine.not_para_of_not_para_toLine (dirline dirline' : DirLine P) : ¬ dirline.toLine ∥ dirline'.toLine → ¬ dirline ∥ dirline' := Quotient.ind₂ (fun _ _ => id) dirline dirline'
+theorem DirLine.not_para_toLine_of_not_para {l₁ l₂ : DirLine P} (h : ¬ l₁ ∥ l₂) : ¬ l₁.toLine ∥ l₂.toLine :=
+  (not_para_toLine_iff_not_para l₁ l₂).mpr h
 
-theorem DirLine.not_para_iff_not_para_toLine (dirline dirline' : DirLine P) : ¬ dirline ∥ dirline' ↔ ¬ dirline.toLine ∥ dirline'.toLine  := ⟨Quotient.ind₂ (fun _ _ => id) dirline dirline', Quotient.ind₂ (fun _ _ => id) dirline dirline'⟩
+theorem DirLine.not_para_of_not_para_toLine {l₁ l₂ : DirLine P} (h : ¬ l₁.toLine ∥ l₂.toLine) : ¬ l₁ ∥ l₂ :=
+  (not_para_toLine_iff_not_para l₁ l₂).mp h
 
 end parallel_iff_coercion_parallel
 
 section reverse
 
 variable {α β : Type*} [DirFig α P] [DirFig β P] {l₁ : α} {l₂ : β}
+-- Add `iff` theorems and @[simp]
 
 theorem DirFig.para_rev_of_para (h : l₁ ∥ l₂) : l₁ ∥ reverse l₂ :=
   h.trans (rev_toProj_eq_toProj l₂).symm

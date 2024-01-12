@@ -62,6 +62,8 @@ structure Ray (P : Type _) [EuclideanPlane P] where
 
 attribute [pp_dot] Ray.source Ray.toDir
 
+alias Ray.mk_pt_dir := Ray.mk
+
 /-- A \emph{Segment} consists of a pair of points: the source and the target; it is the segment from the source to the target. (We allow the source and the target to be the same.) -/
 @[ext]
 structure Seg (P : Type _) [EuclideanPlane P] where
@@ -475,7 +477,7 @@ theorem Ray.lies_on_of_lies_int {X : P} {ray : Ray P} (h : X LiesInt ray) : X Li
 theorem Ray.lies_int_def {X : P} {ray : Ray P} : X LiesInt ray ↔ X LiesOn ray ∧ X ≠ ray.source := Iff.rfl
 
 
-/-- For a nondegenerate segment $AB$, every point of the segment $AB$ lies on the ray associated to $AB$.. -/
+/-- For a nondegenerate segment $AB$, every point of the segment $AB$ lies on the ray associated to $AB$. -/
 theorem SegND.lies_on_toRay_of_lies_on {X : P} {seg_nd : SegND P} (h : X LiesOn seg_nd) : X LiesOn seg_nd.toRay := by
   rcases h with ⟨t, ht0, _, h⟩
   refine' ⟨t • ‖VEC seg_nd.source seg_nd.target‖, smul_nonneg ht0 (norm_nonneg _), _⟩

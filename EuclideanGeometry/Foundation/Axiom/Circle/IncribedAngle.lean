@@ -200,12 +200,10 @@ theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P} (h₁ : p LiesO
     have : (ANG β.target β.circle.center p (Arc.center_isnot_arc_endpts β).2.symm ne).end_ray = (ANG p β.circle.center β.source ne (Arc.center_isnot_arc_endpts β).1.symm).start_ray := rfl
     have hhs : (Angle.sum_adj this).value = ∠ β.target β.circle.center β.source (Arc.center_isnot_arc_endpts β).2.symm (Arc.center_isnot_arc_endpts β).1.symm := rfl
     rw [← hhs, Angle.ang_eq_ang_add_ang_mod_pi_of_adj_ang]
-    rfl
   have hsum₂ : ∠ β.source p β.circle.center h₂.1.symm ne.symm + ∠ β.circle.center p β.target ne.symm h₂.2.symm = ∠ β.source p β.target h₂.1.symm h₂.2.symm := by
     have : (ANG β.source p β.circle.center h₂.1.symm ne.symm).end_ray = (ANG β.circle.center p β.target ne.symm h₂.2.symm).start_ray := rfl
     have hhs : (Angle.sum_adj this).value = ∠ β.source p β.target h₂.1.symm h₂.2.symm := rfl
     rw [← hhs, Angle.ang_eq_ang_add_ang_mod_pi_of_adj_ang]
-    rfl
   have eq₃ : ∠ β.target β.circle.center β.source (Arc.center_isnot_arc_endpts β).2.symm (Arc.center_isnot_arc_endpts β).1.symm + 2 • (∠ β.source p β.target h₂.1.symm h₂.2.symm) = 0 := by
     calc
       _ = ∠ β.target β.circle.center p (Arc.center_isnot_arc_endpts β).2.symm ne + ∠ p β.circle.center β.source ne (Arc.center_isnot_arc_endpts β).1.symm + 2 • (∠ β.source p β.circle.center h₂.1.symm ne.symm + ∠ β.circle.center p β.target ne.symm h₂.2.symm) := by rw [hsum₁, hsum₂]
