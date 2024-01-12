@@ -88,7 +88,7 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
         exact (length_eq_length_add_length a_lies_on_be).symm
   -- $\angle EBF = \angle ABC$
   have ang₁ : ∠ F B E f_ne_b e_ne_b = ∠ C B A c_ne_a a_ne_b := by
-    apply eq_ang_value_of_lies_int_lies_int
+    apply value_eq_of_lies_on_ray_pt_pt
     constructor
     exact SegND.lies_on_toRay_of_lies_on c_lies_on_bf
     exact b_ne_c.symm
