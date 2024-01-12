@@ -128,16 +128,13 @@ theorem interior_of_circle_iff_inside_not_on_circle (p : P) (ω : Circle P) : p 
   push_neg
   exact lt_iff_le_and_ne
 
-@[simp]
 theorem mk_pt_pt_lieson {O A : P} [PtNe O A] : A LiesOn (CIR O A) := rfl
 
-@[simp]
 theorem mk_pt_pt_diam_fst_lieson {A B : P} [_h : PtNe A B] : A LiesOn (mk_pt_pt_diam A B) := by
   show dist (SEG A B).midpoint A = dist (SEG A B).midpoint B
   rw [dist_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
   exact dist_target_eq_dist_source_of_midpt (seg := (SEG A B))
 
-@[simp]
 theorem mk_pt_pt_diam_snd_lieson {A B : P} [_h : PtNe A B] : B LiesOn (mk_pt_pt_diam A B) := rfl
 
 -- Define a concept of segment to be entirely contained in a circle, to mean that the two endpoints of a segment to lie inside a circle.
@@ -234,7 +231,6 @@ namespace Circle
 
 def antipode (A : P) (ω : Circle P) : P := VEC A ω.center +ᵥ ω.center
 
-@[simp]
 theorem antipode_lieson_circle {A : P} {ω : Circle P} {ha : A LiesOn ω} : (antipode A ω) LiesOn ω := by
   show dist ω.center (antipode A ω) = ω.radius
   rw [NormedAddTorsor.dist_eq_norm', antipode,  vsub_vadd_eq_vsub_sub]
@@ -252,7 +248,6 @@ theorem antipode_symm {A B : P} {ω : Circle P} {ha : A LiesOn ω} (h : antipode
     apply (eq_vadd_iff_vsub_eq _ _ _).mp h.symm
   rw [← neg_vec, ← this, neg_vec]
 
-@[simp]
 theorem antipode_distinct {A : P} {ω : Circle P} {ha : A LiesOn ω} : antipode A ω ≠ A := by
   intro eq
   have : VEC ω.center A = VEC A ω.center := by
