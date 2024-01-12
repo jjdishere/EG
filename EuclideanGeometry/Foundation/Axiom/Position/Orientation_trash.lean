@@ -47,18 +47,28 @@ theorem eq_toDir_of_parallel_and_same_side {A B C D : P} {h : A ≠ B} {h₁ : C
   have Proj : (SEG_nd A C h₁).toProj = (SEG_nd B D h₂).toProj := by
     exact para
   have eq_or_neg : ((SEG_nd A C h₁).toDir = (SEG_nd B D h₂).toDir) ∨ ((SEG_nd A C h₁).toDir = -(SEG_nd B D h₂).toDir) := by
-    sorry
+    apply Dir.toProj_eq_toProj_iff.mp
+    exact Proj
   rcases eq_or_neg with eq|neg
   · exact eq
-  · sorry
+  · have : C LiesOnLeft (SEG_nd A B h.symm) ∧ D LiesOnLeft (SEG_nd A B h.symm) ∨ C LiesOnRight (SEG_nd A B h.symm) ∧ D LiesOnRight (SEG_nd A B h.symm) := by
+      exact side
+    rcases this with ll|rr
+    · sorry
+    · sorry
 --Guan Nailin
 theorem neg_toDir_of_parallel_and_opposite_side {A B C D : P} {h : A ≠ B} {h₁ : C ≠ A} {h₂ : D ≠ B} {para : (SEG_nd A C h₁) ∥ (SEG_nd B D h₂)} {side : IsOnOppositeSide C D (SEG_nd A B h.symm)} : (SEG_nd A C h₁).toDir = -(SEG_nd B D h₂).toDir := by
   have Proj : (SEG_nd A C h₁).toProj = (SEG_nd B D h₂).toProj := by
     exact para
   have eq_or_neg : ((SEG_nd A C h₁).toDir = (SEG_nd B D h₂).toDir) ∨ ((SEG_nd A C h₁).toDir = -(SEG_nd B D h₂).toDir) := by
-    sorry
+    apply Dir.toProj_eq_toProj_iff.mp
+    exact Proj
   rcases eq_or_neg with eq|neg
-  · sorry
+  · have : C LiesOnLeft (SEG_nd A B h.symm) ∧ D LiesOnRight (SEG_nd A B h.symm) ∨ C LiesOnRight (SEG_nd A B h.symm) ∧ D LiesOnLeft (SEG_nd A B h.symm) := by
+      exact side
+    rcases this with lr|rl
+    · sorry
+    · sorry
   · exact neg
 
 end EuclidGeom
