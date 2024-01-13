@@ -4,63 +4,7 @@ noncomputable section
 namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P] (tr : Triangle P) (tr_nd : TriangleND P)
-
-namespace Triangle
-
-def perm_vertices : (Triangle P) where
-  point₁ := tr.point₂
-  point₂ := tr.point₃
-  point₃ := tr.point₁
-
--- We decide not to define reverse permutation of triangles, just do composition twice.
-
--- Permuting three times returns to the original triangle.
-theorem eq_self_of_perm_vertices_three_times : tr.perm_vertices.perm_vertices.perm_vertices = tr := rfl
-
--- flip vertices for triangles means to flip the second and the third vertices.
-
-def flip_vertices : (Triangle P) where
-  point₁ := tr.point₁
-  point₂ := tr.point₃
-  point₃ := tr.point₂
-
-theorem eq_self_of_flip_vertices_twice : tr.flip_vertices.flip_vertices = tr := rfl
-
--- Not sure this is the best theorem to p
-theorem eq_flip_of_perm_twice_of_perm_flip_vertices : tr.flip_vertices.perm_vertices.perm_vertices = tr.perm_vertices.flip_vertices := rfl
-
-theorem is_inside_of_is_inside_perm_vertices (tr : Triangle P) (p : P) (inside : p LiesInt tr) : p LiesInt tr.perm_vertices := by
-  sorry
-
-theorem is_inside_of_is_inside_flip_vertices (tr : Triangle P) (p : P) (inside : p LiesInt tr) : p LiesInt tr.flip_vertices := by
-  sorry
-
-end Triangle
-
-namespace TriangleND
-
-def perm_vertices : (TriangleND P) := ⟨tr_nd.1.perm_vertices, flip_colinear_snd_trd.mt $ flip_colinear_fst_snd.mt tr_nd.2⟩
-
-def flip_vertices : (TriangleND P) := ⟨tr_nd.1.flip_vertices, flip_colinear_snd_trd.mt tr_nd.2⟩
-
-theorem eq_self_of_perm_vertices_three_times : tr_nd.perm_vertices.perm_vertices.perm_vertices = tr_nd := rfl
-  --exact tr_nd.1.eq_self_of_perm_vertices_three_times
-
-theorem eq_self_of_flip_vertices_twice : tr_nd.flip_vertices.flip_vertices = tr_nd := rfl
-
-theorem eq_flip_of_perm_twice_of_perm_flip_vertices : tr_nd.flip_vertices.perm_vertices.perm_vertices = tr_nd.perm_vertices.flip_vertices := rfl
-
--- compatibility of permutation/flip of vertices with orientation of the triangle
-
-theorem same_orient_of_perm_vertices : tr_nd.is_cclock = (tr_nd.perm_vertices.is_cclock) := by sorry
-
-theorem reverse_orient_of_flip_vertices : tr_nd.is_cclock = ¬ tr_nd.flip_vertices.is_cclock := by sorry
-
-theorem is_inside_of_is_inside_perm_vertices (tr_nd : Triangle P) (p : P) (inside : p LiesInt tr_nd) : p LiesInt tr_nd.perm_vertices := by sorry
-
-theorem is_inside_of_is_inside_flip_vertices (tr_nd : Triangle P) (p : P) (inside : p LiesInt tr_nd) : p LiesInt tr_nd.flip_vertices := by sorry
-
-end TriangleND
+--perm and flip is moved to the main file
 
 
 /-
