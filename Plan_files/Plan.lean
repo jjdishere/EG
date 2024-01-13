@@ -65,7 +65,8 @@ Construction Folder
     GeneralPolygon -- Define general convex polygons, regular polygons.
 
   subfolder : Circle
-    CyclicQuadrilaterial -- Define the relation of four points concylic, criterion and properties of concyclic `What is the good definition of 4 points concyclic s.t. (a) do not use ∃ ; (b) symmetric in 4 points`
+    CyclicQuadrilaterial -- Define the relation of four points concyclic, criterion and properties of concyclic
+    `What is the good definition of 4 points concyclic s.t. (a) do not use ∃ ; (b) symmetric in 4 points`
     CyclicPolygon -- Define and discuss properties of general cyclic polygons
     RadicalAxis -- Define the radical axis given two circle and discuss it's property
     SimsonLine -- Define the Simson line

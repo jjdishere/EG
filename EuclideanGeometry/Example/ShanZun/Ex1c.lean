@@ -16,16 +16,16 @@ Prove that $CD = AB / 2$. -/
 variable {A B C: P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $A \ne C$ and $B \ne C$.
 -- This is because vertices of nondegenerate triangles are distinct.
-lemma b_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
+lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
 lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
-lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
+lemma B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
 --∠ A C B = π/2
-variable {hrt : (ANG A C B c_ne_a.symm b_ne_c).IsRightAngle}
+variable {hrt : (ANG A C B c_ne_a.symm B_ne_C).IsRightAngle}
 -- D is the midpoint of segment AB
 variable {D : P} {hd : D = (SEG A B).midpoint}
 lemma d_ne_a: D ≠ A := by
   rw[hd]
-  apply (SegND.midpt_lies_int (seg_nd := SEG_nd A B (b_ne_a).symm)).2.1
+  apply (SegND.midpt_lies_int (SegND := SegND A B (b_ne_a).symm)).2.1
   use C
   by_contra h
   have : colinear A B C :=by
@@ -35,12 +35,12 @@ lemma d_ne_a: D ≠ A := by
 variable {E : P} {he : E=  (SEG A C).midpoint}
 lemma e_ne_a: E ≠ A := by
   rw[he]
-  apply (SegND.midpt_lies_int (seg_nd := SEG_nd A C c_ne_a)).2.1
+  apply (SegND.midpt_lies_int (SegND := SegND A C c_ne_a)).2.1
   use B
   exact hnd
-lemma e_ne_c: E ≠ C := by
+lemma e_ne_C: E ≠ C := by
   rw[he]
-  apply (SegND.midpt_lies_int (seg_nd := SEG_nd A C c_ne_a)).2.2
+  apply (SegND.midpt_lies_int (SegND := SegND A C c_ne_a)).2.2
   use B
   exact hnd
 --midpoint lies on the segment
@@ -63,7 +63,7 @@ lemma midpt_half_length : (SEG A D).length = (SEG A B).length/2:=by
 
 lemma ad_ratio : (SEG A D).length / (SEG A B).length = 2⁻¹ := by
   apply div_eq_of_eq_mul
-  apply (length_ne_zero_iff_nd.mpr (b_ne_a)).symm
+  apply (length_ne_zero_iff_nd.mpr (B_ne_a)).symm
   use C
   exact hnd
   rw[length_eq_length_add_length (seg := (SEG A B)) (A := D),← dist_target_eq_dist_source_of_eq_midpt]
@@ -108,7 +108,7 @@ lemma hnd'' : ¬ colinear C D E := by
     use E
     exact he
     apply flip_colinear_snd_trd h
-    apply e_ne_c
+    apply e_ne_C
     apply hnd
     exact he
   have : colinear A B C := by
@@ -143,11 +143,11 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
 --rays equal, respectively
   congr 1
   apply Angle.ext
-  have h₀:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.1=(SEG_nd A D (@d_ne_a P _ A B C hnd D hd)).toRay := rfl
+  have h₀:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.1=(SegND A D (@d_ne_a P _ A B C hnd D hd)).toRay := rfl
   rw[h₀]
-  have h₁:(TRI_nd A B C hnd).angle₁.1=(SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay:=rfl
+  have h₁:(TRI_nd A B C hnd).angle₁.1=(SegND A B (@b_ne_a P _ A B C hnd)).toRay:=rfl
   rw[h₁]
-  apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A B (@b_ne_a P _ A B C hnd)).toRay
+  apply @Ray.source_int_toRay_eq_ray P _ (SegND A B (@b_ne_a P _ A B C hnd)).toRay
   apply SegND.lies_int_toRay_of_lies_int
   apply (Seg.lies_int_iff).mpr
   constructor
@@ -156,11 +156,11 @@ lemma ade_sim_abc: TRI_nd A D E (@hnd' P _ A B C hnd D hd E he) ∼ TRI_nd A B C
   norm_num
   simp only [Seg.toVec,hd]
   apply Seg.vec_source_midpt
-  have h₂:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.2=(SEG_nd A E (@e_ne_a P _ A B C hnd E he)).toRay := rfl
+  have h₂:(TRI_nd A D E (@hnd' P _ A B C hnd D hd E he)).angle₁.2=(SegND A E (@e_ne_a P _ A B C hnd E he)).toRay := rfl
   rw[h₂]
-  have h₃:(TRI_nd A B C hnd).angle₁.2=(SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay:=rfl
+  have h₃:(TRI_nd A B C hnd).angle₁.2=(SegND A C (@c_ne_a P _ A B C hnd)).toRay:=rfl
   rw[h₃]
-  apply @Ray.source_int_toRay_eq_ray P _ (SEG_nd A C (@c_ne_a P _ A B C hnd)).toRay
+  apply @Ray.source_int_toRay_eq_ray P _ (SegND A C (@c_ne_a P _ A B C hnd)).toRay
   apply SegND.lies_int_toRay_of_lies_int
   apply (Seg.lies_int_iff).mpr
   constructor
@@ -212,18 +212,18 @@ namespace Shan_Problem_1_8
 Prove that $FG \perp DE$. -/
 variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma a_ne_b : A ≠ B := sorry
-lemma b_ne_c : B ≠ C := sorry
+lemma A_ne_B : A ≠ B := sorry
+lemma B_ne_C : B ≠ C := sorry
 lemma c_ne_a : C ≠ A := sorry
 --introduce the perps
 variable {D : P} {hd : D = perp_foot B (LIN A C c_ne_a)}
-variable {E : P} {he : E = perp_foot C (LIN A B a_ne_b.symm)}
+variable {E : P} {he : E = perp_foot C (LIN A B A_ne_B.symm)}
 variable {F G: P} {hf : F = (SEG B C).midpoint} {hg : G = (SEG D E).midpoint}
 lemma e_ne_d: E ≠ D := sorry
 lemma g_ne_f: G ≠ F := sorry
 --Failed to use the notation ⟂
 
 -- Theorem : $FG \perp DE$
-theorem Shan_Problem_1_8 : (SEG_nd F G g_ne_f) ⟂ (SEG_nd D E e_ne_d) := sorry
+theorem Shan_Problem_1_8 : (SegND F G g_ne_f) ⟂ (SegND D E e_ne_d) := sorry
 
 end Shan_Problem_1_8

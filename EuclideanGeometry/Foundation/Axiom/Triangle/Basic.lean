@@ -31,7 +31,10 @@ def edge₂ (tr : Triangle P) : Seg P := Seg.mk tr.3 tr.1
 def edge₃ (tr : Triangle P) : Seg P := Seg.mk tr.1 tr.2
 
 @[pp_dot]
-def area (tr : Triangle P) : ℝ := sorry
+def oarea (tr : Triangle P) : ℝ := EuclidGeom.oarea tr.1 tr.2 tr.3
+
+@[pp_dot]
+def area (tr : Triangle P) : ℝ := |tr.oarea|
 
 @[pp_dot]
 def IsND (tr : Triangle P) : Prop := ¬ colinear tr.1 tr.2 tr.3
@@ -45,13 +48,13 @@ namespace TriangleND
 variable {P : Type u} [EuclideanPlane P] (tr_nd : TriangleND P)
 
 @[pp_dot]
-def point₁ : P := tr_nd.1.1
+abbrev point₁ : P := tr_nd.1.1
 
 @[pp_dot]
-def point₂ : P := tr_nd.1.2
+abbrev point₂ : P := tr_nd.1.2
 
 @[pp_dot]
-def point₃ : P := tr_nd.1.3
+abbrev point₃ : P := tr_nd.1.3
 
 instance nontriv₁ : PtNe tr_nd.point₃ tr_nd.point₂ := ⟨(ne_of_not_colinear tr_nd.2).1⟩
 
@@ -60,13 +63,13 @@ instance nontriv₂ : PtNe tr_nd.point₁ tr_nd.point₃ := ⟨(ne_of_not_coline
 instance nontriv₃ : PtNe tr_nd.point₂ tr_nd.point₁ := ⟨(ne_of_not_colinear tr_nd.2).2.2⟩
 
 @[pp_dot]
-def edge₁ : Seg P := tr_nd.1.edge₁
+abbrev edge₁ : Seg P := tr_nd.1.edge₁
 
 @[pp_dot]
-def edge₂ : Seg P := tr_nd.1.edge₂
+abbrev edge₂ : Seg P := tr_nd.1.edge₂
 
 @[pp_dot]
-def edge₃ : Seg P := tr_nd.1.edge₃
+abbrev edge₃ : Seg P := tr_nd.1.edge₃
 
 @[pp_dot]
 def edge_nd₁ : SegND P := ⟨tr_nd.1.edge₁, tr_nd.nontriv₁.out⟩
@@ -78,11 +81,14 @@ def edge_nd₂ : SegND P := ⟨tr_nd.1.edge₂, tr_nd.nontriv₂.out⟩
 def edge_nd₃ : SegND P := ⟨tr_nd.1.edge₃, tr_nd.nontriv₃.out⟩
 
 @[pp_dot]
-def area : ℝ := tr_nd.1.area
+abbrev oarea : ℝ := tr_nd.1.oarea
+
+@[pp_dot]
+abbrev area : ℝ := tr_nd.1.area
 
 /- Only nondegenerate triangles can talk about orientation -/
 @[pp_dot]
-def is_cclock : Prop := tr_nd.1.3 LiesOnLeft (Ray.mk_pt_pt tr_nd.1.1 tr_nd.1.2 (tr_nd.nontriv₃.out))
+def is_cclock : Prop := 0 < TriangleND.oarea tr_nd
 
 @[pp_dot]
 def angle₁ : Angle P := ANG tr_nd.point₂ tr_nd.point₁ tr_nd.point₃
@@ -202,16 +208,16 @@ theorem angle_sum_eq_pi_of_cclock (cclock : tr_nd.is_cclock): tr_nd.angle₁.val
 
 theorem angle_sum_eq_neg_pi_of_clock (clock : ¬ tr_nd.is_cclock): tr_nd.angle₁.value + tr_nd.angle₂.value + tr_nd.angle₃.value = - π := sorry
 -/
-theorem triangle_ineq : tr.edge₁.length + tr.edge₂.length ≥ tr.edge₃.length := by
-  have l₃ : tr.edge₃.length = norm (VEC tr.point₁ tr.point₂) := rfl
-  rw [l₃, ← neg_vec tr.point₂ _, norm_neg, ← vec_add_vec tr.point₂ tr.point₃ tr.point₁]
-  exact norm_add_le _ _
+theorem triangle_ineq : tr.edge₃.length ≤ tr.edge₁.length + tr.edge₂.length := by
+  unfold Seg.length
+  rw [dist_comm]
+  exact dist_triangle _ _ _
 
 theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr.edge₃.length → ¬ tr.IsND  := by
   let A := tr.point₁
   let B := tr.point₂
   let C := tr.point₃
-  have l₃ : tr.edge₃.length = norm (VEC A B) := rfl
+  have l₃ : tr.edge₃.length = norm (VEC A B) := Seg.length_eq_norm_toVec
   rw [l₃, ← neg_vec B _, norm_neg, ← vec_add_vec B C A]
   intro eq
   unfold IsND
@@ -226,7 +232,8 @@ theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr
       exact triv_colinear _ _
     · have g : SameRay ℝ (VEC B C) (VEC C A)
       · rw [sameRay_iff_norm_add, ← eq]
-        rfl
+        congr <;>
+        exact Seg.length_eq_norm_toVec
       rcases SameRay.exists_pos g h₁ h₂ with ⟨_, ⟨_, ⟨_, ⟨_, g⟩⟩⟩⟩
       rw [← neg_vec C B, ← neg_one_smul ℝ, ← mul_smul, mul_neg_one, ← eq_inv_smul_iff₀ (by linarith), ← mul_smul] at g
       exact perm_colinear_snd_trd_fst (colinear_of_vec_eq_smul_vec g)
@@ -248,7 +255,7 @@ theorem nontrivial_of_edge_sum_gt_edge : tr.edge₁.length + tr.edge₂.length >
 
 So funny. Can you get it? -/
 
-theorem edge_sum_eq_edge_iff_colinear :  colinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry
+theorem edge_sum_eq_edge_iff_colinear : colinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry
 /- area ≥ 0, nontrivial → >0, =0 → trivial -/
 
 end Triangle
@@ -303,7 +310,5 @@ theorem sum_of_other_angle_same_if_one_angle_same (tr₁ tr₂ : TriangleND P) (
 theorem sum_of_other_angle_same_neg_if_one_angle_same_neg (tr₁ tr₂ : TriangleND P) (a : tr₁.angle₁.value =  - tr₂.angle₁.value) : tr₁.angle₂.value + tr₁.angle₃.value = - (tr₂.angle₂.value + tr₂.angle₃.value ) := by sorry
 
 end TriangleND
-
-
 
 end EuclidGeom
