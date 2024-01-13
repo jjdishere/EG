@@ -31,7 +31,7 @@ theorem cosine_rule (tr_nd : TriangleND P) : 2 * (tr_nd.edge₃.length * tr_nd.e
   let h₃ := @cosine_rule' _ _ A B C tr_nd.nontriv₃ tr_nd.nontriv₂.symm
   have h₄ : ‖VEC_nd A C tr_nd.nontriv₂.out.symm‖ = ‖VEC_nd C A tr_nd.nontriv₂.out‖
   · simp_rw [VecND.mkPtPt, ← neg_vec A C]
-    simp
+    simp only [ne_eq, VecND.mk_neg', VecND.norm_neg]
   have h₅ : Seg.length (SEG A C) = Seg.length (SEG C A)
   · rw [Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec]
     -- unfold Seg.length Seg.toVec

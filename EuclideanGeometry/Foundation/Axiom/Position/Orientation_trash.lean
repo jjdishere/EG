@@ -19,6 +19,7 @@ theorem liesonleft_iff_liesonright_reverse {A : P} {l : DirLine P} : A LiesOnLef
 
 theorem DirLine.lieson_or_liesonleft_or_liesonright (A : P) (l : DirLine P) : (A LiesOn l) ∨ (A LiesOnLeft l) ∨ (A LiesOnRight l) := by sorry
 --Guan Nailin
+
 lemma eq_toDir_of_parallel_and_IsOnLL {A B C D : P} [bnea : PtNe B A] [cnea : PtNe C A] [dneb : PtNe D B] (para : (SEG_nd A C) ∥ (SEG_nd B D)) (side : C LiesOnLeft (SEG_nd A B) ∧ D LiesOnLeft (SEG_nd A B)) : (SEG_nd A C).toDir = (SEG_nd B D).toDir := by
   have Proj : (SEG_nd A C ).toProj = (SEG_nd B D ).toProj := by
     exact para

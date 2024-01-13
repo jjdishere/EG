@@ -7,6 +7,7 @@ noncomputable section
 namespace EuclidGeom
 
 open Classical
+open AngValue
 
 /- Class of generalized triangles -/
 @[ext]
@@ -264,7 +265,45 @@ namespace TriangleND
 
 variable (tr_nd : TriangleND P)
 
-theorem angle₁_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsPos := by sorry
+theorem angle₁_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsPos := by
+  simp only [← eq_iff_iff]
+  have trans1 : tr_nd.is_cclock = (tr_nd.oarea > 0) := by rfl
+  simp only [trans1]
+  have trans2 : tr_nd.oarea = wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ /2 := by rfl
+  simp only [trans2]
+  have trans3 : wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ = tr_nd.edge₃.length * tr_nd.edge₂.length * sin tr_nd.angle₁.value := by
+    calc
+      _= (SEG tr_nd.point₁ tr_nd.point₂).length * (SEG tr_nd.point₁ tr_nd.point₃).length * sin (ANG tr_nd.point₂ tr_nd.point₁ tr_nd.point₃).value := by
+        exact wedge_eq_length_mul_length_mul_sin tr_nd.point₁ tr_nd.point₂ tr_nd.point₃
+      _=_ := by
+        congr 2
+        have : (SEG tr_nd.point₁ tr_nd.point₃).length = (SEG tr_nd.point₃ tr_nd.point₁).length := by exact length_of_rev_eq_length'
+        simp only [this]
+        rfl
+  simp only [trans3]
+  have pos : (tr_nd.edge₃.length * tr_nd.edge₂.length * sin tr_nd.angle₁.value / 2 > 0) = (sin tr_nd.angle₁.value > 0) := by
+    simp only [eq_iff_iff]
+    have pos3 : tr_nd.edge₃.length > 0 := by
+      calc
+        _= tr_nd.edge_nd₃.length := by rfl
+        _>0 := by apply EuclidGeom.length_pos
+    have pos2 : tr_nd.edge₂.length > 0 := by
+      calc
+        _= tr_nd.edge_nd₂.length := by rfl
+        _>0 := by apply EuclidGeom.length_pos
+    constructor
+    · intro P
+      by_contra H
+      simp only [gt_iff_lt, not_lt] at H
+      have h : -sin tr_nd.angle₁.value ≥ 0 := by linarith
+      have : tr_nd.edge₃.length * tr_nd.edge₂.length * -sin tr_nd.angle₁.value / 2 ≥ 0 :=by
+        positivity
+      linarith
+    · intro P
+      positivity
+  simp only [pos]
+  simp only [eq_iff_iff]
+  exact isPos_iff_zero_lt_sin.symm
 
 theorem angle₂_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₂.value.IsPos := by sorry
 

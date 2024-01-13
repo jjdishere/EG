@@ -351,10 +351,10 @@ instance instHasCongr : HasCongr (TriangleND P) where
   trans := IsCongr.trans
 
 theorem is_cclock_of_cclock (h : tr_nd₁.IsCongr tr_nd₂) (cc : tr_nd₁.is_cclock) : tr_nd₂.is_cclock := by
-  apply TriangleND.cclock_of_pos_angle
-  left
+  apply (angle₁_pos_iff_cclock tr_nd₂).mpr
   rw [<-h.4]
-  exact (TriangleND.angle_pos_of_cclock tr_nd₁ cc).1
+  apply (angle₁_pos_iff_cclock tr_nd₁).mp
+  exact cc
 
 theorem area (h : tr_nd₁.IsCongr tr_nd₂) : tr_nd₁.area = tr_nd₂.area := sorry
 
@@ -420,11 +420,15 @@ structure IsACongr (tr_nd₁ tr_nd₂: TriangleND P) : Prop where intro ::
 namespace IsACongr
 
 theorem not_cclock_of_cclock (h : tr_nd₁.IsACongr tr_nd₂) (cc : tr_nd₁.is_cclock) : ¬ tr_nd₂.is_cclock := by
-  apply clock_of_neg_angle
-  left
+  apply (angle₁_pos_iff_cclock tr_nd₂).not.mpr
   have : - tr_nd₁.angle₁.value = tr_nd₂.angle₁.value := by simp only [h.4, neg_neg]
   simp only [← this, AngValue.neg_isNeg_iff_isPos]
-  exact (tr_nd₁.angle_pos_of_cclock cc).1
+  have : tr_nd₁.angle₁.value.IsPos := by
+    apply (angle₁_pos_iff_cclock tr_nd₁).mp
+    exact cc
+  simp only [neg_isPos_iff_isNeg]
+  apply AngValue.not_isNeg_of_isPos
+  exact this
 
 protected theorem symm (h : tr_nd₁.IsACongr tr_nd₂) : tr_nd₂.IsACongr tr_nd₁ where
   edge₁ := h.1.symm
@@ -712,10 +716,14 @@ theorem congr_of_SAS (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) 
   have c : tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock := by
     apply TriangleND.pos_pos_or_neg_neg_of_iff_cclock.mpr
     by_cases cc: tr_nd₁.is_cclock
-    . have pos : (Angle.value (angle₁ tr_nd₁)).IsPos := (tr_nd₁.angle_pos_of_cclock cc).1
+    . have pos : (Angle.value (angle₁ tr_nd₁)).IsPos := by
+        apply (angle₁_pos_iff_cclock tr_nd₁).mp
+        exact cc
       have pos' : (Angle.value (angle₁ tr_nd₂)).IsPos := by rw [<-a₁] ; exact pos
       exact .inl ⟨pos, pos'⟩
-    . have neg : (Angle.value (angle₁ tr_nd₁)).IsNeg := (tr_nd₁.angle_neg_of_clock cc).1
+    . have neg : (Angle.value (angle₁ tr_nd₁)).IsNeg := by
+        apply (angle₁_neg_iff_not_cclock tr_nd₁).mp
+        exact cc
       have neg' : (Angle.value (angle₁ tr_nd₂)).IsNeg := by rw [<-a₁] ; exact neg
       exact .inr ⟨neg, neg'⟩
   exact congr_of_SSS_of_eq_orientation cosn₁ e₂ e₃ c
@@ -730,16 +738,22 @@ theorem acongr_of_SAS (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length)
     simp only [eq_iff_iff]
     constructor
     . intro cc
-      have pos : (Angle.value (angle₁ tr_nd₁)).IsPos := (tr_nd₁.angle_pos_of_cclock cc).1
+      have pos : (Angle.value (angle₁ tr_nd₁)).IsPos := by
+        apply (angle₁_pos_iff_cclock tr_nd₁).mp
+        exact cc
       have pos' : (Angle.value (angle₁ tr_nd₂)).IsNeg := by
         rw [a₁] at pos
         exact AngValue.neg_isPos_iff_isNeg.mp pos
-      exact tr_nd₂.clock_of_neg_angle (.inl pos')
+      apply (angle₁_neg_iff_not_cclock tr_nd₂).mpr
+      exact pos'
     intro c
     have neg' : (Angle.value (angle₁ tr_nd₁)).IsPos := by
       rw [a₁]
-      exact AngValue.neg_isPos_iff_isNeg.mpr (tr_nd₂.angle_neg_of_clock c).1
-    exact tr_nd₁.cclock_of_pos_angle (.inl neg')
+      apply AngValue.neg_isPos_iff_isNeg.mpr
+      apply (angle₁_neg_iff_not_cclock tr_nd₂).mp
+      exact c
+    apply (angle₁_pos_iff_cclock tr_nd₁).mpr
+    exact neg'
   exact acongr_of_SSS_of_ne_orientation cosn₁ e₂ e₃ c
 
 /- ASA -/
@@ -748,18 +762,18 @@ theorem congr_of_ASA (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value) 
     by_cases c : tr_nd₁.is_cclock
     . have a := tr_nd₁.angle_sum_eq_pi_of_cclock c
       have c₂ : tr_nd₂.is_cclock := by
-        apply TriangleND.cclock_of_pos_angle
-        right ; left
+        apply (angle₂_pos_iff_cclock tr_nd₂).mpr
         rw [<-a₂]
-        exact (tr_nd₁.angle_pos_of_cclock c).2.1
+        apply (angle₂_pos_iff_cclock tr_nd₁).mp
+        exact c
       simp only [a₂, a₃, <- tr_nd₂.angle_sum_eq_pi_of_cclock c₂, add_left_inj] at a
       exact a
     . have a := tr_nd₁.angle_sum_eq_neg_pi_of_clock c
       have c₂ : ¬  tr_nd₂.is_cclock := by
-        apply TriangleND.clock_of_neg_angle
-        right ; left
+        apply (angle₂_neg_iff_not_cclock tr_nd₂).mpr
         rw [<-a₂]
-        exact (tr_nd₁.angle_neg_of_clock c).2.1
+        apply (angle₂_neg_iff_not_cclock tr_nd₁).mp
+        exact c
       simp only [a₂, a₃, <- tr_nd₂.angle_sum_eq_neg_pi_of_clock c₂, add_left_inj] at a
       exact a
   have e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length := by
@@ -786,17 +800,27 @@ theorem acongr_of_ASA (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.valu
     by_cases c : tr_nd₁.is_cclock
     . have a := tr_nd₁.angle_sum_eq_pi_of_cclock c
       have c₂ : ¬ tr_nd₂.is_cclock := by
-        have temp := (tr_nd₁.angle_pos_of_cclock c).2.1
+        have temp : tr_nd₁.angle₂.IsPos := by
+          apply (angle₂_pos_iff_cclock tr_nd₁).mp
+          exact c
         simp only [a₂, Left.neg_pos_iff] at temp
-        exact TriangleND.clock_of_neg_angle _ (.inr (.inl (AngValue.neg_isPos_iff_isNeg.mp temp)))
+        apply (angle₂_neg_iff_not_cclock tr_nd₂).mpr
+        apply AngValue.neg_isPos_iff_isNeg.mp
+        simp only [← a₂]
+        exact temp
       simp only [a₂, a₃] at a
       have b := tr_nd₂.angle_sum_eq_neg_pi_of_clock c₂
       sorry
     . have a := tr_nd₁.angle_sum_eq_neg_pi_of_clock c
       have c₂ : tr_nd₂.is_cclock := by
-        have temp := (tr_nd₁.angle_neg_of_clock c).2.1
+        have temp : tr_nd₁.angle₂.IsNeg := by
+          apply (angle₂_neg_iff_not_cclock tr_nd₁).mp
+          exact c
         simp only [a₂, Left.neg_neg_iff] at temp
-        exact TriangleND.cclock_of_pos_angle _ (.inr (.inl (AngValue.neg_isNeg_iff_isPos.mp temp)))
+        apply (angle₂_pos_iff_cclock tr_nd₂).mpr
+        apply AngValue.neg_isNeg_iff_isPos.mp
+        simp only [← a₂]
+        exact temp
       simp only [a₂, a₃] at a
       have b := tr_nd₂.angle_sum_eq_pi_of_cclock c₂
       sorry

@@ -238,7 +238,7 @@ def antipode (A : P) (ω : Circle P) : P := VEC A ω.center +ᵥ ω.center
 theorem antipode_lieson_circle {A : P} {ω : Circle P} {ha : A LiesOn ω} : (antipode A ω) LiesOn ω := by
   show dist ω.center (antipode A ω) = ω.radius
   rw [NormedAddTorsor.dist_eq_norm', antipode,  vsub_vadd_eq_vsub_sub]
-  simp
+  simp only [vsub_self, zero_sub, norm_neg]
   show ‖ω.center -ᵥ A‖ = ω.radius
   rw [← NormedAddTorsor.dist_eq_norm', ha]
 
