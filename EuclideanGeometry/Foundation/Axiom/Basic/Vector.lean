@@ -184,7 +184,7 @@ lemma toComplex_inv (z : 𝕜) : ↑(z⁻¹) = (z : ℂ)⁻¹ := by ext <;> simp
 
 @[simp, norm_cast]
 lemma abs_toComplex (z : 𝕜) : Complex.abs (z : ℂ) = ‖z‖ := by
-  rw [← pow_left_inj (map_nonneg _ _) (norm_nonneg _) zero_lt_two,
+  rw [← pow_left_inj (map_nonneg _ _) (norm_nonneg _) two_ne_zero,
     Complex.sq_abs, Complex.normSq_apply, norm_sq_eq_def]
   rfl
 
@@ -400,7 +400,10 @@ instance innerProductSpace' : InnerProductSpace ℝ Vec where
   norm_sq_eq_inner v := by simp [norm_sq]
   conj_symm v₁ v₂ := by simp [Complex.conj_ofReal, mul_comm]
   add_left v₁ v₂ v₃ := by dsimp; ring
-  smul_left v₁ v₂ z := by dsimp; ring
+  smul_left v₁ v₂ z := by
+    dsimp
+    simp only [zero_mul, sub_zero, add_zero, conj_trivial]
+    ring
 
 lemma real_inner_apply (v₁ v₂ : Vec) :
     ⟪v₁, v₂⟫_ℝ = v₁.fst * v₂.fst + v₁.snd * v₂.snd :=
@@ -694,7 +697,7 @@ lemma cdiv_eq_cdiv_iff_cdiv_eq_cdiv {v₁ v₂ v₃ v₄ : Vec} (hv₂ : v₂ �
 
 @[simp]
 lemma abs_inner (v₁ v₂ : Vec) : Complex.abs ⟪v₁, v₂⟫_ℂ = ‖v₁‖ * ‖v₂‖ := by
-  rw [← pow_left_inj (by simp) (by positivity) zero_lt_two]
+  rw [← pow_left_inj (by simp) (by positivity) two_ne_zero]
   rw [Complex.abs_apply, sq_sqrt (Complex.normSq_nonneg _)]
   dsimp [inner, det]
   rw [mul_pow, norm_sq, norm_sq]
@@ -1256,6 +1259,9 @@ lemma neg_vsub_left (d₁ d₂ : Dir) : -d₁ -ᵥ d₂ = d₁ -ᵥ d₂ + ∠[�
 lemma neg_vsub_right (d₁ d₂ : Dir) : d₁ -ᵥ -d₂ = d₁ -ᵥ d₂ + ∠[π] := by
   rw [← pi_vadd, vsub_vadd_eq_vsub_sub, sub_eq_add_neg, AngValue.neg_coe_pi]
 
+lemma eq_neg_of_vsub_eq_pi (d₁ d₂ : Dir) : d₁ = - d₂ ↔ d₁ -ᵥ d₂ = ∠[π] :=
+  ((pi_vadd d₂).symm.congr_right).trans (eq_vadd_iff_vsub_eq d₁ ∠[π] d₂)
+
 protected abbrev normalize {M : Type*} [AddCommGroup M] [Module ℝ M]
     {F : Type*} [LinearMapClass F ℝ Vec M]
     (f : F) :
@@ -1326,47 +1332,40 @@ lemma norm_unitVecND (d : Dir) : ‖d.unitVecND‖ = 1 := by
 
 section CircularOrder
 
-instance : Btw Dir where
-  btw d₁ d₂ d₃ := btw (d₁ -ᵥ d₁) (d₂ -ᵥ d₁) (d₃ -ᵥ d₁)
+instance instCircularOrderedAddTorsor : CircularOrderedAddTorsor AngValue Dir :=
+  AddTorsor.CircularOrderedAddTorsor_of_CircularOrderedAddCommGroup AngValue Dir
+
+theorem btw_def₁ {d₁ d₂ d₃ : Dir} : btw d₁ d₂ d₃ ↔ btw 0 (d₂ -ᵥ d₁) (d₃ -ᵥ d₁) := Iff.rfl
+
+theorem btw_def₂ {d₁ d₂ d₃ : Dir} : btw d₁ d₂ d₃ ↔ btw (d₁ -ᵥ d₂) 0 (d₃ -ᵥ d₂) :=
+  btw_vsub_fst_iff_btw_vsub_snd d₁ d₂ d₃
+
+theorem btw_def₃ {d₁ d₂ d₃ : Dir} : btw d₁ d₂ d₃ ↔ btw (d₁ -ᵥ d₃) (d₂ -ᵥ d₃) 0 :=
+  btw_vsub_fst_iff_btw_vsub_trd d₁ d₂ d₃
+
+theorem btw_iff_btw_vsub {d₁ d₂ d₃ : Dir} (d : Dir) : btw d₁ d₂ d₃ ↔ btw (d₁ -ᵥ d) (d₂ -ᵥ d) (d₃ -ᵥ d) := by
+  apply (btw_add_right_iff (g := d₁ -ᵥ d)).symm.trans
+  rw [zero_add, vsub_add_vsub_cancel, vsub_add_vsub_cancel]
+
+theorem sbtw_def₁ {d₁ d₂ d₃ : Dir} : sbtw d₁ d₂ d₃ ↔ sbtw 0 (d₂ -ᵥ d₁) (d₃ -ᵥ d₁) := Iff.rfl
+
+theorem sbtw_def₂ {d₁ d₂ d₃ : Dir} : sbtw d₁ d₂ d₃ ↔ sbtw (d₁ -ᵥ d₂) 0 (d₃ -ᵥ d₂) :=
+  sbtw_vsub_fst_iff_sbtw_vsub_snd d₁ d₂ d₃
+
+theorem sbtw_def₃ {d₁ d₂ d₃ : Dir} : sbtw d₁ d₂ d₃ ↔ sbtw (d₁ -ᵥ d₃) (d₂ -ᵥ d₃) 0 :=
+  sbtw_vsub_fst_iff_sbtw_vsub_trd d₁ d₂ d₃
+
+theorem sbtw_iff_sbtw_vsub {d₁ d₂ d₃ : Dir} (d : Dir) : sbtw d₁ d₂ d₃ ↔ sbtw (d₁ -ᵥ d) (d₂ -ᵥ d) (d₃ -ᵥ d) := by
+  apply (sbtw_add_right_iff (g := d₁ -ᵥ d)).symm.trans
+  rw [zero_add, vsub_add_vsub_cancel, vsub_add_vsub_cancel]
 
 @[simp]
-lemma btw_vadd_left {θ : AngValue} {d₁ d₂ d₃ : Dir} :
-    btw (θ +ᵥ d₁) (θ +ᵥ d₂) (θ +ᵥ d₃) ↔ btw d₁ d₂ d₃ := by
-  simp only [btw, vadd_vsub_vadd_cancel_left, vsub_self, sub_zero]
+theorem btw_neg {d₁ d₂ d₃ : Dir} : btw (- d₁) (- d₂) (- d₃) ↔ btw d₁ d₂ d₃ := by
+  rw [← pi_vadd, ← pi_vadd, ← pi_vadd, btw_vadd_left_iff]
 
 @[simp]
-lemma btw_vadd_right {θ₁ θ₂ θ₃ : AngValue} {d : Dir} :
-    btw (θ₁ +ᵥ d) (θ₂ +ᵥ d) (θ₃ +ᵥ d) ↔ btw θ₁ θ₂ θ₃ := by
-  simp only [btw, vadd_vsub_vadd_cancel_right, vsub_self, sub_zero]
-
-@[simp]
-lemma btw_vsub_right {d₁ d₂ d₃ d : Dir} :
-    btw (d₁ -ᵥ d) (d₂ -ᵥ d) (d₃ -ᵥ d) ↔ btw d₁ d₂ d₃ := by
-  simp only [btw, vsub_sub_vsub_cancel_right, vsub_self, sub_zero]
-
-@[simp]
-lemma btw_vsub_left {d d₁ d₂ d₃ : Dir} :
-    btw (d -ᵥ d₁) (d -ᵥ d₂) (d -ᵥ d₃) ↔ btw d₃ d₂ d₁ := by
-  rw [← btw_vsub_right (d := d)]
-  simp [btw]
-  sorry
-
-@[simp]
-lemma btw_neg {d₁ d₂ d₃ : Dir} :
-    btw (-d₁) (-d₂) (-d₃) ↔ btw d₁ d₂ d₃ := by
-  rw [← pi_vadd, ← pi_vadd, ← pi_vadd, btw_vadd_left]
-
-instance : CircularOrder Dir where
-  btw d₁ d₂ d₃ := btw (d₁ -ᵥ d₁) (d₂ -ᵥ d₁) (d₃ -ᵥ d₁)
-  sbtw d₁ d₂ d₃ := sbtw (d₁ -ᵥ d₁) (d₂ -ᵥ d₁) (d₃ -ᵥ d₁)
-  btw_refl d := by simpa using btw_refl _
-  btw_cyclic_left {d₁ d₂ d₃} h := by
-    simp [btw]
-    sorry
-  sbtw_iff_btw_not_btw := sorry
-  sbtw_trans_left := sorry
-  btw_antisymm := sorry
-  btw_total := sorry
+theorem sbtw_neg {d₁ d₂ d₃ : Dir} : sbtw (- d₁) (- d₂) (- d₃) ↔ sbtw d₁ d₂ d₃ := by
+  rw [← pi_vadd, ← pi_vadd, ← pi_vadd, sbtw_vadd_left_iff]
 
 end CircularOrder
 
@@ -1470,6 +1469,20 @@ theorem Dir.toProj_eq_toProj_iff_unitVecND {d₁ d₂ : Dir} :
     d₁.toProj = d₂.toProj ↔ ∃ a : ℝˣ, d₁.unitVecND = a • d₂.unitVecND := by
   conv_lhs => rw [← d₁.unitVecND_toDir, ← d₂.unitVecND_toDir]
   rw [VecND.toProj_eq_toProj_iff']
+
+theorem Dir.toProj_eq_toProj_iff_vsub_not_isND {d₁ d₂ : Dir} : d₁.toProj = d₂.toProj ↔ ¬ (d₁ -ᵥ d₂).IsND :=
+  toProj_eq_toProj_iff.trans <|
+    (or_congr vsub_eq_zero_iff_eq.symm (eq_neg_of_vsub_eq_pi d₁ d₂)).trans AngValue.not_isND_iff.symm
+
+theorem Dir.toProj_ne_toProj_iff_vsub_isND {d₁ d₂ : Dir} : d₁.toProj ≠ d₂.toProj ↔ (d₁ -ᵥ d₂).IsND :=
+  toProj_eq_toProj_iff_vsub_not_isND.not_left
+
+theorem Dir.toProj_ne_toProj_iff_neg_vsub_isND {d₁ d₂ : Dir} : d₁.toProj ≠ d₂.toProj ↔ (d₂ -ᵥ d₁).IsND := by
+  apply toProj_ne_toProj_iff_vsub_isND.trans
+  rw [← neg_vsub_eq_vsub_rev d₂ d₁, AngValue.neg_isND_iff_isND]
+
+theorem Dir.toProj_eq_toProj_iff_neg_vsub_not_isND {d₁ d₂ : Dir} : d₁.toProj = d₂.toProj ↔ ¬ (d₂ -ᵥ d₁).IsND :=
+  toProj_ne_toProj_iff_neg_vsub_isND.not_right
 
 @[simp]
 lemma VecND.neg_toProj (v : VecND) : (-v).toProj = v.toProj := by
@@ -1582,7 +1595,7 @@ theorem map_trans (f g : Dir ≃ Dir) {_ : Dir.NegCommute f} {_ : Dir.NegCommute
     Proj.map (f.trans g) = (Proj.map f).trans (Proj.map g) := by
   ext p
   induction p using Proj.ind
-  
+
   simp
 
 instance : Nonempty Proj := (nonempty_quotient_iff _).mpr <| inferInstanceAs (Nonempty Dir)

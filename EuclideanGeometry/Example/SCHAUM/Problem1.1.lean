@@ -133,7 +133,7 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
     have h₅₁ : -∠ e.E e.C e.M  = -∠ e.A e.C e.B := by
       have inner_h₅₁ : ∠  e.E e.C e.M = ∠  e.A e.C e.B := by
         symm
-        apply eq_ang_val_of_lieson_lieson
+        apply Angle.value_eq_of_lies_on_ray_pt_pt
         · exact E_int_ray_CA
         · exact M_int_ray_CB
       simp only [inner_h₅₁]
@@ -141,7 +141,7 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
       rw [← neg_value_of_rev_ang]
       have inner_h₅₂ : ∠  e.D e.B e.M = ∠  e.A e.B e.C := by
         symm
-        apply eq_ang_val_of_lieson_lieson
+        apply Angle.value_eq_of_lies_on_ray_pt_pt
         · exact D_int_ray_BA
         · exact M_int_ray_BC
       simp only [inner_h₅₂]

@@ -1,33 +1,40 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 
+/-!
+# Constructions of an angle
+
+-/
 
 noncomputable section
 
 namespace EuclidGeom
 
+variable {P : Type _} [EuclideanPlane P]
+
 namespace Angle
 
 /- whether an angle is acute/right/obtuse. -/
 
-def IsRightAngle {P : Type _} [EuclideanPlane P] (ang : Angle P) : Prop := sorry
+def IsRightAngle (ang : Angle P) : Prop := sorry
 
 
-def IsAcuteAngle {P : Type _} [EuclideanPlane P] (ang : Angle P) : Prop := sorry
+def IsAcuteAngle (ang : Angle P) : Prop := sorry
 
 
-def IsObtuseAngle {P : Type _} [EuclideanPlane P] (ang : Angle P) : Prop := sorry
+def IsObtuseAngle (ang : Angle P) : Prop := sorry
 
 
 --`This section should be rewrite`
 /- Supplementary angles -/
 
 -- Define the supplementary angle to be the angle
-variable {P : Type _} [EuclideanPlane P] (ang : Angle P)
+variable (ang : Angle P)
 
+--Maybe the name is too long
 def supplementary : Angle P where
-  start_ray := ang.end_ray
-  end_ray := ang.start_ray.reverse
-  source_eq_source := sorry
+  source := ang.source
+  dir₁ := ang.dir₁
+  dir₂ := - ang.dir₂
 
 -- If two oriented angles share a same side, then they are supplementary oriented angles if and only if the sum of two angles is π or -π   `Do I use {ang1} or (ang1)?
 
@@ -42,9 +49,9 @@ theorem obtuse_of_supp_of_acute (rt : IsAcuteAngle ang) :  IsRightAngle ang.supp
 theorem IsND_of_supp_of_IsND (nontriv : ang.IsND) : ang.supplementary.IsND := by sorry
 
 def opposite :(Angle P) where
-  start_ray := ang.start_ray.reverse
-  end_ray := ang.end_ray.reverse
-  source_eq_source := sorry
+  source := ang.source
+  dir₁ := - ang.dir₁
+  dir₂ := - ang.dir₂
 
 theorem opposite_eq_supp_of_supp : ang.supplementary.supplementary = ang := by sorry
 
@@ -89,27 +96,32 @@ theorem IsConsecutiveIntAng.symm {ang₁ ang₂ : Angle P} : IsConsecutiveIntAng
 
 theorem IsAlternateIntAng.symm {ang₁ ang₂ : Angle P} : IsAlternateIntAng ang₁ ang₂ → IsAlternateIntAng ang₂ ang₁ := sorry
 
-theorem eq_value_of_isoppositeang {ang₁ ang₂ : Angle P} (h : IsOppositeAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
+theorem value_eq_of_isoppositeang {ang₁ ang₂ : Angle P} (h : IsOppositeAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
 
-theorem eq_value_of_iscorrespondingang {ang₁ ang₂ : Angle P} (h : IsCorrespondingAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
+theorem value_eq_of_iscorrespondingang {ang₁ ang₂ : Angle P} (h : IsCorrespondingAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
 
 theorem value_sub_eq_pi_of_isconsecutiveintang {ang₁ ang₂ : Angle P} (h : IsConsecutiveIntAng ang₁ ang₂) : ang₁.value - ang₂.value = π := sorry --`first mod 2π, then discuss +-? `
 
-theorem eq_value_of_isalternateintang {ang₁ ang₂ : Angle P} (h : IsAlternateIntAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
+theorem value_eq_of_isalternateintang {ang₁ ang₂ : Angle P} (h : IsAlternateIntAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
 
 /-
 -- equivlently, this will be much more lengthy
-theorem eq_value_of_corresponding_angle {l₁ l₂ l : DirLine P} (h : l₁.toDir = l₂.toDir) (g : ¬ l ∥ l₁) : (Angle.mk_dirline_dirline l₁ l (Ne.symm g)).value = (Angle.mk_dirline_dirline l₂ l (Ne.symm (ne_of_ne_of_eq g (Quotient.sound (h ▸ PM.con.refl _))))).value := sorry
+theorem value_eq_of_corresponding_angle {l₁ l₂ l : DirLine P} (h : l₁.toDir = l₂.toDir) (g : ¬ l ∥ l₁) : (Angle.mk_dirline_dirline l₁ l (Ne.symm g)).value = (Angle.mk_dirline_dirline l₂ l (Ne.symm (ne_of_ne_of_eq g (Quotient.sound (h ▸ PM.con.refl _))))).value := sorry
 -/
 
 end parallel
 
 namespace Angle
 
-variable {P : Type _} [EuclideanPlane P] (ang : Angle P)
+@[pp_dot]
+def reverse (ang : Angle P) : Angle P where
+  source := ang.source
+  dir₁ := ang.dir₂
+  dir₂ := ang.dir₁
 
+theorem rev_value_eq_neg_value {ang : Angle P} : ang.reverse.value = - ang.value :=
+  (neg_vsub_eq_vsub_rev ang.reverse.dir₁ ang.reverse.dir₂).symm
 
 end Angle
-
 
 end EuclidGeom

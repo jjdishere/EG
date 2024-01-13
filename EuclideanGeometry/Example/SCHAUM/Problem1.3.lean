@@ -93,13 +93,13 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
       exact e.isoc_ABC
   --Because $\angle A B C = -\angle A C B$ we have $\angle A B D = -\angle A C E$
   have A_int_ray_BA : e.A LiesInt (RAY e.B e.A e.A_ne_B) := by
-    sorry
+    apply Ray.snd_pt_lies_int_mk_pt_pt
   have D_int_ray_BC : e.D LiesInt (RAY e.B e.C e.C_ne_B) := by
     rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
     apply SegND.lies_int_toRay_of_lies_int
     exact e.D_Int_BC
   have A_int_ray_CA : e.A LiesInt (RAY e.C e.A e.A_ne_C) := by
-    sorry
+    apply Ray.snd_pt_lies_int_mk_pt_pt
   have E_int_ray_CB : e.E LiesInt (RAY e.C e.B e.B_ne_C) := by
     rw [← pt_pt_seg_toRay_eq_pt_pt_ray]
     apply SegND.lies_int_toRay_of_lies_int
@@ -110,14 +110,14 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
       rw [← neg_value_of_rev_ang (e.A_ne_B) (e.C_ne_B)]
       have inner_h₂₁ : ∠  e.A e.B e.D (e.A_ne_B) (e.D_ne_B) = ∠  e.A e.B e.C (e.A_ne_B) (e.C_ne_B) := by
         symm
-        apply eq_ang_val_of_lieson_lieson
+        apply Angle.value_eq_of_lies_on_ray_pt_pt
         ·exact A_int_ray_BA
         .exact D_int_ray_BC
       simp only [inner_h₂₁]
     have h₂₂ : ∠ e.A e.C e.E (e.A_ne_C) (e.E_ne_C) = ∠ e.A e.C e.B (e.A_ne_C) (e.B_ne_C) := by
       have inner_h₂₂ : ∠  e.A e.C e.E (e.A_ne_C) (e.E_ne_C) = ∠  e.A e.C e.B (e.A_ne_C) (e.B_ne_C) := by
         symm
-        apply eq_ang_val_of_lieson_lieson
+        apply Angle.value_eq_of_lies_on_ray_pt_pt
         ·exact A_int_ray_CA
         ·exact E_int_ray_CB
       simp only [inner_h₂₂]

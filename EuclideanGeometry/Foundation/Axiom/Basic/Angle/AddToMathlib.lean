@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Basic.Angle.FromMathlib
+import Mathlib.Data.Int.Parity
 
 /-!
 # Theorems that should exist in Mathlib
@@ -6,13 +7,18 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Angle.FromMathlib
 Maybe we can create some PRs to mathlib in the future.
 -/
 
-open Real
+open Real Classical
+attribute [ext] Complex.ext
 
 /-!
-## More theorems about trigonometric functions in Mathlib
+### More theorems about trigonometric functions in Mathlib
 
-These theorems about trigonometric functions mostly exist in Mathlib in the version of `Real.sin`, `Real.cos` or `Real.tan` but not in the version of `Real.Angle.sin`, `Real.Angle.cos` or `Real.Angle.tan`.
-In this file, we will translate these theorems into the version of `EuclidGeom.AngValue.sin`, `EuclidGeom.AngValue.cos` or `EuclidGeom.AngValue.tan`.
+These theorems about trigonometric functions mostly exist in Mathlib in the version of `Real.sin`,
+`Real.cos` or `Real.tan` but not in the version of `Real.Angle.sin`, `Real.Angle.cos` or
+`Real.Angle.tan`.
+
+In this section, we will translate these theorems into the version of `EuclidGeom.AngValue.sin`,
+`EuclidGeom.AngValue.cos` or `EuclidGeom.AngValue.tan`.
 -/
 
 namespace EuclidGeom
@@ -32,6 +38,7 @@ Real.sin (x - y) = Real.sin x * Real.cos y - Real.cos x * Real.sin y
 theorem Real.cos_sub (x : ℝ) (y : ℝ) :
 Real.cos (x - y) = Real.cos x * Real.cos y + Real.sin x * Real.sin y
 
+-- The product-to-sum formulas. The version of `Real.sin` and `Real.cos` may need to be proven first.
 cos ⁡ θ * cos ⁡ φ = (cos ⁡ ( θ + φ ) + cos ⁡ ( θ − φ )) / 2
 
 sin ⁡ θ * sin ⁡ φ = (cos ⁡ ( θ − φ ) − cos ⁡ ( θ + φ )) / 2
@@ -391,52 +398,562 @@ end EuclidGeom
 
 
 /-!
-## Compatibility among group, addtorsor and order
+### Compatibility among group, addtorsor and order
 -/
 
 section Mathlib.Algebra.Order.Group.Defs
 
-class CircularOrderAddCommGroup (G : Type*) extends AddCommGroup G, CircularOrder G where
-  btw_add {a b c : G} (h : btw a b c) (t : G) : btw (a + t) (b + t) (c + t)
+/-- A circular ordered additive commutative group is an additive commutative group with
+a circular order whose order is stable under addition and compatiable with negation. -/
+class CircularOrderedAddCommGroup (G : Type*) extends AddCommGroup G, CircularOrder G where
+  btw_add_left {a b c : G} (h : btw a b c) (g : G) : btw (g + a) (g + b) (g + c)
+  btw_neg {a b c : G} (h : btw a b c) : btw (- a) (- c) (- b)
 
-namespace CircularOrderAddCommGroup
+/-- A circular ordered commutative group is a commutative group with a circular order whose
+order is stable under multiplication and compatiable with inverse. -/
+@[to_additive]
+class CircularOrderedCommGroup (G : Type*) extends CommGroup G, CircularOrder G where
+  btw_mul_left {a b c : G} (h : btw a b c) (g : G) : btw (g * a) (g * b) (g * c)
+  btw_inv {a b c : G} (h : btw a b c) : btw a⁻¹ c⁻¹ b⁻¹
 
-variable {G : Type*} [CircularOrderAddCommGroup G]
+variable {G : Type*} [CircularOrderedCommGroup G]
 
-@[simp]
-theorem btw_add_iff {a b c t : G} : btw (a + t) (b + t) (c + t) ↔ btw a b c := by
-  refine' ⟨fun h ↦ _, fun h ↦ btw_add h t⟩
-  have h := btw_add h (- t)
-  simp only [add_neg_cancel_right] at h
-  exact h
+@[to_additive]
+theorem btw_mul_left {a b c : G} (h : btw a b c) (g : G) : btw (g * a) (g * b) (g * c) :=
+  CircularOrderedCommGroup.btw_mul_left h g
 
-theorem sbtw_add {a b c : G} (h : sbtw a b c) (t : G) : sbtw (a + t) (b + t) (c + t) := sorry
+@[to_additive (attr := simp)]
+theorem btw_mul_left_iff {g a b c : G} : btw (g * a) (g * b) (g * c) ↔ btw a b c :=
+  ⟨fun h ↦ by
+    rw [← inv_mul_cancel_left g a, ← inv_mul_cancel_left g b, ← inv_mul_cancel_left g c]
+    exact btw_mul_left h g⁻¹, fun h ↦ btw_mul_left h g⟩
 
-@[simp]
-theorem sbtw_add_iff {a b c t : G} : sbtw (a + t) (b + t) (c + t) ↔ sbtw a b c := sorry
+@[to_additive (attr := simp)]
+theorem sbtw_mul_left_iff {g a b c : G} : sbtw (g * a) (g * b) (g * c) ↔ sbtw a b c :=  by
+  simp only [sbtw_iff_not_btw, btw_mul_left_iff]
 
-end CircularOrderAddCommGroup
+@[to_additive]
+theorem sbtw_mul_left {a b c : G} (h : sbtw a b c) (g : G) : sbtw (g * a) (g * b) (g * c) :=
+  sbtw_mul_left_iff.mpr h
 
-instance QuotientAddGroup.instCircularOrderAddCommGroup (G : Type*) [LinearOrderedAddCommGroup G] [ha : Archimedean G] {p : G} [hp : Fact (0 < p)] : CircularOrderAddCommGroup (G ⧸ AddSubgroup.zmultiples p) := sorry
+@[to_additive (attr := simp)]
+theorem btw_mul_right_iff {a b c g : G} : btw (a * g) (b * g) (c * g) ↔ btw a b c := by
+  rw [mul_comm a g, mul_comm b g, mul_comm c g]
+  exact btw_mul_left_iff
 
-section Mathlib.Algebra.Order.Group.Defs
+@[to_additive]
+theorem btw_mul_right {a b c : G} (h : btw a b c) (g : G) : btw (a * g) (b * g) (c * g) :=
+  btw_mul_right_iff.mpr h
+
+@[to_additive (attr := simp)]
+theorem sbtw_mul_right_iff {a b c g : G} : sbtw (a * g) (b * g) (c * g) ↔ sbtw a b c :=  by
+  simp only [sbtw_iff_not_btw, btw_mul_right_iff]
+
+@[to_additive]
+theorem sbtw_mul_right {a b c : G} (h : sbtw a b c) (g : G) : sbtw (a * g) (b * g) (c * g) :=
+  sbtw_mul_right_iff.mpr h
+
+@[to_additive]
+theorem btw_inv {a b c : G} (h : btw a b c) : btw a⁻¹ c⁻¹ b⁻¹ := CircularOrderedCommGroup.btw_inv h
+
+@[to_additive (attr := simp)]
+theorem btw_inv_iff {a b c : G} : btw a⁻¹ b⁻¹ c⁻¹ ↔ btw a c b :=
+  ⟨fun h ↦ by
+    rw [← inv_inv a, ← inv_inv b, ← inv_inv c]
+    exact btw_inv h, btw_inv⟩
+
+@[to_additive]
+theorem btw_inv_iff' {a b c : G} : btw a⁻¹ b⁻¹ c⁻¹ ↔ btw c b a :=
+  btw_inv_iff.trans btw_cyclic.symm
+
+@[to_additive]
+theorem btw_inv_iff'' {a b c : G} : btw a⁻¹ b⁻¹ c⁻¹ ↔ btw b a c :=
+  btw_inv_iff.trans btw_cyclic
+
+@[to_additive]
+theorem btw_inv_iff_not_sbtw {a b c : G} : btw a⁻¹ b⁻¹ c⁻¹ ↔ ¬ sbtw a b c :=
+  btw_inv_iff'.trans btw_iff_not_sbtw
+
+@[to_additive]
+theorem not_btw_inv_iff_sbtw {a b c : G} : ¬ btw a⁻¹ b⁻¹ c⁻¹ ↔ sbtw a b c :=
+  btw_inv_iff_not_sbtw.not_left
+
+@[to_additive]
+theorem sbtw_inv_iff_not_btw {a b c : G} : sbtw a⁻¹ b⁻¹ c⁻¹ ↔ ¬ btw a b c :=
+  sbtw_iff_not_btw.trans btw_inv_iff'.not
+
+@[to_additive]
+theorem not_sbtw_inv_iff_btw {a b c : G} : ¬ sbtw a⁻¹ b⁻¹ c⁻¹ ↔ btw a b c :=
+  sbtw_inv_iff_not_btw.not_left
+
+@[to_additive (attr := simp)]
+theorem sbtw_inv_iff {a b c : G} : sbtw a⁻¹ b⁻¹ c⁻¹ ↔ sbtw a c b :=
+  sbtw_inv_iff_not_btw.trans (sbtw_iff_not_btw.symm.trans sbtw_cyclic)
+
+@[to_additive]
+theorem sbtw_inv {a b c : G} (h : sbtw a b c) : sbtw a⁻¹ c⁻¹ b⁻¹ := sbtw_inv_iff.mpr h
+
+@[to_additive]
+theorem sbtw_inv_iff' {a b c : G} : sbtw a⁻¹ b⁻¹ c⁻¹ ↔ sbtw c b a :=
+  sbtw_inv_iff.trans sbtw_cyclic.symm
+
+@[to_additive]
+theorem sbtw_inv_iff'' {a b c : G} : sbtw a⁻¹ b⁻¹ c⁻¹ ↔ sbtw b a c :=
+  sbtw_inv_iff.trans sbtw_cyclic
+
+@[to_additive]
+theorem btw_div_left {a b c : G} (h : btw a b c) (g : G) : btw (g / a) (g / c) (g / b) := by
+  simp only [div_eq_mul_inv]
+  exact btw_mul_left (btw_inv h) g
+
+@[to_additive (attr := simp)]
+theorem btw_div_left_iff {g a b c : G} : btw (g / a) (g / b) (g / c) ↔ btw a c b :=
+  ⟨fun h ↦ btw_inv_iff.mp <| by
+    simp only [div_eq_mul_inv] at h
+    exact btw_mul_left_iff.mp h, fun h ↦ btw_div_left h g⟩
+
+@[to_additive]
+theorem btw_div_left_iff' {g a b c : G} : btw (g / a) (g / b) (g / c) ↔ btw c b a :=
+  btw_div_left_iff.trans btw_cyclic.symm
+
+@[to_additive]
+theorem btw_div_left_iff'' {g a b c : G} : btw (g / a) (g / b) (g / c) ↔ btw b a c :=
+  btw_div_left_iff.trans btw_cyclic
+
+@[to_additive]
+theorem sbtw_div_left {a b c : G} (h : sbtw a b c) (g : G) : sbtw (g / a) (g / c) (g / b) := by
+  simp only [div_eq_mul_inv]
+  exact sbtw_mul_left (sbtw_inv h) g
+
+@[to_additive (attr := simp)]
+theorem sbtw_div_left_iff {a b c g : G} : sbtw (g / a) (g / b) (g / c) ↔ sbtw a c b :=
+  ⟨fun h ↦ sbtw_inv_iff.mp <| by
+    simp only [div_eq_mul_inv] at h
+    exact sbtw_mul_left_iff.mp h, fun h ↦ sbtw_div_left h g⟩
+
+@[to_additive]
+theorem sbtw_div_left_iff' {g a b c : G} : sbtw (g / a) (g / b) (g / c) ↔ sbtw c b a :=
+  sbtw_div_left_iff.trans sbtw_cyclic.symm
+
+@[to_additive]
+theorem sbtw_div_left_iff'' {g a b c : G} : sbtw (g / a) (g / b) (g / c) ↔ sbtw b a c :=
+  sbtw_div_left_iff.trans sbtw_cyclic
+
+@[to_additive]
+theorem btw_div_left_iff_not_sbtw {g a b c : G} : btw (g / a) (g / b) (g / c) ↔ ¬ sbtw a b c :=
+  btw_div_left_iff'.trans btw_iff_not_sbtw
+
+@[to_additive]
+theorem not_btw_div_left_iff_sbtw {g a b c : G} : ¬ btw (g / a) (g / b) (g / c) ↔ sbtw a b c :=
+  btw_div_left_iff_not_sbtw.not_left
+
+@[to_additive]
+theorem sbtw_div_left_iff_not_btw {g a b c : G} : sbtw (g / a) (g / b) (g / c) ↔ ¬ btw a b c :=
+  sbtw_div_left_iff'.trans sbtw_iff_not_btw
+
+@[to_additive]
+theorem not_sbtw_div_left_iff_btw {g a b c : G} : ¬ sbtw (g / a) (g / b) (g / c) ↔ btw a b c :=
+  sbtw_div_left_iff_not_btw.not_left
+
+@[to_additive]
+theorem btw_div_right {a b c : G} (h : btw a b c) (g : G) : btw (a / g) (b / g) (c / g) := by
+  simp only [div_eq_mul_inv]
+  exact btw_mul_right h g⁻¹
+
+@[to_additive (attr := simp)]
+theorem btw_div_right_iff {a b c g : G} : btw (a / g) (b / g) (c / g) ↔ btw a b c :=
+  ⟨fun h ↦ by
+    rw [← div_mul_cancel' a g, ← div_mul_cancel' b g, ← div_mul_cancel' c g]
+    exact btw_mul_right h g, fun h ↦ btw_div_right h g⟩
+
+@[to_additive]
+theorem sbtw_div_right {a b c : G} (h : sbtw a b c) (g : G) : sbtw (a / g) (b / g) (c / g) := by
+  simp only [div_eq_mul_inv]
+  exact sbtw_mul_right h g⁻¹
+
+@[to_additive (attr := simp)]
+theorem sbtw_div_right_iff {a b c g : G} : sbtw (a / g) (b / g) (c / g) ↔ sbtw a b c :=
+  ⟨fun h ↦ by
+    rw [← div_mul_cancel' a g, ← div_mul_cancel' b g, ← div_mul_cancel' c g]
+    exact sbtw_mul_right h g, fun h ↦ sbtw_div_right h g⟩
+
+namespace QuotientAddGroup
+
+instance instCircularOrderedAddCommGroup (G : Type*) [LinearOrderedAddCommGroup G] [Archimedean G] {p : G} [Fact (0 < p)] : CircularOrderedAddCommGroup (G ⧸ AddSubgroup.zmultiples p) where
+  btw_add_left := by
+    rintro ⟨⟩ ⟨⟩ ⟨⟩ h ⟨⟩
+    apply btw_coe_iff'.mpr
+    simpa only [add_sub_add_left_eq_sub] using h
+  btw_neg := by
+    rintro ⟨⟩ ⟨⟩ ⟨⟩ h
+    apply btw_coe_iff.mpr
+    simp only [toIcoMod_neg, toIocMod_neg, neg_neg]
+    exact sub_le_sub_left (btw_coe_iff.mp h) p
+
+variable {G : Type*} [LinearOrderedAddCommGroup G] [Archimedean G] {p : G} [hp : Fact (0 < p)]
+
+theorem sbtw_coe_iff' {a b c : G} : sbtw (a : G ⧸ AddSubgroup.zmultiples p) b c ↔ toIocMod hp.out 0 (a - c) < toIcoMod hp.out 0 (b - c) :=
+  not_iff_not.mp (btw_iff_not_sbtw.symm.trans not_lt.symm)
+
+theorem sbtw_coe_iff {a b c : G} : sbtw (a : G ⧸ AddSubgroup.zmultiples p) b c ↔ toIocMod hp.out c a < toIcoMod hp.out c b :=
+  not_iff_not.mp (btw_iff_not_sbtw.symm.trans (btw_coe_iff.trans not_lt.symm))
+
+end QuotientAddGroup
+
+end Mathlib.Algebra.Order.Group.Defs
 
 
 
-section Mathlib.Algebra.AddTorsor
-
-variable {V : outParam Type*} {L : Type*} [outParam (AddCommGroup V)] [AddTorsor V L]
+section Mathlib.GroupTheory.GroupAction
 
 section PartialOrder
+
+/-- A partial ordered additive group action is a additive group action on a partial
+order which is stable under the additive group action. -/
+class OrderedAddAction (G : outParam Type*) (P : Type*) [outParam (AddGroup G)] extends AddAction G P, PartialOrder P where
+  vadd_left_le {a b : P} (h : a ≤ b) (g : G) : g +ᵥ a ≤ g +ᵥ b
+
+/-- A partial ordered multiplicative group action is a multiplicative group action on a partial
+order which is stable under the multiplicative group action. -/
+@[to_additive]
+class OrderedMulAction (G : outParam Type*) (P : Type*) [outParam (Group G)] extends MulAction G P, PartialOrder P where
+  smul_left_le {a b : P} (h : a ≤ b) (g : G) : g • a ≤ g • b
+
+variable {G : outParam Type*} {P : Type*} [outParam (Group G)] [OrderedMulAction G P]
+
+@[to_additive]
+theorem smul_left_le {a b : P} (h : a ≤ b) (g : G) : g • a ≤ g • b :=
+  OrderedMulAction.smul_left_le h g
+
+@[to_additive (attr := simp)]
+theorem smul_left_le_iff {g : G} {a b : P} : g • a ≤ g • b ↔ a ≤ b := by
+  refine' ⟨fun h ↦ _, fun h ↦ smul_left_le h g⟩
+  have h := smul_left_le h g⁻¹
+  simp only [inv_smul_smul] at h
+  exact h
+
+@[to_additive (attr := simp)]
+theorem smul_left_lt_iff {g : G} {a b : P} : g • a < g • b ↔ a < b := by
+  simp only [lt_iff_le_not_le, smul_left_le_iff]
+
+@[to_additive]
+theorem smul_left_lt {a b : P} (h : a < b) (g : G) : g • a < g • b := smul_left_lt_iff.mpr h
 
 end PartialOrder
 
 section LinearOrder
 
+/-- A linearly ordered additive group action is an additive group action on a linearly order which
+is stable under the additive group action. -/
+class LinearOrderedAddAction (G : outParam Type*) (P : Type*) [outParam (AddGroup G)] extends
+  OrderedAddAction G P, LinearOrder P
+
+/-- A linearly ordered multiplicative group action is a multiplicative group action on a linearly
+order which is stable under the multiplicative group action. -/
+@[to_additive]
+class LinearOrderedMulAction (G : outParam Type*) (P : Type*) [outParam (Group G)] extends
+  OrderedMulAction G P, LinearOrder P
+
+variable {G : outParam Type*} {P : Type*} [outParam (Group G)] [LinearOrderedMulAction G P]
+
+@[to_additive]
+theorem min_smul {a b : P} (g : G) : min (g • a) (g • b) = g • min a b := by
+  simp only [min_def, smul_left_le_iff]
+  if h : a ≤ b then simp only [h, ite_true]
+  else simp only [h, ite_false]
+
+@[to_additive]
+theorem max_smul {a b : P} (g : G) : max (g • a) (g • b) = g • max a b := by
+  simp only [max_def, smul_left_le_iff]
+  if h : a ≤ b then simp only [h, ite_true]
+  else simp only [h, ite_false]
+
 end LinearOrder
 
 section CircularOrder
 
+/-- A circular ordered additive group action is an additive group action on a circular order which
+is stable under the additive group action. -/
+class CircularOrderedAddAction (G : outParam Type*) (P : Type*) [outParam (AddGroup G)] extends AddAction G P, CircularOrder P where
+  btw_vadd_left {a b c : P} (h : btw a b c) (g : G) : btw (g +ᵥ a) (g +ᵥ b) (g +ᵥ c)
+
+/-- A circular ordered multiplicative group action is a multiplicative group action on a circular
+order which is stable under the multiplicative group action. -/
+@[to_additive]
+class CircularOrderedMulAction (G : outParam Type*) (P : Type*) [outParam (Group G)] extends MulAction G P, CircularOrder P where
+  btw_smul_left {a b c : P} (h : btw a b c) (g : G) : btw (g • a) (g • b) (g • c)
+
+variable {G : outParam Type*} {P : Type*} [outParam (Group G)] [CircularOrderedMulAction G P]
+
+@[to_additive]
+theorem btw_smul_left {a b c : P} (h : btw a b c) (g : G) : btw (g • a) (g • b) (g • c) :=
+  CircularOrderedMulAction.btw_smul_left h g
+
+@[to_additive (attr := simp)]
+theorem btw_smul_left_iff {g : G} {a b c : P} : btw (g • a) (g • b) (g • c) ↔ btw a b c := by
+  refine' ⟨fun h ↦ _, fun h ↦ btw_smul_left h g⟩
+  have h := btw_smul_left h g⁻¹
+  simp only [inv_smul_smul] at h
+  exact h
+
+@[to_additive (attr := simp)]
+theorem sbtw_smul_left_iff {g : G} {a b c : P} : sbtw (g • a) (g • b) (g • c) ↔ sbtw a b c :=  by
+  simp only [sbtw_iff_not_btw, btw_smul_left_iff]
+
+@[to_additive]
+theorem sbtw_smul_left {a b c : P} (h : sbtw a b c) (g : G) : sbtw (g • a) (g • b) (g • c) :=
+  sbtw_smul_left_iff.mpr h
+
 end CircularOrder
+
+end Mathlib.GroupTheory.GroupAction
+
+
+
+section Mathlib.Algebra.AddTorsor
+
+section Class
+
+section PartialOrder
+
+/-- A partial ordered `AddTorsor` is an `AddTorsor` with partial orders on the group and
+the type acted on, such that both orders are compatiable with the additive group action. -/
+class OrderedAddTorsor (G : outParam Type*) (P : Type*) [outParam (OrderedAddCommGroup G)] extends OrderedAddAction G P, AddTorsor G P where
+  vadd_right_le {f g : G} (h : f ≤ g) (a : P) : f +ᵥ a ≤ g +ᵥ a
+
+variable {G : outParam Type*} {P : Type*} [outParam (OrderedAddCommGroup G)] [OrderedAddTorsor G P]
+
+theorem vadd_right_le {f g : G} (h : f ≤ g) (a : P) : f +ᵥ a ≤ g +ᵥ a :=
+  OrderedAddTorsor.vadd_right_le h a
+
+theorem vadd_right_lt {f g : G} (h : f < g) (a : P) : f +ᵥ a < g +ᵥ a :=
+  Ne.lt_of_le (fun eq ↦ h.ne (vadd_right_cancel a eq)) (vadd_right_le (le_of_lt h) a)
+
+end PartialOrder
+
+section LinearOrder
+
+variable (G : outParam Type*) (P : Type*) [outParam (LinearOrderedAddCommGroup G)]
+
+/-- A linearly ordered `AddTorsor` is an `AddTorsor` with linearly orders on the group and
+the type acted on, such that both orders are compatiable with the additive group action. -/
+class LinearOrderedAddTorsor extends LinearOrderedAddAction G P, OrderedAddTorsor G P
+
+variable {G} {P} [outParam (LinearOrderedAddCommGroup G)] [LinearOrderedAddTorsor G P]
+
+@[simp]
+theorem vadd_right_le_iff {f g : G} {a : P} : f +ᵥ a ≤ g +ᵥ a ↔ f ≤ g :=
+  ⟨fun h ↦ not_lt.mp (fun lt ↦ (not_lt_of_le h) (vadd_right_lt lt a)), fun h ↦ vadd_right_le h a⟩
+
+@[simp]
+theorem vadd_right_lt_iff {f g : G} {a : P} : f +ᵥ a < g +ᵥ a ↔ f < g := by
+  simp only [lt_iff_not_ge, vadd_right_le_iff]
+
+@[simp]
+theorem vsub_right_le_iff {a b x : P} : a -ᵥ x ≤ b -ᵥ x ↔ a ≤ b := by
+  nth_rw 2 [← vsub_vadd a x, ← vsub_vadd b x]
+  exact vadd_right_le_iff.symm
+
+theorem vsub_right_le {a b : P} (h : a ≤ b) (x : P) : a -ᵥ x ≤ b -ᵥ x := vsub_right_le_iff.mpr h
+
+@[simp]
+theorem vsub_left_le_iff {x a b : P} : x -ᵥ a ≤ x -ᵥ b ↔ b ≤ a := by
+  rw [← neg_vsub_eq_vsub_rev a x, ← neg_vsub_eq_vsub_rev b x]
+  exact neg_le_neg_iff.trans vsub_right_le_iff
+
+theorem vsub_left_le {a b : P} (h : a ≤ b) (x : P) : x -ᵥ b ≤ x -ᵥ a := vsub_left_le_iff.mpr h
+
+end LinearOrder
+
+section CircularOrder
+
+variable (G : outParam Type*) (P : Type*) [outParam (CircularOrderedAddCommGroup G)]
+
+/-- A circular ordered `AddTorsor` is an `AddTorsor` with circular orders on the group and
+the type acted on, such that both orders are compatiable with the additive group action. -/
+class CircularOrderedAddTorsor extends CircularOrderedAddAction G P, AddTorsor G P where
+  btw_vadd_right {e f g : G} (h : Btw.btw e f g) (a : P) : btw (e +ᵥ a) (f +ᵥ a) (g +ᵥ a)
+
+variable {G} {P} [outParam (CircularOrderedAddCommGroup G)] [CircularOrderedAddTorsor G P]
+
+theorem btw_vadd_right {e f g : G} (h : btw e f g) (a : P) : btw (e +ᵥ a) (f +ᵥ a) (g +ᵥ a) :=
+  CircularOrderedAddTorsor.btw_vadd_right h a
+
+theorem sbtw_vadd_right {e f g : G} (h : sbtw e f g) (a : P) : sbtw (e +ᵥ a) (f +ᵥ a) (g +ᵥ a) := by
+  by_contra hn
+  rcases (btw_vadd_right h.btw a).antisymm (btw_iff_not_sbtw.mpr hn) with eq | eq | eq
+  · rw [vadd_right_cancel a eq] at h
+    exact sbtw_irrefl_left h
+  · rw [vadd_right_cancel a eq] at h
+    exact sbtw_irrefl_right h
+  · rw [vadd_right_cancel a eq] at h
+    exact sbtw_irrefl_left_right h
+
+@[simp]
+theorem btw_vadd_right_iff {e f g : G} {a : P} : btw (e +ᵥ a) (f +ᵥ a) (g +ᵥ a) ↔ btw e f g :=
+  ⟨fun h ↦ btw_iff_not_sbtw.mpr (fun hs ↦ sbtw_iff_not_btw.mp (sbtw_vadd_right hs a) h),
+    fun h ↦ btw_vadd_right h a⟩
+
+@[simp]
+theorem sbtw_vadd_right_iff {e f g : G} {a : P} : sbtw (e +ᵥ a) (f +ᵥ a) (g +ᵥ a) ↔ sbtw e f g := by
+  simp only [sbtw_iff_not_btw, btw_vadd_right_iff]
+
+@[simp]
+theorem btw_vsub_right_iff {a b c x : P} : btw (a -ᵥ x) (b -ᵥ x) (c -ᵥ x) ↔ btw a b c := by
+  nth_rw 2 [← vsub_vadd a x, ← vsub_vadd b x, ← vsub_vadd c x]
+  exact btw_vadd_right_iff.symm
+
+theorem btw_vsub_right {a b c : P} (h : btw a b c) (x : P) : btw (a -ᵥ x) (b -ᵥ x) (c -ᵥ x) :=
+  btw_vsub_right_iff.mpr h
+
+@[simp]
+theorem sbtw_vsub_right_iff {a b c x : P} : sbtw (a -ᵥ x) (b -ᵥ x) (c -ᵥ x) ↔ sbtw a b c := by
+  simp only [sbtw_iff_not_btw, btw_vsub_right_iff]
+
+theorem sbtw_vsub_right {a b c : P} (h : sbtw a b c) (x : P) : sbtw (a -ᵥ x) (b -ᵥ x) (c -ᵥ x) :=
+  sbtw_vsub_right_iff.mpr h
+
+@[simp]
+theorem btw_vsub_left_iff {x a b c : P} : btw (x -ᵥ a) (x -ᵥ b) (x -ᵥ c) ↔ btw a c b := by
+  rw [← neg_vsub_eq_vsub_rev a x, ← neg_vsub_eq_vsub_rev b x, ← neg_vsub_eq_vsub_rev c x]
+  exact btw_neg_iff.trans btw_vsub_right_iff
+
+theorem btw_vsub_left {a b c : P} (h : btw a b c) (x : P) : btw (x -ᵥ a) (x -ᵥ c) (x -ᵥ b) :=
+  btw_vsub_left_iff.mpr h
+
+theorem btw_vsub_left_iff' {x a b c : P} : btw (x -ᵥ a) (x -ᵥ b) (x -ᵥ c) ↔ btw c b a :=
+  btw_vsub_left_iff.trans btw_cyclic.symm
+
+theorem btw_vsub_left_iff'' {x a b c : P} : btw (x -ᵥ a) (x -ᵥ b) (x -ᵥ c) ↔ btw b a c :=
+  btw_vsub_left_iff.trans btw_cyclic
+
+theorem btw_vsub_left_iff_not_sbtw {x a b c : P} : btw (x -ᵥ a) (x -ᵥ b) (x -ᵥ c) ↔ ¬ sbtw a b c :=
+  btw_vsub_left_iff'.trans btw_iff_not_sbtw
+
+theorem not_btw_vsub_left_iff_sbtw {x a b c : P} : ¬ btw (x -ᵥ a) (x -ᵥ b) (x -ᵥ c) ↔ sbtw a b c :=
+  btw_vsub_left_iff_not_sbtw.not_left
+
+theorem sbtw_vsub_left_iff_not_btw {x a b c : P} : sbtw (x -ᵥ a) (x -ᵥ b) (x -ᵥ c) ↔ ¬ btw a b c :=
+  sbtw_iff_not_btw.trans btw_vsub_left_iff'.not
+
+theorem not_sbtw_vsub_left_iff_btw {x a b c : P} : ¬ sbtw (x -ᵥ a) (x -ᵥ b) (x -ᵥ c) ↔ btw a b c :=
+  sbtw_vsub_left_iff_not_btw.not_left
+
+@[simp]
+theorem sbtw_vsub_left_iff {x a b c : P} : sbtw (x -ᵥ a) (x -ᵥ b) (x -ᵥ c) ↔ sbtw a c b :=
+  sbtw_vsub_left_iff_not_btw.trans (sbtw_iff_not_btw.symm.trans sbtw_cyclic)
+
+theorem sbtw_vsub_left {a b c : P} (h : sbtw a b c) (x : P) : sbtw (x -ᵥ a) (x -ᵥ c) (x -ᵥ b) :=
+  sbtw_vsub_left_iff.mpr h
+
+end CircularOrder
+
+end Class
+
+section symmetry
+-- These lemmas show that the following definitions satisfy symmetry.
+
+variable {G : outParam Type*} {P : Type*}
+
+lemma vsub_le_zero_iff_zero_le_vsub_rev [outParam (OrderedAddCommGroup G)] [AddTorsor G P] (a b : P) : a -ᵥ b ≤ 0 ↔ 0 ≤ b -ᵥ a :=
+  (add_le_add_iff_right (b -ᵥ a)).symm.trans (by rw [vsub_add_vsub_cancel, vsub_self, zero_add])
+
+lemma vsub_lt_zero_iff_zero_lt_vsub_rev [outParam (OrderedAddCommGroup G)] [AddTorsor G P] (a b : P) : a -ᵥ b < 0 ↔ 0 < b -ᵥ a :=
+  (add_lt_add_iff_right (b -ᵥ a)).symm.trans (by rw [vsub_add_vsub_cancel, vsub_self, zero_add])
+
+variable [outParam (CircularOrderedAddCommGroup G)] [AddTorsor G P] (a b c : P)
+
+lemma btw_vsub_fst_iff_btw_vsub_snd : btw 0 (b -ᵥ a) (c -ᵥ a) ↔ btw (a -ᵥ b) 0 (c -ᵥ b) :=
+  Iff.trans (by simp only [vsub_add_vsub_cancel, vsub_self, zero_add]) (btw_add_right_iff (g := b -ᵥ a))
+
+lemma btw_vsub_fst_iff_btw_vsub_trd : btw 0 (b -ᵥ a) (c -ᵥ a) ↔ btw (a -ᵥ c) (b -ᵥ c) 0 :=
+  Iff.trans (by simp only [vsub_add_vsub_cancel, vsub_self, zero_add]) (btw_add_right_iff (g := c -ᵥ a))
+
+lemma btw_vsub_snd_iff_btw_vsub_trd : btw (a -ᵥ b) 0 (c -ᵥ b) ↔ btw (a -ᵥ c) (b -ᵥ c) 0 :=
+  (btw_vsub_fst_iff_btw_vsub_snd a b c).symm.trans (btw_vsub_fst_iff_btw_vsub_trd a b c)
+
+lemma sbtw_vsub_fst_iff_sbtw_vsub_snd : sbtw 0 (b -ᵥ a) (c -ᵥ a) ↔ sbtw (a -ᵥ b) 0 (c -ᵥ b) :=
+  Iff.trans (by simp only [vsub_add_vsub_cancel, vsub_self, zero_add]) (sbtw_add_right_iff (g := b -ᵥ a))
+
+lemma sbtw_vsub_fst_iff_sbtw_vsub_trd : sbtw 0 (b -ᵥ a) (c -ᵥ a) ↔ sbtw (a -ᵥ c) (b -ᵥ c) 0 :=
+  Iff.trans (by simp only [vsub_add_vsub_cancel, vsub_self, zero_add]) (sbtw_add_right_iff (g := c -ᵥ a))
+
+lemma sbtw_vsub_snd_iff_sbtw_vsub_trd : sbtw (a -ᵥ b) 0 (c -ᵥ b) ↔ sbtw (a -ᵥ c) (b -ᵥ c) 0 :=
+  (sbtw_vsub_fst_iff_sbtw_vsub_snd a b c).symm.trans (sbtw_vsub_fst_iff_sbtw_vsub_trd a b c)
+
+end symmetry
+
+namespace AddTorsor
+
+section contruction
+
+variable (G : outParam Type*) (P : Type*)
+
+/-- If the group acting on an `AddTorsor` is a partial ordered group, then there is a natual
+partial order on the `AddTorsor` along with a corresponding structure of partial ordered `AddTorsor`
+induced by the partial ordered group. This is not an instance, since we do not want it to
+conflict with other partial order structures that may exist on the `AddTorsor`. -/
+def OrderedAddTorsor_of_OrderedAddCommGroup [outParam (OrderedAddCommGroup G)] [AddTorsor G P] : OrderedAddTorsor G P where
+  vsub_vadd' := vsub_vadd'
+  vadd_vsub' := vadd_vsub'
+  le a b := a -ᵥ b ≤ 0
+  lt a b := a -ᵥ b < 0
+  le_refl _ := by simp only [vsub_self, le_refl]
+  le_trans a b c hab hbc := (vsub_add_vsub_cancel a b c).symm.trans_le (add_nonpos hab hbc)
+  lt_iff_le_not_le a b :=
+    have h : a -ᵥ b < 0 ↔ a -ᵥ b ≤ 0 ∧ ¬ 0 ≤ a -ᵥ b := Preorder.lt_iff_le_not_le (a -ᵥ b) 0
+    ⟨fun hab ↦ ⟨(h.1 hab).1, (vsub_le_zero_iff_zero_le_vsub_rev b a).not.mpr (h.1 hab).2⟩,
+      fun ⟨hab, hba⟩ ↦ h.2 ⟨hab, (vsub_le_zero_iff_zero_le_vsub_rev b a).not.mp hba⟩⟩
+  le_antisymm a b hab hba := eq_of_vsub_eq_zero <|
+    PartialOrder.le_antisymm (a -ᵥ b) 0 hab ((vsub_le_zero_iff_zero_le_vsub_rev b a).mp hba)
+  vadd_left_le h _ := by simpa only [vadd_vsub_vadd_cancel_left] using h
+  vadd_right_le h _ := by
+    simpa only [vadd_vsub_vadd_cancel_right, tsub_le_iff_right, zero_add] using h
+
+/-- If the group acting on an `AddTorsor` is a linearly ordered group, then there is a natual
+linearly order on the `AddTorsor` along with a corresponding structure of linearly ordered `AddTorsor`
+induced by the linearly ordered group. This is not an instance, since we do not want it to
+conflict with other linearly order structures that may exist on the `AddTorsor`. -/
+theorem LinearOrderedAddTorsor_of_LinearOrderedAddCommGroup [outParam (LinearOrderedAddCommGroup G)] [AddTorsor G P] : LinearOrderedAddTorsor G P := {
+  OrderedAddTorsor_of_OrderedAddCommGroup G P with
+  le_total := fun a b ↦
+    (or_congr_right (vsub_le_zero_iff_zero_le_vsub_rev b a)).mpr (LinearOrder.le_total (a -ᵥ b) 0)
+  decidableLE := decRel fun _ ↦ _
+}
+
+/-- If the group acting on an `AddTorsor` is a circular ordered group, then there is a natual
+circular order on the `AddTorsor` along with a corresponding structure of circular ordered `AddTorsor`
+induced by the circular ordered group. This is not an instance, since we do not want it to
+conflict with other circular order structures that may exist on the `AddTorsor`. -/
+def CircularOrderedAddTorsor_of_CircularOrderedAddCommGroup [outParam (CircularOrderedAddCommGroup G)] [AddTorsor G P] : CircularOrderedAddTorsor G P where
+  vsub_vadd' := vsub_vadd'
+  vadd_vsub' := vadd_vsub'
+  btw a b c := btw 0 (b -ᵥ a) (c -ᵥ a)
+  sbtw a b c := sbtw 0 (b -ᵥ a) (c -ᵥ a)
+  btw_refl a := by simp only [vsub_self, btw_rfl]
+  btw_cyclic_left h := btw_cyclic_left ((btw_vsub_fst_iff_btw_vsub_snd _ _ _).mp h)
+  sbtw_iff_btw_not_btw {a} {b} {c} := by
+    simp only [btw_vsub_fst_iff_btw_vsub_trd c b a]
+    exact sbtw_iff_btw_not_btw
+  sbtw_trans_left {a} {b} _ _ ha h := by
+    have h := sbtw_add_right h (b -ᵥ a)
+    rw [zero_add, vsub_add_vsub_cancel, vsub_add_vsub_cancel] at h
+    exact sbtw_trans_left ha h
+  btw_antisymm ha h := by
+    have h := btw_antisymm ha ((btw_vsub_fst_iff_btw_vsub_trd _ _ _).mp h)
+    nth_rw 1 [vsub_left_cancel_iff, vsub_eq_zero_iff_eq, eq_comm, vsub_eq_zero_iff_eq, eq_comm] at h
+    exact h
+  btw_total a b c := by
+    simp only [btw_vsub_fst_iff_btw_vsub_trd c b a]
+    exact btw_total 0 (b -ᵥ a) (c -ᵥ a)
+  btw_vadd_left h _ := by
+    simpa only [vadd_vsub_vadd_cancel_left] using h
+  btw_vadd_right {e} {_} {_} h _ := by
+    simp only [vadd_vsub_vadd_cancel_right, ← sub_self e]
+    exact btw_sub_right h e
+
+end contruction
+
+end AddTorsor
 
 end Mathlib.Algebra.AddTorsor
