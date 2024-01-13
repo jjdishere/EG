@@ -3,6 +3,8 @@ import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex2
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation_trash
 import EuclideanGeometry.Foundation.Axiom.Triangle.IsocelesTriangle_trash
 import EuclideanGeometry.Foundation.Axiom.Basic.Angle_trash
+import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
+import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 
 noncomputable section
 namespace EuclidGeom
@@ -176,11 +178,13 @@ end angle
 
 theorem inscribed_angle_is_positive {p : P} {β : Arc P} (h : p LiesInt β.complement) : (Arc.angle_mk_pt_arc p β h.2.symm).value.IsPos := by
   unfold Arc.angle_mk_pt_arc
-  apply liesonleft_angle_ispos (Arc.liesint_complementary_arc_liesonleft_dlin h)
+  apply TriangleND.liesonleft_angle_ispos
+  exact (Arc.liesint_complementary_arc_liesonleft_dlin h)
 
 theorem inscribed_angle_of_complementary_arc_is_negative {p : P} {β : Arc P} (h : p LiesInt β) : (Arc.angle_mk_pt_arc p β h.2).value.IsNeg := by
   unfold Arc.angle_mk_pt_arc
-  apply liesonright_angle_isneg (Arc.liesint_arc_liesonright_dlin h)
+  apply TriangleND.liesonright_angle_isneg
+  exact (Arc.liesint_arc_liesonright_dlin h)
 
 theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P} (h₁ : p LiesOn β.circle) (h₂ : Arc.Isnot_arc_endpts p β) : β.cangle.value = 2 • (Arc.angle_mk_pt_arc p β h₂).value := by
   haveI : PtNe p β.source := ⟨h₂.1⟩
