@@ -263,14 +263,19 @@ end Triangle
 namespace TriangleND
 
 variable (tr_nd : TriangleND P)
---`Rewrite this Part!!!!`
-theorem angle_pos_of_cclock (cclock : tr_nd.is_cclock) : tr_nd.angle₁.value.IsPos ∧ tr_nd.angle₂.value.IsPos ∧ tr_nd.angle₃.value.IsPos := by sorry
 
-theorem angle_neg_of_clock (clock : ¬ tr_nd.is_cclock) : tr_nd.angle₁.value.IsNeg ∧ tr_nd.angle₂.value.IsNeg ∧ tr_nd.angle₃.value.IsNeg  := by sorry
+theorem angle₁_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsPos := by sorry
 
-theorem cclock_of_pos_angle (h : tr_nd.angle₁.value.IsPos ∨ tr_nd.angle₂.value.IsPos ∨ tr_nd.angle₃.value.IsPos) : tr_nd.is_cclock := sorry
+theorem angle₂_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₂.value.IsPos := by sorry
 
-theorem clock_of_neg_angle (h : tr_nd.angle₁.value.IsNeg ∨ tr_nd.angle₂.value.IsNeg ∨ tr_nd.angle₃.value.IsNeg) :¬ tr_nd.is_cclock := sorry
+theorem angle₃_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₃.value.IsPos := by sorry
+
+theorem angle₁_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsNeg := by sorry
+
+theorem angle₂_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₂.value.IsNeg := by sorry
+
+theorem angle₃_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₃.value.IsNeg := by sorry
+
 
 theorem pos_pos_or_neg_neg_of_iff_cclock {tr_nd₁ tr_nd₂ : TriangleND P} : (tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) ↔ (tr_nd₁.angle₁.value.IsPos ∧ tr_nd₂.angle₁.value.IsPos) ∨ (tr_nd₁.angle₁.value.IsNeg ∧ tr_nd₂.angle₁.value.IsNeg) := by
   constructor
@@ -278,25 +283,31 @@ theorem pos_pos_or_neg_neg_of_iff_cclock {tr_nd₁ tr_nd₂ : TriangleND P} : (t
     by_cases h : tr_nd₁.is_cclock
     · have h0 : tr_nd₂.is_cclock := by rw [←k] ; apply h
       left
-      exact ⟨(angle_pos_of_cclock tr_nd₁ h).1, (angle_pos_of_cclock tr_nd₂ h0).1⟩
+      --exact ⟨(angle_pos_of_cclock tr_nd₁ h).1, (angle_pos_of_cclock tr_nd₂ h0).1⟩
+      sorry
     · have h0: ¬ tr_nd₂.is_cclock := by rw [←k] ; apply h
       right
-      exact ⟨(angle_neg_of_clock tr_nd₁ h).1, (angle_neg_of_clock tr_nd₂ h0).1⟩
+      --exact ⟨(angle_neg_of_clock tr_nd₁ h).1, (angle_neg_of_clock tr_nd₂ h0).1⟩
+      sorry
   intro k
   rcases k with x | y
   · have k1 : tr_nd₁.is_cclock := by
-      apply cclock_of_pos_angle tr_nd₁
-      apply Or.inl x.1
+      --apply cclock_of_pos_angle tr_nd₁
+      --apply Or.inl x.1
+      sorry
     have k2 : tr_nd₂.is_cclock := by
-      apply cclock_of_pos_angle tr_nd₂
-      apply Or.inl x.2
+      --apply cclock_of_pos_angle tr_nd₂
+      --apply Or.inl x.2
+      sorry
     simp only [k1,k2]
   · have k1 : ¬ tr_nd₁.is_cclock := by
-      apply clock_of_neg_angle tr_nd₁
-      apply Or.inl y.1
+      --apply clock_of_neg_angle tr_nd₁
+      --apply Or.inl y.1
+      sorry
     have k2 : ¬ tr_nd₂.is_cclock := by
-      apply clock_of_neg_angle tr_nd₂
-      apply Or.inl y.2
+      --apply clock_of_neg_angle tr_nd₂
+      --apply Or.inl y.2
+      sorry
     simp only [k1,k2]
 
 theorem angle_sum_eq_pi_of_cclock (cclock : tr_nd.is_cclock): tr_nd.angle₁.value + tr_nd.angle₂.value + tr_nd.angle₃.value = π := sorry

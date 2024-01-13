@@ -951,8 +951,19 @@ theorem not_colinear_of_IsOnOppositeSide (A B C D : P) [bnea : PtNe B A] (h : Is
 
 end relative_side
 
-scoped notation A B "LiesOnSameSide" l => IsOnSameSide A B l
-scoped notation A B "LiesOnOppositeSide" l => IsOnOppositeSide A B l
+scoped notation A:max "and" B:max " LiesOnSameSide " C:max => IsOnSameSide A B C
+
+variable (A B : P) [EuclideanPlane P] (l : Line P)
+
+#check A and B LiesOnSameSide l
+
+scoped notation:5 A:max "and" B:max " LiesOnOppositeSide " C:max => IsOnOppositeSide A B C
+
+
+-- @[inherit_doc IsOnSameSide]
+-- scoped syntax term:max ws term:max ws " LiesOnSameSide " ws term:max : term
+
+
 
 /- Position of two lines; need a function to take the intersection of two lines (when they intersect). -/
 
