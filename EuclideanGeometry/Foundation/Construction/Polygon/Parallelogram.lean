@@ -19,7 +19,7 @@ Recall certain definitions concerning quadrilaterals:
 
 A QDR consists of four points; it is the generalized quadrilateral formed by these four points.
 
-A QDR_nd is QDR that the points that adjacent is not same, namely $point_2 \neq point_1$, $point_3 \neq point_2$, $point_4 \neq point_3$, $point_1 \neq point_4$.
+A QDR_nd is QDR that the points that adjacent is not same, namely $point_2 ≠ point_1$, $point_3 ≠ point_2$, $point_4 ≠ point_3$, $point_1 ≠ point_4$.
 
 A QDR_cvx is QDR_nd that convex, current the definition is four angle has the same sign, namely $$(angle_1.IsPos \wedge angle_1.IsPos \wedge angle_1.IsPos \wedge angle_1.IsPos) \vee (angle_1.IsNeg \wedge angle_1.IsNeg \wedge angle_1.IsNeg \wedge angle_1.IsNeg)$$.
 
@@ -277,9 +277,7 @@ theorem parallelogram_not_colinear₄_is_parallelogram_nd (para: qdr_nd.toQuadri
 --   is_parallelogram := h
 
 /- we left these four theorems as interface for user. -/
-theorem is_parallelogramND_iff_not_colinear₁ : qdr_nd.IsParallelogramND ↔ (¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) := by
-  constructor
-  exact ()
+theorem is_parallelogramND_iff_not_colinear₁ : qdr_nd.IsParallelogramND ↔ (¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) := sorry
 
 theorem is_parallelogramND_iff_not_colinear₂ : qdr_nd.IsParallelogramND ↔ (¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) := sorry
 
