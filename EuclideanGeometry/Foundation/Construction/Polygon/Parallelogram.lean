@@ -78,12 +78,11 @@ def Quadrilateral_nd.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr_nd : Q
 scoped postfix : 50 "nd_IsParallelogram" => Quadrilateral_nd.IsParallelogram
 
 /-- A parallelogram which satisfies Prallelogram_non_triv satisfies IsParallelogram_para. -/
-theorem Parallelogram_non_triv_is_parallelogram_para (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (h: qdr_nd.IsParallelogram) (non_triv: qdr_nd.Parallelogram_non_triv): qdr_nd.IsParallelogram_para:= by
+theorem parallelogram_non_triv_is_parallelogram_para (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (h: qdr_nd.IsParallelogram) (non_triv: qdr_nd.Parallelogram_non_triv): qdr_nd.IsParallelogram_para:= by
   sorry
 
 /-- A parallelogram which satisfies Prallelogram_non_triv is a quadrilateral_cvx. -/
-theorem Parallelogram_non_triv_is_convex (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (h: qdr_nd.IsParallelogram) (non_triv: qdr_nd.Parallelogram_non_triv): qdr_nd.IsConvex:= by
-  sorry
+theorem parallelogram_non_triv_is_convex (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (h: qdr_nd.IsParallelogram) (non_triv: qdr_nd.Parallelogram_non_triv): qdr_nd.IsConvex:= by sorry
 
 /-- We define parallelogram as a structure. -/
 @[ext]
@@ -116,10 +115,10 @@ def QuadrilateralND.IsParallelogramND {P : Type _} [EuclideanPlane P] (qdr_nd : 
 
 scoped postfix : 50 "nd_IsParallelogramND" => QuadrilateralND.IsParallelogramND
 
-theorem ParallelogramND_is_Parallelogram_non_triv (P : Type _) [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.Parallelogram_non_triv:= by
+theorem parallelogramND_is_parallelogram_non_triv (P : Type _) [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.Parallelogram_non_triv:= by
   sorry
 
-theorem ParallelogramND_is_Parallelogram_para (P : Type _) [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.IsParallelogram_para:= by
+theorem parallelogramND_is_parallelogram_para (P : Type _) [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.IsParallelogram_para:= by
   sorry
 
 def ParallelogramND.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsConvex) (h': (QDR A B C D) IsParallelogram) : ParallelogramND P where
@@ -144,7 +143,7 @@ scoped notation "PRG_nd₂" => ParallelogramND.mk_parallelogram_para
 
 theorem Quadrilateral.IsParallelogram_nd_redef {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) (h: qdr.IsND) (h': qdr IsParallelogram) (h': (((Quadrilateral_nd.mk_is_nd h).angle₁.value.IsPos ∧ (Quadrilateral_nd.mk_is_nd h).angle₃.value.IsPos) ∨ ((Quadrilateral_nd.mk_is_nd h).angle₁.value.IsNeg ∧ (Quadrilateral_nd.mk_is_nd h).angle₃.value.IsNeg) ∨ ((Quadrilateral_nd.mk_is_nd h).angle₂.value.IsPos ∧ (Quadrilateral_nd.mk_is_nd h).angle₄.value.IsPos) ∨ ((Quadrilateral_nd.mk_is_nd h).angle₂.value.IsNeg ∧ (Quadrilateral_nd.mk_is_nd h).angle₄.value.IsNeg))) : (Quadrilateral_nd.mk_is_nd h).IsParallelogramND := sorry
 
-theorem Parallelogram.ParallelogramIs_nd_redef {P : Type _} [EuclideanPlane P] (qdr_para : Parallelogram P) (h': qdr_para.1.IsND) (k: ((Quadrilateral_nd.mk_is_nd h').angle₁.value.IsPos ∧ (Quadrilateral_nd.mk_is_nd h').angle₃.value.IsPos) ∨ ((Quadrilateral_nd.mk_is_nd h').angle₁.value.IsNeg ∧ (Quadrilateral_nd.mk_is_nd h').angle₃.value.IsNeg) ∨ ((Quadrilateral_nd.mk_is_nd h').angle₂.value.IsPos ∧ (Quadrilateral_nd.mk_is_nd h').angle₄.value.IsPos) ∨ ((Quadrilateral_nd.mk_is_nd h').angle₂.value.IsNeg ∧ (Quadrilateral_nd.mk_is_nd h').angle₄.value.IsNeg)) : (Quadrilateral_nd.mk_is_nd h').IsParallelogramND := sorry
+theorem Parallelogram.parallelogramIs_nd_redef {P : Type _} [EuclideanPlane P] (qdr_para : Parallelogram P) (h': qdr_para.1.IsND) (k: ((Quadrilateral_nd.mk_is_nd h').angle₁.value.IsPos ∧ (Quadrilateral_nd.mk_is_nd h').angle₃.value.IsPos) ∨ ((Quadrilateral_nd.mk_is_nd h').angle₁.value.IsNeg ∧ (Quadrilateral_nd.mk_is_nd h').angle₃.value.IsNeg) ∨ ((Quadrilateral_nd.mk_is_nd h').angle₂.value.IsPos ∧ (Quadrilateral_nd.mk_is_nd h').angle₄.value.IsPos) ∨ ((Quadrilateral_nd.mk_is_nd h').angle₂.value.IsNeg ∧ (Quadrilateral_nd.mk_is_nd h').angle₄.value.IsNeg)) : (Quadrilateral_nd.mk_is_nd h').IsParallelogramND := sorry
 
 section permute
 
