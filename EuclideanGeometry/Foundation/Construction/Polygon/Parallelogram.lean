@@ -54,7 +54,7 @@ def Quadrilateral.IsParallelogram_para {P : Type _} [EuclideanPlane P] (qdr : Qu
   · exact (Quadrilateral_nd.mk_is_nd h).IsParallelogram_para
   · exact False
 
--- `do we need this?`
+-- `do we really need this?`
 -- scoped postfix : 50 "IsParallelogram_para_gen" => Quadrilateral.IsParallelogram_para
 
 /-- A quadrilateral is called parallelogram if VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃.-/
@@ -103,9 +103,9 @@ def Quadrilateral.IsParallelogramND {P : Type _} [EuclideanPlane P] (qdr : Quadr
 scoped postfix : 50 "IsParallelogramND" => Quadrilateral.IsParallelogramND
 
 @[pp_dot]
-def QuadrilateralND.IsParallelogramND {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : Prop := qdr_nd.toQuadrilateral.IsParallelogramND
+def Quadrilateral_nd.IsParallelogramND {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : Prop := Quadrilateral.IsParallelogramND qdr_nd.toQuadrilateral
 
-scoped postfix : 50 "nd_IsParallelogramND" => QuadrilateralND.IsParallelogramND
+-- scoped postfix : 50 "nd_IsParallelogramND" => Quadrilateral_nd.IsParallelogramND
 
 theorem parallelogram_non_triv_of_parallelogramND {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.Parallelogram_non_triv := by
   sorry
@@ -114,24 +114,28 @@ theorem parallelogram_para_of_parallelogramND {P : Type _} [EuclideanPlane P] (p
   sorry
 
 def ParallelogramND.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D) IsConvex) (h': (QDR A B C D) IsParallelogram) : ParallelogramND P where
-  point₁ := A; point₂ := B; point₃ := C; point₄ := D
+  toQuadrilateral := (QDR A B C D)
   nd := h; convex := h
   is_parallelogram := h'
 
-def ParallelogramND.mk_parallelogram_non_triv {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (non_triv: prg.Parallelogram_non_triv): ParallelogramND P where
-  toQuadrilateral := prg.toQuadrilateral
-  nd := sorry
-  convex := sorry
-  is_parallelogram := sorry
+scoped notation "PRG_nd" => ParallelogramND.mk_pt_pt_pt_pt
 
-scoped notation "PRG_nd₁" => ParallelogramND.mk_parallelogram_non_triv
+/- `I think these criteria should be theorems, instead of functions below.`-/
+-- def ParallelogramND.mk_parallelogram_non_triv {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (non_triv: prg.Parallelogram_non_triv): ParallelogramND P where
+--   toQuadrilateral := prg.toQuadrilateral
+--   nd := sorry
+--   convex := sorry
+--   is_parallelogram := sorry
 
-def ParallelogramND.mk_parallelogram_para {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (para: (QDR_nd A B C D h).IsParallelogram_para): ParallelogramND P where
-  point₁ := A; point₂ := B; point₃ := C; point₄ := D
-  nd := h; convex := sorry
-  is_parallelogram := h'
+-- scoped notation "PRG_nd₁" => ParallelogramND.mk_parallelogram_non_triv
 
-scoped notation "PRG_nd₂" => ParallelogramND.mk_parallelogram_para
+-- def ParallelogramND.mk_parallelogram_para {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (para: (QDR_nd A B C D h).IsParallelogram_para): ParallelogramND P where
+--   point₁ := A; point₂ := B; point₃ := C; point₄ := D
+--   nd := h
+--   convex := sorry
+--   is_parallelogram := h'
+
+-- scoped notation "PRG_nd₂" => ParallelogramND.mk_parallelogram_para
 
 /- here is two theorem using first version of definition of PRG_nd, may not useful currently. -/
 -- theorem Quadrilateral.IsParallelogram_nd_redef {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) (h: qdr.IsND) (h': qdr IsParallelogram) (h': (((Quadrilateral_nd.mk_is_nd h).angle₁.value.IsPos ∧ (Quadrilateral_nd.mk_is_nd h).angle₃.value.IsPos) ∨ ((Quadrilateral_nd.mk_is_nd h).angle₁.value.IsNeg ∧ (Quadrilateral_nd.mk_is_nd h).angle₃.value.IsNeg) ∨ ((Quadrilateral_nd.mk_is_nd h).angle₂.value.IsPos ∧ (Quadrilateral_nd.mk_is_nd h).angle₄.value.IsPos) ∨ ((Quadrilateral_nd.mk_is_nd h).angle₂.value.IsNeg ∧ (Quadrilateral_nd.mk_is_nd h).angle₄.value.IsNeg))) : (Quadrilateral_nd.mk_is_nd h).IsParallelogramND := sorry
@@ -196,17 +200,17 @@ end reflect
 
 section criteria_prg_nd_of_prg
 
-theorem parallelogram_not_colinear₁_is_parallelogram_nd {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (para: qdr_nd.1 IsParallelogram) (h: ¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsParallelogramND := by
+theorem parallelogram_not_colinear₁_is_parallelogram_nd {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (para : qdr_nd.1 IsParallelogram) (h : ¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsParallelogramND := by
   sorry
 
-def Parallelogram_nd.mk_pt_pt_pt_pt₁ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_colinear₁: ¬ colinear B C D) : ParallelogramND P where
+def Parallelogram_nd.mk_pt_pt_pt_pt₁ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h' : (QDR A B C D) IsParallelogram) (non_colinear₁ : ¬ colinear B C D) : ParallelogramND P where
   point₁ := A; point₂ := B; point₃ := C; point₄ := D
   nd := h; convex := sorry
   is_parallelogram := h'
 
 scoped notation "PRG_nd₁" => Parallelogram_nd.mk_pt_pt_pt_pt₁
 
-def mk_parallelogram_nd₁ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_colinear₁: ¬ colinear qdr.2 qdr.3 qdr.4) : ParallelogramND P where
+def mk_parallelogram_nd₁ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h' : qdr.IsND) (non_colinear₁ : ¬ colinear qdr.2 qdr.3 qdr.4) : ParallelogramND P where
   point₁ := qdr.point₁; point₂ := qdr.point₂; point₃ := qdr.point₃; point₄ := qdr.point₄
   nd := h'; convex := sorry
   is_parallelogram := h
