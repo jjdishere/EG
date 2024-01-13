@@ -254,14 +254,16 @@ Class of Convex Quadrilateral: A convex quadrilateral is quadrilateral with the 
 structure Quadrilateral_cvx (P : Type _) [EuclideanPlane P] extends Quadrilateral_nd P where
   convex : toQuadrilateral.IsConvex
 
-def Quadrilateral_cvx.mk_is_convex {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P where
+def Quadrilateral_cvx.mk_pt_pt_pt_pt_convex {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P where
   toQuadrilateral := (QDR A B C D)
   nd := h
   convex := h
 
-scoped notation "QDR_cvx" => Quadrilateral_cvx.mk_is_convex
+scoped notation "QDR_cvx" => Quadrilateral_cvx.mk_pt_pt_pt_pt_convex
 
 namespace Quadrilateral_cvx
+
+def mk_is_convex {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P := mk_pt_pt_pt_pt_convex A B C D h
 
 /-- Given a property that a quadrilateral qdr is convex, this function returns qdr itself as an object in the class of convex quadrilateral-/
 def mk_nd_is_convex {P : Type _} [EuclideanPlane P] {qdr_nd : Quadrilateral_nd P} (h : qdr_nd.IsConvex) : Quadrilateral_cvx P where
