@@ -11,6 +11,27 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Parallel_trash
 noncomputable section
 namespace EuclidGeom
 
+-- `Add class parallelogram and state every theorem in structure`
+
+/-
+
+Recall certain definitions concerning quadrilaterals:
+
+A QDR consists of four points; it is the generalized quadrilateral formed by these four points.
+
+A QDR_nd is QDR that the points that adjacent is not same, namely $point_2 \neq point_1$, $point_3 \neq point_2$, $point_4 \neq point_3$, $point_1 \neq point_4$.
+
+A QDR_cvx is QDR_nd that convex, current the definition is four angle has the same sign, namely $$(angle_1.IsPos \wedge angle_1.IsPos \wedge angle_1.IsPos \wedge angle_1.IsPos) \vee (angle_1.IsNeg \wedge angle_1.IsNeg \wedge angle_1.IsNeg \wedge angle_1.IsNeg)$$.
+
+While we have great benifit using QDR_cvx as the basis of discussion of parallelogram_nd (as we will show later, all parallelogram_nds are quadrilateral_cvxs), we do have practical difficulty in proving a quadrilateral being convex. Also, it is important (but not essential, as we will see) to keep the definition of parallelogram and parallelogram_nd being the same form (we will use this 'standardised' method as a theorem later on). So we would like to switch our attention to another type of quadrilaterals: quadrilateral_nds, about which we can discuss angles, but general enough to include the degenerating cases.
+
+But we still find difficulties in organizing proofs, so we still use quadrilateral_cvx to define parallelogram_nd and finally we will prove some equivalent definitions.
+
+In this section we define two types of parallelogram. 'parallel_nd' deals with those quadrilaterals we commomly call parallelogram (convex), and 'parallel' with more general cases (we permite degenerate cases). As the concept of convex is hard to deal with, we therefore won't use it to define directly. Instead, we will start with non_triv, where all sets of 3 points are not colinear.
+
+-/
+
+/-- A quadrilateral_nd satisfies Parallelogram_non_triv if every 3 vertexes are not colinear. -/
 @[pp_dot]
 structure Quadrilateral_nd.Parallelogram_non_triv {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : Prop where
   not_colinear₁₂₃: ( ¬ colinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃)
@@ -20,6 +41,7 @@ structure Quadrilateral_nd.Parallelogram_non_triv {P : Type _} [EuclideanPlane P
 
 scoped postfix : 50 "IsParallelogram_non_triv" => Quadrilateral_nd.Parallelogram_non_triv
 
+/-- A quadrilateral satisfies Parallelogram_non_triv if it is quadrilateral_nd and satisfies Parallelogram_non_triv as a quadrilateral_nd. -/
 @[pp_dot]
 def Quadrilateral.Parallelogram_non_triv {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases h : qdr.IsND
@@ -28,11 +50,13 @@ def Quadrilateral.Parallelogram_non_triv {P : Type _} [EuclideanPlane P] (qdr : 
 
 scoped postfix : 50 "IsParallelogram_non_triv_gen" => Quadrilateral.Parallelogram_non_triv
 
+/-- A quadrilateral_nd satisfies IsParallelogram_para if two sets of opposite sides are parallel respectively. -/
 @[pp_dot]
 def Quadrilateral_nd.IsParallelogram_para {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : Prop := ( qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) ∧ (qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃)
 
 scoped postfix : 50 "IsParallelogram_para" => Quadrilateral_nd.IsParallelogram_para
 
+/-- A quadrilateral satisfies IsParallelogram_para if it is a quadrilateral_nd and satisfies IsParallelogram_para as a quadrilateral_nd. -/
 @[pp_dot]
 def Quadrilateral.IsParallelogram_para {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases h : qdr.IsND
@@ -41,36 +65,44 @@ def Quadrilateral.IsParallelogram_para {P : Type _} [EuclideanPlane P] (qdr : Qu
 
 scoped postfix : 50 "IsParallelogram_para_gen" => Quadrilateral.IsParallelogram_para
 
+/-- A quadrilateral is called parallelogram if VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃.-/
 @[pp_dot]
 def Quadrilateral.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃
 
 scoped postfix : 50 "IsParallelogram" => Quadrilateral.IsParallelogram
 
+/-- A quadrilateral_nd is called parallelogram if VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃.-/
 @[pp_dot]
 def Quadrilateral_nd.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : Prop := VEC qdr_nd.point₁ qdr_nd.point₂ = VEC qdr_nd.point₄ qdr_nd.point₃
 
 scoped postfix : 50 "nd_IsParallelogram" => Quadrilateral_nd.IsParallelogram
 
+/-- A parallelogram which satisfies Prallelogram_non_triv satisfies IsParallelogram_para. -/
 theorem Parallelogram_non_triv_is_parallelogram_para (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (h: qdr_nd.IsParallelogram) (non_triv: qdr_nd.Parallelogram_non_triv): qdr_nd.IsParallelogram_para:= by
   sorry
 
+/-- A parallelogram which satisfies Prallelogram_non_triv is a quadrilateral_cvx. -/
 theorem Parallelogram_non_triv_is_convex (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (h: qdr_nd.IsParallelogram) (non_triv: qdr_nd.Parallelogram_non_triv): qdr_nd.IsConvex:= by
   sorry
 
+/-- We define parallelogram as a structure. -/
 @[ext]
 structure Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral P where
   is_parallelogram : toQuadrilateral IsParallelogram
 
+/-- Make a parallelogram with 4 points on a plane, and using condition IsParallelogram. -/
 def Parallelogram.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D) IsParallelogram) : Parallelogram P where
   toQuadrilateral := (QDR A B C D)
   is_parallelogram := h
 
 scoped notation "PRG" => Parallelogram.mk_pt_pt_pt_pt
 
+/-- Make a parallelogram with a quadrilateral, and using condition IsParallelogram. -/
 def mk_parallelogram {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) : Parallelogram P where
   toQuadrilateral := qdr
   is_parallelogram := h
 
+/-- We define parallelogram_nd as a structure. -/
 @[ext]
 structure ParallelogramND (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P, Parallelogram P
 
