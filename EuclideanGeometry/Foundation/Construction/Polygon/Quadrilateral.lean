@@ -247,11 +247,6 @@ instance {P : Type _} [EuclideanPlane P] {qdr_nd : Quadrilateral_nd P} : Coe qdr
 
 instance {P : Type _} [EuclideanPlane P] {qdr_nd : Quadrilateral_nd P} : Coe qdr_nd.toQuadrilateral.IsConvex qdr_nd.IsConvex := {coe := (Quadrilateral_cvx.nd_is_convex_iff_is_convex qdr_nd).mpr}
 
-/-
-`Currently, there are 2 ambiguous interpretation of qdr_cvx.permute IsConvex, lean will choose qdr_nd one.`
-`I think only allow qdr has permute is better, define every concept to the most basic layer. The proof the we need is written in permute_is_convex'`
--/
-
 /--
 Class of Convex Quadrilateral: A convex quadrilateral is quadrilateral with the property of convex.
 -/
@@ -259,11 +254,6 @@ Class of Convex Quadrilateral: A convex quadrilateral is quadrilateral with the 
 structure Quadrilateral_cvx (P : Type _) [EuclideanPlane P] extends Quadrilateral_nd P where
   convex : toQuadrilateral.IsConvex
 
-/- `This need a new name, g is not in the name`-/
-/-
-`we still need a mk from qdr and adr.IsConvex to make a Qdr_cvx, without nd`
-` Now every method is from nd`
--/
 def Quadrilateral_cvx.mk_is_convex {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P where
   toQuadrilateral := (QDR A B C D)
   nd := h
@@ -315,7 +305,7 @@ theorem is_convex_of_diag_inx_lies_int (p : is_convex_of_diag_inx_lies_int' (P :
   4. because nd₂₃ not divid pt₁ and pt₄, then sign of angle₂ = angle₃.
   -/
 
--- theorem is_convex_of four inferior angle (seems it's obvious via current definition)
+-- theorem is_convex_of four inferior angle (seems it's obvious compared with current definition)
 -- theorem is_convex_of both diag divids other pts
 -- `to be added`
 
@@ -343,6 +333,9 @@ theorem permute_is_convex : Quadrilateral_nd.IsConvex (Quadrilateral_nd.permute 
 
 /-- The permute quadrilateral_cvx, the first point of the permute is the second point of the origin, etc. -/
 def permute : Quadrilateral_cvx P := mk_nd_is_convex (permute_is_convex qdr_cvx)
+
+/-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is also convex. -/
+theorem permute_is_convex' : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁) IsConvex := (qdr_cvx.permute).convex
 
 theorem is_convex_iff_permute_is_convex : qdr_nd.IsConvex ↔ qdr_nd.permute.IsConvex := by
   constructor
@@ -430,8 +423,7 @@ theorem diag_not_para : ¬ qdr_cvx.diag_nd₁₃ ∥ qdr_cvx.diag_nd₂₄ := by
 def diag_inx : P := Line.inx qdr_cvx.diag_nd₁₃.toLine qdr_cvx.diag_nd₂₄.toLine qdr_cvx.diag_not_para
 
 /-- The interior of two diagonals intersect at one point, i.e. the intersection point of the underlying lines of the diagonals lies in the interior of both diagonals. -/
-theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃ ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄
- := by sorry
+theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃ ∧ qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₂₄ := by sorry
    -- have h: qdr_cvx.point₁ ≠ qdr_cvx.point₃ ∧ qdr_cvx.point₂ ≠ qdr_cvx.point₄ := ⟨qdr_cvx.nd₁₃.symm, qdr_cvx.nd₂₄.symm⟩
    -- have k: qdr_cvx.IsConvex := qdr_cvx.convex
    -- unfold Quadrilateral_nd.IsConvex at k
@@ -440,16 +432,6 @@ theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃ ∧ q
    -- rw [diag_nd₁₃, diag_nd₂₄] at g
    -- simp only [g, dite_true] at k
    -- exact k
-
-/- `This theorem should be compared with permute_is_convex, put them together, reorganize and rename if needed`-/
-/-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is also convex. -/
-theorem permute_is_convex' : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁) IsConvex := by
-  by_cases isnd : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁).IsND
-  · simp only [Quadrilateral.IsConvex, isnd, dite_true]
-    exact permute_is_convex qdr_cvx
-  · simp [Quadrilateral.IsConvex, isnd]
-    absurd isnd
-    exact Quadrilateral_nd.permute_is_nd (qdr_cvx.toQuadrilateral_nd)
 
 /-- Given a convex quadrilateral qdr_cvx, its 1st, 2nd and 3rd points are not colinear, i.e. the projective direction of the vector $\overrightarrow{point₁ point₂}$ is not the same as the projective direction of the vector $\overrightarrow{point₁ point₃}$. -/
 theorem not_colinear₁₂₃ : ¬ colinear qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ := sorry
