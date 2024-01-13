@@ -19,19 +19,15 @@ Recall certain definitions concerning quadrilaterals:
 
 A QDR consists of four points; it is the generalized quadrilateral formed by these four points.
 
-A QDR_nd is QDR that the points that adjacent is not same, namely $point_2 ≠ point_1$, $point_3 ≠ point_2$, $point_4 ≠ point_3$, $point_1 ≠ point_4$.
+A QDR_nd is QDR that the points that adjacent is not same, namely point₂ ≠ point₁, point₃ ≠ point₂, point₄ ≠ point₃, and point₁ ≠ point₁.
 
-A QDR_cvx is QDR_nd that convex, current the definition is four angle has the same sign, namely $$(angle_1.IsPos \wedge angle_1.IsPos \wedge angle_1.IsPos \wedge angle_1.IsPos) \vee (angle_1.IsNeg \wedge angle_1.IsNeg \wedge angle_1.IsNeg \wedge angle_1.IsNeg)$$.
+We take notice that, by the well-known fact that non-trivial parallelograms are indeed convex, and considering the fine qualities of convex quadrilaterals, we decide to define parallelogram_nds as a parallelogram that is convex, while the class of parallelograms permit degenerate cases. In this way, the structure of parallelogram_nd becomes natural in both aspects of quadrilaterals and parallelograms. We do take notice that there are more straightforward ways to descibe parallelograms, such as para and non_triv mentioned later. So it is due to user-friendliness that we leave quite a number of shortcuts to ease theorem-proving.
 
-While we have great benifit using QDR_cvx as the basis of discussion of parallelogram_nd (as we will show later, all parallelogram_nds are quadrilateral_cvxs), we do have practical difficulty in proving a quadrilateral being convex. Also, it is important (but not essential, as we will see) to keep the definition of parallelogram and parallelogram_nd being the same form (we will use this 'standardised' method as a theorem later on). So we would like to switch our attention to another type of quadrilaterals: quadrilateral_nds, about which we can discuss angles, but general enough to include the degenerating cases.
-
-But we still find difficulties in organizing proofs, so we still use quadrilateral_cvx to define parallelogram_nd and finally we will prove some equivalent definitions.
-
-In this section we define two types of parallelogram. 'parallel_nd' deals with those quadrilaterals we commomly call parallelogram (convex), and 'parallel' with more general cases (we permite degenerate cases). As the concept of convex is hard to deal with, we therefore won't use it to define directly. Instead, we will start with non_triv, where all sets of 3 points are not colinear.
+In this section we define two types of parallelograms. 'parallel_nd' deals with those quadrilaterals we commomly call parallelogram (convex), and 'parallel' with more general cases (we permite degenerate cases).
 
 -/
 
-/-- A quadrilateral satisfies Parallelogram_non_triv if every 3 vertexes are not colinear. -/
+/-- A quadrilateral satisfies Parallelogram_non_triv if every 3 vertices are not colinear. -/
 @[pp_dot]
 structure Quadrilateral.Parallelogram_non_triv {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop where
   not_colinear₁₂₃: ( ¬ colinear qdr.point₁ qdr.point₂ qdr.point₃)
@@ -120,30 +116,28 @@ def ParallelogramND.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P)
 
 scoped notation "PRG_nd" => ParallelogramND.mk_pt_pt_pt_pt
 
-/- `I think these criteria may should be theorems, instead of functions below.`-/
-/- `besides these, we also need the make method from qdr and qdr_nd to prg_nd `-/
--- def ParallelogramND.mk_parallelogram_non_triv {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (non_triv: prg.Parallelogram_non_triv): ParallelogramND P where
---   toQuadrilateral := prg.toQuadrilateral
---   nd := sorry
---   convex := sorry
---   is_parallelogram := sorry
+def ParallelogramND.mk_parallelogramND_of_non_triv {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (non_triv: prg.Parallelogram_non_triv): ParallelogramND P where
+  toQuadrilateral := prg.toQuadrilateral
+  nd := sorry
+  convex := sorry
+  is_parallelogram := sorry
 
--- scoped notation "PRG_nd₁" => ParallelogramND.mk_parallelogram_non_triv
+-- scoped notation "non_triv_PRG_nd" => ParallelogramND.mk_parallelogram_non_triv
 
--- def ParallelogramND.mk_parallelogram_para {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (para: (QDR_nd A B C D h).IsParallelogram_para): ParallelogramND P where
---   point₁ := A; point₂ := B; point₃ := C; point₄ := D
---   nd := h
---   convex := sorry
---   is_parallelogram := h'
+def ParallelogramND.mk_parallelogramND_of_para {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (para: (QDR_nd A B C D h).IsParallelogram_para): ParallelogramND P where
+  point₁ := A; point₂ := B; point₃ := C; point₄ := D
+  nd := h
+  convex := sorry
+  is_parallelogram := h'
 
--- scoped notation "PRG_nd₂" => ParallelogramND.mk_parallelogram_para
+-- scoped notation "para_PRG_nd" => ParallelogramND.mk_parallelogram_para
 
 /- here is two theorem using first version of definition of PRG_nd, may not useful currently. -/
 -- theorem Quadrilateral.IsParallelogram_nd_redef {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) (h: qdr.IsND) (h': qdr IsParallelogram) (h': (((Quadrilateral_nd.mk_is_nd h).angle₁.value.IsPos ∧ (Quadrilateral_nd.mk_is_nd h).angle₃.value.IsPos) ∨ ((Quadrilateral_nd.mk_is_nd h).angle₁.value.IsNeg ∧ (Quadrilateral_nd.mk_is_nd h).angle₃.value.IsNeg) ∨ ((Quadrilateral_nd.mk_is_nd h).angle₂.value.IsPos ∧ (Quadrilateral_nd.mk_is_nd h).angle₄.value.IsPos) ∨ ((Quadrilateral_nd.mk_is_nd h).angle₂.value.IsNeg ∧ (Quadrilateral_nd.mk_is_nd h).angle₄.value.IsNeg))) : (Quadrilateral_nd.mk_is_nd h).IsParallelogramND := sorry
 
 -- theorem Parallelogram.parallelogramIs_nd_redef {P : Type _} [EuclideanPlane P] (qdr_para : Parallelogram P) (h': qdr_para.1.IsND) (k: ((Quadrilateral_nd.mk_is_nd h').angle₁.value.IsPos ∧ (Quadrilateral_nd.mk_is_nd h').angle₃.value.IsPos) ∨ ((Quadrilateral_nd.mk_is_nd h').angle₁.value.IsNeg ∧ (Quadrilateral_nd.mk_is_nd h').angle₃.value.IsNeg) ∨ ((Quadrilateral_nd.mk_is_nd h').angle₂.value.IsPos ∧ (Quadrilateral_nd.mk_is_nd h').angle₄.value.IsPos) ∨ ((Quadrilateral_nd.mk_is_nd h').angle₂.value.IsNeg ∧ (Quadrilateral_nd.mk_is_nd h').angle₄.value.IsNeg)) : (Quadrilateral_nd.mk_is_nd h').IsParallelogramND := sorry
 
-section permute
+section perm
 
 variable {P : Type _} [EuclideanPlane P]
 variable (qdr : Quadrilateral P)
@@ -151,8 +145,8 @@ variable (qdr_nd : Quadrilateral_nd P)
 variable (qdr_cvx : Quadrilateral_cvx P)
 variable (prg : Parallelogram P)
 
-theorem qdr_is_parallelogram_permute_iff : (qdr.IsParallelogram) ↔ ((qdr.permute).IsParallelogram) := by
-  unfold Quadrilateral.permute
+theorem qdr_is_parallelogram_perm_iff : (qdr.IsParallelogram) ↔ ((qdr.perm).IsParallelogram) := by
+  unfold Quadrilateral.perm
   unfold Quadrilateral.IsParallelogram
   simp only
   unfold Vec.mkPtPt
@@ -160,24 +154,24 @@ theorem qdr_is_parallelogram_permute_iff : (qdr.IsParallelogram) ↔ ((qdr.permu
   refine (eq_iff_eq_of_sub_eq_sub ?H)
   rw [vsub_sub_vsub_comm]
 
-theorem qdr_is_parallelogramND_permute_iff : (qdr.IsParallelogramND) ↔ ((qdr.permute).IsParallelogramND) := by
+theorem qdr_is_parallelogramND_perm_iff : (qdr.IsParallelogramND) ↔ ((qdr.perm).IsParallelogramND) := by
   sorry
 
-theorem qdr_nd_is_parallelogram_permute_iff : (qdr_nd.IsParallelogram) ↔ ((qdr_nd.permute).IsParallelogram) := by
+theorem qdr_nd_is_parallelogram_perm_iff : (qdr_nd.IsParallelogram) ↔ ((qdr_nd.perm).IsParallelogram) := by
   sorry
 
-theorem qdr_nd_is_parallelogram_nd_permute_iff : (qdr_nd.IsParallelogramND) ↔ ((qdr_nd.permute).IsParallelogramND) := by
+theorem qdr_nd_is_parallelogram_nd_perm_iff : (qdr_nd.IsParallelogramND) ↔ ((qdr_nd.perm).IsParallelogramND) := by
   sorry
 
-theorem qdr_cvx_is_parallelogram_nd_permute_iff : (qdr_cvx.IsParallelogramND) ↔ ((qdr_cvx.permute).IsParallelogramND) := by
+theorem qdr_cvx_is_parallelogram_nd_perm_iff : (qdr_cvx.IsParallelogramND) ↔ ((qdr_cvx.perm).IsParallelogramND) := by
   sorry
 
-theorem prg_is_parallelogram_nd_permute_iff : (prg.IsParallelogramND) ↔ ((prg.permute).IsParallelogramND) := by
+theorem prg_is_parallelogram_nd_perm_iff : (prg.IsParallelogramND) ↔ ((prg.perm).IsParallelogramND) := by
   sorry
 
-end permute
+end perm
 
-section reflect
+section flip
 
 variable {P : Type _} [EuclideanPlane P]
 variable (qdr : Quadrilateral P)
@@ -185,30 +179,30 @@ variable (qdr_nd : Quadrilateral_nd P)
 variable (qdr_cvx : Quadrilateral_cvx P)
 variable (prg : Parallelogram P)
 
-theorem qdr_is_parallelogram_reflect_iff : (qdr.IsParallelogram) ↔ ((qdr.reflect).IsParallelogram) := by
-  unfold Quadrilateral.reflect
+theorem qdr_is_parallelogram_flip_iff : (qdr.IsParallelogram) ↔ ((qdr.flip).IsParallelogram) := by
+  unfold Quadrilateral.flip
   unfold Quadrilateral.IsParallelogram
   simp only
   unfold Vec.mkPtPt
   refine (eq_iff_eq_of_sub_eq_sub ?H)
   sorry
 
-theorem qdr_is_parallelogramND_reflect_iff : (qdr.IsParallelogramND) ↔ ((qdr.reflect).IsParallelogramND) := by
+theorem qdr_is_parallelogramND_flip_iff : (qdr.IsParallelogramND) ↔ ((qdr.flip).IsParallelogramND) := by
   sorry
 
-theorem qdr_nd_is_parallelogram_reflect_iff : (qdr_nd.IsParallelogram) ↔ ((qdr_nd.reflect).IsParallelogram) := by
+theorem qdr_nd_is_parallelogram_flip_iff : (qdr_nd.IsParallelogram) ↔ ((qdr_nd.flip).IsParallelogram) := by
   sorry
 
-theorem qdr_nd_is_parallelogram_nd_reflect_iff : (qdr_nd.IsParallelogramND) ↔ ((qdr_nd.reflect).IsParallelogramND) := by
+theorem qdr_nd_is_parallelogram_nd_flip_iff : (qdr_nd.IsParallelogramND) ↔ ((qdr_nd.flip).IsParallelogramND) := by
   sorry
 
-theorem qdr_cvx_is_parallelogram_nd_reflect_iff : (qdr_cvx.IsParallelogramND) ↔ ((qdr_cvx.reflect).IsParallelogramND) := by
+theorem qdr_cvx_is_parallelogram_nd_flip_iff : (qdr_cvx.IsParallelogramND) ↔ ((qdr_cvx.flip).IsParallelogramND) := by
   sorry
 
-theorem prg_is_parallelogram_nd_reflect_iff : (prg.IsParallelogramND) ↔ ((prg.reflect).IsParallelogramND) := by
+theorem prg_is_parallelogram_nd_flip_iff : (prg.IsParallelogramND) ↔ ((prg.flip).IsParallelogramND) := by
   sorry
 
-end reflect
+end flip
 
 section criteria_prg_nd_of_prg
 
@@ -219,64 +213,19 @@ variable (qdr_nd : Quadrilateral_nd P)
 theorem parallelogram_not_colinear₁_is_parallelogram_nd (para : qdr_nd.toQuadrilateral IsParallelogram) (h : ¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsParallelogramND := by
   sorry
 
--- def Parallelogram_nd.mk_pt_pt_pt_pt₁ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h' : (QDR A B C D) IsParallelogram) (non_colinear₁ : ¬ colinear B C D) : ParallelogramND P where
---   point₁ := A; point₂ := B; point₃ := C; point₄ := D
---   nd := h; convex := sorry
---   is_parallelogram := h'
-
--- scoped notation "PRG_nd₁" => Parallelogram_nd.mk_pt_pt_pt_pt₁
-
--- def mk_parallelogram_nd₁ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h' : qdr.IsND) (non_colinear₁ : ¬ colinear qdr.2 qdr.3 qdr.4) : ParallelogramND P where
---   point₁ := qdr.point₁; point₂ := qdr.point₂; point₃ := qdr.point₃; point₄ := qdr.point₄
---   nd := h'; convex := sorry
---   is_parallelogram := h
+/- `I think these criteria should be theorems, instead of functions below.`-/
+/- `besides these, we also need the make method from qdr and qdr_nd to prg_nd `-/
 
 theorem parallelogram_not_colinear₂_is_parallelogram_nd (para: qdr_nd.toQuadrilateral IsParallelogram) (h: ¬ colinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsParallelogramND := by
   sorry
 
--- def Parallelogram_nd.mk_pt_pt_pt_pt₂ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_colinear₂: ¬ colinear A C D) : ParallelogramND P where
---   point₁ := A; point₂ := B; point₃ := C; point₄ := D
---   nd := h; convex := sorry
---   is_parallelogram := h'
-
--- scoped notation "PRG_nd₂" => Parallelogram_nd.mk_pt_pt_pt_pt₂
-
--- def mk_parallelogram_nd₂ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_colinear₂: ¬ colinear qdr.1 qdr.3 qdr.4) : ParallelogramND P where
---   point₁ := qdr.point₁; point₂ := qdr.point₂; point₃ := qdr.point₃; point₄ := qdr.point₄
---   nd := h'; convex := sorry
---   is_parallelogram := h
-
 theorem parallelogram_not_colinear₃_is_parallelogram_nd (para: qdr_nd.toQuadrilateral IsParallelogram) (h: ¬ colinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsParallelogramND := by
   sorry
-
--- def Parallelogram_nd.mk_pt_pt_pt_pt₃ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_colinear₃: ¬ colinear A B D) : ParallelogramND P where
---   point₁ := A; point₂ := B; point₃ := C; point₄ := D
---   nd := h; convex := sorry
---   is_parallelogram := h'
-
--- scoped notation "PRG_nd₃" => Parallelogram_nd.mk_pt_pt_pt_pt₃
-
--- def mk_parallelogram_nd₃ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_colinear₃: ¬ colinear qdr.1 qdr.2 qdr.4) : ParallelogramND P where
---   point₁ := qdr.point₁; point₂ := qdr.point₂; point₃ := qdr.point₃; point₄ := qdr.point₄
---   nd := h'; convex := sorry
---   is_parallelogram := h
 
 theorem parallelogram_not_colinear₄_is_parallelogram_nd (para: qdr_nd.toQuadrilateral IsParallelogram) (h: ¬ colinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd.IsParallelogramND := by
   sorry
 
--- def Parallelogram_nd.mk_pt_pt_pt_pt₄ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_colinear₄: ¬ colinear A B C) : ParallelogramND P where
---   point₁ := A; point₂ := B; point₃ := C; point₄ := D
---   nd := h; convex := sorry
---   is_parallelogram := h'
-
--- scoped notation "PRG_nd₄" => Parallelogram_nd.mk_pt_pt_pt_pt₄
-
--- def mk_parallelogram_nd₄ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_colinear₄: ¬ colinear qdr.1 qdr.2 qdr.3) : ParallelogramND P where
---   point₁ := qdr.point₁; point₂ := qdr.point₂; point₃ := qdr.point₃; point₄ := qdr.point₄
---   nd := h'; convex := sorry
---   is_parallelogram := h
-
-/- we left these four theorems as interface for user. -/
+/- We left these four theorems as interface for user. -/
 theorem is_parallelogramND_iff_not_colinear₁ : qdr_nd.IsParallelogramND ↔ (¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) := sorry
 
 theorem is_parallelogramND_iff_not_colinear₂ : qdr_nd.IsParallelogramND ↔ (¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) := sorry
@@ -300,15 +249,15 @@ theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₄ (h₁ : qdr_nd.edge_nd₁�
 
 theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₄_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcolinear : ¬ colinear A B C) : (QDR_nd A B C D nd).IsParallelogramND := qdr_nd_is_prg_nd_of_para_para_not_colinear₄ (QDR_nd A B C D nd) h₁ h₂ notcolinear
 
-theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₁ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcolinear : ¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsParallelogramND := (qdr_nd_is_parallelogram_nd_permute_iff qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_colinear₄ qdr_nd.permute (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcolinear)
+theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₁ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcolinear : ¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsParallelogramND := (qdr_nd_is_parallelogram_nd_perm_iff qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_colinear₄ qdr_nd.perm (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcolinear)
 
 theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₁_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcolinear : ¬ colinear B C D) : (QDR_nd A B C D nd).IsParallelogramND := qdr_nd_is_prg_nd_of_para_para_not_colinear₁ (QDR_nd A B C D nd) h₁ h₂ notcolinear
 
-theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₂ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcolinear : ¬ colinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsParallelogramND := (qdr_nd_is_parallelogram_nd_permute_iff qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_colinear₁ qdr_nd.permute (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcolinear)
+theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₂ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcolinear : ¬ colinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsParallelogramND := (qdr_nd_is_parallelogram_nd_perm_iff qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_colinear₁ qdr_nd.perm (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcolinear)
 
 theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₂_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcolinear : ¬ colinear C D A) : (QDR_nd A B C D nd).IsParallelogramND := qdr_nd_is_prg_nd_of_para_para_not_colinear₂ (QDR_nd A B C D nd) h₁ h₂ notcolinear
 
-theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₃ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcolinear : ¬ colinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsParallelogramND := (qdr_nd_is_parallelogram_nd_permute_iff qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_colinear₂ qdr_nd.permute (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcolinear)
+theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₃ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcolinear : ¬ colinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsParallelogramND := (qdr_nd_is_parallelogram_nd_perm_iff qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_colinear₂ qdr_nd.perm (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcolinear)
 
 theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₄₁₂_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcolinear : ¬ colinear D A B) : (QDR_nd A B C D nd).IsParallelogramND := qdr_nd_is_prg_nd_of_para_para_not_colinear₃ (QDR_nd A B C D nd) h₁ h₂ notcolinear
 

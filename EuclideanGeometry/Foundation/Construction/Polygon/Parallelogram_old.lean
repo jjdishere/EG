@@ -73,19 +73,19 @@ structure Parallelogram_nd (P : Type _) [EuclideanPlane P] extends Quadrilateral
   is_parallelogram_para : toQuadrilateral_nd IsParallelogram_para
   is_parallelogram_non_triv : toQuadrilateral_nd IsParallelogram_non_triv
 
-/-- We would also like to introduce a shortcut in proving statements concerning parallelograms - that is permute, the same technique used in Quadrilateral.lean. If qdr IsParallelogram, then its permute also IsParallelogram. -/
-theorem qdr_is_parallelogram_permute_iff (P : Type _) [EuclideanPlane P] (qdr : Quadrilateral P) :(qdr.IsParallelogram) ↔ ((qdr.permute).IsParallelogram) := by
+/-- We would also like to introduce a shortcut in proving statements concerning parallelograms - that is perm, the same technique used in Quadrilateral.lean. If qdr IsParallelogram, then its perm also IsParallelogram. -/
+theorem qdr_is_parallelogram_perm_iff (P : Type _) [EuclideanPlane P] (qdr : Quadrilateral P) :(qdr.IsParallelogram) ↔ ((qdr.perm).IsParallelogram) := by
   sorry
 
-/-- If qdr IsParallelogram_nd, then its permute also IsParallelogram_nd. -/
-theorem qdr_is_parallelogram_nd_permute_iff (P : Type _) [EuclideanPlane P] (qdr : Quadrilateral P) :(qdr.IsParallelogram_nd) ↔ ((qdr.permute).IsParallelogram_nd) := by
+/-- If qdr IsParallelogram_nd, then its perm also IsParallelogram_nd. -/
+theorem qdr_is_parallelogram_nd_perm_iff (P : Type _) [EuclideanPlane P] (qdr : Quadrilateral P) :(qdr.IsParallelogram_nd) ↔ ((qdr.perm).IsParallelogram_nd) := by
   sorry
 
-/-- If qdr_nd IsParallelogram, then its permute also IsParallelogram. -/
-theorem qdr_nd_is_parallelogram_permute_iff (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) :(qdr_nd.IsParallelogram) ↔ ((qdr_nd.permute).IsParallelogram) := by sorry
+/-- If qdr_nd IsParallelogram, then its perm also IsParallelogram. -/
+theorem qdr_nd_is_parallelogram_perm_iff (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) :(qdr_nd.IsParallelogram) ↔ ((qdr_nd.perm).IsParallelogram) := by sorry
 
-/-- If qdr_nd IsParallelogram_nd, then its permute also IsParallelogram. -/
-theorem qdr_nd_is_parallelogram_nd_permute_iff (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) :(qdr_nd.IsParallelogram_nd) ↔ ((qdr_nd.permute).IsParallelogram_nd) := by
+/-- If qdr_nd IsParallelogram_nd, then its perm also IsParallelogram. -/
+theorem qdr_nd_is_parallelogram_nd_perm_iff (P : Type _) [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) :(qdr_nd.IsParallelogram_nd) ↔ ((qdr_nd.perm).IsParallelogram_nd) := by
   constructor
   intro h
   unfold Quadrilateral_nd.IsParallelogram_nd
@@ -96,18 +96,18 @@ theorem qdr_nd_is_parallelogram_nd_permute_iff (P : Type _) [EuclideanPlane P] (
   rcases a with ⟨k,q⟩
   unfold parallel
   unfold parallel at k q
-  have K₁: qdr_nd.permute.edge_nd₁₂.toProj = qdr_nd.edge_nd₂₃.toProj := by rfl
-  have K₂: qdr_nd.permute.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.reverse.toProj := by rfl
+  have K₁: qdr_nd.perm.edge_nd₁₂.toProj = qdr_nd.edge_nd₂₃.toProj := by rfl
+  have K₂: qdr_nd.perm.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.reverse.toProj := by rfl
   have K₃: qdr_nd.edge_nd₁₄.reverse.toProj = qdr_nd.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
   rw [K₃] at K₂
-  have K₄: qdr_nd.permute.edge_nd₁₂.toProj = qdr_nd.permute.edge_nd₃₄.toProj := by
+  have K₄: qdr_nd.perm.edge_nd₁₂.toProj = qdr_nd.perm.edge_nd₃₄.toProj := by
     rw [K₁, K₂]
     exact q.symm
-  have K₅: qdr_nd.permute.edge_nd₁₄.toProj = qdr_nd.edge_nd₁₂.reverse.toProj := by rfl
+  have K₅: qdr_nd.perm.edge_nd₁₄.toProj = qdr_nd.edge_nd₁₂.reverse.toProj := by rfl
   have K₆: qdr_nd.edge_nd₁₂.reverse.toProj = qdr_nd.edge_nd₁₂.toProj := by apply SegND.toProj_of_rev_eq_toProj
   rw [K₆] at K₅
-  have K₇: qdr_nd.permute.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj := by rfl
-  have K₈: qdr_nd.permute.edge_nd₁₄.toProj = qdr_nd.permute.edge_nd₂₃.toProj := by
+  have K₇: qdr_nd.perm.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj := by rfl
+  have K₈: qdr_nd.perm.edge_nd₁₄.toProj = qdr_nd.perm.edge_nd₂₃.toProj := by
     rw [K₅, K₇]
     exact k
   constructor
@@ -129,13 +129,13 @@ theorem qdr_nd_is_parallelogram_nd_permute_iff (P : Type _) [EuclideanPlane P] (
   rcases a with ⟨k,q⟩
   unfold parallel
   unfold parallel at k q
-  have K₂: qdr_nd.permute.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.reverse.toProj := by rfl
+  have K₂: qdr_nd.perm.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.reverse.toProj := by rfl
   have K₃: qdr_nd.edge_nd₁₄.reverse.toProj = qdr_nd.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
   rw [K₃] at K₂
-  have K₅: qdr_nd.permute.edge_nd₁₄.toProj = qdr_nd.edge_nd₁₂.reverse.toProj := by rfl
+  have K₅: qdr_nd.perm.edge_nd₁₄.toProj = qdr_nd.edge_nd₁₂.reverse.toProj := by rfl
   have K₆: qdr_nd.edge_nd₁₂.reverse.toProj = qdr_nd.edge_nd₁₂.toProj := by apply SegND.toProj_of_rev_eq_toProj
   rw [K₆] at K₅
-  have K₇: qdr_nd.permute.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj := by rfl
+  have K₇: qdr_nd.perm.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj := by rfl
   constructor
   constructor
   exact (Eq.congr (id K₅.symm) K₇).mpr q
@@ -147,8 +147,8 @@ theorem qdr_nd_is_parallelogram_nd_permute_iff (P : Type _) [EuclideanPlane P] (
   exact y
   exact z
 
-/-- If prg IsParallelogram_nd, then its permute also IsParallelogram_nd. -/
-theorem prg_is_parallelogram_nd_permute_iff (P : Type _) [EuclideanPlane P] (prg : Parallelogram P) :(prg.IsParallelogram_nd) ↔ ((prg.permute).IsParallelogram_nd) := by
+/-- If prg IsParallelogram_nd, then its perm also IsParallelogram_nd. -/
+theorem prg_is_parallelogram_nd_perm_iff (P : Type _) [EuclideanPlane P] (prg : Parallelogram P) :(prg.IsParallelogram_nd) ↔ ((prg.perm).IsParallelogram_nd) := by
   sorry
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 1st, 2nd and 3rd points are not colinear, then qdr_nd is a parallelogram_nd.-/
@@ -526,19 +526,19 @@ theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₁₂₃ (h₁ : qdr_nd.edge_
 theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₁₂₃_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcolinear : ¬ colinear A B C) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_para_para_not_colinear₁₂₃ (QDR_nd A B C D nd) h₁ h₂ notcolinear
 
 /-- Given Quadrilateral_nd qdr_nd, qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄, qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃, and qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄ is not colinear, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₂₃₄ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcolinear : ¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsParallelogram_nd := (qdr_nd_is_parallelogram_nd_permute_iff P qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_colinear₁₂₃ qdr_nd.permute (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcolinear)
+theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₂₃₄ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcolinear : ¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsParallelogram_nd := (qdr_nd_is_parallelogram_nd_perm_iff P qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_colinear₁₂₃ qdr_nd.perm (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcolinear)
 
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, AB ∥ CD, AD ∥ BC, and B C D is not colinear, then Quadrilateral ABCD is a Parallelogram_nd. -/
 theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₂₃₄_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcolinear : ¬ colinear B C D) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_para_para_not_colinear₂₃₄ (QDR_nd A B C D nd) h₁ h₂ notcolinear
 
 /-- Given Quadrilateral_nd qdr_nd, qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄, qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃, and qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁ is not colinear, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₃₄₁ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcolinear : ¬ colinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsParallelogram_nd := (qdr_nd_is_parallelogram_nd_permute_iff P qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_colinear₂₃₄ qdr_nd.permute (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcolinear)
+theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₃₄₁ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcolinear : ¬ colinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsParallelogram_nd := (qdr_nd_is_parallelogram_nd_perm_iff P qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_colinear₂₃₄ qdr_nd.perm (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcolinear)
 
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, AB ∥ CD, AD ∥ BC, and C D A is not colinear, then Quadrilateral ABCD is a Parallelogram_nd. -/
 theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₃₄₁_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcolinear : ¬ colinear C D A) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_para_para_not_colinear₃₄₁ (QDR_nd A B C D nd) h₁ h₂ notcolinear
 
 /-- Given Quadrilateral_nd qdr_nd, qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄, qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃, and qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂ is not colinear, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₄₁₂ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcolinear : ¬ colinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsParallelogram_nd := (qdr_nd_is_parallelogram_nd_permute_iff P qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_colinear₃₄₁ qdr_nd.permute (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcolinear)
+theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₄₁₂ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcolinear : ¬ colinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsParallelogram_nd := (qdr_nd_is_parallelogram_nd_perm_iff P qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_colinear₃₄₁ qdr_nd.perm (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcolinear)
 
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, AB ∥ CD, AD ∥ BC, and D A B is not colinear, then Quadrilateral ABCD is a Parallelogram_nd. -/
 theorem qdr_nd_is_prg_nd_of_para_para_not_colinear₄₁₂_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcolinear : ¬ colinear D A B) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_para_para_not_colinear₄₁₂ (QDR_nd A B C D nd) h₁ h₂ notcolinear
@@ -995,33 +995,33 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qd
 theorem qdr_cvx_is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.edge_nd₂₃) (h₂ : qdr_cvx.edge_nd₁₄.length = qdr_cvx.edge_nd₂₃.length) : qdr_cvx.IsParallelogram_nd := by sorry
   -- unfold Quadrilateral_nd.IsParallelogram_nd
   -- constructor
-  -- let permute_convex := Quadrilateral_cvx.mk_is_convex qdr_cvx.permute_is_convex
-  -- have K₁: permute_convex.edge_nd₁₂.toProj = qdr_cvx.edge_nd₂₃.toProj := by rfl
-  -- have K₂: permute_convex.edge_nd₁₂.length = qdr_cvx.edge_nd₂₃.length := by rfl
-  -- have j₂: permute_convex.edge_nd₃₄ = qdr_cvx.edge_nd₁₄.reverse := by rfl
-  -- have K₃: permute_convex.edge_nd₃₄.toProj = qdr_cvx.edge_nd₁₄.toProj := by
+  -- let perm_convex := Quadrilateral_cvx.mk_is_convex qdr_cvx.perm_is_convex
+  -- have K₁: perm_convex.edge_nd₁₂.toProj = qdr_cvx.edge_nd₂₃.toProj := by rfl
+  -- have K₂: perm_convex.edge_nd₁₂.length = qdr_cvx.edge_nd₂₃.length := by rfl
+  -- have j₂: perm_convex.edge_nd₃₄ = qdr_cvx.edge_nd₁₄.reverse := by rfl
+  -- have K₃: perm_convex.edge_nd₃₄.toProj = qdr_cvx.edge_nd₁₄.toProj := by
   --   rw [j₂]
   --   apply SegND.toProj_of_rev_eq_toProj
-  -- have K₄: permute_convex.edge_nd₃₄.length = qdr_cvx.edge_nd₁₄.length := by
+  -- have K₄: perm_convex.edge_nd₃₄.length = qdr_cvx.edge_nd₁₄.length := by
   --   rw [j₂]
   --   apply SegND.length_of_rev_eq_length
-  -- have H₁: permute_convex.edge_nd₁₂.toProj = permute_convex.edge_nd₃₄.toProj := by
+  -- have H₁: perm_convex.edge_nd₁₂.toProj = perm_convex.edge_nd₃₄.toProj := by
   --   rw [K₁, K₃]
   --   unfold parallel at h₁
   --   exact h₁.symm
-  -- have H₂: permute_convex.edge_nd₁₂.length = permute_convex.edge_nd₃₄.length := by
+  -- have H₂: perm_convex.edge_nd₁₂.length = perm_convex.edge_nd₃₄.length := by
   --   rw [K₂, K₄]
   --   exact h₂.symm
-  -- have H: permute_convex.IsParallelogram_nd := qdr_cvx_is_prg_nd_of_para_eq_length permute_convex H₁ H₂
+  -- have H: perm_convex.IsParallelogram_nd := qdr_cvx_is_prg_nd_of_para_eq_length perm_convex H₁ H₂
   -- unfold Quadrilateral_nd.IsParallelogram_nd at H
   -- rcases H with ⟨para, _⟩
   -- unfold Quadrilateral_nd.IsParallelogram_para
   -- unfold Quadrilateral_nd.IsParallelogram_para at para
   -- rcases para with ⟨para₁, para₂⟩
   -- unfold parallel
-  -- have K₉: permute_convex.edge_nd₁₄.reverse.toProj = qdr_cvx.edge_nd₁₂.toProj := by rfl
-  -- have K₁₀: permute_convex.edge_nd₁₄.reverse.toProj = permute_convex.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
-  -- have K₈: permute_convex.edge_nd₂₃.toProj = qdr_cvx.edge_nd₃₄.toProj := by rfl
+  -- have K₉: perm_convex.edge_nd₁₄.reverse.toProj = qdr_cvx.edge_nd₁₂.toProj := by rfl
+  -- have K₁₀: perm_convex.edge_nd₁₄.reverse.toProj = perm_convex.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
+  -- have K₈: perm_convex.edge_nd₂₃.toProj = qdr_cvx.edge_nd₃₄.toProj := by rfl
   -- rw [K₁₀] at K₉
   -- unfold parallel at para₁
   -- unfold parallel at para₂
@@ -1041,33 +1041,33 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edge_nd₁₄ ∥ q
 -- theorem qdr_cvx_is_prg_nd_of_para_eq_length'_variant (h₁ : (SEG_nd A D (QDR_cvx A B C D nd cvx).nd₁₄.out) ∥ (SEG_nd B C (QDR_cvx A B C D nd cvx).nd₂₃.out)) (h₂ : (QDR_cvx A B C D nd cvx).edge_nd₁₄.length = (QDR_cvx A B C D nd cvx).edge_nd₂₃.length) : (Quadrilateral_nd.mk_is_nd nd) IsParallelogram_nd := by
 --    unfold Quadrilateral_nd.IsParallelogram_nd
 --    constructor
---    let permute_convex := Quadrilateral_cvx.mk_is_convex (QDR_cvx A B C D nd cvx).permute_is_convex
---    have K₁: permute_convex.edge_nd₁₂.toProj = (QDR_cvx A B C D nd cvx).edge_nd₂₃.toProj := by rfl
---    have K₂: permute_convex.edge_nd₁₂.1.length = (QDR_cvx A B C D nd cvx).edge_nd₂₃.1.length := by rfl
---    have j₂: permute_convex.edge_nd₃₄ = (QDR_cvx A B C D nd cvx).edge_nd₁₄.reverse := by rfl
---    have K₃: permute_convex.edge_nd₃₄.toProj = (QDR_cvx A B C D nd cvx).edge_nd₁₄.toProj := by
+--    let perm_convex := Quadrilateral_cvx.mk_is_convex (QDR_cvx A B C D nd cvx).perm_is_convex
+--    have K₁: perm_convex.edge_nd₁₂.toProj = (QDR_cvx A B C D nd cvx).edge_nd₂₃.toProj := by rfl
+--    have K₂: perm_convex.edge_nd₁₂.1.length = (QDR_cvx A B C D nd cvx).edge_nd₂₃.1.length := by rfl
+--    have j₂: perm_convex.edge_nd₃₄ = (QDR_cvx A B C D nd cvx).edge_nd₁₄.reverse := by rfl
+--    have K₃: perm_convex.edge_nd₃₄.toProj = (QDR_cvx A B C D nd cvx).edge_nd₁₄.toProj := by
 --      rw [j₂]
 --      apply SegND.toProj_of_rev_eq_toProj
---    have K₄: permute_convex.edge_nd₃₄.1.length = (QDR_cvx A B C D nd cvx).edge_nd₁₄.1.length := by
+--    have K₄: perm_convex.edge_nd₃₄.1.length = (QDR_cvx A B C D nd cvx).edge_nd₁₄.1.length := by
 --      rw [j₂]
 --      apply SegND.length_of_rev_eq_length
---    have H₁: permute_convex.edge_nd₁₂.toProj = permute_convex.edge_nd₃₄.toProj := by
+--    have H₁: perm_convex.edge_nd₁₂.toProj = perm_convex.edge_nd₃₄.toProj := by
 --      rw [K₁, K₃]
 --      unfold parallel at h₁
 --      exact h₁.symm
---    have H₂: permute_convex.edge_nd₁₂.1.length = permute_convex.edge_nd₃₄.1.length := by
+--    have H₂: perm_convex.edge_nd₁₂.1.length = perm_convex.edge_nd₃₄.1.length := by
 --      rw [K₂, K₄]
 --      exact h₂.symm
---    have H: permute_convex.IsParallelogram_nd := qdr_cvx_is_prg_nd_of_para_eq_length permute_convex H₁ H₂
+--    have H: perm_convex.IsParallelogram_nd := qdr_cvx_is_prg_nd_of_para_eq_length perm_convex H₁ H₂
 --    unfold Quadrilateral_nd.IsParallelogram_nd at H
 --    rcases H with ⟨para, _⟩
 --    unfold Quadrilateral_nd.IsParallelogram_para
 --    unfold Quadrilateral_nd.IsParallelogram_para at para
 --    rcases para with ⟨para₁, para₂⟩
 --    unfold parallel
---    have K₉: permute_convex.edge_nd₁₄.reverse.toProj = (QDR_cvx A B C D nd cvx).edge_nd₁₂.toProj := by rfl
---    have K₁₀: permute_convex.edge_nd₁₄.reverse.toProj = permute_convex.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
---    have K₈: permute_convex.edge_nd₂₃.toProj = (QDR_cvx A B C D nd cvx).edge_nd₃₄.toProj := by rfl
+--    have K₉: perm_convex.edge_nd₁₄.reverse.toProj = (QDR_cvx A B C D nd cvx).edge_nd₁₂.toProj := by rfl
+--    have K₁₀: perm_convex.edge_nd₁₄.reverse.toProj = perm_convex.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
+--    have K₈: perm_convex.edge_nd₂₃.toProj = (QDR_cvx A B C D nd cvx).edge_nd₃₄.toProj := by rfl
 --    rw [K₁₀] at K₉
 --    unfold parallel at para₁
 --    unfold parallel at para₂
