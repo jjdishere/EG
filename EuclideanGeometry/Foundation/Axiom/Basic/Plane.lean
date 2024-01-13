@@ -49,6 +49,7 @@ theorem vadd_eq_self_iff_vec_eq_zero {A : P} {v : Vec} : v +ᵥ A = A ↔ v = 0 
 theorem vec_same_eq_zero (A : P) : VEC A A = 0 := by
   rw [Vec.mkPtPt, vsub_self]
 
+@[simp]
 theorem neg_vec (A B : P) : - VEC A B = VEC B A := by
   rw [Vec.mkPtPt, Vec.mkPtPt, neg_vsub_eq_vsub_rev]
 

@@ -1,5 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Basic.Angle.AddToMathlib
-
+import Mathlib.Data.Int.Parity
 /-!
 # Angle Conversions
 
@@ -15,6 +15,8 @@ In this file, we define suitable coversion function between `ℝ⧸2π`,`ℝ⧸�
 -/
 
 noncomputable section
+
+attribute [ext] Complex.ext
 
 namespace EuclidGeom
 
