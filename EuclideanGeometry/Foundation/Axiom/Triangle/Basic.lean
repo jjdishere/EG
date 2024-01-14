@@ -7,6 +7,7 @@ noncomputable section
 namespace EuclidGeom
 
 open Classical
+open AngValue
 
 /- Class of generalized triangles -/
 @[ext]
@@ -263,14 +264,57 @@ end Triangle
 namespace TriangleND
 
 variable (tr_nd : TriangleND P)
---`Rewrite this Part!!!!`
-theorem angle_pos_of_cclock (cclock : tr_nd.is_cclock) : tr_nd.angle₁.value.IsPos ∧ tr_nd.angle₂.value.IsPos ∧ tr_nd.angle₃.value.IsPos := by sorry
 
-theorem angle_neg_of_clock (clock : ¬ tr_nd.is_cclock) : tr_nd.angle₁.value.IsNeg ∧ tr_nd.angle₂.value.IsNeg ∧ tr_nd.angle₃.value.IsNeg  := by sorry
+theorem angle₁_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsPos := by
+  simp only [← eq_iff_iff]
+  have trans1 : tr_nd.is_cclock = (tr_nd.oarea > 0) := by rfl
+  simp only [trans1]
+  have trans2 : tr_nd.oarea = wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ /2 := by rfl
+  simp only [trans2]
+  have trans3 : wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ = tr_nd.edge₃.length * tr_nd.edge₂.length * sin tr_nd.angle₁.value := by
+    calc
+      _= (SEG tr_nd.point₁ tr_nd.point₂).length * (SEG tr_nd.point₁ tr_nd.point₃).length * sin (ANG tr_nd.point₂ tr_nd.point₁ tr_nd.point₃).value := by
+        exact wedge_eq_length_mul_length_mul_sin tr_nd.point₁ tr_nd.point₂ tr_nd.point₃
+      _=_ := by
+        congr 2
+        have : (SEG tr_nd.point₁ tr_nd.point₃).length = (SEG tr_nd.point₃ tr_nd.point₁).length := by exact length_of_rev_eq_length'
+        simp only [this]
+        rfl
+  simp only [trans3]
+  have pos : (tr_nd.edge₃.length * tr_nd.edge₂.length * sin tr_nd.angle₁.value / 2 > 0) = (sin tr_nd.angle₁.value > 0) := by
+    simp only [eq_iff_iff]
+    have pos3 : tr_nd.edge₃.length > 0 := by
+      calc
+        _= tr_nd.edge_nd₃.length := by rfl
+        _>0 := by apply EuclidGeom.length_pos
+    have pos2 : tr_nd.edge₂.length > 0 := by
+      calc
+        _= tr_nd.edge_nd₂.length := by rfl
+        _>0 := by apply EuclidGeom.length_pos
+    constructor
+    · intro P
+      by_contra H
+      simp only [gt_iff_lt, not_lt] at H
+      have h : -sin tr_nd.angle₁.value ≥ 0 := by linarith
+      have : tr_nd.edge₃.length * tr_nd.edge₂.length * -sin tr_nd.angle₁.value / 2 ≥ 0 :=by
+        positivity
+      linarith
+    · intro P
+      positivity
+  simp only [pos]
+  simp only [eq_iff_iff]
+  exact isPos_iff_zero_lt_sin.symm
 
-theorem cclock_of_pos_angle (h : tr_nd.angle₁.value.IsPos ∨ tr_nd.angle₂.value.IsPos ∨ tr_nd.angle₃.value.IsPos) : tr_nd.is_cclock := sorry
+theorem angle₂_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₂.value.IsPos := by sorry
 
-theorem clock_of_neg_angle (h : tr_nd.angle₁.value.IsNeg ∨ tr_nd.angle₂.value.IsNeg ∨ tr_nd.angle₃.value.IsNeg) :¬ tr_nd.is_cclock := sorry
+theorem angle₃_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₃.value.IsPos := by sorry
+
+theorem angle₁_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsNeg := by sorry
+
+theorem angle₂_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₂.value.IsNeg := by sorry
+
+theorem angle₃_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₃.value.IsNeg := by sorry
+
 
 theorem pos_pos_or_neg_neg_of_iff_cclock {tr_nd₁ tr_nd₂ : TriangleND P} : (tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) ↔ (tr_nd₁.angle₁.value.IsPos ∧ tr_nd₂.angle₁.value.IsPos) ∨ (tr_nd₁.angle₁.value.IsNeg ∧ tr_nd₂.angle₁.value.IsNeg) := by
   constructor
@@ -278,25 +322,31 @@ theorem pos_pos_or_neg_neg_of_iff_cclock {tr_nd₁ tr_nd₂ : TriangleND P} : (t
     by_cases h : tr_nd₁.is_cclock
     · have h0 : tr_nd₂.is_cclock := by rw [←k] ; apply h
       left
-      exact ⟨(angle_pos_of_cclock tr_nd₁ h).1, (angle_pos_of_cclock tr_nd₂ h0).1⟩
+      --exact ⟨(angle_pos_of_cclock tr_nd₁ h).1, (angle_pos_of_cclock tr_nd₂ h0).1⟩
+      sorry
     · have h0: ¬ tr_nd₂.is_cclock := by rw [←k] ; apply h
       right
-      exact ⟨(angle_neg_of_clock tr_nd₁ h).1, (angle_neg_of_clock tr_nd₂ h0).1⟩
+      --exact ⟨(angle_neg_of_clock tr_nd₁ h).1, (angle_neg_of_clock tr_nd₂ h0).1⟩
+      sorry
   intro k
   rcases k with x | y
   · have k1 : tr_nd₁.is_cclock := by
-      apply cclock_of_pos_angle tr_nd₁
-      apply Or.inl x.1
+      --apply cclock_of_pos_angle tr_nd₁
+      --apply Or.inl x.1
+      sorry
     have k2 : tr_nd₂.is_cclock := by
-      apply cclock_of_pos_angle tr_nd₂
-      apply Or.inl x.2
+      --apply cclock_of_pos_angle tr_nd₂
+      --apply Or.inl x.2
+      sorry
     simp only [k1,k2]
   · have k1 : ¬ tr_nd₁.is_cclock := by
-      apply clock_of_neg_angle tr_nd₁
-      apply Or.inl y.1
+      --apply clock_of_neg_angle tr_nd₁
+      --apply Or.inl y.1
+      sorry
     have k2 : ¬ tr_nd₂.is_cclock := by
-      apply clock_of_neg_angle tr_nd₂
-      apply Or.inl y.2
+      --apply clock_of_neg_angle tr_nd₂
+      --apply Or.inl y.2
+      sorry
     simp only [k1,k2]
 
 theorem angle_sum_eq_pi_of_cclock (cclock : tr_nd.is_cclock): tr_nd.angle₁.value + tr_nd.angle₂.value + tr_nd.angle₃.value = π := sorry

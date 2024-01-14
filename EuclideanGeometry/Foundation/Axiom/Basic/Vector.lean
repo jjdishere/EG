@@ -184,7 +184,7 @@ lemma toComplex_inv (z : 𝕜) : ↑(z⁻¹) = (z : ℂ)⁻¹ := by ext <;> simp
 
 @[simp, norm_cast]
 lemma abs_toComplex (z : 𝕜) : Complex.abs (z : ℂ) = ‖z‖ := by
-  rw [← pow_left_inj (map_nonneg _ _) (norm_nonneg _) zero_lt_two,
+  rw [← pow_left_inj (map_nonneg _ _) (norm_nonneg _) two_ne_zero,
     Complex.sq_abs, Complex.normSq_apply, norm_sq_eq_def]
   rfl
 
@@ -400,7 +400,7 @@ instance innerProductSpace' : InnerProductSpace ℝ Vec where
   norm_sq_eq_inner v := by simp [norm_sq]
   conj_symm v₁ v₂ := by simp [Complex.conj_ofReal, mul_comm]
   add_left v₁ v₂ v₃ := by dsimp; ring
-  smul_left v₁ v₂ z := by dsimp; ring
+  smul_left v₁ v₂ z := by dsimp; simp only [zero_mul, sub_zero, add_zero, conj_trivial]; ring
 
 lemma real_inner_apply (v₁ v₂ : Vec) :
     ⟪v₁, v₂⟫_ℝ = v₁.fst * v₂.fst + v₁.snd * v₂.snd :=
@@ -694,7 +694,7 @@ lemma cdiv_eq_cdiv_iff_cdiv_eq_cdiv {v₁ v₂ v₃ v₄ : Vec} (hv₂ : v₂ �
 
 @[simp]
 lemma abs_inner (v₁ v₂ : Vec) : Complex.abs ⟪v₁, v₂⟫_ℂ = ‖v₁‖ * ‖v₂‖ := by
-  rw [← pow_left_inj (by simp) (by positivity) zero_lt_two]
+  rw [← pow_left_inj (by simp) (by positivity) two_ne_zero]
   rw [Complex.abs_apply, sq_sqrt (Complex.normSq_nonneg _)]
   dsimp [inner, det]
   rw [mul_pow, norm_sq, norm_sq]
@@ -1256,6 +1256,9 @@ lemma neg_vsub_left (d₁ d₂ : Dir) : -d₁ -ᵥ d₂ = d₁ -ᵥ d₂ + ∠[�
 lemma neg_vsub_right (d₁ d₂ : Dir) : d₁ -ᵥ -d₂ = d₁ -ᵥ d₂ + ∠[π] := by
   rw [← pi_vadd, vsub_vadd_eq_vsub_sub, sub_eq_add_neg, AngValue.neg_coe_pi]
 
+lemma eq_neg_of_vsub_eq_pi (d₁ d₂ : Dir) : d₁ = - d₂ ↔ d₁ -ᵥ d₂ = ∠[π] :=
+  ((pi_vadd d₂).symm.congr_right).trans (eq_vadd_iff_vsub_eq d₁ ∠[π] d₂)
+
 protected abbrev normalize {M : Type*} [AddCommGroup M] [Module ℝ M]
     {F : Type*} [LinearMapClass F ℝ Vec M]
     (f : F) :
@@ -1463,6 +1466,20 @@ theorem Dir.toProj_eq_toProj_iff_unitVecND {d₁ d₂ : Dir} :
     d₁.toProj = d₂.toProj ↔ ∃ a : ℝˣ, d₁.unitVecND = a • d₂.unitVecND := by
   conv_lhs => rw [← d₁.unitVecND_toDir, ← d₂.unitVecND_toDir]
   rw [VecND.toProj_eq_toProj_iff']
+
+theorem Dir.toProj_eq_toProj_iff_vsub_not_isND {d₁ d₂ : Dir} : d₁.toProj = d₂.toProj ↔ ¬ (d₁ -ᵥ d₂).IsND :=
+  toProj_eq_toProj_iff.trans <|
+    (or_congr vsub_eq_zero_iff_eq.symm (eq_neg_of_vsub_eq_pi d₁ d₂)).trans AngValue.not_isND_iff.symm
+
+theorem Dir.toProj_ne_toProj_iff_vsub_isND {d₁ d₂ : Dir} : d₁.toProj ≠ d₂.toProj ↔ (d₁ -ᵥ d₂).IsND :=
+  toProj_eq_toProj_iff_vsub_not_isND.not_left
+
+theorem Dir.toProj_ne_toProj_iff_neg_vsub_isND {d₁ d₂ : Dir} : d₁.toProj ≠ d₂.toProj ↔ (d₂ -ᵥ d₁).IsND := by
+  apply toProj_ne_toProj_iff_vsub_isND.trans
+  rw [← neg_vsub_eq_vsub_rev d₂ d₁, AngValue.neg_isND_iff_isND]
+
+theorem Dir.toProj_eq_toProj_iff_neg_vsub_not_isND {d₁ d₂ : Dir} : d₁.toProj = d₂.toProj ↔ ¬ (d₂ -ᵥ d₁).IsND :=
+  toProj_ne_toProj_iff_neg_vsub_isND.not_right
 
 @[simp]
 lemma VecND.neg_toProj (v : VecND) : (-v).toProj = v.toProj := by
