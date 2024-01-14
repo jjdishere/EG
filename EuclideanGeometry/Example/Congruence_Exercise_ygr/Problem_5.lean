@@ -10,8 +10,8 @@ namespace Problem_5
 /-
 Let $l$ be a directed line on the plane.
 Let $A, F, C, D$ be four points on $l$ in this order.
-Let $B, E$ be two points on the plane such that they lies on different sides of $l$, and that $BC \parallel EF$.
-If $\angle BAC = - \angle EDF$ and $AF = DC$, prove that $AB = DE$.
+Let $B, E$ be two points on the plane such that they lies on different sides of $l$, and that $CB \parallel FE$.
+If $\angle BAC = \angle EDF$ and $AF = DC$, prove that $AB = DE$.
 -/
 
 structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
@@ -52,10 +52,47 @@ lemma D_ne_F' {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : e.D
   _< ⟨e.D, e.D_on_l⟩ := e.C_lt_D_on_l
 instance D_ne_F {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.D e.F := ⟨D_ne_F'⟩
 lemma not_colinear_BCA {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : ¬ colinear e.B e.C e.A := by
-  have h : IsOnOppositeSide e.B e.E (RAY e.C e.A) := by sorry
+  have h : IsOnOppositeSide e.B e.E (RAY e.C e.A) := by
+    have h3 : (RAY e.C e.A).toLine = e.l.toLine := by
+      calc
+        _= (LIN e.C e.A) := by
+          apply Line.eq_line_of_pt_pt_of_ne
+          apply Line.fst_pt_lies_on_mk_pt_pt
+          apply Line.snd_pt_lies_on_mk_pt_pt
+        _=_ := by
+          apply Line.eq_line_of_pt_pt_of_ne
+          apply DirLine.lies_on_iff_lies_on_toLine.mpr; exact e.C_on_l
+          apply DirLine.lies_on_iff_lies_on_toLine.mpr; exact e.A_on_l
+    have : IsOnOppositeSide e.B e.E (RAY e.C e.A) = IsOnOppositeSide e.B e.E e.l := by
+      calc
+        _= IsOnOppositeSide e.B e.E (RAY e.C e.A).toLine := by rfl
+        _=_ := by congr
+    simp only [this]
+    exact e.B_E_IsOnOppositeSide_l
   have h1 : ¬ colinear e.C e.A e.B := (not_colinear_of_IsOnOppositeSide e.C e.A e.B e.E h).1
-  sorry
-lemma not_colinear_EFD {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : ¬ colinear e.E e.F e.D := by sorry
+  by_contra h2; absurd h1
+  exact perm_colinear_snd_trd_fst h2
+lemma not_colinear_EFD {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : ¬ colinear e.E e.F e.D := by
+  have h : IsOnOppositeSide e.B e.E (RAY e.F e.D) := by
+    have h3 : (RAY e.F e.D).toLine = e.l.toLine := by
+      calc
+        _= (LIN e.F e.D) := by
+          apply Line.eq_line_of_pt_pt_of_ne
+          apply Line.fst_pt_lies_on_mk_pt_pt
+          apply Line.snd_pt_lies_on_mk_pt_pt
+        _=_ := by
+          apply Line.eq_line_of_pt_pt_of_ne
+          apply DirLine.lies_on_iff_lies_on_toLine.mpr; exact e.F_on_l
+          apply DirLine.lies_on_iff_lies_on_toLine.mpr; exact e.D_on_l
+    have : IsOnOppositeSide e.B e.E (RAY e.F e.D) = IsOnOppositeSide e.B e.E e.l := by
+      calc
+        _= IsOnOppositeSide e.B e.E (RAY e.F e.D).toLine := by rfl
+        _=_ := by congr
+    simp only [this]
+    exact e.B_E_IsOnOppositeSide_l
+  have h1 : ¬ colinear e.F e.D e.E := (not_colinear_of_IsOnOppositeSide e.F e.D e.B e.E h).2
+  by_contra h2; absurd h1
+  exact perm_colinear_snd_trd_fst h2
 -- Claim : $C \ne B$.
 instance C_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.B := ⟨(ne_of_not_colinear not_colinear_BCA).2.2⟩
 -- Claim : $A \ne B$.
@@ -68,10 +105,10 @@ instance E_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : P
 structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
   not_colinear_BCA : ¬ colinear B C A := not_colinear_BCA
   not_colinear_EFD : ¬ colinear E F D := not_colinear_EFD
--- and that $BC \parallel EF$,
-  BC_parallel_EF : (LIN B C) ∥ (LIN E F)
+-- and that $CB \parallel FE$,
+  CB_parallel_FE : (LIN C B) ∥ (LIN F E)
 -- If $\angle BAC = - \angle EDF$,
-  angle_BAC_eq_neg_angle_EDF : (∠ B A C) = - (∠ E D F)
+  angle_BAC_eq_angle_EDF : (∠ B A C) = (∠ E D F)
 -- and $AF = DC$,
   AF_eq_DC : (SEG A F).length = (SEG D C).length
 -- Prove that $AB = DE$.
@@ -79,9 +116,10 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
 theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (SEG e.A e.B).length = (SEG e.D e.E).length := by
   have F_int_AC : e.F LiesInt (SEG e.A e.C) := by sorry
   have C_int_DF : e.C LiesInt (SEG e.D e.F) := by sorry
-  have AC_eq_DF : (SEG e.A e.C).length = (SEG e.D e.F).length := by
+  haveI C_ne_F : PtNe e.C e.F := by sorry
+  have CA_eq_FD : (SEG e.C e.A).length = (SEG e.F e.D).length := by
     calc
-    (SEG e.A e.C).length
+    _= (SEG e.A e.C).length := by apply length_of_rev_eq_length'
     _= (SEG e.A e.F).length + (SEG e.F e.C).length := by
       apply length_eq_length_add_length
       apply Seg.lies_on_of_lies_int
@@ -91,10 +129,41 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (S
       symm; apply length_eq_length_add_length
       apply Seg.lies_on_of_lies_int
       exact C_int_DF
-  have angle_BCA_eq_neg_angle_EFD : (∠ e.B e.C e.A) = - (∠ e.E e.F e.D) := by sorry
--- ``to be rewritten``
-  have triangle_BCA_acongr_triangle_EFD : (TRI_nd e.B e.C e.A e.not_colinear_BCA) ≅ₐ (TRI_nd e.E e.F e.D e.not_colinear_EFD) := by sorry
-  exact triangle_BCA_acongr_triangle_EFD.edge₂
+    _=_ := by apply length_of_rev_eq_length'
+  have angle_ACB_eq_angle_DFE : (∠ e.A e.C e.B) = (∠ e.D e.F e.E) := by
+    have dir_CA_eq_neg_dir_FD : (RAY e.C e.A).toDir = - (RAY e.F e.D).toDir := by
+      calc
+      _= - e.l.toDir := by sorry
+      _=_ := by sorry
+    have dir_CB_eq_neg_dir_FE : (RAY e.C e.B).toDir = - (RAY e.F e.E).toDir := by
+      have h : IsOnOppositeSide e.B e.E (SEG_nd e.C e.F) := by
+        have h1 : (SEG_nd e.C e.F).toLine = e.l := by
+          calc
+          _= (LIN e.C e.F) := by
+            symm;
+            apply Line.eq_line_of_pt_pt_of_ne
+            apply SegND.lies_on_toLine_of_lie_on; exact SegND.source_lies_on
+            apply SegND.lies_on_toLine_of_lie_on; exact SegND.target_lies_on
+          _=_ := by
+            apply Line.eq_line_of_pt_pt_of_ne
+            exact e.C_on_l
+            exact e.F_on_l
+        have h2 : IsOnOppositeSide e.B e.E (SEG_nd e.C e.F) = IsOnOppositeSide e.B e.E e.l := by
+          calc
+          _= IsOnOppositeSide e.B e.E (SEG_nd e.C e.F).toLine := by rfl
+          _=_ := by congr
+      apply neg_toDir_of_parallel_and_IsOnOppositeSide
+      · exact e.CB_parallel_FE
+      · exact h
+    apply ang_eq_ang_of_toDir_rev_toDir
+    · exact dir_CA_eq_neg_dir_FD
+    · exact dir_CB_eq_neg_dir_FE
+  have triangle_BCA_congr_triangle_EFD : (TRI_nd e.B e.C e.A e.not_colinear_BCA) ≅ (TRI_nd e.E e.F e.D e.not_colinear_EFD) := by
+    apply TriangleND.congr_of_ASA
+    · exact angle_ACB_eq_angle_DFE
+    · exact CA_eq_FD
+    · exact e.angle_BAC_eq_angle_EDF
+  exact triangle_BCA_congr_triangle_EFD.edge₂
 end Problem_5
 
 end EuclidGeom
