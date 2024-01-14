@@ -156,6 +156,87 @@ instance : IntFig Triangle where
 
 end TriangleND
 
+variable {P : Type _} [EuclideanPlane P] (tr : Triangle P) (tr_nd : TriangleND P)
+
+namespace Triangle
+
+def perm_vertices : (Triangle P) where
+  point₁ := tr.point₂
+  point₂ := tr.point₃
+  point₃ := tr.point₁
+
+-- We decide not to define reverse permutation of triangles, just do composition twice.
+
+-- Permuting three times returns to the original triangle.
+theorem eq_self_of_perm_vertices_three_times : tr.perm_vertices.perm_vertices.perm_vertices = tr := rfl
+
+-- flip vertices for triangles means to flip the second and the third vertices.
+
+def flip_vertices : (Triangle P) where
+  point₁ := tr.point₁
+  point₂ := tr.point₃
+  point₃ := tr.point₂
+
+theorem eq_self_of_flip_vertices_twice : tr.flip_vertices.flip_vertices = tr := rfl
+
+-- Not sure this is the best theorem to p
+theorem eq_flip_of_perm_twice_of_perm_flip_vertices : tr.flip_vertices.perm_vertices.perm_vertices = tr.perm_vertices.flip_vertices := rfl
+
+theorem is_inside_of_is_inside_perm_vertices (tr : Triangle P) (p : P) (inside : p LiesInt tr) : p LiesInt tr.perm_vertices := by
+  sorry
+
+theorem is_inside_of_is_inside_flip_vertices (tr : Triangle P) (p : P) (inside : p LiesInt tr) : p LiesInt tr.flip_vertices := by
+  sorry
+
+end Triangle
+
+namespace TriangleND
+
+def perm_vertices : (TriangleND P) := ⟨tr_nd.1.perm_vertices, flip_colinear_snd_trd.mt $ flip_colinear_fst_snd.mt tr_nd.2⟩
+
+def flip_vertices : (TriangleND P) := ⟨tr_nd.1.flip_vertices, flip_colinear_snd_trd.mt tr_nd.2⟩
+
+theorem eq_self_of_perm_vertices_three_times : tr_nd.perm_vertices.perm_vertices.perm_vertices = tr_nd := rfl
+  --exact tr_nd.1.eq_self_of_perm_vertices_three_times
+
+theorem eq_self_of_flip_vertices_twice : tr_nd.flip_vertices.flip_vertices = tr_nd := rfl
+
+theorem eq_flip_of_perm_twice_of_perm_flip_vertices : tr_nd.flip_vertices.perm_vertices.perm_vertices = tr_nd.perm_vertices.flip_vertices := rfl
+
+-- compatibility of permutation/flip of vertices with orientation of the triangle
+
+theorem same_orient_of_perm_vertices : tr_nd.is_cclock = (tr_nd.perm_vertices.is_cclock) := by
+  unfold is_cclock
+  have w1 : tr_nd.oarea = (wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃)/2 := by rfl
+  have w2 : tr_nd.perm_vertices.oarea = (wedge tr_nd.perm_vertices.point₁ tr_nd.perm_vertices.point₂ tr_nd.perm_vertices.point₃)/2 := by rfl
+  have eq : wedge tr_nd.perm_vertices.point₁ tr_nd.perm_vertices.point₂ tr_nd.perm_vertices.point₃ = wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ := by
+    calc
+      _= wedge tr_nd.point₂ tr_nd.point₃ tr_nd.point₁ := by rfl
+      _=_ := by exact wedge231 tr_nd.point₁ tr_nd.point₂ tr_nd.point₃
+  simp only [w1,w2,eq]
+
+theorem reverse_orient_of_flip_vertices : tr_nd.is_cclock = ¬ tr_nd.flip_vertices.is_cclock := by
+  unfold is_cclock
+  have w1 : tr_nd.oarea = (wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃)/2 := by rfl
+  have w2 : tr_nd.flip_vertices.oarea = (wedge tr_nd.flip_vertices.point₁ tr_nd.flip_vertices.point₂ tr_nd.flip_vertices.point₃)/2 := by rfl
+  have neg : wedge tr_nd.flip_vertices.point₁ tr_nd.flip_vertices.point₂ tr_nd.flip_vertices.point₃ = -wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ := by
+    calc
+      _= wedge tr_nd.point₁ tr_nd.point₃ tr_nd.point₂ := by rfl
+      _=_ := by exact wedge132 tr_nd.point₁ tr_nd.point₂ tr_nd.point₃
+  simp only [w1,w2,neg,eq_iff_iff]
+  constructor
+  · intro P
+    linarith
+  · intro P
+    simp at P
+    sorry
+
+theorem is_inside_of_is_inside_perm_vertices (tr_nd : Triangle P) (p : P) (inside : p LiesInt tr_nd) : p LiesInt tr_nd.perm_vertices := by sorry
+
+theorem is_inside_of_is_inside_flip_vertices (tr_nd : Triangle P) (p : P) (inside : p LiesInt tr_nd) : p LiesInt tr_nd.flip_vertices := by sorry
+
+end TriangleND
+
 def TriangleND.mk (A B C : P) (h : ¬ colinear A B C) : TriangleND P := Subtype.mk (Triangle.mk A B C) h
 
 scoped notation "TRI" => Triangle.mk
@@ -305,15 +386,55 @@ theorem angle₁_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsPos
   simp only [eq_iff_iff]
   exact isPos_iff_zero_lt_sin.symm
 
-theorem angle₂_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₂.value.IsPos := by sorry
+theorem angle₂_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₂.value.IsPos := by
+  have eqcc : tr_nd.is_cclock = tr_nd.perm_vertices.is_cclock := by
+    exact same_orient_of_perm_vertices tr_nd
+  simp only [eqcc]
+  have eqANG' : tr_nd.angle₂.value.IsPos = tr_nd.perm_vertices.angle₁.value.IsPos := by
+    congr
+  simp only [eqANG']
+  exact (angle₁_pos_iff_cclock tr_nd.perm_vertices)
 
-theorem angle₃_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₃.value.IsPos := by sorry
+theorem angle₃_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₃.value.IsPos := by
+  have eqcc : tr_nd.is_cclock = tr_nd.perm_vertices.is_cclock := by
+    exact same_orient_of_perm_vertices tr_nd
+  simp only [eqcc]
+  have eqANG' : tr_nd.angle₃.value.IsPos = tr_nd.perm_vertices.angle₂.value.IsPos := by
+    congr
+  simp only [eqANG']
+  exact (angle₂_pos_iff_cclock tr_nd.perm_vertices)
 
-theorem angle₁_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsNeg := by sorry
+theorem angle₁_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsNeg := by
+  have negcc : tr_nd.is_cclock = ¬ tr_nd.flip_vertices.is_cclock := by
+    exact reverse_orient_of_flip_vertices tr_nd
+  simp only [negcc, not_not]
+  have negval : tr_nd.angle₁.value = -tr_nd.flip_vertices.angle₁.value := by
+    calc
+      tr_nd.angle₁.value = ∠ tr_nd.point₂ tr_nd.point₁ tr_nd.point₃ := by rfl
+      _= -∠ tr_nd.point₃ tr_nd.point₁ tr_nd.point₂ := by exact neg_value_of_rev_ang
+      _= -tr_nd.flip_vertices.angle₁.value := by rfl
+  have h : tr_nd.angle₁.value.IsNeg = tr_nd.flip_vertices.angle₁.value.IsPos := by
+    simp only [negval, neg_isNeg_iff_isPos]
+  simp only [h]
+  exact (angle₁_pos_iff_cclock tr_nd.flip_vertices)
 
-theorem angle₂_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₂.value.IsNeg := by sorry
+theorem angle₂_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₂.value.IsNeg := by
+  have eqcc : tr_nd.is_cclock = tr_nd.perm_vertices.is_cclock := by
+    exact same_orient_of_perm_vertices tr_nd
+  simp only [eqcc]
+  have eqANG' : tr_nd.angle₂.value.IsNeg = tr_nd.perm_vertices.angle₁.value.IsNeg := by
+    congr
+  simp only [eqANG']
+  exact (angle₁_neg_iff_not_cclock tr_nd.perm_vertices)
 
-theorem angle₃_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₃.value.IsNeg := by sorry
+theorem angle₃_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₃.value.IsNeg := by
+  have eqcc : tr_nd.is_cclock = tr_nd.perm_vertices.is_cclock := by
+    exact same_orient_of_perm_vertices tr_nd
+  simp only [eqcc]
+  have eqANG' : tr_nd.angle₃.value.IsNeg = tr_nd.perm_vertices.angle₂.value.IsNeg := by
+    congr
+  simp only [eqANG']
+  exact (angle₂_neg_iff_not_cclock tr_nd.perm_vertices)
 
 
 theorem pos_pos_or_neg_neg_of_iff_cclock {tr_nd₁ tr_nd₂ : TriangleND P} : (tr_nd₁.is_cclock ↔ tr_nd₂.is_cclock) ↔ (tr_nd₁.angle₁.value.IsPos ∧ tr_nd₂.angle₁.value.IsPos) ∨ (tr_nd₁.angle₁.value.IsNeg ∧ tr_nd₂.angle₁.value.IsNeg) := by
