@@ -11,16 +11,11 @@ variable {P : Type _} [EuclideanPlane P]
 
 section AngleValue
 
-/- theorem - π < angle.value, angle.value ≤ π,  -/
-theorem val_gt_neg_pi (ang : Angle P) : -π < ang.value.toReal := sorry
-
-theorem val_le_pi (ang : Angle P) : ang.value.toReal < π := sorry
-
 /- theorem when angle > 0, IsInt means lies left of start ray + right of end ray; when angle < 0, ...  -/
 
 end AngleValue
 
-section AngleSum
+section angle_sum
 
 namespace Angle
 
@@ -34,14 +29,11 @@ theorem ang_eq_ang_add_ang_mod_pi_of_adj_ang (ang₁ ang₂ : Angle P) (h: ang�
 
 end Angle
 
-end AngleSum
+end angle_sum
 
-section colinear
+section angle_sub
 
-theorem colinear_of_angle_eq_zero {A O B : P} {h₁ : A ≠ O} {h₂ : B ≠ O} : ∠ A O B h₁ h₂ = 0 → colinear O A B := by sorry
+end angle_sub
 
-theorem colinear_of_angle_eq_pi {A O B : P} {h₁ : A ≠ O} {h₂ : B ≠ O} : ∠ A O B h₁ h₂ = π → colinear O A B := by sorry
-
-end colinear
 
 end EuclidGeom

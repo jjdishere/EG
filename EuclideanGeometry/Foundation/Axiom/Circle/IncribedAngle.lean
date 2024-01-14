@@ -9,7 +9,7 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 noncomputable section
 namespace EuclidGeom
 
-open AngValue
+open AngValue Angle
 
 @[ext]
 structure Arc (P : Type _) [EuclideanPlane P] where
@@ -133,14 +133,11 @@ theorem cangle_of_complementary_arc_are_opposite (β : Arc P) : β.cangle.value 
   apply neg_value_of_rev_ang
 
 theorem antipode_iff_colinear (A B : P) {ω : Circle P} [h : PtNe B A] (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) : Arc.IsAntipode A B h₁ h₂ ↔ colinear ω.center A B := by
-  constructor
-  · intro hh
-    unfold Arc.IsAntipode Arc.cangle Arc.mk_pt_pt_circle Arc.angle_mk_pt_arc at hh
-    simp at hh
-    apply colinear_of_angle_eq_pi hh
-  intro hh
   haveI : PtNe A ω.center := Circle.pt_lieson_ne_center h₁
   haveI : PtNe B ω.center := Circle.pt_lieson_ne_center h₂
+  constructor
+  · exact colinear_of_angle_eq_pi
+  intro hh
   show ∠ A ω.center B = π
   have hl : B LiesOn LIN ω.center A := Line.pt_pt_maximal hh
   have heq₁ : VEC A ω.center = VEC ω.center B := by
@@ -160,7 +157,7 @@ theorem antipode_iff_colinear (A B : P) {ω : Circle P} [h : PtNe B A] (h₁ : A
     show VEC A ω.center = 2⁻¹ • (VEC A B)
     rw [heq₂]
     simp
-  apply liesint_segnd_value_eq_pi _ hli
+  exact value_eq_pi_of_lies_int_seg_nd hli
 
 theorem mk_pt_pt_diam_isantipode {A B : P} [h : PtNe A B] : Arc.IsAntipode A B (Circle.mk_pt_pt_diam_fst_lieson) (Circle.mk_pt_pt_diam_snd_lieson) := by
   have hc : colinear (SEG A B).midpoint A B := by

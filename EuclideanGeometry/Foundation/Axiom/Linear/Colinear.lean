@@ -25,12 +25,6 @@ def colinear (A B C : P) : Prop :=
 
 -- The definition of colinear now includes two cases: the degenerate case and the nondegenerate case. We use to_dir' to avoid problems involving using conditions of an "if" in its "then" and "else". And we only use VEC to define colinear.
 
-theorem toProj_eq_of_colinear {A B C : P} [hba : PtNe B A] [hca : PtNe C A] (h : colinear A B C) : (SEG_nd A B).toProj = (SEG_nd A C).toProj :=
-  if hbc : B = C then by congr
-  else ((dite_prop_iff_and _).mp h).2 <| by
-    push_neg
-    exact ⟨Ne.symm hbc, Fact.out, Fact.out⟩
-
 /-- Given three points $A$, $B$, $C$ and a real number $t$, if the vector $\overrightarrow{AC}$ is $t$ times the vector $\overrightarrow{AB}$, then $A$, $B$, and $C$ are colinear. -/
 theorem colinear_of_vec_eq_smul_vec {A B C : P} {t : ℝ} (e : VEC A C = t • VEC A B) : colinear A B C := by
   have : colinear A B C = True := by
@@ -158,6 +152,15 @@ theorem ne_of_not_colinear {A B C : P} (h : ¬ colinear A B C) : (C ≠ B) ∧ (
   push_neg at h
   rcases h with ⟨g, _⟩
   tauto
+
+theorem colinear_iff_toProj_eq_of_ptNe {A B C : P} [hba : PtNe B A] [hca : PtNe C A] : colinear A B C ↔ (VEC_nd A B).toProj = (VEC_nd A C).toProj := by
+  if hbc : B = C then simp only [hbc, colinear_of_trd_eq_snd A rfl]
+  else
+    refine' ⟨fun h ↦ _, fun h ↦ _⟩
+    exact ((dite_prop_iff_and _).mp h).2 <| by
+      push_neg
+      exact ⟨Ne.symm hbc, hca.1.symm, hba.1⟩
+    exact (dite_prop_iff_and _).mpr ⟨fun _ ↦ trivial, fun _ ↦ h⟩
 
 end colinear
 
