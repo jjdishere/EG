@@ -104,6 +104,7 @@ end mk_parallel
 -- 6 theorems for each coercion, 6 coercion
 section parallel_iff_coercion_parallel
 
+/-- If two nondegenerate segments are parallel, then their associated rays are parallel. -/
 theorem SegND.para_toRay_of_para (seg_nd seg_nd' : SegND P) : seg_nd ∥ seg_nd' → seg_nd.toRay ∥ seg_nd'.toRay := id
 
 theorem SegND.para_of_para_toRay (seg_nd seg_nd' : SegND P) : seg_nd.toRay ∥ seg_nd'.toRay → seg_nd ∥ seg_nd' := id
@@ -112,6 +113,7 @@ theorem SegND.para_iff_para_toRay (seg_nd seg_nd' : SegND P) : seg_nd.toRay ∥ 
 
 theorem SegND.not_para_toRay_of_not_para (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' → ¬ seg_nd.toRay ∥ seg_nd'.toRay := id
 
+/-- If the associated rays of two nondegenerate segments are not parallel, then the two segments are not parallel. -/
 theorem SegND.not_para_of_not_para_toRay (seg_nd seg_nd' : SegND P) : ¬ seg_nd.toRay ∥ seg_nd'.toRay → ¬ seg_nd ∥ seg_nd' := id
 
 theorem SegND.not_para_iff_not_para_toRay (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' ↔ ¬ seg_nd.toRay ∥ seg_nd'.toRay  := ⟨id, id⟩
@@ -122,6 +124,7 @@ theorem SegND.para_of_para_toDirLine (seg_nd seg_nd' : SegND P) : seg_nd.toDirLi
 
 theorem SegND.para_iff_para_toDirLine (seg_nd seg_nd' : SegND P) : seg_nd.toDirLine ∥ seg_nd'.toDirLine ↔ seg_nd ∥ seg_nd' := ⟨id, id⟩
 
+/-- If two nondegenerate segments are not parallel, then their associated directed lines are not parallel. -/
 theorem SegND.not_para_toDirLine_of_not_para (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' → ¬ seg_nd.toDirLine ∥ seg_nd'.toDirLine := id
 
 theorem SegND.not_para_of_not_para_toDirLine (seg_nd seg_nd' : SegND P) : ¬ seg_nd.toDirLine ∥ seg_nd'.toDirLine → ¬ seg_nd ∥ seg_nd' := id
@@ -153,6 +156,7 @@ theorem Ray.not_para_iff_not_para_toDirLine (ray ray' : Ray P) : ¬ ray ∥ ray'
 /-- Given two parallel rays, their extension lines are parallel. -/
 theorem Ray.para_toLine_of_para (ray ray' : Ray P) : ray ∥ ray' → ray.toLine ∥ ray'.toLine := id
 
+/-- If the lines associated to two rays are parallel, then thew two rays are parallel. -/
 theorem Ray.para_of_para_toLine (ray ray' : Ray P) : ray.toLine ∥ ray'.toLine → ray ∥ ray' := id
 
 theorem Ray.para_iff_para_toLine (ray ray' : Ray P) : ray.toLine ∥ ray'.toLine ↔ ray ∥ ray' := ⟨id, id⟩
