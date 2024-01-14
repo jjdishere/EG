@@ -109,10 +109,17 @@ scoped postfix : 50 "nd_IsParallelogramND" => Quadrilateral_nd.IsParallelogramND
 theorem parallelogram_non_triv_of_parallelogramND {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.Parallelogram_non_triv := by
   sorry
 
+/-- A parallelogram_nd satisfies parallelogram_non_triv. -/
+theorem parallelogram_non_triv_of_parallelogramND_variant {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D).Parallelogram_non_triv := by
+  sorry
+
 /-- A parallelogram_nd satisfies parallelogram_para. -/
 theorem parallelogram_para_of_parallelogramND {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.IsParallelogram_para := by
   sorry
 
+/-- A parallelogram_nd satisfies parallelogram_para. -/
+theorem parallelogram_para_of_parallelogramND_variant {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D).IsParallelogram_para := by
+  sorry
 
 def ParallelogramND.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D) IsConvex) (h': (QDR A B C D) IsParallelogram) : ParallelogramND P where
   toQuadrilateral := (QDR A B C D)
@@ -163,8 +170,7 @@ theorem qdr_is_parallelogram_perm_iff : (qdr.IsParallelogram) ↔ ((qdr.perm).Is
   rw [vsub_sub_vsub_comm]
 
 /-- If a quadrilateral is a parallelogram_nd, then its perm is also a parallelogram_nd. -/
-theorem qdr_is_parallelogramND_perm_iff : (qdr.IsParallelogramND) ↔ ((qdr.perm).IsParallelogramND) := by
-  sorry
+theorem qdr_is_parallelogramND_perm_iff : (qdr.IsParallelogramND) ↔ ((qdr.perm).IsParallelogramND) := by sorry
 
 /-- If a quadrilateral satisfies para, then its perm also satisfies para. -/
 theorem qdr_is_parallelogram_para_perm_iff : (qdr.IsParallelogram_para) ↔ ((qdr.perm).IsParallelogram_para) := by sorry
@@ -388,13 +394,12 @@ section criteria_prg_nd_of_qdr_cvx
 variable {P : Type _} [EuclideanPlane P]
 variable {A B C D : P}
 variable (nd : (QDR A B C D).IsND)
-variable (cvx : (QDR_nd A B C D nd).IsConvex)
+variable (cvx : (QDR A B C D).IsConvex)
 variable {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
 variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
 
 /-- If edge_nd₁₂ and edge_nd₃₄ of a quadrilateral_cvx are parallel, and so do edge_nd₁₄ and edge_nd₂₃, then it is a parallelogram_nd. -/
-theorem qdr_cvx_is_prg_nd_of_para_para (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) (h₂ : qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.edge_nd₂₃) : qdr_cvx.IsParallelogramND := by
-  sorry
+theorem qdr_cvx_is_prg_nd_of_para_para (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) (h₂ : qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.edge_nd₂₃) : qdr_cvx.IsParallelogramND := by sorry
 
 /-- If AB and CD are parallel, and so do AD and BC, then quadrilateral_cvx A B C D is a parallelogram_nd. -/
 theorem qdr_cvx_is_prg_nd_of_para_para_variant (h₁ : (QDR_nd A B C D nd).edge_nd₁₂ ∥ (QDR_nd A B C D nd).edge_nd₃₄) (h₂ : (QDR_nd A B C D nd).edge_nd₁₄ ∥ (QDR_nd A B C D nd).edge_nd₂₃) : (Quadrilateral_nd.mk_is_nd nd).IsParallelogramND := by sorry
@@ -496,8 +501,20 @@ theorem nd_is_prg_of_is_prg_nd_variant (A B C D : P) (h : (QDR A B C D).IsParall
   rcases h with ⟨_,a⟩
   exact a
 
+/-- Parallelogram_nd A B C D is nd. -/
+theorem nd_is_nd_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D).IsND := by
+  unfold Quadrilateral.IsParallelogramND at h
+  rcases h with ⟨a,_⟩
+  unfold Quadrilateral.IsConvex at a
+  by_cases j: (QDR A B C D).IsND
+  exact j
+  simp only [dite_false, j] at a
+
 /-- Parallelogram_nd A B C D is convex. -/
-theorem nd_is_convex_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D) IsConvex := by sorry
+theorem nd_is_convex_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D) IsConvex := by
+  unfold Quadrilateral.IsParallelogramND at h
+  rcases h with ⟨a,_⟩
+  exact a
 
 /-- In a parallelogram_nd A B C D, B ≠ A. -/
 theorem nd₁₂_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : B ≠ A := by
@@ -530,16 +547,36 @@ theorem nd₂₄_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : D 
   exact (Quadrilateral_cvx.mk_is_convex s).nd₂₄.out
 
 /-- In a parallelogram_nd, edge_nd₁₂ and edge₃₄ are parallel. -/
-theorem nd_para_of_is_prg_nd : prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ := by sorry
+theorem nd_para_of_is_prg_nd : prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ := by
+  have h: prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ ∧ prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := by apply parallelogram_para_of_parallelogramND
+  rcases h with ⟨a,_⟩
+  exact a
 
 /-- In a parallelogram_nd A B C D, A B and C D are parallel. -/
-theorem nd_para_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : (SEG_nd A B (nd₁₂_of_is_prg_nd_variant h)) ∥ (SEG_nd C D (nd₃₄_of_is_prg_nd_variant h)) := by sorry
+theorem nd_para_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : (SEG_nd A B (nd₁₂_of_is_prg_nd_variant h)) ∥ (SEG_nd C D (nd₃₄_of_is_prg_nd_variant h)) := by
+  have p: (QDR A B C D).IsParallelogram_para := by apply parallelogram_para_of_parallelogramND_variant h
+  have H: (QDR A B C D).IsND := nd_is_nd_of_is_prg_nd_variant h
+  unfold Quadrilateral.IsParallelogram_para at p
+  simp only [dite_true, H] at p
+  unfold Quadrilateral_nd.IsParallelogram_para at p
+  rcases p with ⟨a,_⟩
+  exact a
 
 /-- In a parallelogram_nd, edge_nd₁₄ and edge₂₃ are parallel. -/
-theorem nd_para_of_is_prg_nd' : prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := by sorry
+theorem nd_para_of_is_prg_nd' : prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := by
+  have h: prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ ∧ prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := by apply parallelogram_para_of_parallelogramND
+  rcases h with ⟨_,a⟩
+  exact a
 
 /-- In a parallelogram_nd A B C D, A D and B C are parallel. -/
-theorem nd_para_of_is_prg_nd'_variant (h : (QDR A B C D).IsParallelogramND) : SEG_nd A D (nd₁₄_of_is_prg_nd_variant h) ∥ SEG_nd B C (nd₂₃_of_is_prg_nd_variant h) := by sorry
+theorem nd_para_of_is_prg_nd'_variant (h : (QDR A B C D).IsParallelogramND) : SEG_nd A D (nd₁₄_of_is_prg_nd_variant h) ∥ SEG_nd B C (nd₂₃_of_is_prg_nd_variant h) := by
+  have p: (QDR A B C D).IsParallelogram_para := by apply parallelogram_para_of_parallelogramND_variant h
+  have H: (QDR A B C D).IsND := nd_is_nd_of_is_prg_nd_variant h
+  unfold Quadrilateral.IsParallelogram_para at p
+  simp only [dite_true, H] at p
+  unfold Quadrilateral_nd.IsParallelogram_para at p
+  rcases p with ⟨_,a⟩
+  exact a
 
 /-- In a parallelogram_nd, angle₂ and angle₄ are equal. -/
 theorem nd_eq_angle_value_of_is_prg_nd : prg_nd.angle₂.value = prg_nd.angle₄.value := by sorry
