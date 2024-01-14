@@ -229,7 +229,15 @@ theorem reverse_orient_of_flip_vertices : tr_nd.is_cclock = ¬ tr_nd.flip_vertic
     linarith
   · intro P
     simp at P
-    sorry
+    have ne0' : wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ ≠ 0 := by
+      have : ¬ colinear tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ := by
+        exact tr_nd.2
+      apply (colinear_iff_wedge_eq_zero tr_nd.point₁ tr_nd.point₂ tr_nd.point₃).not.mp
+      exact this
+    have ne0 : wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃/2 ≠ 0 := by
+      simp only [ne_eq, div_eq_zero_iff, ne0', OfNat.ofNat_ne_zero, or_self, not_false_eq_true]
+    have nonneg : wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃/2 ≥ 0 := by linarith
+    exact Ne.lt_of_le (id (Ne.symm ne0)) nonneg
 
 theorem is_inside_of_is_inside_perm_vertices (tr_nd : Triangle P) (p : P) (inside : p LiesInt tr_nd) : p LiesInt tr_nd.perm_vertices := by sorry
 
