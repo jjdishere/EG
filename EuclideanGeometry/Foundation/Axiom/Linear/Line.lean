@@ -785,7 +785,7 @@ theorem pt_pt_maximal {A B C : P} [_h : PtNe B A] (Co : colinear A B C) : C Lies
     exact snd_pt_lies_on_mk_pt_pt
   else haveI : PtNe C B := ⟨hcb⟩
   (lies_on_iff_eq_toProj_of_lies_on snd_pt_lies_on_mk_pt_pt).mpr <|
-    (toProj_eq_of_colinear (perm_colinear_snd_trd_fst Co)).trans <|
+    (colinear_iff_toProj_eq_of_ptNe.mp (perm_colinear_snd_trd_fst Co)).trans <|
       congrArg Line.toProj (line_of_pt_pt_eq_rev (_h := _h)).symm
 
 theorem maximal {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) [_h : PtNe B A] (Co : colinear A B C) : C LiesOn l := by

@@ -28,6 +28,8 @@ Of course many definitions work on these classes already, but without necessarit
 noncomputable section
 namespace EuclidGeom
 
+open Angle
+
 /-- Class of Quadrilateral: A quadrilateral consists of four points; it is the generalized quadrilateral formed by these four points -/
 @[ext]
 structure Quadrilateral (P : Type _) [EuclideanPlane P] where
@@ -391,8 +393,7 @@ instance nd₁₃ : PtNe qdr_cvx.point₃ qdr_cvx.point₁ := Fact.mk <| by
   by_contra h
   have g : qdr_cvx.angle₂.value = 0 := by
     unfold Quadrilateral_nd.angle₂
-    simp only [h]
-    exact angle_eq_zero_of_same_dir
+    simp only [h, pt_pt_pt_value_eq_zero_of_same_pt]
   have k₁ : ¬ qdr_cvx.angle₂.value.IsPos := by
     rw [g]
     exact AngValue.not_zero_isPos

@@ -321,7 +321,7 @@ theorem Vec.linear_combination_of_not_colinear_dir {u v : Dir} (w : Vec) (h' : u
   exact @linear_combination_of_not_colinear' u.unitVec v.unitVec w (VecND.ne_zero _) (h₁ h')
 
 /-- Given two unparallel rays, this function gives the intersection of their extension lines. -/
-def inx_of_extn_line (r₁ r₂ : Ray P) (h : ¬ r₁ ∥ r₂) : P := (cu r₁.toDir.unitVecND r₂.toDir.unitVecND (VEC r₁.source r₂.source) • r₁.toDir.unitVec +ᵥ r₁.source)
+def inx_of_extn_line (r₁ r₂ : Ray P) (_h : ¬ r₁ ∥ r₂) : P := (cu r₁.toDir.unitVecND r₂.toDir.unitVecND (VEC r₁.source r₂.source) • r₁.toDir.unitVec +ᵥ r₁.source)
 
 /-- Given two unparallel rays, we define the intersection of their extension lines. -/
 theorem inx_of_extn_line_symm (r₁ r₂ : Ray P) (h : ¬ r₁ ∥ r₂) :

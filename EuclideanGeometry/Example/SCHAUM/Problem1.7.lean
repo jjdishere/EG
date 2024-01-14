@@ -82,7 +82,6 @@ Therefore, $DX = EY$.
   have E_int_ray_CB : e.E LiesInt (RAY e.C e.B C_ne_B.symm) := by
     -- It suffices to prove that $E$ lies on segment $CB$.
     apply SegND.lies_int_toRay_of_lies_int (seg_nd := (SEG_nd e.C e.B C_ne_B.symm))
-    apply lies_int_seg_nd_of_lies_int_seg e.C e.B e.E C_ne_B.symm _
     -- By symmetry, we only need to show that $E$ lies on segment $BC$,
     apply (Seg.lies_int_rev_iff_lies_int (seg := (SEG e.B e.C))).mpr
     -- which is what we already know.
@@ -115,7 +114,7 @@ Therefore, $DX = EY$.
     -- It suffices to prove that $D$ lies on segment $BC$.
     apply SegND.lies_int_toRay_of_lies_int (seg_nd := (SEG_nd e.B e.C C_ne_B))
     -- which is what we already know.
-    exact lies_int_seg_nd_of_lies_int_seg e.B e.C e.D C_ne_B e.D_int_BC
+    exact e.D_int_BC
   -- We have that $X$ lies on ray $BA$.
   have X_int_ray_BA : e.X LiesInt (RAY e.B e.A A_ne_B) := by
     simp only [e.hd, Line.line_of_pt_pt_eq_rev A_ne_B.symm]

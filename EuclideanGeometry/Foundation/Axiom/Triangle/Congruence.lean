@@ -526,13 +526,12 @@ theorem IsACongr.not_nd_of_not_nd (h : tr₁.IsACongr tr₂) (nnd : ¬ tr₁.IsN
   fun nd ↦ nnd (h.symm.nd_of_nd nd)
 
 theorem not_nd_of_acongr_self (h : tr.IsACongr tr) : ¬ tr.IsND := by
-  by_contra nd
+  intro nd
   let tr_nd : TriangleND P := ⟨tr, nd⟩
-  have temp := ((dite_prop_iff_and _).mp h.4).1 ⟨nd,nd⟩
-  have eq : Angle.value tr_nd.angle₁ = 0 ∨ Angle.value tr_nd.angle₁ = π := AngValue.eq_neg_self_iff.mp temp
-  cases eq with
-  | inl eq => exact nd (colinear_of_angle_eq_zero eq)
-  | inr eq => exact nd (colinear_of_angle_eq_pi eq)
+  haveI : PtNe tr.point₂ tr.point₁ := tr_nd.nontriv₃
+  haveI : PtNe tr.point₃ tr.point₁ := tr_nd.nontriv₂.symm
+  exact nd <| colinear_iff_not_isND.mpr <|
+    eq_neg_self_iff_not_isND.mp (((dite_prop_iff_and _).mp h.4).1 ⟨nd, nd⟩)
 
 theorem acongr_self_of_not_nd (nnd : ¬ tr.IsND) : tr.IsACongr tr where
   edge₁ := rfl

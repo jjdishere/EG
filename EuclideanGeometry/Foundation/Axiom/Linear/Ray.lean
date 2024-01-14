@@ -170,7 +170,11 @@ protected def IsOn (X : P) (ray : Ray P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ VEC ray.source X = t • ray.toDir.unitVec
 
 /-- Given a point $X$ and a ray, this function returns whether the point lies in the interior of the ray; here saying that a point lies in the interior of a ray means that it lies on the ray and is not equal to the source of the ray. -/
-protected def IsInt (X : P) (ray : Ray P) : Prop := Ray.IsOn X ray ∧ X ≠ ray.source
+protected structure IsInt (X : P) (ray : Ray P) : Prop where
+  isOn : Ray.IsOn X ray
+  ne_source : X ≠ ray.source
+
+alias ne_source_of_lies_int := IsInt.ne_source
 
 /-- Given a ray, its carrier is the set of points that lie on the ray. -/
 protected def carrier (ray : Ray P) : Set P := { X : P | Ray.IsOn X ray }
@@ -182,7 +186,7 @@ protected def interior (ray : Ray P) : Set P := { X : P | Ray.IsInt X ray }
 instance : IntFig (Ray P) P where
   carrier := Ray.carrier
   interior := Ray.interior
-  interior_subset_carrier _ _ := And.left
+  interior_subset_carrier _ _ := IsInt.isOn
 
 end Ray
 
@@ -204,6 +208,10 @@ protected structure IsInt (X : P) (seg : Seg P) : Prop where
   isOn : Seg.IsOn X seg
   ne_source : X ≠ seg.source
   ne_target : X ≠ seg.target
+
+alias ne_source_of_lies_int := IsInt.ne_source
+
+alias ne_target_of_lies_int := IsInt.ne_target
 
 /-- Given a segment, this function returns the set of points that lie on the segment. -/
 protected def carrier (seg : Seg P) : Set P := { X : P | Seg.IsOn X seg }
@@ -405,6 +413,14 @@ theorem SegND.lies_int_iff {X : P} {seg_nd : SegND P}: X LiesInt seg_nd ↔ ∃ 
       rw [h1, smul_ne_zero_iff]
       exact ⟨by linarith, seg_nd.toVecND.2⟩
 
+/-- For a nondegenerate segment $AB$, if a point $X$ lies on $AB$ the $X$ not equal to $A$. -/
+theorem SegND.ne_source_of_lies_int {X : P} {s : SegND P} (h : X LiesInt s) : X ≠ s.source :=
+  h.ne_source
+
+/-- For a nondegenerate segment $AB$, if a point $X$ lies on $AB$ the $X$ not equal to $B$. -/
+theorem SegND.ne_target_of_lies_int {X : P} {s : SegND P} (h : X LiesInt s) : X ≠ s.target :=
+  h.ne_target
+
 /-- For a segment $AB$, if there exists an interior point $X$, then it is nondegenerate. -/
 theorem Seg.isND_of_pt_liesint {seg : Seg P} {X : P} (h : X LiesInt seg) : seg.IsND := by sorry
 
@@ -418,7 +434,6 @@ theorem Seg.lies_int_iff {X : P} {seg : Seg P}: X LiesInt seg ↔ seg.IsND ∧ (
     let segnd : SegND P := ⟨ seg, h2.1 ⟩
     exact (segnd.lies_int_iff).mpr h2.2
 
-
 /-- Given a segment $AB$, the source $A$ of the segment lies on the segment. -/
 @[simp]
 theorem Seg.source_lies_on {seg : Seg P} : seg.source LiesOn seg :=
@@ -426,7 +441,7 @@ theorem Seg.source_lies_on {seg : Seg P} : seg.source LiesOn seg :=
 
 /--  Given a segment $AB$, the target $B$ lies on the segment $AB$. -/
 @[simp]
-theorem Seg.target_lies_on {seg : Seg P} : seg.target LiesOn seg := ⟨1, zero_le_one, by rfl, by rw [one_smul]⟩
+theorem Seg.target_lies_on {seg : Seg P} : seg.target LiesOn seg := ⟨1, zero_le_one, Eq.le rfl, by rw [one_smul]⟩
 
 /-- Given a segment $AB$, the source $A$ does not belong to the interior of $AB$. -/
 @[simp]
@@ -474,8 +489,8 @@ theorem Ray.lies_on_of_lies_int {X : P} {ray : Ray P} (h : X LiesInt ray) : X Li
 
 
 /-- Given a ray, a point lies in the interior of the ray if and only if it lies on the ray and is different from the source of ray. -/
-theorem Ray.lies_int_def {X : P} {ray : Ray P} : X LiesInt ray ↔ X LiesOn ray ∧ X ≠ ray.source := Iff.rfl
-
+theorem Ray.lies_int_def {X : P} {ray : Ray P} : X LiesInt ray ↔ X LiesOn ray ∧ X ≠ ray.source :=
+  ⟨fun h ↦ ⟨h.1, h.2⟩, fun h ↦ ⟨h.1, h.2⟩⟩
 
 /-- For a nondegenerate segment $AB$, every point of the segment $AB$ lies on the ray associated to $AB$. -/
 theorem SegND.lies_on_toRay_of_lies_on {X : P} {seg_nd : SegND P} (h : X LiesOn seg_nd) : X LiesOn seg_nd.toRay := by
@@ -739,6 +754,8 @@ theorem every_pt_lies_int_ray_of_source_lies_int_ray_and_same_dir {ray₁ ray₂
   constructor
   linarith
   rw[←vec_add_vec ray₂.1 ray₁.1,hx,ht,add_smul]
+
+theorem SegND.toDir_eq_neg_toDir_of_lies_int {A : P} {s : SegND P} (h : A LiesInt s) : (VEC_nd A s.source h.2.symm).toDir = - (VEC_nd A s.target h.3.symm).toDir := sorry
 
 end lieson_compatibility
 
