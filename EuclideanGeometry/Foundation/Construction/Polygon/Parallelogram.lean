@@ -490,6 +490,12 @@ variable {A B C D : P}
 variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
 variable {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P)
 
+/-- Parallelogram_nd A B C D is a parallelogram. -/
+theorem nd_is_prg_of_is_prg_nd_variant (A B C D : P) (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D).IsParallelogram := by
+  unfold Quadrilateral.IsParallelogramND at h
+  rcases h with ⟨_,a⟩
+  exact a
+
 /-- Parallelogram_nd A B C D is convex. -/
 theorem nd_is_convex_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D) IsConvex := by sorry
 
