@@ -578,6 +578,18 @@ theorem nd_para_of_is_prg_nd'_variant (h : (QDR A B C D).IsParallelogramND) : SE
   rcases p with ⟨_,a⟩
   exact a
 
+/-- The toDirs of edge_nd₁₂ and edge_nd₃₄ of a parallelogram_nd remain reverse. -/
+theorem todir_eq_of_is_prg_nd : prg_nd.edge_nd₁₂.toDir = - prg_nd.edge_nd₃₄.toDir := by sorry
+
+/-- The toDirs of AB and CD in parallelogram_nd A B C D remain reverse. -/
+theorem todir_eq_of_is_prg_nd_variant (A B C D : P) (h : (QDR A B C D).IsParallelogramND) (h1 : B ≠ A) (h2 : C ≠ D): (SEG_nd A B h1).toDir = (SEG_nd D C h2).toDir := by sorry
+
+/-- The toDirs of edge_nd₁₄ and edge_nd₂₃ of a parallelogram_nd remain the same. -/
+theorem todir_eq_of_is_prg_nd' : prg_nd.edge_nd₁₄.toDir = prg_nd.edge_nd₂₃.toDir := by sorry
+
+/-- The toDirs of AD and BC in parallelogram_nd A B C D remain the same. -/
+theorem todir_eq_of_is_prg_nd'_variant (A B C D : P) (h : (QDR A B C D).IsParallelogramND) (h1 : D ≠ A) (h2 : C ≠ B): (SEG_nd A D h1).toDir = (SEG_nd B C h2).toDir := by sorry
+
 /-- In a parallelogram_nd, angle₂ and angle₄ are equal. -/
 theorem nd_eq_angle_value_of_is_prg_nd : prg_nd.angle₂.value = prg_nd.angle₄.value := by sorry
 
