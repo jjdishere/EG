@@ -430,9 +430,13 @@ theorem same_sign_of_parallel (A B : P) (ray : Ray P) [bnea : PtNe B A] (para : 
 
 theorem same_odist_sign_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l = odist_sign B l) : ∀ (C : P) , Seg.IsOn C (SEG A B) → odist_sign C l = odist_sign A l := sorry
 
+--should be discussed with relative side
 theorem no_intersect_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l * odist_sign B l = 1) : ∀ (C : P) , Seg.IsOn C (SEG A B) → ¬ Line.IsOn C l := sorry
 
 theorem intersect_of_diff_odist_sign (A B : P) (l : DirLine P) (signdiff : odist_sign A l * odist_sign B l = -1) : ∃ (C : P), Seg.IsOn C (SEG A B) ∧ Line.IsOn C l := sorry
+
+/-
+--this is proven later after relative side and stronger
 
 lemma ne_of_isonleft_of_lieson (A B : P) (r : DirLine P) (aliesonr : A LiesOn r) (bliesonleft : IsOnLeftSide B r) : B ≠ A := by
   intro h0
@@ -442,6 +446,7 @@ lemma ne_of_isonleft_of_lieson (A B : P) (r : DirLine P) (aliesonr : A LiesOn r)
   linarith
 
 theorem isonleft_of_isintray_of_isonleft (r : DirLine P) (A B C: P) (aliesonr : Line.IsOn A r) (bliesonleft : IsOnLeftSide B r) (conab : Ray.IsInt C (RAY A B (ne_of_isonleft_of_lieson A B r aliesonr bliesonleft))) : IsOnLeftSide C r := sorry
+-/
 
 end handside
 
@@ -1079,6 +1084,90 @@ section relative_side_with_seg_and_ray
 /-
 In this section,we will discuss the compatibility with seg and ray.
 -/
+
+lemma ne_of_not_lies_on {α} [ProjFig α P] {A B : P} (l : α) (ha : A LiesOn l) (hb : ¬ B LiesOn l) : B ≠ A := by
+  have : A ≠ B := by
+    by_contra h
+    simp only [h] at ha
+    absurd ha
+    exact hb
+  symm
+  exact this
+
+theorem same_side_of_line_passing_source (A B C : P) (l : Line P) (ha : A LiesOn l) (hb : ¬ B LiesOn l) (hc : C LiesInt (RAY A B (ne_of_not_lies_on l ha hb))) : IsOnSameSide B C l := by
+  have c_ne_a : C ≠ A := by
+    exact hc.2
+  have b_ne_a : B ≠ A := ne_of_not_lies_on l ha hb
+  have eqDir : (VEC_nd A C c_ne_a).toDir = (VEC_nd A B b_ne_a).toDir := by
+    calc
+      _=(RAY A C c_ne_a).toDir := by rfl
+      _=(RAY A B b_ne_a).toDir := by
+        congr 1
+        exact Ray.pt_pt_eq_ray hc
+      _=_ := by rfl
+  have eqDir' : (VEC_nd A C c_ne_a).SameDir (VEC_nd A B b_ne_a) := by
+    apply VecND.toDir_eq_toDir_iff.mp
+    exact eqDir
+  unfold VecND.SameDir at eqDir'
+  rcases eqDir' with ⟨x,h⟩
+  have x_pos : x > 0 := h.1
+  have exist : ∃ ray : Ray P , (ray.source = A) ∧ (ray.toLine = l) := by
+    apply every_pt_onLine_exist_rep
+    exact ha
+  rcases exist with ⟨r,p⟩
+  have : IsOnSameSide B C r = IsOnSameSide B C l := by
+    calc
+      _= IsOnSameSide B C r.toLine := by rfl
+      _=_ := by congr; exact p.2
+  simp only [← this]
+  have ratio : odist C r = x * odist B r := by
+    unfold odist
+    show odist' C r = x * odist' B r
+    unfold odist'
+    simp only [p.1]
+    calc
+      _= Vec.det r.toDir.unitVec (VEC_nd A C c_ne_a) := by rfl
+      _= Vec.det r.toDir.unitVec (x • (VEC_nd A B b_ne_a)) := by congr;exact h.2
+      _= x * Vec.det r.toDir.unitVec (VEC_nd A B b_ne_a) := by
+        simp only [LinearMap.map_smul]
+        rfl
+      _=_ := by rfl
+  have lr : (B LiesOnLeft r) ∨ (B LiesOnRight r) := by
+    have : (IsOnLeftSide B r) ∨ (IsOnRightSide B r) ∨ (B LiesOn (toLine r)) := by
+      exact LiesOnLeft_or_LiesOnRight_or_LiesOn B r
+    have n : ¬ B LiesOn (toLine r) := by
+      have : B LiesOn (toLine r) = B LiesOn l := by
+        congr; exact p.2
+      simp only [this]
+      exact hb
+    rcases this with l|ro
+    · simp only [l, true_or]
+    · rcases ro with r|o
+      · simp only [r, or_true]
+      · absurd o
+        exact n
+  unfold IsOnSameSide
+  unfold IsOnSameSide'
+  show B LiesOnLeft r ∧ C LiesOnLeft r ∨ B LiesOnRight r ∧ C LiesOnRight r
+  rcases lr with bl|br
+  · have cl : C LiesOnLeft r := by
+      unfold IsOnLeftSide at bl
+      unfold IsOnLeftSide
+      simp only [ratio]
+      positivity
+    simp only [bl, cl, and_self, true_or]
+  · have cr : C LiesOnRight r := by
+      unfold IsOnRightSide at br
+      unfold IsOnRightSide
+      simp only [ratio]
+      have b : -odist B r > 0 := by linarith
+      have : -x * odist B r > 0 := by
+        calc
+          _= x * (-odist B r) := by simp only [neg_mul, mul_neg]
+          _>0 := by positivity
+      linarith
+    simp only [br, cr, and_self, or_true]
+
 
 end relative_side_with_seg_and_ray
 

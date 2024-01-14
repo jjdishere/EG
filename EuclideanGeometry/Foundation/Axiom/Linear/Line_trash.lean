@@ -107,5 +107,25 @@ theorem eq_toDirLine_of_source_to_pt_lies_int {seg_nd : SegND P} {A : P} (h : A 
 theorem eq_toDir_of_pt_lies_int_to_target {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target (ne_vertex_of_lies_int_seg_nd h).2.symm).toDir = seg_nd.toDir := by sorry
 theorem eq_toDirLine_of_pt_lies_int_to_target {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target (ne_vertex_of_lies_int_seg_nd h).2.symm).toDirLine = seg_nd.toDirLine := by sorry
 
+--Guan Nailin
+theorem every_pt_onLine_exist_rep (A : P) (l : Line P) (ha : A LiesOn l) : ∃ ray : Ray P , (ray.source = A) ∧ (ray.toLine = l) := by
+  rcases (Quotient.exists_rep l.toProj) with ⟨Dir , h0⟩
+  let r : Ray P := ⟨A,Dir⟩
+  have s: r.source = A := by rfl
+  have l: r.toLine = l := by
+    have : r.toProj = l.toProj := by
+      calc
+        _= r.toDir.toProj := by rfl
+        _= ⟦Dir⟧ := by rfl
+        _=_ := h0
+    calc
+      _= Line.mk_pt_proj A r.toProj := by rfl
+      _= Line.mk_pt_proj A l.toProj := by congr
+      _= l := by
+        apply Line.mk_pt_proj_eq_of_eq_toProj
+        exact ha
+        rfl
+  use r
+  --use mk_pt_proj_eq_of_eq_toProj and pick a rep of Proj
 
 end EuclidGeom
