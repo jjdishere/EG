@@ -182,12 +182,12 @@ Therefore, $DX = EY$.
     ∠ e.D e.B e.X D_ne_B X_ne_B
     -- $\angle DBX = \angle CBA$ because $D$ lies on ray $BC$ and $X$ lies on ray $BA$,
     _= ∠ e.C e.B e.A C_ne_B A_ne_B := by
-      symm; exact eq_ang_val_of_lieson_lieson C_ne_B A_ne_B D_ne_B X_ne_B D_int_ray_BC X_int_ray_BA
+      symm; exact Angle.value_eq_of_lies_on_ray_pt_pt C_ne_B A_ne_B D_ne_B X_ne_B D_int_ray_BC X_int_ray_BA
     -- $\angle CBA = - \angle BCA$,
     _= - ∠ e.B e.C e.A C_ne_B.symm A_ne_C := angle_CBA_eq_neg_angle_BCA
     -- $\angle BCA = - \angle ECY$ because $e$ lies on ray $CB$ and $Y$ lies on ray $CA$.
     _= - ∠ e.E e.C e.Y E_ne_C Y_ne_C := by
-      simp only [eq_ang_val_of_lieson_lieson C_ne_B.symm A_ne_C E_ne_C Y_ne_C E_int_ray_CB Y_int_ray_CA]
+      simp only [Angle.value_eq_of_lies_on_ray_pt_pt C_ne_B.symm A_ne_C E_ne_C Y_ne_C E_int_ray_CB Y_int_ray_CA]
   -- $\triangle XBD \cong_a \triangle YEC$ (by AAS)
   have triangle_XBD_acongr_triangle_YCE : (TRI_nd e.X e.B e.D not_colinear_XBD) ≅ₐ (TRI_nd e.Y e.C e.E not_colinear_YCE) := by
     apply acongr_of_AAS_variant

@@ -96,17 +96,17 @@ theorem IsConsecutiveIntAng.symm {ang₁ ang₂ : Angle P} : IsConsecutiveIntAng
 
 theorem IsAlternateIntAng.symm {ang₁ ang₂ : Angle P} : IsAlternateIntAng ang₁ ang₂ → IsAlternateIntAng ang₂ ang₁ := sorry
 
-theorem eq_value_of_isoppositeang {ang₁ ang₂ : Angle P} (h : IsOppositeAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
+theorem value_eq_of_isoppositeang {ang₁ ang₂ : Angle P} (h : IsOppositeAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
 
-theorem eq_value_of_iscorrespondingang {ang₁ ang₂ : Angle P} (h : IsCorrespondingAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
+theorem value_eq_of_iscorrespondingang {ang₁ ang₂ : Angle P} (h : IsCorrespondingAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
 
 theorem value_sub_eq_pi_of_isconsecutiveintang {ang₁ ang₂ : Angle P} (h : IsConsecutiveIntAng ang₁ ang₂) : ang₁.value - ang₂.value = π := sorry --`first mod 2π, then discuss +-? `
 
-theorem eq_value_of_isalternateintang {ang₁ ang₂ : Angle P} (h : IsAlternateIntAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
+theorem value_eq_of_isalternateintang {ang₁ ang₂ : Angle P} (h : IsAlternateIntAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
 
 /-
 -- equivlently, this will be much more lengthy
-theorem eq_value_of_corresponding_angle {l₁ l₂ l : DirLine P} (h : l₁.toDir = l₂.toDir) (g : ¬ l ∥ l₁) : (Angle.mk_dirline_dirline l₁ l (Ne.symm g)).value = (Angle.mk_dirline_dirline l₂ l (Ne.symm (ne_of_ne_of_eq g (Quotient.sound (h ▸ PM.con.refl _))))).value := sorry
+theorem value_eq_of_corresponding_angle {l₁ l₂ l : DirLine P} (h : l₁.toDir = l₂.toDir) (g : ¬ l ∥ l₁) : (Angle.mk_dirline_dirline l₁ l (Ne.symm g)).value = (Angle.mk_dirline_dirline l₂ l (Ne.symm (ne_of_ne_of_eq g (Quotient.sound (h ▸ PM.con.refl _))))).value := sorry
 -/
 
 end parallel

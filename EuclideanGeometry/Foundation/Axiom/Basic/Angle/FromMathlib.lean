@@ -7,11 +7,13 @@ We use `AngValue` as an alias of `Real.Angle`.
 -/
 
 noncomputable section
+
 attribute [ext] Complex.ext
+
+
 open Real
 
 section Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle
-
 namespace EuclidGeom
 
 def AngValue : Type := Angle
