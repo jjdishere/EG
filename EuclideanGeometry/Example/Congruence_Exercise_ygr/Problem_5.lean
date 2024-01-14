@@ -92,6 +92,7 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (S
       apply Seg.lies_on_of_lies_int
       exact C_int_DF
   have angle_BCA_eq_neg_angle_EFD : (∠ e.B e.C e.A) = - (∠ e.E e.F e.D) := by sorry
+-- ``to be rewritten``
   have triangle_BCA_acongr_triangle_EFD : (TRI_nd e.B e.C e.A e.not_colinear_BCA) ≅ₐ (TRI_nd e.E e.F e.D e.not_colinear_EFD) := by sorry
   exact triangle_BCA_acongr_triangle_EFD.edge₂
 end Problem_5
