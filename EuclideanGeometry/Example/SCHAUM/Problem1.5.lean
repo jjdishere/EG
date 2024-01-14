@@ -95,13 +95,13 @@ As a consequence, we know that $PQRS$ is a parallelogram.
       -- Since $P$ lies on $AB$, we have $AP, AB$ are of the same direction,
       _= (SEG_nd e.A e.B B_ne_A).toDir := by
         symm;
-        exact eq_todir_of_lies_int_seg_nd e.A e.B e.P B_ne_A e.P_int_AB
+        exact SegND.toDir_eq_of_lies_int e.A e.B e.P B_ne_A e.P_int_AB
       -- in parallelogram $ABCD$, we have $AB, DC$ are of the same direction,
       _= (SEG_nd e.D e.C C_ne_D).toDir := todir_eq_of_is_prg_nd e.A e.B e.C e.D e.hprgnd B_ne_A C_ne_D
       -- $CD, DC$ are of the opposite direction because of symmetry,
       _= - (SEG_nd e.C e.D C_ne_D.symm).toDir := by apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd e.C e.D C_ne_D.symm))
       -- since $R$ lies on $CD$, we have $CR, CD$ are of the same direction,
-      _= - (SEG_nd e.C e.R R_ne_C).toDir := by simp only [eq_todir_of_lies_int_seg_nd e.C e.D e.R C_ne_D.symm e.R_int_CD]
+      _= - (SEG_nd e.C e.R R_ne_C).toDir := by simp only [SegND.toDir_eq_of_lies_int e.C e.D e.R C_ne_D.symm e.R_int_CD]
       -- $CR, RC$ are of the opposite direction because of symmetry.
       _= (SEG_nd e.R e.C R_ne_C.symm).toDir := by symm; apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd e.C e.R R_ne_C))
     -- We have $AP = RC$.
@@ -125,13 +125,13 @@ As a consequence, we know that $PQRS$ is a parallelogram.
       -- Since $S$ lies on $AD$, we have $AS, AD$ are of the same direction,
       _= (SEG_nd e.A e.D D_ne_A).toDir := by
         symm;
-        exact eq_todir_of_lies_int_seg_nd e.A e.D e.S D_ne_A S_int_AD
+        exact SegND.toDir_eq_of_lies_int e.A e.D e.S D_ne_A S_int_AD
       -- in parallelogram $ABCD$, we have $AD, BC$ are of the same direction,
       _= (SEG_nd e.B e.C C_ne_B).toDir := todir_eq_of_is_prg_nd_variant e.A e.B e.C e.D e.hprgnd D_ne_A C_ne_B
       -- $BC, CB$ are of the opposite direction because of symmetry,
       _= - (SEG_nd e.C e.B C_ne_B.symm).toDir := by apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd e.C e.B C_ne_B.symm))
       -- since $Q$ lies on $CB$, we have $CQ, CB$ are of the same direction,
-      _= - (SEG_nd e.C e.Q Q_ne_C).toDir := by simp only [eq_todir_of_lies_int_seg_nd e.C e.B e.Q C_ne_B.symm Q_int_CB]
+      _= - (SEG_nd e.C e.Q Q_ne_C).toDir := by simp only [SegND.toDir_eq_of_lies_int e.C e.B e.Q C_ne_B.symm Q_int_CB]
       -- $CQ, QC$ are of the opposite direction because of symmetry.
       _= (SEG_nd e.Q e.C Q_ne_C.symm).toDir := by symm; apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd e.C e.Q Q_ne_C))
     -- We have $AS = QC$.
@@ -169,7 +169,7 @@ As a consequence, we know that $PQRS$ is a parallelogram.
     _= (SEG e.S e.Q).midpoint := by
       exact eq_midpt_of_diag_inx_of_is_prg_nd'_variant isprgnd_ASCQ
     -- the midpoint of $SQ$ is the same as the midpoint of $QS$ by symmetry.
-    _= (SEG e.Q e.S).midpoint := midpt_of_rev_eq_midpt e.S e.Q
+    _= (SEG e.Q e.S).midpoint := (SEG e.Q e.S).reverse_midpt_eq_midpt
   -- We have that $ABCD$ is convex, since it's a nondegenerate parallelogram.
   have hprgnd' : (QDR e.A e.B e.C e.D) IsPRG_nd := e.hprgnd
   have cvx_ABCD : (QDR e.A e.B e.C e.D).IsConvex := by

@@ -871,11 +871,8 @@ theorem congr_of_HL (h₁ : tr_nd₁.angle₁.value = ↑(π / 2)) (h₂ : tr_nd
   have : Seg.length (edge₃ tr_nd₁) * Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) * Seg.length (edge₃ tr_nd₂) := by
     rw [<-sq ,<-sq]
     exact pyth₂.symm
-  have pos : 0 ≤ Seg.length (edge₃ tr_nd₁) := length_nonneg
-  have pos' : 0 ≤ Seg.length (edge₃ tr_nd₂) := length_nonneg
-  have : Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) := (mul_self_inj pos pos').mp this
   rw [<-h₂] at h₁
-  exact  congr_of_SAS e₂ h₁ this
+  exact congr_of_SAS e₂ h₁ ((mul_self_inj (edge₃ tr_nd₁).length_nonneg (edge₃ tr_nd₂).length_nonneg).mp this)
 
 theorem acongr_of_HL (h₁ : tr_nd₁.angle₁.value = ↑(π / 2)) (h₂ : tr_nd₂.angle₁.value = ↑ (- π / 2)) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) : tr_nd₁ ≅ₐ tr_nd₂ := by
   have pyth := Pythagoras_of_tr_nd tr_nd₁ (Or.inl h₁)
@@ -884,10 +881,8 @@ theorem acongr_of_HL (h₁ : tr_nd₁.angle₁.value = ↑(π / 2)) (h₂ : tr_n
   have : Seg.length (edge₃ tr_nd₁) * Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) * Seg.length (edge₃ tr_nd₂) := by
     rw [<-sq ,<-sq]
     exact pyth₂.symm
-  have pos : 0 ≤ Seg.length (edge₃ tr_nd₁) := length_nonneg
-  have pos' : 0 ≤ Seg.length (edge₃ tr_nd₂) := length_nonneg
   have : Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) := by
-    exact (mul_self_inj pos pos').mp this
+    exact (mul_self_inj (edge₃ tr_nd₁).length_nonneg (edge₃ tr_nd₂).length_nonneg).mp this
   have eq_neg : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value := by
     simp only [h₁, h₂]
     norm_cast
