@@ -1074,6 +1074,14 @@ theorem not_LiesOn_of_IsOnOppositeSide {α} [ProjFig α P] (A B : P) (l : α) (h
 
 end relative_side
 
+section relative_side_with_seg_and_ray
+
+/-
+In this section,we will discuss the compatibility with seg and ray.
+-/
+
+end relative_side_with_seg_and_ray
+
 scoped notation A:max "and" B:max " LiesOnSameSide " C:max => IsOnSameSide A B C
 
 variable (A B : P) [EuclideanPlane P] (l : Line P)
