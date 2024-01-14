@@ -205,9 +205,30 @@ theorem eq_flip_of_perm_twice_of_perm_flip_vertices : tr_nd.flip_vertices.perm_v
 
 -- compatibility of permutation/flip of vertices with orientation of the triangle
 
-theorem same_orient_of_perm_vertices : tr_nd.is_cclock = (tr_nd.perm_vertices.is_cclock) := by sorry
+theorem same_orient_of_perm_vertices : tr_nd.is_cclock = (tr_nd.perm_vertices.is_cclock) := by
+  unfold is_cclock
+  have w1 : tr_nd.oarea = (wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃)/2 := by rfl
+  have w2 : tr_nd.perm_vertices.oarea = (wedge tr_nd.perm_vertices.point₁ tr_nd.perm_vertices.point₂ tr_nd.perm_vertices.point₃)/2 := by rfl
+  have eq : wedge tr_nd.perm_vertices.point₁ tr_nd.perm_vertices.point₂ tr_nd.perm_vertices.point₃ = wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ := by
+    calc
+      _= wedge tr_nd.point₂ tr_nd.point₃ tr_nd.point₁ := by rfl
+      _=_ := by exact wedge231 tr_nd.point₁ tr_nd.point₂ tr_nd.point₃
+  simp only [w1,w2,eq]
 
-theorem reverse_orient_of_flip_vertices : tr_nd.is_cclock = ¬ tr_nd.flip_vertices.is_cclock := by sorry
+theorem reverse_orient_of_flip_vertices : tr_nd.is_cclock = ¬ tr_nd.flip_vertices.is_cclock := by
+  unfold is_cclock
+  have w1 : tr_nd.oarea = (wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃)/2 := by rfl
+  have w2 : tr_nd.flip_vertices.oarea = (wedge tr_nd.flip_vertices.point₁ tr_nd.flip_vertices.point₂ tr_nd.flip_vertices.point₃)/2 := by rfl
+  have neg : wedge tr_nd.flip_vertices.point₁ tr_nd.flip_vertices.point₂ tr_nd.flip_vertices.point₃ = -wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ := by
+    calc
+      _= wedge tr_nd.point₁ tr_nd.point₃ tr_nd.point₂ := by rfl
+      _=_ := by exact wedge132 tr_nd.point₁ tr_nd.point₂ tr_nd.point₃
+  simp only [w1,w2,neg,eq_iff_iff]
+  constructor
+  · intro P
+    linarith
+  · intro P
+    simp at P
 
 theorem is_inside_of_is_inside_perm_vertices (tr_nd : Triangle P) (p : P) (inside : p LiesInt tr_nd) : p LiesInt tr_nd.perm_vertices := by sorry
 
