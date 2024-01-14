@@ -104,7 +104,7 @@ end mk_parallel
 -- 6 theorems for each coercion, 6 coercion
 section parallel_iff_coercion_parallel
 
-/-- If two nondegenerate segments are parallel, then their associated rays are parallel. -/
+/-- If two nondegenerate segements are parallel, then their associated rays are parallel. -/
 theorem SegND.para_toRay_of_para (seg_nd seg_nd' : SegND P) : seg_nd ∥ seg_nd' → seg_nd.toRay ∥ seg_nd'.toRay := id
 
 theorem SegND.para_of_para_toRay (seg_nd seg_nd' : SegND P) : seg_nd.toRay ∥ seg_nd'.toRay → seg_nd ∥ seg_nd' := id
@@ -116,6 +116,7 @@ theorem SegND.not_para_toRay_of_not_para (seg_nd seg_nd' : SegND P) : ¬ seg_nd 
 /-- If the associated rays of two nondegenerate segments are not parallel, then the two segments are not parallel. -/
 theorem SegND.not_para_of_not_para_toRay (seg_nd seg_nd' : SegND P) : ¬ seg_nd.toRay ∥ seg_nd'.toRay → ¬ seg_nd ∥ seg_nd' := id
 
+/-- Given two nondegenerate segments, they are not parallel if and only if their associated rays are not parallel. -/
 theorem SegND.not_para_iff_not_para_toRay (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' ↔ ¬ seg_nd.toRay ∥ seg_nd'.toRay  := ⟨id, id⟩
 
 theorem SegND.para_toDirLine_of_para (seg_nd seg_nd' : SegND P) : seg_nd ∥ seg_nd' → seg_nd.toDirLine ∥ seg_nd'.toDirLine := id
@@ -139,6 +140,7 @@ theorem SegND.para_iff_para_toLine (seg_nd seg_nd' : SegND P) : seg_nd.toLine �
 
 theorem SegND.not_para_toLine_of_not_para (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' → ¬ seg_nd.toLine ∥ seg_nd'.toLine := id
 
+/-- Given two nondegenerate segments, their asscociated lines are not parallel if and only if they are not parallel. -/
 theorem SegND.not_para_of_not_para_toLine (seg_nd seg_nd' : SegND P) : ¬ seg_nd.toLine ∥ seg_nd'.toLine → ¬ seg_nd ∥ seg_nd' := id
 
 theorem SegND.not_para_iff_not_para_toLine (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' ↔ ¬ seg_nd.toLine ∥ seg_nd'.toLine  := ⟨id, id⟩
@@ -194,10 +196,11 @@ end parallel_iff_coercion_parallel
 
 section reverse
 
-variable {α β : Type*} [DirFig α P] [DirFig β P] {l₁ : α} {l₂ : β}
+variable {α β : Type*} [DirFig α P] [DirFig β P]
 -- Add `iff` theorems and @[simp]
 
-theorem DirFig.para_rev_of_para (h : l₁ ∥ l₂) : l₁ ∥ reverse l₂ :=
+/-- For two parallel directed figures $l_1$ and $l_2$, $l_1$ is parallel to the reverse of $l_2$. -/
+theorem DirFig.para_rev_of_para {l₁ : α} {l₂ : β} (h : l₁ ∥ l₂) : l₁ ∥ reverse l₂ :=
   h.trans (rev_toProj_eq_toProj l₂).symm
 
 theorem SegND.para_rev_of_para {s s' : SegND P} (h : s ∥ s') : s ∥ s'.reverse :=
@@ -209,7 +212,8 @@ theorem Ray.para_rev_of_para {r r' : Ray P} (h : r ∥ r') : r ∥ r'.reverse :=
 theorem DirLine.para_rev_of_para {l l' : DirLine P} (h : l ∥ l') : l ∥ l'.reverse :=
   DirFig.para_rev_of_para h
 
-theorem DirFig.not_para_rev_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ l₁ ∥ reverse l₂ :=
+/-- For two directed figures $l_1$ and $l_2$, if they are not parallel, then $l_1$ is not parallel to the reverse of $l_2$. -/
+theorem DirFig.not_para_rev_of_not_para {l₁ : α} {l₂ : β} (h : ¬ l₁ ∥ l₂) : ¬ l₁ ∥ reverse l₂ :=
   fun hn ↦ h ((para_rev_of_para hn).trans (congrArg ProjObj.toProj (rev_rev)))
 
 theorem SegND.not_para_rev_of_not_para {s s' : SegND P} (h : ¬ s ∥ s') : ¬ s ∥ s'.reverse :=
@@ -221,9 +225,10 @@ theorem Ray.not_para_rev_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r ∥
 theorem DirLine.not_para_rev_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l ∥ l'.reverse :=
   DirFig.not_para_rev_of_not_para h
 
-theorem DirFig.rev_para_of_para (h : l₁ ∥ l₂) : reverse l₁ ∥ l₂ :=
+theorem DirFig.rev_para_of_para {l₁ : α} {l₂ : β} (h : l₁ ∥ l₂) : reverse l₁ ∥ l₂ :=
   (rev_toProj_eq_toProj l₁).trans h
 
+/-- Given two nondegenerate segments $s$ and $s'$, if they are parallel, then the reverse of $s$ is parallel to $s'$. -/
 theorem SegND.rev_para_of_para {s s' : SegND P} (h : s ∥ s') : s.reverse ∥ s' :=
   DirFig.rev_para_of_para h
 
@@ -233,7 +238,7 @@ theorem Ray.rev_para_of_para {r r' : Ray P} (h : r ∥ r') : r.reverse ∥ r' :=
 theorem DirLine.rev_para_of_para {l l' : DirLine P} (h : l ∥ l') : l.reverse ∥ l' :=
   DirFig.rev_para_of_para h
 
-theorem DirFig.not_rev_para_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ l₂ :=
+theorem DirFig.not_rev_para_of_not_para {l₁ : α} {l₂ : β} (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ l₂ :=
   fun hn ↦ h ((congrArg ProjObj.toProj rev_rev).symm.trans (rev_para_of_para hn) )
 
 theorem SegND.not_rev_para_of_not_para {s s' : SegND P} (h : ¬ s ∥ s') : ¬ s.reverse ∥ s' :=
@@ -245,7 +250,7 @@ theorem Ray.not_rev_para_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r.rev
 theorem DirLine.not_rev_para_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l.reverse ∥ l' :=
   DirFig.not_rev_para_of_not_para h
 
-theorem DirFig.rev_para_rev_of_para (h : l₁ ∥ l₂) : reverse l₁ ∥ reverse l₂ :=
+theorem DirFig.rev_para_rev_of_para {l₁ : α} {l₂ : β} (h : l₁ ∥ l₂) : reverse l₁ ∥ reverse l₂ :=
   rev_para_of_para (para_rev_of_para h)
 
 theorem SegND.rev_para_rev_of_para {s s' : SegND P} (h : s ∥ s') : s.reverse ∥ s'.reverse :=
@@ -257,7 +262,7 @@ theorem Ray.rev_para_rev_of_para {r r' : Ray P} (h : r ∥ r') : r.reverse ∥ r
 theorem DirLine.rev_para_rev_of_para {l l' : DirLine P} (h : l ∥ l') : l.reverse ∥ l'.reverse :=
   DirFig.rev_para_rev_of_para h
 
-theorem DirFig.not_rev_para_rev_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ reverse l₂ :=
+theorem DirFig.not_rev_para_rev_of_not_para {l₁ : α} {l₂ : β} (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ reverse l₂ :=
   not_rev_para_of_not_para (not_para_rev_of_not_para h)
 
 theorem SegND.not_rev_para_rev_of_not_para {s s' : SegND P} (h : ¬ s ∥ s') : ¬ s.reverse ∥ s'.reverse :=
@@ -277,10 +282,13 @@ section intersection_of_line
 
 section construction
 
+/-- Given three vectors $\vec u$, $\vec v$ and $\vec w$, we may write $\vec w$ as a linear combination of $\vec u$ and $\vec v$ (usually), i.e. $\vec w = c_u \vec u + c_v \vec v$. This function returns $c_u$, which we call the \emph{first linear coefficients} later on.  When $\vec u$ and $\vec v$ are linearly dependent, we return $0$. -/
 def cu (u v w: Vec) : ℝ := (Vec.det u v)⁻¹ * (Vec.det w v)
 
+/-- Given three vectors $\vec u$, $\vec v$ and $\vec w$, we may write $\vec w$ as a linear combination of $\vec u$ and $\vec v$ (usually), i.e. $\vec w = c_u \vec u + c_v \vec v$. This function returns $c_v$, which we call the \emph{second linear coefficients} later on.  When $\vec u$ and $\vec v$ are linearly dependent, we return $0$. -/
 def cv (u v w: Vec) : ℝ := (Vec.det u v)⁻¹ * (Vec.det u w)
 
+/-- Given three vectors $\vec u$, $\vec v$ and $\vec w$, the first linear coefficients to write $\vec w$ in terms of $\vec u$ and $\vec v$ is the same as the second linear coefficients to write $\vec w$ in terms of $\vec v$ and $\vec u$, i.e. after reversing the two base vectors. -/
 theorem cu_cv (u v w : Vec) : cu u v w = cv v u w := by
   rw [cu, cv, ← Vec.det_skew v u, inv_neg, Vec.det_apply w v, Vec.det_apply v w]
   field_simp
@@ -290,6 +298,7 @@ theorem cu_neg (u v w : Vec) : cu u v (- w) = - cu u v w := by
   rw [cu, cu, neg_mul_eq_mul_neg, map_neg]
   rfl
 
+/-- Let $\vec u$, $\vec v$ and $\vec w$ be three vectors such that $\vec v$ is nonzero and $\vec u$ is not a multiple of $\vec v$, then $\vec w$ is the linear combination of $\vec u$ and $\vec v$ with the first and second linear coefficients respectively, i.e. $\vec w = c_u(\vec u, \vec v, \vec w) \cdot \vec u + c_v(\vec u, \vec v, \vec w) \cdot \vec v$. -/
 theorem Vec.linear_combination_of_not_colinear' {u v w : Vec} (hu : v ≠ 0) (h' : ¬(∃ (t : ℝ), u = t • v)) : w = cu u v w • u + cv u v w • v := by
   have : u.fst * v.snd - u.snd * v.fst ≠ 0 := (det_eq_zero_iff_eq_smul_right.not.mpr (not_or.mpr ⟨hu, h'⟩))
   dsimp [cu, cv, det_apply]
