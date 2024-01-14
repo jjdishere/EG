@@ -8,7 +8,7 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
 
-open DirLC
+open DirLC CC
 
 namespace Circle
 
@@ -74,11 +74,11 @@ lemma tangent_circle_intersected {ω : Circle P} {p : P} (h : p LiesOut ω) : Ci
   simp; exact ω.rad_pos
 
 def pt_tangent_circle_pts {ω : Circle P} {p : P} (h : p LiesOut ω) : Tangents P where
-  left := (CC_Intersected_pts (tangent_circle_intersected h)).left
-  right := (CC_Intersected_pts (tangent_circle_intersected h)).right
+  left := (Inxpts (tangent_circle_intersected h)).left
+  right := (Inxpts (tangent_circle_intersected h)).right
 
 theorem tangents_lieson_circle {ω : Circle P} {p : P} (h : p LiesOut ω) : ((pt_tangent_circle_pts h).left LiesOn ω) ∧ ((pt_tangent_circle_pts h).right LiesOn ω) := by
-  rcases CC_inx_pts_lieson_circles (tangent_circle_intersected h) with ⟨_, ⟨h₂, ⟨_, h₄⟩⟩⟩
+  rcases inx_pts_lieson_circles (tangent_circle_intersected h) with ⟨_, ⟨h₂, ⟨_, h₄⟩⟩⟩
   exact ⟨h₂, h₄⟩
 
 lemma tangents_ne_pt {ω : Circle P} {p : P} (h : p LiesOut ω) : ((pt_tangent_circle_pts h).left ≠ p) ∧ ((pt_tangent_circle_pts h).right ≠ p) := by
@@ -117,7 +117,7 @@ lemma tangents_perp₁ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_
   haveI : PtNe (pt_tangent_circle_pts h).left p := ⟨(tangents_ne_pt h).1⟩
   have heq₁ : ∠ p (pt_tangent_circle_pts h).left ω.center = ∡[π / 2] := by
     apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt
-    · exact (CC_inx_pts_lieson_circles (tangent_circle_intersected h)).1
+    · exact (inx_pts_lieson_circles (tangent_circle_intersected h)).1
     exact Arc.mk_pt_pt_diam_isantipode
   show (DLIN p (pt_tangent_circle_pts h).left).toProj = (DLIN ω.center (pt_tangent_circle_pts h).left).toProj.perp
   calc
@@ -133,7 +133,7 @@ lemma tangents_perp₂ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_
   haveI : PtNe ω.center (pt_tangent_circle_pts h).right := ⟨(tangents_ne_center h).2.symm⟩
   have heq₂ : ∠ p (pt_tangent_circle_pts h).right ω.center = ∡[π / 2] := by
     apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt
-    · exact (CC_inx_pts_lieson_circles (tangent_circle_intersected h)).2.2.1
+    · exact (inx_pts_lieson_circles (tangent_circle_intersected h)).2.2.1
     apply Arc.mk_pt_pt_diam_isantipode
   show (DLIN p (pt_tangent_circle_pts h).right).toProj = (DLIN ω.center (pt_tangent_circle_pts h).right).toProj.perp
   calc
