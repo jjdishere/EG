@@ -114,9 +114,18 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
 -- Prove that $AB = DE$.
 
 theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (SEG e.A e.B).length = (SEG e.D e.E).length := by
-  have F_int_AC : e.F LiesInt (SEG e.A e.C) := by sorry
-  have C_int_DF : e.C LiesInt (SEG e.D e.F) := by sorry
-  haveI C_ne_F : PtNe e.C e.F := by sorry
+  have F_int_AC : e.F LiesInt (SEG e.A e.C) := by
+    apply DirLine.lies_int_of_lt_and_lt e.A_on_l e.F_on_l e.C_on_l
+    simp only [e.A_lt_F_on_l]
+    simp only [e.F_lt_C_on_l]
+  have C_int_DF : e.C LiesInt (SEG e.D e.F) := by
+    apply DirLine.lies_int_of_gt_and_gt e.D_on_l e.C_on_l e.F_on_l
+    simp only [e.C_lt_D_on_l]
+    simp only [e.F_lt_C_on_l]
+  have C_ne_F' : e.C ≠ e.F := by
+    apply (DirLine.ne_iff_ne_as_line_elem e.C_on_l e.F_on_l).mpr; apply ne_of_gt
+    simp only [e.F_lt_C_on_l]
+  haveI C_ne_F : PtNe e.C e.F := ⟨C_ne_F'⟩
   have CA_eq_FD : (SEG e.C e.A).length = (SEG e.F e.D).length := by
     calc
     _= (SEG e.A e.C).length := by apply length_of_rev_eq_length'
@@ -133,8 +142,19 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (S
   have angle_ACB_eq_angle_DFE : (∠ e.A e.C e.B) = (∠ e.D e.F e.E) := by
     have dir_CA_eq_neg_dir_FD : (RAY e.C e.A).toDir = - (RAY e.F e.D).toDir := by
       calc
-      _= - e.l.toDir := by sorry
-      _=_ := by sorry
+      _= - e.l.toDir := by
+        apply DirLine.neg_toDir_of_gt e.C_on_l e.A_on_l
+        calc
+        (⟨e.A, e.A_on_l⟩ : e.l.carrier.Elem)
+        _< ⟨e.F, e.F_on_l⟩ := e.A_lt_F_on_l
+        _< ⟨e.C, e.C_on_l⟩ := e.F_lt_C_on_l
+      _=_ := by
+        simp only [neg_inj]; symm
+        apply DirLine.eq_toDir_of_lt e.F_on_l e.D_on_l
+        calc
+        (⟨e.F, e.F_on_l⟩ : e.l.carrier.Elem)
+        _< ⟨e.C, e.C_on_l⟩ := e.F_lt_C_on_l
+        _< ⟨e.D, e.D_on_l⟩ := e.C_lt_D_on_l
     have dir_CB_eq_neg_dir_FE : (RAY e.C e.B).toDir = - (RAY e.F e.E).toDir := by
       have h : IsOnOppositeSide e.B e.E (SEG_nd e.C e.F) := by
         have h1 : (SEG_nd e.C e.F).toLine = e.l := by
@@ -152,6 +172,7 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (S
           calc
           _= IsOnOppositeSide e.B e.E (SEG_nd e.C e.F).toLine := by rfl
           _=_ := by congr
+        simp only [h2]; exact e.B_E_IsOnOppositeSide_l
       apply neg_toDir_of_parallel_and_IsOnOppositeSide
       · exact e.CB_parallel_FE
       · exact h
