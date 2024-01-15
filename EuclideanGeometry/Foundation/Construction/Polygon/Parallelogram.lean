@@ -478,7 +478,7 @@ theorem nd_is_prg_of_is_prg_nd_variant (A B C D : P) (h : (QDR A B C D).IsParall
 theorem nd_is_nd_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D).IsND := by
   unfold Quadrilateral.IsParallelogramND at h
   rcases h with ⟨a,_⟩
-  exact Quadrilateral.isND_of_is_convex a
+  exact (a : (QDR A B C D).IsND)
 
 /-- Parallelogram_nd A B C D is convex. -/
 theorem nd_is_convex_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D) IsConvex := by
