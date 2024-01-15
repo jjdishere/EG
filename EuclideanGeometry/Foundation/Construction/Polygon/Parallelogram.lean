@@ -15,7 +15,7 @@ namespace EuclidGeom
 
 /-
 There're some structural problems need further discuss.
-1. In our earlier implement, we tried to claim most theorems in two different form. One of them accept arguments like (A B C D : P) ((QDR A B C D) satisfies...), the other accept arguments like (qdr : Quadrilateral) (qdr satisfieds...). We called first one 'variant'. But it's seems that we can delete all 'variant's and force user to use theorems in format of (some_prg_theorem (QDR A B C D) some_conditions), in this way we can get rid of most variants.
+1. In our earlier implement, we tried to claim most theorems in two different form. One of them accept arguments like (A B C D : P) ((QDR A B C D) satisfies...), the other accept arguments like (qdr : Quadrilateral) (qdr satisfies...). We called first one 'variant'. But it's seems that we can delete all 'variant's and force user to use theorems in format of (some_prg_theorem (QDR A B C D) some_conditions), in this way we can get rid of most variants.
 The reason we keep the variant in our file due to problem 3. While IsPrgND is not iff with Prg_nd. Maybe some instance can solve this.
 2. We have quite much criteria from Prg and/or Qdr_nd to PrgND. For user's ease, we need to provide some make methods. It's clear we should have a method like (PRG A B C D (QDR A B C D is PrgND)), It's the most intuitive make method. We should discuss the necessity of other make methods. For example, do we need a method accepts arguments qdr_cvx and (qdr_cvx satisfies IsPara)?
 3. In other structures we define predicate IsXXX then define structure XXX with it's element IsXXX. Now the PrgND is not involving new predicate, so the definition of 'IsPrgND' is not related to structure PrgND naturally. How to solve this? Shall we simply provide more instances?
@@ -23,8 +23,6 @@ The reason we keep the variant in our file due to problem 3. While IsPrgND is no
 -/
 
 /-
-
-
 
 Recall certain definitions concerning quadrilaterals:
 
@@ -87,16 +85,16 @@ def Parallelogram.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (
 scoped notation "PRG" => Parallelogram.mk_pt_pt_pt_pt
 
 /-- Make a parallelogram with a quadrilateral, and using condition IsPrg. -/
-def mk_parallelogram {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsPrg) : Parallelogram P where
+def Parallelogram.mk_isPrg {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsPrg) : Parallelogram P where
   toQuadrilateral := qdr
   is_parallelogram := h
 
 /-- A parallelogram which satisfies Prallelogram_non_triv satisfies IsPara. -/
-theorem IsPara_of_non_triv {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (non_triv: prg.non_triv): prg.IsPara:= by
+theorem Parallelogram.IsPara_of_non_triv {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (non_triv: prg.non_triv): prg.IsPara:= by
   sorry
 
 /-- A parallelogram which satisfies Prallelogram_non_triv is convex. -/
-theorem convex_of_non_triv {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (non_triv: prg.non_triv): prg.IsConvex:= by sorry
+theorem Parallelogram.convex_of_non_triv {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (non_triv: prg.non_triv): prg.IsConvex:= by sorry
 
 /-- We define parallelogram_nd as a structure. -/
 @[ext]
@@ -115,11 +113,11 @@ scoped postfix : 50 "IsPrgND" => Quadrilateral.IsParallelogramND
 -- scoped postfix : 50 "nd_IsParallelogramND" => Quadrilateral_nd.IsParallelogramND
 
 /-- A parallelogram_nd satisfies non_triv. -/
-theorem non_triv_of_parallelogramND {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.non_triv := by
+theorem Parallelogram.non_triv_of_parallelogramND {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.non_triv := by
   sorry
 
 /-- A parallelogram_nd satisfies non_triv. -/
-theorem non_triv_of_parallelogramND_variant {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D).non_triv := by
+theorem Parallelogram.non_triv_of_parallelogramND_variant {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D).non_triv := by
   sorry
 
 /-- A parallelogram_nd satisfies IsPara. -/
@@ -128,7 +126,7 @@ theorem IsPara_of_parallelogramND {P : Type _} [EuclideanPlane P] (prg_nd : Para
 
 -- `the necessity of variant theorems needs further discuss`
 /-- A parallelogram_nd satisfies IsPara. -/
-theorem IsPara_of_parallelogramND_variant {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D) IsPrgND) : (QDR A B C D).IsPara := by
+theorem Parallelogram.IsPara_of_parallelogramND_variant {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D) IsPrgND) : (QDR A B C D).IsPara := by
   sorry
 
 def ParallelogramND.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (h: (QDR A B C D) IsPrgND) : ParallelogramND P where
