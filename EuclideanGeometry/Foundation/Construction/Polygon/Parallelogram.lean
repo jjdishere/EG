@@ -378,7 +378,7 @@ variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
 theorem qdr_cvx_is_prg_nd_of_para_para (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) (h₂ : qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.edge_nd₂₃) : qdr_cvx.IsParallelogramND := by sorry
 
 /-- If AB and CD are parallel, and so do AD and BC, then quadrilateral_cvx A B C D is a parallelogram_nd. -/
-theorem qdr_cvx_is_prg_nd_of_para_para_variant (h₁ : (QDR_nd A B C D nd).edge_nd₁₂ ∥ (QDR_nd A B C D nd).edge_nd₃₄) (h₂ : (QDR_nd A B C D nd).edge_nd₁₄ ∥ (QDR_nd A B C D nd).edge_nd₂₃) : (Quadrilateral_nd.mk_is_nd nd).IsParallelogramND := by sorry
+theorem qdr_cvx_is_prg_nd_of_para_para_variant (h₁ : (QDR_cvx A B C D cvx).edge_nd₁₂ ∥ (QDR_cvx A B C D cvx).edge_nd₃₄) (h₂ : (QDR_cvx A B C D cvx).edge_nd₁₄ ∥ (QDR_cvx A B C D cvx).edge_nd₂₃) : (Quadrilateral_nd.mk_is_nd nd).IsParallelogramND := by sorry
 
 /-- If edge_nd₁₂ and edge_nd₃₄ of a quadrilateral_cvx are equal in length, and so do edge_nd₁₄ and edge_nd₂₃, then it is a parallelogram_nd. -/
 theorem qdr_cvx_is_prg_nd_of_eq_length_eq_length (h₁ : qdr_cvx.edge_nd₁₂.length = qdr_cvx.edge_nd₃₄.length) (h₂ : qdr_cvx.edge_nd₁₄.length = qdr_cvx.edge_nd₂₃.length) : qdr_cvx.IsParallelogramND := by sorry
@@ -390,21 +390,20 @@ theorem qdr_cvx_is_prg_nd_of_eq_length_eq_length_variant (h₁ : (SEG A B).lengt
 theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) (h₂ : qdr_cvx.edge_nd₁₂.length = qdr_cvx.edge_nd₃₄.length) : qdr_cvx.IsParallelogramND := by sorry
 
 /-- If AB and CD are not only equal in length but also parallel, then quadrilateral_cvx A B C D is a parallelogram_nd. -/
-theorem qdr_cvx_is_prg_nd_of_para_eq_length_variant (h₁ : (QDR_nd A B C D nd).edge_nd₁₂ ∥ (QDR_nd A B C D nd).edge_nd₃₄) (h₂ : (QDR_nd A B C D nd).edge_nd₁₂.length = (QDR_nd A B C D nd).edge_nd₃₄.length) : (Quadrilateral_nd.mk_is_nd nd).IsParallelogramND := by sorry
+theorem qdr_cvx_is_prg_nd_of_para_eq_length_variant (h₁ : (QDR_cvx A B C D cvx).edge_nd₁₂ ∥ (QDR_cvx A B C D cvx).edge_nd₃₄) (h₂ : (QDR_cvx A B C D cvx).edge_nd₁₂.length = (QDR_cvx A B C D cvx).edge_nd₃₄.length) : (Quadrilateral_nd.mk_is_nd nd).IsParallelogramND := by sorry
 
 /-- If edge_nd₁₄ and edge_nd₂₃ of a quadrilateral_cvx are not only equal in length but also parallel, then it is a parallelogram_nd. -/
 theorem qdr_cvx_is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.edge_nd₂₃) (h₂ : qdr_cvx.edge_nd₁₄.length = qdr_cvx.edge_nd₂₃.length) : qdr_cvx.IsParallelogramND := by sorry
 
 /-- If AD and BC are not only equal in length but also parallel, then quadrilateral_cvx A B C D is a parallelogram_nd. -/
-theorem qdr_cvx_is_prg_nd_of_para_eq_length'_variant (h₁ : (QDR_nd A B C D nd).edge_nd₁₄ ∥ (QDR_nd A B C D nd).edge_nd₂₃) (h₂ : (QDR_nd A B C D nd).edge_nd₁₄.length = (QDR_nd A B C D nd).edge_nd₂₃.length) : (Quadrilateral_nd.mk_is_nd nd).IsParallelogramND := by
+theorem qdr_cvx_is_prg_nd_of_para_eq_length'_variant (h₁ : (QDR_cvx A B C D cvx).edge_nd₁₄ ∥ (QDR_cvx A B C D cvx).edge_nd₂₃) (h₂ : (QDR_cvx A B C D cvx).edge_nd₁₄.length = (QDR_cvx A B C D cvx).edge_nd₂₃.length) : (Quadrilateral_nd.mk_is_nd nd).IsParallelogramND := by
   sorry
 
 /-- If angle₁ and angle₃ of a quadrilateral_cvx are equal in value, and so do angle₂ and angle₄, then it is a parallelogram_nd. -/
 theorem qdr_cvx_is_prg_nd_of_eq_angle_value_eq_angle_value (h₁ : qdr_cvx.angle₁ = qdr_cvx.angle₃) (h₂ : qdr_cvx.angle₂ = qdr_cvx.angle₄) : qdr_cvx.IsParallelogramND := by sorry
 
 /-- If ∠ A and ∠ C are equal in value, and so do ∠ B and ∠ D, then quadrilateral_cvx A B C D is a parallelogram_nd. -/
-theorem qdr_cvx_is_prg_of_eq_angle_value_eq_angle_value_variant (h₁ : (ANG D A B (QDR_nd A B C D nd).nd₁₄.out (QDR_nd A B C D nd).nd₁₂.out) = (ANG B C D (QDR_nd A B C D nd).nd₂₃.out.symm (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (ANG A B C (QDR_nd A B C D nd).nd₁₂.out.symm (QDR_nd A B C D nd).nd₂₃.out) = (ANG C D A (QDR_nd A B C D nd).nd₃₄.out.symm (QDR_nd A B C D nd).nd₁₄.out.symm)) : (Quadrilateral_nd.mk_is_nd nd).IsParallelogramND := by
-  sorry
+theorem qdr_cvx_is_prg_nd_of_eq_angle_value_eq_angle_value_variant (h₁ : (QDR_cvx A B C D cvx).angle₁ = (QDR_cvx A B C D cvx).angle₃) (h₂ : (QDR_cvx A B C D cvx).angle₂ = (QDR_cvx A B C D cvx).angle₄) : (QDR_cvx A B C D cvx).IsParallelogramND := by sorry
 
 /-- If the midpoint of the two diags of a quadrilateral_cvx are exactly the same, then it is a parallelogram_nd. -/
 theorem qdr_cvx_is_prg_nd_of_diag_inx_eq_mid_eq_mid (h' : qdr_cvx.diag_nd₁₃.midpoint = qdr_cvx.diag_nd₂₄.midpoint) : qdr_cvx.IsParallelogramND := by sorry
@@ -457,7 +456,7 @@ theorem eq_vec_of_is_prg_nd' (h : qdr.IsParallelogram) : VEC qdr.point₁ qdr.po
 theorem eq_vec_of_is_prg_nd'_variant (h : (QDR A B C D).IsParallelogram) : VEC A D = VEC B C := eq_vec_of_is_prg_nd' (QDR A B C D) h
 
 /-- In a parallelogram the sum of the square of the sides is equal to that of the two diags. -/
-theorem parallelogram_law : 2 * (SEG prg.point₁ prg.point₂).length ^ 2 + 2 * (SEG prg.point₂ prg.point₃).length ^ 2 = (SEG prg.point₁ prg.point₃).length ^ 2 + (SEG prg.point₂ prg.point₄).length ^ 2 := by sorry
+theorem parallelogram_law : 2 * (prg.edge₁₂).length ^ 2 + 2 * (prg.edge₂₃).length ^ 2 = (prg.diag₁₃).length ^ 2 + (prg.diag₂₄).length ^ 2 := by sorry
 
 /-- In a parallelogram A B C D the sum of the square of the sides is equal to that of the two diags, namely 2 * AB² + 2 * BC² = AC² + BD². -/
 theorem nd_parallelogram_law_variant (h : (QDR A B C D).IsParallelogram) : 2 * (SEG A B).length ^ 2 + 2 * (SEG B C).length ^ 2 = (SEG A C).length ^ 2 + (SEG B D).length ^ 2 := by sorry
