@@ -126,6 +126,5 @@ theorem every_pt_onLine_exist_rep (A : P) (l : Line P) (ha : A LiesOn l) : ∃ r
         exact ha
         rfl
   use r
-  --use mk_pt_proj_eq_of_eq_toProj and pick a rep of Proj
 
 end EuclidGeom

@@ -1168,6 +1168,143 @@ theorem same_side_of_line_passing_source (A B C : P) (l : Line P) (ha : A LiesOn
       linarith
     simp only [br, cr, and_self, or_true]
 
+lemma L_of_vertices_LL {ray : Ray P} {A B C : P} (al : A LiesOnLeft ray) (bl : B LiesOnLeft ray) (c_on : C LiesOn (SEG A B)) : C LiesOnLeft ray := by
+  rcases (c_on) with ⟨t,ge0,le1,h'⟩
+  have h : VEC A C = t • (VEC A B) := by exact h'
+  let D : P := ray.source
+  let v : Vec := ray.toDir.unitVec
+  unfold IsOnLeftSide at al
+  unfold odist at al
+  have al' : odist' A ray > 0 := by exact al
+  unfold odist' at al'
+  have a : Vec.det v (VEC D A) > 0 := by exact al'
+  unfold IsOnLeftSide at bl
+  unfold odist at bl
+  have bl' : odist' B ray > 0 := by exact bl
+  unfold odist' at bl'
+  have f : (VEC D C) = (1-t) • (VEC D A) + t • (VEC D B) := by
+    calc
+      _= VEC D A + VEC A C := by simp only [vec_add_vec]
+      _= VEC D A + t • (VEC A B) := by simp only [h]
+      _= VEC D A + t • (VEC A D + VEC D B)  := by simp only [vec_add_vec]
+      _= VEC D A + t • VEC A D + t • VEC D B := by
+        have : t • (VEC A D + VEC D B) = t • VEC A D + t • VEC D B := by
+          exact smul_add t (VEC A D) (VEC D B)
+        simp only [this]
+        show (VEC D A + (t • VEC A D + t • VEC D B) = VEC D A + t • VEC A D + t • VEC D B)
+        rw [add_assoc]
+      _= (1 : ℝ) • VEC D A + (-t) • VEC D A + t • VEC D B := by
+        simp only [one_smul, neg_smul, add_left_inj, add_right_inj]
+        calc
+          _= t • VEC A D := by rfl
+          _= t • -VEC D A := by congr;simp only [neg_vec]
+          _= -(t • VEC D A) := by
+            apply smul_neg
+          _=_ := by rfl
+      _=_ := by
+        have : (1 : ℝ) • VEC D A + (-t) • VEC D A = (1 + (-t)) • VEC D A := by
+          symm
+          exact add_smul (x := VEC D A) (r := (1 : ℝ)) (s := -t)
+        simp only [this]
+        have : (1 + -t) = (1 - t) := by ring
+        simp only [this]
+  unfold IsOnLeftSide
+  unfold odist
+  show odist' C ray > 0
+  unfold odist'
+  show Vec.det v (VEC D C) > 0
+  simp only [f]
+  show Vec.det v ((1-t) • (VEC D A) + t • (VEC D B)) > 0
+  have gt_or_0 : t > 0 ∨ 0 = t := by
+    simp only [gt_iff_lt]
+    have : (0 < t ∨ 0 = t) = (0 ≤ t) := by
+      symm
+      simp only [eq_iff_iff]
+      exact le_iff_lt_or_eq (a:= 0) (b:= t)
+    simp [this]
+    simp only [ge0]
+  have n : 1-t ≥ 0 :=by
+    linarith
+  calc
+    _= (1-t) * Vec.det v (VEC D A) + t * Vec.det v (VEC D B) := by
+      simp only [map_add, map_smul, smul_eq_mul]
+    _> 0 := by
+      rcases gt_or_0 with gt|eq0
+      · have : (1-t) * Vec.det v (VEC D A) ≥ 0 := by
+          positivity
+        have : t * Vec.det v (VEC D B) > 0 := by
+          positivity
+        linarith
+      · symm at eq0
+        simp only [eq0, sub_zero, one_mul, zero_mul, add_zero, gt_iff_lt]
+        show Vec.det v (VEC D A) > 0
+        exact a
+
+theorem IsOnSameSide_of_vertices_SameSide' {A B C : P} {l : Line P} (h : IsOnSameSide A B l) (c_on : C LiesOn (SEG A B)) : IsOnSameSide C A l := by
+  rcases (Quotient.exists_rep l) with ⟨ray , h0⟩
+  simp only [← h0] at h
+  unfold IsOnSameSide at h
+  unfold IsOnSameSide' at h
+  have llrr : A LiesOnLeft ray ∧ B LiesOnLeft ray ∨ A LiesOnRight ray ∧ B LiesOnRight ray := by exact h
+  simp only [←h0]
+  show IsOnSameSide C A ray
+  unfold IsOnSameSide
+  unfold IsOnSameSide'
+  show C LiesOnLeft ray ∧ A LiesOnLeft ray ∨ C LiesOnRight ray ∧ A LiesOnRight ray
+  rcases llrr with ll|rr
+  · have cl : C LiesOnLeft ray := by
+      exact L_of_vertices_LL ll.1 ll.2 c_on
+    simp only [cl, ll.1, and_self, true_or]
+  · have ar₀ := rr.1
+    unfold IsOnRightSide at rr
+    have ar := rr.1
+    have br := rr.2
+    have al' : A LiesOnLeft ray.reverse := by
+      unfold IsOnLeftSide
+      show odist A ray.reverse > 0
+      calc
+        _= -odist A ray := by exact odist_reverse_eq_neg_odist' A ray
+        _> 0 := by linarith
+    have bl' : B LiesOnLeft ray.reverse := by
+      unfold IsOnLeftSide
+      show odist B ray.reverse > 0
+      calc
+        _= -odist B ray := by exact odist_reverse_eq_neg_odist' B ray
+        _> 0 := by linarith
+    have cl' : C LiesOnLeft ray.reverse := by
+      exact L_of_vertices_LL al' bl' c_on
+    unfold IsOnLeftSide at cl'
+    have cr : C LiesOnRight ray := by
+      unfold IsOnRightSide
+      calc
+        _=-odist C ray.reverse := by
+          simp [odist_reverse_eq_neg_odist' C ray]
+        _< 0 := by linarith
+    simp [ar₀,cr]
+
+theorem IsOnSameSide_of_vertices_SameSide {α} [ProjFig α P] (A B C : P) (l : α) (h : IsOnSameSide A B l) (c_on : C LiesOn (SEG A B)) : IsOnSameSide C A l := by
+  have h' : IsOnSameSide A B (toLine l) := by exact h
+  have goal' : IsOnSameSide C A (toLine l) := by
+    exact IsOnSameSide_of_vertices_SameSide' h' c_on
+  exact goal'
+
+lemma ne_odist_of_IsOnOppositeSide (A B : P) (ray : Ray P) (h : IsOnOppositeSide A B ray) : odist A ray ≠ odist B ray := by
+  by_contra eq
+  unfold IsOnOppositeSide at h
+  unfold IsOnOppositeSide' at h
+  have llrr : A LiesOnLeft ray ∧ B LiesOnRight ray ∨ A LiesOnRight ray ∧ B LiesOnLeft ray := by exact h
+  rcases llrr with lr|rl
+  · have al: odist A ray > 0 := by exact lr.1
+    have br: odist B ray < 0 := by exact lr.2
+    simp only [eq] at al
+    linarith
+  · have ar : odist A ray < 0 := by exact rl.1
+    have bl : odist B ray > 0 := by exact rl.2
+    simp only [eq] at ar
+    linarith
+
+theorem exist_inx_int_of_IsOnOppositeSide (A B : P) (l : Line P) (h : IsOnOppositeSide A B l) : ∃ C : P , (C IsInxOf (SEG A B) l) ∧ (C LiesInt (SEG A B)) := by
+  sorry
 
 end relative_side_with_seg_and_ray
 
