@@ -321,7 +321,7 @@ theorem not_LiesOnLeft_and_not_LiesOn_of_LiesOnRight (A : P) [DirFig α P] (df :
     exact no'
   simp only [nl, not_false_eq_true, no, and_self]
 
-theorem not_LiesOnLeftt_and_not_LiesOnRight_of_LiesOn (A : P) [DirFig α P] (df : α) (h : A LiesOn df) : (¬ IsOnLeftSide A df) ∧ (¬ IsOnRightSide A df) := by
+theorem not_LiesOnLeft_and_not_LiesOnRight_of_LiesOn (A : P) [DirFig α P] (df : α) (h : A LiesOn df) : (¬ IsOnLeftSide A df) ∧ (¬ IsOnRightSide A df) := by
   have o : A LiesOn (toLine df) := by
     apply lies_on_of_lies_on_toline
     exact h
@@ -1077,6 +1077,13 @@ theorem not_LiesOn_of_IsOnOppositeSide {α} [ProjFig α P] (A B : P) (l : α) (h
     exact not_LiesOn_of_IsOnOppositeSide' B A l h'
   simp only [a, not_false_eq_true, b, and_self]
 
+theorem IsOnSameSide_or_IsOnOppositeSide_of_not_LiesOn (A B : P) (l : Line P) (a : ¬ A LiesOn l) (b : ¬ B LiesOn l) : IsOnSameSide A B l ∨ IsOnOppositeSide A B l := by
+  rcases (Quotient.exists_rep l) with ⟨ray , h0⟩
+  simp only [← h0]
+  have : IsOnSameSide A B ray ∨ IsOnOppositeSide A B ray := by
+    sorry
+  exact this
+
 end relative_side
 
 section relative_side_with_seg_and_ray
@@ -1282,11 +1289,21 @@ theorem IsOnSameSide_of_vertices_SameSide' {A B C : P} {l : Line P} (h : IsOnSam
         _< 0 := by linarith
     simp [ar₀,cr]
 
-theorem IsOnSameSide_of_vertices_SameSide {α} [ProjFig α P] (A B C : P) (l : α) (h : IsOnSameSide A B l) (c_on : C LiesOn (SEG A B)) : IsOnSameSide C A l := by
+theorem IsOnSameSide_of_vertices_SameSide {α} [ProjFig α P] {A B C : P} {l : α} (h : IsOnSameSide A B l) (c_on : C LiesOn (SEG A B)) : IsOnSameSide C A l := by
   have h' : IsOnSameSide A B (toLine l) := by exact h
   have goal' : IsOnSameSide C A (toLine l) := by
     exact IsOnSameSide_of_vertices_SameSide' h' c_on
   exact goal'
+
+theorem not_IsOnSameSide_of_exist_inx (A B C : P) (l : Line P) (h : C IsInxOf (SEG A B) l) : ¬ IsOnSameSide A B l := by
+  by_contra s
+  have : C LiesOn (SEG A B) ∧ C LiesOn l := by exact h
+  have c1 := this.1
+  have c2 := this.2
+  have same: IsOnSameSide C A l := by
+    exact IsOnSameSide_of_vertices_SameSide s c1
+  absurd c2
+  exact (not_LiesOn_of_IsOnSameSide C A l same).1
 
 lemma ne_odist_of_IsOnOppositeSide (A B : P) (ray : Ray P) (h : IsOnOppositeSide A B ray) : odist A ray ≠ odist B ray := by
   by_contra eq
