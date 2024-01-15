@@ -225,6 +225,7 @@ theorem Ray.not_para_rev_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r ∥
 theorem DirLine.not_para_rev_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l ∥ l'.reverse :=
   DirFig.not_para_rev_of_not_para h
 
+/-- If $l_1$ and $l_2$ are two parallel directed figure, then the reverse of $l_1$ is parallel to $l_2$. -/
 theorem DirFig.rev_para_of_para {l₁ : α} {l₂ : β} (h : l₁ ∥ l₂) : reverse l₁ ∥ l₂ :=
   (rev_toProj_eq_toProj l₁).trans h
 
@@ -294,6 +295,7 @@ theorem cu_cv (u v w : Vec) : cu u v w = cv v u w := by
   field_simp
   ring
 
+/-- Given three vectors $\vec u$, $\vec v$, and $\vec w$, if we change $\vec w$ to $-\vec w$, then the first linear combination coefficients is negated. -/
 theorem cu_neg (u v w : Vec) : cu u v (- w) = - cu u v w := by
   rw [cu, cu, neg_mul_eq_mul_neg, map_neg]
   rfl
@@ -306,6 +308,7 @@ theorem Vec.linear_combination_of_not_colinear' {u v w : Vec} (hu : v ≠ 0) (h'
   · field_simp
     ring
 
+/-- Given two nondegenerate vectors $\vec u$ and $\vec v$ of distinct projective directions, any vector $w$ is the linear combination of $\vec u$ and $\vec v$ with coefficients, namely, $\vec w = c_u(\vec u, \vec v, \vec w) \vec u + c_v(\vec u, \vec v, \vec w) \vec v$. -/
 theorem Vec.linear_combination_of_not_colinear_vecND {u v : VecND} (w : Vec) (h' : VecND.toProj u ≠ VecND.toProj v) : w = (cu u.1 v.1 w) • u.1 + (cv u.1 v.1 w) • v.1 := by
   have h₁ : ¬(∃ (t : ℝ), u.1 = t • v.1)
   · by_contra h₂
@@ -313,6 +316,7 @@ theorem Vec.linear_combination_of_not_colinear_vecND {u v : VecND} (w : Vec) (h'
     tauto
   exact @linear_combination_of_not_colinear' u.1 v.1 w v.2 h₁
 
+/-- Given two directions $\vec u$ and $\vec v$ of different projective directions, any vector $w$ is the linear combination of $\vec u$ and $\vec v$ with coefficients, namely, $\vec w = c_u(\vec u, \vec v, \vec w) \vec u + c_v(\vec u, \vec v, \vec w) \vec v$. -/
 theorem Vec.linear_combination_of_not_colinear_dir {u v : Dir} (w : Vec) (h' : u.toProj ≠ v.toProj) : w = (cu u.unitVec v.unitVec w) • u.unitVec + (cv u.unitVec v.unitVec w) • v.unitVec := by
   have h₁ : (u.toProj ≠ v.toProj) → ¬(∃ (t : ℝ), u.unitVec = t • v.unitVec)
   · by_contra h
@@ -333,10 +337,11 @@ theorem Vec.linear_combination_of_not_colinear_dir {u v : Dir} (w : Vec) (h' : u
     tauto
   exact @linear_combination_of_not_colinear' u.unitVec v.unitVec w (VecND.ne_zero _) (h₁ h')
 
-/-- Given two unparallel rays, this function gives the intersection of their extension lines. -/
-def inx_of_extn_line (r₁ r₂ : Ray P) (h : ¬ r₁ ∥ r₂) : P := (cu r₁.toDir.unitVecND r₂.toDir.unitVecND (VEC r₁.source r₂.source) • r₁.toDir.unitVec +ᵥ r₁.source)
+-- This function in fact does not require $r_1$ and $r_2$ to be unparallel, but please only use this under the unparallel assumption.`
+/-- Given two unparallel rays, this function returns the intersection of their associated lines. -/
+def inx_of_extn_line (r₁ r₂ : Ray P) (_h: ¬ r₁ ∥ r₂) : P := (cu r₁.toDir.unitVecND r₂.toDir.unitVecND (VEC r₁.source r₂.source) • r₁.toDir.unitVec +ᵥ r₁.source)
 
-/-- Given two unparallel rays, we define the intersection of their extension lines. -/
+/-- Given two unparallel rays $r_1$ and $r_2$, the intersection of the lines of $r_1$ and $r_2$ is the same as the intersection of the lines of $r_2$ and $r_1$. -/
 theorem inx_of_extn_line_symm (r₁ r₂ : Ray P) (h : ¬ r₁ ∥ r₂) :
     inx_of_extn_line r₁ r₂ h = inx_of_extn_line r₂ r₁ (Ne.symm h) := by
   have hsymm : cu r₁.toDir.unitVecND r₂.toDir.unitVecND (VEC r₁.source r₂.source) • r₁.toDir.unitVec =
@@ -367,11 +372,12 @@ theorem inx_lies_on_snd_extn_line (r₁ r₂ : Ray P) (h : ¬ r₁ ∥ r₂) : (
   rw [inx_of_extn_line_symm]
   exact inx_lies_on_fst_extn_line r₂ r₁ (Ne.symm h)
 
-/-- Given two rays $r_1$ $r_2$, if they have same projective directions and the source of $r_1$ lies on the extension line of $r_2$, then the two rays have same extension lines. -/
+/-- Given two rays $r_1$ and $r_2$, if they have the same projective direction and the source of $r_1$ lies on the extension line of $r_2$, then the two rays have same extension lines. -/
 theorem ray_toLine_eq_of_same_extn_line {r₁ r₂ : Ray P} (h : same_extn_line r₁ r₂) : r₁.toLine = r₂.toLine := (Quotient.eq (r := same_extn_line.setoid)).mpr h
 
+
 -- `key theorem`
-/-- Given four rays $a_1$ $a_2$ $b_1$ $b_2$, if $a_1$ $a_2$ have the same extension line, $b_1$ $b_2$ have the same extension line , $a_1$ $b_1$ have different projective directions and $a_2$ $b_2$ have different projective directions, then the intersection of extension lines of $a_1$ $b_1$ is same as that of $a_2$ $b_2$ -/
+/-- Let $a_1$, $a_2$, $b_1$, and $b_2$ be four rays such that $a_1$ and $a_2$ have the same extension line and $b_1$ and $b_2$ have the same extension line. If $a_1$ is not parallel to $b_1$ and $a_2$ is not parallel to $b_2$, then the intersection of extension lines of $a_1$ and $b_1$ is same as that of $a_2$ and $b_2$ -/
 theorem inx_eq_of_same_extn_line {a₁ b₁ a₂ b₂ : Ray P} (g₁ : same_extn_line a₁ a₂) (g₂ : same_extn_line b₁ b₂) (h₁ : ¬ a₁ ∥ b₁ ) (h₂ : ¬ a₂ ∥ b₂) : inx_of_extn_line a₁ b₁ h₁ = inx_of_extn_line a₂ b₂ h₂ := by
   have ha1 : inx_of_extn_line a₁ b₁ h₁ LiesOn a₁.toLine := inx_lies_on_fst_extn_line a₁ b₁ h₁
   have hb1 : inx_of_extn_line a₁ b₁ h₁ LiesOn b₁.toLine := inx_lies_on_snd_extn_line a₁ b₁ h₁
@@ -390,7 +396,7 @@ theorem heq_of_inx_of_extn_line (a₁ b₁ a₂ b₂ : Ray P) (h₁ : same_extn_
     rw [h₁.1, h₂.1]
   exact @heq_funext (Ray.toProj a₁ ≠ Ray.toProj b₁) (Ray.toProj a₂ ≠ Ray.toProj b₂) P e (fun h => inx_of_extn_line a₁ b₁ h) (fun h => inx_of_extn_line a₂ b₂ h) (inx_eq_of_same_extn_line h₁ h₂)
 
-/-- Given two lines with different projective directions, this function gives the intersection point of these two lines. -/
+/-- Given two unparallel lines, this function returns the intersection point of these two lines. -/
 def Line.inx (l₁ l₂ : Line P) (h : ¬ l₁ ∥ l₂) : P := @Quotient.hrecOn₂ (Ray P) (Ray P) same_extn_line.setoid same_extn_line.setoid (fun l l' => (Line.toProj l ≠ Line.toProj l') → P) l₁ l₂ inx_of_extn_line heq_of_inx_of_extn_line h
 
 /-- Given two unparallel line $l_1$ $l_2$, the point given by function "Line.inx" lies on $l_1$ -/
@@ -401,7 +407,7 @@ theorem Line.inx_lies_on_fst {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) :
   simp only [← hr1, ← hr2]
   exact inx_lies_on_fst_extn_line r1 r2 (by rw [← hr1, ← hr2] at h; exact h)
 
-/-- Given two unparallel line $l_1$ $l_2$, the point given by function "Line.inx" lies on $l_1$ -/
+/-- Given two unparallel line $l_1$ $l_2$, the point given by function "Line.inx" lies on $l_2$ -/
 theorem Line.inx_lies_on_snd {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) :
     Line.inx l₁ l₂ h LiesOn l₂ := by
   rcases Quotient.exists_rep l₁ with ⟨r1, hr1⟩
@@ -419,7 +425,7 @@ section property
 
 -- In this section, we discuss the property of intersection point using `is_inx` instead of `Line.inx`. As a corollory, we deduce the symmetry of Line.inx.
 
-/-- Two unparallel lines have only one intersection point -/
+/-- Two unparallel lines have only one intersection point, i.e. if two points $A$ and $B$ are both intersection points of unparallel lines $l_1$ and $l_2$, then $B = A$. -/
 theorem unique_of_inx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) (a : is_inx A l₁ l₂) (b : is_inx B l₁ l₂) : B = A :=
   Classical.byContradiction fun d ↦ h (congrArg Line.toProj (eq_of_pt_pt_lies_on_of_ne (_h := ⟨d⟩) a.1 b.1 a.2 b.2))
 
@@ -427,15 +433,15 @@ theorem unique_of_inx_of_line_of_not_para {A B : P} {l₁ l₂ : Line P} (h : ¬
 theorem inx_of_line_eq_inx {A : P} {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) (ha : is_inx A l₁ l₂) :
   A = l₁.inx l₂ h := unique_of_inx_of_line_of_not_para h (Line.inx_is_inx h) ha
 
-/-- The symmetry of Line.inx -/
+/-- The symmetry of Line.inx, i.e. for two unparallel lines $l_1$ and $l_2$, the intersection of $l_1$ with $l_2$ is the same as the intersection of $l_2$ with $l_1$. -/
 theorem Line.inx.symm {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : Line.inx l₂ l₁ (Ne.symm h) = Line.inx l₁ l₂ h :=
   unique_of_inx_of_line_of_not_para h (Line.inx_is_inx h) (is_inx.symm (Line.inx_is_inx (Ne.symm h)))
 
-/-- If two parallel lines share a same point, they are exactly the same line -/
+/-- If two parallel lines share a same point, they are exactly the same line. -/
 theorem eq_of_parallel_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A LiesOn l₁) (h₂ : A LiesOn l₂)
   (h : l₁ ∥ l₂) : l₁ = l₂ := eq_of_same_toProj_and_pt_lies_on h₁ h₂ h
 
-/-- If two lines are not parallel, then their intersection is not empty -/
+/-- If two lines are not parallel, then their intersection is not empty, i.e. there exists a point that lies on both lines. -/
 theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : ∃ p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
   rcases l₁.nontriv with ⟨A, ⟨B, hab⟩⟩
   rcases l₂.nontriv with ⟨C, ⟨D, hcd⟩⟩
@@ -455,7 +461,7 @@ theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l�
     (colinear_of_vec_eq_smul_vec (vec_of_pt_vadd_pt_eq_vec A _)),
     (lies_on_iff_colinear_of_ne_lies_on_lies_on hcd.1 hcd.2.1 _).2 (colinear_of_vec_eq_smul_vec h)⟩
 
-/-- If two lines are not parallel, then there exists a unique point in their intersection -/
+/-- If two lines are not parallel, then there exists a unique point in their intersection. -/
 theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : ∃! p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
   rcases exists_intersection_of_nonparallel_lines h with ⟨X, ⟨h₁, h₂⟩⟩
   use X
