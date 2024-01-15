@@ -8,7 +8,7 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
 
-open DirLC CC
+open DirLC CC Angle
 
 namespace Circle
 
@@ -123,7 +123,7 @@ lemma tangents_perp₁ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_
   calc
     _ = (RAY p (pt_tangent_circle_pts h).left).toProj := rfl
     _ = (RAY (pt_tangent_circle_pts h).left p).toProj := by apply Ray.toProj_eq_toProj_of_mk_pt_pt
-    _ = (RAY (pt_tangent_circle_pts h).left ω.center).toProj.perp := dvalue_eq_ang_rays_perp heq₁
+    _ = (RAY (pt_tangent_circle_pts h).left ω.center).toProj.perp := dir_perp_iff_dvalue_eq_pi_div_two.mpr heq₁
     _ = (RAY ω.center (pt_tangent_circle_pts h).left).toProj.perp := by rw [Ray.toProj_eq_toProj_of_mk_pt_pt]
     _ = (DLIN ω.center (pt_tangent_circle_pts h).left).toProj.perp := rfl
 
@@ -139,7 +139,7 @@ lemma tangents_perp₂ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_
   calc
     _ = (RAY p (pt_tangent_circle_pts h).right).toProj := rfl
     _ = (RAY (pt_tangent_circle_pts h).right p).toProj := by apply Ray.toProj_eq_toProj_of_mk_pt_pt
-    _ = (RAY (pt_tangent_circle_pts h).right ω.center).toProj.perp := dvalue_eq_ang_rays_perp heq₂
+    _ = (RAY (pt_tangent_circle_pts h).right ω.center).toProj.perp := dir_perp_iff_dvalue_eq_pi_div_two.mpr heq₂
     _ = (RAY ω.center (pt_tangent_circle_pts h).right).toProj.perp := by rw [Ray.toProj_eq_toProj_of_mk_pt_pt]
     _ = (DLIN ω.center (pt_tangent_circle_pts h).right).toProj.perp := rfl
 

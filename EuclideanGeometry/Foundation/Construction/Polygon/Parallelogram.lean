@@ -1130,8 +1130,8 @@ theorem qdr_cvx_is_prg_nd_of_diag_inx_eq_mid_eq_mid (h' : qdr_cvx.diag_nd₁₃.
     have h: qdr_cvx.diag_nd₂₄.1.midpoint ≠ qdr_cvx.point₄ := by apply SegND.midpt_ne_target
     rw [qdr_cvx_eq_midpoint_of_diag₂₄] at h
     exact h
-  have prep₁_pre: (SEG_nd qdr_cvx.point₁ midpoint nd₁₅).length = (SEG_nd midpoint qdr_cvx.point₃ nd₃₅.symm).length :=  dist_target_eq_dist_source_of_midpt (seg := qdr_cvx.diag₁₃)
-  have prep₁_pre': (SEG_nd qdr_cvx.point₁ midpoint nd₁₅).length = (SEG_nd midpoint qdr_cvx.point₁ nd₁₅.symm).length := by   apply length_of_rev_eq_length'
+  have prep₁_pre: (SEG_nd qdr_cvx.point₁ midpoint nd₁₅).length = (SEG_nd midpoint qdr_cvx.point₃ nd₃₅.symm).length := (qdr_cvx.diag₁₃).dist_target_eq_dist_source_of_midpt
+  have prep₁_pre': (SEG_nd qdr_cvx.point₁ midpoint nd₁₅).length = (SEG_nd midpoint qdr_cvx.point₁ nd₁₅.symm).length := length_of_rev_eq_length'
   sorry
   constructor
   exact qdr_cvx.not_colinear₁₂₃

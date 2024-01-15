@@ -86,10 +86,8 @@ theorem Shan_Problem_1_10 : (SEG A D).length = (SEG D C).length := by
   have a_ne_e : A ≠ E := sorry
   -- Extend $EA$ to $M$ such that $AM = EC$
   let M := Ray.extpoint (SEG_nd E A a_ne_e).extension (SEG E C).length
-  have am_eq_ec : (SEG A M).length = (SEG E C).length := by
-    apply seg_length_eq_dist_of_extpoint (SEG_nd E A a_ne_e).extension
-    simp
-    exact length_nonneg
+  have am_eq_ec : (SEG A M).length = (SEG E C).length :=
+    (SEG_nd E A a_ne_e).extension.dist_of_extpoint (SEG E C).length_nonneg
   -- Claim: $M \ne C$, $B \ne M$
   have m_ne_c : M ≠ C := sorry
   have b_ne_m : B ≠ M := sorry
