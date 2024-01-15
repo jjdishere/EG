@@ -339,7 +339,7 @@ Theorem
 \end{itemize}
 
 
-\section{Content in file Colinear.lean}
+\section{Content in file Collinear.lean}
 
 In this section, We discuss colinarity of points on a plane.
 

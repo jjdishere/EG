@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
+import EuclideanGeometry.Foundation.Axiom.Linear.Collinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
 
 noncomputable section

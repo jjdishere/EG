@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
+import EuclideanGeometry.Foundation.Axiom.Linear.Collinear
 
 namespace EuclidGeom
 
@@ -6,16 +6,16 @@ open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic Qq
 
 variable {P : Type _} [EuclideanPlane P]
 
-def extractColinear (expr : Q(Prop)) : MetaM (Option Expr) :=
+def extractCollinear (expr : Q(Prop)) : MetaM (Option Expr) :=
   match expr with
   | ~q(@EuclidGeom.collinear _ (_) _ _ _) =>
       return .some expr
   | _ => return .none
 
-def getColinearDeclNames : TacticM (List Name) := withMainContext do
+def getCollinearDeclNames : TacticM (List Name) := withMainContext do
   flip (<- getLCtx).foldlM [] fun acc x => do
     let type := x.type
-    pure $ match <- (extractColinear type) with
+    pure $ match <- (extractCollinear type) with
     | .some _ => x.userName :: acc
     | .none => acc
 
@@ -25,7 +25,7 @@ syntax (name := perm_collinear) "perm_collinear"  : tactic
 def evalPerm_collinear : Tactic := fun stx =>
   match stx with
   | `(tactic| perm_collinear) => withTheReader Term.Context ({· with errToSorry := false }) do
-    let collinearDeclNames <- getColinearDeclNames
+    let collinearDeclNames <- getCollinearDeclNames
     for x0 in collinearDeclNames do
       let x0 := mkIdent x0
       try
