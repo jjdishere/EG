@@ -64,8 +64,8 @@ theorem result1 {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (
   Thus $\triangle MBP \congr \triangle NCQ$ (by AAS),
   which implies $PM = QN$.
   -/
-  have not_colinear_MBP : ¬ colinear e.M e.B e.P := by sorry
-  have not_colinear_NDQ : ¬ colinear e.N e.D e.Q := by sorry
+  have not_collinear_MBP : ¬ collinear e.M e.B e.P := by sorry
+  have not_collinear_NDQ : ¬ collinear e.N e.D e.Q := by sorry
   have B_ne_M : e.B ≠ e.M := by sorry
   have P_ne_M : e.P ≠ e.M := by sorry
   have D_ne_N : e.D ≠ e.N := by sorry
@@ -73,7 +73,7 @@ theorem result1 {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (
   -- have
   have ang_BMP_eq_ang_DNQ_mod_pi : (ANG e.B e.M e.P B_ne_M P_ne_M).dvalue = (ANG e.D e.N e.Q D_ne_N Q_ne_N).dvalue := by sorry
 
-  have MBP_congr_NCQ : (TRI_nd e.M e.B e.P not_colinear_MBP).IsCongr (TRI_nd e.N e.D e.Q not_colinear_NDQ) := by sorry
+  have MBP_congr_NCQ : (TRI_nd e.M e.B e.P not_collinear_MBP).IsCongr (TRI_nd e.N e.D e.Q not_collinear_NDQ) := by sorry
   exact MBP_congr_NCQ.edge₂
 
 -- Prove that $PM \parallel QN$.

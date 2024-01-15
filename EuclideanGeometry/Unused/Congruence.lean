@@ -46,11 +46,11 @@ theorem isND: tr₁.isND = tr₂.isND := by
       exact nd_2
     unfold Triangle.isND at nd_2
     push_neg at nd_2
-    have sum := (Triangle.edge_sum_eq_edge_iff_colinear tr₂).mp nd_2
+    have sum := (Triangle.edge_sum_eq_edge_iff_collinear tr₂).mp nd_2
     simp only [dif_neg notnd] at h
     rcases h with ⟨h₁,⟨h₂,h₃⟩⟩
     rw [← h₁,← h₂,← h₃] at sum
-    have nd_1 := (Triangle.edge_sum_eq_edge_iff_colinear tr₁).mpr sum
+    have nd_1 := (Triangle.edge_sum_eq_edge_iff_collinear tr₁).mpr sum
     unfold Triangle.isND at nd₁
     exact nd₁ nd_1
   · let nd_1 := nd1
@@ -61,11 +61,11 @@ theorem isND: tr₁.isND = tr₂.isND := by
       exact nd_1 nd₁
     unfold Triangle.isND at nd_1
     push_neg at nd_1
-    have sum := (Triangle.edge_sum_eq_edge_iff_colinear tr₁).mp nd_1
+    have sum := (Triangle.edge_sum_eq_edge_iff_collinear tr₁).mp nd_1
     simp only [dif_neg notnd] at h
     rcases h with ⟨h₁,⟨h₂,h₃⟩⟩
     rw [h₁,h₂,h₃] at sum
-    have nd_2 := (Triangle.edge_sum_eq_edge_iff_colinear tr₂).mpr sum
+    have nd_2 := (Triangle.edge_sum_eq_edge_iff_collinear tr₂).mpr sum
     rw [eq_false nd1]
     simp only [eq_iff_iff, false_iff]
     unfold Triangle.isND
@@ -262,11 +262,11 @@ theorem isND: tr₁.isND ↔ tr₂.isND := by
       exact nd_2
     unfold Triangle.isND at nd_2
     push_neg at nd_2
-    have sum := (Triangle.edge_sum_eq_edge_iff_colinear tr₂).mp nd_2
+    have sum := (Triangle.edge_sum_eq_edge_iff_collinear tr₂).mp nd_2
     simp only [dif_neg notnd] at h
     rcases h with ⟨h₁,⟨h₂,h₃⟩⟩
     rw [← h₁,← h₂,← h₃] at sum
-    have nd_1 := (Triangle.edge_sum_eq_edge_iff_colinear tr₁).mpr sum
+    have nd_1 := (Triangle.edge_sum_eq_edge_iff_collinear tr₁).mpr sum
     unfold Triangle.isND at nd₁
     exact nd₁ nd_1
   · intro nd₂
@@ -278,11 +278,11 @@ theorem isND: tr₁.isND ↔ tr₂.isND := by
       exact nd_1 nd₁
     unfold Triangle.isND at nd_1
     push_neg at nd_1
-    have sum := (Triangle.edge_sum_eq_edge_iff_colinear tr₁).mp nd_1
+    have sum := (Triangle.edge_sum_eq_edge_iff_collinear tr₁).mp nd_1
     simp only [dif_neg notnd] at h
     rcases h with ⟨h₁,⟨h₂,h₃⟩⟩
     rw [h₁,h₂,h₃] at sum
-    have nd_2 := (Triangle.edge_sum_eq_edge_iff_colinear tr₂).mpr sum
+    have nd_2 := (Triangle.edge_sum_eq_edge_iff_collinear tr₂).mpr sum
     exact nd₂ nd_2
 
 theorem edge₁ : tr₁.edge₁.length = tr₂.edge₁.length := by
@@ -383,7 +383,7 @@ theorem triv_of_acongr_self (h : tr IsACongrTo tr) : ¬ tr.isND := by
    rcases h with ⟨anti_angle,_⟩
    have eq_zero : Angle.value tr_nd.angle₁ = 0 := by linarith
    unfold TriangleND.angle₁ at eq_zero
-   have col := colinear_of_zero_angle eq_zero
+   have col := collinear_of_zero_angle eq_zero
    unfold Triangle.isND at nd
    apply nd ; exact col
 

@@ -12,7 +12,7 @@ the perpendicular line passing through $D$ of the bisector of $\angle BAC$ inter
 Prove that $BE=CF=\frac{1}{2}|AB-AC|$.  -/
 
 -- We have triagngle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -20,7 +20,7 @@ lemma c_ne_a : C ≠ A := sorry
 -- $D$ is the midpoint of $BC$
 variable {D : P} {hd : D = (SEG B C).midpoint}
 -- the perpendicular line passing through $D$ of the bisector of $\angle BAC$ intersects $AB,AC$ at $E,F$ respectively.
--- Introduce two points colinear and the orthogonality. The colinear condition is not helpful.
+-- Introduce two points collinear and the orthogonality. The collinear condition is not helpful.
 variable {E F : P} {l : Line P} {hl : l = perp_line D (ANG B A C A_ne_B.symm c_ne_a).AngBis.toLine} {he : is_inx E (LIN A B A_ne_B.symm) l} {hf : is_inx F (LIN A C c_ne_a) l}
 
 -- Theorem : $BE=CF=\frac{1}{2}|AB-AC|$
@@ -34,7 +34,7 @@ namespace Shan_Problem_2_18
 Prove that $E$ liesInt $DF$ -/
 
 -- We have triagngle $\triangle ABC$ such that $AC < BC$
-variable {A B C : P} {hnd : ¬ colinear A B C} {hedge : (SEG A C).length < (SEG B C).length}
+variable {A B C : P} {hnd : ¬ collinear A B C} {hedge : (SEG A C).length < (SEG B C).length}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -56,7 +56,7 @@ namespace Shan_Problem_2_18'
 If $\angle ACB = 90^{circ}$, prove that $CE$ is the bisector of $\angle FCD$.  -/
 
 -- We have triagngle $\triangle ABC$ such that $AC < BC$
-variable {A B C : P} {hnd : ¬ colinear A B C} {hedge : (SEG A C).length < (SEG B C).length}
+variable {A B C : P} {hnd : ¬ collinear A B C} {hedge : (SEG A C).length < (SEG B C).length}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry

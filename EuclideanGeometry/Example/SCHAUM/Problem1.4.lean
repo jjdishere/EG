@@ -21,13 +21,13 @@ variable {D : Plane} {D_on_seg: D LiesInt (SEG A F)}
 -- $AD = BF$.
 variable {seg_eq : (SEG A D).length = (SEG B F).length}
 --Let $C$ be a point.
-variable {C : Plane} {C_off_lin: ¬ colinear A F C} --Implied by opposite side.
+variable {C : Plane} {C_off_lin: ¬ collinear A F C} --Implied by opposite side.
 --Let $E$ be a point on the opposite side of $AF$ to $C$, such that EF ∥ AC and ED ∥ BC.
-variable {E : Plane} {E_off_lin: ¬ colinear A F E} --Implied by opposite side.
--- Claim:$C \ne A$ , $C \ne B$, $C, A, B$ is not colinear, $E, F, D$ is not colinear.
-lemma cabnd : ¬ colinear C A B := by sorry
-lemma efdnd : ¬ colinear E F D := by sorry
-lemma c_ne_a : C ≠ A := (ne_of_not_colinear C_off_lin).2.1.symm
+variable {E : Plane} {E_off_lin: ¬ collinear A F E} --Implied by opposite side.
+-- Claim:$C \ne A$ , $C \ne B$, $C, A, B$ is not collinear, $E, F, D$ is not collinear.
+lemma cabnd : ¬ collinear C A B := by sorry
+lemma efdnd : ¬ collinear E F D := by sorry
+lemma c_ne_a : C ≠ A := (ne_of_not_collinear C_off_lin).2.1.symm
 lemma c_ne_B : C ≠ B :=by
   by_contra h
   rw [h] at C_off_lin
@@ -36,11 +36,11 @@ lemma c_ne_B : C ≠ B :=by
   have b_on_s : B LiesOn S := by sorry
   have f_on_s : F LiesOn S := by sorry
   absurd C_off_lin
-  apply Seg.colinear_of_lies_on a_on_s f_on_s b_on_s
+  apply Seg.collinear_of_lies_on a_on_s f_on_s b_on_s
 
 --Claim:$E \ne D$ , $E \ne F$.
 lemma e_ne_d : E ≠ D := by sorry
-lemma e_ne_f : E ≠ F := (ne_of_not_colinear E_off_lin).1
+lemma e_ne_f : E ≠ F := (ne_of_not_collinear E_off_lin).1
 --such that EF ∥ AC and ED ∥ BC.
 variable {EF_AC_para: (SegND E F e_ne_f)∥(SegND A C c_ne_a.symm)}
 variable {ED_BC_para: (SegND E D e_ne_d)∥(SegND B C c_ne_B.symm)}

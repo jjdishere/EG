@@ -20,16 +20,16 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   h₁ : (SEG A B).length = (SEG D C).length
   h₂ : (SEG D B).length = (SEG A C).length
   -- nondegenerate
-  hnd₁ : ¬ colinear D B A
-  hnd₂ : ¬ colinear A C D
-  D_ne_A : D ≠ A :=(ne_of_not_colinear hnd₁).2.1
+  hnd₁ : ¬ collinear D B A
+  hnd₂ : ¬ collinear A C D
+  D_ne_A : D ≠ A :=(ne_of_not_collinear hnd₁).2.1
   -- $B,C$ is on the same side of line $AD$.
   B_side : IsOnRightSide B (SEG_nd A D D_ne_A)
   C_side : IsOnRightSide C (SEG_nd A D D_ne_A)
-lemma a_ne_b {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: e.A ≠ e.B := (ne_of_not_colinear e.hnd₁).1
-lemma a_ne_c {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: e.A ≠ e.C := (ne_of_not_colinear e.hnd₂).2.2.symm
-lemma b_ne_d {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: e.B ≠ e.D :=  (ne_of_not_colinear e.hnd₁).2.2
-lemma c_ne_d {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: e.C ≠ e.D :=(ne_of_not_colinear e.hnd₂).1.symm
+lemma a_ne_b {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: e.A ≠ e.B := (ne_of_not_collinear e.hnd₁).1
+lemma a_ne_c {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: e.A ≠ e.C := (ne_of_not_collinear e.hnd₂).2.2.symm
+lemma b_ne_d {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: e.B ≠ e.D :=  (ne_of_not_collinear e.hnd₁).2.2
+lemma c_ne_d {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: e.C ≠ e.D :=(ne_of_not_collinear e.hnd₂).1.symm
 -- Prove that $∠B = ∠ C$.
 theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}:  ∠ e.A e.B e.D a_ne_b b_ne_d.symm = -∠ e.D e.C e.A c_ne_d.symm a_ne_c := by
   -- Use SSS to prove that $\triangle DBA \congr \triangle ACD$ or $\triangle DBA \congr_a \triangle ACD$.
