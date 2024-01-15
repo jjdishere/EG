@@ -52,8 +52,10 @@ theorem sim_iff_perm_sim : IsSim tr₁ tr₂ ↔ IsSim (perm_vertices tr₁) (pe
   ⟨fun h ↦ h.perm_sim, fun h ↦ h.perm_sim.perm_sim⟩
 
 theorem is_cclock_of_cclock (h : IsSim tr₁ tr₂) (cc : tr₁.is_cclock) : tr₂.is_cclock := by
-  refine' cclock_of_pos_angle tr₂ (.inl _)
-  simp only [<- h.1, ( TriangleND.angle_pos_of_cclock tr₁ cc).1]
+  apply (angle₁_pos_iff_cclock tr₂).mpr
+  simp only [<- h.1]
+  apply (angle₁_pos_iff_cclock tr₁).mp
+  exact cc
 
 def ratio (_h : IsSim tr₁ tr₂) : ℝ := tr₁.edge₁.length / tr₂.edge₁.length
 
@@ -123,10 +125,13 @@ instance instHasASim : HasASim ( TriangleND P) where
   symm := IsASim.symm
 
 theorem not_cclock_of_cclock (h : IsASim tr₁ tr₂) (cc : tr₁.is_cclock) : ¬ tr₂.is_cclock := by
-  have : tr₁.angle₁.value.IsPos := (angle_pos_of_cclock tr₁ cc).1
+  have : tr₁.angle₁.value.IsPos := by
+    apply (angle₁_pos_iff_cclock tr₁).mp
+    exact cc
   rw [h.1] at this
   simp only [neg_isPos_iff_isNeg] at this
-  exact clock_of_neg_angle tr₂ (.inl this)
+  apply (angle₁_neg_iff_not_cclock tr₂).mpr
+  exact this
 
 def ratio (_h : IsASim tr₁ tr₂) : ℝ := tr₁.edge₁.length / tr₂.edge₁.length
 
@@ -224,15 +229,21 @@ theorem sim_of_AA (tr₁ tr₂ : TriangleND P) (h₂ : tr₁.angle₂.value = tr
   by_cases cc : tr₁.is_cclock
   . have : tr₂.is_cclock := by
       have : tr₂.angle₂.value.IsPos := by
-        simp only [<- h₂, ( TriangleND.angle_pos_of_cclock tr₁ cc).2.1]
-      exact cclock_of_pos_angle tr₂ (.inr (.inl this))
+        simp only [<- h₂]
+        apply (angle₂_pos_iff_cclock tr₁).mp
+        exact cc
+      apply (angle₂_pos_iff_cclock tr₂).mpr
+      exact this
     have eq₂ := angle_sum_eq_pi_of_cclock tr₂ this
     simp only [<- angle_sum_eq_pi_of_cclock tr₁ cc, h₂, h₃, add_left_inj] at eq₂
     exact eq₂.symm
   . have : ¬ tr₂.is_cclock := by
       have : tr₂.angle₂.value.IsNeg := by
-        simp only [<- h₂, ( TriangleND.angle_neg_of_clock tr₁ cc).2.1]
-      exact clock_of_neg_angle tr₂ (.inr (.inl this))
+        simp only [<- h₂]
+        apply (angle₂_neg_iff_not_cclock tr₁).mp
+        exact cc
+      apply (angle₂_neg_iff_not_cclock tr₂).mpr
+      exact this
     have eq₂ := angle_sum_eq_neg_pi_of_clock tr₂ this
     simp only [<- angle_sum_eq_neg_pi_of_clock tr₁ cc, h₂, h₃, add_left_inj] at eq₂
     exact eq₂.symm
@@ -243,19 +254,25 @@ theorem asim_of_AA (tr₁ tr₂ : TriangleND P) (h₂ : tr₁.angle₂.value = -
   constructor
   by_cases cc : tr₁.is_cclock
   . have : ¬ tr₂.is_cclock := by
-      have : tr₁.angle₂.value.IsPos := (TriangleND.angle_pos_of_cclock tr₁ cc).2.1
+      have : tr₁.angle₂.value.IsPos := by
+        apply (angle₂_pos_iff_cclock tr₁).mp
+        exact cc
       rw [h₂] at this
       simp only [neg_isPos_iff_isNeg] at this
-      exact clock_of_neg_angle tr₂ (.inr (.inl this))
+      apply (angle₂_neg_iff_not_cclock tr₂).mpr
+      exact this
     have eq₂ := angle_sum_eq_neg_pi_of_clock tr₂ this
     simp only [<- angle_sum_eq_pi_of_cclock tr₁ cc, h₂, h₃, neg_add_rev, neg_neg] at eq₂
     rw [add_comm,add_right_inj,add_comm,add_right_inj] at eq₂
     exact neg_eq_iff_eq_neg.mp (id eq₂.symm)
   . have : tr₂.is_cclock := by
-      have : tr₁.angle₂.value.IsNeg := (TriangleND.angle_neg_of_clock tr₁ cc).2.1
+      have : tr₁.angle₂.value.IsNeg := by
+        apply (angle₂_neg_iff_not_cclock tr₁).mp
+        exact cc
       rw [h₂] at this
       simp only [neg_isNeg_iff_isPos] at this
-      exact cclock_of_pos_angle tr₂ (.inr (.inl this))
+      apply (angle₂_pos_iff_cclock tr₂).mpr
+      exact this
     have eq₂ := angle_sum_eq_pi_of_cclock tr₂ this
     have eq₁ := TriangleND.angle_sum_eq_neg_pi_of_clock tr₁ cc
     simp only [h₂, h₃, <- eq₂, neg_add_rev] at eq₁
@@ -325,15 +342,23 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
       . exact e₁
       have cc_eq := cclock_of_eq_angle tr₁ tr₂ a
       by_cases cc : tr₁.is_cclock
-      . have pos₁ : tr₁.angle₃.value.IsPos := (angle_pos_of_cclock tr₁ cc).2.2
+      . have pos₁ : tr₁.angle₃.value.IsPos := by
+          apply (angle₃_pos_iff_cclock tr₁).mp
+          exact cc
         rw [cc_eq] at cc
-        have pos₂ : tr₂.angle₃.value.IsPos := (angle_pos_of_cclock tr₂ cc).2.2
+        have pos₂ : tr₂.angle₃.value.IsPos := by
+          apply (angle₃_pos_iff_cclock tr₂).mp
+          exact cc
         have npos₁ := add_pi_isNeg_iff_isPos.mpr pos₂
         rw [<-e₂] at npos₁
         exact (not_isPos_of_isNeg npos₁ pos₁).elim
-      . have neg₁ : tr₁.angle₃.value.IsNeg := (angle_neg_of_clock tr₁ cc).2.2
+      . have neg₁ : tr₁.angle₃.value.IsNeg := by
+          apply (angle₃_neg_iff_not_cclock tr₁).mp
+          exact cc
         rw [cc_eq] at cc
-        have neg₂ : tr₂.angle₃.value.IsNeg := (angle_neg_of_clock tr₂ cc).2.2
+        have neg₂ : tr₂.angle₃.value.IsNeg := by
+          apply (angle₃_neg_iff_not_cclock tr₂).mp
+          exact cc
         have nneg₁ := add_pi_isPos_iff_isNeg.mpr neg₂
         rw [<-e₂] at nneg₁
         exact (not_isNeg_of_isPos nneg₁ neg₁).elim
@@ -360,7 +385,12 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
     rw [two_nsmul_coe_pi] at this
     have nd := not_isND_iff_two_nsmul_eq_zero.mpr this
     rw [cclock_of_eq_angle tr₁ tr₂ a] at cc
-    exact (nd (isND_iff_isPos_or_isNeg.mpr (.inl ((angle_pos_of_cclock tr₂ cc).1)))).elim
+    exfalso
+    apply nd
+    apply isND_iff_isPos_or_isNeg.mpr
+    left
+    apply (angle₁_pos_iff_cclock tr₂).mp
+    exact cc
   have eq_pi : Angle.value tr₁.angle₂ + Angle.value tr₁.angle₃ = - π - Angle.value tr₁.angle₁ := by
       rw [<-angle_sum_eq_neg_pi_of_clock tr₁ cc] ; abel
   have eq_pi' : Angle.value tr₂.angle₂ + Angle.value tr₂.angle₃ = - π - Angle.value tr₂.angle₁ := by
@@ -374,7 +404,12 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
   rw [neg_coe_pi,two_nsmul_coe_pi] at this
   have nd := not_isND_iff_two_nsmul_eq_zero.mpr this
   rw [cclock_of_eq_angle tr₁ tr₂ a] at cc
-  exact (nd (isND_iff_isPos_or_isNeg.mpr (.inr ((angle_neg_of_clock tr₂ cc).1)))).elim
+  exfalso
+  apply nd
+  apply isND_iff_isPos_or_isNeg.mpr
+  right
+  apply (angle₁_neg_iff_not_cclock tr₂).mp
+  exact cc
 
 theorem asim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr₂.edge₂.length = tr₁.edge₃.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = - tr₂.angle₁.value): tr₁ ∼ₐ tr₂ := by
   have eq : tr₁.edge₂.length * tr₂.edge₃.length = tr₁.edge₃.length * tr₂.edge₂.length := by
@@ -440,7 +475,12 @@ theorem asim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
       rw [<-two_smul ℕ (Angle.value tr₂.angle₁),neg_eq_zero] at eq_zero
       have nd := not_isND_iff_two_nsmul_eq_zero.mpr eq_zero
       rw [clock_of_eq_neg_angle tr₁ tr₂ a] at cc
-      exact (nd (isND_iff_isPos_or_isNeg.mpr (.inr (angle_neg_of_clock tr₂ cc).1))).elim
+      exfalso
+      apply nd
+      apply isND_iff_isPos_or_isNeg.mpr
+      right
+      apply (angle₁_neg_iff_not_cclock tr₂).mp
+      exact cc
     . have eq_zero : (Angle.value tr₂.angle₂ + Angle.value tr₂.angle₃) - (Angle.value tr₁.angle₂ + Angle.value tr₁.angle₃)  = 0 := by
         rw [<-add_sub,<-sub_sub,<-neg_neg (Angle.value tr₂.angle₃ - Angle.value tr₁.angle₂),neg_sub,<-c]
         abel
@@ -459,7 +499,12 @@ theorem asim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
       have nd := not_isND_iff_two_nsmul_eq_zero.mpr eq_zero
       rw [clock_of_eq_neg_angle tr₁ tr₂ a] at cc
       push_neg at cc
-      exact (nd (isND_iff_isPos_or_isNeg.mpr (.inl (angle_pos_of_cclock tr₂ cc).1))).elim
+      exfalso
+      apply nd
+      apply isND_iff_isPos_or_isNeg.mpr
+      left
+      apply (angle₁_pos_iff_cclock tr₂).mp
+      exact cc
   . have : tr₁.angle₃.value = - tr₂.angle₃.value := by
       have : tr₁.angle₂.value = - (tr₂.angle₂.value + tr₂.angle₃.value) - tr₁.angle₃.value := by
         rw [<-addeq] ; abel
@@ -474,18 +519,26 @@ theorem asim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
       . exact e₁
       have cc_eq := clock_of_eq_neg_angle tr₁ tr₂ a
       by_cases cc : tr₁.is_cclock
-      . have pos₁ : tr₁.angle₃.value.IsPos := (angle_pos_of_cclock tr₁ cc).2.2
+      . have pos₁ : tr₁.angle₃.value.IsPos := by
+          apply (angle₃_pos_iff_cclock tr₁).mp
+          exact cc
         rw [cc_eq] at cc
-        have pos₂ : tr₂.angle₃.value.IsNeg := (angle_neg_of_clock tr₂ cc).2.2
+        have pos₂ : tr₂.angle₃.value.IsNeg := by
+          apply (angle₃_neg_iff_not_cclock tr₂).mp
+          exact cc
         have pos₃ : (-tr₂.angle₃.value).IsPos := by simp only [neg_isPos_iff_isNeg,
           pos₂]
         have npos₁ := add_pi_isNeg_iff_isPos.mpr pos₃
         rw [<-e₂] at npos₁
         exact ((not_isPos_of_isNeg npos₁) pos₁).elim
-      . have neg₁ : tr₁.angle₃.value.IsNeg := (angle_neg_of_clock tr₁ cc).2.2
+      . have neg₁ : tr₁.angle₃.value.IsNeg := by
+          apply (angle₃_neg_iff_not_cclock tr₁).mp
+          exact cc
         rw [cc_eq] at cc
         push_neg at cc
-        have neg₂ : tr₂.angle₃.value.IsPos := (angle_pos_of_cclock tr₂ cc).2.2
+        have neg₂ : tr₂.angle₃.value.IsPos := by
+          apply (angle₃_pos_iff_cclock tr₂).mp
+          exact cc
         have neg₃ : (-tr₂.angle₃.value).IsNeg := by simp only [neg_isNeg_iff_isPos,
           neg₂]
         have nneg₁ := add_pi_isPos_iff_isNeg.mpr neg₃
