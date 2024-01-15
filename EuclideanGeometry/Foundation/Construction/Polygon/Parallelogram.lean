@@ -113,20 +113,20 @@ scoped postfix : 50 "IsPrgND" => Quadrilateral.IsParallelogramND
 -- scoped postfix : 50 "nd_IsParallelogramND" => Quadrilateral_nd.IsParallelogramND
 
 /-- A parallelogram_nd satisfies non_triv. -/
-theorem Parallelogram.non_triv_of_parallelogramND {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.non_triv := by
+theorem ParallelogramND.non_triv_of_parallelogramND {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.non_triv := by
   sorry
 
 /-- A parallelogram_nd satisfies non_triv. -/
-theorem Parallelogram.non_triv_of_parallelogramND_variant {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D).non_triv := by
+theorem ParallelogramND.non_triv_of_parallelogramND_variant {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsParallelogramND) : (QDR A B C D).non_triv := by
   sorry
 
 /-- A parallelogram_nd satisfies IsPara. -/
-theorem IsPara_of_parallelogramND {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.IsPara := by
+theorem ParallelogramND.IsPara_of_parallelogramND {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.IsPara := by
   sorry
 
 -- `the necessity of variant theorems needs further discuss`
 /-- A parallelogram_nd satisfies IsPara. -/
-theorem Parallelogram.IsPara_of_parallelogramND_variant {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D) IsPrgND) : (QDR A B C D).IsPara := by
+theorem ParallelogramND.IsPara_of_parallelogramND_variant {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D) IsPrgND) : (QDR A B C D).IsPara := by
   sorry
 
 def ParallelogramND.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (h: (QDR A B C D) IsPrgND) : ParallelogramND P where
@@ -517,13 +517,13 @@ theorem nd₂₄_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : D 
 
 /-- In a parallelogram_nd, edge_nd₁₂ and edge₃₄ are parallel. -/
 theorem nd_para_of_is_prg_nd : prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ := by
-  have h: prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ ∧ prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := by apply IsPara_of_parallelogramND
+  have h: prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ ∧ prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := by apply ParallelogramND.IsPara_of_parallelogramND
   rcases h with ⟨a,_⟩
   exact a
 
 /-- In a parallelogram_nd A B C D, A B and C D are parallel. -/
 theorem nd_para_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : (SEG_nd A B (nd₁₂_of_is_prg_nd_variant h)) ∥ (SEG_nd C D (nd₃₄_of_is_prg_nd_variant h)) := by
-  have p: (QDR A B C D).IsPara := by apply IsPara_of_parallelogramND_variant h
+  have p: (QDR A B C D).IsPara := by apply ParallelogramND.IsPara_of_parallelogramND_variant h
   have H: (QDR A B C D).IsND := nd_is_nd_of_is_prg_nd_variant h
   unfold Quadrilateral.IsPara at p
   simp only [dite_true, H] at p
@@ -533,13 +533,13 @@ theorem nd_para_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : (SE
 
 /-- In a parallelogram_nd, edge_nd₁₄ and edge₂₃ are parallel. -/
 theorem nd_para_of_is_prg_nd' : prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := by
-  have h: prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ ∧ prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := by apply IsPara_of_parallelogramND
+  have h: prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ ∧ prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := by apply ParallelogramND.IsPara_of_parallelogramND
   rcases h with ⟨_,a⟩
   exact a
 
 /-- In a parallelogram_nd A B C D, A D and B C are parallel. -/
 theorem nd_para_of_is_prg_nd'_variant (h : (QDR A B C D).IsParallelogramND) : SEG_nd A D (nd₁₄_of_is_prg_nd_variant h) ∥ SEG_nd B C (nd₂₃_of_is_prg_nd_variant h) := by
-  have p: (QDR A B C D).IsPara := by apply IsPara_of_parallelogramND_variant h
+  have p: (QDR A B C D).IsPara := by apply ParallelogramND.IsPara_of_parallelogramND_variant h
   have H: (QDR A B C D).IsND := nd_is_nd_of_is_prg_nd_variant h
   unfold Quadrilateral.IsPara at p
   simp only [dite_true, H] at p
