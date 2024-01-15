@@ -28,8 +28,8 @@ structure IsAngBis (ang : Angle P) (ray : Ray P) : Prop where
   eq_source : ang.source = ray.source
   eq_value : (mk_dir₁ ang ray.toDir).value = (mk_dir₂ ang ray.toDir).value
   -- `the definition of same_sgn should be rewrite, using btw`.
-  -- For example, change it to `sbtw ang.dir₁ ray.toDir ang.dir₂ ∨ (ray.toDir =ang.dir₁ ∧ ray.toDir = ang.dir₂)`.
-  same_sgn : ((Angle.mk_start_ray ang ray eq_source).value.IsPos ∧ ang.value.IsPos) ∨ ((Angle.mk_start_ray ang ray eq_source).value.IsNeg ∧ ang.value.IsNeg) ∨ ((Angle.mk_start_ray ang ray eq_source).value = ↑(π/2) ∧ ang.value = π ) ∨ ((Angle.mk_start_ray ang ray eq_source).value = 0 ∧ ang.value = 0)
+  -- May change it to `- π / 2 < (mk_dir₁ ang ray.toDir).value ≤ π / 2`.
+  same_sgn : ((mk_dir₁ ang ray.toDir).value.IsPos ∧ ang.value.IsPos) ∨ ((mk_dir₁ ang ray.toDir).value.IsNeg ∧ ang.value.IsNeg) ∨ ((mk_dir₁ ang ray.toDir).value = ↑(π/2) ∧ ang.value = π ) ∨ ((mk_dir₁ ang ray.toDir).value = 0 ∧ ang.value = 0)
 
 
 structure IsAngBisLine (ang : Angle P) (l : Line P) : Prop where
@@ -61,16 +61,16 @@ namespace Angle
 
 theorem eq_source {ang : Angle P} : ang.source = ang.AngBis.source := rfl
 
-theorem value_angBis_eq_half_value {ang : Angle P} : (Angle.mk_start_ray ang ang.AngBis rfl).value = ang.value.half := by
-  simp only [mk_strat_ray_value_eq_vsub, AngBis, vadd_vsub]
+theorem value_angBis_eq_half_value {ang : Angle P} : (mk_dir₁ ang ang.AngBis.toDir).value = ang.value.half := by
+  simp only [mk_dir₁_value, AngBis, vadd_vsub]
 
-theorem mk_start_ray_value_eq_half_angvalue {ang : Angle P} : (Angle.mk_start_ray ang ang.AngBis rfl).value.toReal = ang.value.toReal / 2 :=
+theorem mk_start_ray_value_eq_half_angvalue {ang : Angle P} : (mk_dir₁ ang ang.AngBis.toDir).value.toReal = ang.value.toReal / 2 :=
   (Eq.congr_right (ang.value.half_toReal).symm).mpr (congrArg toReal ang.value_angBis_eq_half_value)
 
 theorem angbis_is_angbis {ang : Angle P} : IsAngBis ang ang.AngBis where
   eq_source := rfl
   eq_value := by
-    simp only [value_mk_dir₁, value_mk_dir₂, AngBis, vadd_vsub, vsub_vadd_eq_vsub_sub]
+    simp only [mk_dir₁_value, mk_dir₂_value, AngBis, vadd_vsub, vsub_vadd_eq_vsub_sub]
     exact sub_half_eq_half.symm
   same_sgn := by
     have g : (ang.value.IsPos) ∨ (ang.value.IsNeg) ∨ (ang.value = π) ∨ (ang.value = 0) := by
@@ -110,7 +110,7 @@ theorem ang_source_rev_eq_source_bis {ang : Angle P} {r : Ray P} (h : IsAngBis a
 theorem nonpi_bisector_eq_bisector_of_rev {ang : Angle P} {r : Ray P} (h : IsAngBis ang r) (nonpi : ang.value ≠ π ): IsAngBis ang.reverse r where
   eq_source := h.eq_source
   eq_value := by
-    simp only [value_mk_dir₁, value_mk_dir₂, reverse]
+    simp only [mk_dir₁_value, mk_dir₂_value, reverse]
     rw [← neg_vsub_eq_vsub_rev ang.dir₂ r.toDir, ← neg_vsub_eq_vsub_rev r.toDir ang.dir₁]
     exact neg_inj.mpr h.eq_value.symm
   same_sgn := sorry /- by
@@ -167,8 +167,8 @@ namespace TriangleND
 
 theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : TriangleND P} : ¬ tri_nd.angle₁.AngBis.toLine ∥ tri_nd.angle₂.AngBis.toLine := by
   by_contra g
-  let A₁ := (Angle.mk_start_ray tri_nd.angle₁ tri_nd.angle₁.AngBis tri_nd.angle₁.eq_source).reverse
-  let A₂ := Angle.mk_end_ray tri_nd.angle₂ tri_nd.angle₂.AngBis tri_nd.angle₂.eq_source
+  let A₁ := (mk_dir₁ tri_nd.angle₁ tri_nd.angle₁.AngBis.toDir).reverse
+  let A₂ := mk_dir₂ tri_nd.angle₂ tri_nd.angle₂.AngBis.toDir
   have sr : A₁.start_ray.toDir = A₂.start_ray.toDir := by
     have h₁ : A₁.start_ray = tri_nd.angle₁.AngBis := rfl
     have h₂ : A₂.start_ray = tri_nd.angle₂.AngBis := rfl
@@ -184,11 +184,8 @@ theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : TriangleND P} : �
     have h₅ : tri_nd.edge_nd₃.reverse.toDirLine.reverse = tri_nd.edge_nd₃.reverse.reverse.toDirLine := by rw [SegND.toDirLine_rev_eq_rev_toDirLine]
     have h₆ : tri_nd.edge_nd₃.reverse.reverse.toDirLine = tri_nd.edge_nd₃.toDirLine := rfl
     rw [h₆] at h₅
-    exact id h₅.symm
-  have g₁ : IsConsecutiveIntAng A₁ A₂ := by
-    constructor
-    · rw [sr]
-    · rw [er]
+    exact h₅.symm
+  have g₁ : IsConsecutiveIntAng A₁ A₂ := ⟨sr, er⟩
   have g₂ : A₁.value - A₂.value = π := by rw [value_sub_eq_pi_of_isconsecutiveintang g₁]
   sorry
 

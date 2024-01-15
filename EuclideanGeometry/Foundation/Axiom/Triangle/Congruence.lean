@@ -526,13 +526,12 @@ theorem IsACongr.not_nd_of_not_nd (h : tr₁.IsACongr tr₂) (nnd : ¬ tr₁.IsN
   fun nd ↦ nnd (h.symm.nd_of_nd nd)
 
 theorem not_nd_of_acongr_self (h : tr.IsACongr tr) : ¬ tr.IsND := by
-  by_contra nd
+  intro nd
   let tr_nd : TriangleND P := ⟨tr, nd⟩
-  have temp := ((dite_prop_iff_and _).mp h.4).1 ⟨nd,nd⟩
-  have eq : Angle.value tr_nd.angle₁ = 0 ∨ Angle.value tr_nd.angle₁ = π := AngValue.eq_neg_self_iff.mp temp
-  cases eq with
-  | inl eq => exact nd (colinear_of_angle_eq_zero eq)
-  | inr eq => exact nd (colinear_of_angle_eq_pi eq)
+  haveI : PtNe tr.point₂ tr.point₁ := tr_nd.nontriv₃
+  haveI : PtNe tr.point₃ tr.point₁ := tr_nd.nontriv₂.symm
+  exact nd <| colinear_iff_not_isND.mpr <|
+    eq_neg_self_iff_not_isND.mp (((dite_prop_iff_and _).mp h.4).1 ⟨nd, nd⟩)
 
 theorem acongr_self_of_not_nd (nnd : ¬ tr.IsND) : tr.IsACongr tr where
   edge₁ := rfl
@@ -872,11 +871,8 @@ theorem congr_of_HL (h₁ : tr_nd₁.angle₁.value = ↑(π / 2)) (h₂ : tr_nd
   have : Seg.length (edge₃ tr_nd₁) * Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) * Seg.length (edge₃ tr_nd₂) := by
     rw [<-sq ,<-sq]
     exact pyth₂.symm
-  have pos : 0 ≤ Seg.length (edge₃ tr_nd₁) := length_nonneg
-  have pos' : 0 ≤ Seg.length (edge₃ tr_nd₂) := length_nonneg
-  have : Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) := (mul_self_inj pos pos').mp this
   rw [<-h₂] at h₁
-  exact  congr_of_SAS e₂ h₁ this
+  exact congr_of_SAS e₂ h₁ ((mul_self_inj (edge₃ tr_nd₁).length_nonneg (edge₃ tr_nd₂).length_nonneg).mp this)
 
 theorem acongr_of_HL (h₁ : tr_nd₁.angle₁.value = ↑(π / 2)) (h₂ : tr_nd₂.angle₁.value = ↑ (- π / 2)) (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) : tr_nd₁ ≅ₐ tr_nd₂ := by
   have pyth := Pythagoras_of_tr_nd tr_nd₁ (Or.inl h₁)
@@ -885,10 +881,8 @@ theorem acongr_of_HL (h₁ : tr_nd₁.angle₁.value = ↑(π / 2)) (h₂ : tr_n
   have : Seg.length (edge₃ tr_nd₁) * Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) * Seg.length (edge₃ tr_nd₂) := by
     rw [<-sq ,<-sq]
     exact pyth₂.symm
-  have pos : 0 ≤ Seg.length (edge₃ tr_nd₁) := length_nonneg
-  have pos' : 0 ≤ Seg.length (edge₃ tr_nd₂) := length_nonneg
   have : Seg.length (edge₃ tr_nd₁) = Seg.length (edge₃ tr_nd₂) := by
-    exact (mul_self_inj pos pos').mp this
+    exact (mul_self_inj (edge₃ tr_nd₁).length_nonneg (edge₃ tr_nd₂).length_nonneg).mp this
   have eq_neg : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value := by
     simp only [h₁, h₂]
     norm_cast

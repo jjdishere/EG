@@ -84,10 +84,8 @@ theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge
     rw [sin_pos_iff_isPos] at h3
     exact h3
   rw [wedge_eq_length_mul_length_mul_sin (bnea := ⟨(ne_of_not_colinear nd).2.2⟩) (cnea := ⟨(ne_of_not_colinear nd).2.1.symm⟩)]
-  intro h0
-  have h3 : 0 < sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_isPos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
   field_simp
-  exact h3
+  exact sin_pos_iff_isPos.mpr
 
 end wedge
 
@@ -103,12 +101,13 @@ theorem odist'_eq_zero_iff_exist_real_vec_eq_smul {A : P} {ray : Ray P} : odist'
 
 theorem odist'_eq_length_mul_sin (A : P) (ray : Ray P) [h : PtNe A ray.source] : odist' A ray = (SEG ray.source A).length * sin ((Angle.mk_ray_pt ray A h.out).value) := by
   rw [odist',Angle.value]
-  have h0 : (Angle.mk_ray_pt ray A h.out).value = VecND.angle ray.2.unitVecND (VEC_nd ray.source A) := angle_value_eq_angle A ray
   have h2 : (VEC_nd ray.source A).1 = VEC ray.source A := rfl
-  have h3 : ‖ray.toDir.unitVecND‖ = 1 := by simp
+  have h3 : ‖ray.toDir.unitVecND‖ = 1 := by rw [Dir.norm_unitVecND]
   have h4 : (SEG ray.source A).length = ‖VEC_nd ray.source A‖ := Seg.length_eq_norm_toVec
-  rw [← h2, ← VecND.norm_mul_sin ray.2.unitVecND (VEC_nd ray.source A),h3,h4,← h0]
-  ring_nf
+  rw [← h2, ← VecND.norm_mul_sin ray.2.unitVecND (VEC_nd ray.source A), h3, h4, one_mul]
+  simp only [mk_ray_pt_dir₂, mk_ray_pt_dir₁, mul_eq_mul_left_iff, VecND.norm_ne_zero, or_false]
+  congr
+  nth_rw 2 [← Dir.unitVecND_toDir ray.toDir]
   rfl
 
 theorem wedge_eq_length_mul_odist' (A B C : P) [bnea : PtNe B A] : (wedge A B C) = (SEG A B).length * odist' C (RAY A B) := by
@@ -167,9 +166,6 @@ theorem odist_reverse_eq_neg_odist {α} (A : P) [DirFig α P] (df : α) : odist 
 
 theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) [bnea : PtNe B A] : (odist C (SEG_nd A B) = odist D (SEG_nd A B)) ↔ (wedge A B C = wedge A B D) := by
   rw [wedge_eq_length_mul_odist' A B C, wedge_eq_length_mul_odist' A B D]
-  have h0 : 0 ≠ Seg.length (SEG A B) := by
-    rw [length_ne_zero_iff_nd]
-    exact bnea.out
   field_simp
   tauto
 
@@ -221,7 +217,7 @@ theorem online_iff_lies_on_line' (A : P) (dl : DirLine P) :Line.IsOn A (toLine d
     rfl
   rw[h4]
 
-theorem online_iff_lies_on_line (A : P) [DirFig α P] (df : α) : Line.IsOn A (toLine df) ↔ odist A df = 0 := by
+theorem online_iff_lies_on_line (A : P) [DirFig α P] (df : α) :  A LiesOn (toLine df) ↔ odist A df = 0 := by
   have h1 : toLine (toDirLine df) = toLine df := toDirLine_toLine_eq_toLine
   have h2 : odist A df = odist A (toDirLine df) := rfl
   rw[← h1,h2]
@@ -259,17 +255,76 @@ theorem LiesOnLeft_or_LiesOnRight_or_LiesOn (A : P) [DirFig α P] (df : α) : (I
   · rcases R with r|o
     · have : IsOnRightSide A df := by exact r
       simp only [this, true_or, or_true]
-    · have : Line.IsOn A (toLine df) := by
+    · have : A LiesOn (toLine df) := by
         apply (online_iff_lies_on_line A df).mpr
         exact o
-      have : A LiesOn (toLine df) := by exact this
       simp only [this, or_true]
 
---theorem not_LiesOnRight_and_not_LiesOn_of_LiesOnLeft
 
---theorem not_LiesOnRight_and_not_LiesOn_of_LiesOnRight
+theorem not_LiesOnRight_and_not_LiesOn_Line_of_LiesOnLeft (A : P) [DirFig α P] (df : α) (h : IsOnLeftSide A df) : (¬ IsOnRightSide A df) ∧ (¬ A LiesOn (toLine df)) := by
+  have nr : ¬ IsOnRightSide A df := by
+    unfold IsOnRightSide
+    unfold IsOnLeftSide at h
+    simp only [not_lt]
+    linarith
+  have no : ¬ A LiesOn (toLine df) := by
+    apply (online_iff_lies_on_line A df).not.mpr
+    unfold IsOnLeftSide at h
+    linarith
+  simp only [nr, not_false_eq_true, no, and_self]
 
---theorem not_LiesOnTight_and_not_LiesOnRight_of_LiesOn
+theorem not_LiesOnLeft_and_not_LiesOn_Line_of_LiesOnRight (A : P) [DirFig α P] (df : α) (h : IsOnRightSide A df) : (¬ IsOnLeftSide A df) ∧ (¬ A LiesOn (toLine df)) := by
+  have nl : ¬ IsOnLeftSide A df := by
+    unfold IsOnLeftSide
+    unfold IsOnRightSide at h
+    simp only [not_lt]
+    linarith
+  have no : ¬ A LiesOn (toLine df) := by
+    apply (online_iff_lies_on_line A df).not.mpr
+    unfold IsOnRightSide at h
+    linarith
+  simp only [nl, not_false_eq_true, no, and_self]
+
+theorem not_LiesOnLeftt_and_not_LiesOnRight_of_LiesOn_Line (A : P) [DirFig α P] (df : α) (h : A LiesOn (toLine df)) : (¬ IsOnLeftSide A df) ∧ (¬ IsOnRightSide A df) := by
+  have o : odist A df = 0 := by
+    apply (online_iff_lies_on_line A df).mp
+    exact h
+  have nl : ¬ IsOnLeftSide A df := by
+    unfold IsOnLeftSide
+    linarith
+  have nr : ¬ IsOnRightSide A df := by
+    unfold IsOnRightSide
+    linarith
+  simp only [nl, not_false_eq_true, nr, and_self]
+
+lemma lies_on_of_lies_on_toline (A : P) [DirFig α P] (df : α) : A LiesOn df → A LiesOn (toLine df) := by
+  apply ProjFig.carrier_subset_toLine
+
+theorem not_LiesOnRight_and_not_LiesOn_of_LiesOnLeft (A : P) [DirFig α P] (df : α) (h : IsOnLeftSide A df) : (¬ IsOnRightSide A df) ∧ (¬ A LiesOn df) := by
+  have nr : ¬ IsOnRightSide A df := by
+    exact (not_LiesOnRight_and_not_LiesOn_Line_of_LiesOnLeft A df h).1
+  have no' : ¬ A LiesOn (toLine df) := by
+    exact (not_LiesOnRight_and_not_LiesOn_Line_of_LiesOnLeft A df h).2
+  have no : ¬ A LiesOn df := by
+    apply (lies_on_of_lies_on_toline A df).mt
+    exact no'
+  simp only [nr, not_false_eq_true, no, and_self]
+
+theorem not_LiesOnLeft_and_not_LiesOn_of_LiesOnRight (A : P) [DirFig α P] (df : α) (h : IsOnRightSide A df) : (¬ IsOnLeftSide A df) ∧ (¬ A LiesOn df) := by
+  have nl : ¬ IsOnLeftSide A df := by
+    exact (not_LiesOnLeft_and_not_LiesOn_Line_of_LiesOnRight A df h).1
+  have no' : ¬ A LiesOn (toLine df) := by
+    exact (not_LiesOnLeft_and_not_LiesOn_Line_of_LiesOnRight A df h).2
+  have no : ¬ A LiesOn df := by
+    apply (lies_on_of_lies_on_toline A df).mt
+    exact no'
+  simp only [nl, not_false_eq_true, no, and_self]
+
+theorem not_LiesOnLeftt_and_not_LiesOnRight_of_LiesOn (A : P) [DirFig α P] (df : α) (h : A LiesOn df) : (¬ IsOnLeftSide A df) ∧ (¬ IsOnRightSide A df) := by
+  have o : A LiesOn (toLine df) := by
+    apply lies_on_of_lies_on_toline
+    exact h
+  exact not_LiesOnLeftt_and_not_LiesOnRight_of_LiesOn_Line A df o
 
 theorem not_colinear_of_LiesOnLeft_or_LiesOnRight (A B C : P) [bnea : PtNe B A] (hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B))) : ¬ colinear A B C := by
   apply (not_colinear_iff_wedge_ne_zero A B C).mpr
@@ -294,6 +349,7 @@ theorem not_colinear_of_LiesOnLeft_or_LiesOnRight (A B C : P) [bnea : PtNe B A] 
         _=-odist' C (RAY A B) * (SEG A B).length := by ring
         _>0 := by positivity
     linarith
+
 
 /- Relation of position of points on a ray and directed distance-/
 
@@ -377,15 +433,12 @@ theorem no_intersect_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odis
 
 theorem intersect_of_diff_odist_sign (A B : P) (l : DirLine P) (signdiff : odist_sign A l * odist_sign B l = -1) : ∃ (C : P), Seg.IsOn C (SEG A B) ∧ Line.IsOn C l := sorry
 
-lemma ne_of_isonleft_of_lieson (A B : P) (r : DirLine P) (aliesonr : Line.IsOn A r) (bliesonleft : IsOnLeftSide B r) : B ≠ A := by
+lemma ne_of_isonleft_of_lieson (A B : P) (r : DirLine P) (aliesonr : A LiesOn r) (bliesonleft : IsOnLeftSide B r) : B ≠ A := by
   intro h0
-  rw[← h0] at aliesonr
-  have h1 : DirLine.toLine r = toLine r := rfl
-  rw [h1, online_iff_lies_on_line] at aliesonr
-  have h2 : ¬ 0 < odist B r := by
-    rw [aliesonr]
-    linarith
-  tauto
+  have : odist A r = 0 := by sorry
+  simp only [h0] at bliesonleft
+  unfold IsOnLeftSide at bliesonleft
+  linarith
 
 theorem isonleft_of_isintray_of_isonleft (r : DirLine P) (A B C: P) (aliesonr : Line.IsOn A r) (bliesonleft : IsOnLeftSide B r) (conab : Ray.IsInt C (RAY A B (ne_of_isonleft_of_lieson A B r aliesonr bliesonleft))) : IsOnLeftSide C r := sorry
 
@@ -949,7 +1002,84 @@ theorem not_colinear_of_IsOnOppositeSide (A B C D : P) [bnea : PtNe B A] (h : Is
     exact hlr'
   simp only [c, not_false_eq_true, d, and_self]
 
+lemma lies_on_of_lies_on_toline' {α} (A : P) [ProjFig α P] (df : α) : A LiesOn df → A LiesOn (toLine df) := by
+  apply ProjFig.carrier_subset_toLine
+
+theorem not_LiesOn_of_IsOnSameSide' {α} [ProjFig α P] (A B : P) (l : α) (h : IsOnSameSide A B l) : ¬ A LiesOn l := by
+  have h' : IsOnSameSide A B (toLine l) =  IsOnSameSide A B l := by rfl
+  simp only [← h'] at h
+  rcases (Quotient.exists_rep (toLine l)) with ⟨ray , h0⟩
+  simp only [← h0] at h
+  have h'' : IsOnSameSide A B ray := by exact h
+  unfold IsOnSameSide at h''
+  unfold IsOnSameSide' at h''
+  have llrr :  A LiesOnLeft ray ∧ B LiesOnLeft ray ∨ A LiesOnRight ray ∧ B LiesOnRight ray := by exact h''
+  have lr : A LiesOnLeft ray ∨ A LiesOnRight ray := by
+    rcases llrr with ll|rr
+    · simp only [ll.1, true_or]
+    · simp only [rr.1, or_true]
+  have : ¬ A LiesOn (toLine ray) := by
+    rcases lr with l|r
+    · exact (not_LiesOnRight_and_not_LiesOn_Line_of_LiesOnLeft A ray l).2
+    · exact (not_LiesOnLeft_and_not_LiesOn_Line_of_LiesOnRight A ray r).2
+  apply (lies_on_of_lies_on_toline' A l).mt
+  simp only [← h0]
+  exact this
+
+theorem not_LiesOn_of_IsOnSameSide {α} [ProjFig α P] (A B : P) (l : α) (h : IsOnSameSide A B l) : (¬ A LiesOn l) ∧ (¬ B LiesOn l) := by
+  have h' : IsOnSameSide B A l := by
+    have : IsOnSameSide B A l = IsOnSameSide A B l := by
+      exact IsOnSameSide_symm B A l
+    simp only [this]
+    exact h
+  have a: ¬ A LiesOn l := by
+    exact not_LiesOn_of_IsOnSameSide' A B l h
+  have b: ¬ B LiesOn l := by
+    exact not_LiesOn_of_IsOnSameSide' B A l h'
+  simp only [a, not_false_eq_true, b, and_self]
+
+theorem not_LiesOn_of_IsOnOppositeSide' {α} [ProjFig α P] (A B : P) (l : α) (h : IsOnOppositeSide A B l) : ¬ A LiesOn l := by
+  have h' : IsOnOppositeSide A B (toLine l) =  IsOnOppositeSide A B l := by rfl
+  simp only [← h'] at h
+  rcases (Quotient.exists_rep (toLine l)) with ⟨ray , h0⟩
+  simp only [← h0] at h
+  have h'' : IsOnOppositeSide A B ray := by exact h
+  unfold IsOnOppositeSide at h''
+  unfold IsOnOppositeSide' at h''
+  have llrr :  A LiesOnLeft ray ∧ B LiesOnRight ray ∨ A LiesOnRight ray ∧ B LiesOnLeft ray := by exact h''
+  have lr : A LiesOnLeft ray ∨ A LiesOnRight ray := by
+    rcases llrr with ll|rr
+    · simp only [ll.1, true_or]
+    · simp only [rr.1, or_true]
+  have : ¬ A LiesOn (toLine ray) := by
+    rcases lr with l|r
+    · exact (not_LiesOnRight_and_not_LiesOn_Line_of_LiesOnLeft A ray l).2
+    · exact (not_LiesOnLeft_and_not_LiesOn_Line_of_LiesOnRight A ray r).2
+  apply (lies_on_of_lies_on_toline' A l).mt
+  simp only [← h0]
+  exact this
+
+theorem not_LiesOn_of_IsOnOppositeSide {α} [ProjFig α P] (A B : P) (l : α) (h : IsOnOppositeSide A B l) : (¬ A LiesOn l) ∧ (¬ B LiesOn l) := by
+  have h' : IsOnOppositeSide B A l := by
+    have : IsOnOppositeSide B A l = IsOnOppositeSide A B l := by
+      exact IsOnOppositeSide_symm B A l
+    simp only [this]
+    exact h
+  have a: ¬ A LiesOn l := by
+    exact not_LiesOn_of_IsOnOppositeSide' A B l h
+  have b: ¬ B LiesOn l := by
+    exact not_LiesOn_of_IsOnOppositeSide' B A l h'
+  simp only [a, not_false_eq_true, b, and_self]
+
 end relative_side
+
+section relative_side_with_seg_and_ray
+
+/-
+In this section,we will discuss the compatibility with seg and ray.
+-/
+
+end relative_side_with_seg_and_ray
 
 scoped notation A:max "and" B:max " LiesOnSameSide " C:max => IsOnSameSide A B C
 
