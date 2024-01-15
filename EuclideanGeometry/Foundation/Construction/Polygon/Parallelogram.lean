@@ -186,6 +186,9 @@ theorem qdr_is_parallelogramND_perm_iff : (qdr.IsParallelogramND) ↔ ((qdr.perm
 /-- If a quadrilateral satisfies IsPara, then its perm also satisfies IsPara. -/
 theorem qdr_IsPara_perm_iff : (qdr.IsPara) ↔ ((qdr.perm).IsPara) := by sorry
 
+/-- If a quadrilateral_nd satisfies IsPara, then its perm also satisfies IsPara. -/
+theorem qdr_nd_IsPara_perm_iff : (qdr_nd.IsPara) ↔ ((qdr_nd.perm).IsPara) := by sorry
+
 /-- If a quadrilateral satisfies IsPara, then its perm also satisfies IsPara. -/
 theorem qdr_is_non_triv_perm_iff : (qdr.non_triv) ↔ ((qdr.perm).IsPara) := by sorry
 
@@ -215,16 +218,11 @@ theorem qdr_is_parallelogramND_flip_iff : (qdr.IsParallelogramND) ↔ ((qdr.flip
 /-- If a quadrilateral satisfies IsPara, then its flip also satisfies IsPara. -/
 theorem qdr_IsPara_flip_iff : (qdr.IsPara) ↔ ((qdr.flip).IsPara) := by sorry
 
-/-- If a quadrilateral_nd is a parallelogram, then its flip is also a parallelogram. -/
-theorem qdr_nd_is_parallelogram_flip_iff : (qdr_nd.IsParallelogram) ↔ ((qdr_nd.flip).IsParallelogram) := by
-  sorry
-
-/-- If a quadrilateral_nd is a parallelogram_nd, then its flip is also a parallelogram_nd. -/
-theorem qdr_nd_is_parallelogram_nd_flip_iff : (qdr_nd.IsParallelogramND) ↔ ((qdr_nd.flip).IsParallelogramND) := by
-  sorry
-
 /-- If a quadrilateral_nd satisfies IsPara, then its flip also satisfies IsPara. -/
 theorem qdr_nd_IsPara_flip_iff : (qdr_nd.IsPara) ↔ ((qdr_nd.flip).IsPara) := by sorry
+
+/-- If a quadrilateral satisfies IsPara, then its flip also satisfies IsPara. -/
+theorem qdr_is_non_triv_flip_iff : (qdr.non_triv) ↔ ((qdr.flip).non_triv) := by sorry
 
 end flip
 
