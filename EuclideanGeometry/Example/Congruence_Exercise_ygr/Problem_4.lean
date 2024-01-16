@@ -78,8 +78,8 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : �
         · exact B_ne_C.out
       · show (RAY e.B e.E).toDirLine = (RAY e.C e.B).toDirLine.reverse
         calc
-          _=(SEG_nd e.B e.C).toDirLine := by
-            apply eq_toDirLine_of_source_to_pt_lies_int (e.E_int)
+          _=(SEG_nd e.B e.C).toDirLine :=
+            SegND.dirLine_source_pt_eq_toDirLine_of_lies_int (e.E_int)
           _=(SEG_nd e.C e.B).toDirLine.reverse := by
             symm
             apply SegND.toDirLine_rev_eq_rev_toDirLine
@@ -87,9 +87,9 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : �
             congr
 
     calc
-      _=-∠ e.D e.B e.E := by apply neg_value_of_rev_ang --anti-symm
+      _=-∠ e.D e.B e.E := by apply Angle.neg_value_of_rev_ang --anti-symm
       _=-∠ e.A e.C e.B := by --Alternate interior angle
-        have neg : ∠ e.D e.B e.E = ∠ e.A e.C e.B := eq_value_of_isalternateintang (hAltint)
+        have neg : ∠ e.D e.B e.E = ∠ e.A e.C e.B := value_eq_of_isAlternateIntAng (hAltint)
         simp only [neg]
   --$BE = CA$
   have e₃ : (SEG e.B e.E).length = (SEG e.C e.A).length := by

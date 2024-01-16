@@ -356,6 +356,7 @@ theorem mk_two_ray_of_eq_source_end_ray : (mk_two_ray_of_eq_source r r' h).end_r
 
 theorem mk_two_ray_of_eq_source_value : (mk_two_ray_of_eq_source r r' h).value = r'.toDir -ᵥ r.toDir := rfl
 
+@[simp]
 theorem same_ray_value_eq_zero (r : Ray P) : (mk_two_ray_of_eq_source r r rfl).value = 0 :=
   vsub_self r.2
 
@@ -582,14 +583,45 @@ theorem value_eq_pi_of_eq_neg_dir (h : ang.dir₁ = - ang.dir₂) : ang.value = 
 theorem value_eq_of_dir_eq (h₁ : ang₁.dir₁ = ang₂.dir₁) (h₂ : ang₁.dir₂ = ang₂.dir₂) : ang₁.value = ang₂.value := by
   rw [value, value, h₁, h₂]
 
-theorem value_toReal_le_pi : ang.value.toReal ≤ π := ang.value.toReal_le_pi
+theorem value_eq_of_dir_eq_neg_dir (h₁ : ang₁.dir₁ = - ang₂.dir₁) (h₂ : ang₁.dir₂ = - ang₂.dir₂) : ang₁.value = ang₂.value := by
+  rw [value, value, h₁, h₂, neg_vsub_right, neg_vsub_left, add_assoc, coe_pi_add_coe_pi, add_zero]
 
-theorem neg_pi_lt_value_toReal : - π < ang.value.toReal := ang.value.neg_pi_lt_toReal
+theorem value_eq_value_add_pi_of_dir_eq_neg_dir_of_dir_eq (h₁ : ang₁.dir₁ = ang₂.dir₁) (h₂ : ang₁.dir₂ = - ang₂.dir₂) : ang₁.value = ang₂.value + π := by
+  rw [value, value, h₁, h₂, neg_vsub_left]
+
+theorem value_eq_value_add_pi_of_dir_eq_of_dir_eq_neg_dir (h₁ : ang₁.dir₁ = - ang₂.dir₁) (h₂ : ang₁.dir₂ = ang₂.dir₂) : ang₁.value = ang₂.value + π := by
+  rw [value, value, h₁, h₂, neg_vsub_right]
+
+theorem value_toReal_le_pi : ang.value.toReal ≤ π :=
+  ang.value.toReal_le_pi
+
+theorem neg_pi_lt_value_toReal : - π < ang.value.toReal :=
+  ang.value.neg_pi_lt_toReal
 
 theorem dir₂_eq_value_vadd_dir₁ : ang.dir₂ = ang.value +ᵥ ang.dir₁ :=
   (eq_vadd_iff_vsub_eq ang.dir₂ ang.value ang.dir₁).mpr rfl
 
 theorem dvalue_eq_dAngDiff : ang.dvalue = DAngDiff ang.proj₁ ang.proj₂ := rfl
+
+theorem dvalue_eq_vsub : ang.dvalue = ang.proj₂ -ᵥ ang.proj₁ := rfl
+
+theorem dvalue_eq_zero_of_same_dir (h : ang.dir₁ = ang.dir₂) : ang.dvalue = 0 := by
+  simp only [dvalue_eq_vsub, congrArg Dir.toProj h, vsub_self]
+
+theorem dvalue_eq_pi_of_eq_neg_dir (h : ang.dir₁ = - ang.dir₂) : ang.dvalue = 0 := by
+  simp only [dvalue_eq_vsub, toProj_eq_toProj_iff.mpr (.inr h), vsub_self]
+
+theorem dvalue_eq_of_dir_eq (h₁ : ang₁.dir₁ = ang₂.dir₁) (h₂ : ang₁.dir₂ = ang₂.dir₂) : ang₁.dvalue = ang₂.dvalue := by
+  simp only [dvalue_eq_vsub, congrArg Dir.toProj h₁, congrArg Dir.toProj h₂]
+
+theorem dvalue_eq_of_dir_eq_neg_dir (h₁ : ang₁.dir₁ = - ang₂.dir₁) (h₂ : ang₁.dir₂ = - ang₂.dir₂) : ang₁.dvalue = ang₂.dvalue := by
+  simp only [dvalue_eq_vsub, toProj_eq_toProj_iff.mpr (.inr h₁), toProj_eq_toProj_iff.mpr (.inr h₂)]
+
+theorem dvalue_eq_dvalue_of_dir_eq_neg_dir_of_dir_eq (h₁ : ang₁.dir₁ = ang₂.dir₁) (h₂ : ang₁.dir₂ = - ang₂.dir₂) : ang₁.dvalue = ang₂.dvalue := by
+  simp only [dvalue_eq_vsub, congrArg Dir.toProj h₁, toProj_eq_toProj_iff.mpr (.inr h₂)]
+
+theorem dvalue_eq_dvalue_of_dir_eq_of_dir_eq_neg_dir (h₁ : ang₁.dir₁ = - ang₂.dir₁) (h₂ : ang₁.dir₂ = ang₂.dir₂) : ang₁.dvalue = ang₂.dvalue := by
+  simp only [dvalue_eq_vsub, congrArg Dir.toProj h₂, toProj_eq_toProj_iff.mpr (.inr h₁)]
 
 theorem dvalue_eq_dvalue_of_proj_eq_proj (h₁ : ang₁.proj₁ = ang₂.proj₁) (h₂ : ang₁.proj₂ = ang₂.proj₂) : ang₁.dvalue = ang₂.dvalue := by
   rw [dvalue_eq_dAngDiff, dvalue_eq_dAngDiff, h₁, h₂]
@@ -602,12 +634,12 @@ theorem dir_perp_iff_dvalue_eq_pi_div_two : ang.dir₁ ⟂ ang.dir₂ ↔ ang.dv
 theorem line_pt_pt_perp_iff_dvalue_eq_pi_div_two : LIN O A ⟂ LIN O B ↔ (ANG A O B).dvalue = ∡[π / 2] :=
   (ANG A O B).dir_perp_iff_dvalue_eq_pi_div_two
 
-theorem angle_dval_eq_pi_div_two_at_perp_foot (A B C : P) [_h : PtNe B C] (l : Line P) (hb : B LiesOn l) (ha : ¬ A LiesOn l) (hc : C = perp_foot A l) : haveI : PtNe A C := ⟨((pt_ne_iff_not_lies_on_of_eq_perp_foot hc).mpr ha).symm⟩; (ANG A C B).dvalue = ∡[π / 2] := by
+theorem dvalue_eq_pi_div_two_at_perp_foot {A B C : P} [_h : PtNe B C] (l : Line P) (hb : B LiesOn l) (ha : ¬ A LiesOn l) (hc : C = perp_foot A l) : haveI : PtNe A C := ⟨((pt_ne_iff_not_lies_on_of_eq_perp_foot hc).mpr ha).symm⟩; (ANG A C B).dvalue = ∡[π / 2] := by
   haveI : PtNe A C := ⟨((pt_ne_iff_not_lies_on_of_eq_perp_foot hc).mpr ha).symm⟩
   haveI : PtNe B (perp_foot A l) := by
     rw [← hc]
     exact _h
-  apply line_pt_pt_perp_iff_dvalue_eq_pi_div_two.mp _
+  apply line_pt_pt_perp_iff_dvalue_eq_pi_div_two.mp
   rw [Line.line_of_pt_pt_eq_rev]
   simp only [hc, Line.eq_line_of_pt_pt_of_ne (perp_foot_lies_on_line A l) hb]
   exact line_of_self_perp_foot_perp_line_of_not_lies_on ha

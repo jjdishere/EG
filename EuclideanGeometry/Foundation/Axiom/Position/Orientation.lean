@@ -1229,10 +1229,7 @@ theorem same_side_of_line_passing_source (A B C : P) (l : Line P) (ha : A LiesOn
   unfold VecND.SameDir at eqDir'
   rcases eqDir' with ⟨x,h⟩
   have x_pos : x > 0 := h.1
-  have exist : ∃ ray : Ray P , (ray.source = A) ∧ (ray.toLine = l) := by
-    apply every_pt_onLine_exist_rep
-    exact ha
-  rcases exist with ⟨r,p⟩
+  rcases l.exist_rep_ray_source_eq_pt ha with ⟨r,p⟩
   have : IsOnSameSide B C r = IsOnSameSide B C l := by
     calc
       _= IsOnSameSide B C r.toLine := by rfl

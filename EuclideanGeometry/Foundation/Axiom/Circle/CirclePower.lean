@@ -222,8 +222,7 @@ theorem liesout_back_lieson_ray_front {ω : Circle P} {p : P} {l : DirLine P} (h
         rw [abs_of_nonneg dist_nonneg, abs_of_nonneg dist_nonneg, (inx_pts_lieson_circle h₁).1]
         exact h₃
       _ = dist (Inxpts h₁).front (SEG (Inxpts h₁).front (Inxpts h₁).back).midpoint := by rw [abs_of_nonneg dist_nonneg]
-  apply (not_lies_on_segnd_iff_lieson_ray h₂').mp
-  apply (midpoint_dist_gt_iff_liesout h₂').mp hgt
+  exact (not_lies_on_seg_nd_iff_lies_on_ray h₂').mp <| ((SEG_nd (DirLC.Inxpts h₁).front (DirLC.Inxpts h₁).back).dist_midpt_gt_iff_not_lies_on_of_lies_on_toLine h₂').mp hgt
 
 theorem liesint_back_lieson_ray_front_reverse {ω : Circle P} {p : P} {l : DirLine P} (h₁ : DirLine.IsIntersected l ω) (h₂ : p LiesOn l) (h₃ : p LiesInt ω) : (Inxpts h₁).back LiesOn (RAY p (Inxpts h₁).front (liesint_ne_inxpts h₁ h₂ h₃).1.symm).reverse := by
   haveI : PtNe p (Inxpts h₁).front := ⟨(liesint_ne_inxpts h₁ h₂ h₃).1⟩
@@ -257,8 +256,8 @@ theorem liesint_back_lieson_ray_front_reverse {ω : Circle P} {p : P} {l : DirLi
         rw [abs_of_nonneg dist_nonneg, abs_of_nonneg dist_nonneg, (inx_pts_lieson_circle h₁).1]
         exact h₃
       _ = dist (Inxpts h₁).front (SEG (Inxpts h₁).front (Inxpts h₁).back).midpoint := by rw [abs_of_nonneg dist_nonneg]
-  apply (liesint_segnd_iff_lieson_ray_reverse h₂').mp
-  apply (midpoint_dist_lt_iff_liesint h₂').mp hgt
+  apply (lies_int_seg_nd_iff_lies_on_ray_reverse h₂').mp
+  exact ((SEG_nd (Inxpts h₁).front (Inxpts h₁).back).dist_midpt_lt_iff_lies_int_of_lies_on_toLine h₂').mp hgt
 
 end Circle
 

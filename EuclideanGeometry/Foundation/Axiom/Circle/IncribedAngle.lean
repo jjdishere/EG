@@ -141,7 +141,7 @@ theorem antipode_iff_collinear (A B : P) {ω : Circle P} [h : PtNe B A] (h₁ : 
   show ∠ A ω.center B = π
   have hl : B LiesOn LIN ω.center A := Line.pt_pt_maximal hh
   have heq₁ : VEC A ω.center = VEC ω.center B := by
-    apply distinct_pts_same_dist_vec_eq hl
+    apply vec_eq_dist_eq_of_lies_on_line_pt_pt_of_ptNe hl
     rw [h₁, h₂]
   have heq₂ : VEC A B = (2 : ℝ) • (VEC A ω.center) := by
     calc

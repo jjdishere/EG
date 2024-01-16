@@ -83,7 +83,7 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : âˆ
             odist e.A (SEG_nd e.B e.D) = odist e.A (SEG_nd e.B e.D).toDirLine := by rfl
             _=odist e.A (SEG_nd e.B e.F).toDirLine := by
               have : (SEG_nd e.B e.D).toDirLine = (SEG_nd e.B e.F).toDirLine := by
-                apply eq_toDirLine_of_source_to_pt_lies_int (e.D_int)
+                apply SegND.mk_source_pt_toDirLine_eq_of_lies_int (e.D_int)
               congr
             _=odist e.A (SEG_nd e.B e.F) := by rfl
             _>0 := by exact e.A_side
@@ -92,7 +92,7 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : âˆ
             odist e.E (SEG_nd e.B e.D) = odist e.E (SEG_nd e.B e.D).toDirLine := by rfl
             _=odist e.E (SEG_nd e.B e.F).toDirLine := by
               have : (SEG_nd e.B e.D).toDirLine = (SEG_nd e.B e.F).toDirLine := by
-                apply eq_toDirLine_of_source_to_pt_lies_int (e.D_int)
+                apply SegND.mk_source_pt_toDirLine_eq_of_lies_int (e.D_int)
               congr
             _=odist e.E (SEG_nd e.B e.F) := by rfl
             _>0 := by exact e.E_side
@@ -106,10 +106,10 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : âˆ
       Â· show (RAY e.B e.C).toDirLine = (RAY e.D e.F).toDirLine
         calc
           _=(SEG_nd e.B e.F).toDirLine := by
-            apply eq_toDirLine_of_source_to_pt_lies_int (e.C_int)
+            apply SegND.mk_source_pt_toDirLine_eq_of_lies_int (e.C_int)
           _=(SEG_nd e.D e.F).toDirLine := by
             symm
-            apply eq_toDirLine_of_pt_lies_int_to_target (e.D_int)
+            apply SegND.mk_pt_target_toDirLine_eq_of_lies_int (e.D_int)
     -- Then $âˆ  ABC = âˆ  EDF = -âˆ  FDE$.
     calc
       _ = âˆ  e.E e.D e.F := eq_value_of_iscorrespondingang hCrsp --corresponding angle
