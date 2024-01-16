@@ -243,15 +243,22 @@ end property_nd
 end QuadrilateralND
 
 /--
-A QuadrilateralND is called convex if four angles are same sign.
+A Quadrilateral is called convex if it's ND and four angles have the same sign.
 -/
-@[pp_dot]
-def QuadrilateralND.IsConvex {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₃.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg)
+-- @[pp_dot]
+-- def QuadrilateralND.IsConvex {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₃.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg)
+
+-- @[pp_dot]
+-- def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
+--   by_cases h : qdr.IsND
+--   · exact (QuadrilateralND.mk_nd h).IsConvex
+--   · exact False
 
 @[pp_dot]
 def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases h : qdr.IsND
-  · exact (QuadrilateralND.mk_nd h).IsConvex
+  · have qdr_nd : QuadrilateralND P := QDR_nd' h
+    exact (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₃.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg)
   · exact False
 
 scoped postfix : 50 "IsConvex" => Quadrilateral.IsConvex
@@ -263,19 +270,18 @@ theorem Quadrilateral.isND_of_is_convex {P : Type _} [EuclideanPlane P] {qdr : Q
 
 instance {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} : Coe qdr.IsConvex qdr.IsND := {coe := Quadrilateral.isND_of_is_convex}
 
-theorem Quadrilateral.toqdr_cvx_of_cvx {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} (h : qdr_nd.IsConvex) : qdr_nd.toQuadrilateral.IsConvex := by
-  have k : qdr_nd.toQuadrilateral.IsND := qdr_nd.nd
-  have l : qdr_nd = (QDR_nd' k) := rfl
-  rw [l] at h
-  unfold Quadrilateral.IsConvex
-  simp only [k, h, dite_eq_ite, ite_true]
+-- theorem QuadrilateralND.toqdr_cvx_of_cvx {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} (h : qdr_nd.IsConvex) : qdr_nd.toQuadrilateral.IsConvex := by
+--   have k : qdr_nd.toQuadrilateral.IsND := qdr_nd.nd
+--   have l : qdr_nd = (QDR_nd' k) := rfl
+--   rw [l] at h
+--   unfold Quadrilateral.IsConvex
+--   simp only [k, h, dite_eq_ite, ite_true]
 
-instance {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} : Coe qdr_nd.IsConvex qdr_nd.toQuadrilateral.IsConvex := {coe := Quadrilateral.toqdr_cvx_of_cvx}
+-- instance {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} : Coe qdr_nd.IsConvex qdr_nd.toQuadrilateral.IsConvex := {coe := QuadrilateralND.toqdr_cvx_of_cvx}
 
 theorem Quadrilateral_cvx.nd_is_convex_iff_is_convex {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : qdr_nd.IsConvex ↔ qdr_nd.toQuadrilateral.IsConvex := by
   unfold Quadrilateral.IsConvex
   simp only [qdr_nd.nd, dite_true]
-  rfl
 
 instance {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} : Coe qdr_nd.IsConvex qdr_nd.toQuadrilateral.IsConvex := {coe := (Quadrilateral_cvx.nd_is_convex_iff_is_convex qdr_nd).mp}
 
@@ -305,10 +311,10 @@ namespace Quadrilateral_cvx
 
 -- def mk_is_convex {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P := mk_pt_pt_pt_pt_convex A B C D h
 
-/-- Given a property that a quadrilateral qdr is convex, this function returns qdr itself as an object in the class of convex quadrilateral-/
-def mk_nd_is_convex {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} (h : qdr_nd.IsConvex) : Quadrilateral_cvx P where
-  toQuadrilateralND := qdr_nd
-  convex := h
+-- /-- Given a property that a quadrilateral qdr is convex, this function returns qdr itself as an object in the class of convex quadrilateral-/
+-- def mk_nd_is_convex {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} (h : qdr_nd.IsConvex) : Quadrilateral_cvx P where
+--   toQuadrilateralND := qdr_nd
+--   convex := h
 
 section criteria_cvx
 variable {P : Type _} [EuclideanPlane P] {A B C D : P}
@@ -361,19 +367,19 @@ variable (qdr_nd : QuadrilateralND P)
 variable (qdr_cvx : Quadrilateral_cvx P)
 
 /-- The perm of quadrilateral_cvx is also quadrilateral_cvx. -/
-theorem perm_is_convex : QuadrilateralND.IsConvex (QuadrilateralND.perm qdr_cvx.toQuadrilateralND) := by
-  unfold QuadrilateralND.IsConvex
+theorem perm_is_convex : (QuadrilateralND.perm qdr_cvx.toQuadrilateralND).IsConvex := by
+  unfold Quadrilateral.IsConvex
   by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
   · have q : (qdr_cvx.perm.angle₄.value.IsPos ∧ qdr_cvx.perm.angle₁.value.IsPos ∧ qdr_cvx.perm.angle₂.value.IsPos ∧ qdr_cvx.perm.angle₃.value.IsPos) := h
     simp only [q, and_self, true_or]
   · have p: qdr_cvx.IsConvex := qdr_cvx.convex
-    unfold QuadrilateralND.IsConvex at p
+    unfold Quadrilateral.IsConvex at p
     simp only [h, false_or] at p
     have q : (qdr_cvx.perm.angle₄.value.IsNeg ∧ qdr_cvx.perm.angle₁.value.IsNeg ∧ qdr_cvx.perm.angle₂.value.IsNeg ∧ qdr_cvx.perm.angle₃.value.IsNeg) := p
     simp only [q, and_self, or_true]
 
 /-- The perm quadrilateral_cvx, the first point of the perm is the second point of the origin, etc. -/
-def perm : Quadrilateral_cvx P := mk_nd_is_convex (perm_is_convex qdr_cvx)
+def perm : Quadrilateral_cvx P := mk_cvx (Quadrilateral.toqdr_cvx_of_cvx (perm_is_convex qdr_cvx))
 
 /-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is also convex. -/
 theorem perm_is_convex' : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁) IsConvex := (qdr_cvx.perm).convex
