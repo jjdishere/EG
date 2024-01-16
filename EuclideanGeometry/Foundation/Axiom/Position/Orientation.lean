@@ -1545,6 +1545,9 @@ section intersect_of_ray
 /- Statement of his theorem should change, since ray₀.source ≠ ray₂.source. -/
 theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < (Angle.mk_two_ray_of_eq_source ray₀ ray₁ rfl).value.toReal) ∧ ((Angle.mk_two_ray_of_eq_source ray₀ ray₁ rfl).value.toReal < (Angle.mk_two_ray_of_eq_source ray₀ ray₂ sorry).value.toReal) ∧ ((Angle.mk_two_ray_of_eq_source ray₀ ray₂ sorry).value.toReal < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
 
+lemma SB (a b : ℝ) (h : b≠ 0): (-a/b)*b =-a := by
+  field_simp
+
 theorem exist_inx_DirLine_Ray_of_source_LiesOnLeft_and_included_ang_neg (ray : Ray P) (dl : DirLine P) (left : ray.source LiesOnLeft dl)(h : (ray.toDir -ᵥ dl.toDir).IsNeg ) : ∃ C : P , C IsInxOf ray dl := by
   rcases (Quotient.exists_rep dl) with ⟨r , h0⟩
   let A : P := ray.source
@@ -1600,7 +1603,10 @@ theorem exist_inx_DirLine_Ray_of_source_LiesOnLeft_and_included_ang_neg (ray : R
         let b : ℝ :=(Vec.det r.toDir.unitVec ray.toDir.unitVec)
         show odist A r + -odist A r / b * b = 0
         have ne0 : b ≠ 0 := ne0
-        sorry
+        have : -odist A r / b * b = -odist A r := by
+          exact SB (odist A r) b ne0
+        simp only [this]
+        simp only [add_right_neg]
   have on_dl : B LiesOn dl := by
     simp only [← h0]
     show B LiesOn (toLine r)
