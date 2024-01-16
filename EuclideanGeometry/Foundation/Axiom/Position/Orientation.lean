@@ -229,7 +229,7 @@ theorem off_line_iff_not_online (A : P) [DirFig α P] (df : α) : OffLine A df �
 
 --LiesOnLeft and LiesOnRight and LiesOn should be correct for exact one
 
-theorem LiesOnLeft_or_LiesOnRight_or_LiesOn (A : P) [DirFig α P] (df : α) : (IsOnLeftSide A df) ∨ (IsOnRightSide A df) ∨ (A LiesOn (toLine df)) := by
+theorem LiesOn_or_LiesOnLeft_or_LiesOnRight (A : P) [DirFig α P] (df : α) : (A LiesOn (toLine df)) ∨ (IsOnLeftSide A df) ∨ (IsOnRightSide A df) := by
   have h : (odist A df > 0) ∨ (odist A df < 0) ∨ (odist A df = 0) := by
     by_contra h'
     have nl : ¬ (odist A df > 0) := by
@@ -250,16 +250,16 @@ theorem LiesOnLeft_or_LiesOnRight_or_LiesOn (A : P) [DirFig α P] (df : α) : (I
       linarith [nl,nr]
     absurd this
     exact no
-  rcases h with l|R
+  rcases h with l|ro
   · have : IsOnLeftSide A df := by exact l
-    simp only [this, true_or]
-  · rcases R with r|o
+    simp only [this, true_or, or_true]
+  · rcases ro with r|o
     · have : IsOnRightSide A df := by exact r
       simp only [this, true_or, or_true]
     · have : A LiesOn (toLine df) := by
         apply (online_iff_lies_on_line A df).mpr
         exact o
-      simp only [this, or_true]
+      simp only [this, true_or]
 
 
 theorem not_LiesOnRight_and_not_LiesOn_Line_of_LiesOnLeft (A : P) [DirFig α P] (df : α) (h : IsOnLeftSide A df) : (¬ IsOnRightSide A df) ∧ (¬ A LiesOn (toLine df)) := by
@@ -326,6 +326,15 @@ theorem not_LiesOnLeft_and_not_LiesOnRight_of_LiesOn (A : P) [DirFig α P] (df :
     apply lies_on_of_lies_on_toline
     exact h
   exact not_LiesOnLeftt_and_not_LiesOnRight_of_LiesOn_Line A df o
+
+theorem LiesOnLeft_or_LiesOnRight_of_not_LiesOn {A : P} [DirFig α P] {df : α} (h : ¬ A LiesOn (toLine df)): (IsOnLeftSide A df) ∨ (IsOnRightSide A df) := by
+  have : (A LiesOn (toLine df)) ∨ (IsOnLeftSide A df) ∨ (IsOnRightSide A df) := by
+    exact LiesOn_or_LiesOnLeft_or_LiesOnRight A df
+  rcases this with o|lr
+  · absurd h
+    exact o
+  · exact lr
+
 
 theorem not_colinear_of_LiesOnLeft_or_LiesOnRight (A B C : P) [bnea : PtNe B A] (hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B))) : ¬ colinear A B C := by
   apply (not_colinear_iff_wedge_ne_zero A B C).mpr
@@ -610,7 +619,6 @@ theorem LiesOnOppositeSide'_of_toLine_eq_toLine' (A B : P) (ray ray' : Ray P) (h
           _>0 := by linarith
       unfold IsOnOppositeSide'
       simp only [har₁, hbl₁, and_self, or_true]
-
   · intro P
     rcases P with Pl|Pr
     · unfold IsOnLeftSide at Pl
@@ -1080,8 +1088,26 @@ theorem not_LiesOn_of_IsOnOppositeSide {α} [ProjFig α P] (A B : P) (l : α) (h
 theorem IsOnSameSide_or_IsOnOppositeSide_of_not_LiesOn (A B : P) (l : Line P) (a : ¬ A LiesOn l) (b : ¬ B LiesOn l) : IsOnSameSide A B l ∨ IsOnOppositeSide A B l := by
   rcases (Quotient.exists_rep l) with ⟨ray , h0⟩
   simp only [← h0]
+  have coer : (toLine ray) = l := by exact h0
+  simp only [←coer] at a
+  simp only [←coer] at b
   have : IsOnSameSide A B ray ∨ IsOnOppositeSide A B ray := by
-    sorry
+    have alr : A LiesOnLeft ray ∨ A LiesOnRight ray := by
+      exact LiesOnLeft_or_LiesOnRight_of_not_LiesOn a
+    have blr : B LiesOnLeft ray ∨ B LiesOnRight ray := by
+      exact LiesOnLeft_or_LiesOnRight_of_not_LiesOn b
+    unfold IsOnSameSide
+    unfold IsOnOppositeSide
+    unfold IsOnSameSide'
+    unfold IsOnOppositeSide'
+    show (A LiesOnLeft ray ∧ B LiesOnLeft ray ∨ A LiesOnRight ray ∧ B LiesOnRight ray) ∨ (A LiesOnLeft ray ∧ B LiesOnRight ray ∨ A LiesOnRight ray ∧ B LiesOnLeft ray)
+    rcases alr with al|ar
+    · rcases blr with bl|br
+      · simp only [al, bl, and_self, true_or, true_and, and_true]
+      · simp only [al, true_and, br, and_true, and_self, true_or, or_true]
+    · rcases blr with bl|br
+      · simp only [bl, and_true, ar, true_and, and_self, or_true]
+      · simp only [ar, br, and_self, or_true, and_true, true_and, true_or]
   exact this
 
 end relative_side
@@ -1140,19 +1166,12 @@ theorem same_side_of_line_passing_source (A B C : P) (l : Line P) (ha : A LiesOn
         rfl
       _=_ := by rfl
   have lr : (B LiesOnLeft r) ∨ (B LiesOnRight r) := by
-    have : (IsOnLeftSide B r) ∨ (IsOnRightSide B r) ∨ (B LiesOn (toLine r)) := by
-      exact LiesOnLeft_or_LiesOnRight_or_LiesOn B r
     have n : ¬ B LiesOn (toLine r) := by
       have : B LiesOn (toLine r) = B LiesOn l := by
         congr; exact p.2
       simp only [this]
       exact hb
-    rcases this with l|ro
-    · simp only [l, true_or]
-    · rcases ro with r|o
-      · simp only [r, or_true]
-      · absurd o
-        exact n
+    exact LiesOnLeft_or_LiesOnRight_of_not_LiesOn n
   unfold IsOnSameSide
   unfold IsOnSameSide'
   show B LiesOnLeft r ∧ C LiesOnLeft r ∨ B LiesOnRight r ∧ C LiesOnRight r
