@@ -74,6 +74,26 @@ def perm : Quadrilateral P := QDR qdr.point₂ qdr.point₃ qdr.point₄ qdr.poi
 @[pp_dot]
 def flip : Quadrilateral P := QDR qdr.point₁ qdr.point₄ qdr.point₃ qdr.point₂
 
+/- the simp theorems -/
+variable (A B C D : P)
+@[simp]
+theorem edge₁₂_simp : (QDR A B C D).edge₁₂ = (SEG A B) := rfl
+@[simp]
+theorem edge₂₃_simp : (QDR A B C D).edge₂₃ = (SEG B C) := rfl
+@[simp]
+theorem edge₃₄_simp : (QDR A B C D).edge₃₄ = (SEG C D) := rfl
+@[simp]
+theorem edge₁₄_simp : (QDR A B C D).edge₁₄ = (SEG A D) := rfl
+@[simp]
+theorem diag₁₃_simp : (QDR A B C D).diag₁₃ = (SEG A C) := rfl
+@[simp]
+theorem diag₂₄_simp : (QDR A B C D).diag₂₄ = (SEG B D) := rfl
+
+@[simp]
+theorem perm_simp : (QDR A B C D).perm = (QDR B C D A) := rfl
+@[simp]
+theorem flip_simp : (QDR A B C D).flip = (QDR A D C B) := rfl
+
 end Quadrilateral
 
 /--
@@ -99,12 +119,14 @@ def QuadrilateralND.mk_pt_pt_pt_pt_nd {P : Type _} [EuclideanPlane P] (A B C D :
 
 scoped notation "QDR_nd" => QuadrilateralND.mk_pt_pt_pt_pt_nd
 
-namespace QuadrilateralND
-
 /-- Given a property that a quadrilateral qdr is nd, this function returns qdr itself as an object in the class of nd quadrilateral -/
-def mk_is_nd {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr.IsND) : QuadrilateralND P where
+def QuadrilateralND.mk_nd {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr.IsND) : QuadrilateralND P where
   toQuadrilateral := qdr
   nd := h
+
+scoped notation "QDR_nd'" => QuadrilateralND.mk_nd
+
+namespace QuadrilateralND
 
 section property_nd
 -- properties of nd quadrilateral `to be added`
@@ -176,14 +198,17 @@ theorem perm_is_nd : (qdr_nd.toQuadrilateral.perm).IsND := ⟨ qdr_nd.nd₂₃.o
 
 /-- The perm QuadrilateralND, the first point of the perm is the second point of the origin, etc. -/
 @[pp_dot]
-def perm : QuadrilateralND P := mk_is_nd (perm_is_nd qdr_nd)
+def perm : QuadrilateralND P := mk_nd (perm_is_nd qdr_nd)
 
 /-- The flip of QuadrilateralND is also QuadrilateralND. -/
 theorem flip_is_nd : (qdr_nd.toQuadrilateral.flip).IsND := ⟨ qdr_nd.nd₁₄.out, qdr_nd.nd₃₄.out.symm, qdr_nd.nd₂₃.out.symm, qdr_nd.nd₁₂.out ⟩
 
 /-- The flip QuadrilateralND, exchanged the second point and the fourth. -/
 @[pp_dot]
-def flip : QuadrilateralND P := mk_is_nd (flip_is_nd qdr_nd)
+def flip : QuadrilateralND P := mk_nd (flip_is_nd qdr_nd)
+
+/- the simp theorems -/
+variable (A B C D : P)
 
 theorem flip_angle₁_value_eq_neg_angle₁ : qdr_nd.flip.angle₁.value = - qdr_nd.angle₁.value := by
   unfold QuadrilateralND.angle₁
@@ -226,7 +251,7 @@ def QuadrilateralND.IsConvex {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilat
 @[pp_dot]
 def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases h : qdr.IsND
-  · exact (QuadrilateralND.mk_is_nd h).IsConvex
+  · exact (QuadrilateralND.mk_nd h).IsConvex
   · exact False
 
 scoped postfix : 50 "IsConvex" => Quadrilateral.IsConvex
@@ -260,6 +285,12 @@ def Quadrilateral_cvx.mk_pt_pt_pt_pt_convex {P : Type _} [EuclideanPlane P] (A B
   convex := h
 
 scoped notation "QDR_cvx" => Quadrilateral_cvx.mk_pt_pt_pt_pt_convex
+
+def Quadrilateral_cvx.mk_cvx {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr.IsConvex) : Quadrilateral_cvx P where
+  toQuadrilateralND := QDR_nd' h
+  convex := h
+
+scoped notation "QDR_cvx'" => Quadrilateral_cvx.mk_cvx
 
 namespace Quadrilateral_cvx
 
