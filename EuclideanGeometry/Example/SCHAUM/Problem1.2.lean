@@ -15,7 +15,7 @@ Prove that $DP = EQ$.
 -/
 
 --Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : Plane} {not_colinear_ABC: ¬ colinear A B C} {isoceles_ABC: (▵ A B C).IsIsoceles}
+variable {A B C : Plane} {not_collinear_ABC: ¬ collinear A B C} {isoceles_ABC: (▵ A B C).IsIsoceles}
 --Let $D$ be a point on $AB$.
 variable {D : Plane} {D_int_AB: D LiesInt (SEG A B)}
 --Let $E$ be a point on $AC$
@@ -25,7 +25,7 @@ variable {AE_eq_AD : (SEG A E).length = (SEG A D).length}
 -- Claim: $B \ne C$.
 lemma B_ne_C : B ≠ C :=
   -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-  (ne_of_not_colinear not_colinear_ABC).1.symm
+  (ne_of_not_collinear not_collinear_ABC).1.symm
 -- Let $P$ be the foot of perpendicular from $D$ to $BC$.
 variable {P : Plane} {hd : P = perp_foot D (LIN B C B_ne_C.symm)}
 -- Let $Q$ be the foot of perpendicular from $E$ to $BC$.
@@ -90,27 +90,27 @@ theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
         exact sorry --(length_eq_length_add_length (SEG A C) E (E_on_seg)).symm
       _ = (SEG C E).length := sorry -- length_eq_length_of_rev (SEG E C)
   -- We have $A \ne B$.
-  have a_ne_b : A ≠ B := (ne_of_not_colinear not_colinear_ABC).2.2.symm
+  have a_ne_b : A ≠ B := (ne_of_not_collinear not_collinear_ABC).2.2.symm
   -- We have $A \ne C$.
-  have a_ne_c : A ≠ C := (ne_of_not_colinear not_colinear_ABC).2.1
+  have a_ne_c : A ≠ C := (ne_of_not_collinear not_collinear_ABC).2.1
   -- We have $C \ne B$.
-  have c_ne_b : C ≠ B := (ne_of_not_colinear not_colinear_ABC).1
+  have c_ne_b : C ≠ B := (ne_of_not_collinear not_collinear_ABC).1
   -- We have $\triangle PBD$ is nondegenerate
-  have not_colinear_ABC1 : ¬ colinear P B D := by sorry
+  have not_collinear_ABC1 : ¬ collinear P B D := by sorry
   -- We have $B \ne D$.
-  have b_ne_d : B ≠ D := (ne_of_not_colinear not_colinear_ABC1).1.symm
+  have b_ne_d : B ≠ D := (ne_of_not_collinear not_collinear_ABC1).1.symm
   -- We have $P \ne D$.
-  have p_ne_d : P ≠ D := (ne_of_not_colinear not_colinear_ABC1).2.1
+  have p_ne_d : P ≠ D := (ne_of_not_collinear not_collinear_ABC1).2.1
   -- We have $P \ne B$.
-  have p_ne_b : P ≠ B := (ne_of_not_colinear not_colinear_ABC1).2.2.symm
+  have p_ne_b : P ≠ B := (ne_of_not_collinear not_collinear_ABC1).2.2.symm
   -- We have $\triangle QCE$ is nondegenerate
-  have not_colinear_ABC2 : ¬ colinear Q C E := by sorry
+  have not_collinear_ABC2 : ¬ collinear Q C E := by sorry
   -- We have $C \ne E$.
-  have c_ne_e : C ≠ E := (ne_of_not_colinear not_colinear_ABC2).1.symm
+  have c_ne_e : C ≠ E := (ne_of_not_collinear not_collinear_ABC2).1.symm
   -- We have $Q \ne E$.
-  have q_ne_e : Q ≠ E := (ne_of_not_colinear not_colinear_ABC2).2.1
+  have q_ne_e : Q ≠ E := (ne_of_not_collinear not_collinear_ABC2).2.1
   -- We have $Q \ne C$.
-  have q_ne_c : Q ≠ C := (ne_of_not_colinear not_colinear_ABC2).2.2.symm
+  have q_ne_c : Q ≠ C := (ne_of_not_collinear not_collinear_ABC2).2.2.symm
   -- Therefore, $\angle DBP = \angle ABC = -\angle ACB = - \angle ECQ$.
   have ang2 : (∠ D B P b_ne_d.symm p_ne_b) = - (∠ E C Q c_ne_e.symm q_ne_c) := by
     calc
@@ -125,7 +125,7 @@ theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
   -- $|\angle DPB| = |\angle EQC|$.
   have ang1 : (∠ B P D p_ne_b.symm p_ne_d.symm) = - (∠ C Q E q_ne_c.symm q_ne_e.symm) := by sorry
   -- $\triangle DPB \congr_a \triangle EQC$ (by AAS).
-  have h : (TRI_nd P B D not_colinear_ABC1) ≅ₐ (TRI_nd Q C E not_colinear_ABC2) := by
+  have h : (TRI_nd P B D not_collinear_ABC1) ≅ₐ (TRI_nd Q C E not_collinear_ABC2) := by
     apply TriangleND.acongr_of_AAS
     -- $\cdot \angle DBP = - \angle ECQ$
     · exact ang1

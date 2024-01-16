@@ -18,18 +18,18 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_colinear_ABC : ¬ colinear A B C
+  not_collinear_ABC : ¬ collinear A B C
   -- Claim :$C \ne A$
   B_ne_A : B ≠ A :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.2
+    (ne_of_not_collinear not_collinear_ABC).2.2
   C_ne_A : C ≠ A :=
     -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.1.symm
+    (ne_of_not_collinear not_collinear_ABC).2.1.symm
   -- Claim $B \ne C$
   C_ne_B : C ≠ B :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).1
+    (ne_of_not_collinear not_collinear_ABC).1
 
   --D lies in AB and E lies in AE
   D : Plane
@@ -86,18 +86,18 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_colinear_ABC : ¬ colinear A B C
+  not_collinear_ABC : ¬ collinear A B C
   -- Claim :$C \ne A$
   B_ne_A : B ≠ A :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.2
+    (ne_of_not_collinear not_collinear_ABC).2.2
   C_ne_A : C ≠ A :=
     -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.1.symm
+    (ne_of_not_collinear not_collinear_ABC).2.1.symm
   -- Claim $B \ne C$
   C_ne_B : C ≠ B :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).1
+    (ne_of_not_collinear not_collinear_ABC).1
   --E lies on the extension of CA
   E : Plane
   hE₁ : E LiesInt (SEG_nd C A C_ne_A.symm).extension

@@ -137,20 +137,20 @@ theorem iscclock_iff_liesonleft₂ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr
   simp only [h]
   apply iscclock_iff_liesonleft₁
 
-theorem eq_cclock_of_IsOnSameSide (A B C D : P) [hne : PtNe B A] (h : IsOnSameSide C D (RAY A B)) : (TRI_nd A B C (not_colinear_of_IsOnSameSide A B C D h).1).is_cclock = (TRI_nd A B D (not_colinear_of_IsOnSameSide A B C D h).2).is_cclock := by
-  have c : (TRI_nd A B C (not_colinear_of_IsOnSameSide A B C D h).1).is_cclock = C LiesOnLeft (SEG_nd A B) := by
+theorem eq_cclock_of_IsOnSameSide (A B C D : P) [hne : PtNe B A] (h : IsOnSameSide C D (RAY A B)) : (TRI_nd A B C (not_collinear_of_IsOnSameSide A B C D h).1).is_cclock = (TRI_nd A B D (not_collinear_of_IsOnSameSide A B C D h).2).is_cclock := by
+  have c : (TRI_nd A B C (not_collinear_of_IsOnSameSide A B C D h).1).is_cclock = C LiesOnLeft (SEG_nd A B) := by
     apply iscclock_iff_liesonleft₃
-  have d : (TRI_nd A B D (not_colinear_of_IsOnSameSide A B C D h).2).is_cclock = D LiesOnLeft (SEG_nd A B) := by
+  have d : (TRI_nd A B D (not_collinear_of_IsOnSameSide A B C D h).2).is_cclock = D LiesOnLeft (SEG_nd A B) := by
     apply iscclock_iff_liesonleft₃
   have h0 : C LiesOnLeft (SEG_nd A B) = D LiesOnLeft (SEG_nd A B) := by
     apply LiesOnLeft_iff_LiesOnLeft_of_IsOnSameSide
     exact h
   simp only [c, h0, d]
 
-theorem anti_cclock_of_IsOnOppositeSide (A B C D : P) [hne : PtNe B A] (h : IsOnOppositeSide C D (SEG_nd A B)) : (TRI_nd A B C (not_colinear_of_IsOnOppositeSide A B C D h).1).is_cclock → ¬ (TRI_nd A B D (not_colinear_of_IsOnOppositeSide A B C D h).2).is_cclock := by
-  have c : (TRI_nd A B C (not_colinear_of_IsOnOppositeSide A B C D h).1).is_cclock = C LiesOnLeft (SEG_nd A B) := by
+theorem anti_cclock_of_IsOnOppositeSide (A B C D : P) [hne : PtNe B A] (h : IsOnOppositeSide C D (SEG_nd A B)) : (TRI_nd A B C (not_collinear_of_IsOnOppositeSide A B C D h).1).is_cclock → ¬ (TRI_nd A B D (not_collinear_of_IsOnOppositeSide A B C D h).2).is_cclock := by
+  have c : (TRI_nd A B C (not_collinear_of_IsOnOppositeSide A B C D h).1).is_cclock = C LiesOnLeft (SEG_nd A B) := by
     apply iscclock_iff_liesonleft₃
-  have d : (TRI_nd A B D (not_colinear_of_IsOnOppositeSide A B C D h).2).is_cclock = D LiesOnLeft (SEG_nd A B) := by
+  have d : (TRI_nd A B D (not_collinear_of_IsOnOppositeSide A B C D h).2).is_cclock = D LiesOnLeft (SEG_nd A B) := by
     apply iscclock_iff_liesonleft₃
   simp only [c,d]
   have h0 : C LiesOnLeft SEG_nd A B = D LiesOnLeft (SEG_nd A B).reverse := by
@@ -175,17 +175,17 @@ theorem anti_cclock_of_IsOnOppositeSide (A B C D : P) [hne : PtNe B A] (h : IsOn
 
 lemma liesonleft_ne_pts {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (DLIN A B)) : (C ≠ A) ∧ (C ≠ B) := by
   have h': C LiesOnLeft (RAY A B) := by exact h
-  have : ¬ colinear A B C := by
-    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+  have : ¬ collinear A B C := by
+    apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     simp only [h', true_or]
-  have c_ne_a : C ≠ A := (ne_of_not_colinear this).2.1.symm
-  have c_ne_b : C ≠ B := (ne_of_not_colinear this).1
+  have c_ne_a : C ≠ A := (ne_of_not_collinear this).2.1.symm
+  have c_ne_b : C ≠ B := (ne_of_not_collinear this).1
   simp only [ne_eq, c_ne_a, not_false_eq_true, c_ne_b, and_self]
 
 theorem liesonleft_angle_ispos {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (DLIN A B)) : (∠ A C B (liesonleft_ne_pts h).1.symm (liesonleft_ne_pts h).2.symm).IsPos := by
   have h': C LiesOnLeft (RAY A B) := by exact h
-  have ABC_nd: ¬ colinear A B C := by
-    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+  have ABC_nd: ¬ collinear A B C := by
+    apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     simp only [h', true_or]
   have c : (TRI_nd A B C ABC_nd).is_cclock = C LiesOnLeft (SEG_nd A B) := by
     apply iscclock_iff_liesonleft₃
@@ -201,18 +201,18 @@ theorem liesonleft_angle_ispos {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (D
 
 lemma liesonright_ne_pts {A B C : P} [hne : PtNe B A] (h : C LiesOnRight (DLIN A B)) : (C ≠ A) ∧ (C ≠ B) := by
   have h': C LiesOnRight (RAY A B) := by exact h
-  have : ¬ colinear A B C := by
-    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+  have : ¬ collinear A B C := by
+    apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     simp only [h', or_true]
-  have c_ne_a : C ≠ A := (ne_of_not_colinear this).2.1.symm
-  have c_ne_b : C ≠ B := (ne_of_not_colinear this).1
+  have c_ne_a : C ≠ A := (ne_of_not_collinear this).2.1.symm
+  have c_ne_b : C ≠ B := (ne_of_not_collinear this).1
   simp only [ne_eq, c_ne_a, not_false_eq_true, c_ne_b, and_self]
 
 theorem liesonright_angle_isneg {A B C : P} [hne : PtNe B A] (h : C LiesOnRight (DLIN A B)) : (∠ A C B (liesonright_ne_pts h).1.symm (liesonright_ne_pts h).2.symm).IsNeg := by
   have h': C LiesOnRight (RAY A B) := by exact h
   have h'' : C LiesOnRight (SEG_nd A B) := by exact h
-  have ABC_nd: ¬ colinear A B C := by
-    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+  have ABC_nd: ¬ collinear A B C := by
+    apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     simp only [h', or_true]
   have c : (TRI_nd A B C ABC_nd).is_cclock = C LiesOnLeft (SEG_nd A B) := by
     apply iscclock_iff_liesonleft₃

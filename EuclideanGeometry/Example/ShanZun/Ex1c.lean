@@ -13,12 +13,12 @@ namespace Shan_Problem_1_7
 
 Prove that $CD = AB / 2$. -/
 
-variable {A B C: P} {hnd : ¬ colinear A B C}
+variable {A B C: P} {hnd : ¬ collinear A B C}
 -- Claim: $A \ne B$ and $A \ne C$ and $B \ne C$.
 -- This is because vertices of nondegenerate triangles are distinct.
-lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
-lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
-lemma B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
+lemma B_ne_a : B ≠ A := (ne_of_not_collinear hnd).2.2
+lemma c_ne_a : C ≠ A := (ne_of_not_collinear hnd).2.1.symm
+lemma B_ne_C : B ≠ C := (ne_of_not_collinear hnd).1.symm
 --∠ A C B = π/2
 variable {hrt : (ANG A C B c_ne_a.symm B_ne_C).IsRightAngle}
 -- D is the midpoint of segment AB
@@ -28,8 +28,8 @@ lemma d_ne_a: D ≠ A := by
   apply (SegND.midpt_lies_int (SegND := SegND A B (b_ne_a).symm)).2.1
   use C
   by_contra h
-  have : colinear A B C :=by
-    apply flip_colinear_fst_snd h
+  have : collinear A B C :=by
+    apply flip_collinear_fst_snd h
   trivial
 --Introduce the midpoint E of AC
 variable {E : P} {he : E=  (SEG A C).midpoint}
@@ -44,13 +44,13 @@ lemma e_ne_C: E ≠ C := by
   use B
   exact hnd
 --midpoint lies on the segment
-lemma adb_colinear : colinear A D B := by
-  apply colinear_of_vec_eq_smul_vec'
+lemma adb_collinear : collinear A D B := by
+  apply collinear_of_vec_eq_smul_vec'
   use 2
   simp only [hd,Seg.midpoint,one_div, seg_toVec_eq_vec, vec_of_pt_vadd_pt_eq_vec,smul_smul]
   norm_num
-lemma aec_colinear : colinear A E C := by
-  apply colinear_of_vec_eq_smul_vec'
+lemma aec_collinear : collinear A E C := by
+  apply collinear_of_vec_eq_smul_vec'
   use 2
   simp only [he,Seg.midpoint,one_div, seg_toVec_eq_vec, vec_of_pt_vadd_pt_eq_vec,smul_smul]
   norm_num
@@ -82,40 +82,40 @@ lemma ae_ratio : (SEG A E).length / (SEG A C).length = 2⁻¹ :=by
   rw[he]
   apply Seg.midpt_lies_on
 
-lemma hnd': ¬ colinear A D E := by
+lemma hnd': ¬ collinear A D E := by
   intro h'
-  have : colinear A B E := by
-    apply colinear_of_colinear_colinear_ne adb_colinear h' d_ne_a
+  have : collinear A B E := by
+    apply collinear_of_collinear_collinear_ne adb_collinear h' d_ne_a
     exact hd
     use B
     use C
     exact hnd
     exact hd
-  have neghnd : colinear A B C := by
-    apply colinear_of_colinear_colinear_ne (flip_colinear_snd_trd this) aec_colinear e_ne_a
+  have neghnd : collinear A B C := by
+    apply collinear_of_collinear_collinear_ne (flip_collinear_snd_trd this) aec_collinear e_ne_a
     exact he
     use B
     use C
     exact hnd
     exact he
   apply hnd neghnd
-lemma hnd'' : ¬ colinear C D E := by
+lemma hnd'' : ¬ collinear C D E := by
   intro h
-  have : colinear C D A := by
-    apply flip_colinear_snd_trd
-    apply colinear_of_colinear_colinear_ne
-    apply (flip_colinear_snd_trd (flip_colinear_fst_snd (flip_colinear_snd_trd aec_colinear)))
+  have : collinear C D A := by
+    apply flip_collinear_snd_trd
+    apply collinear_of_collinear_collinear_ne
+    apply (flip_collinear_snd_trd (flip_collinear_fst_snd (flip_collinear_snd_trd aec_collinear)))
     use E
     exact he
-    apply flip_colinear_snd_trd h
+    apply flip_collinear_snd_trd h
     apply e_ne_C
     apply hnd
     exact he
-  have : colinear A B C := by
-    apply colinear_of_colinear_colinear_ne
-    apply adb_colinear
+  have : collinear A B C := by
+    apply collinear_of_collinear_collinear_ne
+    apply adb_collinear
     apply hd
-    apply (flip_colinear_snd_trd (flip_colinear_fst_snd (flip_colinear_snd_trd this)))
+    apply (flip_collinear_snd_trd (flip_collinear_fst_snd (flip_collinear_snd_trd this)))
     apply d_ne_a
     apply hnd
     exact hd
@@ -210,7 +210,7 @@ namespace Shan_Problem_1_8
 /- In $\triangle ABC$, let $BD$ and $CE$ be the heights, with foots $D$ and $E$, respectively. Let $F$ and $G$ be the midpoint of $BC$ and $DE$, respectively.
 
 Prove that $FG \perp DE$. -/
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry

@@ -21,20 +21,20 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_colinear_ABC : ¬ colinear A B C
+  not_collinear_ABC : ¬ collinear A B C
   regular_ABC : (▵ A B C).IsRegular
 --Claim $A \ne B$
   A_ne_B : A ≠ B :=
   -- This is because vertices $A, B$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.2.symm
+    (ne_of_not_collinear not_collinear_ABC).2.2.symm
 --Claim $B \ne C$
   B_ne_C : B ≠ C :=
   -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).1.symm
+    (ne_of_not_collinear not_collinear_ABC).1.symm
 --Claim $C \ne A$
   C_ne_A : C ≠ A :=
   -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.1.symm
+    (ne_of_not_collinear not_collinear_ABC).2.1.symm
 --let $D$ be point on the extension of $BC$
   D : Plane
   D_int_BC_ext : D LiesInt (SEG_nd B C B_ne_C.symm).extension
@@ -60,10 +60,10 @@ $\cdot BD = CE$
 Thus, $\triangle BDA \cong \triangle CEB$ (by SAS).
 Therefore, $BD = CE$.
 -/
-  --We have that $B, D, A$ is not colinear.
-  have not_colinear_BDA : ¬ colinear e.B e.D e.A := by sorry
-  --We have that $C, E, B$ is not colinear.
-  have not_colinear_CEB : ¬ colinear e.C e.E e.B := by sorry
+  --We have that $B, D, A$ is not collinear.
+  have not_collinear_BDA : ¬ collinear e.B e.D e.A := by sorry
+  --We have that $C, E, B$ is not collinear.
+  have not_collinear_CEB : ¬ collinear e.C e.E e.B := by sorry
   --We have $D \ne B$.
   have D_ne_B : e.D ≠ e.B := by sorry
   --We have $A \ne B$.
@@ -94,7 +94,7 @@ Therefore, $BD = CE$.
       · exact Ray.snd_pt_lies_int_mk_pt_pt e.B e.A e.A_ne_B
     -- In regular triangle $ABC$, $\angle CBA = \angle ACB$.
     _= ∠ e.A e.C e.B A_ne_C e.B_ne_C := by
-      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.B e.C e.not_colinear_ABC))).mp
+      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.B e.C e.not_collinear_ABC))).mp
       exact Triangle.isoceles_of_regular (▵ e.A e.B e.C) e.regular_ABC
     -- Since $E$ lies on the extension of $CA$, we know that $\angle BCA$ is the same as $\angle ECB$.
     _= ∠ e.E e.C e.B E_ne_C e.B_ne_C := by
@@ -116,7 +116,7 @@ Therefore, $BD = CE$.
       symm;apply length_eq_length_add_length
       exact A_on_CE
   -- We have $\triangle ABD \cong \triangle BCE$ (by SAS).
-  have triangle_BDA_congr_triangle_CEB : TriangleND.IsCongr (TRI_nd e.B e.D e.A not_colinear_BDA) (TRI_nd e.C e.E e.B not_colinear_CEB) := by
+  have triangle_BDA_congr_triangle_CEB : TriangleND.IsCongr (TRI_nd e.B e.D e.A not_collinear_BDA) (TRI_nd e.C e.E e.B not_collinear_CEB) := by
     apply TriangleND.congr_of_SAS
     -- $\cdot AB = BC$
     · exact AB_eq_BC

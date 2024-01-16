@@ -339,52 +339,52 @@ Theorem
 \end{itemize}
 
 
-\section{Content in file Colinear.lean}
+\section{Content in file Collinear.lean}
 
 In this section, We discuss colinarity of points on a plane.
 
 \subsection{Definitions}
 
 \begin{itemize}
-\item Definition \verb|colinear_of_nd|: Given three distinct (ordered) points $A$, $B$, $C$, this function returns whether they are colinear, i.e. whether the projective direction of the vector $\overrightarrow{AB}$ is the same as the projective direction of the vector $\overrightarrow{AC}$.
+\item Definition \verb|collinear_of_nd|: Given three distinct (ordered) points $A$, $B$, $C$, this function returns whether they are collinear, i.e. whether the projective direction of the vector $\overrightarrow{AB}$ is the same as the projective direction of the vector $\overrightarrow{AC}$.
 
-\item Definition \verb|colinear|: Given three points $A$, $B$, $C$, return whether they are colinear: if at least two of them are equal, then they are considered colinear; if the three points are distinct, we use the earlier definition of colinarity for distinct points.
+\item Definition \verb|collinear|: Given three points $A$, $B$, $C$, return whether they are collinear: if at least two of them are equal, then they are considered collinear; if the three points are distinct, we use the earlier definition of colinarity for distinct points.
 \end{itemize}
 
 \subsection{Theorems}
 
 \begin{itemize}
 \item 
-Theorem \verb|colinear_of_vec_eq_smul_vec|: Given three points $A$, $B$, $C$ and a real number $t$, if the vector $\overrightarrow{AC}$ is $t$ times the vector $\overrightarrow{AB}$, then $A$, $B$, and $C$ are colinear.
+Theorem \verb|collinear_of_vec_eq_smul_vec|: Given three points $A$, $B$, $C$ and a real number $t$, if the vector $\overrightarrow{AC}$ is $t$ times the vector $\overrightarrow{AB}$, then $A$, $B$, and $C$ are collinear.
 \item 
-Theorem \verb|colinear_of_vec_eq_smul_vec'|: Given three points $A$, $B$, $C$, if the vector $\overrightarrow{AC}$ is a scalar multiple of the vector $\overrightarrow{AB}$, then $A$, $B$, $C$ are colinear.
+Theorem \verb|collinear_of_vec_eq_smul_vec'|: Given three points $A$, $B$, $C$, if the vector $\overrightarrow{AC}$ is a scalar multiple of the vector $\overrightarrow{AB}$, then $A$, $B$, $C$ are collinear.
 
 \item 
-Theorem \verb|colinear_iff_eq_smul_vec_of_ne|: Given three points $A$, $B$, $C$ such that $B \neq A$, we have $A$, $B$, $C$ are colinear if and only if the vector $\overrightarrow{AC}$ is a scalar multiple of the vector $\overrightarrow{AB}$.
+Theorem \verb|collinear_iff_eq_smul_vec_of_ne|: Given three points $A$, $B$, $C$ such that $B \neq A$, we have $A$, $B$, $C$ are collinear if and only if the vector $\overrightarrow{AC}$ is a scalar multiple of the vector $\overrightarrow{AB}$.
 
 \item 
-Theorem \verb|triv_colinear|: For any two points $A$ and $C$, the points $A$, $A$, $C$ are colinear.
+Theorem \verb|triv_collinear|: For any two points $A$ and $C$, the points $A$, $A$, $C$ are collinear.
 
 \item 
-Theorem \verb|flip_colinear_snd_trd|: Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are colinear (in that order), then $A$, $C$, $B$ are colinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity.
+Theorem \verb|flip_collinear_snd_trd|: Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are collinear (in that order), then $A$, $C$, $B$ are collinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity.
 
 \item 
-Theorem \verb|flip_colinear_fst_snd|: Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are colinear (in that order), then $B$, $A$, $C$ are colinear (in that order); in other words, in the definition of colinarity, swapping the first two of the three points does not change property of the three points being colinear.
+Theorem \verb|flip_collinear_fst_snd|: Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are collinear (in that order), then $B$, $A$, $C$ are collinear (in that order); in other words, in the definition of colinarity, swapping the first two of the three points does not change property of the three points being collinear.
 
 \item 
-Theorem \verb|colinear_of_colinear_colinear_ne|: Given four points $A$, $B$, $C$, $D$ with $B \neq A$, if $A$, $B$, $C$ are colinear, and if $A$, $B$, $D$ are colinear, then $A$, $C$, $D$ are colinear.
+Theorem \verb|collinear_of_collinear_collinear_ne|: Given four points $A$, $B$, $C$, $D$ with $B \neq A$, if $A$, $B$, $C$ are collinear, and if $A$, $B$, $D$ are collinear, then $A$, $C$, $D$ are collinear.
 
 \item {\color{red} where did this theorem go?}
-Theorem \verb|ne_of_not_colinear|: Given three points $A$, $B$, $C$, if they are not colinear, then they are pairwise distinct, i.e. $C \neq B$, $A \neq C$, and $B \neq A$.
+Theorem \verb|ne_of_not_collinear|: Given three points $A$, $B$, $C$, if they are not collinear, then they are pairwise distinct, i.e. $C \neq B$, $A \neq C$, and $B \neq A$.
 
 \end{itemize}
 
 \subsection{Compatibility}
 \begin{itemize}
 \item 
-Theorem \verb|Ray.colinear_of_lies_on|: If $A$, $B$, $C$ are three points which lie on a ray, then they are colinear.
+Theorem \verb|Ray.collinear_of_lies_on|: If $A$, $B$, $C$ are three points which lie on a ray, then they are collinear.
 \item 
-Theorem \verb|Seg.colinear_of_lies_on|: If $A$, $B$, $C$ are three points which lie on a segment, then they are colinear.
+Theorem \verb|Seg.collinear_of_lies_on|: If $A$, $B$, $C$ are three points which lie on a segment, then they are collinear.
 
 {\color{red}More theorems of this kind.}
 
@@ -393,7 +393,7 @@ Theorem \verb|Seg.colinear_of_lies_on|: If $A$, $B$, $C$ are three points which 
 \subsection{Miscellany}
 \begin{itemize}
 \item 
-Theorem \verb|nontriv_of_plane|: There exists three points $A$, $B$, $C$ on the plane such that they are not colinear.
+Theorem \verb|nontriv_of_plane|: There exists three points $A$, $B$, $C$ on the plane such that they are not collinear.
 
 \end{itemize}
 
@@ -516,10 +516,10 @@ theorem SegND.toProj_eq_toLine_toProj (seg_nd : SegND P) : seg_nd.toProj = seg_n
 
 \begin{itemize}
 \item 
-Theorem \verb|Line.linear|: Given a line and three points $A$, $B$, $C$ on this line, then these three points $A$, $B$, $C$ are colinear.
+Theorem \verb|Line.linear|: Given a line and three points $A$, $B$, $C$ on this line, then these three points $A$, $B$, $C$ are collinear.
 
 \item
-Theorem \verb|Line.maximal|: Given a line $l$ and two distinct points $A$ and $B$ on $l$, if $C$ is another point such that $A$, $B$, $C$ are colinear, then $C$ lines on the line $l$.
+Theorem \verb|Line.maximal|: Given a line $l$ and two distinct points $A$ and $B$ on $l$, if $C$ is another point such that $A$, $B$, $C$ are collinear, then $C$ lines on the line $l$.
 {\color{red} In the description, why not write C LiesOn l?}
 
 \item
@@ -560,11 +560,11 @@ Theorem \verb|eq_of_pt_pt_lies_on_of_ne|: Given two distinct points $A$ and $B$ 
 
 
 \end{itemize}
-    lies_on_line_of_pt_pt_iff_colinear --
+    lies_on_line_of_pt_pt_iff_collinear --
     lies_on_iff_lies_on_iff_line_eq_line --
     eq_line_of_pt_pt_of_ne --
     eq_of_pt_pt_lies_on_of_ne -- 2 ne pts lies on 2 lines implies 2 liones are the same
-    colinear_iff_exist_line_lies_on --
+    collinear_iff_exist_line_lies_on --
 
 
 

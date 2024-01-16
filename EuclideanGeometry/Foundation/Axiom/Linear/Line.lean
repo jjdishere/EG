@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
+import EuclideanGeometry.Foundation.Axiom.Linear.Collinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
 
 noncomputable section
@@ -893,61 +893,61 @@ end lieson
 
 
 
-section colinear
+section collinear
 
 namespace Line
 
-/-- Given three points $A$, $B$ and $C$, if $A$ and $B$ are distinct and $C$ lies on the line $AB$, then $A$, $B$, and $C$ are colinear. -/
-theorem pt_pt_linear {A B C : P} [_h : PtNe B A] (hc : C LiesOn (LIN A B)) : colinear A B C :=
-  if hcb : C = B then colinear_of_trd_eq_snd A hcb
-  else if hac : A = C then colinear_of_fst_eq_snd B hac
+/-- Given three points $A$, $B$ and $C$, if $A$ and $B$ are distinct and $C$ lies on the line $AB$, then $A$, $B$, and $C$ are collinear. -/
+theorem pt_pt_linear {A B C : P} [_h : PtNe B A] (hc : C LiesOn (LIN A B)) : collinear A B C :=
+  if hcb : C = B then collinear_of_trd_eq_snd A hcb
+  else if hac : A = C then collinear_of_fst_eq_snd B hac
   else haveI : PtNe C B := ⟨hcb⟩
-  perm_colinear_trd_fst_snd <| (dite_prop_iff_or _).mpr <| .inr ⟨by push_neg; exact ⟨hac, Fact.out, hcb⟩,
+  perm_collinear_trd_fst_snd <| (dite_prop_iff_or _).mpr <| .inr ⟨by push_neg; exact ⟨hac, Fact.out, hcb⟩,
     ((lies_on_iff_eq_toProj_of_lies_on snd_pt_lies_on_mk_pt_pt).mp hc).trans <|
       congrArg toProj line_of_pt_pt_eq_rev⟩
 
-/-- The theorem states that if three points $A$, $B$, and $C$ lie on the same line $l$, then they are colinear. -/
-theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h₃ : C LiesOn l) : colinear A B C := by
-  if h : B = A then exact colinear_of_snd_eq_fst C h
+/-- The theorem states that if three points $A$, $B$, and $C$ lie on the same line $l$, then they are collinear. -/
+theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h₃ : C LiesOn l) : collinear A B C := by
+  if h : B = A then exact collinear_of_snd_eq_fst C h
   else
   haveI : PtNe B A := ⟨h⟩
   refine' pt_pt_linear _
   rw [eq_line_of_pt_pt_of_ne h₁ h₂]
   exact h₃
 
-/-- If $A$ and $B$ are two distinct points and $C$ is a point such that $A$, $B$ and $C$ are colinear, then $C$ lies on the line $AB$. -/
-theorem pt_pt_maximal {A B C : P} [_h : PtNe B A] (Co : colinear A B C) : C LiesOn (LIN A B) :=
+/-- If $A$ and $B$ are two distinct points and $C$ is a point such that $A$, $B$ and $C$ are collinear, then $C$ lies on the line $AB$. -/
+theorem pt_pt_maximal {A B C : P} [_h : PtNe B A] (Co : collinear A B C) : C LiesOn (LIN A B) :=
   if hcb : C = B then by
     rw [hcb]
     exact snd_pt_lies_on_mk_pt_pt
   else haveI : PtNe C B := ⟨hcb⟩
   (lies_on_iff_eq_toProj_of_lies_on snd_pt_lies_on_mk_pt_pt).mpr <|
-    (colinear_iff_toProj_eq_of_ptNe.mp (perm_colinear_snd_trd_fst Co)).trans <|
+    (collinear_iff_toProj_eq_of_ptNe.mp (perm_collinear_snd_trd_fst Co)).trans <|
       congrArg Line.toProj (line_of_pt_pt_eq_rev (_h := _h)).symm
 
-/-- Given two distinct points $A$ and $B$ on a line $l$, if a point $C$ is so that $A$, $B$, and $C$ are colinear, then $C$ lines on $l$. -/
-theorem maximal {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) [_h : PtNe B A] (Co : colinear A B C) : C LiesOn l := by
+/-- Given two distinct points $A$ and $B$ on a line $l$, if a point $C$ is so that $A$, $B$, and $C$ are collinear, then $C$ lines on $l$. -/
+theorem maximal {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) [_h : PtNe B A] (Co : collinear A B C) : C LiesOn l := by
   rw [← eq_line_of_pt_pt_of_ne h₁ h₂]
   exact pt_pt_maximal Co
 
-/-- Given two distinct points $A$ and $B$, a point $X$ lies on the line through $A$ and $B$ if and only if $A$, $B$, and $X$ are colinear. -/
-theorem lies_on_line_of_pt_pt_iff_colinear {A B : P} [_h : PtNe B A] (X : P) : (X LiesOn (LIN A B)) ↔ colinear A B X := ⟨
+/-- Given two distinct points $A$ and $B$, a point $X$ lies on the line through $A$ and $B$ if and only if $A$, $B$, and $X$ are collinear. -/
+theorem lies_on_line_of_pt_pt_iff_collinear {A B : P} [_h : PtNe B A] (X : P) : (X LiesOn (LIN A B)) ↔ collinear A B X := ⟨
   fun hx ↦ (LIN A B).linear fst_pt_lies_on_mk_pt_pt snd_pt_lies_on_mk_pt_pt hx,
   fun c ↦ (LIN A B).maximal fst_pt_lies_on_mk_pt_pt snd_pt_lies_on_mk_pt_pt c⟩
 
 -- This is also a typical proof that shows how to use linear, maximal, nontriv of a line. Please write it shorter in future.
 
-/-- This theorem states that if $A$ and $B$ are two distinct points on a line $l$, then a point $C$ lies on $l$ if and only if $A$, $B$, and $C$ are colinear. -/
-theorem lies_on_iff_colinear_of_ne_lies_on_lies_on {A B : P} {l : Line P} [_h : PtNe B A] (ha : A LiesOn l) (hb : B LiesOn l) (C : P) : (C LiesOn l) ↔ colinear A B C :=
+/-- This theorem states that if $A$ and $B$ are two distinct points on a line $l$, then a point $C$ lies on $l$ if and only if $A$, $B$, and $C$ are collinear. -/
+theorem lies_on_iff_collinear_of_ne_lies_on_lies_on {A B : P} {l : Line P} [_h : PtNe B A] (ha : A LiesOn l) (hb : B LiesOn l) (C : P) : (C LiesOn l) ↔ collinear A B C :=
   ⟨fun hc ↦ l.linear ha hb hc, fun c ↦ l.maximal ha hb c⟩
 
-/-- The given theorem is an equivalence statement between the colinearity of three points and the existence of a line on which all three points lie. -/
-theorem colinear_iff_exist_line_lies_on (A B C : P) : colinear A B C ↔ ∃ l : Line P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) := by
+/-- The given theorem is an equivalence statement between the collinearity of three points and the existence of a line on which all three points lie. -/
+theorem collinear_iff_exist_line_lies_on (A B C : P) : collinear A B C ↔ ∃ l : Line P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) := by
   constructor
   · intro c
     by_cases h : PtNe B A
     · exact ⟨LIN A B, fst_pt_lies_on_mk_pt_pt, snd_pt_lies_on_mk_pt_pt,
-        (lies_on_line_of_pt_pt_iff_colinear C).mpr c⟩
+        (lies_on_line_of_pt_pt_iff_collinear C).mpr c⟩
     rw [PtNe, fact_iff, ne_eq, not_not] at h
     by_cases hh : PtNe C B
     · use LIN B C hh.out
@@ -956,42 +956,42 @@ theorem colinear_iff_exist_line_lies_on (A B C : P) : colinear A B C ↔ ∃ l :
     rw [PtNe, fact_iff, ne_eq, not_not] at hh
     simp only [hh, h, and_self, exist_line_pt_lies_on A]
   · intro ⟨l, ha, hb, hc⟩
-    if h : PtNe B A then exact (lies_on_iff_colinear_of_ne_lies_on_lies_on ha hb C).mp hc
+    if h : PtNe B A then exact (lies_on_iff_collinear_of_ne_lies_on_lies_on ha hb C).mp hc
     else
       simp [PtNe, fact_iff] at h
-      simp only [h, colinear, or_true, dite_true]
+      simp only [h, collinear, or_true, dite_true]
 
 end Line
 
 namespace DirLine
 
-/-- If $A$, $B$ and $C$ are three points on the same directed line $l$, then they are colinear. -/
-theorem linear {l : DirLine P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h₃ : C LiesOn l) : colinear A B C :=
+/-- If $A$, $B$ and $C$ are three points on the same directed line $l$, then they are collinear. -/
+theorem linear {l : DirLine P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h₃ : C LiesOn l) : collinear A B C :=
   Line.linear h₁ h₂ h₃
 
-/-- If $A$, $B$ and $C$ are three colinear points in which $A \neq B$, then $C$ lies on the directed line associated to $AB$. -/
-theorem pt_pt_maximal {A B C : P} [_h : PtNe B A] (Co : colinear A B C) : C LiesOn (DLIN A B) :=
+/-- If $A$, $B$ and $C$ are three collinear points in which $A \neq B$, then $C$ lies on the directed line associated to $AB$. -/
+theorem pt_pt_maximal {A B C : P} [_h : PtNe B A] (Co : collinear A B C) : C LiesOn (DLIN A B) :=
   Line.pt_pt_maximal Co
 
-/-- Given two points $A$ and $B$ on a directed line $l$, if a point $C$ is so that $A$, $B$, and $C$ are colinear, then $C$ lies on $l$. -/
-theorem maximal {l : DirLine P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) [_h : PtNe B A] (Co : colinear A B C) : C LiesOn l :=
+/-- Given two points $A$ and $B$ on a directed line $l$, if a point $C$ is so that $A$, $B$, and $C$ are collinear, then $C$ lies on $l$. -/
+theorem maximal {l : DirLine P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) [_h : PtNe B A] (Co : collinear A B C) : C LiesOn l :=
   Line.maximal h₁ h₂ Co
 
-/-- Given two distinct points $A$ and $B$, a point $X$ lies on the directed line from $A$ to $B$ if and only if $A$, $B$, and $X$ are colinear. -/
-theorem lies_on_dirline_of_pt_pt_iff_colinear {A B : P} [_h : PtNe B A] (X : P) : (X LiesOn (DLIN A B)) ↔ colinear A B X :=
-  Line.lies_on_line_of_pt_pt_iff_colinear X
+/-- Given two distinct points $A$ and $B$, a point $X$ lies on the directed line from $A$ to $B$ if and only if $A$, $B$, and $X$ are collinear. -/
+theorem lies_on_dirline_of_pt_pt_iff_collinear {A B : P} [_h : PtNe B A] (X : P) : (X LiesOn (DLIN A B)) ↔ collinear A B X :=
+  Line.lies_on_line_of_pt_pt_iff_collinear X
 
-/-- Let $A$ and $B$ be two distinct points on a directed line $l$, then a point $C$ lies on $l$ if and only if $A$, $B$ and $C$ are colinear. -/
-theorem lies_on_iff_colinear_of_ne_lies_on_lies_on {A B : P} {l : DirLine P} [_h : PtNe B A] (ha : A LiesOn l) (hb : B LiesOn l) (C : P) : (C LiesOn l) ↔ colinear A B C :=
-  Line.lies_on_iff_colinear_of_ne_lies_on_lies_on ha hb C
+/-- Let $A$ and $B$ be two distinct points on a directed line $l$, then a point $C$ lies on $l$ if and only if $A$, $B$ and $C$ are collinear. -/
+theorem lies_on_iff_collinear_of_ne_lies_on_lies_on {A B : P} {l : DirLine P} [_h : PtNe B A] (ha : A LiesOn l) (hb : B LiesOn l) (C : P) : (C LiesOn l) ↔ collinear A B C :=
+  Line.lies_on_iff_collinear_of_ne_lies_on_lies_on ha hb C
 
 /-- The theorem states that three points $A$, $B$, and $C$ are collinear if and only if there exists a line $l$ such that $A$, $B$, and $C$ all lie on $l$. -/
-theorem colinear_iff_exist_line_lies_on (A B C : P) : colinear A B C ↔ ∃ l : Line P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) :=
-  Line.colinear_iff_exist_line_lies_on A B C
+theorem collinear_iff_exist_line_lies_on (A B C : P) : collinear A B C ↔ ∃ l : Line P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) :=
+  Line.collinear_iff_exist_line_lies_on A B C
 
 end DirLine
 
-end colinear
+end collinear
 
 
 

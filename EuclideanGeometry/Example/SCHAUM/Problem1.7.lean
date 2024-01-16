@@ -23,7 +23,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_colinear_ABC : ¬ colinear A B C
+  not_collinear_ABC : ¬ collinear A B C
   isoceles_ABC : (▵ A B C).IsIsoceles
 --Let $D$ be point on the segment $BC$
   D : Plane
@@ -36,11 +36,11 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
 --Claim $B \ne A$
   B_ne_A : B ≠ A :=
   -- This is because vertices $A, B$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.2
+    (ne_of_not_collinear not_collinear_ABC).2.2
 --Claim $C \ne A$
   C_ne_A : C ≠ A :=
   -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.1.symm
+    (ne_of_not_collinear not_collinear_ABC).2.1.symm
 --take the foot of the height of $D$ to $AB$ and denote as $X$
   X : Plane
   hd : X = perp_foot D (LIN A B B_ne_A)
@@ -99,13 +99,13 @@ Therefore, $DX = EY$.
         · exact E_int_ray_CB
       -- and $\angle ACB$ is acute because it's a base angle of the isoceles triangle $ABC$.
       simp only [angle_ACE_is_angle_ACB]
-      exact ang_acute_of_is_isoceles_variant e.not_colinear_ABC e.isoceles_ABC
+      exact ang_acute_of_is_isoceles_variant e.not_collinear_ABC e.isoceles_ABC
     -- The perpendicular foot from a point on one ray of an acute angle to the other ray always falls on the interior of the other ray, so we know that $Y$, which is the perpendicular foot of $E$ to line $AC$, falls on the interior of ray $CA$.
     exact perp_foot_lies_int_ray_of_acute_ang (A := e.C) (B := e.A) (C := e.E) A_ne_C E_ne_C angle_ACE_acute
   -- We have $Y \ne C$ as Y is on the interior of ray $CA$ and therefore different to the source $C$.
   have Y_ne_C : e.Y ≠ e.C := Y_int_ray_CA.2
-  -- We have $Y, C, E$ are not colinear because $E$ doesn't lies on line $AC$ and $C$ doesn't coincide with $Y$.
-  have not_colinear_YCE : ¬ colinear e.Y e.C e.E := by exact not_colinear_with_perp_foot_of_ne_perp_foot e.E e.C e.Y (LIN e.A e.C e.C_ne_A) (Line.snd_pt_lies_on_mk_pt_pt e.C_ne_A) E_not_on_AC e.he (Y_ne_C).symm
+  -- We have $Y, C, E$ are not collinear because $E$ doesn't lies on line $AC$ and $C$ doesn't coincide with $Y$.
+  have not_collinear_YCE : ¬ collinear e.Y e.C e.E := by exact not_collinear_with_perp_foot_of_ne_perp_foot e.E e.C e.Y (LIN e.A e.C e.C_ne_A) (Line.snd_pt_lies_on_mk_pt_pt e.C_ne_A) E_not_on_AC e.he (Y_ne_C).symm
   -- We have $E \ne Y$.
   have E_ne_Y : e.E ≠ e.Y := by sorry
 
@@ -129,14 +129,14 @@ Therefore, $DX = EY$.
       simp only [angle_ABD_is_angle_ABC]
       -- and $\angle ABC$ is acute because it's a base angle of the isoceles triangle $ABC$.
       apply is_acute_of_is_acute_rev C_ne_B A_ne_B
-      exact ang_acute_of_is_isoceles e.not_colinear_ABC e.isoceles_ABC
+      exact ang_acute_of_is_isoceles e.not_collinear_ABC e.isoceles_ABC
     -- The perpendicular foot from a point on one ray of an acute angle to the other ray always falls on the interior of the other ray, so we know that $X$, which is the perpendicular foot of $D$ to line $AB$, falls on the interior of ray $BA$.
     exact perp_foot_lies_int_ray_of_acute_ang A_ne_B D_ne_B angle_ABD_acute
   -- We have $X \ne B$ as X is on the interior of ray $BA$ and therefore different to the source $B$.
   have X_ne_B : e.X ≠ e.B := X_int_ray_BA.2
-  -- We have $X, B, D$ are not colinear because $D$ doesn't lies on line $AB$ and $B$ doesn't coincide with $X$.
-  have not_colinear_XBD : ¬ colinear e.X e.B e.D := by
-    exact not_colinear_with_perp_foot_of_ne_perp_foot e.D e.B e.X (LIN e.A e.B e.B_ne_A) (Line.snd_pt_lies_on_mk_pt_pt e.B_ne_A) D_not_on_AB e.hd (X_ne_B).symm
+  -- We have $X, B, D$ are not collinear because $D$ doesn't lies on line $AB$ and $B$ doesn't coincide with $X$.
+  have not_collinear_XBD : ¬ collinear e.X e.B e.D := by
+    exact not_collinear_with_perp_foot_of_ne_perp_foot e.D e.B e.X (LIN e.A e.B e.B_ne_A) (Line.snd_pt_lies_on_mk_pt_pt e.B_ne_A) D_not_on_AB e.hd (X_ne_B).symm
   -- We have $D \ne X$.
   have D_ne_X : e.D ≠ e.X := by sorry
   -- In isoceles triangle $ABC$, we have $\angle CBA = - \angle BCA$.
@@ -144,7 +144,7 @@ Therefore, $DX = EY$.
     calc
     ∠ e.C e.B e.A C_ne_B A_ne_B
     -- $\angle CBA = \angle ACB$ because triangle $ABC$ is an isoceles triangle.
-    _= ∠ e.A e.C e.B A_ne_C C_ne_B.symm := is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.B e.C e.not_colinear_ABC)).mp e.isoceles_ABC
+    _= ∠ e.A e.C e.B A_ne_C C_ne_B.symm := is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.B e.C e.not_collinear_ABC)).mp e.isoceles_ABC
     -- $\angle ACB = - \angle BCA$ by symmetry.
     _= - ∠ e.B e.C e.A C_ne_B.symm A_ne_C := neg_value_of_rev_ang A_ne_C C_ne_B.symm
   -- We have that $\angle BXD = \angle CYE (\mod \pi)$.
@@ -188,7 +188,7 @@ Therefore, $DX = EY$.
     _= - ∠ e.E e.C e.Y E_ne_C Y_ne_C := by
       simp only [Angle.value_eq_of_lies_on_ray_pt_pt C_ne_B.symm A_ne_C E_ne_C Y_ne_C E_int_ray_CB Y_int_ray_CA]
   -- $\triangle XBD \cong_a \triangle YEC$ (by AAS)
-  have triangle_XBD_acongr_triangle_YCE : (TRI_nd e.X e.B e.D not_colinear_XBD) ≅ₐ (TRI_nd e.Y e.C e.E not_colinear_YCE) := by
+  have triangle_XBD_acongr_triangle_YCE : (TRI_nd e.X e.B e.D not_collinear_XBD) ≅ₐ (TRI_nd e.Y e.C e.E not_collinear_YCE) := by
     apply acongr_of_AAS_variant
     -- $\cdot $\angle BXD = \angle CYE (\mod \pi)$
     · exact angle_BXD_eq_neg_angle_CYE
