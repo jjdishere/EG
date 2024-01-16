@@ -281,6 +281,12 @@ instance {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} : Coe qdr.IsCon
 
 -- instance {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} : Coe qdr_nd.IsConvex qdr_nd.toQuadrilateral.IsConvex := {coe := QuadrilateralND.toqdr_cvx_of_cvx}
 
+theorem Quadrilateral.nd_cvx_iff_cvx {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : qdr_nd.IsConvex ↔ (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₃.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg) := by
+  unfold Quadrilateral.IsConvex
+  have nd : qdr_nd.toQuadrilateral.IsND := qdr_nd.nd
+  simp only [nd, dite_true]
+  rfl
+
 theorem Quadrilateral_cvx.nd_is_convex_iff_is_convex {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : qdr_nd.IsConvex ↔ qdr_nd.toQuadrilateral.IsConvex := by
   unfold Quadrilateral.IsConvex
   simp only [qdr_nd.nd, dite_true]
