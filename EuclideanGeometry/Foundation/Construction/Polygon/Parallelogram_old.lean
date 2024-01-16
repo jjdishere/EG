@@ -28,12 +28,12 @@ A QDR_cvx is QDR_nd that convex, current the definition is four angle has the sa
 
 While we have great benifit using QDR_cvx as the basis of discussion of parallelogram_nd (as we will show later, all parallelogram_nds are quadrilateral_cvxs), we do have practical difficulty in proving a quadrilateral being convex. Also, it is important (but not essential, as we will see) to keep the definition of parallelogram and parallelogram_nd being the same form (we will use this 'standardised' method as a theorem later on). So we would like to switch our attention to another type of quadrilaterals: QuadrilateralNDs, about which we can discuss angles, but general enough to include the degenerating cases.
 
-In this section we define two types of parallelogram. 'parallel_nd' deals with those quadrilaterals we commomly call parallelogram (convex), and 'parallel' with more general cases (we permite degenerate cases). As the concept of convex is hard to deal with, we therefore won't use it to define directly. Instead, we will start with non_triv, where all sets of 3 points are not colinear.
+In this section we define two types of parallelogram. 'parallel_nd' deals with those quadrilaterals we commomly call parallelogram (convex), and 'parallel' with more general cases (we permite degenerate cases). As the concept of convex is hard to deal with, we therefore won't use it to define directly. Instead, we will start with GPt, where all sets of 3 points are not colinear.
 
 -/
 
 @[pp_dot]
-structure QuadrilateralND.Parallelogram_non_triv {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop where
+structure Quadrilateral_nd.Parallelogram_GPt {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : Prop where
   not_colinear₁₂₃: ( ¬ colinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃)
   not_colinear₂₃₄: ( ¬ colinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄)
   not_colinear₃₄₁: ( ¬ colinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁)
@@ -47,7 +47,7 @@ def Quadrilateral.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadril
 @[pp_dot]
 def QuadrilateralND.IsParallelogram_para {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := ( qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) ∧ (qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃)
 
-/-- A quadrilateral satisfies IsParallelogram_nd if it satisfies both IsParallelogram_para and Parallelogram_non_triv. It is now what we commonly call parallelogram.-/
+/-- A quadrilateral satisfies IsParallelogram_nd if it satisfies both IsParallelogram_para and Parallelogram_GPt. It is now what we commonly call parallelogram.-/
 @[pp_dot]
 def QuadrilateralND.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := qdr_nd.IsParallelogram_para ∧ qdr_nd.Parallelogram_non_triv
 
@@ -57,7 +57,7 @@ def Quadrilateral.IsParallelogram_nd {P : Type _} [EuclideanPlane P] (qdr : Quad
   · exact (QuadrilateralND.mk_nd h).IsParallelogram_nd
   · exact False
 
-scoped postfix : 50 "IsParallelogram_non_triv" => QuadrilateralND.Parallelogram_non_triv
+scoped postfix : 50 "IsParallelogram_GPt" => Quadrilateral_nd.Parallelogram_GPt
 scoped postfix : 50 "IsParallelogram" => Quadrilateral.IsParallelogram
 scoped postfix : 50 "IsParallelogram_para" => QuadrilateralND.IsParallelogram_para
 scoped postfix : 50 "IsParallelogram_nd" => QuadrilateralND.IsParallelogram_nd
@@ -69,9 +69,9 @@ structure Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral P 
 
 /-- We define parallelogram_nd as a structure.-/
 @[ext]
-structure Parallelogram_nd (P : Type _) [EuclideanPlane P] extends QuadrilateralND P, Parallelogram P where
-  is_parallelogram_para : toQuadrilateralND IsParallelogram_para
-  is_parallelogram_non_triv : toQuadrilateralND IsParallelogram_non_triv
+structure Parallelogram_nd (P : Type _) [EuclideanPlane P] extends Quadrilateral_nd P, Parallelogram P where
+  is_parallelogram_para : toQuadrilateral_nd IsParallelogram_para
+  is_parallelogram_GPt : toQuadrilateral_nd IsParallelogram_GPt
 
 /-- We would also like to introduce a shortcut in proving statements concerning parallelograms - that is perm, the same technique used in Quadrilateral.lean. If qdr IsParallelogram, then its perm also IsParallelogram. -/
 theorem qdr_is_parallelogram_perm_iff (P : Type _) [EuclideanPlane P] (qdr : Quadrilateral P) :(qdr.IsParallelogram) ↔ ((qdr.perm).IsParallelogram) := by
@@ -333,7 +333,7 @@ def Parallelogram_nd.mk_pt_pt_pt_pt₄ {P : Type _} [EuclideanPlane P] (A B C D 
   is_parallelogram := h'
   nd := h
   is_parallelogram_para := sorry
-  is_parallelogram_non_triv := sorry
+  is_parallelogram_GPt := sorry
 
 /-- Make a parallelogram_nd with 4 points on a plane, and using condition non_colinear₂₃₄.-/
 def Parallelogram_nd.mk_pt_pt_pt_pt₁ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_colinear₂₃₄: ¬ colinear B C D) : Parallelogram_nd P where
@@ -341,7 +341,7 @@ def Parallelogram_nd.mk_pt_pt_pt_pt₁ {P : Type _} [EuclideanPlane P] (A B C D 
   is_parallelogram := h'
   nd := h
   is_parallelogram_para := sorry
-  is_parallelogram_non_triv := sorry
+  is_parallelogram_GPt := sorry
 
 /-- Make a parallelogram_nd with 4 points on a plane, and using condition non_colinear₃₄₁.-/
 def Parallelogram_nd.mk_pt_pt_pt_pt₂ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_colinear₃₄₁: ¬ colinear C D A) : Parallelogram_nd P where
@@ -349,7 +349,7 @@ def Parallelogram_nd.mk_pt_pt_pt_pt₂ {P : Type _} [EuclideanPlane P] (A B C D 
   is_parallelogram := h'
   nd := h
   is_parallelogram_para := sorry
-  is_parallelogram_non_triv := sorry
+  is_parallelogram_GPt := sorry
 
 /-- Make a parallelogram_nd with 4 points on a plane, and using condition non_colinear₄₁₂.-/
 def Parallelogram_nd.mk_pt_pt_pt_pt₃ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_colinear₄₁₂: ¬ colinear D A B) : Parallelogram_nd P where
@@ -357,7 +357,7 @@ def Parallelogram_nd.mk_pt_pt_pt_pt₃ {P : Type _} [EuclideanPlane P] (A B C D 
   is_parallelogram := h'
   nd := h
   is_parallelogram_para := sorry
-  is_parallelogram_non_triv := sorry
+  is_parallelogram_GPt := sorry
 
 /-- Make a parallelogram_nd with 4 points on a plane.-/
 def Parallelogram_nd.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_colinear: (QuadrilateralND.mk_nd h) IsParallelogram_non_triv) : Parallelogram_nd P where
@@ -365,7 +365,7 @@ def Parallelogram_nd.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P
   is_parallelogram := h'
   nd := h
   is_parallelogram_para := sorry
-  is_parallelogram_non_triv := non_colinear
+  is_parallelogram_GPt := non_colinear
 
 scoped notation "PRG" => Parallelogram.mk_pt_pt_pt_pt
 scoped notation "PRG_nd₁" => Parallelogram_nd.mk_pt_pt_pt_pt₁
@@ -385,7 +385,7 @@ def mk_parallelogram_nd₄ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral 
   is_parallelogram := h
   nd := h'
   is_parallelogram_para := sorry
-  is_parallelogram_non_triv := sorry
+  is_parallelogram_GPt := sorry
 
 /-- Make parallelogram_nd with a quadrilateral, using condition non_colinear₂₃₄.-/
 def mk_parallelogram_nd₁ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_colinear₂₃₄: ¬ colinear qdr.2 qdr.3 qdr.4) : Parallelogram_nd P where
@@ -393,7 +393,7 @@ def mk_parallelogram_nd₁ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral 
   is_parallelogram := h
   nd := h'
   is_parallelogram_para := sorry
-  is_parallelogram_non_triv := sorry
+  is_parallelogram_GPt := sorry
 
 /-- Make parallelogram_nd with a quadrilateral, using condition non_colinear₃₁₄.-/
 def mk_parallelogram_nd₂ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_colinear₃₄₁: ¬ colinear qdr.3 qdr.4 qdr.1) : Parallelogram_nd P where
@@ -401,7 +401,7 @@ def mk_parallelogram_nd₂ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral 
   is_parallelogram := h
   nd := h'
   is_parallelogram_para := sorry
-  is_parallelogram_non_triv := sorry
+  is_parallelogram_GPt := sorry
 
 /-- Make parallelogram_nd with a quadrilateral, using condition non_colinear₄₁₂.-/
 def mk_parallelogram_nd₃ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_colinear₄₁₂: ¬ colinear qdr.4 qdr.1 qdr.2) : Parallelogram_nd P where
@@ -409,7 +409,7 @@ def mk_parallelogram_nd₃ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral 
   is_parallelogram := h
   nd := h'
   is_parallelogram_para := sorry
-  is_parallelogram_non_triv := sorry
+  is_parallelogram_GPt := sorry
 
 /-- Make parallelogram_nd with a quadrilateral.-/
 def mk_parallelogram_nd {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_colinear: (QuadrilateralND.mk_nd h') IsParallelogram_non_triv) : Parallelogram_nd P where
@@ -417,7 +417,7 @@ def mk_parallelogram_nd {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} 
   is_parallelogram := h
   nd := h'
   is_parallelogram_para := sorry
-  is_parallelogram_non_triv := sorry
+  is_parallelogram_GPt := sorry
 
 /-- Here is also a quite odd definition of a quadrilateral or parallelogram being parallelogram_nd, concerning angle being positive or negative. As it may be useful when discussing cclocks, it is reserved in form of the two theorems below.-/
 theorem Quadrilateral.IsParallelogram_nd_redef {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) (h: qdr.IsND) (h': qdr IsParallelogram) (h': (((QuadrilateralND.mk_nd h).angle₁.value.IsPos ∧ (QuadrilateralND.mk_nd h).angle₃.value.IsPos) ∨ ((QuadrilateralND.mk_nd h).angle₁.value.IsNeg ∧ (QuadrilateralND.mk_nd h).angle₃.value.IsNeg) ∨ ((QuadrilateralND.mk_nd h).angle₂.value.IsPos ∧ (QuadrilateralND.mk_nd h).angle₄.value.IsPos) ∨ ((QuadrilateralND.mk_nd h).angle₂.value.IsNeg ∧ (QuadrilateralND.mk_nd h).angle₄.value.IsNeg))) : (QuadrilateralND.mk_nd h) IsParallelogram_nd := sorry

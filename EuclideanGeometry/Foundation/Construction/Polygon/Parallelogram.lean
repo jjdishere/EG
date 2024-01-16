@@ -19,7 +19,7 @@ There're some structural problems need further discuss.
 The reason we keep the variant in our file due to problem 3. While IsPrgND is not iff with Prg_nd. Maybe some instance can solve this.
 2. We have quite much criteria from Prg and/or Qdr_nd to PrgND. For user's ease, we need to provide some make methods. It's clear we should have a method like (PRG A B C D (QDR A B C D is PrgND)), It's the most intuitive make method. We should discuss the necessity of other make methods. For example, do we need a method accepts arguments qdr_cvx and (qdr_cvx satisfies IsPara)?
 3. In other structures we define predicate IsXXX then define structure XXX with it's element IsXXX. Now the PrgND is not involving new predicate, so the definition of 'IsPrgND' is not related to structure PrgND naturally. How to solve this? Shall we simply provide more instances?
-4. the naming of predicate currently called 'non_triv_PRG_nd' and 'IsPara_PRG_nd', and the naming of 'IsPara' and 'non_triv' needs discuss.
+4. the naming of predicate currently called 'GPt_PRG_nd' and 'IsParaPara_PRG_nd', and the naming of 'IsParaPara' and 'GPt' needs discuss.
 -/
 
 /-
@@ -44,7 +44,7 @@ structure Quadrilateral.InGPos {P : Type _} [EuclideanPlane P] (qdr : Quadrilate
   not_colinear₃₄₁: ( ¬ colinear qdr.point₃ qdr.point₄ qdr.point₁)
   not_colinear₄₁₂: ( ¬ colinear qdr.point₄ qdr.point₁ qdr.point₂)
 
--- scoped postfix : 50 "IsPrg_non_triv" => Quadrilateral.non_triv
+-- scoped postfix : 50 "IsPrg_GPt" => Quadrilateral.GPt
 
 /-- A QuadrilateralND satisfies IsPara if two sets of opposite sides are parallel respectively. -/
 @[pp_dot]
@@ -154,8 +154,8 @@ def ParallelogramND.mk_prgND_of_para {P : Type _} [EuclideanPlane P] (A B C D : 
   is_parallelogram := h'
 
 -- `name maybe changed`
-scoped notation "IsPara_PRG_nd" => ParallelogramND.mk_prgND_of_para
--/
+scoped notation "IsParaPara_PRG_nd" => ParallelogramND.mk_parallelogram_para
+
 /- here is two theorem using first version of definition of PRG_nd, may not useful currently. -/
 -- theorem Quadrilateral.IsPrg_nd_redef {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) (h: qdr.IsND) (h': qdr IsPrg) (h': (((QuadrilateralND.mk_nd h).angle₁.value.IsPos ∧ (QuadrilateralND.mk_nd h).angle₃.value.IsPos) ∨ ((QuadrilateralND.mk_nd h).angle₁.value.IsNeg ∧ (QuadrilateralND.mk_nd h).angle₃.value.IsNeg) ∨ ((QuadrilateralND.mk_nd h).angle₂.value.IsPos ∧ (QuadrilateralND.mk_nd h).angle₄.value.IsPos) ∨ ((QuadrilateralND.mk_nd h).angle₂.value.IsNeg ∧ (QuadrilateralND.mk_nd h).angle₄.value.IsNeg))) : (QuadrilateralND.mk_nd h).IsPrgND := sorry
 
@@ -183,13 +183,13 @@ theorem qdr_is_parallelogram_perm_iff : (qdr.IsPrg) ↔ ((qdr.perm).IsPrg) := by
 theorem qdr_is_parallelogramND_perm_iff : (qdr.IsPrgND) ↔ ((qdr.perm).IsPrgND) := by sorry
 
 /-- If a quadrilateral satisfies IsParaPara, then its perm also satisfies IsParaPara. -/
-theorem qdr_IsPara_perm_iff : (qdr.IsParaPara) ↔ ((qdr.perm).IsParaPara) := by sorry
+theorem qdr_IsParaPara_perm_iff : (qdr.IsParaPara) ↔ ((qdr.perm).IsParaPara) := by sorry
 
-/-- If a QuadrilateralND satisfies IsParaPara, then its perm also satisfies IsParaPara. -/
-theorem qdr_nd_IsPara_perm_iff : (qdr_nd.IsParaPara) ↔ ((qdr_nd.perm).IsParaPara) := by sorry
+/-- If a quadrilateral_nd satisfies IsParaPara, then its perm also satisfies IsParaPara. -/
+theorem qdr_nd_IsParaPara_perm_iff : (qdr_nd.IsParaPara) ↔ ((qdr_nd.perm).IsParaPara) := by sorry
 
-/-- If a quadrilateral satisfies InGPos, then its perm also satisfies InGPos. -/
-theorem qdr_is_non_triv_perm_iff : (qdr.InGPos) ↔ ((qdr.perm).InGPos) := by sorry
+/-- If a quadrilateral satisfies IsParaPara, then its perm also satisfies IsParaPara. -/
+theorem qdr_is_GPt_perm_iff : (qdr.GPt) ↔ ((qdr.perm).IsParaPara) := by sorry
 
 end perm
 
@@ -215,13 +215,13 @@ theorem qdr_is_parallelogramND_flip_iff : (qdr.IsPrgND) ↔ ((qdr.flip).IsPrgND)
   sorry
 
 /-- If a quadrilateral satisfies IsParaPara, then its flip also satisfies IsParaPara. -/
-theorem qdr_IsPara_flip_iff : (qdr.IsParaPara) ↔ ((qdr.flip).IsParaPara) := by sorry
+theorem qdr_IsParaPara_flip_iff : (qdrIsParaPara) ↔ ((qdr.flip).IsParaPara) := by sorry
 
-/-- If a QuadrilateralND satisfies IsParaPara, then its flip also satisfies IsParaPara. -/
-theorem qdr_nd_IsPara_flip_iff : (qdr_nd.IsParaPara) ↔ ((qdr_nd.flip).IsParaPara) := by sorry
+/-- If a quadrilateral_nd satisfies IsParaPara, then its flip also satisfies IsParaPara. -/
+theorem qdr_nd_IsParaPara_flip_iff : (qdr_nd.IsParaPara) ↔ ((qdr_nd.flip).IsParaPara) := by sorry
 
 /-- If a quadrilateral satisfies IsParaPara, then its flip also satisfies IsParaPara. -/
-theorem qdr_is_non_triv_flip_iff : (qdr.InGPos) ↔ ((qdr.flip).InGPos) := by sorry
+theorem qdr_is_GPt_flip_iff : (qdr.GPt) ↔ ((qdr.flip).GPt) := by sorry
 
 end flip
 
