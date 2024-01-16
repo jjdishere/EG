@@ -487,33 +487,33 @@ theorem nd_is_convex_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) 
 
 /-- In a parallelogram_nd A B C D, B ≠ A. -/
 theorem nd₁₂_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : B ≠ A := by
-  have s : (QDR A B C D) IsConvex := by exact h.left
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₁₂.out
+  have s : (QDR A B C D) IsConvex := h.left
+  exact (Quadrilateral_cvx.mk_cvx s).nd₁₂.out
 
 /-- In a parallelogram_nd A B C D, C ≠ B. -/
 theorem nd₂₃_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : C ≠ B := by
-  have s : (QDR A B C D) IsConvex := by exact h.left
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₂₃.out
+  have s : (QDR A B C D) IsConvex := h.left
+  exact (Quadrilateral_cvx.mk_cvx s).nd₂₃.out
 
 /-- In a parallelogram_nd A B C D, D ≠ C. -/
 theorem nd₃₄_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : D ≠ C := by
-  have s : (QDR A B C D) IsConvex := by exact h.left
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₃₄.out
+  have s : (QDR A B C D) IsConvex := h.left
+  exact (Quadrilateral_cvx.mk_cvx s).nd₃₄.out
 
 /-- In a parallelogram_nd A B C D, D ≠ A. -/
 theorem nd₁₄_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : D ≠ A := by
-  have s : (QDR A B C D) IsConvex := by exact h.left
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₁₄.out
+  have s : (QDR A B C D) IsConvex := h.left
+  exact (Quadrilateral_cvx.mk_cvx s).nd₁₄.out
 
 /-- In a parallelogram_nd A B C D, C ≠ A. -/
 theorem nd₁₃_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : C ≠ A := by
-  have s : (QDR A B C D) IsConvex := by exact h.left
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₁₃.out
+  have s : (QDR A B C D) IsConvex := h.left
+  exact (Quadrilateral_cvx.mk_cvx s).nd₁₃.out
 
 /-- In a parallelogram_nd A B C D, D ≠ B. -/
 theorem nd₂₄_of_is_prg_nd_variant (h : (QDR A B C D).IsParallelogramND) : D ≠ B := by
-  have s : (QDR A B C D) IsConvex := by exact h.left
-  exact (Quadrilateral_cvx.mk_is_convex s).nd₂₄.out
+  have s : (QDR A B C D) IsConvex := h.left
+  exact (Quadrilateral_cvx.mk_cvx s).nd₂₄.out
 
 /-- In a parallelogram_nd, edge_nd₁₂ and edge₃₄ are parallel. -/
 theorem nd_para_of_is_prg_nd : prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ := by
