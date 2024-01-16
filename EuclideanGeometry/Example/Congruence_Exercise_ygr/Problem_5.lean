@@ -1,5 +1,5 @@
 import EuclideanGeometry.Foundation.Index
-import EuclideanGeometry.Foundation.Axiom.Linear.Line_trash
+import EuclideanGeometry.Foundation.Axiom.Linear.Order
 
 noncomputable section
 

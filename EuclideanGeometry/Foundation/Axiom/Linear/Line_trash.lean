@@ -98,22 +98,4 @@ theorem eq_toDir_of_pt_lies_int_to_target {seg_nd : SegND P} {A : P} (h : A Lies
 
 theorem eq_toDirLine_of_pt_lies_int_to_target {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target h.ne_target.symm).toDirLine = seg_nd.toDirLine := by sorry
 
-namespace DirLine
-section linear_order
--- linear order and ne
-theorem ne_iff_ne_as_line_elem {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) : (A ≠ B) ↔ ((⟨A, ha⟩ : Dl.carrier.Elem) ≠ ⟨B, hb⟩) := by sorry
--- linear order and LiesInt
-theorem lies_int_of_lt_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_lt_b : (⟨A, ha⟩ : Dl.carrier.Elem) < ⟨B, hb⟩) (b_lt_c : (⟨B, hb⟩ : Dl.carrier.Elem) < ⟨C, hc⟩) : B LiesInt (SEG A C) := by sorry
-theorem lies_int_of_gt_and_gt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_gt_b : (⟨A, ha⟩ : Dl.carrier.Elem) > ⟨B, hb⟩) (b_gt_c : (⟨B, hb⟩ : Dl.carrier.Elem) > ⟨C, hc⟩) : B LiesInt (SEG A C) := by sorry
-theorem lt_and_lt_or_gt_and_gt_of_lies_int {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesInt (SEG A C)) : (((⟨A, ha⟩ : Dl.carrier.Elem) < ⟨B, hb⟩) ∧ ((⟨B, hb⟩ : Dl.carrier.Elem) < ⟨C, hc⟩)) ∨ (((⟨A, ha⟩ : Dl.carrier.Elem) > ⟨B, hb⟩) ∧ ((⟨B, hb⟩ : Dl.carrier.Elem) > ⟨C, hc⟩)) := by sorry
--- linear order and LiesOn
-theorem lies_on_of_le_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_le_b : (⟨A, ha⟩ : Dl.carrier.Elem) ≤ ⟨B, hb⟩) (b_le_c : (⟨B, hb⟩ : Dl.carrier.Elem) ≤ ⟨C, hc⟩) : B LiesOn (SEG A C) := by sorry
-theorem lies_on_of_ge_and_ge {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_ge_b : (⟨A, ha⟩ : Dl.carrier.Elem) ≥ ⟨B, hb⟩) (b_ge_c : (⟨B, hb⟩ : Dl.carrier.Elem) ≥ ⟨C, hc⟩) : B LiesOn (SEG A C) := by sorry
-theorem le_and_le_or_ge_and_ge_of_lies_on {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) : (((⟨A, ha⟩ : Dl.carrier.Elem) ≤ ⟨B, hb⟩) ∧ ((⟨B, hb⟩ : Dl.carrier.Elem) ≤ ⟨C, hc⟩)) ∨ (((⟨A, ha⟩ : Dl.carrier.Elem) ≥ ⟨B, hb⟩) ∧ ((⟨B, hb⟩ : Dl.carrier.Elem) ≥ ⟨C, hc⟩)) := by sorry
--- linear order and toDir
-theorem eq_toDir_of_lt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (a_lt_b : (⟨A, ha⟩ : Dl.carrier.Elem) < ⟨B, hb⟩) : (RAY A B ((ne_iff_ne_as_line_elem ha hb).mpr (ne_of_lt a_lt_b)).symm).toDir = Dl.toDir := by sorry
-theorem neg_toDir_of_gt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (a_gt_b : (⟨A, ha⟩ : Dl.carrier.Elem) > ⟨B, hb⟩) : (RAY A B ((ne_iff_ne_as_line_elem ha hb).mpr (ne_of_gt a_gt_b)).symm).toDir = - Dl.toDir := by sorry
-end linear_order
-end DirLine
-
 end EuclidGeom
