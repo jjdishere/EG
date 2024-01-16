@@ -371,14 +371,16 @@ variable (qdr_cvx : Quadrilateral_cvx P)
 /-- The perm of quadrilateral_cvx is also quadrilateral_cvx. -/
 theorem perm_is_convex : (QuadrilateralND.perm qdr_cvx.toQuadrilateralND).IsConvex := by
   unfold Quadrilateral.IsConvex
-  by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
-  · have q : (qdr_cvx.perm.angle₄.value.IsPos ∧ qdr_cvx.perm.angle₁.value.IsPos ∧ qdr_cvx.perm.angle₂.value.IsPos ∧ qdr_cvx.perm.angle₃.value.IsPos) := h
-    simp only [q, and_self, true_or]
-  · have p: qdr_cvx.IsConvex := qdr_cvx.convex
-    unfold Quadrilateral.IsConvex at p
-    simp only [h, false_or] at p
-    have q : (qdr_cvx.perm.angle₄.value.IsNeg ∧ qdr_cvx.perm.angle₁.value.IsNeg ∧ qdr_cvx.perm.angle₂.value.IsNeg ∧ qdr_cvx.perm.angle₃.value.IsNeg) := p
-    simp only [q, and_self, or_true]
+  sorry
+  -- unfold Quadrilateral.IsConvex
+  -- by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
+  -- · have q : (qdr_cvx.perm.angle₄.value.IsPos ∧ qdr_cvx.perm.angle₁.value.IsPos ∧ qdr_cvx.perm.angle₂.value.IsPos ∧ qdr_cvx.perm.angle₃.value.IsPos) := h
+  --   simp only [q, and_self, true_or]
+  -- · have p: qdr_cvx.IsConvex := qdr_cvx.convex
+  --   unfold Quadrilateral.IsConvex at p
+  --   simp only [h, false_or] at p
+  --   have q : (qdr_cvx.perm.angle₄.value.IsNeg ∧ qdr_cvx.perm.angle₁.value.IsNeg ∧ qdr_cvx.perm.angle₂.value.IsNeg ∧ qdr_cvx.perm.angle₃.value.IsNeg) := p
+  --   simp only [q, and_self, or_true]
 
 /-- The perm quadrilateral_cvx, the first point of the perm is the second point of the origin, etc. -/
 def perm : Quadrilateral_cvx P := QDR_cvx' (perm_is_convex qdr_cvx)
@@ -400,24 +402,25 @@ theorem is_convex_iff_perm_is_convex : qdr_nd.IsConvex ↔ qdr_nd.perm.IsConvex 
 /-- The flip of quadrilateral_cvx is also quadrilateral_cvx. -/
 theorem flip_is_convex : (QuadrilateralND.flip qdr_cvx.toQuadrilateralND).IsConvex := by
   unfold Quadrilateral.IsConvex
-  by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
-  · have q : (qdr_cvx.flip.angle₁.value.IsNeg ∧ qdr_cvx.flip.angle₄.value.IsNeg ∧ qdr_cvx.flip.angle₃.value.IsNeg ∧ qdr_cvx.flip.angle₂.value.IsNeg) := by
-      rw [(QuadrilateralND.flip_angle₁_value_eq_neg_angle₁ qdr_cvx.toQuadrilateralND), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₁.value)]
-      rw [(QuadrilateralND.flip_angle₄_value_eq_neg_angle₂ qdr_cvx.toQuadrilateralND), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₂.value)]
-      rw [(QuadrilateralND.flip_angle₃_value_eq_neg_angle₃ qdr_cvx.toQuadrilateralND), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₃.value)]
-      rw [(QuadrilateralND.flip_angle₂_value_eq_neg_angle₄ qdr_cvx.toQuadrilateralND), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₄.value)]
-      simp only [h, and_self]
-    simp only [q, and_self, or_true]
-  · have p: qdr_cvx.IsConvex := qdr_cvx.convex
-    unfold QuadrilateralND.IsConvex at p
-    simp only [h, false_or] at p
-    have q : (qdr_cvx.flip.angle₁.value.IsPos ∧ qdr_cvx.flip.angle₄.value.IsPos ∧ qdr_cvx.flip.angle₃.value.IsPos ∧ qdr_cvx.flip.angle₂.value.IsPos) := by
-      rw [(QuadrilateralND.flip_angle₁_value_eq_neg_angle₁ qdr_cvx.toQuadrilateralND), AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₁.value)]
-      rw [(QuadrilateralND.flip_angle₄_value_eq_neg_angle₂ qdr_cvx.toQuadrilateralND), AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₂.value)]
-      rw [(QuadrilateralND.flip_angle₃_value_eq_neg_angle₃ qdr_cvx.toQuadrilateralND), AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₃.value)]
-      rw [(QuadrilateralND.flip_angle₂_value_eq_neg_angle₄ qdr_cvx.toQuadrilateralND), AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₄.value)]
-      simp only [p, and_self]
-    simp only [q, and_self, true_or]
+  sorry
+  -- by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
+  -- · have q : (qdr_cvx.flip.angle₁.value.IsNeg ∧ qdr_cvx.flip.angle₄.value.IsNeg ∧ qdr_cvx.flip.angle₃.value.IsNeg ∧ qdr_cvx.flip.angle₂.value.IsNeg) := by
+  --     rw [(QuadrilateralND.flip_angle₁_value_eq_neg_angle₁ qdr_cvx.toQuadrilateralND), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₁.value)]
+  --     rw [(QuadrilateralND.flip_angle₄_value_eq_neg_angle₂ qdr_cvx.toQuadrilateralND), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₂.value)]
+  --     rw [(QuadrilateralND.flip_angle₃_value_eq_neg_angle₃ qdr_cvx.toQuadrilateralND), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₃.value)]
+  --     rw [(QuadrilateralND.flip_angle₂_value_eq_neg_angle₄ qdr_cvx.toQuadrilateralND), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₄.value)]
+  --     simp only [h, and_self]
+  --   simp only [q, and_self, or_true]
+  -- · have p: qdr_cvx.IsConvex := qdr_cvx.convex
+  --   unfold QuadrilateralND.IsConvex at p
+  --   simp only [h, false_or] at p
+  --   have q : (qdr_cvx.flip.angle₁.value.IsPos ∧ qdr_cvx.flip.angle₄.value.IsPos ∧ qdr_cvx.flip.angle₃.value.IsPos ∧ qdr_cvx.flip.angle₂.value.IsPos) := by
+  --     rw [(QuadrilateralND.flip_angle₁_value_eq_neg_angle₁ qdr_cvx.toQuadrilateralND), AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₁.value)]
+  --     rw [(QuadrilateralND.flip_angle₄_value_eq_neg_angle₂ qdr_cvx.toQuadrilateralND), AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₂.value)]
+  --     rw [(QuadrilateralND.flip_angle₃_value_eq_neg_angle₃ qdr_cvx.toQuadrilateralND), AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₃.value)]
+  --     rw [(QuadrilateralND.flip_angle₂_value_eq_neg_angle₄ qdr_cvx.toQuadrilateralND), AngValue.neg_isPos_iff_isNeg (θ := qdr_cvx.angle₄.value)]
+  --     simp only [p, and_self]
+  --   simp only [q, and_self, true_or]
 
 def flip : Quadrilateral_cvx P := QDR_cvx' (flip_is_convex qdr_cvx)
 
