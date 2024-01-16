@@ -83,10 +83,14 @@ theorem perp_foot_eq_self_iff_lies_on (A : P) (l : Line P) : perp_foot A l = A �
 theorem perp_foot_ne_self_iff_not_lies_on (A : P) (l : Line P) : perp_foot A l ≠ A ↔ ¬ A LiesOn l :=
   (perp_foot_eq_self_iff_lies_on A l).not
 
+theorem pt_ne_iff_not_lies_on_of_eq_perp_foot {A B : P} {l : Line P} (h : B = perp_foot A l) : B ≠ A ↔ ¬ A LiesOn l := by
+  rw [h]
+  exact (perp_foot_ne_self_iff_not_lies_on A l)
+
 theorem line_of_self_perp_foot_eq_perp_line_of_not_lies_on {A : P} {l : Line P} (h : ¬ A LiesOn l) : LIN A (perp_foot A l) ((perp_foot_ne_self_iff_not_lies_on A l).2 h) = perp_line A l :=
   eq_line_of_pt_pt_of_ne (_h := ⟨(perp_foot_ne_self_iff_not_lies_on A l).2 h⟩) (pt_lies_on_of_mk_pt_proj A l.toProj.perp) (Line.inx_is_inx (toProj_ne_perp_toProj A l)).2
 
-theorem line_of_self_perp_foot_perp_line_of_not_lies_on {A : P} {l : Line P} (h : ¬ (A LiesOn l)) : LIN A (perp_foot A l) ((perp_foot_ne_self_iff_not_lies_on A l).2 h) ⟂ l :=
+theorem line_of_self_perp_foot_perp_line_of_not_lies_on {A : P} {l : Line P} (h : ¬ A LiesOn l) : LIN A (perp_foot A l) ((perp_foot_ne_self_iff_not_lies_on A l).2 h) ⟂ l :=
   (congrArg toProj (line_of_self_perp_foot_eq_perp_line_of_not_lies_on h)).trans (perp_line_perp A l)
 
 theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l :=

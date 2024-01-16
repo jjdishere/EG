@@ -30,10 +30,8 @@ variable {E : P} {he : E = (SEG A B).midpoint}
 theorem Shan_Problem_1_3 : (SEG C D).length = 2 * (SEG C E).length := by
   -- Extend $AC$ to $F$ such that $CF = AC$
   let F := Ray.extpoint (SEG_nd A C c_ne_a).extension (SEG A C).length
-  have cf_eq_ac : (SEG C F).length = (SEG A C).length := by
-    apply seg_length_eq_dist_of_extpoint (SEG_nd A C c_ne_a).extension
-    simp
-    exact length_nonneg
+  have cf_eq_ac : (SEG C F).length = (SEG A C).length :=
+    (SEG_nd A C c_ne_a).extension.dist_of_extpoint (SEG A C).length_nonneg
   -- $\triangle A B F$ is congruent to $\triangle A C D$, so $BF = CD$
   have iso : (▵ A B F) ≅ₐ (▵ A C D) := sorry
   have bf_eq_cd : (SEG B F).length = (SEG C D).length := iso.edge₁
@@ -63,10 +61,8 @@ variable {D : P} {hd : D = perp_foot A (LIN B C B_ne_C.symm)}
 theorem Shan_Problem_1_4 : (SEG B D).length = (SEG A C).length + (SEG C D).length := by
   -- Extend $BC$ to $E$ such that $CE = CA$
   let E := Ray.extpoint (SEG_nd B C B_ne_C.symm).extension (SEG C A).length
-  have ce_eq_ca : (SEG C E).length = (SEG C A).length := by
-    apply seg_length_eq_dist_of_extpoint (SEG_nd B C B_ne_C.symm).extension
-    simp
-    exact length_nonneg
+  have ce_eq_ca : (SEG C E).length = (SEG C A).length :=
+    (SEG_nd B C B_ne_C.symm).extension.dist_of_extpoint (SEG C A).length_nonneg
   -- $DE = AC + CD$
   have de_eq_ac_plus_cd : (SEG D E).length = (SEG A C).length + (SEG C D).length := sorry
   -- $C A E$ is not colinear

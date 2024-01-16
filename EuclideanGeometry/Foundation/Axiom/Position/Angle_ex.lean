@@ -3,6 +3,8 @@ import EuclideanGeometry.Foundation.Axiom.Position.Angle
 /-!
 # Constructions of an angle
 
+This document discusses the construction of an angle, their properties, and the relationships between them.
+
 -/
 
 noncomputable section
@@ -13,25 +15,14 @@ variable {P : Type _} [EuclideanPlane P]
 
 namespace Angle
 
-/- whether an angle is acute/right/obtuse. -/
 
-def IsRightAngle (ang : Angle P) : Prop := sorry
-
-
-def IsAcuteAngle (ang : Angle P) : Prop := sorry
-
-
-def IsObtuseAngle (ang : Angle P) : Prop := sorry
-
-
---`This section should be rewrite`
-/- Supplementary angles -/
 
 -- Define the supplementary angle to be the angle
 variable (ang : Angle P)
 
 --Maybe the name is too long
-def supplementary : Angle P where
+@[pp_dot]
+def suppl : Angle P where
   source := ang.source
   dir₁ := ang.dir₁
   dir₂ := - ang.dir₂
@@ -40,22 +31,23 @@ def supplementary : Angle P where
 
 theorem reverse_ray_iff_sum_of_angle_eq_pi {ang1 : Angle P} {ang2 : Angle P} (h: ang1.end_ray = ang2.start_ray) : ang1.end_ray = ang2.start_ray.reverse ↔ ang1.value + ang2.value = π ∨ ang1.value + ang2.value = -π := by sorry
 
-theorem right_of_supp_of_right (rt : IsRightAngle ang) :  IsRightAngle ang.supplementary := by sorry
+theorem right_of_suppl_of_right (h : ang.IsRight) :  ang.suppl.IsRight := by sorry
 
-theorem acute_of_supp_of_obtuse (rt : IsObtuseAngle ang) :  IsRightAngle ang.supplementary := by sorry
+theorem acute_of_suplp_of_obtuse (h : ang.IsObt) : ang.suppl.IsAcu := by sorry
 
-theorem obtuse_of_supp_of_acute (rt : IsAcuteAngle ang) :  IsRightAngle ang.supplementary := by sorry
+theorem obtuse_of_suppl_of_acute (h : ang.IsAcu) : ang.suppl.IsObt := by sorry
 
-theorem IsND_of_supp_of_IsND (nontriv : ang.IsND) : ang.supplementary.IsND := by sorry
+theorem IsND_of_suppl_of_IsND (nontriv : ang.IsND) : ang.suppl.IsND := by sorry
 
-def opposite :(Angle P) where
+@[pp_dot]
+def oppo :(Angle P) where
   source := ang.source
   dir₁ := - ang.dir₁
   dir₂ := - ang.dir₂
 
-theorem opposite_eq_supp_of_supp : ang.supplementary.supplementary = ang := by sorry
+theorem oppo_eq_supp_of_supp : ang.suppl.suppl = ang := by sorry
 
-theorem  IsND_of_oppo_of_IsND (nontriv : ang.IsND) : ang.opposite.IsND := by sorry
+theorem IsND_of_oppo_of_IsND (nontriv : ang.IsND) : ang.oppo.IsND := by sorry
 
 end Angle
 
@@ -63,32 +55,21 @@ section parallel
 variable {P : Type _} [EuclideanPlane P]
 -- should be stated use mod 2pi first, then back to pi or -pi
 
-theorem ang_eq_ang_of_toDir_eq_toDir {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = ang₂.start_ray.toDir) (he : ang₁.end_ray.toDir = ang₂.end_ray.toDir) : ang₁.value = ang₂.value := sorry
-
-theorem start_ray_toDir_eq_toDir_of_ang_eq_ang {ang₁ ang₂ : Angle P} (hs : ang₁.end_ray.toDir = ang₂.end_ray.toDir) (h : ang₁.value = ang₂.value) : ang₁.start_ray.toDir = ang₂.start_ray.toDir := sorry
-
-theorem end_ray_toDir_eq_toDir_of_ang_eq_ang {ang₁ ang₂ : Angle P} (hs : ang₁.start_ray.toDir = ang₂.start_ray.toDir) (h : ang₁.value = ang₂.value) : ang₁.end_ray.toDir = ang₂.end_ray.toDir := sorry
-
--- theorem discuss all possible case of end/start.toDir = +- end/start.toDir
--- `do we need construction of OppositeAng?`
-
-structure IsOppositeAng (ang₁ ang₂ : Angle P) : Prop where
-  start_ray : ang₁.start_ray = ang₂.start_ray.reverse
-  end_ray : ang₁.end_ray = ang₂.end_ray.reverse
+def IsOppoAng (ang₁ ang₂ : Angle P) : Prop := ang₁ = ang₂.oppo
 
 structure IsCorrespondingAng (ang₁ ang₂ : Angle P) : Prop where
-  start_ray : ang₁.start_ray.toDir = ang₂.start_ray.toDir
-  end_ray : ang₁.end_ray.toDirLine = ang₂.end_ray.toDirLine
+  start_ray : ang₁.dir₁ = ang₂.dir₁
+  end_ray : ang₁.end_dirLine = ang₂.end_dirLine
 
 structure IsConsecutiveIntAng (ang₁ ang₂ : Angle P) : Prop where
-  start_ray : ang₁.start_ray.toDir = ang₂.start_ray.toDir
-  end_ray : ang₁.end_ray.toDirLine = ang₂.end_ray.toDirLine.reverse
+  start_ray : ang₁.dir₁ = ang₂.dir₁
+  end_ray : ang₁.end_dirLine = ang₂.end_dirLine.reverse
 
 structure IsAlternateIntAng (ang₁ ang₂ : Angle P) : Prop where
-  start_ray : ang₁.start_ray.toDir = - ang₂.start_ray.toDir
-  end_ray : ang₁.end_ray.toDirLine = ang₂.end_ray.toDirLine.reverse
+  start_ray : ang₁.dir₁ = - ang₂.dir₁
+  end_ray : ang₁.end_dirLine = ang₂.end_dirLine.reverse
 
-theorem IsOppositeAng.symm {ang₁ ang₂ : Angle P} : IsOppositeAng ang₁ ang₂ → IsOppositeAng ang₂ ang₁ := sorry
+theorem IsOppoAng.symm {ang₁ ang₂ : Angle P} : IsOppoAng ang₁ ang₂ → IsOppoAng ang₂ ang₁ := sorry
 
 theorem IsCorrespondingAng.symm {ang₁ ang₂ : Angle P} : IsCorrespondingAng ang₁ ang₂ → IsCorrespondingAng ang₂ ang₁ := sorry
 
@@ -96,7 +77,7 @@ theorem IsConsecutiveIntAng.symm {ang₁ ang₂ : Angle P} : IsConsecutiveIntAng
 
 theorem IsAlternateIntAng.symm {ang₁ ang₂ : Angle P} : IsAlternateIntAng ang₁ ang₂ → IsAlternateIntAng ang₂ ang₁ := sorry
 
-theorem value_eq_of_isoppositeang {ang₁ ang₂ : Angle P} (h : IsOppositeAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
+theorem value_eq_of_isoppoang {ang₁ ang₂ : Angle P} (h : IsOppoAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
 
 theorem value_eq_of_iscorrespondingang {ang₁ ang₂ : Angle P} (h : IsCorrespondingAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
 

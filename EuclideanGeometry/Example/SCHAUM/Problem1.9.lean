@@ -9,6 +9,8 @@ namespace Schaum
 
 namespace Problem1_9
 
+open Angle
+
 /-
 Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$. Let $E$ be a point on the extension of $BA$.Let X be a point on the ray through $A$ with the same direction to $\vec{BC}$.
 
@@ -113,7 +115,7 @@ Therefore, $\angle EAX = \angle ABC = - \angle ACB = \angle XAC$.
   calc
   ∠ e.E e.A e.X e.E_ne_A e.X_ne_A
   -- As $AE$ has the same direction as $BA$ and that $AX$ has the same direction as $BC$, we know that $\angle EAX = \angle ABC$,
-  _= ∠ e.A e.B e.C e.B_ne_A.symm e.C_ne_B := ang_eq_ang_of_toDir_eq_toDir dir_AE_eq_dir_BA dir_AX_eq_dir_BC
+  _= ∠ e.A e.B e.C e.B_ne_A.symm e.C_ne_B := value_eq_of_dir_eq dir_AE_eq_dir_BA dir_AX_eq_dir_BC
   -- $\angle ABC = - \angle CBA$ by symmetry,
   _= - ∠ e.C e.B e.A e.C_ne_B e.B_ne_A.symm := by exact neg_value_of_rev_ang e.B_ne_A.symm e.C_ne_B
   -- $ - \angle CBA = - \angle ACB$ because $\angle CBA = \angle ACB$ in the isoceles triangle $ABC$,

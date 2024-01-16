@@ -418,9 +418,9 @@ theorem angle₁_neg_iff_not_cclock : ¬ tr_nd.is_cclock ↔ tr_nd.angle₁.valu
   simp only [negcc, not_not]
   have negval : tr_nd.angle₁.value = -tr_nd.flip_vertices.angle₁.value := by
     calc
-      tr_nd.angle₁.value = ∠ tr_nd.point₂ tr_nd.point₁ tr_nd.point₃ := by rfl
-      _= -∠ tr_nd.point₃ tr_nd.point₁ tr_nd.point₂ := by exact neg_value_of_rev_ang
-      _= -tr_nd.flip_vertices.angle₁.value := by rfl
+      tr_nd.angle₁.value = ∠ tr_nd.point₂ tr_nd.point₁ tr_nd.point₃ := rfl
+      _ = -∠ tr_nd.point₃ tr_nd.point₁ tr_nd.point₂ := Angle.neg_value_of_rev_ang
+      _ = -tr_nd.flip_vertices.angle₁.value := rfl
   have h : tr_nd.angle₁.value.IsNeg = tr_nd.flip_vertices.angle₁.value.IsPos := by
     simp only [negval, neg_isNeg_iff_isPos]
   simp only [h]

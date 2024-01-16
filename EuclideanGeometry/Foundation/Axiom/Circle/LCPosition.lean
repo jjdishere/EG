@@ -69,7 +69,7 @@ lemma dist_pt_line_ineq {l : DirLine P} {ω : Circle P} (h : DirLine.IsIntersect
     rw [abs_of_nonneg, abs_of_pos]
     exact this
     exact ω.rad_pos
-    exact length_nonneg
+    exact Seg.length_nonneg
   linarith
 
 def Inxpts {l : DirLine P} {ω : Circle P} (_h : DirLine.IsIntersected l ω) : DirLCInxpts P where
@@ -165,8 +165,7 @@ theorem inx_pts_same_iff_tangent {l : DirLine P} {ω : Circle P} (h : DirLine.Is
         apply dist_pt_line_ineq h
       apply (sq_eq_sq _ _).mp
       linarith
-      unfold dist_pt_line
-      exact length_nonneg
+      exact Seg.length_nonneg
       apply le_iff_lt_or_eq.mpr
       left; exact ω.rad_pos
     exfalso

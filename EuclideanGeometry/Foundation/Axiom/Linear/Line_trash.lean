@@ -5,22 +5,12 @@ namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
 
-theorem ne_source_of_lies_int_seg_nd (A B C : P) [hne : PtNe B A] (h : C LiesInt (SEG_nd A B)) : C ≠ A := by sorry
-
-theorem ne_source_of_lies_int_seg (A B C : P) (h2 : C LiesInt (SEG A B)) : C ≠ A := by sorry
-
-theorem eq_todir_of_lies_int_seg_nd (A B C : P) [hne : PtNe B A] (h : C LiesInt (SEG A B)) : (SEG_nd A B).toDir = (SEG_nd A C (ne_source_of_lies_int_seg_nd A B C h)).toDir := by sorry
-
-theorem lies_int_seg_nd_of_lies_int_seg (A B C : P) [hne : PtNe B A] (h : C LiesInt (SEG A B)) : C LiesInt (SEG_nd A B) := by sorry
-
-theorem lies_on_seg_nd_of_lies_on_seg (A B C : P) [hne : PtNe B A] (h : C LiesOn (SEG A B)) : C LiesOn (SEG_nd A B) := by sorry
-
 theorem same_dist_eq_or_eq_neg {A B C : P} [hne : PtNe B A] (h : C LiesOn (LIN A B)) (heq : dist A C = dist A B) : (C = B) ∨ (VEC A C = VEC B A) := by
   have : LIN A B = (RAY A B).toLine := rfl
   rw [this] at h
   rcases Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev.mp h with h | h
   · left; apply (eq_iff_vec_eq_zero _ _).mpr
-    have : VEC A C = (dist A C) • (RAY A B).2.unitVec := Ray.lieson_eq_dist h
+    have : VEC A C = (dist A C) • (RAY A B).2.unitVec := Ray.vec_eq_dist_smul_toDir_of_lies_on h
     calc
       _ = VEC A C - VEC A B := by rw [vec_sub_vec]
       _ = (dist A B) • (RAY A B).2.unitVec - VEC A B := by rw [this, heq]
@@ -33,7 +23,7 @@ theorem same_dist_eq_or_eq_neg {A B C : P} [hne : PtNe B A] (h : C LiesOn (LIN A
         rfl
   right
   calc
-    _ = (dist A C) • (RAY A B).reverse.2.unitVec := Ray.lieson_eq_dist h
+    _ = (dist A C) • (RAY A B).reverse.2.unitVec := Ray.vec_eq_dist_smul_toDir_of_lies_on h
     _ = (dist A C) • (- (VEC_nd A B).toDir.unitVec) := by simp
     _ = (dist A B) • (- (VEC_nd A B).toDir.unitVec) := by rw [heq]
     _ = - (‖VEC_nd A B‖ • (VEC_nd A B).toDir.unitVec) := by
@@ -70,8 +60,7 @@ theorem midpoint_dist_eq_iff_eq_endpts {A B C : P} [hne : PtNe B C] (h : A LiesO
   rcases hh with hh | hh
   · rw [hh]
   rw [hh, dist_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
-  symm
-  apply dist_target_eq_dist_source_of_midpt (seg := (SEG B C))
+  exact ((SEG B C).dist_target_eq_dist_source_of_midpt).symm
 
 theorem midpoint_dist_gt_iff_liesout {A B C : P} [hne : PtNe B C] (h : A LiesOn (LIN B C)) : dist A (SEG B C).midpoint > dist B (SEG B C).midpoint ↔ ¬ (A LiesOn (SEG B C)) := by
   apply Iff.not_right
@@ -101,11 +90,13 @@ theorem liesint_segnd_iff_lieson_ray_reverse {A B C : P} [hne₁ : PtNe B C] [hn
 theorem not_lies_on_segnd_iff_lieson_ray {A B C : P} [hne₁ : PtNe B C] [hne₂ : PtNe A B] (h : A LiesOn (LIN B C)) : ¬ (A LiesOn (SEG B C)) ↔ C LiesOn (RAY A B) := sorry
 
 --Guan Nailin
-theorem ne_vertex_of_lies_int_seg_nd {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (A ≠ seg_nd.source) ∧ (A ≠ seg_nd.target) := by sorry
-theorem eq_toDir_of_source_to_pt_lies_int {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd seg_nd.source A (ne_vertex_of_lies_int_seg_nd h).1).toDir = seg_nd.toDir := by sorry
-theorem eq_toDirLine_of_source_to_pt_lies_int {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd seg_nd.source A (ne_vertex_of_lies_int_seg_nd h).1).toDirLine = seg_nd.toDirLine := by sorry
-theorem eq_toDir_of_pt_lies_int_to_target {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target (ne_vertex_of_lies_int_seg_nd h).2.symm).toDir = seg_nd.toDir := by sorry
-theorem eq_toDirLine_of_pt_lies_int_to_target {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target (ne_vertex_of_lies_int_seg_nd h).2.symm).toDirLine = seg_nd.toDirLine := by sorry
+theorem eq_toDir_of_source_to_pt_lies_int {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd seg_nd.source A h.ne_source).toDir = seg_nd.toDir := by sorry
+
+theorem eq_toDirLine_of_source_to_pt_lies_int {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd seg_nd.source A h.ne_source).toDirLine = seg_nd.toDirLine := by sorry
+
+theorem eq_toDir_of_pt_lies_int_to_target {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target h.ne_target.symm).toDir = seg_nd.toDir := by sorry
+
+theorem eq_toDirLine_of_pt_lies_int_to_target {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target h.ne_target.symm).toDirLine = seg_nd.toDirLine := by sorry
 
 --Guan Nailin
 theorem every_pt_onLine_exist_rep (A : P) (l : Line P) (ha : A LiesOn l) : ∃ ray : Ray P , (ray.source = A) ∧ (ray.toLine = l) := by

@@ -84,10 +84,8 @@ theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge
     rw [sin_pos_iff_isPos] at h3
     exact h3
   rw [wedge_eq_length_mul_length_mul_sin (bnea := ⟨(ne_of_not_colinear nd).2.2⟩) (cnea := ⟨(ne_of_not_colinear nd).2.1.symm⟩)]
-  intro h0
-  have h3 : 0 < sin ((Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value) := (sin_pos_iff_isPos (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm)).mpr h0
   field_simp
-  exact h3
+  exact sin_pos_iff_isPos.mpr
 
 end wedge
 
@@ -103,12 +101,13 @@ theorem odist'_eq_zero_iff_exist_real_vec_eq_smul {A : P} {ray : Ray P} : odist'
 
 theorem odist'_eq_length_mul_sin (A : P) (ray : Ray P) [h : PtNe A ray.source] : odist' A ray = (SEG ray.source A).length * sin ((Angle.mk_ray_pt ray A h.out).value) := by
   rw [odist',Angle.value]
-  have h0 : (Angle.mk_ray_pt ray A h.out).value = VecND.angle ray.2.unitVecND (VEC_nd ray.source A) := angle_value_eq_angle A ray
   have h2 : (VEC_nd ray.source A).1 = VEC ray.source A := rfl
-  have h3 : ‖ray.toDir.unitVecND‖ = 1 := by simp
+  have h3 : ‖ray.toDir.unitVecND‖ = 1 := by rw [Dir.norm_unitVecND]
   have h4 : (SEG ray.source A).length = ‖VEC_nd ray.source A‖ := Seg.length_eq_norm_toVec
-  rw [← h2, ← VecND.norm_mul_sin ray.2.unitVecND (VEC_nd ray.source A),h3,h4,← h0]
-  ring_nf
+  rw [← h2, ← VecND.norm_mul_sin ray.2.unitVecND (VEC_nd ray.source A), h3, h4, one_mul]
+  simp only [mk_ray_pt_dir₂, mk_ray_pt_dir₁, mul_eq_mul_left_iff, VecND.norm_ne_zero, or_false]
+  congr
+  nth_rw 2 [← Dir.unitVecND_toDir ray.toDir]
   rfl
 
 theorem wedge_eq_length_mul_odist' (A B C : P) [bnea : PtNe B A] : (wedge A B C) = (SEG A B).length * odist' C (RAY A B) := by
