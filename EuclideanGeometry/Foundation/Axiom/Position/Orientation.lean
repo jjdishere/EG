@@ -418,13 +418,98 @@ theorem odist_eq_odist_of_parallel' (A B : P) (ray : Ray P) [bnea : PtNe B A] (p
   rw [add_zero] at h1
   exact h1.symm
 
-theorem odist_eq_odist_of_parallel {α} [DirFig α P] (A B : P) (df : α) [bnea : PtNe B A] (para : parallel (SEG_nd A B) df) : odist A df = odist B df := sorry
+--theorem odist_eq_odist_of_parallel {α} [DirFig α P] (A B : P) (df : α) [bnea : PtNe B A] (para : parallel (SEG_nd A B) df) : odist A df = odist B df := sorry
 
-theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : (parallel (SEG_nd A B) (SEG_nd C D)) ↔ wedge A B C = wedge A B D := sorry
+theorem odist_eq_odist_iff_parallel_ne {α} [DirFig α P] (A B : P) (df : α) [bnea : PtNe B A] : (parallel (SEG_nd A B) df) ↔ odist A df = odist B df := by
+  have coer1 : (parallel (SEG_nd A B) df) = (parallel (SEG_nd A B) (toDirLine df)) := by
+    unfold parallel
+    have : toProj df = toProj (toDirLine df) := by
+      simp only [← DirObj.toDir_toProj_eq_toProj]
+      congr
+      apply DirFig.toDirLine_toDir_eq_toDir.symm
+    simp only [this]
+  have coer2 : (odist A df = odist B df) = (odist A (toDirLine df) = odist B (toDirLine df)) := by
+    have a : odist A df = odist A (toDirLine df) := by rfl
+    have b : odist B df = odist B (toDirLine df) := by rfl
+    simp only [a,b]
+  simp only [coer1,coer2]
+  rcases (Quotient.exists_rep (toDirLine df)) with ⟨ray , h0⟩
+  simp only [← h0]
+  show SEG_nd A B ∥ ray ↔ odist A ray = odist B ray
+  have h : (odist A ray = odist B ray) = (Vec.det ray.toDir.unitVecND (VEC_nd A B) = 0) := by
+    unfold odist
+    unfold odist'
+    show ((Vec.det ray.toDir.unitVecND) (VEC ray.source A) = Vec.det ray.toDir.unitVecND (VEC ray.source B)) = (Vec.det ray.toDir.unitVecND (VEC_nd A B) = 0)
+    have : Vec.det ray.toDir.unitVecND (VEC_nd A B) =Vec.det ray.toDir.unitVecND (VEC ray.source B) - Vec.det ray.toDir.unitVecND (VEC ray.source A):= by
+      calc
+        _= Vec.det ray.toDir.unitVecND (VEC A ray.source + VEC ray.source B):= by simp
+        _= Vec.det ray.toDir.unitVecND (VEC A ray.source) + Vec.det ray.toDir.unitVecND (VEC ray.source B) := by
+          apply LinearMap.map_add
+        _= -Vec.det ray.toDir.unitVecND (VEC ray.source A) + Vec.det ray.toDir.unitVecND (VEC ray.source B) := by
+          simp only [ne_eq, Dir.coe_unitVecND, add_left_inj]
+          calc
+            _=Vec.det ray.toDir.unitVec (-(VEC ray.source A)) := by simp
+            _=_ := by simp only [LinearMap.map_neg]
+        _=_ := by ring
+    simp only  [this]
+    simp only [eq_iff_iff]
+    constructor
+    · intro p
+      simp [p]
+    · intro p
+      symm
+      calc
+        _= ((Vec.det ↑ray.toDir.unitVecND) (VEC ray.source B) - (Vec.det ↑ray.toDir.unitVecND) (VEC ray.source A)) + (Vec.det ↑ray.toDir.unitVecND) (VEC ray.source A) := by ring
+        _=_ := by simp only [ne_eq, Dir.coe_unitVecND, p, zero_add]
+  have h' : (Vec.det ray.toDir.unitVecND (VEC_nd A B) = 0) = (ray.toDir.unitVecND.toProj = (VEC_nd A B).toProj) := by
+    simp only [eq_iff_iff]
+    exact VecND.det_eq_zero_iff_toProj_eq_toProj (u := ray.toDir.unitVecND) (v := VEC_nd A B)
+  simp only [h,h']
+  unfold parallel
+  have : toProj (SEG_nd A B) = (VEC_nd A B).toProj := by rfl
+  constructor
+  · intro p
+    simp only [this] at p
+    simp only [p]
+    simp only [Dir.unitVecND_toProj]
+    rfl
+  · intro p
+    simp only [this,←p]
+    simp only [Dir.unitVecND_toProj]
+    rfl
 
-theorem odist_eq_odist_iff_parallel_ne {α} [DirFig α P] (A B : P) (df : α) [bnea : PtNe B A] : (parallel (SEG_nd A B) df) ↔ odist A df = odist B df := sorry
+theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : (parallel (SEG_nd A B) (SEG_nd C D)) ↔ wedge A B C = wedge A B D := by
+  have : (wedge A B C = wedge A B D) = (odist C (SEG_nd A B) = odist D (SEG_nd A B)) := by
+    symm
+    simp only [eq_iff_iff]
+    exact wedge_eq_wedge_iff_odist_eq_odist_of_ne A B C D
+  simp only [this]
+  have : (parallel (SEG_nd A B) (SEG_nd C D)) = (parallel (SEG_nd C D) (SEG_nd A B)) := by
+    unfold parallel
+    simp only [eq_iff_iff]
+    constructor
+    · intro P
+      exact P.symm
+    · intro P
+      exact P.symm
+  simp only [this]
+  exact odist_eq_odist_iff_parallel_ne C D (SEG_nd A B)
 
-theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : (parallel (SEG_nd A B) (SEG_nd C D)) ↔ oarea A B C = oarea A B D := sorry
+theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : (parallel (SEG_nd A B) (SEG_nd C D)) ↔ oarea A B C = oarea A B D := by
+  unfold oarea
+  have : (wedge A B C / 2 = wedge A B D / 2) = (wedge A B C = wedge A B D) := by
+    simp only [eq_iff_iff]
+    constructor
+    · intro P
+      calc
+        _= wedge A B C /2 *2 := by simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+          div_mul_cancel]
+        _= wedge A B D /2 *2 := by simp only [P]
+        _=_ := by simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, div_mul_cancel]
+    · intro P
+      simp only [P]
+  simp only [this]
+  exact wedge_eq_wedge_iff_parallel_of_ne_ne A B C D
 
 end cooperation_with_parallel
 
@@ -437,12 +522,13 @@ theorem same_sign_of_parallel (A B : P) (ray : Ray P) [bnea : PtNe B A] (para : 
   unfold odist_sign
   rw [odist_eq_odist_of_parallel' A B ray para]
 
+--Is discussed with IsOnSameSide only except odist_sign = 0
 theorem same_odist_sign_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l = odist_sign B l) : ∀ (C : P) , Seg.IsOn C (SEG A B) → odist_sign C l = odist_sign A l := sorry
 
---should be discussed with relative side
-theorem no_intersect_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l * odist_sign B l = 1) : ∀ (C : P) , Seg.IsOn C (SEG A B) → ¬ Line.IsOn C l := sorry
+--Is discussed with relative side
+--theorem no_intersect_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l * odist_sign B l = 1) : ∀ (C : P) , Seg.IsOn C (SEG A B) → ¬ Line.IsOn C l := sorry
 
-theorem intersect_of_diff_odist_sign (A B : P) (l : DirLine P) (signdiff : odist_sign A l * odist_sign B l = -1) : ∃ (C : P), Seg.IsOn C (SEG A B) ∧ Line.IsOn C l := sorry
+--theorem intersect_of_diff_odist_sign (A B : P) (l : DirLine P) (signdiff : odist_sign A l * odist_sign B l = -1) : ∃ (C : P), Seg.IsOn C (SEG A B) ∧ Line.IsOn C l := sorry
 
 /-
 --this is proven later after relative side and stronger
