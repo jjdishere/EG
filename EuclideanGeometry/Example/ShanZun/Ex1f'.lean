@@ -13,19 +13,29 @@ Let $E$ be a point on the extension of $BA$ and $D$ a point on the extension of 
 such that $AE = BD$, connect $CE,DE$
 Prove that $CE = DE$ -/
 
+structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
 -- Let $\triangle ABC$ be a regular triangle
-variable {A B C : P} {hnd : ¬ colinear A B C} {hreg : (▵ A B C).IsRegular}
+  A : Plane
+  B : Plane
+  C : Plane
+  hnd : ¬ colinear A B C
+  hreg : (▵ A B C).IsRegular
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma A_ne_B : A ≠ B := sorry
-lemma B_ne_C : B ≠ C := sorry
-lemma C_ne_A : C ≠ A := sorry
+instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_colinear e.hnd).2.2.symm⟩
+instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_colinear e.hnd).1.symm⟩
+instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_colinear e.hnd).2.1.symm⟩
+
+structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
 -- Let $E$ be a point on the extension of $BA$ and $D$ a point on the extension of $BC$
-variable {D E : P} {hd : D LiesInt (SEG_nd B C B_ne_C.symm).extension} {he : E LiesInt (SEG_nd B A A_ne_B).extension}
+  D : Plane
+  E : Plane
+  hd : D LiesInt (SEG_nd B C).extension
+  he : E LiesInt (SEG_nd B A).extension
 -- We have $AE = BD$
-variable {h : (SEG A E).length = (SEG B D).length}
+  h : (SEG A E).length = (SEG B D).length
 
 -- Theorem : $CE = DE$
-theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
+theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (SEG e.C e.E).length = (SEG e.D e.E).length := by
 /-
   Extend $BD$ to $F$ such that $DF = BC$.
   Then $BF = BD + DF = AE + AB = BE$, and $\angle FBE = 60^{\circ}$  or $-60^{\circ}$.
@@ -33,125 +43,119 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
   Thus $\triangle BEC$ is anti-congruence to $\triangle FED$ by SAS.
   Therefore $CE = DE$
 -/
-  have : PtNe C B := ⟨ B_ne_C.symm ⟩
   -- Claim: $D \ne B$, $E \ne B$
-  have D_ne_B : D ≠ B := sorry
-  have E_ne_B : E ≠ B := sorry
+  haveI D_ne_B : PtNe e.D e.B := sorry
+  haveI E_ne_B : PtNe e.E e.B := sorry
   -- Extend $BD$ to $F$ such that $DF = CB$
-  let F := Ray.extpoint (SEG_nd B D D_ne_B).extension (SEG B C).length
-  have DF_eq_CB : (SEG D F).length = (SEG C B).length := by
+  let e.F := Ray.extpoint (SEG_nd e.B e.D).extension (SEG e.B e.C).length
+  have DF_eq_CB : (SEG e.D e.F).length = (SEG e.C e.B).length := by
     calc
       -- $DF = BC$ from above
-      _ = (SEG B C).length := by
-        apply seg_length_eq_dist_of_extpoint (SEG_nd B D D_ne_B).extension
+      _ = (SEG e.B e.C).length := by
+        apply seg_length_eq_dist_of_extpoint (SEG_nd e.B e.D).extension
         simp
         exact length_nonneg
       -- $BC = CB$ by symmetry
-      _ = (SEG C B).length := by
+      _ = (SEG e.C e.B).length := by
         simp only [length_of_rev_eq_length']
   -- Claim: $F \ne B$, $D \ne F$, $E \ne F$
-  have F_ne_B : F ≠ B := sorry
-  have D_ne_F : D ≠ F := sorry
-  have E_ne_F : E ≠ F := sorry
+  haveI F_ne_B : PtNe e.F e.B := sorry
+  haveI D_ne_F : PtNe e.D e.F := sorry
+  haveI E_ne_F : PtNe e.E e.F := sorry
   -- $F$ lies in extension of $BD$
-  have F_int_BD_extn : F LiesInt (SEG_nd B D D_ne_B).extension := by
-    apply lies_int_of_pos_extpoint (r := (SEG B C).length)
+  have F_int_BD_extn : e.F LiesInt (SEG_nd e.B e.D).extension := by
+    apply lies_int_of_pos_extpoint (r := (SEG e.B e.C).length)
     simp
     intro hh
     rw [length_pos_iff_nd]
-    exact B_ne_C
-  -- $D$ lies on $BF$
-  have D_on_BF : D LiesOn (SEG_nd B F F_ne_B) := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn F_int_BD_extn)
-  -- $C$ lies on $BF$
-  have C_on_BF : C LiesOn (SEG_nd B F F_ne_B) := sorry
-  -- $A$ lies on $BE$
-  have A_on_BE : A LiesOn (SEG_nd B E E_ne_B) := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn he)
-  -- $F$ lies on ray $BC$
-  have F_on_ray_BC : C LiesOn (SEG_nd B F F_ne_B).toRay := SegND.lies_on_toRay_of_lies_on C_on_BF
-  -- $E$ lies on ray $BA$
-  have E_on_ray_BA : A LiesOn (SEG_nd B E E_ne_B).toRay := SegND.lies_on_toRay_of_lies_on A_on_BE
+    -- exact B_ne_C
+    sorry
+    --这里要用instance的B≠C推线段BC非退化，好像不能直接exact
+  -- $D$ lies on $BF$ because $F$ lies on extension of $BD$
+  have D_on_BF : e.D LiesOn (SEG_nd e.B e.F) :=  SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn F_int_BD_extn)
+  -- $C$ lies on $BF$ because $C$ lies on $BD$ and $D$ lies on $BF$
+  have C_on_BF : e.C LiesOn (SEG_nd e.B e.F) := sorry
+  -- $A$ lies on $BE$ because $E$ lies on exxtension of $BA$
+  have A_on_BE : e.A LiesOn (SEG_nd e.B e.E) := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn e.he)
+  -- $F$ lies on ray $BC$ because $C$ lies on $BF$
+  have C_on_ray_BF : e.C LiesOn (RAY e.B e.F) := SegND.lies_on_toRay_of_lies_on C_on_BF
+  -- $E$ lies on ray $BA$ because $A$ lies on $BE$
+  have A_on_ray_BE : e.A LiesOn (RAY e.B e.E) := SegND.lies_on_toRay_of_lies_on A_on_BE
   -- $BF = BD + DF = AE + AB = BE$
-  have BF_eq_BE : (SEG B F).length = (SEG B E).length := by
+  have BF_eq_BE : (SEG e.B e.F).length = (SEG e.B e.E).length := by
     calc
-      -- $BF = BD + DF$
-      _ = (SEG B D).length + (SEG D F).length := by
+      -- $BF = BD + DF$ because $D$ lies on $BF$
+      _ = (SEG e.B e.D).length + (SEG e.D e.F).length := by
         exact length_eq_length_add_length D_on_BF
-      -- $BD + DF = BD + BC$
-      _ = (SEG B D).length + (SEG B C).length := by
+      -- $BD + DF = BD + BC$ because $DF = BC$ by the construction of $F$
+      _ = (SEG e.B e.D).length + (SEG e.B e.C).length := by
         simp only [length_of_rev_eq_length', DF_eq_CB]
-      -- $BD + BC = AE + BC$
-      _ = (SEG A E).length + (SEG B C).length := by rw [h]
-      -- $AE + BC = AE + AB$
-      _ = (SEG A E).length + (SEG A B).length := by
-        -- $AB = BC$ by $\triangle ABC$ is regular
-        have AB_eq_BC : (SEG B C).length = (SEG A B).length := hreg.2
+      -- $BD + BC = AE + BC$ because $BD = AE$
+      _ = (SEG e.A e.E).length + (SEG e.B e.C).length := by rw [e.h]
+      -- $AE + BC = AE + AB$ because $BC = AB$ by $\triangle ABC$ is regular
+      _ = (SEG e.A e.E).length + (SEG e.A e.B).length := by
+        have AB_eq_BC : (SEG e.B e.C).length = (SEG e.A e.B).length := e.hreg.2
         rw[AB_eq_BC]
       -- $AE + AB = BA + AE$ by symmetry
-      _ = (SEG B A).length + (SEG A E).length := by
+      _ = (SEG e.B e.A).length + (SEG e.A e.E).length := by
         simp only [length_of_rev_eq_length', add_comm]
-      -- $BA + AE = BE$
-      _ = (SEG B E).length := by
+      -- $BA + AE = BE$ because $A$ lies on $BE$
+      _ = (SEG e.B e.E).length := by
         exact (length_eq_length_add_length A_on_BE).symm
-  have C_ne_B : C ≠ B := B_ne_C.symm
-  -- $\angle EBF = \angle ABC$
-
-  have ang₁ : ∠ F B E F_ne_B E_ne_B = ∠ C B A C_ne_B A_ne_B := sorry
-    apply Angle.value_eq_of_lies_on_ray_pt_pt
-
-    --apply Angle.value_eq_of_lies_on_ray_pt_pt
-    --constructor
-    --exact SegND.lies_on_toRay_of_lies_on c_lies_on_bf
-    --exact B_ne_C.symm
-    --constructor
-    --exact SegND.lies_on_toRay_of_lies_on a_lies_on_be
-    --exact a_ne_b
-
-    --  apply SegND.lies_on_toRay_of_lies_on
-    --  exact C_on_BF
-
-  -- $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
-  have ang_EBF_eq_sixty : ∠ F B E F_ne_B E_ne_B = ↑ (π / 3) ∨  ∠ F B E F_ne_B E_ne_B = ↑ (- π / 3) := by
-    by_cases h₁ : (TRI_nd A B C hnd).is_cclock
-    have sixty₁ : ∠ C B A A_ne_B B_ne_C.symm = ↑ (π / 3) := (ang_eq_sixty_deg_of_cclock_regular_tri (TRI_nd A B C hnd) h₁ hreg).2.1
-    rw[← ang₁] at sixty₁
+  -- $\angle EBF = \angle ABC$ because they are the same angle
+  have ang_EBF_eq_ang_ABC : ∠ e.F e.B e.E = ∠ e.C e.B e.A := (Angle.value_eq_of_lies_on_ray_pt_pt C_on_ray_BF A_on_ray_BE).symm
+  -- $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$ because $\angle FBE = -\angle EBF = -\angle ABC$
+  have ang_EBF_eq_sixty : ∠ e.F e.B e.E = ↑ (π / 3) ∨  ∠ e.F e.B e.E = ↑ (- π / 3) := by
+    by_cases h₁ : (TRI_nd e.A e.B e.C e.hnd).is_cclock
+    have sixty₁ : ∠ e.C e.B e.A = ↑ (π / 3) := (ang_eq_sixty_deg_of_cclock_regular_tri (TRI_nd e.A e.B e.C e.hnd) h₁ e.hreg).2.1
+    rw[← ang_EBF_eq_ang_ABC] at sixty₁
     left
     exact sixty₁
-    have sixty₂ : ∠ C B A A_ne_B B_ne_C.symm = ↑ (- π / 3) := (ang_eq_sixty_deg_of_acclock_regular_tri (TRI_nd A B C hnd) h₁ hreg).2.1
-    rw[← ang₁] at sixty₂
+    have sixty₂ : ∠ e.C e.B e.A = ↑ (- π / 3) := (ang_eq_sixty_deg_of_acclock_regular_tri (TRI_nd e.A e.B e.C e.hnd) h₁ e.hreg).2.1
+    rw[← ang_EBF_eq_ang_ABC] at sixty₂
     right
     exact sixty₂
-  -- $BFE$ is not colinear
-  have BFE_not_colinear : ¬ colinear B F E := sorry
-  -- $\triangle BFE$ is regular
-  have BFE_is_regular : (TRI_nd B F E BFE_not_colinear).1.IsRegular := by
+  -- $BFE$ is not colinear because $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
+  have BFE_not_colinear : ¬ colinear e.B e.F e.E := sorry
+  have BEF_not_colinear : ¬ colinear e.B e.E e.F := sorry
+  -- $\triangle BFE$ is regular because $BF = EB$ and $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
+  have BFE_is_regular : (TRI_nd e.B e.F e.E BFE_not_colinear).1.IsRegular := by
     apply regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg
     exact ang_EBF_eq_sixty
-    rw[← Seg.length_of_rev_eq_length (seg := (SEG B E))] at BF_eq_BE
+    rw[← Seg.length_of_rev_eq_length (seg := (SEG e.B e.E))] at BF_eq_BE
     exact BF_eq_BE.symm
-  -- $\angle EBC = - \angle EFD$ because $\triangle BFE$ is regular
-  -- 下面两个sorry留下的是很烦的相同射线推相同角度
-  have ang_EBC_eq_neg_ang_EFD : ∠ E B C E_ne_B B_ne_C.symm = - ∠ E F D E_ne_F D_ne_F := by
+-- $\angle EBC = - \angle EFD$ because $\triangle BFE$ is regular
+  -- 下面1,3sorry留下的是很烦的相同射线推相同角度,第二个sorry需要x=y推出-x=-y
+  have ang_EBC_eq_neg_ang_EFD : ∠ e.E e.B e.C = - ∠ e.E e.F e.D := by
     calc
-    _ = - ∠ F B E F_ne_B E_ne_B := sorry
-    _ = - ∠ E F B E_ne_F F_ne_B.symm := sorry
-    --((regular_tri_iff_eq_angle_of_nd_tri (TRI_nd B F E BFE_not_colinear)).mp BFE_is_regular).1.symm
-    _ = - ∠ E F D E_ne_F D_ne_F := sorry
+    --$\angle EBC = \ange EBF$ because they are the same angle
+    _ = ∠ e.E e.B e.F := by
+      have E_on_ray_BE : e.E LiesOn (SEG_nd e.B e.E).toRay := SegND.lies_on_toRay_of_lies_on SegND.target_lies_on
+      apply Angle.value_eq_of_lies_on_ray_pt_pt
+      exact E_on_ray_BE
+      exact C_on_ray_BF
+    --$\angle EBF = \ange BFE$ because $\triangle BFE$ is regular
+    _ = ∠ e.B e.F e.E := sorry
+    --下面这行证明的是∠ FBE = ∠ EFB, 要转化到这个反过来的我好像还没找到那个定理（就是∠ XYZ = - ∠ ZYX）
+    --exact ((regular_tri_iff_eq_angle_of_nd_tri (TRI_nd e.B e.F e.E BFE_not_colinear)).mp BFE_is_regular).1.symm
+    _ = ∠ e.D e.F e.E := sorry
+    _ = - ∠ e.E e.F e.D := sorry
   -- $FE = BE$ because $\triangle BFE$ is regular
-  have FE_eq_BE : (SEG F E).length = (SEG B E).length := by
+  have FE_eq_BE : (SEG e.F e.E).length = (SEG e.B e.E).length := by
     calc
     -- $FE = EB$ because $\triangle BFE$ is regular
-    _ = (SEG E B).length := by
+    _ = (SEG e.E e.B).length := by
       exact BFE_is_regular.1
     -- $EB = BE$ by symmetry
-    _ = (SEG B E).length := by
+    _ = (SEG e.B e.E).length := by
       simp only [length_of_rev_eq_length']
   -- $BEC$ is not colinear and $FED$ is not colinear
-  have BEC_not_colinear : ¬ colinear B E C := sorry
-  have FED_not_colinear : ¬ colinear F E D := sorry
+  have BEC_not_colinear : ¬ colinear e.B e.E e.C := sorry
+  have FED_not_colinear : ¬ colinear e.F e.E e.D := sorry
   -- $\triangle BCE$ is anti-congruence to $\triangle FDE$
-  have cong : (TRI_nd B E C BEC_not_colinear) ≅ₐ (TRI_nd F E D FED_not_colinear) := TriangleND.acongr_of_SAS DF_eq_CB.symm ang_EBC_eq_neg_ang_EFD FE_eq_BE.symm
+  have cong : (TRI_nd e.B e.E e.C BEC_not_colinear) ≅ₐ (TRI_nd e.F e.E e.D FED_not_colinear) := TriangleND.acongr_of_SAS DF_eq_CB.symm ang_EBC_eq_neg_ang_EFD FE_eq_BE.symm
   -- $EC = ED$ because $\triangle BCE \cong \triangle FDE$
-  have EC_eq_ED : (SEG E C).length = (SEG E D).length := cong.edge₁
+  have EC_eq_ED : (SEG e.E e.C).length = (SEG e.E e.D).length := cong.edge₁
   rw[length_of_rev_eq_length', EC_eq_ED]
   simp only [length_of_rev_eq_length']
 end Shan_Problem_2_11
@@ -179,7 +183,7 @@ lemma g_ne_e : G ≠ E := sorry
 variable {H : P} {hh : is_inx H (LIN D F f_ne_d) (LIN E G g_ne_e)}
 
 -- Theorem : quadrilateral $ABCH$ is parallelogram
-theorem Shan_Problem_2_22 : (QDR A B C H) IsPRG := sorry
+theorem Shan_Problem_2_22 : QDR A B C H IsPRG := sorry
 
 end Shan_Problem_2_22
 
@@ -206,13 +210,13 @@ variable {hedge : (SEG F B).length = (SEG C G).length}
 lemma f_ne_a : F ≠ A := sorry
 lemma e_ne_B : E ≠ B := sorry
 -- We have $AF \parallel BE$
-variable {hpara : (SEG_nd A F f_ne_a) ∥ (SEG_nd B E e_ne_B)}
+variable {hpara : (SegND A F f_ne_a) ∥ (SegND B E e_ne_B)}
 -- Claim: $G \ne A$ and $D \ne C$
 lemma g_ne_a : G ≠ A := sorry
 lemma d_ne_C : D ≠ C := sorry
 
 -- Theorem : $AG \parallel DC$
-theorem Shan_Problem_2_36 : (SEG_nd A G g_ne_a) ∥ (SEG_nd C D d_ne_C) := sorry
+theorem Shan_Problem_2_36 : (SegND A G g_ne_a) ∥ (SegND C D d_ne_C) := sorry
 
 end Shan_Problem_2_36
 
@@ -264,7 +268,7 @@ variable {E F : P} {he : is_inx E (ANG A D B A_ne_d B_ne_d).AngBis (SEG A B)} {h
 lemma f_ne_e : F ≠ E := sorry
 
 -- Theorem : $EF \parallel BC$
-theorem Shan_Problem_2_38 : (SEG_nd E F f_ne_e) ∥ (SEG_nd B C B_ne_C.symm) := sorry
+theorem Shan_Problem_2_38 : (SegND E F f_ne_e) ∥ (SegND B C B_ne_C.symm) := sorry
 
 end Shan_Problem_2_38
 
@@ -298,12 +302,12 @@ variable {A B C : P} {hnd : ¬ colinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
-lemma C_ne_A : C ≠ A := sorry
+lemma c_ne_a : C ≠ A := sorry
 -- $E,F$ lies on $AB$ such that $AE = FB$
 variable {E F : P} {he : E LiesInt (SEG A B)} {hf : F LiesInt (SEG A B)} {hef : (SEG A E).length = (SEG F B).length}
 -- 此处以后可能会专门加上过一个点做平行线的定义,从而更改条件的叙述
 -- $l_1,l_2$ are parallel lines to $AC$ of $E,F$ respectively
-variable {l₁ l₂ : Line P} {hl₁ : l₁ ∥ (SEG_nd A C C_ne_A) ∧ E LiesOn l₁} {hl₂ : l₂ ∥ (SEG_nd A C C_ne_A) ∧ F LiesOn l₂}
+variable {l₁ l₂ : Line P} {hl₁ : l₁ ∥ (SegND A C C_ne_A) ∧ E LiesOn l₁} {hl₂ : l₂ ∥ (SegND A C C_ne_A) ∧ F LiesOn l₂}
 -- $l_1,l_2$ intersect $BC$ at $G,H$ respectively
 variable {G H : P} {hg : is_inx G l₁ (SEG B C)} {hh : is_inx H l₂ (SEG B C)}
 
@@ -324,7 +328,7 @@ variable {m n : ℝ} {hpos : m > 0 ∧ n > 0} {hratio : (SEG A B).length / (SEG 
 -- We have line $l₁$ and points $A₁,B₁,C₁$ lies on $l₁$
 variable {l₁ : Line P} {A₁ B₁ C₁ : P} {ha₁ : A₁ LiesOn l₁} {hb₁ : B₁ LiesOn l₁} {hc₁ : C₁ LiesOn l₁}
 -- We have $A \ne A₁$, $B \ne B₁$, $C \ne C₁$ and $AA₁ \parallel BB₁ \parallel CC₁$
-variable {nea : A₁ ≠ A} {neb : B₁ ≠ B} {nec : C₁ ≠ C} {hpara₁ : (SEG_nd A A₁ nea) ∥ (SEG_nd B B₁ neb)} {hpara₂ : (SEG_nd B B₁ neb) ∥ (SEG_nd C C₁ nec)}
+variable {nea : A₁ ≠ A} {neb : B₁ ≠ B} {nec : C₁ ≠ C} {hpara₁ : (SegND A A₁ nea) ∥ (SegND B B₁ neb)} {hpara₂ : (SegND B B₁ neb) ∥ (SegND C C₁ nec)}
 
 -- Theorem : $BB₁ = \frac{n}{m+n} AA₁ + \frac{m}{m+n} CC₁$
 theorem Shan_Problem_2_44 : (SEG B B₁).length = (n / (m+n)) * (SEG A A₁).length + (m/(m+n)) * (SEG C C₁).length := sorry

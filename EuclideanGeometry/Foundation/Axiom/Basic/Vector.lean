@@ -1634,6 +1634,9 @@ instance : AddTorsor AngDValue Proj where
     induction p using Proj.ind
     simp
 
+instance instCircularOrderedAddTorsor : CircularOrderedAddTorsor AngDValue Proj :=
+  AddTorsor.CircularOrderedAddTorsor_of_CircularOrderedAddCommGroup AngDValue Proj
+
 @[pp_dot]
 def perp (p : Proj) : Proj := ∡[π / 2] +ᵥ p
 

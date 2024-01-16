@@ -28,6 +28,8 @@ Of course many definitions work on these classes already, but without necessarit
 noncomputable section
 namespace EuclidGeom
 
+open Angle
+
 /-- Class of Quadrilateral: A quadrilateral consists of four points; it is the generalized quadrilateral formed by these four points -/
 @[ext]
 structure Quadrilateral (P : Type _) [EuclideanPlane P] where

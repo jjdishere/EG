@@ -89,8 +89,8 @@ Therefore, $BD = CE$.
     -- Since $D$ lies on the extension of $BC$, we know that $\angle DBA$ is the same as $\angle CBA$.
     _= ∠ e.C e.B e.A B_ne_C.symm e.A_ne_B := by
       symm;
-      apply Angle.value_eq_of_lies_on_ray_pt_pt (e.B_ne_C.symm) e.A_ne_B D_ne_B e.A_ne_B
-      · exact lies_int_toray_of_lies_int_ext_of_seg_nd e.B e.C e.D e.B_ne_C.symm e.D_int_BC_ext
+      apply Angle.value_eq_of_lies_on_ray_pt_pt e.A_ne_B D_ne_B e.A_ne_B
+      · exact lies_int_toRay_of_lies_int_extn e.B e.C e.D e.B_ne_C.symm e.D_int_BC_ext
       · exact Ray.snd_pt_lies_int_mk_pt_pt e.B e.A e.A_ne_B
     -- In regular triangle $ABC$, $\angle CBA = \angle ACB$.
     _= ∠ e.A e.C e.B A_ne_C e.B_ne_C := by
@@ -99,7 +99,7 @@ Therefore, $BD = CE$.
     -- Since $E$ lies on the extension of $CA$, we know that $\angle BCA$ is the same as $\angle ECB$.
     _= ∠ e.E e.C e.B E_ne_C e.B_ne_C := by
       apply Angle.value_eq_of_lies_on_ray_pt_pt A_ne_C e.B_ne_C E_ne_C e.B_ne_C
-      · exact lies_int_toray_of_lies_int_ext_of_seg_nd e.C e.A e.E A_ne_C e.E_int_CA_ext
+      · exact lies_int_toRay_of_lies_int_extn e.C e.A e.E A_ne_C e.E_int_CA_ext
       · exact Ray.snd_pt_lies_int_mk_pt_pt e.C e.B e.B_ne_C
   -- We have $BD = CE$.
   have BD_eq_CE : (SEG e.B e.D).length = (SEG e.C e.E).length := by

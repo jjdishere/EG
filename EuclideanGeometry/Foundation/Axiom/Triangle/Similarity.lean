@@ -383,7 +383,7 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
       abel
     rw [<-two_smul ℕ (Angle.value tr₂.angle₁),<-two_smul ℕ _] at this
     rw [two_nsmul_coe_pi] at this
-    have nd := not_isND_iff_two_nsmul_eq_zero.mpr this
+    have nd := two_nsmul_eq_zero_iff_not_isND.mp this
     rw [cclock_of_eq_angle tr₁ tr₂ a] at cc
     exfalso
     apply nd
@@ -402,7 +402,7 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
       abel
   rw [<-two_smul ℕ (Angle.value tr₂.angle₁),<-two_smul ℕ _] at this
   rw [neg_coe_pi,two_nsmul_coe_pi] at this
-  have nd := not_isND_iff_two_nsmul_eq_zero.mpr this
+  have nd := two_nsmul_eq_zero_iff_not_isND.mp this
   rw [cclock_of_eq_angle tr₁ tr₂ a] at cc
   exfalso
   apply nd
@@ -473,7 +473,7 @@ theorem asim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
       simp only [comm,sub_self, zero_sub] at eq_zero
       rw [sub_eq_add_neg,<-neg_add] at eq_zero
       rw [<-two_smul ℕ (Angle.value tr₂.angle₁),neg_eq_zero] at eq_zero
-      have nd := not_isND_iff_two_nsmul_eq_zero.mpr eq_zero
+      have nd := two_nsmul_eq_zero_iff_not_isND.mp eq_zero
       rw [clock_of_eq_neg_angle tr₁ tr₂ a] at cc
       exfalso
       apply nd
@@ -496,7 +496,7 @@ theorem asim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
       simp only [comm,sub_self, zero_sub] at eq_zero
       rw [sub_eq_add_neg,<-neg_add] at eq_zero
       rw [<-two_smul ℕ (Angle.value tr₂.angle₁),neg_eq_zero] at eq_zero
-      have nd := not_isND_iff_two_nsmul_eq_zero.mpr eq_zero
+      have nd := two_nsmul_eq_zero_iff_not_isND.mp eq_zero
       rw [clock_of_eq_neg_angle tr₁ tr₂ a] at cc
       push_neg at cc
       exfalso
