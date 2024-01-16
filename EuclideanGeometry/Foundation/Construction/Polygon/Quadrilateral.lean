@@ -263,6 +263,15 @@ theorem Quadrilateral.isND_of_is_convex {P : Type _} [EuclideanPlane P] {qdr : Q
 
 instance {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} : Coe qdr.IsConvex qdr.IsND := {coe := Quadrilateral.isND_of_is_convex}
 
+theorem Quadrilateral.toqdr_cvx_of_cvx {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} (h : qdr_nd.IsConvex) : qdr_nd.toQuadrilateral.IsConvex := by
+  have k : qdr_nd.toQuadrilateral.IsND := qdr_nd.nd
+  have l : qdr_nd = (QDR_nd' k) := rfl
+  rw [l] at h
+  unfold Quadrilateral.IsConvex
+  simp only [k, h, dite_eq_ite, ite_true]
+
+instance {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} : Coe qdr_nd.IsConvex qdr_nd.toQuadrilateral.IsConvex := {coe := Quadrilateral.toqdr_cvx_of_cvx}
+
 theorem Quadrilateral_cvx.nd_is_convex_iff_is_convex {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : qdr_nd.IsConvex ↔ qdr_nd.toQuadrilateral.IsConvex := by
   unfold Quadrilateral.IsConvex
   simp only [qdr_nd.nd, dite_true]
@@ -294,12 +303,11 @@ scoped notation "QDR_cvx'" => Quadrilateral_cvx.mk_cvx
 
 namespace Quadrilateral_cvx
 
-def mk_is_convex {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P := mk_pt_pt_pt_pt_convex A B C D h
+-- def mk_is_convex {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P := mk_pt_pt_pt_pt_convex A B C D h
 
 /-- Given a property that a quadrilateral qdr is convex, this function returns qdr itself as an object in the class of convex quadrilateral-/
 def mk_nd_is_convex {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} (h : qdr_nd.IsConvex) : Quadrilateral_cvx P where
-  toQuadrilateral := qdr_nd.toQuadrilateral
-  nd := qdr_nd.nd
+  toQuadrilateralND := qdr_nd
   convex := h
 
 section criteria_cvx
