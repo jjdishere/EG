@@ -24,8 +24,8 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   -- $A, E$ do not lie on $l$.
   A : Plane
   E : Plane
-  ABC_nd : ¬colinear A B C
-  EDF_nd : ¬colinear E D F
+  ABC_nd : ¬collinear A B C
+  EDF_nd : ¬collinear E D F
   -- need A and E be at the same side of l!!
   A_side : IsOnLeftSide A (SEG_nd B F)
   E_side : IsOnLeftSide E (SEG_nd B F)
@@ -34,18 +34,18 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   -- $BC = DE$
   h₂ : (SEG B C).length = (SEG D E).length
 attribute [instance] Setting1.B_ne_F
-lemma hnd₁ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ colinear e.B e.A e.C := by
-  apply flip_colinear_fst_snd.mt
+lemma hnd₁ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ collinear e.B e.A e.C := by
+  apply flip_collinear_fst_snd.mt
   exact e.ABC_nd
-lemma hnd₂ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ colinear e.D e.F e.E := by
-  apply perm_colinear_trd_fst_snd.mt
+lemma hnd₂ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ collinear e.D e.F e.E := by
+  apply perm_collinear_trd_fst_snd.mt
   exact e.EDF_nd
-instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.A e.B := ⟨(ne_of_not_colinear hnd₁).2.2⟩
-instance D_ne_E {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.E := ⟨(ne_of_not_colinear hnd₂).2.1⟩
-instance A_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.A e.C := ⟨(ne_of_not_colinear hnd₁).1.symm⟩
-instance E_ne_F {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.E e.F := ⟨(ne_of_not_colinear hnd₂).1⟩
-instance D_ne_F {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.F := ⟨(ne_of_not_colinear hnd₂).2.2.symm⟩
-instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.B e.C := ⟨(ne_of_not_colinear hnd₁).2.1⟩
+instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.A e.B := ⟨(ne_of_not_collinear hnd₁).2.2⟩
+instance D_ne_E {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.E := ⟨(ne_of_not_collinear hnd₂).2.1⟩
+instance A_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.A e.C := ⟨(ne_of_not_collinear hnd₁).1.symm⟩
+instance E_ne_F {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.E e.F := ⟨(ne_of_not_collinear hnd₂).1⟩
+instance D_ne_F {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.F := ⟨(ne_of_not_collinear hnd₂).2.2.symm⟩
+instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.B e.C := ⟨(ne_of_not_collinear hnd₁).2.1⟩
 instance D_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.B := ⟨(ne_vertex_of_lies_int_seg_nd e.D_int).1⟩
 
 structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where

@@ -90,24 +90,24 @@ theorem let_test_prop (α : Prop) (a : α) (p : α → Prop) : (let x := a; p x)
     intro x
     exact x _
 
-def main_theorem (A B C : P) (h : ¬ colinear A B C) : Prop := by
-  let hAB : B≠A := by exact (ne_of_not_colinear h).2.2
-  let hCB : C ≠ B := by exact (ne_of_not_colinear h).1
+def main_theorem (A B C : P) (h : ¬ collinear A B C) : Prop := by
+  let hAB : B≠A := by exact (ne_of_not_collinear h).2.2
+  let hCB : C ≠ B := by exact (ne_of_not_collinear h).1
   let l₁ := LIN A B hAB
   let l₂ := LIN B C hCB
   let h' : ¬ l₁ ∥ l₂ := sorry
   let E := Line.inx l₁ l₂ h'
   exact (E = B)
 
-example (A B C : P) (h : ¬ colinear A B C) : main_theorem A B C h := by
+example (A B C : P) (h : ¬ collinear A B C) : main_theorem A B C h := by
   unfold main_theorem
-  -- rw [let_test (α := B≠A) (a := (ne_of_not_colinear h).2.2) (p := fun x => let hCB := (_ : C ≠ B);
+  -- rw [let_test (α := B≠A) (a := (ne_of_not_collinear h).2.2) (p := fun x => let hCB := (_ : C ≠ B);
 -- let l₁ := LIN A B x;
 -- let l₂ := LIN B C hCB;
 -- let h' := (_ : ¬LIN A B (_ : B ≠ A)∥LIN B C (_ : C ≠ B));
 -- let E := LineInx l₁ l₂ h';
 -- E = B) ]
-  rw [let_test_prop (B≠A) (ne_of_not_colinear h).2.2 (fun x => let hCB := (_ : C ≠ B);
+  rw [let_test_prop (B≠A) (ne_of_not_collinear h).2.2 (fun x => let hCB := (_ : C ≠ B);
  let l₁ := LIN A B x;
  let l₂ := LIN B C hCB;
  let h' := (_ : ¬LIN A B (_ : B ≠ A)∥LIN B C (_ : C ≠ B));

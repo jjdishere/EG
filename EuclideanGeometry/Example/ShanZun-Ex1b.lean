@@ -14,8 +14,8 @@ namespace Shan_Problem_1_5
 Prove that $AF = EF$. -/
 
   -- Let $\triangle ABC$ be an triangle.
-  variable {A B C : P} {hnd : ¬ colinear A B C}
-  lemma B_ne_C : B ≠ C := (ne_of_not_colinear hnd).1.symm
+  variable {A B C : P} {hnd : ¬ collinear A B C}
+  lemma B_ne_C : B ≠ C := (ne_of_not_collinear hnd).1.symm
   variable {D : P} {median_D_position : D = (SEG B C).midpoint}
   variable {median : SegND P} {defmedian: median = (SEG A D)}
   variable {E : P} {E_on_ray : E LiesInt (SEG A D)}
@@ -30,10 +30,10 @@ namespace Shan_Problem_1_6
 
 Prove that For any point $D$ on the base $BC$, the sum of the the distance of $D$ to $AB$ and to $AC$ is independent of $D$. -/
   -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-  variable {A B C : P} {hnd : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
+  variable {A B C : P} {hnd : ¬ collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
   -- Claim: $A \ne B$ and $A \neq C$. This is because vertices of nondegenerate triangles are distinct.
-  lemma B_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
-  lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
+  lemma B_ne_a : B ≠ A := (ne_of_not_collinear hnd).2.2
+  lemma c_ne_a : C ≠ A := (ne_of_not_collinear hnd).2.1.symm
   -- Claim: For any point $D$ on the interior of the segment of $BC$, $D ≠ B$ and $D ≠ C$. This is because: $D$ is an interior point of an edge of a triangle, so it is not equal to the vertexs $B$ and $C$ of the triangle.
   variable {D : P}{hd : D LiesInt (SEG B C)}
   lemma d_ne_B {D : P} {hd : D LiesInt (SEG B C)} : D ≠ B := ((TRI_nd A B C hnd).ne_vertex_of_lies_int_fst_edge hd).2.1

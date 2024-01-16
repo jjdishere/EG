@@ -18,18 +18,18 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_colinear_ABC : ¬ colinear A B C
+  not_collinear_ABC : ¬ collinear A B C
   -- Claim :$C \ne A$
   C_ne_A : C ≠ A :=
     -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.1.symm
+    (ne_of_not_collinear not_collinear_ABC).2.1.symm
   -- Claim $B \ne C$
   B_ne_C : B ≠ C :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).1.symm
+    (ne_of_not_collinear not_collinear_ABC).1.symm
   B_ne_A : B ≠ A :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.2
+    (ne_of_not_collinear not_collinear_ABC).2.2
   --Let $D$ be the midpoint of $AB$
   hrt: (ANG A C B C_ne_A.symm B_ne_C).IsRightAngle
   D : Plane
@@ -52,13 +52,13 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
     rw[hE]
     apply (SegND.midpt_lies_int (seg_nd := SEG_nd e.A e.C e.C_ne_A)).2.2
   --midpoint lies on the segment
-  have adb_colinear : colinear e.A e.D e.B := by
-    apply colinear_of_vec_eq_smul_vec'
+  have adb_collinear : collinear e.A e.D e.B := by
+    apply collinear_of_vec_eq_smul_vec'
     use 2
     simp only [e.hD,Seg.midpoint,one_div, seg_toVec_eq_vec, vec_of_pt_vadd_pt_eq_vec,smul_smul]
     norm_num
-  have aec_colinear : colinear e.A E e.C := by
-    apply colinear_of_vec_eq_smul_vec'
+  have aec_collinear : collinear e.A E e.C := by
+    apply collinear_of_vec_eq_smul_vec'
     use 2
     simp only [hE,Seg.midpoint,one_div, seg_toVec_eq_vec, vec_of_pt_vadd_pt_eq_vec,smul_smul]
     norm_num
@@ -88,32 +88,32 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
     exact hE
     rw[hE]
     apply Seg.midpt_lies_on
-  have not_colinear_ADE: ¬ colinear e.A e.D E := by
+  have not_collinear_ADE: ¬ collinear e.A e.D E := by
     intro h'
-    have : colinear e.A e.B E := by
-      apply colinear_of_colinear_colinear_ne adb_colinear h' D_ne_A
-    have neghnd : colinear e.A e.B e.C := by
-      apply colinear_of_colinear_colinear_ne (flip_colinear_snd_trd this) aec_colinear E_ne_A
-    exact e.not_colinear_ABC neghnd
-  have not_colinear_CDE : ¬ colinear e.C e.D E := by
+    have : collinear e.A e.B E := by
+      apply collinear_of_collinear_collinear_ne adb_collinear h' D_ne_A
+    have neghnd : collinear e.A e.B e.C := by
+      apply collinear_of_collinear_collinear_ne (flip_collinear_snd_trd this) aec_collinear E_ne_A
+    exact e.not_collinear_ABC neghnd
+  have not_collinear_CDE : ¬ collinear e.C e.D E := by
     intro h
-    have : colinear e.C e.D e.A := by
-      apply flip_colinear_snd_trd
-      apply colinear_of_colinear_colinear_ne
-      apply (flip_colinear_snd_trd (flip_colinear_fst_snd (flip_colinear_snd_trd aec_colinear)))
-      apply flip_colinear_snd_trd h
+    have : collinear e.C e.D e.A := by
+      apply flip_collinear_snd_trd
+      apply collinear_of_collinear_collinear_ne
+      apply (flip_collinear_snd_trd (flip_collinear_fst_snd (flip_collinear_snd_trd aec_collinear)))
+      apply flip_collinear_snd_trd h
       apply E_ne_C
-    have : colinear e.A e.B e.C := by
-      apply colinear_of_colinear_colinear_ne
-      apply adb_colinear
+    have : collinear e.A e.B e.C := by
+      apply collinear_of_collinear_collinear_ne
+      apply adb_collinear
       -- apply e.hD
-      apply (flip_colinear_snd_trd (flip_colinear_fst_snd (flip_colinear_snd_trd this)))
+      apply (flip_collinear_snd_trd (flip_collinear_fst_snd (flip_collinear_snd_trd this)))
       apply D_ne_A
-    apply e.not_colinear_ABC this
+    apply e.not_collinear_ABC this
 
-  have ADE_sim_ABC: TRI_nd e.A e.D E not_colinear_ADE ∼ TRI_nd e.A e.B e.C e.not_colinear_ABC := by
-    let tri_nd_ADE := TRI_nd e.A e.D E not_colinear_ADE
-    let tri_nd_ABC := TRI_nd e.A e.B e.C e.not_colinear_ABC
+  have ADE_sim_ABC: TRI_nd e.A e.D E not_collinear_ADE ∼ TRI_nd e.A e.B e.C e.not_collinear_ABC := by
+    let tri_nd_ADE := TRI_nd e.A e.D E not_collinear_ADE
+    let tri_nd_ABC := TRI_nd e.A e.B e.C e.not_collinear_ABC
     apply sim_of_SAS
     simp only [TriangleND.edge₂,TriangleND.edge₃, Triangle.edge₂,Triangle.edge₃]
     have tr13: tri_nd_ADE.1.point₃=E:= rfl
@@ -128,9 +128,9 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
   --rays equal, respectively
     congr 1
     apply Angle.ext
-    have h₀ :(TRI_nd e.A e.D E not_colinear_ADE).angle₁.1=(SEG_nd e.A e.D (D_ne_A)).toRay := rfl
+    have h₀ :(TRI_nd e.A e.D E not_collinear_ADE).angle₁.1=(SEG_nd e.A e.D (D_ne_A)).toRay := rfl
     rw[h₀]
-    have h₁:(TRI_nd e.A e.B e.C e.not_colinear_ABC).angle₁.1=(SEG_nd e.A e.B (e.B_ne_A)).toRay:=rfl
+    have h₁:(TRI_nd e.A e.B e.C e.not_collinear_ABC).angle₁.1=(SEG_nd e.A e.B (e.B_ne_A)).toRay:=rfl
     rw[h₁]
     apply @Ray.source_int_toRay_eq_ray Plane _ (SEG_nd e.A e.B (e.B_ne_A)).toRay
     apply SegND.lies_int_toRay_of_lies_int
@@ -141,9 +141,9 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
     norm_num
     simp only [Seg.toVec,e.hD]
     apply Seg.vec_source_midpt
-    have h₂:(TRI_nd e.A e.D E (not_colinear_ADE)).angle₁.2=(SEG_nd e.A E (E_ne_A)).toRay := rfl
+    have h₂:(TRI_nd e.A e.D E (not_collinear_ADE)).angle₁.2=(SEG_nd e.A E (E_ne_A)).toRay := rfl
     rw[h₂]
-    have h₃:(TRI_nd e.A e.B e.C e.not_colinear_ABC).angle₁.2=(SEG_nd e.A e.C (e.C_ne_A)).toRay:=rfl
+    have h₃:(TRI_nd e.A e.B e.C e.not_collinear_ABC).angle₁.2=(SEG_nd e.A e.C (e.C_ne_A)).toRay:=rfl
     rw[h₃]
     apply @Ray.source_int_toRay_eq_ray Plane _ (SEG_nd e.A e.C (e.C_ne_A)).toRay
     apply SegND.lies_int_toRay_of_lies_int
@@ -155,7 +155,7 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
     simp only [Seg.toVec,hE]
     apply Seg.vec_source_midpt
 
-  have ade_acongr_cde : (TRI_nd e.A e.D E (not_colinear_ADE)) ≅ₐ (TRI_nd e.C e.D E (not_colinear_CDE)) := sorry
+  have ade_acongr_cde : (TRI_nd e.A e.D E (not_collinear_ADE)) ≅ₐ (TRI_nd e.C e.D E (not_collinear_CDE)) := sorry
     --need to define the value of right angle
     --by_SAS (acongr)
 
@@ -184,18 +184,18 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_colinear_ABC : ¬ colinear A B C
+  not_collinear_ABC : ¬ collinear A B C
   -- Claim :$C \ne A$
   C_ne_A : C ≠ A :=
     -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.1.symm
+    (ne_of_not_collinear not_collinear_ABC).2.1.symm
   -- Claim $B \ne C$
   B_ne_C : B ≠ C :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).1.symm
+    (ne_of_not_collinear not_collinear_ABC).1.symm
   B_ne_A : B ≠ A :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.2
+    (ne_of_not_collinear not_collinear_ABC).2.2
   --Let $D$ be the perpendicular foot from $B$ to $AC$
   D : Plane
   hD : D = perp_foot B (LIN A C C_ne_A)
