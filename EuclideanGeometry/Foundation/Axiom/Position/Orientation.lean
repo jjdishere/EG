@@ -1426,6 +1426,19 @@ lemma ne_odist_of_IsOnOppositeSide (A B : P) (ray : Ray P) (h : IsOnOppositeSide
     linarith
 
 theorem exist_inx_int_of_IsOnOppositeSide (A B : P) (l : Line P) (h : IsOnOppositeSide A B l) : ∃ C : P , (C IsInxOf (SEG A B) l) ∧ (C LiesInt (SEG A B)) := by
+  rcases (Quotient.exists_rep l) with ⟨ray , h0⟩
+  simp only [← h0] at h
+  have h' : IsOnOppositeSide A B ray := by exact h
+  let x : ℝ := odist A ray / (odist A ray - odist B ray)
+  have gt0_lt1: (x > 0) ∧ (x < 1) := by
+    unfold IsOnOppositeSide at h'
+    unfold IsOnOppositeSide' at h'
+    have : A LiesOnLeft ray ∧ B LiesOnRight ray ∨ A LiesOnRight ray ∧ B LiesOnLeft ray := by exact h'
+    rcases this with lr|rl
+    · sorry
+    · sorry
+  have gt0 : x > 0 := gt0_lt1.1
+  have lt1 : x < 1 := gt0_lt1.2
   sorry
 
 end relative_side_with_seg_and_ray
@@ -1441,8 +1454,6 @@ scoped notation:5 A:max "and" B:max " LiesOnOppositeSide " C:max => IsOnOpposite
 
 -- @[inherit_doc IsOnSameSide]
 -- scoped syntax term:max ws term:max ws " LiesOnSameSide " ws term:max : term
-
-
 
 /- Position of two lines; need a function to take the intersection of two lines (when they intersect). -/
 
