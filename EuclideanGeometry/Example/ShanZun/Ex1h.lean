@@ -64,15 +64,15 @@ lemma b_ne_f : B ≠ F := sorry
 -- G is the intersection point of AC and BF, H is the intersection point of AC and DE
 variable {G H : P} {hg : is_inx G (LIN A C c_ne_a.symm) (LIN B F b_ne_f)} {hh : is_inx H (LIN A C c_ne_a.symm) (LIN D E d_ne_e)}
 -- $▵AFG$ is nontrivial
-lemma afg_nd : ¬ colinear A F G := sorry
+lemma afg_nd : ¬ collinear A F G := sorry
 -- $▵CBG$ is nontrivial
-lemma cbg_nd : ¬ colinear C B G :=sorry
+lemma cbg_nd : ¬ collinear C B G :=sorry
 -- $▵ AFG ∼ ▵ CBG$ with ratio 1/2 by AAA
 lemma afg_sim_cbg : (TRI_nd A F G afg_nd) ∼ (TRI_nd C B G cbg_nd) := sorry
 --The following three may not be necessary since we can use the above three lemmas instead
 --
-lemma ceh_nd : ¬ colinear C E H := sorry
-lemma adh_nd : ¬ colinear A D H :=sorry
+lemma ceh_nd : ¬ collinear C E H := sorry
+lemma adh_nd : ¬ collinear A D H :=sorry
 -- $▵ CEH ∼ ▵ ADH$ with ratio 1/2 by AAA
 lemma ceh_sim_adh : (TRI_nd C E H ceh_nd) ∼ (TRI_nd A D H adh_nd) := sorry
 -- length of segment AG is half of segment CG

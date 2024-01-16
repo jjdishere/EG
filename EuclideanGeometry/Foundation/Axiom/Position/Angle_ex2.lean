@@ -1,5 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
-import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
+import EuclideanGeometry.Foundation.Axiom.Linear.Collinear
 
 noncomputable section
 

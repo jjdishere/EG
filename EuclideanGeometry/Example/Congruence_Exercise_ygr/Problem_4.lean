@@ -18,13 +18,13 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   C : Plane
   D : Plane
   --some nondegenerate
-  hnd₁ : ¬ colinear B C A
-  hnd₂ : ¬ colinear B C D
+  hnd₁ : ¬ collinear B C A
+  hnd₂ : ¬ collinear B C D
   --$A,D$ are on the opposite side of line $BC$,which satisfies $BD \para CA$(lemma needed), $BD = BC$
   BD_eq_BC : (SEG B D).length = (SEG B C).length
-instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_colinear e.hnd₁).2.2.symm⟩
-instance D_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.D e.B := ⟨(ne_of_not_colinear e.hnd₂).2.1.symm⟩
-instance A_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.C := ⟨(ne_of_not_colinear e.hnd₁).1⟩
+instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd₁).2.2.symm⟩
+instance D_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.D e.B := ⟨(ne_of_not_collinear e.hnd₂).2.1.symm⟩
+instance A_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.C := ⟨(ne_of_not_collinear e.hnd₁).1⟩
 
 structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
   --$BD \para CA$
@@ -36,10 +36,10 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
   E : Plane
   E_int : E LiesInt (SEG_nd B C)
   E_position : (SEG B E).length = (SEG A C).length
-lemma hnd₃ {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane}: ¬ colinear e.B e.E e.D := by sorry
-instance E_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.E e.D := ⟨(ne_of_not_colinear hnd₃).1.symm⟩
-instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.A e.B := ⟨(ne_of_not_colinear e.hnd₁).2.1.symm⟩
-instance B_ne_E {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.B e.E := ⟨(ne_of_not_colinear hnd₃).2.2.symm⟩
+lemma hnd₃ {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane}: ¬ collinear e.B e.E e.D := by sorry
+instance E_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.E e.D := ⟨(ne_of_not_collinear hnd₃).1.symm⟩
+instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd₁).2.1.symm⟩
+instance B_ne_E {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.B e.E := ⟨(ne_of_not_collinear hnd₃).2.2.symm⟩
 --Prove that $\angle B D E = -\angle C B A $.
 theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : ∠ e.B e.D e.E = -∠ e.C e.B e.A := by
   /-
@@ -52,8 +52,8 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : �
   We have $\triangle B E D \congr_a \triangle C A B$
   Thus $\angle B D E = -\angle C B A $.
   -/
-  have hnd₁' : ¬ colinear e.C e.A e.B := by
-    apply perm_colinear_trd_fst_snd.mt
+  have hnd₁' : ¬ collinear e.C e.A e.B := by
+    apply perm_collinear_trd_fst_snd.mt
     exact e.hnd₁
   --$DB = BC$
   have e₂ : (SEG e.D e.B).length = (SEG e.B e.C).length := by

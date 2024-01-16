@@ -8,7 +8,7 @@ Axiom Folder
 
   subfolder : Linear
     Ray -- Define segments and rays (including midpoint here)
-    Colinear -- Define colinarity
+    Collinear -- Define collinearity
     Line -- Define lines, define the class LinObj and unify their toProj
     Parallel -- Define parallel lines and basic properties
     Perpendicular -- Define the perpendicular lines and perpendicular foot

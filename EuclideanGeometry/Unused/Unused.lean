@@ -250,17 +250,17 @@ class Triangle' (P : Type _) [EuclideanPlane P] where
   point₁ : P
   point₂ : P
   point₃ : P
-  nontriv : ¬ colinear point₁ point₂ point₃
+  nontriv : ¬ collinear point₁ point₂ point₃
 
 namespace Triangle
 
 variable {P : Type _} [EuclideanPlane P]
 
-def nontriv₁ (tr : Triangle P) := (ne_of_not_colinear tr.nontriv).1
+def nontriv₁ (tr : Triangle P) := (ne_of_not_collinear tr.nontriv).1
 
-def nontriv₂ (tr : Triangle P) := (ne_of_not_colinear tr.nontriv).2.1
+def nontriv₂ (tr : Triangle P) := (ne_of_not_collinear tr.nontriv).2.1
 
-def nontriv₃ (tr : Triangle P) := (ne_of_not_colinear tr.nontriv).2.2
+def nontriv₃ (tr : Triangle P) := (ne_of_not_collinear tr.nontriv).2.2
 
 def is_cclock (tr : Triangle P): Prop := tr.3 LiesOnLeft (Ray.mk_pt_pt tr.1 tr.2 tr.nontriv₃)
 
@@ -286,20 +286,20 @@ scoped infix : 50 " IsInsideLTriangle " => Triangle.IsInside
 
 end nondeg_tri
 
-section colinear
+section collinear
 
 variable {P : Type _} [EuclideanPlane P]
 
-theorem colinear_ACB_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear A C B := sorry
+theorem collinear_ACB_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear A C B := sorry
 
-theorem colinear_BAC_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear B A C := sorry
+theorem collinear_BAC_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear B A C := sorry
 
-theorem colinear_BCA_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear B C A := sorry
+theorem collinear_BCA_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear B C A := sorry
 
-theorem colinear_CAB_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear C A B := sorry
+theorem collinear_CAB_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear C A B := sorry
 
-theorem colinear_CBA_of_colinear_ABC {A B C : P} (h : colinear A B C): colinear C B A := sorry
-end colinear
+theorem collinear_CBA_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear C B A := sorry
+end collinear
 
 /-!
 section HasFallsOn

@@ -18,12 +18,12 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ colinear A B C
+  hnd : ¬ collinear A B C
   hreg : (▵ A B C).IsRegular
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_colinear e.hnd).2.2.symm⟩
-instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_colinear e.hnd).1.symm⟩
-instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_colinear e.hnd).2.1.symm⟩
+instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
+instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
+instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
 
 structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
 -- Let $E$ be a point on the extension of $BA$ and $D$ a point on the extension of $BC$
@@ -50,11 +50,10 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (S
   let e.F := Ray.extpoint (SEG_nd e.B e.D).extension (SEG e.B e.C).length
   have DF_eq_CB : (SEG e.D e.F).length = (SEG e.C e.B).length := by
     calc
-      -- $DF = BC$ from above
+      -- $DF = BC$ from defination of $F$
       _ = (SEG e.B e.C).length := by
-        apply seg_length_eq_dist_of_extpoint (SEG_nd e.B e.D).extension
-        simp
-        exact length_nonneg
+        apply Ray.dist_of_extpoint (r := (SEG_nd e.B e.D).extension)
+        exact Seg.length_nonneg
       -- $BC = CB$ by symmetry
       _ = (SEG e.C e.B).length := by
         simp only [length_of_rev_eq_length']
@@ -64,16 +63,14 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (S
   haveI E_ne_F : PtNe e.E e.F := sorry
   -- $F$ lies in extension of $BD$
   have F_int_BD_extn : e.F LiesInt (SEG_nd e.B e.D).extension := by
-    apply lies_int_of_pos_extpoint (r := (SEG e.B e.C).length)
+    apply Ray.lies_int_of_eq_pos_extpoint (t := (SEG e.B e.C).length)
+    rw [length_pos_iff_PtNe]
+    exact B_ne_C
     simp
-    intro hh
-    rw [length_pos_iff_nd]
-    -- exact B_ne_C
-    sorry
-    --这里要用instance的B≠C推线段BC非退化，好像不能直接exact
   -- $D$ lies on $BF$ because $F$ lies on extension of $BD$
   have D_on_BF : e.D LiesOn (SEG_nd e.B e.F) :=  SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn F_int_BD_extn)
   -- $C$ lies on $BF$ because $C$ lies on $BD$ and $D$ lies on $BF$
+  --这个sorry应该是一些linear Order的东西
   have C_on_BF : e.C LiesOn (SEG_nd e.B e.F) := sorry
   -- $A$ lies on $BE$ because $E$ lies on exxtension of $BA$
   have A_on_BE : e.A LiesOn (SEG_nd e.B e.E) := SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn e.he)
@@ -81,6 +78,8 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (S
   have C_on_ray_BF : e.C LiesOn (RAY e.B e.F) := SegND.lies_on_toRay_of_lies_on C_on_BF
   -- $E$ lies on ray $BA$ because $A$ lies on $BE$
   have A_on_ray_BE : e.A LiesOn (RAY e.B e.E) := SegND.lies_on_toRay_of_lies_on A_on_BE
+  -- $B$ lies on ray $FD$ because $F$ lies on ray $BD$
+  have B_on_ray_FD : e.B LiesOn (RAY e.F e.D) := sorry
   -- $BF = BD + DF = AE + AB = BE$
   have BF_eq_BE : (SEG e.B e.F).length = (SEG e.B e.E).length := by
     calc
@@ -115,31 +114,43 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (S
     rw[← ang_EBF_eq_ang_ABC] at sixty₂
     right
     exact sixty₂
-  -- $BFE$ is not colinear because $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
-  have BFE_not_colinear : ¬ colinear e.B e.F e.E := sorry
-  have BEF_not_colinear : ¬ colinear e.B e.E e.F := sorry
+  -- $BFE$ is not collinear because $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
+  have BFE_not_collinear : ¬ collinear e.B e.F e.E := sorry
+  have BEF_not_collinear : ¬ collinear e.B e.E e.F := sorry
   -- $\triangle BFE$ is regular because $BF = EB$ and $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
-  have BFE_is_regular : (TRI_nd e.B e.F e.E BFE_not_colinear).1.IsRegular := by
+  have BFE_is_regular : (TRI_nd e.B e.F e.E BFE_not_collinear).1.IsRegular := by
     apply regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg
     exact ang_EBF_eq_sixty
     rw[← Seg.length_of_rev_eq_length (seg := (SEG e.B e.E))] at BF_eq_BE
     exact BF_eq_BE.symm
--- $\angle EBC = - \angle EFD$ because $\triangle BFE$ is regular
-  -- 下面1,3sorry留下的是很烦的相同射线推相同角度,第二个sorry需要x=y推出-x=-y
+  -- $\angle FBE = - \angle EFB$ because $\triangle BFE$ is regular
+  have ang_FBE_eq_ang_EFB : ∠ e.F e.B e.E = ∠ e.E e.F e.B := ((regular_tri_iff_eq_angle_of_nd_tri (TRI_nd e.B e.F e.E BFE_not_collinear)).mp BFE_is_regular).1
+  -- $\angle EBC = - \angle EFD$ because $\triangle BFE$ is regular
   have ang_EBC_eq_neg_ang_EFD : ∠ e.E e.B e.C = - ∠ e.E e.F e.D := by
     calc
     --$\angle EBC = \ange EBF$ because they are the same angle
     _ = ∠ e.E e.B e.F := by
       have E_on_ray_BE : e.E LiesOn (SEG_nd e.B e.E).toRay := SegND.lies_on_toRay_of_lies_on SegND.target_lies_on
-      apply Angle.value_eq_of_lies_on_ray_pt_pt
-      exact E_on_ray_BE
-      exact C_on_ray_BF
-    --$\angle EBF = \ange BFE$ because $\triangle BFE$ is regular
-    _ = ∠ e.B e.F e.E := sorry
-    --下面这行证明的是∠ FBE = ∠ EFB, 要转化到这个反过来的我好像还没找到那个定理（就是∠ XYZ = - ∠ ZYX）
-    --exact ((regular_tri_iff_eq_angle_of_nd_tri (TRI_nd e.B e.F e.E BFE_not_colinear)).mp BFE_is_regular).1.symm
-    _ = ∠ e.D e.F e.E := sorry
-    _ = - ∠ e.E e.F e.D := sorry
+      exact Angle.value_eq_of_lies_on_ray_pt_pt E_on_ray_BE C_on_ray_BF
+    --$\angle EBF = - \angle FBE$ by reverse
+    _ = - ∠ e.F e.B e.E := by
+      rw[← Angle.rev_value_eq_neg_value (ang := (ANG e.F e.B e.E))]
+      constructor
+    --$\angle FBE = - \angle EFB$ by the lemma above
+    _ = - ∠ e.E e.F e.B := by
+      simp only[ang_FBE_eq_ang_EFB]
+    --$- \angle EFB = \angle BFE$ by reverse
+    _ = ∠ e.B e.F e.E := by
+      rw[← Angle.rev_value_eq_neg_value (ang := (ANG e.E e.F e.B))]
+      constructor
+    --$\angle BFE = \ange DFE$ because they are the same angle
+    _ = ∠ e.D e.F e.E := by
+      have E_on_ray_FE : e.E LiesOn (SEG_nd e.F e.E).toRay := SegND.lies_on_toRay_of_lies_on SegND.target_lies_on
+      exact Angle.value_eq_of_lies_on_ray_pt_pt B_on_ray_FD E_on_ray_FE
+    --$\angle DFE = - \angle EFD$ by reverse
+    _ = - ∠ e.E e.F e.D := by
+      rw[← Angle.rev_value_eq_neg_value (ang := (ANG e.E e.F e.D))]
+      constructor
   -- $FE = BE$ because $\triangle BFE$ is regular
   have FE_eq_BE : (SEG e.F e.E).length = (SEG e.B e.E).length := by
     calc
@@ -149,11 +160,11 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (S
     -- $EB = BE$ by symmetry
     _ = (SEG e.B e.E).length := by
       simp only [length_of_rev_eq_length']
-  -- $BEC$ is not colinear and $FED$ is not colinear
-  have BEC_not_colinear : ¬ colinear e.B e.E e.C := sorry
-  have FED_not_colinear : ¬ colinear e.F e.E e.D := sorry
+  -- $BEC$ is not collinear and $FED$ is not collinear
+  have BEC_not_collinear : ¬ collinear e.B e.E e.C := sorry
+  have FED_not_collinear : ¬ collinear e.F e.E e.D := sorry
   -- $\triangle BCE$ is anti-congruence to $\triangle FDE$
-  have cong : (TRI_nd e.B e.E e.C BEC_not_colinear) ≅ₐ (TRI_nd e.F e.E e.D FED_not_colinear) := TriangleND.acongr_of_SAS DF_eq_CB.symm ang_EBC_eq_neg_ang_EFD FE_eq_BE.symm
+  have cong : (TRI_nd e.B e.E e.C BEC_not_collinear) ≅ₐ (TRI_nd e.F e.E e.D FED_not_collinear) := TriangleND.acongr_of_SAS DF_eq_CB.symm ang_EBC_eq_neg_ang_EFD FE_eq_BE.symm
   -- $EC = ED$ because $\triangle BCE \cong \triangle FDE$
   have EC_eq_ED : (SEG e.E e.C).length = (SEG e.E e.D).length := cong.edge₁
   rw[length_of_rev_eq_length', EC_eq_ED]
@@ -166,24 +177,40 @@ $F,G$ are points of trisection of $AC$,
 line $DF$ and $EG$ intersect at $H$
 Prove that quadrilateral $ABCH$ is parallelogram -/
 
+structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+  A : Plane
+  B : Plane
+  C : Plane
+  hnd : ¬ collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma A_ne_B : A ≠ B := sorry
-lemma B_ne_C : B ≠ C := sorry
-lemma C_ne_A : C ≠ A := sorry
+instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
+instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
+instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
+
+structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
 -- $D$ is midpoint of $BA$, $E$ is midpoint of $BC$
-variable {D E : P} {hd : D = (SEG B A).midpoint} {he : E = (SEG B C).midpoint}
+  D : Plane
+  E : Plane
+  hd : D = (SEG B A).midpoint
+  he : E = (SEG B C).midpoint
 -- $F,G$ are points of trisection of $AC$
-variable {F G : P} {hf : F LiesInt (SegND A C C_ne_A).1} {he : E LiesInt (SegND A C C_ne_A).1} {htri : (SEG A F).length = (SEG F G).length ∧ (SEG F G).length = (SEG G C).length}
+  F : Plane
+  G : Plane
+  hf : F LiesInt (SEG_nd A C)
+  hg : G LiesInt (SEG_nd A C)
+  htri : (SEG A F).length = (SEG F G).length ∧ (SEG F G).length = (SEG G C).length
 -- Claim: $F \ne D$ and $G \ne E$
-lemma f_ne_d : F ≠ D := sorry
-lemma g_ne_e : G ≠ E := sorry
+instance F_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.F e.D := ⟨sorry⟩
+instance G_ne_E {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.G e.E := ⟨sorry⟩
+
+structure Setting3 (Plane : Type _) [EuclideanPlane Plane] extends Setting2 Plane where
 -- $H$ is the intersection of line $DF$ and $EG$
-variable {H : P} {hh : is_inx H (LIN D F f_ne_d) (LIN E G g_ne_e)}
+  H : Plane
+  hh : is_inx H (LIN D F) (LIN E G)
 
 -- Theorem : quadrilateral $ABCH$ is parallelogram
-theorem Shan_Problem_2_22 : QDR A B C H IsPRG := sorry
+theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting3 Plane} : QDR e.A e.B e.C e.H IsPRG := sorry
 
 end Shan_Problem_2_22
 
@@ -194,29 +221,43 @@ $F,G$ are points lies on line $BC$,
 such that $FB = CG$ and $AF \parallel BE$ ,
 Prove that $AG \parallel DC$-/
 
+structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+  A : Plane
+  B : Plane
+  C : Plane
+  hnd : ¬ collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-lemma A_ne_B : A ≠ B := sorry
-lemma B_ne_C : B ≠ C := sorry
-lemma C_ne_A : C ≠ A := sorry
+instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
+instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
+instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
+
+structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
 -- $D,E$ are points in $AB,AC$ respectively
-variable {D E : P} {hd : D LiesInt (SegND A B A_ne_B.symm).1} {he : E LiesInt (SegND A C C_ne_A).1}
+  D : Plane
+  E : Plane
+  hd : D LiesInt (SEG_nd A B)
+  he : E LiesInt (SEG_nd A C)
 -- $F,G$ are points lies on line $BC$
-variable {F G : P} {hf : F LiesOn (LIN B C B_ne_C.symm)} {hg : G LiesOn (LIN B C B_ne_C.symm)}
+  F : Plane
+  G : Plane
+  hf : F LiesOn (LIN B C)
+  hg : G LiesOn (LIN B C)
 -- We have $FB = CG$
-variable {hedge : (SEG F B).length = (SEG C G).length}
+  hedge : (SEG F B).length = (SEG C G).length
 -- Claim : $F \ne A$ and $E \ne B$
-lemma f_ne_a : F ≠ A := sorry
-lemma e_ne_B : E ≠ B := sorry
+instance F_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.F e.A := ⟨sorry⟩
+instance E_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.E e.B := ⟨sorry⟩
+
+structure Setting3 (Plane : Type _) [EuclideanPlane Plane] extends Setting2 Plane where
 -- We have $AF \parallel BE$
-variable {hpara : (SegND A F f_ne_a) ∥ (SegND B E e_ne_B)}
+  hpara : (SEG_nd A F) ∥ (SEG_nd B E)
 -- Claim: $G \ne A$ and $D \ne C$
-lemma g_ne_a : G ≠ A := sorry
-lemma d_ne_C : D ≠ C := sorry
+instance G_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting3 Plane} : PtNe e.G e.A := ⟨sorry⟩
+instance D_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting3 Plane} : PtNe e.D e.C := ⟨sorry⟩
 
 -- Theorem : $AG \parallel DC$
-theorem Shan_Problem_2_36 : (SegND A G g_ne_a) ∥ (SegND C D d_ne_C) := sorry
+theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting3 Plane} : (SEG_nd e.A e.G) ∥ (SEG_nd e.C e.D) := sorry
 
 end Shan_Problem_2_36
 
@@ -228,7 +269,7 @@ such that $AE = 2 EC$
 Prove that $AF = 3 FB$ -/
 
 -- We have acute triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C} {hacute : TriangleND.IsAcute (TRI_nd A B C hnd)}
+variable {A B C : P} {hnd : ¬ collinear A B C} {hacute : TriangleND.IsAcute (TRI_nd A B C hnd)}
 -- 这个题应该需要加锐角三角形的限制，否则需要条件中的$AE = 2 EC$是有向线段的相等
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
@@ -251,7 +292,7 @@ let the angle bisectors of $\angle ADB$ and $\angle ADC$ intersect $AB$ and $AC$
 Prove that $EF \parallel BC$-/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -279,7 +320,7 @@ $CD,BE$ intersects at $O$
 Prove that $OE = \frac{1}{4} BE$-/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ collinear A B C}
 -- $D$ is midpoint of $AB$
 variable {D : P} {hd : D = (SEG A B).midpoint}
 -- $E$ lies on $AC$ such that $AE = 2 CE$,
@@ -298,7 +339,7 @@ The parallel line to $AC$ of $E,F$ intersect $BC$ at $G,H$ respectively,
 Prove that $EG + FH = AC$-/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -355,7 +396,7 @@ the angle bisector of $\angle ABC$ intersect $AD$ and $AC$ at $M,N$ respectively
 Prove that $AB^2 - AN^2 = BM \times BN$-/
 
 -- Let triangle $\triangle ABC$ be a right triangle with $\angle BAC = 90^{circ}$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma a_ne_b : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry

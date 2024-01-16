@@ -18,7 +18,7 @@ In this file, we assign linear objects into different abstract classes so that p
 
 ## Main Definitions
 
-* `LinFig` : The class of linear figures, i.e. every three points in the carrier is colinear.
+* `LinFig` : The class of linear figures, i.e. every three points in the carrier is collinear.
 * `DirObj` : The class of objects with direction, i.e. equipped with a `toDir` method. It does not have to be a plane figure, e.g. `VecND` and `Dir` itself.
 * `DirFig` : The class of linear figures with direction. Each figure is equipped with a `toDirLine` method.
 * `ProjObj` : The class of objects with projective direction, i.e. equipped with a `toProj` method. It does not have to be a plane figure, e.g. `VecND` and `Proj` itself.
@@ -42,7 +42,7 @@ noncomputable section
 namespace EuclidGeom
 
 class LinFig (α : Type*) (P : outParam <| Type*) [outParam <| EuclideanPlane P] extends Fig α P where
-  colinear' : ∀ {A B C : P} {F : α}, A LiesOn F → B LiesOn F → C LiesOn F → colinear A B C
+  collinear' : ∀ {A B C : P} {F : α}, A LiesOn F → B LiesOn F → C LiesOn F → collinear A B C
 
 class ProjObj (β : Type _) where
   toProj : β → Proj
@@ -103,11 +103,11 @@ instance : ProjObj Proj where
   toProj := id
 
 instance : LinFig (Seg P) P where
-  colinear' := Seg.colinear_of_lies_on
+  collinear' := Seg.collinear_of_lies_on
 
 instance : DirFig (SegND P) P where
   carrier s := s.carrier
-  colinear' := Seg.colinear_of_lies_on
+  collinear' := Seg.collinear_of_lies_on
   toProj' := SegND.toProj
   toLine := SegND.toLine
   carrier_subset_toLine {_} := SegND.subset_toLine
@@ -123,7 +123,7 @@ instance : DirFig (SegND P) P where
 
 instance : DirFig (Ray P) P where
   carrier := Ray.carrier
-  colinear' := Ray.colinear_of_lies_on
+  collinear' := Ray.collinear_of_lies_on
   toProj' := Ray.toProj
   toLine := Ray.toLine
   carrier_subset_toLine := Or.inl
@@ -139,7 +139,7 @@ instance : DirFig (Ray P) P where
 
 instance : DirFig (DirLine P) P where
   carrier := DirLine.carrier
-  colinear' := DirLine.linear
+  collinear' := DirLine.linear
   toProj' := DirLine.toProj
   toLine := DirLine.toLine
   carrier_subset_toLine := id
@@ -155,7 +155,7 @@ instance : DirFig (DirLine P) P where
 
 instance : ProjFig (Line P) P where
   carrier := Line.carrier
-  colinear' := Line.linear
+  collinear' := Line.linear
   toProj' := Line.toProj
   toLine := id
   carrier_subset_toLine := id
