@@ -379,7 +379,7 @@ theorem perm_is_convex : (QuadrilateralND.perm qdr_cvx.toQuadrilateralND).IsConv
     simp only [q, and_self, or_true]
 
 /-- The perm quadrilateral_cvx, the first point of the perm is the second point of the origin, etc. -/
-def perm : Quadrilateral_cvx P := mk_cvx (Quadrilateral.toqdr_cvx_of_cvx (perm_is_convex qdr_cvx))
+def perm : Quadrilateral_cvx P := QDR_cvx' (perm_is_convex qdr_cvx)
 
 /-- Given a convex quadrilateral qdr_cvx ABCD, quadrilateral QDR BCDA is also convex. -/
 theorem perm_is_convex' : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁) IsConvex := (qdr_cvx.perm).convex
@@ -387,17 +387,17 @@ theorem perm_is_convex' : (QDR qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point�
 theorem is_convex_iff_perm_is_convex : qdr_nd.IsConvex ↔ qdr_nd.perm.IsConvex := by
   constructor
   intro h
-  exact perm_is_convex (Quadrilateral_cvx.mk_nd_is_convex h)
+  exact perm_is_convex (QDR_cvx' h)
   intro h
   let q₁ : QuadrilateralND P := qdr_nd.perm.perm
-  have h₁ : q₁.IsConvex := perm_is_convex (Quadrilateral_cvx.mk_nd_is_convex h)
+  have h₁ : q₁.IsConvex := perm_is_convex (QDR_cvx' h)
   let q₂ : QuadrilateralND P := qdr_nd.perm.perm.perm
-  have h₂ : q₂.IsConvex := perm_is_convex (Quadrilateral_cvx.mk_nd_is_convex h₁)
-  exact perm_is_convex (Quadrilateral_cvx.mk_nd_is_convex h₂)
+  have h₂ : q₂.IsConvex := perm_is_convex (QDR_cvx' h₁)
+  exact perm_is_convex (QDR_cvx' h₂)
 
 /-- The flip of quadrilateral_cvx is also quadrilateral_cvx. -/
-theorem flip_is_convex : QuadrilateralND.IsConvex (QuadrilateralND.flip qdr_cvx.toQuadrilateralND) := by
-  unfold QuadrilateralND.IsConvex
+theorem flip_is_convex : (QuadrilateralND.flip qdr_cvx.toQuadrilateralND).IsConvex := by
+  unfold Quadrilateral.IsConvex
   by_cases h : (qdr_cvx.angle₁.value.IsPos ∧ qdr_cvx.angle₂.value.IsPos ∧ qdr_cvx.angle₃.value.IsPos ∧ qdr_cvx.angle₄.value.IsPos)
   · have q : (qdr_cvx.flip.angle₁.value.IsNeg ∧ qdr_cvx.flip.angle₄.value.IsNeg ∧ qdr_cvx.flip.angle₃.value.IsNeg ∧ qdr_cvx.flip.angle₂.value.IsNeg) := by
       rw [(QuadrilateralND.flip_angle₁_value_eq_neg_angle₁ qdr_cvx.toQuadrilateralND), AngValue.neg_isNeg_iff_isPos (θ := qdr_cvx.angle₁.value)]
@@ -417,14 +417,14 @@ theorem flip_is_convex : QuadrilateralND.IsConvex (QuadrilateralND.flip qdr_cvx.
       simp only [p, and_self]
     simp only [q, and_self, true_or]
 
-def flip : Quadrilateral_cvx P := mk_nd_is_convex (flip_is_convex qdr_cvx)
+def flip : Quadrilateral_cvx P := QDR_cvx' (flip_is_convex qdr_cvx)
 
 theorem is_convex_iff_flip_is_convex : qdr_nd.IsConvex ↔ qdr_nd.flip.IsConvex := by
   constructor
   intro h
-  exact flip_is_convex (Quadrilateral_cvx.mk_nd_is_convex h)
+  exact flip_is_convex (QDR_cvx' h)
   intro h
-  exact flip_is_convex (Quadrilateral_cvx.mk_nd_is_convex h)
+  exact flip_is_convex (QDR_cvx' h)
 
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
@@ -441,8 +441,9 @@ instance nd₁₃ : PtNe qdr_cvx.point₃ qdr_cvx.point₁ := Fact.mk <| by
     rw [g]
     exact AngValue.not_zero_isNeg
   have p: qdr_cvx.IsConvex := qdr_cvx.convex
-  unfold QuadrilateralND.IsConvex at p
+  unfold Quadrilateral.IsConvex at p
   simp only [k₁, false_and, and_false, k₂, or_self] at p
+  sorry
 
 /-- Given a convex quadrilateral qdr_cvx, diagonal from the first point to the second point is not degenerate, i.e. the second point is not equal to the first point. -/
 instance nd₂₄ : PtNe qdr_cvx.point₄ qdr_cvx.point₂ := (qdr_cvx.perm).nd₁₃
