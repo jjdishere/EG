@@ -98,5 +98,15 @@ theorem eq_toDir_of_pt_lies_int_to_target {seg_nd : SegND P} {A : P} (h : A Lies
 
 theorem eq_toDirLine_of_pt_lies_int_to_target {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target h.ne_target.symm).toDirLine = seg_nd.toDirLine := by sorry
 
+theorem pt_flip_colinear {A B O : P} (h : B = pt_flip A O) : colinear A O B := by
+  apply flip_colinear_snd_trd
+  by_cases hne : A = B
+  · rw [hne]
+    unfold colinear
+    simp
+  haveI : PtNe A B := ⟨hne⟩
+  apply Line.pt_pt_linear
+  sorry
+
 
 end EuclidGeom

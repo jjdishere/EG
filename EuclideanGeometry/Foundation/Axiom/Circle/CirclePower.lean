@@ -15,20 +15,20 @@ namespace Circle
 -- Define the power of a point P relative to a circle ω with center O and radius r to be OP ^ 2 - r ^ 2
 def power (ω : Circle P) (p : P) : ℝ := dist ω.center p ^ 2 - ω.radius ^ 2
 
-theorem inside_circle_iff_power_npos (p : P) (ω : Circle P) : p LiesIn ω ↔ ω.power p ≤ 0 := by
+theorem liesin_circle_iff_power_npos (p : P) (ω : Circle P) : p LiesIn ω ↔ ω.power p ≤ 0 := by
   apply Iff.trans _ sub_nonpos.symm
   unfold Circle.IsInside
   apply Iff.trans _ sq_le_sq.symm
   rw [abs_of_nonneg dist_nonneg, abs_of_pos ω.rad_pos]
 
-theorem interior_of_circle_iff_power_neg (p : P) (ω : Circle P) : p LiesInt ω ↔ ω.power p < 0 := by
+theorem liesint_circle_iff_power_neg (p : P) (ω : Circle P) : p LiesInt ω ↔ ω.power p < 0 := by
   apply Iff.trans _ sub_neg.symm
   unfold lies_int Interior.interior instInteriorCircle Circle.interior Circle.IsInt
   simp
   apply Iff.trans _ sq_lt_sq.symm
   rw [abs_of_nonneg dist_nonneg, abs_of_pos ω.rad_pos]
 
-theorem lies_on_circle_iff_power_zero (p : P) (ω : Circle P) : p LiesOn ω ↔ ω.power p = 0 := by
+theorem lieson_circle_iff_power_zero (p : P) (ω : Circle P) : p LiesOn ω ↔ ω.power p = 0 := by
   apply Iff.trans _ sub_eq_zero.symm
   unfold lies_on Fig.carrier instFigCircle Circle.carrier Circle.IsOn
   simp
@@ -37,7 +37,7 @@ theorem lies_on_circle_iff_power_zero (p : P) (ω : Circle P) : p LiesOn ω ↔ 
   apply le_iff_lt_or_eq.mpr
   left; exact ω.rad_pos
 
-theorem outside_circle_iff_power_pos (p : P) (ω : Circle P) : p LiesOut ω ↔ 0 < ω.power p  := by
+theorem liesout_circle_iff_power_pos (p : P) (ω : Circle P) : p LiesOut ω ↔ 0 < ω.power p  := by
   apply Iff.trans _ sub_pos.symm
   unfold Circle.IsOutside
   apply Iff.trans _ sq_lt_sq.symm
