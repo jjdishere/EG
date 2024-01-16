@@ -337,12 +337,9 @@ theorem LiesOnLeft_or_LiesOnRight_of_not_LiesOn {A : P} [DirFig α P] {df : α} 
 
 theorem not_collinear_of_LiesOnLeft_or_LiesOnRight (A B C : P) [bnea : PtNe B A] (hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B))) : ¬ collinear A B C := by
   apply (not_collinear_iff_wedge_ne_zero A B C).mpr
-  have hw : (wedge A B C) = (SEG A B).length * odist' C (RAY A B) := by
-    exact wedge_eq_length_mul_odist' A B C
-  have pos : (SEG A B).length > 0 := by
-    calc
-      _=(SEG_nd A B).length := by rfl
-      _>0 := by apply EuclidGeom.length_pos
+  have hw : (wedge A B C) = (SEG A B).length * odist' C (RAY A B) :=
+    wedge_eq_length_mul_odist' A B C
+  have _ : (SEG A B).length > 0 := (SEG_nd A B).length_pos
   rcases hlr with l|r
   · unfold IsOnLeftSide at l
     have : (wedge A B C) > 0 := by

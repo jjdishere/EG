@@ -559,7 +559,7 @@ theorem eq_of_same_toProj_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A 
 theorem exist_line_pt_lies_on (A : P) : ∃ l : Line P, A LiesOn l :=
   ⟨Line.mk_pt_vec_nd A (Classical.arbitrary _), pt_lies_on_of_mk_pt_vec_nd _ _⟩
 
-theorem Line.exist_rep_ray_source_eq_pt {l : Line P} {A : P} (ha : A LiesOn l) : ∃ r : Ray P , r.source = A ∧ r.toLine = l := by
+theorem exist_rep_ray_source_eq_pt {l : Line P} {A : P} (ha : A LiesOn l) : ∃ r : Ray P , r.source = A ∧ r.toLine = l := by
   rcases (Quotient.exists_rep l.toProj) with ⟨d , _⟩
   let r : Ray P := ⟨A, d⟩
   refine' ⟨r, rfl, _⟩

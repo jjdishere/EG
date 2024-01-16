@@ -70,14 +70,14 @@ theorem ratio₂ : h.ratio = tr₁.edge₂.length / tr₂.edge₂.length := by
   rw [h.1,h.2] at sine₁
   have s₁₂: tr₁.edge₁.length / tr₁.edge₂.length = (sin (Angle.value tr₂.angle₁)) / (sin (Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₁
-    exact ((div_eq_div_iff  (sine_ne_zero_of_nd (perm_vertices tr₂)) (length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm).mpr sine₁).symm
+    exact ((div_eq_div_iff  (sine_ne_zero_of_nd (perm_vertices tr₂)) (Seg.length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm).mpr sine₁).symm
   have t₁₂: tr₂.edge₁.length / tr₂.edge₂.length = (sin (Angle.value tr₂.angle₁)) / (sin (Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₂
-    exact ((div_eq_div_iff  (sine_ne_zero_of_nd (perm_vertices tr₂)) (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr sine₂).symm
+    exact ((div_eq_div_iff  (sine_ne_zero_of_nd (perm_vertices tr₂)) (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr sine₂).symm
   rw [<-t₁₂] at s₁₂
   unfold ratio
-  have eq := mul_eq_mul_of_div_eq_div tr₁.edge₁.length tr₂.edge₁.length (length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm s₁₂
-  apply (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₁.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr
+  have eq := mul_eq_mul_of_div_eq_div tr₁.edge₁.length tr₂.edge₁.length (Seg.length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm s₁₂
+  apply (div_eq_div_iff (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₁.2).symm (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr
   have e₂ : (tr₂.edge_nd₂).1.length = tr₂.edge₂.length := rfl
   have e₁ : (tr₂.edge_nd₁).1.length = tr₂.edge₁.length := rfl
   have e₂' : (tr₁.edge_nd₂).1.length = tr₁.edge₂.length := rfl
@@ -93,10 +93,10 @@ theorem ratio₁₂ : tr₁.edge₁.length / tr₁.edge₂.length = tr₂.edge�
   rw [h.1,h.2] at sine₁
   have s₁₂: tr₁.edge₁.length / tr₁.edge₂.length = (sin (Angle.value tr₂.angle₁)) / (sin (Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₁
-    exact ((div_eq_div_iff  (sine_ne_zero_of_nd (perm_vertices tr₂)) (length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm).mpr sine₁).symm
+    exact ((div_eq_div_iff  (sine_ne_zero_of_nd (perm_vertices tr₂)) (Seg.length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm).mpr sine₁).symm
   have t₁₂: tr₂.edge₁.length / tr₂.edge₂.length = (sin (Angle.value tr₂.angle₁)) / (sin (Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₂
-    exact ((div_eq_div_iff  (sine_ne_zero_of_nd (perm_vertices tr₂)) (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr sine₂).symm
+    exact ((div_eq_div_iff  (sine_ne_zero_of_nd (perm_vertices tr₂)) (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr sine₂).symm
   rw [<-t₁₂] at s₁₂
   exact s₁₂
 
@@ -155,15 +155,15 @@ theorem ratio₂ : h.ratio = tr₁.edge₂.length / tr₂.edge₂.length := by
   rw [<-this,<-(angle_eq_angle_of_perm_vertices (perm_vertices tr₂)).2.2,<-(angle_eq_angle_of_perm_vertices  tr₂).2.1] at nd
   have s₁₂: tr₁.edge₁.length / tr₁.edge₂.length = (sin (- Angle.value tr₂.angle₁)) / (sin (-Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₁
-    exact ((div_eq_div_iff nd (length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm).mpr sine₁).symm
+    exact ((div_eq_div_iff nd (Seg.length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm).mpr sine₁).symm
   have t₁₂: tr₂.edge₁.length / tr₂.edge₂.length = (sin (Angle.value tr₂.angle₁)) / (sin (Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₂
-    exact ((div_eq_div_iff (sine_ne_zero_of_nd (perm_vertices tr₂)) (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr sine₂).symm
+    exact ((div_eq_div_iff (sine_ne_zero_of_nd (perm_vertices tr₂)) (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr sine₂).symm
   rw [sin_neg (Angle.value tr₂.angle₁),sin_neg (Angle.value tr₂.angle₂),neg_div_neg_eq] at s₁₂
   rw [<-t₁₂] at s₁₂
   unfold ratio
-  have eq := mul_eq_mul_of_div_eq_div tr₁.edge₁.length tr₂.edge₁.length (length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm s₁₂
-  apply (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₁.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr
+  have eq := mul_eq_mul_of_div_eq_div tr₁.edge₁.length tr₂.edge₁.length (Seg.length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm s₁₂
+  apply (div_eq_div_iff (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₁.2).symm (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr
   have e₂ : (tr₂.edge_nd₂).1.length = tr₂.edge₂.length := rfl
   have e₁ : (tr₂.edge_nd₁).1.length = tr₂.edge₁.length := rfl
   have e₂' : (tr₁.edge_nd₂).1.length = tr₁.edge₂.length := rfl
@@ -183,10 +183,10 @@ theorem ratio₁₂ : tr₁.edge₁.length / tr₁.edge₂.length = tr₂.edge�
   rw [<-this,<-(angle_eq_angle_of_perm_vertices (perm_vertices tr₂)).2.2,<-(angle_eq_angle_of_perm_vertices  tr₂).2.1] at nd
   have s₁₂: tr₁.edge₁.length / tr₁.edge₂.length = (sin (- Angle.value tr₂.angle₁)) / (sin (-Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₁
-    exact ((div_eq_div_iff nd (length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm).mpr sine₁).symm
+    exact ((div_eq_div_iff nd (Seg.length_ne_zero_iff_nd.mpr tr₁.edge_nd₂.2).symm).mpr sine₁).symm
   have t₁₂: tr₂.edge₁.length / tr₂.edge₂.length = (sin (Angle.value tr₂.angle₁)) / (sin (Angle.value tr₂.angle₂)) := by
     rw [mul_comm] at sine₂
-    exact ((div_eq_div_iff (sine_ne_zero_of_nd (perm_vertices tr₂)) (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr sine₂).symm
+    exact ((div_eq_div_iff (sine_ne_zero_of_nd (perm_vertices tr₂)) (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mpr sine₂).symm
   rw [sin_neg (Angle.value tr₂.angle₁), sin_neg (Angle.value tr₂.angle₂), neg_div_neg_eq, ← t₁₂] at s₁₂
   exact s₁₂
 
@@ -284,9 +284,9 @@ theorem asim_of_AA (tr₁ tr₂ : TriangleND P) (h₂ : tr₁.angle₂.value = -
 /- SAS -/
 theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr₂.edge₂.length = tr₁.edge₃.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = tr₂.angle₁.value): tr₁ ∼ tr₂ := by
   have eq : tr₁.edge₂.length * tr₂.edge₃.length = tr₁.edge₃.length * tr₂.edge₂.length := by
-    exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mp e
+    exact (div_eq_div_iff (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mp e
   rw [mul_comm tr₁.edge₃.length  tr₂.edge₂.length] at eq
-  have e' : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mpr eq
+  have e' : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length := (div_eq_div_iff (Seg.length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mpr eq
   have sine₁ := Triangle.sine_rule₁ tr₁
   have sine₂ := Triangle.sine_rule₁ tr₂
   have sine₁' : tr₁.edge₂.length * sin (Angle.value tr₁.angle₃) = sin (Angle.value tr₁.angle₂) *  tr₁.edge₃.length := by
@@ -299,8 +299,8 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
   have ne₂₃ : sin (Angle.value tr₂.angle₃) ≠ 0 := by
     simp only [(angle_eq_angle_of_perm_vertices tr₂).2.2,ne_eq, sine_ne_zero_of_nd,
         not_false_eq_true]
-  have s₁₂ : tr₁.edge₂.length / tr₁.edge₃.length = sin (Angle.value tr₁.angle₂) / sin (Angle.value tr₁.angle₃) := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm ne₁₃).mpr sine₁'
-  have t₁₂ : tr₂.edge₂.length / tr₂.edge₃.length = sin (Angle.value tr₂.angle₂) / sin (Angle.value tr₂.angle₃) := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm ne₂₃).mpr sine₂'
+  have s₁₂ : tr₁.edge₂.length / tr₁.edge₃.length = sin (Angle.value tr₁.angle₂) / sin (Angle.value tr₁.angle₃) := (div_eq_div_iff (Seg.length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm ne₁₃).mpr sine₁'
+  have t₁₂ : tr₂.edge₂.length / tr₂.edge₃.length = sin (Angle.value tr₂.angle₂) / sin (Angle.value tr₂.angle₃) := (div_eq_div_iff (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm ne₂₃).mpr sine₂'
   rw [s₁₂,t₁₂] at e'
   have e'' := (div_eq_div_iff ne₁₃ ne₂₃).mp e'
   have summul := Real.cos_sub_cos ((Angle.value tr₁.angle₂).toReal + (Angle.value tr₂.angle₃).toReal) ((Angle.value tr₁.angle₂).toReal - (Angle.value tr₂.angle₃).toReal)
@@ -413,9 +413,9 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
 
 theorem asim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr₂.edge₂.length = tr₁.edge₃.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = - tr₂.angle₁.value): tr₁ ∼ₐ tr₂ := by
   have eq : tr₁.edge₂.length * tr₂.edge₃.length = tr₁.edge₃.length * tr₂.edge₂.length := by
-    exact (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mp e
+    exact (div_eq_div_iff (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mp e
   rw [mul_comm tr₁.edge₃.length  tr₂.edge₂.length] at eq
-  have e' : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mpr eq
+  have e' : tr₁.edge₂.length / tr₁.edge₃.length = tr₂.edge₂.length / tr₂.edge₃.length := (div_eq_div_iff (Seg.length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mpr eq
   have sine₁ := Triangle.sine_rule₁ tr₁
   have sine₂ := Triangle.sine_rule₁ tr₂
   have sine₁' : tr₁.edge₂.length * sin (Angle.value tr₁.angle₃) = sin (Angle.value tr₁.angle₂) *  tr₁.edge₃.length := by
@@ -426,8 +426,8 @@ theorem asim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
     simp only [(angle_eq_angle_of_perm_vertices tr₁).2.2, ne_eq,sine_ne_zero_of_nd, not_false_eq_true]
   have ne₂₃ : sin (Angle.value tr₂.angle₃) ≠ 0 := by
     simp only [(angle_eq_angle_of_perm_vertices tr₂).2.2,ne_eq, sine_ne_zero_of_nd, not_false_eq_true]
-  have s₁₂ : tr₁.edge₂.length / tr₁.edge₃.length = sin (Angle.value tr₁.angle₂) / sin (Angle.value tr₁.angle₃) := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm ne₁₃).mpr  sine₁'
-  have t₁₂ : tr₂.edge₂.length / tr₂.edge₃.length = sin (Angle.value tr₂.angle₂) / sin (Angle.value tr₂.angle₃) := (div_eq_div_iff (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm ne₂₃).mpr  sine₂'
+  have s₁₂ : tr₁.edge₂.length / tr₁.edge₃.length = sin (Angle.value tr₁.angle₂) / sin (Angle.value tr₁.angle₃) := (div_eq_div_iff (Seg.length_ne_zero_iff_nd.mpr tr₁.edge_nd₃.2).symm ne₁₃).mpr  sine₁'
+  have t₁₂ : tr₂.edge₂.length / tr₂.edge₃.length = sin (Angle.value tr₂.angle₂) / sin (Angle.value tr₂.angle₃) := (div_eq_div_iff (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm ne₂₃).mpr  sine₂'
   rw [s₁₂,t₁₂] at e'
   have e'' := (div_eq_div_iff ne₁₃ ne₂₃).mp e'
   have summul := Real.cos_sub_cos ((Angle.value tr₁.angle₂).toReal + (Angle.value tr₂.angle₃).toReal) ((Angle.value tr₁.angle₂).toReal - (Angle.value tr₂.angle₃).toReal)
@@ -563,13 +563,13 @@ theorem IsSim.congr_of_ratio_eq_one (h : IsSim tr₁ tr₂) (hr : h.ratio = 1) :
   constructor
   have := ratio₁ h
   rw [hr] at this
-  exact (div_eq_one_iff_eq (length_ne_zero_iff_nd.mpr tr₂.edge_nd₁.2).symm).mp this.symm
+  exact (div_eq_one_iff_eq (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₁.2).symm).mp this.symm
   have := ratio₂ h
   rw [hr] at this
-  exact (div_eq_one_iff_eq (length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mp this.symm
+  exact (div_eq_one_iff_eq (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₂.2).symm).mp this.symm
   have := ratio₃ h
   rw [hr] at this
-  exact (div_eq_one_iff_eq (length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mp this.symm
+  exact (div_eq_one_iff_eq (Seg.length_ne_zero_iff_nd.mpr tr₂.edge_nd₃.2).symm).mp this.symm
   exact h.1
   exact h.2
   exact h.3

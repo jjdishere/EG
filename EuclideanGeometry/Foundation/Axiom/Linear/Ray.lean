@@ -1303,24 +1303,24 @@ abbrev SegND.length (seg_nd : SegND P) : ℝ := seg_nd.1.length
 theorem Seg.length_nonneg {seg : Seg P} : 0 ≤ seg.length := dist_nonneg
 
 /-- A segment has positive length if and only if it is nondegenerate. -/
-theorem length_pos_iff_nd {seg : Seg P} : 0 < seg.length ↔ seg.IsND :=
+theorem Seg.length_pos_iff_nd {seg : Seg P} : 0 < seg.length ↔ seg.IsND :=
   dist_pos.trans ne_comm
 --norm_pos_iff.trans toVec_eq_zero_of_deg.symm.not
 
 /-- The length of a given segment is nonzero if and only if the segment is nondegenerate. -/
-theorem length_ne_zero_iff_nd {seg : Seg P} : 0 ≠ seg.length ↔ seg.IsND :=
+theorem Seg.length_ne_zero_iff_nd {seg : Seg P} : 0 ≠ seg.length ↔ seg.IsND :=
   (ne_iff_lt_iff_le.mpr dist_nonneg).trans length_pos_iff_nd
 
 /--  A nondegenerate segment has strictly positive length. -/
-theorem length_pos {seg_nd : SegND P} : 0 < seg_nd.length := length_pos_iff_nd.mpr seg_nd.2
+theorem SegND.length_pos {seg_nd : SegND P} : 0 < seg_nd.length := Seg.length_pos_iff_nd.mpr seg_nd.2
 
 /-- Given a segment, the square of its length is equal to the the inner product of the associated vector with itself. -/
-theorem length_sq_eq_inner_toVec_toVec {seg : Seg P} : seg.length ^ 2 = inner seg.toVec seg.toVec := by
+theorem Seg.length_sq_eq_inner_toVec_toVec {seg : Seg P} : seg.length ^ 2 = inner seg.toVec seg.toVec := by
   rw [Seg.length_eq_norm_toVec]
   exact (real_inner_self_eq_norm_sq (Seg.toVec seg)).symm
 
 /-- The length of a segment is zero if and only if it is degenerate, i.e. it has same source and target. -/
-theorem length_eq_zero_iff_deg {seg : Seg P} : seg.length = 0 ↔ (seg.target = seg.source) := by
+theorem Seg.length_eq_zero_iff_deg {seg : Seg P} : seg.length = 0 ↔ (seg.target = seg.source) := by
   rw [Seg.length_eq_norm_toVec]
   exact ((toVec_eq_zero_of_deg).trans norm_eq_zero.symm).symm
 

@@ -88,9 +88,9 @@ Therefore, $DX = EY$.
     exact e.E_int_BC
   -- We have that $Y$ lies on ray $CA$.
   have Y_int_ray_CA : e.Y LiesInt (RAY e.C e.A A_ne_C) := by
-    simp only [e.he, Line.line_of_pt_pt_eq_rev A_ne_C.symm]
+    simp only [e.he, Line.line_of_pt_pt_eq_rev (_h := ⟨A_ne_C.symm⟩)]
     -- We have that $\angle ACE$ is an acute angle.
-    have angle_ACE_acute :  Angle.IsAcuteAngle (ANG e.A e.C e.E A_ne_C E_ne_C) := by
+    have angle_ACE_acute :  Angle.IsAcu (ANG e.A e.C e.E A_ne_C E_ne_C) := by
       -- Because $\angle ACE$ is exactly the same angle as $\angle ACB$, which is the consequence of the fact that $E$ lies on ray $CB$.
       have angle_ACE_is_angle_ACB : (ANG e.A e.C e.E A_ne_C E_ne_C) = (ANG e.A e.C e.B A_ne_C C_ne_B.symm) := by
         symm;
@@ -117,9 +117,9 @@ Therefore, $DX = EY$.
     exact e.D_int_BC
   -- We have that $X$ lies on ray $BA$.
   have X_int_ray_BA : e.X LiesInt (RAY e.B e.A A_ne_B) := by
-    simp only [e.hd, Line.line_of_pt_pt_eq_rev A_ne_B.symm]
+    simp only [e.hd, Line.line_of_pt_pt_eq_rev (_h := ⟨A_ne_C.symm⟩)]
     -- We have that $\angle ABD$ is an acute angle.
-    have angle_ABD_acute :  Angle.IsAcuteAngle (ANG e.A e.B e.D A_ne_B D_ne_B) := by
+    have angle_ABD_acute :  Angle.IsAcu (ANG e.A e.B e.D A_ne_B D_ne_B) := by
       -- Because $\angle ABD$ is exactly the same angle as $\angle ABC$, which is the consequence of the fact that $D$ lies on ray $BC$.
       have angle_ABD_is_angle_ABC : (ANG e.A e.B e.D A_ne_B D_ne_B) = (ANG e.A e.B e.C A_ne_B C_ne_B) := by
         symm;

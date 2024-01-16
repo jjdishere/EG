@@ -94,7 +94,7 @@ theorem line_of_self_perp_foot_perp_line_of_not_lies_on {A : P} {l : Line P} (h 
   (congrArg toProj (line_of_self_perp_foot_eq_perp_line_of_not_lies_on h)).trans (perp_line_perp A l)
 
 theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l :=
-  length_eq_zero_iff_deg.trans (perp_foot_eq_self_iff_lies_on A l)
+  Seg.length_eq_zero_iff_deg.trans (perp_foot_eq_self_iff_lies_on A l)
 
 -- Maybe the proof of this theorem should require the Pythagorean Theorem.
 theorem dist_pt_line_shortest (A B : P) {l : Line P} (h : B LiesOn l) : dist A B ≥ dist_pt_line A l := sorry

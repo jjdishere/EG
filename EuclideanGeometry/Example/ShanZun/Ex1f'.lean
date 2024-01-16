@@ -64,9 +64,8 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (S
   -- $F$ lies in extension of $BD$
   have F_int_BD_extn : e.F LiesInt (SEG_nd e.B e.D).extension := by
     apply Ray.lies_int_of_eq_pos_extpoint (t := (SEG e.B e.C).length)
-    rw [length_pos_iff_PtNe]
-    exact B_ne_C
-    simp
+    apply (SEG_nd e.B e.C).length_pos
+    simp only [Seg.length_eq_dist]
   -- $D$ lies on $BF$ because $F$ lies on extension of $BD$
   have D_on_BF : e.D LiesOn (SEG_nd e.B e.F) :=  SegND.lies_on_of_lies_int (SegND.target_lies_int_seg_source_pt_of_pt_lies_int_extn F_int_BD_extn)
   -- $C$ lies on $BF$ because $C$ lies on $BD$ and $D$ lies on $BF$
