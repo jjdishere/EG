@@ -117,7 +117,7 @@ def delabVecNDMkPtPt : Delab := do
 @[simp]
 lemma VecND.coe_mkPtPt (A B : P) [_h : Fact (B ≠ A)] : VEC_nd A B = VEC A B := rfl
 
-@[simp]
+@[simp low]
 theorem VecND.neg_vecND (A B : P) [_h : Fact (B ≠ A)] : (- VEC_nd A B)= VEC_nd B A _h.1.symm := by
   haveI : Fact (A ≠ B) := ⟨_h.1.symm⟩
   ext

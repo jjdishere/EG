@@ -1166,7 +1166,7 @@ theorem SegND.pt_target_toDir_eq_toDir_of_lies_int {seg_nd : SegND P} {A : P} (h
   simp only [toVecND_of_rev_eq_neg_toVecND, neg_neg]
   rfl
 /--Given a nondegenerate segment $Segnd$ and a point $A$ lies in the interior of it. Then the direction of the nondegenerate vector from $A$ to the source of $Segnd$ equals the opposite direction of the nondegenerate vector from $A$ to the target of $Segnd$.  -/
-theorem SegND.toDir_eq_neg_toDir_of_lies_int1 {A : P} {seg_nd : SegND P} (h : A LiesInt seg_nd) : (VEC_nd A seg_nd.source h.2.symm).toDir = - (VEC_nd A seg_nd.target h.3.symm).toDir := by
+theorem SegND.toDir_eq_neg_toDir_of_lies_int {A : P} {seg_nd : SegND P} (h : A LiesInt seg_nd) : (VEC_nd A seg_nd.source h.2.symm).toDir = - (VEC_nd A seg_nd.target h.3.symm).toDir := by
   haveI : PtNe A seg_nd.source := ⟨h.2⟩
   rw [← VecND.neg_vecND, VecND.neg_toDir]
   exact neg_inj.mpr <|
