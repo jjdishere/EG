@@ -15,19 +15,19 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_colinear_ABC : ¬ colinear A B C
+  not_collinear_ABC : ¬ collinear A B C
   -- Claim : $B \ne A$
   B_ne_A : B ≠ A :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.2
+    (ne_of_not_collinear not_collinear_ABC).2.2
   -- Claim :$C \ne A$
   C_ne_A : C ≠ A :=
     -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.1.symm
+    (ne_of_not_collinear not_collinear_ABC).2.1.symm
   -- Claim $B \ne C$
   B_ne_C : B ≠ C :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).1.symm
+    (ne_of_not_collinear not_collinear_ABC).1.symm
   -- D is the midpoint of the segment $BC$
   D : Plane
   hD : D = (SEG B C).midpoint
@@ -57,18 +57,18 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_colinear_ABC : ¬ colinear A B C
+  not_collinear_ABC : ¬ collinear A B C
   -- Claim :$C \ne A$
   C_ne_A : C ≠ A :=
     -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.1.symm
+    (ne_of_not_collinear not_collinear_ABC).2.1.symm
   -- Claim $B \ne C$
   C_ne_B : C ≠ B :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).1
+    (ne_of_not_collinear not_collinear_ABC).1
   B_ne_A : B ≠ A :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
-    (ne_of_not_colinear not_colinear_ABC).2.2
+    (ne_of_not_collinear not_collinear_ABC).2.2
   -- We have triagngle $\triangle ABC$ such that $AC < BC$
   hedge : (SEG_nd A C C_ne_A).length < (SEG_nd B C C_ne_B).length
   --$D$ is the perpendicular foot from $A$ to line $BC$

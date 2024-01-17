@@ -16,7 +16,7 @@ namespace Parallelogram
 /- 
 construct parallelgram from (protected def)
 1. a point and 2 VecND that is not parallel
-2. 3 point that is not colinear
+2. 3 point that is not collinear
 -/
 
 end Parallelogram

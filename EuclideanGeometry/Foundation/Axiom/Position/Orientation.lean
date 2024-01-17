@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
+import EuclideanGeometry.Foundation.Axiom.Linear.Collinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 import EuclideanGeometry.Foundation.Axiom.Position.Angle
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
@@ -43,7 +43,7 @@ theorem wedge_eq_length_mul_length_mul_sin (A B C : P) [bnea : PtNe B A] [cnea :
   rw [Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec]
   exact (VecND.norm_mul_sin (VEC_nd A B) (VEC_nd A C)).symm
 
-theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B C = 0) := by
+theorem collinear_iff_wedge_eq_zero (A B C : P) : (collinear A B C) ↔ (wedge A B C = 0) := by
   dsimp only [wedge]
   by_cases h : PtNe B A
   · have vecabnd : VEC A B ≠ 0 := by
@@ -52,9 +52,9 @@ theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B
     simp only [vecabnd, false_or]
     constructor
     · intro k
-      exact colinear_iff_eq_smul_vec_of_ne.mp k
+      exact collinear_iff_eq_smul_vec_of_ne.mp k
     · intro k
-      exact colinear_iff_eq_smul_vec_of_ne.mpr k
+      exact collinear_iff_eq_smul_vec_of_ne.mpr k
   · simp [PtNe, fact_iff] at h
     have vecab0 : VEC A B = 0 := by
       exact (eq_iff_vec_eq_zero A B).mp h
@@ -63,27 +63,27 @@ theorem colinear_iff_wedge_eq_zero (A B C : P) : (colinear A B C) ↔ (wedge A B
     field_simp [vecab0]
     intro
     rw [h]
-    exact triv_colinear A C
+    exact triv_collinear A C
 
-theorem not_colinear_iff_wedge_ne_zero (A B C : P) : (¬ colinear A B C) ↔ (wedge A B C ≠ 0) := by
-  rw [colinear_iff_wedge_eq_zero]
+theorem not_collinear_iff_wedge_ne_zero (A B C : P) : (¬ collinear A B C) ↔ (wedge A B C ≠ 0) := by
+  rw [collinear_iff_wedge_eq_zero]
 
-theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬colinear A B C) : (0 < wedge A B C) ↔ (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value.IsPos := by
+theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬collinear A B C) : (0 < wedge A B C) ↔ (Angle.mk_pt_pt_pt B A C (ne_of_not_collinear nd).2.2 (ne_of_not_collinear nd).2.1.symm).value.IsPos := by
   have h1 : 0 < dist A B := by
-      have abnd : (SEG A B).IsND := (ne_of_not_colinear nd).2.2
+      have abnd : (SEG A B).IsND := (ne_of_not_collinear nd).2.2
       exact dist_pos.mpr (abnd.symm)
   have h2 : 0 < dist A C := by
-      have acnd : (SEG A C).IsND := (ne_of_not_colinear nd).2.1.symm
+      have acnd : (SEG A C).IsND := (ne_of_not_collinear nd).2.1.symm
       exact dist_pos.mpr (acnd.symm)
   constructor
   · intro h0
-    rw [wedge_eq_length_mul_length_mul_sin (bnea := ⟨(ne_of_not_colinear nd).2.2⟩) (cnea := ⟨(ne_of_not_colinear nd).2.1.symm⟩)] at h0
-    have h3 : 0 < sin (Angle.mk_pt_pt_pt B A C (ne_of_not_colinear nd).2.2 (ne_of_not_colinear nd).2.1.symm).value := by
+    rw [wedge_eq_length_mul_length_mul_sin (bnea := ⟨(ne_of_not_collinear nd).2.2⟩) (cnea := ⟨(ne_of_not_collinear nd).2.1.symm⟩)] at h0
+    have h3 : 0 < sin (Angle.mk_pt_pt_pt B A C (ne_of_not_collinear nd).2.2 (ne_of_not_collinear nd).2.1.symm).value := by
       field_simp at h0
       exact h0
     rw [sin_pos_iff_isPos] at h3
     exact h3
-  rw [wedge_eq_length_mul_length_mul_sin (bnea := ⟨(ne_of_not_colinear nd).2.2⟩) (cnea := ⟨(ne_of_not_colinear nd).2.1.symm⟩)]
+  rw [wedge_eq_length_mul_length_mul_sin (bnea := ⟨(ne_of_not_collinear nd).2.2⟩) (cnea := ⟨(ne_of_not_collinear nd).2.1.symm⟩)]
   field_simp
   exact sin_pos_iff_isPos.mpr
 
@@ -335,14 +335,11 @@ theorem LiesOnLeft_or_LiesOnRight_of_not_LiesOn {A : P} [DirFig α P] {df : α} 
   · exact lr
 
 
-theorem not_colinear_of_LiesOnLeft_or_LiesOnRight (A B C : P) [bnea : PtNe B A] (hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B))) : ¬ colinear A B C := by
-  apply (not_colinear_iff_wedge_ne_zero A B C).mpr
-  have hw : (wedge A B C) = (SEG A B).length * odist' C (RAY A B) := by
-    exact wedge_eq_length_mul_odist' A B C
-  have pos : (SEG A B).length > 0 := by
-    calc
-      _=(SEG_nd A B).length := by rfl
-      _>0 := by apply EuclidGeom.length_pos
+theorem not_collinear_of_LiesOnLeft_or_LiesOnRight (A B C : P) [bnea : PtNe B A] (hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B))) : ¬ collinear A B C := by
+  apply (not_collinear_iff_wedge_ne_zero A B C).mpr
+  have hw : (wedge A B C) = (SEG A B).length * odist' C (RAY A B) :=
+    wedge_eq_length_mul_odist' A B C
+  have _ : (SEG A B).length > 0 := (SEG_nd A B).length_pos
   rcases hlr with l|r
   · unfold IsOnLeftSide at l
     have : (wedge A B C) > 0 := by
@@ -386,13 +383,13 @@ theorem oarea_eq_sin_mul_length_mul_length_div_two (A B C : P) [bnea : PtNe B A]
   unfold oarea
   rw [wedge_eq_length_mul_length_mul_sin A B C]
 
-theorem oarea_eq_zero_iff_colinear (A B C : P) : oarea A B C = 0 ↔ colinear A B C := by
+theorem oarea_eq_zero_iff_collinear (A B C : P) : oarea A B C = 0 ↔ collinear A B C := by
   unfold oarea
   field_simp
-  exact (colinear_iff_wedge_eq_zero A B C).symm
+  exact (collinear_iff_wedge_eq_zero A B C).symm
 
-theorem oarea_tri_nd_ne_zero (A B C : P) (trind : ¬ colinear A B C) : oarea A B C ≠ 0 := by
-  rw[← oarea_eq_zero_iff_colinear A B C] at trind
+theorem oarea_tri_nd_ne_zero (A B C : P) (trind : ¬ collinear A B C) : oarea A B C ≠ 0 := by
+  rw[← oarea_eq_zero_iff_collinear A B C] at trind
   tauto
 
 end oriented_area
@@ -1098,7 +1095,7 @@ theorem LiesOnLeft_iff_LiesOnLeft_rev_of_IsOnOppositeSide (A B : P) (dl : DirLin
     simp [this] at h0
     exact h0
 
-theorem not_colinear_of_IsOnSameSide (A B C D : P) [bnea : PtNe B A] (h : IsOnSameSide C D (RAY A B)) : (¬ colinear A B C) ∧ (¬ colinear A B D) := by
+theorem not_collinear_of_IsOnSameSide (A B C D : P) [bnea : PtNe B A] (h : IsOnSameSide C D (RAY A B)) : (¬ collinear A B C) ∧ (¬ collinear A B D) := by
   have hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B)) := by
     rcases h with l|r
     · simp only [l.1, true_or]
@@ -1107,15 +1104,15 @@ theorem not_colinear_of_IsOnSameSide (A B C D : P) [bnea : PtNe B A] (h : IsOnSa
     rcases h with l|r
     · simp only [l.2, true_or]
     · simp only [r.2, or_true]
-  have c : ¬ colinear A B C := by
-    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+  have c : ¬ collinear A B C := by
+    apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     exact hlr
-  have d : ¬ colinear A B D := by
-    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+  have d : ¬ collinear A B D := by
+    apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     exact hlr'
   simp only [c, not_false_eq_true, d, and_self]
 
-theorem not_colinear_of_IsOnOppositeSide (A B C D : P) [bnea : PtNe B A] (h : IsOnOppositeSide C D (RAY A B)) : (¬ colinear A B C) ∧ (¬ colinear A B D) := by
+theorem not_collinear_of_IsOnOppositeSide (A B C D : P) [bnea : PtNe B A] (h : IsOnOppositeSide C D (RAY A B)) : (¬ collinear A B C) ∧ (¬ collinear A B D) := by
   have hlr : (IsOnLeftSide C (RAY A B)) ∨ (IsOnRightSide C (RAY A B)) := by
     rcases h with l|r
     · simp only [l.1, true_or]
@@ -1124,11 +1121,11 @@ theorem not_colinear_of_IsOnOppositeSide (A B C D : P) [bnea : PtNe B A] (h : Is
     rcases h with l|r
     · simp only [l.2, or_true]
     · simp only [r.2, true_or]
-  have c : ¬ colinear A B C := by
-    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+  have c : ¬ collinear A B C := by
+    apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     exact hlr
-  have d : ¬ colinear A B D := by
-    apply not_colinear_of_LiesOnLeft_or_LiesOnRight
+  have d : ¬ collinear A B D := by
+    apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     exact hlr'
   simp only [c, not_false_eq_true, d, and_self]
 
@@ -1260,10 +1257,7 @@ theorem same_side_of_line_passing_source (A B C : P) (l : Line P) (ha : A LiesOn
   unfold VecND.SameDir at eqDir'
   rcases eqDir' with ⟨x,h⟩
   have x_pos : x > 0 := h.1
-  have exist : ∃ ray : Ray P , (ray.source = A) ∧ (ray.toLine = l) := by
-    apply every_pt_onLine_exist_rep
-    exact ha
-  rcases exist with ⟨r,p⟩
+  rcases l.exist_rep_ray_source_eq_pt ha with ⟨r,p⟩
   have : IsOnSameSide B C r = IsOnSameSide B C l := by
     calc
       _= IsOnSameSide B C r.toLine := by rfl
@@ -1834,6 +1828,6 @@ end intersect_of_ray
 
 
 /- A lot more theorems regarding positions -/
-/- e.g. 180 degree implies colinear -/
+/- e.g. 180 degree implies collinear -/
 
 end EuclidGeom

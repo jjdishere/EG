@@ -14,7 +14,7 @@ Prove that $∠DAB = ∠CAE$.
 -/
 /--/
 --Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {not_colinear_ABC: ¬ colinear A B C} {isoceles_ABC: (▵ A B C).IsIsoceles}
+variable {A B C : P} {not_collinear_ABC: ¬ collinear A B C} {isoceles_ABC: (▵ A B C).IsIsoceles}
 --Let $D$ and $E$ be two points on $BC$
 variable {D : P} {D_Int_BC: D LiesInt (SEG B C)}
 variable {E : P} {E_Int_BC: E LiesInt (SEG B C)}
@@ -22,12 +22,12 @@ variable {E : P} {E_Int_BC: E LiesInt (SEG B C)}
 variable {D_E_seg_position : (SEG B D).length = (SEG C E).length}
 --lemma for existance of angle
 --Because ▵ A B C is nondegrnerate, $A B C$ is pairwise distinct
-lemma b_ne_a : B ≠ A := (ne_of_not_colinear hnd).2.2
-lemma c_ne_a : C ≠ A := (ne_of_not_colinear hnd).2.1.symm
-lemma a_ne_b : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
-lemma a_ne_c : A ≠ C := (ne_of_not_colinear hnd).2.1
-lemma b_ne_c : B ≠ C := (ne_of_not_colinear hnd).1.symm
-lemma c_ne_b : C ≠ B := (ne_of_not_colinear hnd).1
+lemma b_ne_a : B ≠ A := (ne_of_not_collinear hnd).2.2
+lemma c_ne_a : C ≠ A := (ne_of_not_collinear hnd).2.1.symm
+lemma a_ne_b : A ≠ B := (ne_of_not_collinear hnd).2.2.symm
+lemma a_ne_c : A ≠ C := (ne_of_not_collinear hnd).2.1
+lemma b_ne_c : B ≠ C := (ne_of_not_collinear hnd).1.symm
+lemma c_ne_b : C ≠ B := (ne_of_not_collinear hnd).1
 --Prove that $∠ D A B = ∠ C A E$.
 -/
 structure Setting (Plane : Type _) [EuclideanPlane Plane] where
@@ -35,7 +35,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_colinear_ABC : ¬ colinear A B C
+  not_collinear_ABC : ¬ collinear A B C
   isoc_ABC : (▵ A B C).IsIsoceles
   --Let $D$ and $E$ be two points on $BC$
   D : Plane
@@ -45,12 +45,12 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   BD_eq_CE : (SEG B D).length = (SEG C E).length
   --lemma for existance of angle
   --Because ▵ A B C is nondegrnerate, $A B C$ is pairwise distinct
-  B_ne_A : B ≠ A := (ne_of_not_colinear not_colinear_ABC).2.2
-  C_ne_A : C ≠ A := (ne_of_not_colinear not_colinear_ABC).2.1.symm
-  A_ne_B : A ≠ B := (ne_of_not_colinear not_colinear_ABC).2.2.symm
-  A_ne_C : A ≠ C := (ne_of_not_colinear not_colinear_ABC).2.1
-  B_ne_C : B ≠ C := (ne_of_not_colinear not_colinear_ABC).1.symm
-  C_ne_B : C ≠ B := (ne_of_not_colinear not_colinear_ABC).1
+  B_ne_A : B ≠ A := (ne_of_not_collinear not_collinear_ABC).2.2
+  C_ne_A : C ≠ A := (ne_of_not_collinear not_collinear_ABC).2.1.symm
+  A_ne_B : A ≠ B := (ne_of_not_collinear not_collinear_ABC).2.2.symm
+  A_ne_C : A ≠ C := (ne_of_not_collinear not_collinear_ABC).2.1
+  B_ne_C : B ≠ C := (ne_of_not_collinear not_collinear_ABC).1.symm
+  C_ne_B : C ≠ B := (ne_of_not_collinear not_collinear_ABC).1
 --Points not equal for angles ∠ A B D and ∠ A C E
 namespace Setting
 lemma D_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : e.D ≠ e.A := sorry
@@ -78,9 +78,9 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
       _= (SEG e.A e.B).length := length_of_rev_eq_length' --$BA = AB$ by symmetry
       _= (SEG e.C e.A).length := e.isoc_ABC.symm -- $AB = CA$ by isoceles.
   --Triangle B A D nondegenerate.
-  have hnd₁ : ¬ colinear e.B e.A e.D := by sorry
+  have hnd₁ : ¬ collinear e.B e.A e.D := by sorry
   --Triangle C A E nondegenerate.
-  have hnd₂ : ¬ colinear e.C e.A e.E := by sorry
+  have hnd₂ : ¬ collinear e.C e.A e.E := by sorry
   --Beacause $BD = CE$ we have $DB = EC$.
   have h₁ : (SEG e.D e.B).length = (SEG e.E e.C).length := by
     calc
@@ -89,7 +89,7 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
       _= (SEG e.E e.C).length := length_of_rev_eq_length' --$CE = EC$ by symmetry
   --In the isoceles triangle $A B C$, we have $\angle A B C = -\angle A C B$.
   have h₂₀ : ∠ e.C e.B e.A (e.C_ne_B) (e.A_ne_B) = ∠ e.A e.C e.B (e.A_ne_C) (e.B_ne_C) := by
-      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ e.A e.B e.C, e.not_colinear_ABC⟩)).mp
+      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ e.A e.B e.C, e.not_collinear_ABC⟩)).mp
       exact e.isoc_ABC
   --Because $\angle A B C = -\angle A C B$ we have $\angle A B D = -\angle A C E$
   have A_int_ray_BA : e.A LiesInt (RAY e.B e.A e.A_ne_B) := by

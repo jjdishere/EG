@@ -115,13 +115,13 @@ Ray.lean -- Define (directed) segments and rays
 Colinarity.lean -- Define the relative positions of points on rays
 
   Definitions :
-    (defn) colinear_of_nd : Prop -- Given three distinct points (A B C : P), return whether the three points are colinear, i.e. whether (VEC A B).toProj = (VEC A C).toProj
-    (defn) colinear : Prop -- Given three points (A B C : P), return whether they are colinear; if at least two of them are equal, then they are considered automatically colinear.
+    (defn) collinear_of_nd : Prop -- Given three distinct points (A B C : P), return whether the three points are collinear, i.e. whether (VEC A B).toProj = (VEC A C).toProj
+    (defn) collinear : Prop -- Given three points (A B C : P), return whether they are collinear; if at least two of them are equal, then they are considered automatically collinear.
   
   Theorems :
-    colinear_of_vec_eq_smul_vec -- Given three points (A B C : P), if VEC A C = t ⬝ VEC A B for some t ∈ ℝ, then A B C are colinear
-    colinear_of_vec_eq_smul_vec' -- same as colinear_of_vec_eq_smul_vec, excepted stated in the form of existence of t
-    colinear_iff_eq_smul_vec_of_ne -- Given three points (A B C : P) with (B ≠ A), then A B C are colinear if and only if VEC A C = r ⬝ VEC A B for some r ∈ ℝ
+    collinear_of_vec_eq_smul_vec -- Given three points (A B C : P), if VEC A C = t ⬝ VEC A B for some t ∈ ℝ, then A B C are collinear
+    collinear_of_vec_eq_smul_vec' -- same as collinear_of_vec_eq_smul_vec, excepted stated in the form of existence of t
+    collinear_iff_eq_smul_vec_of_ne -- Given three points (A B C : P) with (B ≠ A), then A B C are collinear if and only if VEC A C = r ⬝ VEC A B for some r ∈ ℝ
     
 
 
@@ -150,8 +150,8 @@ Line.lean -- Define lines
     Carrier:
       Line.carrier --
       Line.IsOn -- `Don't really need this`
-      linear -- every 3 pts on line colinear;
-      maximal -- pt that colinear with 2 different pts on line falls on the line
+      linear -- every 3 pts on line collinear;
+      maximal -- pt that collinear with 2 different pts on line falls on the line
       nontriv -- a line contains at least 2 pts
       Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev --
       Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source
@@ -181,10 +181,10 @@ Line.lean -- Define lines
       Ray.toProj_eq_toLine_toProj --
       SegND.toProj_eq_toLine_toProj --
       lies_on_iff_eq_toProj_of_lies_on --
-    colinear : theorems related to colinear
-      lies_on_line_of_pt_pt_iff_colinear --
-      lies_on_iff_colinear_of_ne_lies_on_lies_on --
-      colinear_iff_exist_line_lies_on --
+    collinear : theorems related to collinear
+      lies_on_line_of_pt_pt_iff_collinear --
+      lies_on_iff_collinear_of_ne_lies_on_lies_on --
+      collinear_iff_exist_line_lies_on --
 
     (archemidean) `Line_ex`
     exists_ne_pt_pt_lies_on_of_line --

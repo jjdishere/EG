@@ -29,10 +29,7 @@ lemma eq_toDir_of_parallel_and_IsOnLL {A B C D : P} [bnea : PtNe B A] [cnea : Pt
   rcases eq_or_neg with eq|neg
   · exact eq
   · unfold IsOnLeftSide at side
-    have ABnd : (SEG A B).length > 0 := by
-      calc
-        _=(SEG_nd A B).length := by rfl
-        _>0 := by apply EuclidGeom.length_pos
+    have _ : (SEG A B).length > 0 := (SEG_nd A B).length_pos
     have c : odist C (SEG_nd A B) > 0 := side.1
     have d : odist D (SEG_nd A B) > 0 := side.2
     have w1 : wedge A B C > 0 := by
@@ -110,10 +107,7 @@ lemma eq_toDir_of_parallel_and_IsOnRR {A B C D : P} [bnea : PtNe B A] [cnea : Pt
   rcases eq_or_neg with eq|neg
   · exact eq
   · unfold IsOnRightSide at side
-    have ABnd : (SEG A B).length > 0 := by
-      calc
-        _=(SEG_nd A B).length := by rfl
-        _>0 := by apply EuclidGeom.length_pos
+    have _ : (SEG A B).length > 0 := (SEG_nd A B).length_pos
     have c : odist C (SEG_nd A B) < 0 := side.1
     have d : odist D (SEG_nd A B) < 0 := side.2
     have w1 : wedge A B C < 0 := by
@@ -210,10 +204,7 @@ lemma neg_toDir_of_parallel_and_IsOnLR {A B C D : P} [bnea : PtNe B A] [cnea : P
   rcases eq_or_neg with eq|neg
   · unfold IsOnLeftSide at side
     unfold IsOnRightSide at side
-    have ABnd : (SEG A B).length > 0 := by
-      calc
-        _=(SEG_nd A B).length := by rfl
-        _>0 := by apply EuclidGeom.length_pos
+    have _ : (SEG A B).length > 0 := (SEG_nd A B).length_pos
     have c : odist C (SEG_nd A B) > 0 := side.1
     have d : odist D (SEG_nd A B) < 0 := side.2
     have w1 : wedge A B C > 0 := by
@@ -281,10 +272,7 @@ lemma neg_toDir_of_parallel_and_IsOnRL {A B C D : P} [bnea : PtNe B A] [cnea : P
   rcases eq_or_neg with eq|neg
   · unfold IsOnLeftSide at side
     unfold IsOnRightSide at side
-    have ABnd : (SEG A B).length > 0 := by
-      calc
-        _=(SEG_nd A B).length := by rfl
-        _>0 := by apply EuclidGeom.length_pos
+    have _ : (SEG A B).length > 0 := (SEG_nd A B).length_pos
     have c : odist C (SEG_nd A B) < 0 := side.1
     have d : odist D (SEG_nd A B) > 0 := side.2
     have w1 : wedge A B C < 0 := by
