@@ -49,17 +49,28 @@ instance : LinearObj (Line P) where
 def parallel {α β : Type*} [ProjObj α] [ProjObj β] (l₁ : α) (l₂ : β) : Prop :=
   toProj l₁ = toProj l₂
 
-/-- Being parallel defines an equivalence relation among all linear objects, that is they satisfy the three conditions: (1) reflexive: every linear object $l$ is parallel to itself; (2) symmetric: if the linear object $l_1$ is parallel to the linear object $l_2$, then $l_2$ is $l_1$; (3) transitive: if the linear object $l_1$ is parallel to the linear object $l_2$, and if the linear object $l_2$ is parallel to the linear object $l_3$, then $l_1$ is parallel to $l_3$. -/
-instance (α : Type*) [ProjObj α] : IsEquiv α parallel where
-  refl _ := rfl
-  symm _ _ := Eq.symm
-  trans _ _ _ := Eq.trans
-
 /-- This is to rewrite \verb|parallel l l'| as \verb|l ParallelTo l'| -/
 scoped infix : 50 " ParallelTo " => parallel
 
 /-- This is to rewrite \verb|parallel l l'| as $l \parallel l'$. -/
 scoped infix : 50 " ∥ " => parallel
+
+@[refl]
+lemma parallel.refl {α : Type*} [ProjObj α] (l : α) : l ∥ l := rfl
+
+@[symm]
+lemma parallel.symm {α β : Type*} [ProjObj α] [ProjObj β] {l₁ : α} {l₂ : β} : l₁ ∥ l₂ → l₂ ∥ l₁ := Eq.symm
+
+lemma parallel_comm {α β : Type*} [ProjObj α] [ProjObj β] {l₁ : α} {l₂ : β} : l₁ ∥ l₂ ↔ l₂ ∥ l₁ := eq_comm
+
+@[trans]
+lemma parallel.trans {α β γ : Type*} [ProjObj α] [ProjObj β] [ProjObj γ] {l₁ : α} {l₂ : β} {l₃ : γ} : l₁ ∥ l₂ → l₂ ∥ l₃ → l₁ ∥ l₃ := Eq.trans
+
+/-- Being parallel defines an equivalence relation among all linear objects, that is they satisfy the three conditions: (1) reflexive: every linear object $l$ is parallel to itself; (2) symmetric: if the linear object $l_1$ is parallel to the linear object $l_2$, then $l_2$ is $l_1$; (3) transitive: if the linear object $l_1$ is parallel to the linear object $l_2$, and if the linear object $l_2$ is parallel to the linear object $l_3$, then $l_1$ is parallel to $l_3$. -/
+instance (α : Type*) [ProjObj α] : IsEquiv α parallel where
+  refl _ := rfl
+  symm _ _ := Eq.symm
+  trans _ _ _ := Eq.trans
 
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coercions, ... -/
 

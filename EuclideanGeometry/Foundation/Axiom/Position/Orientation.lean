@@ -114,7 +114,7 @@ theorem odist_reverse_eq_neg_odist {α} (A : P) [DirFig α P] (df : α) : odist 
   rw [odist_reverse_eq_neg_odist'' A (toDirLine df)]
   rfl
 
-theorem wedge_eq_wedge_iff_odist_eq_odist_of_ne (A B C D : P) [bnea : PtNe B A] : (odist C (SEG_nd A B) = odist D (SEG_nd A B)) ↔ (wedge A B C = wedge A B D) := by
+theorem odist_eq_odist_iff_wedge_eq_wedge (A B C D : P) [bnea : PtNe B A] : (odist C (SEG_nd A B) = odist D (SEG_nd A B)) ↔ (wedge A B C = wedge A B D) := by
   rw [wedge_eq_length_mul_odist' A B C, wedge_eq_length_mul_odist' A B D]
   field_simp
   tauto
@@ -327,10 +327,10 @@ theorem oarea_eq_length_mul_odist_div_two (A B C : P) [bnea : PtNe B A] : oarea 
   rw [h2] at h1
   rw [h1]
 
-theorem oarea_eq_oarea_iff_odist_eq_odist_of_ne (A B C D : P) [bnea : PtNe B A] : odist C (SEG_nd A B) = odist D (SEG_nd A B) ↔ oarea A B C = oarea A B D := by
+theorem odist_eq_odist_iff_oarea_eq_oarea (A B C D : P) [bnea : PtNe B A] : odist C (SEG_nd A B) = odist D (SEG_nd A B) ↔ oarea A B C = oarea A B D := by
   unfold oarea
   field_simp
-  exact wedge_eq_wedge_iff_odist_eq_odist_of_ne A B C D
+  exact odist_eq_odist_iff_wedge_eq_wedge A B C D
 
 theorem oarea_eq_sin_mul_length_mul_length_div_two (A B C : P) [bnea : PtNe B A] [cnea : PtNe C A] : oarea A B C = (SEG A B).length * (SEG A C).length * sin (ANG B A C).value / 2 := by
   unfold oarea
@@ -369,7 +369,7 @@ theorem odist_eq_odist_of_parallel' (A B : P) (ray : Ray P) [bnea : PtNe B A] (p
 
 --theorem odist_eq_odist_of_parallel {α} [DirFig α P] (A B : P) (df : α) [bnea : PtNe B A] (para : parallel (SEG_nd A B) df) : odist A df = odist B df := sorry
 
-theorem odist_eq_odist_iff_parallel_ne {α} [DirFig α P] (A B : P) (df : α) [bnea : PtNe B A] : (parallel (SEG_nd A B) df) ↔ odist A df = odist B df := by
+theorem parallel_iff_odist_eq_odist {α} [DirFig α P] (A B : P) (df : α) [bnea : PtNe B A] : parallel (SEG_nd A B) df ↔ odist A df = odist B df := by
   have coer1 : (parallel (SEG_nd A B) df) = (parallel (SEG_nd A B) (toDirLine df)) := by
     unfold parallel
     have : toProj df = toProj (toDirLine df) := by
@@ -427,7 +427,10 @@ theorem odist_eq_odist_iff_parallel_ne {α} [DirFig α P] (A B : P) (df : α) [b
     simp only [Dir.unitVecND_toProj]
     rfl
 
-theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : (parallel (SEG_nd A B) (SEG_nd C D)) ↔ wedge A B C = wedge A B D := by
+theorem wedge_eq_wedge_iff_parallel (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : SEG_nd A B ∥ SEG_nd C D ↔ wedge A B C = wedge A B D := by
+  rw [← odist_eq_odist_iff_wedge_eq_wedge, parallel_iff_odist_eq_odist]
+
+theorem wedge_eq_wedge_iff_parallel (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : SEG_nd A B ∥ SEG_nd C D ↔ wedge A B C = wedge A B D := by
   have : (wedge A B C = wedge A B D) = (odist C (SEG_nd A B) = odist D (SEG_nd A B)) := by
     symm
     simp only [eq_iff_iff]
@@ -450,20 +453,27 @@ theorem oarea_eq_oarea_iff_parallel_ne (s₁ s₂ : SegND P) :
   let B := s₁.target
   let C := s₂.source
   let D := s₂.target
-  unfold oarea
-  have : (wedge A B C / 2 = wedge A B D / 2) = (wedge A B C = wedge A B D) := by
-    simp only [eq_iff_iff]
-    constructor
-    · intro P
-      calc
-        _= wedge A B C /2 *2 := by simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
-          div_mul_cancel]
-        _= wedge A B D /2 *2 := by simp only [P]
-        _=_ := by simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, div_mul_cancel]
-    · intro P
-      simp only [P]
-  simp only [this]
-  exact wedge_eq_wedge_iff_parallel_of_ne_ne A B C D
+  if hba : B = A then
+    subst hba; simp
+
+    sorry
+
+  else
+    unfold oarea
+    have : (wedge A B C / 2 = wedge A B D / 2) = (wedge A B C = wedge A B D) := by
+      simp only [eq_iff_iff]
+      constructor
+      · intro P
+        calc
+          _= wedge A B C /2 *2 := by simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
+            div_mul_cancel]
+          _= wedge A B D /2 *2 := by simp only [P]
+          _=_ := by simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, div_mul_cancel]
+      · intro P
+        simp only [P]
+    simp only [this]
+    haveI : PtNe B A := ⟨hab⟩
+    exact wedge_eq_wedge_iff_parallel_of_ne_ne A B C D
 
 end cooperation_with_parallel
 
