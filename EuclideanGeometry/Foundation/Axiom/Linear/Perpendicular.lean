@@ -9,13 +9,13 @@ variable {P : Type _} [EuclideanPlane P] {α β γ : Type*} [ProjObj α] [ProjOb
   {l₁ : α} {l₂ : β} {l₃ : γ}
 
 /-- This defines two projective objects to be perpendicular, i.e. their associated projective directions are perpendicular. -/
-def perpendicular (l₁ : α) (l₂ : β) : Prop :=
+def Perpendicular (l₁ : α) (l₂ : β) : Prop :=
   ProjObj.toProj l₁ = (ProjObj.toProj l₂).perp
 
-/-- Abbreviate `perpendicular $l_1$ $l_2$` to `$l_1$ IsPerpendicularTo $l_2$` or `$l_1$ $\perp$ $l_2$`. -/
-scoped infix : 50 " IsPerpendicularTo " => perpendicular
+/-- Abbreviate `Perpendicular $l_1$ $l_2$` to `$l_1$ IsPerpendicularTo $l_2$` or `$l_1$ $\perp$ $l_2$`. -/
+scoped infix : 50 " IsPerpendicularTo " => Perpendicular
 
-scoped infix : 50 " ⟂ " => perpendicular
+scoped infix : 50 " ⟂ " => Perpendicular
 
 section Notation
 open Lean
@@ -23,12 +23,12 @@ open Lean
 syntax (name := perpendicularNotation) (priority := high) term:50 " ⟂ " term:51 : term
 
 @[macro perpendicularNotation] def perpendicularNotationImpl : Macro
-  | `($l:term ⟂ $r:term) => `(perpendicular $l $r)
+  | `($l:term ⟂ $r:term) => `(Perpendicular $l $r)
   | _ => Macro.throwUnsupported
 
 end Notation
 
-namespace perpendicular
+namespace Perpendicular
 
 /-- A projective object $l$ is not perpendicular to itself. -/
 @[simp]
@@ -36,18 +36,18 @@ protected theorem irrefl (l : α) : ¬ (l ⟂ l) :=
   sorry
 
 protected theorem symm (h : l₁ ⟂ l₂) : (l₂ ⟂ l₁) := by
-  rw [perpendicular, Proj.perp, h, Proj.perp, vadd_vadd]
+  rw [Perpendicular, Proj.perp, h, Proj.perp, vadd_vadd]
   norm_cast
   simp
 
-end perpendicular
+end Perpendicular
 
 section Perpendicular_and_parallel
 
 /-- If $l_1$ is perpendicular to $l_2$ and $l_2$ is perpendicular to $l_3$, then $l_1$ is perpendicular to $l_3$. -/
 theorem parallel_of_perp_perp (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ⟂ l₃) : l₁ ∥ l₃ := by
-  unfold perpendicular at h₂
-  simp only [perpendicular, h₂, Proj.perp_perp] at h₁
+  unfold Perpendicular at h₂
+  simp only [Perpendicular, h₂, Proj.perp_perp] at h₁
   exact h₁
 
 theorem perp_of_parallel_perp (h₁ : l₁ ∥ l₂) (h₂ : l₂ ⟂ l₃) : l₁ ⟂ l₃ := Eq.trans h₁ h₂
@@ -78,7 +78,7 @@ theorem perp_line_perp (A : P) (l : Line P) : perp_line A l ⟂ l := toProj_of_p
 
 /-- For a point $A$ and a line $l$, the projective direction of $l$ is different from the projective direction of the line through $A$ perpendicular to $l$. -/
 theorem toProj_ne_perp_toProj (A : P) (l : Line P) : l.toProj ≠ (perp_line A l).toProj :=
-  Ne.trans_eq (perpendicular.irrefl l) (toProj_of_perp_line_eq_toProj_perp A l).symm
+  Ne.trans_eq (Perpendicular.irrefl l) (toProj_of_perp_line_eq_toProj_perp A l).symm
 
 /-- For a point $A$ and a line $l$, this function returns the perpendicular foot from $A$ to $l$.  -/
 def perp_foot (A : P) (l : Line P) : P := Line.inx l (perp_line A l) (toProj_ne_perp_toProj A l)

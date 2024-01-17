@@ -370,18 +370,18 @@ protected theorem trans {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj 
 
 end Parallel
 
-def perpendicular {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := sorry
+def Perpendicular {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := sorry
 
-scoped notation A "IsPerpendicularTo" B => perpendicular A B
-scoped notation A "⟂" B => perpendicular A B
+scoped notation A "IsPerpendicularTo" B => Perpendicular A B
+scoped notation A "⟂" B => Perpendicular A B
 
-namespace perpendicular
+namespace Perpendicular
 
 protected theorem irrefl {α : Type _} (A : α) [HasProj α] : ¬ (A ⟂ A) := by sorry
 
 protected theorem symm {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : (A ⟂ B) → (B ⟂ A) := sorry
 
-end perpendicular
+end Perpendicular
 
 theorem parallel_of_perp_perp {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ] : (A ⟂ B) → (B ⟂ C) → (A ∥ C)  := sorry
 -/ -/
