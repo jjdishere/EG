@@ -88,9 +88,9 @@ Therefore, $DX = EY$.
     exact e.E_int_BC
   -- We have that $Y$ lies on ray $CA$.
   have Y_int_ray_CA : e.Y LiesInt (RAY e.C e.A A_ne_C) := by
-    simp only [e.he, Line.line_of_pt_pt_eq_rev A_ne_C.symm]
+    simp only [e.he, Line.line_of_pt_pt_eq_rev (_h := ⟨A_ne_C.symm⟩)]
     -- We have that $\angle ACE$ is an acute angle.
-    have angle_ACE_acute :  Angle.IsAcuteAngle (ANG e.A e.C e.E A_ne_C E_ne_C) := by
+    have angle_ACE_acute :  Angle.IsAcu (ANG e.A e.C e.E A_ne_C E_ne_C) := by
       -- Because $\angle ACE$ is exactly the same angle as $\angle ACB$, which is the consequence of the fact that $E$ lies on ray $CB$.
       have angle_ACE_is_angle_ACB : (ANG e.A e.C e.E A_ne_C E_ne_C) = (ANG e.A e.C e.B A_ne_C C_ne_B.symm) := by
         symm;
@@ -117,9 +117,9 @@ Therefore, $DX = EY$.
     exact e.D_int_BC
   -- We have that $X$ lies on ray $BA$.
   have X_int_ray_BA : e.X LiesInt (RAY e.B e.A A_ne_B) := by
-    simp only [e.hd, Line.line_of_pt_pt_eq_rev A_ne_B.symm]
+    simp only [e.hd, Line.line_of_pt_pt_eq_rev (_h := ⟨A_ne_C.symm⟩)]
     -- We have that $\angle ABD$ is an acute angle.
-    have angle_ABD_acute :  Angle.IsAcuteAngle (ANG e.A e.B e.D A_ne_B D_ne_B) := by
+    have angle_ABD_acute :  Angle.IsAcu (ANG e.A e.B e.D A_ne_B D_ne_B) := by
       -- Because $\angle ABD$ is exactly the same angle as $\angle ABC$, which is the consequence of the fact that $D$ lies on ray $BC$.
       have angle_ABD_is_angle_ABC : (ANG e.A e.B e.D A_ne_B D_ne_B) = (ANG e.A e.B e.C A_ne_B C_ne_B) := by
         symm;
@@ -136,7 +136,12 @@ Therefore, $DX = EY$.
   have X_ne_B : e.X ≠ e.B := X_int_ray_BA.2
   -- We have $X, B, D$ are not collinear because $D$ doesn't lies on line $AB$ and $B$ doesn't coincide with $X$.
   have not_collinear_XBD : ¬ collinear e.X e.B e.D := by
-    exact not_collinear_with_perp_foot_of_ne_perp_foot e.D e.B e.X (LIN e.A e.B e.B_ne_A) (Line.snd_pt_lies_on_mk_pt_pt e.B_ne_A) D_not_on_AB e.hd (X_ne_B).symm
+    by_contra h
+    haveI : PtNe e.X e.B := ⟨X_ne_B⟩
+    have : e.D LiesOn LIN e.X e.B := Line.pt_pt_maximal h
+    have : LIN e.X e.B = LIN e.A e.B _ := sorry
+    have : e.D LiesOn LIN e.A e.B _ := sorry
+    exact D_not_on_AB this
   -- We have $D \ne X$.
   have D_ne_X : e.D ≠ e.X := by sorry
   -- In isoceles triangle $ABC$, we have $\angle CBA = - \angle BCA$.
@@ -146,7 +151,7 @@ Therefore, $DX = EY$.
     -- $\angle CBA = \angle ACB$ because triangle $ABC$ is an isoceles triangle.
     _= ∠ e.A e.C e.B A_ne_C C_ne_B.symm := is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.B e.C e.not_collinear_ABC)).mp e.isoceles_ABC
     -- $\angle ACB = - \angle BCA$ by symmetry.
-    _= - ∠ e.B e.C e.A C_ne_B.symm A_ne_C := neg_value_of_rev_ang A_ne_C C_ne_B.symm
+    _= - ∠ e.B e.C e.A C_ne_B.symm A_ne_C := (ANG e.B e.C e.A C_ne_B.symm A_ne_C).rev_value_eq_neg_value
   -- We have that $\angle BXD = \angle CYE (\mod \pi)$.
   have angle_BXD_eq_neg_angle_CYE : (ANG e.B e.X e.D X_ne_B.symm D_ne_X).dvalue = - (ANG e.C e.Y e.E Y_ne_C.symm E_ne_Y).dvalue := by
     -- We have $\angle BXD = \pi/2 (\mod \pi)$.
@@ -154,11 +159,13 @@ Therefore, $DX = EY$.
       calc
       (ANG e.B e.X e.D X_ne_B.symm D_ne_X).dvalue
       -- $\angle BXD = - \angle DXB (\mod \pi)$ by symmetry,
-      _= - (ANG e.D e.X e.B D_ne_X X_ne_B.symm).dvalue := by exact neg_dvalue_of_rev_ang X_ne_B.symm D_ne_X
+      _= - (ANG e.D e.X e.B D_ne_X X_ne_B.symm).dvalue :=
+        (ANG e.D e.X e.B D_ne_X X_ne_B.symm).rev_dvalue_eq_neg_dvalue
       -- $\angle DXB = \pi/2 (\mod \pi)$ because $X$ is the perpendicular foot of $D$ to $AB$,
       _= - ↑ (π / 2) := by
         apply neg_inj.mpr
-        exact angle_dval_eq_pi_div_two_at_perp_foot e.D e.B e.X (LIN e.A e.B e.B_ne_A) (Line.snd_pt_lies_on_mk_pt_pt e.B_ne_A) D_not_on_AB e.hd (X_ne_B).symm
+        sorry
+        /- exact Angle.dvalue_eq_pi_div_two_at_perp_foot e.D e.B e.X (LIN e.A e.B e.B_ne_A) (Line.snd_pt_lies_on_mk_pt_pt (_h := ⟨e.B_ne_A⟩)) D_not_on_AB e.hd (X_ne_B).symm -/
       -- $ - \pi/2 = \pi/2 (\mod \pi)$.
       _= ↑ (π / 2) := by simp only [AngDValue.neg_coe_pi_div_two]
     -- We have $\angle CYE = \pi/2 (\mod \pi)$.
@@ -166,11 +173,13 @@ Therefore, $DX = EY$.
       calc
       (ANG e.C e.Y e.E Y_ne_C.symm E_ne_Y).dvalue
       -- $\angle CYE = - \angle EYC (\mod \pi)$ by symmetry,
-      _= - (ANG e.E e.Y e.C E_ne_Y Y_ne_C.symm).dvalue := by exact neg_dvalue_of_rev_ang Y_ne_C.symm E_ne_Y
+      _= - (ANG e.E e.Y e.C E_ne_Y Y_ne_C.symm).dvalue :=
+        (ANG e.E e.Y e.C E_ne_Y Y_ne_C.symm).rev_dvalue_eq_neg_dvalue
       -- $\angle EYC = \pi/2 (\mod \pi)$ because $Y$ is the perpendicular foot of $E$ to $AC$,
       _= - ↑ (π / 2) := by
         apply neg_inj.mpr
-        exact angle_dval_eq_pi_div_two_at_perp_foot e.E e.C e.Y (LIN e.A e.C e.C_ne_A) (Line.snd_pt_lies_on_mk_pt_pt e.C_ne_A) E_not_on_AC e.he (Y_ne_C).symm
+        sorry
+        /- exact dvalue_eq_pi_div_two_at_perp_foot e.E e.C e.Y (LIN e.A e.C e.C_ne_A) (Line.snd_pt_lies_on_mk_pt_pt e.C_ne_A) E_not_on_AC e.he (Y_ne_C).symm -/
       -- $ - \pi/2 = \pi/2 (\mod \pi)$.
       _= ↑ (π / 2) := by simp only [AngDValue.neg_coe_pi_div_two]
     -- $ - \pi/2 = \pi/2 (\mod \pi)$.

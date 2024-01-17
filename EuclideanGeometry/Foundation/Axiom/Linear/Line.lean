@@ -139,20 +139,26 @@ section make
 
 namespace DirLine
 
-/-- Given two distinct points $A$ and $B$,  this function returns the directed line starting from $A$ in the direction of $B$. -/
+/-- Given two distinct points $A$ and $B$,  this function returns the directed line starting
+from $A$ in the direction of $B$. We use $\verb|DLIN| A B$ or $\verb|DLIN| A B h$ to abbreviate
+$\verb|DLine.mk_pt_pt| A B h$, where $h$ is a statement that $A \neq B$. When such statement $h$
+is missing, we search it in all the known facts. -/
 def mk_pt_pt (A B : P) (h : B ≠ A) : DirLine P := Quotient.mk same_dir_line.setoid (RAY A B h)
 
 /-- Given a point $A$ and a direction, this function returns the directed line starting from $A$ in the given direction. -/
 def mk_pt_dir (A : P) (dir : Dir) : DirLine P := Quotient.mk same_dir_line.setoid (Ray.mk A dir)
 
-/-- Given a point $A$ and a nondegenerate vector, this function returns the directed line starting from $A$ in the same direction of the nondegenerate vector.  -/
+/-- Given a point $A$ and a nondegenerate vector, this function returns the directed line starting from $A$ in the same direction of the nondegenerate vector. -/
 def mk_pt_vec_nd (A : P) (vec_nd : VecND) : DirLine P := mk_pt_dir A vec_nd.toDir
 
 end DirLine
 
 namespace Line
 
-/-- Given two distinct points $A$ and $B$, this function returns the line passing through $A$ and $B$. -/
+/-- Given two distinct points $A$ and $B$, this function returns the line passing through
+$A$ and $B$. We use $\verb|LIN| A B$ or $\verb|LIN| A B h$ to abbreviate
+$\verb|Line.mk_pt_pt| A B h$, where $h$ is a statement that $A \neq B$. When such statement $h$
+is missing, we search it in all the known facts. -/
 def mk_pt_pt (A B : P) (h : B ≠ A) : Line P := Quotient.mk same_extn_line.setoid (RAY A B h)
 
 /-- Given a point $A$ and a projective direction, this function returns the line through $A$ along the given projective direction. -/
@@ -171,7 +177,6 @@ def mk_pt_vec_nd (A : P) (vec_nd : VecND) : Line P := mk_pt_proj A vec_nd.toProj
 
 end Line
 
-/-- Define a notation LIN A B or LIN A B h to mean the line through two points $A$ and $B$, where $h$ is a statement that $A \neq B$. When such statement $h$ is missing, we search it in all the known facts. -/
 @[inherit_doc Line.mk_pt_pt]
 scoped syntax "LIN" ws term:max ws term:max (ws term:max)? : term
 
@@ -193,8 +198,6 @@ def delabLineMkPtPt : Delab := do
     else
       `(LIN $A $B $(← delab))
 
-
-/-- Define a notation DLIN A B or DLIN A B h to mean the directed line from the points $A$ to $B$, where $h$ is a statement that $A \neq B$. When such statement $h$ is missing, we search it in all the known facts. -/
 @[inherit_doc DirLine.mk_pt_pt]
 scoped syntax "DLIN" ws term:max ws term:max (ws term:max)? : term
 
@@ -556,6 +559,15 @@ theorem eq_of_same_toProj_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A 
 theorem exist_line_pt_lies_on (A : P) : ∃ l : Line P, A LiesOn l :=
   ⟨Line.mk_pt_vec_nd A (Classical.arbitrary _), pt_lies_on_of_mk_pt_vec_nd _ _⟩
 
+theorem exist_rep_ray_source_eq_pt {l : Line P} {A : P} (ha : A LiesOn l) : ∃ r : Ray P , r.source = A ∧ r.toLine = l := by
+  rcases (Quotient.exists_rep l.toProj) with ⟨d , _⟩
+  let r : Ray P := ⟨A, d⟩
+  refine' ⟨r, rfl, _⟩
+  calc
+    _= mk_pt_proj A r.toProj := rfl
+    _= mk_pt_proj A l.toProj := by congr
+    _= l := mk_pt_proj_eq_of_eq_toProj ha rfl
+
 end pt_proj
 
 end Line
@@ -759,7 +771,7 @@ theorem SegND.lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on {A : P}
       (fun h₂ ↦ (seg_nd.toRay.lies_on_toline_iff_lies_on_or_lies_on_rev).mpr <| .inr <| by
         rw [← rev_extn_eq_toRay_rev]
         exact h₂)
-  -/
+ -/
 
 /-- Given a point $X$ and a nondegenerate segment $seg_nd$, if $X$ lies on the extension ray of $seg_nd$, then $X$ lies on the line associated with $seg_nd$. -/
 theorem SegND.lies_on_toLine_of_lies_on_extn {X : P} {seg_nd : SegND P} (lieson : X LiesOn seg_nd.extension) : X LiesOn seg_nd.toLine := by
@@ -862,7 +874,7 @@ theorem DirLine.exist_real_vec_eq_smul_of_lies_on {A B : P} {dir : Dir} (h : B L
 theorem DirLine.exist_real_vec_eq_smul_vec_of_lies_on {A B : P} {v : VecND} (h : B LiesOn (mk_pt_vec_nd A v)) : ∃ t : ℝ, VEC A B = t • v.1 :=
   Line.exist_real_vec_eq_smul_vec_of_lies_on h
 
-/-- Let $A$ and $B$ be two distinct points and $C$ a point that lies on the directed line from $A$ to $B$. Then there exists some real number $t$ such that $\xrightarrow{AC}$ is $t$ times $\xrightarrow{AB}$.  -/
+/-- Let $A$ and $B$ be two distinct points and $C$ a point that lies on the directed line from $A$ to $B$. Then there exists some real number $t$ such that $\xrightarrow{AC}$ is $t$ times $\xrightarrow{AB}$. -/
 theorem DirLine.exist_real_of_lies_on_of_pt_pt {A B C : P} [_h : PtNe B A] (hc : C LiesOn (DLIN A B)) : ∃ t : ℝ, VEC A C = t • VEC A B :=
   Line.exist_real_of_lies_on_of_pt_pt hc
 
@@ -888,6 +900,108 @@ theorem DirLine.lies_on_of_exist_real_of_pt_pt {A B C : P} [_h : PtNe B A] {t : 
 theorem DirLine.lies_on_of_exist_real_vec_eq_smul_toDir {A B : P} {l : DirLine P} (ha : A LiesOn l) {t : ℝ} (ht : VEC A B = t • l.toDir.unitVec) : B LiesOn l := by
   rw [← mk_pt_dir_eq ha]
   exact lies_on_of_exist_real_vec_eq_smul ht
+
+theorem Ray.eq_toDirLine_of_lies_int {A : P} {r : Ray P} (h : A LiesInt r) : DLIN r.source A h.ne_source = r.toDirLine := sorry -- use `RAY r.source A = r` to prove it
+
+theorem Ray.eq_toLine_of_lies_int {A : P} {r : Ray P} (h : A LiesInt r) : LIN r.source A h.ne_source = r.toLine := sorry
+
+theorem SegND.dirLine_source_pt_eq_toDirLine_of_lies_int {A : P} {s : SegND P} (h : A LiesInt s) : DLIN s.source A h.ne_source = s.toDirLine := sorry
+
+theorem SegND.line_source_pt_eq_toLine_of_lies_int {A : P} {s : SegND P} (h : A LiesInt s) : LIN s.source A h.ne_source = s.toLine := sorry
+
+theorem SegND.dirLine_pt_target_eq_toDirLine_of_lies_int {A : P} {s : SegND P} (h : A LiesInt s) : DLIN A s.target h.ne_target.symm = s.toDirLine := sorry
+
+theorem SegND.line_pt_target_eq_toLine_of_lies_int {A : P} {s : SegND P} (h : A LiesInt s) : LIN A s.target h.ne_target.symm = s.toLine := sorry
+
+theorem SegND.dirLine_source_midpt_eq_toDirLine {s : SegND P} : DLIN s.source s.midpoint s.midpt_ne_source = s.toDirLine := sorry
+
+theorem SegND.line_source_midpt_eq_toLine {s : SegND P} : LIN s.source s.midpoint s.midpt_ne_source = s.toLine := sorry
+
+theorem SegND.dirLine_midpt_target_eq_toDirLine {s : SegND P} : DLIN s.midpoint s.target (s.midpt_ne_target).symm = s.toDirLine := sorry
+
+theorem SegND.line_midpt_target_eq_toLine {s : SegND P} : LIN s.midpoint s.target (s.midpt_ne_target).symm = s.toLine := sorry
+
+theorem eq_or_vec_eq_of_dist_eq_of_lies_on_line_pt_pt {A B C : P} [hne : PtNe B A] (h : C LiesOn (LIN A B)) (heq : dist A C = dist A B) : (C = B) ∨ (VEC A C = VEC B A) := by
+  rcases Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev.mp h with h | h
+  · left
+    apply (eq_iff_vec_eq_zero _ _).mpr
+    have : VEC A C = (dist A C) • (RAY A B).2.unitVec := Ray.vec_eq_dist_smul_toDir_of_lies_on h
+    calc
+      _ = VEC A C - VEC A B := by rw [vec_sub_vec]
+      _ = (dist A B) • (RAY A B).2.unitVec - VEC A B := by rw [this, heq]
+      _ = (dist A B) • (RAY A B).2.unitVec - ‖VEC_nd A B‖ • (VEC_nd A B).toDir.unitVec := by
+        simp only [Ray.mkPtPt_toDir, VecND.norm_smul_toDir_unitVec, ne_eq, VecND.coe_mkPtPt]
+      _ = (dist A B) • (RAY A B).2.unitVec - ‖VEC_nd A B‖ • (RAY A B).2.unitVec := rfl
+      _ = 0 := by
+        rw [← sub_smul, dist_comm, NormedAddTorsor.dist_eq_norm']
+        simp only [Ray.mkPtPt_toDir, smul_eq_zero, VecND.ne_zero, or_false]
+        exact sub_eq_zero.mpr rfl
+  right
+  calc
+    _ = (dist A C) • (RAY A B).reverse.2.unitVec := Ray.vec_eq_dist_smul_toDir_of_lies_on h
+    _ = (dist A C) • (- (VEC_nd A B).toDir.unitVec) := by
+      simp only [Ray.reverse_toDir, Ray.mkPtPt_toDir, Dir.neg_unitVec, smul_neg]
+    _ = (dist A B) • (- (VEC_nd A B).toDir.unitVec) := by rw [heq]
+    _ = - (‖VEC_nd A B‖ • (VEC_nd A B).toDir.unitVec) := by
+      rw [smul_neg, dist_comm, NormedAddTorsor.dist_eq_norm']
+      rfl
+    _ = - (VEC_nd A B).1 := by
+      simp only [VecND.norm_smul_toDir_unitVec, ne_eq, VecND.coe_mkPtPt, neg_vec]
+    _ = - VEC A B := rfl
+    _ = VEC B A := by rw [neg_vec]
+
+theorem vec_eq_dist_eq_of_lies_on_line_pt_pt_of_ptNe {A B C : P} [_hne₁ : PtNe B A] [_hne₂ : PtNe C B] (h : C LiesOn (LIN A B)) (heq : dist A C = dist A B) : VEC B A = VEC A C :=
+  (eq_or_vec_eq_of_dist_eq_of_lies_on_line_pt_pt h heq).casesOn
+    (fun eq ↦ (_hne₂.out eq).elim) (fun hh ↦ hh.symm)
+
+theorem SegND.dist_midpt_le_iff_lies_on_of_lies_on_toLine {A : P} {s : SegND P} (h : A LiesOn s.toLine) : dist A s.midpoint < dist s.source s.midpoint ↔ A LiesInt s := sorry
+
+theorem SegND.dist_midpt_lt_iff_lies_int_of_lies_on_toLine {A : P} {s : SegND P} (h : A LiesOn s.toLine) : dist A s.midpoint < dist s.source s.midpoint ↔ A LiesInt s := sorry
+
+theorem SegND.dist_midpt_eq_iff_eq_source_or_eq_target_of_lies_on_toLine {A : P} {s : SegND P} (h : A LiesOn s.toLine) : dist A s.midpoint = dist s.source s.midpoint ↔ A = s.source ∨ A = s.target := by
+  haveI : PtNe s.midpoint s.source := ⟨s.midpt_ne_source⟩
+  constructor
+  · intro hh
+    rw [dist_comm, ← Seg.length_eq_dist, dist_comm, Seg.length_eq_dist] at hh
+    have : A LiesOn (LIN s.midpoint s.source) := by sorry
+    rcases eq_or_vec_eq_of_dist_eq_of_lies_on_line_pt_pt this hh with h₁ | h₂
+    · exact .inl h₁
+    right
+    apply (eq_iff_vec_eq_zero _ _).mpr
+    calc
+      _ = VEC s.midpoint A - VEC s.midpoint s.target := by rw [vec_sub_vec]
+      _ = VEC s.source s.midpoint - VEC s.midpoint s.target := by rw [h₂]
+      _ = 0 := by rw [s.vec_midpt_eq, sub_self]
+  intro hh
+  rcases hh with hh | hh
+  · rw [hh]
+  rw [hh, dist_comm, ← Seg.length_eq_dist, ← Seg.length_eq_dist]
+  exact (s.1.dist_target_eq_dist_source_of_midpt).symm
+
+theorem SegND.dist_midpt_gt_iff_not_lies_on_of_lies_on_toLine {A : P} {s : SegND P} (h : A LiesOn s.toLine) : dist s.source s.midpoint < dist A s.midpoint ↔ ¬ (A LiesOn s) := by
+  apply Iff.not_right
+  push_neg
+  apply Iff.trans le_iff_lt_or_eq
+  constructor
+  · intro heq
+    rcases heq with heq | heq
+    · exact ((s.dist_midpt_lt_iff_lies_int_of_lies_on_toLine h).mp heq).1
+    rcases (SegND.dist_midpt_eq_iff_eq_source_or_eq_target_of_lies_on_toLine h).mp heq with heq | heq
+    · rw [heq]
+      exact s.source_lies_on
+    rw [heq]
+    exact s.target_lies_on
+  intro hh
+  by_cases hh' : A LiesInt s
+  · exact .inl ((SegND.dist_midpt_lt_iff_lies_int_of_lies_on_toLine h).mpr hh')
+  right
+  apply (SegND.dist_midpt_eq_iff_eq_source_or_eq_target_of_lies_on_toLine h).mpr
+  contrapose! hh'
+  exact ⟨hh, hh'.1, hh'.2⟩
+
+theorem lies_int_seg_nd_iff_lies_on_ray_reverse {A B C : P} [hne₁ : PtNe B C] [hne₂ : PtNe A B] (h : A LiesOn (LIN B C)) : A LiesInt (SEG B C) ↔ C LiesOn (RAY A B).reverse := sorry
+
+theorem not_lies_on_seg_nd_iff_lies_on_ray {A B C : P} [hne₁ : PtNe B C] [hne₂ : PtNe A B] (h : A LiesOn (LIN B C)) : ¬ (A LiesOn (SEG B C)) ↔ C LiesOn (RAY A B) := sorry
 
 end lieson
 
@@ -1050,13 +1164,16 @@ end DirLine
 
 end Archimedean_property
 
+
+
 section addtorsor
 
 namespace DirLine
 
-/-- A directed line can be viewed as a torsor over the addition group structure of $\mathbb{R}$, that is, points on a directed line can be translated by real multiples of the unit direction vector.  -/
+/-- A directed line can be viewed as a torsor over the addition group structure of $\mathbb{R}$, that is, points on a directed line can be translated by real multiples of the unit direction vector. -/
 instance instRealNormedAddTorsor (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
-  vadd := fun x ⟨A, ha⟩ ↦ ⟨x • l.toDir.unitVec +ᵥ A, lies_on_of_exist_real_vec_eq_smul_toDir ha (vadd_vsub _ A)⟩
+  vadd :=
+    fun x ⟨A, ha⟩ ↦ ⟨x • l.toDir.unitVec +ᵥ A, lies_on_of_exist_real_vec_eq_smul_toDir ha (vadd_vsub _ A)⟩
   zero_vadd := by
     intro ⟨A, _⟩
     apply Subtype.val_inj.mp
@@ -1078,7 +1195,7 @@ instance instRealNormedAddTorsor (l : DirLine P) : NormedAddTorsor ℝ l.carrier
     have h : @inner ℝ _ _ (VEC B A) l.toDir.unitVec • l.toDir.unitVec = VEC B A := by
       rcases exist_real_vec_eq_smul_toDir_of_lies_on hb ha with ⟨t, h⟩
       rw [h, real_inner_smul_self_left l.toDir.unitVec t]
-      simp
+      simp only [VecND.norm_coe, Dir.norm_unitVecND, mul_one]
     rw [h]
     exact vsub_vadd A B
   vadd_vsub' := by
@@ -1093,19 +1210,21 @@ instance instRealNormedAddTorsor (l : DirLine P) : NormedAddTorsor ℝ l.carrier
     simp only [h, norm_smul, Real.norm_eq_abs, VecND.norm_coe, Dir.norm_unitVecND, mul_one,
       real_inner_smul_left, Dir.inner_unitVec, vsub_self, AngValue.cos_zero]
 
-
 section ddist
 
 /-- Given two points $A$ and $B$ on a directed line $l$, this function returns the distance from $A$ to $B$ on the directed line $l$, as a real number; or in short $\dist(A, B)$. -/
-def ddist {l : DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : ℝ := (⟨B, hb⟩ : l.carrier.Elem) -ᵥ ⟨A, ha⟩
+def ddist {l : DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : ℝ :=
+  (⟨B, hb⟩ : l.carrier.Elem) -ᵥ ⟨A, ha⟩
 
 /-- For a point $A$ on a directed line $l$, the distance from $A$ to itself is $0$, i.e. $\dist(A, A) = 0$. -/
 @[simp]
-theorem ddist_self {l: DirLine P} {A : P} (ha : A LiesOn l) : ddist ha ha = 0 := vsub_self _
+theorem ddist_self {l: DirLine P} {A : P} (ha : A LiesOn l) : ddist ha ha = 0 :=
+  vsub_self _
 
 /-- The negation of the distance from point $A$ to point $B$ on a directed line $l$ is equal to the distance from point $B$ to point $A$ on the same directed line $l$. -/
 @[simp]
-theorem neg_ddist_eq_ddist_rev {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : - ddist ha hb = ddist hb ha := neg_vsub_eq_vsub_rev _ _
+theorem neg_ddist_eq_ddist_rev {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : - ddist ha hb = ddist hb ha :=
+  neg_vsub_eq_vsub_rev _ _
 
 /-- The distance from point $A$ to point $B$ on a directed line $l$ is zero if and only if $B$ is equal to $A$. -/
 @[simp]
@@ -1137,7 +1256,7 @@ theorem ddist_sub_left {l: DirLine P} {A B C : P} (ha : A LiesOn l) (hb : B Lies
 theorem ddist_left_cancel_iff {l: DirLine P} {A B C : P} (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : ddist ha hb = ddist ha hc ↔ B = C :=
   vsub_left_cancel_iff.trans Subtype.mk_eq_mk
 
-/-- On a directed line. the distance from point $A$ to point $C$ is equal to the distance from point $B$ to point $C$ if and only if $A$ is equal to $B$. -/
+/-- On a directed line, the distance from point $A$ to point $C$ is equal to the distance from point $B$ to point $C$ if and only if $A$ is equal to $B$. -/
 @[simp]
 theorem ddist_right_cancel_iff {l: DirLine P} {A B C : P} (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : ddist ha hc = ddist hb hc ↔ A = B :=
   vsub_right_cancel_iff.trans Subtype.mk_eq_mk
@@ -1156,9 +1275,6 @@ theorem ddist_add_ddist_comm {l: DirLine P} {A B C D : P} (ha : A LiesOn l) (hb 
 end ddist
 
 section order
-
-instance instOrderedAddTorsor (l : DirLine P) : OrderedAddTorsor ℝ l.carrier.Elem :=
-  AddTorsor.OrderedAddTorsor_of_OrderedAddCommGroup ℝ l.carrier.Elem
 
 instance instLinearOrderedAddTorsor (l : DirLine P) : LinearOrderedAddTorsor ℝ l.carrier.Elem :=
   AddTorsor.LinearOrderedAddTorsor_of_LinearOrderedAddCommGroup ℝ l.carrier.Elem

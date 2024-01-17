@@ -5,12 +5,9 @@ noncomputable section
 namespace EuclidGeom
 
 #check SegND.toDirLine_eq_toRay_toDirLine
-#check eq_toDir_of_source_to_pt_lies_int
-#check eq_toDirLine_of_source_to_pt_lies_int
-#check eq_toDir_of_pt_lies_int_to_target
-#check eq_toDirLine_of_pt_lies_int_to_target
-#check eq_toDir_of_parallel_and_same_side
-#check neg_toDir_of_parallel_and_opposite_side
+#check SegND.toDir_eq_of_lies_int
+#check SegND.dirLine_source_pt_eq_toDirLine_of_lies_int
+#check SegND.mk_pt_target_toDirLine_eq_of_lies_int
 #check TriangleND.same_orient_of_perm_vertices
 #check TriangleND.iscclock_iff_liesonleft₁
 

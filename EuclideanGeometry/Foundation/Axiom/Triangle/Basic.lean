@@ -372,14 +372,8 @@ theorem angle₁_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsPos
   simp only [trans3]
   have pos : (tr_nd.edge₃.length * tr_nd.edge₂.length * sin tr_nd.angle₁.value / 2 > 0) = (sin tr_nd.angle₁.value > 0) := by
     simp only [eq_iff_iff]
-    have pos3 : tr_nd.edge₃.length > 0 := by
-      calc
-        _= tr_nd.edge_nd₃.length := by rfl
-        _>0 := by apply EuclidGeom.length_pos
-    have pos2 : tr_nd.edge₂.length > 0 := by
-      calc
-        _= tr_nd.edge_nd₂.length := by rfl
-        _>0 := by apply EuclidGeom.length_pos
+    have _ : tr_nd.edge₃.length > 0 := tr_nd.edge_nd₃.length_pos
+    have _ : tr_nd.edge₂.length > 0 := tr_nd.edge_nd₂.length_pos
     constructor
     · intro P
       by_contra H

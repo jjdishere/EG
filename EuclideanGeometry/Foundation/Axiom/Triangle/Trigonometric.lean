@@ -16,8 +16,8 @@ theorem cosine_rule' (A B C : P) [hab : PtNe B A] [hac : PtNe C A] :
     2 * (‖VEC_nd A B‖ * ‖VEC_nd A C‖ *
       cos (VecND.angle (VEC_nd A B) (VEC_nd A C))) =
       Seg.length (SEG A B) ^ 2 + Seg.length (SEG A C) ^ 2 - Seg.length (SEG B C) ^ 2 := by
-  rw [VecND.norm_mul_cos, length_sq_eq_inner_toVec_toVec,
-    length_sq_eq_inner_toVec_toVec, length_sq_eq_inner_toVec_toVec, seg_toVec_eq_vec,
+  rw [VecND.norm_mul_cos, Seg.length_sq_eq_inner_toVec_toVec,
+    Seg.length_sq_eq_inner_toVec_toVec, Seg.length_sq_eq_inner_toVec_toVec, seg_toVec_eq_vec,
     seg_toVec_eq_vec, seg_toVec_eq_vec, ← vec_sub_vec A B C, inner_sub_sub_self,
     ← InnerProductSpace.conj_symm, IsROrC.conj_to_real]
   ring_nf
