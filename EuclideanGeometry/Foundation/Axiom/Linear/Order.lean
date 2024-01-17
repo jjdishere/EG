@@ -266,22 +266,24 @@ theorem lt_iff_lt_of_lies_int_seg₁₃ {Dl : DirLine P} {A B C : P} (ha : A Lie
   · rintro h1; by_contra h2; absurd this; push_neg
     constructor
     · simp only [h1, h2, not_false_eq_true, forall_true_left]
+      sorry
     · simp only [gt_iff_lt, MEOW_not_lt_of_lt ha hb h1, IsEmpty.forall_iff]
   · rintro h1; by_contra h2; absurd this; push_neg
     constructor
     · rintro h3; contradiction
-    · rintro _; exact MEOW_not_lt_of_lt hb hc h1
+    · rintro _; exact le_of_lt h1
+
 
 theorem lt_iff_lt_of_lies_int_seg₁₂ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) : (lelem A ha) < (lelem B hb) ↔ (lelem A ha) < (lelem C hc) := by
   have : (((lelem A ha) < (lelem B hb)) ∧ ((lelem B hb) < (lelem C hc))) ∨ (((lelem A ha) > (lelem B hb)) ∧ ((lelem B hb) > (lelem C hc))) := ord_of_lies_int_seg ha hb hc hac
   constructor
   · rintro h1; by_contra h2; absurd this; push_neg
     constructor
-    · rintro _; by_contra h3; absurd h2; exact lt_trans h1 h3
+    · rintro _; by_contra h3; absurd h2; -- exact lt_trans h1 h3
     · simp only [gt_iff_lt, MEOW_not_lt_of_lt ha hb h1, IsEmpty.forall_iff]
   · by_contra h3; push_neg at h3
     rcases this with (hl | hr)
-    · absurd hl; push_neg at hl; simp only [not_and]; rintro h4; exfalso; absurd h4; exact h3.2
+    · absurd hl; push_neg at hl; simp only [not_and]; rintro h4; exfalso; absurd h4; sorry
     · have : lelem A ha > lelem C hc := gt_trans hr.1 hr.2
       have : ¬ lelem A ha < lelem C hc := MEOW_not_lt_of_lt hc ha (lt_trans hr.2 hr.1)
       absurd this; exact h3.1
@@ -340,7 +342,7 @@ theorem le_of_lies_on_seg_and_le₃₂ {Dl : DirLine P} {A B C : P} (ha : A Lies
   · exact le_trans hr.1 h2
 
 -- linear order and lies int ray
-theorem
+theorem HOHOHO : 1 = 1 := sorry
 -- # Order Relations to Position Relations
 -- linear order and LiesInt Seg
 theorem lies_int_seg_of_lt_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_lt_b : lelem A ha < lelem B hb) (b_lt_c : lelem B hb < lelem C hc) : B LiesInt (SEG A C) := by
