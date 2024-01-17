@@ -277,6 +277,8 @@ end antipode
 
 section arc
 
+variable (ω : Circle P)
+
 @[ext]
 structure Arc (P : Type _) [EuclideanPlane P] (ω : Circle P) where
   source : P
@@ -284,13 +286,11 @@ structure Arc (P : Type _) [EuclideanPlane P] (ω : Circle P) where
   ison : (source LiesOn ω) ∧ (target LiesOn ω)
   endpts_ne : PtNe target source
 
-variable (ω : Circle P)
-
 namespace Arc
 
 attribute [instance] Arc.endpts_ne
 
-protected def mk_pt_pt_circle (A B : P) [h : PtNe B A] (ha : A LiesOn ω) (hb : B LiesOn ω) : Arc P ω where
+protected def mk_pt_pt_circle {ω : Circle P} {A B : P} [h : PtNe B A] (ha : A LiesOn ω) (hb : B LiesOn ω) : Arc P ω where
   source := A
   target := B
   ison := ⟨ha, hb⟩
@@ -302,27 +302,27 @@ scoped notation "ARC" => Arc.mk_pt_pt_circle
 
 namespace Arc
 
-protected def IsOn (p : P) (β : Arc P ω) : Prop := (p LiesOn ω) ∧ (¬ p LiesOnLeft (DLIN β.source β.target))
+protected def IsOn {ω : Circle P} (p : P) (β : Arc P ω) : Prop := (p LiesOn ω) ∧ (¬ p LiesOnLeft (DLIN β.source β.target))
 
-def Isnot_arc_endpts (p : P) (β : Arc P ω) : Prop := (p ≠ β.source) ∧ (p ≠ β.target)
+protected def ne_endpts {ω : Circle P} (p : P) (β : Arc P ω) : Prop := (p ≠ β.source) ∧ (p ≠ β.target)
 
-instance (p : P) (β : Arc P ω) (h : Isnot_arc_endpts ω p β) : PtNe β.source p := ⟨h.1.symm⟩
+instance pt_ne_source {ω : Circle P} {p : P} {β : Arc P ω} (h : β.ne_endpts p) : PtNe β.source p := ⟨h.1.symm⟩
 
-instance (p : P) (β : Arc P ω) (h : Isnot_arc_endpts ω p β) : PtNe β.target p := ⟨h.2.symm⟩
+instance pt_ne_target {ω : Circle P} {p : P} {β : Arc P ω} (h : β.ne_endpts p) : PtNe β.target p := ⟨h.2.symm⟩
 
-protected def IsInt (p : P) (β : Arc P ω) : Prop := (Arc.IsOn ω p β) ∧ (Isnot_arc_endpts ω p β)
+protected def IsInt {ω : Circle P} (p : P) (β : Arc P ω) : Prop := (Arc.IsOn p β) ∧ (β.ne_endpts p)
 
-protected def carrier (β : Arc P ω) : Set P := { p : P | Arc.IsOn ω p β }
+protected def carrier {ω : Circle P} (β : Arc P ω) : Set P := { p : P | Arc.IsOn p β }
 
-protected def interior (β : Arc P ω) : Set P := { p : P | Arc.IsInt ω p β }
+protected def interior {ω : Circle P} (β : Arc P ω) : Set P := { p : P | Arc.IsInt p β }
 
 instance : Fig (Arc P ω) P where
-  carrier := Arc.carrier ω
+  carrier := Arc.carrier
 
 instance : Interior (Arc P ω) P where
-  interior := Arc.interior ω
+  interior := Arc.interior
 
-theorem center_isnot_arc_endpts (β : Arc P ω) : Isnot_arc_endpts ω ω.center β := by
+theorem center_ne_endpts {ω : Circle P} (β : Arc P ω) : β.ne_endpts ω.center := by
   constructor
   · intro h
     have : β.source LiesOn ω := β.ison.1
@@ -339,32 +339,33 @@ theorem center_isnot_arc_endpts (β : Arc P ω) : Isnot_arc_endpts ω ω.center 
   have : ω.radius > 0 := ω.rad_pos
   linarith
 
-instance (β : Arc P ω) : PtNe β.source ω.center := ⟨ (center_isnot_arc_endpts ω β).1.symm ⟩
-instance (β : Arc P ω) : PtNe β.target ω.center := ⟨ (center_isnot_arc_endpts ω β).2.symm ⟩
+instance source_ne_center {ω : Circle P} (β : Arc P ω) : PtNe β.source ω.center := ⟨ (center_ne_endpts β).1.symm ⟩
 
-def complement (β : Arc P ω) : Arc P ω where
+instance target_ne_center {ω : Circle P} (β : Arc P ω) : PtNe β.target ω.center := ⟨ (center_ne_endpts β).2.symm ⟩
+
+protected def complement {ω : Circle P} (β : Arc P ω) : Arc P ω where
   source := β.target
   target := β.source
   ison := and_comm.mp β.ison
   endpts_ne := β.endpts_ne.symm
 
-lemma pt_liesint_not_lieson_dlin {β : Arc P ω} {p : P} (h : p LiesInt β) : ¬ (p LiesOn (DLIN β.source β.target)) := by
+lemma pt_liesint_not_lieson_dlin {ω : Circle P} {β : Arc P ω} {p : P} (h : p LiesInt β) : ¬ (p LiesOn (DLIN β.source β.target)) := by
   intro hl
   have hl : p LiesOn (LIN β.source β.target) := hl
   have hco : colinear β.source β.target p := Line.pt_pt_linear hl
   have hco' : ¬ (colinear β.source β.target p) := Circle.three_pts_lieson_circle_not_colinear (hne₂ := ⟨h.2.2⟩) (hne₃ := ⟨h.2.1.symm⟩) β.ison.1 β.ison.2 h.1.1
   tauto
 
-theorem pt_liesint_liesonright_dlin {β : Arc P ω} {p : P} (h : p LiesInt β) : p LiesOnRight (DLIN β.source β.target) := by
-  have hnl : ¬ (p LiesOn (DLIN β.source β.target)) := pt_liesint_not_lieson_dlin ω h
+theorem pt_liesint_liesonright_dlin {ω : Circle P} {β : Arc P ω} {p : P} (h : p LiesInt β) : p LiesOnRight (DLIN β.source β.target) := by
+  have hnl : ¬ (p LiesOn (DLIN β.source β.target)) := pt_liesint_not_lieson_dlin h
   have hnll : ¬ (p LiesOnLeft (DLIN β.source β.target)) := h.1.2
   rcases DirLine.lieson_or_liesonleft_or_liesonright p (DLIN β.source β.target) with hh | (hh | hh)
   · exfalso; tauto
   · exfalso; tauto
   exact hh
 
-theorem pt_liesint_complementary_liesonleft_dlin {β : Arc P ω} {p : P} (h : p LiesInt β.complement) : p LiesOnLeft (DLIN β.source β.target) := by
-  have hh : p LiesOnRight (DLIN β.target β.source) := by apply pt_liesint_liesonright_dlin ω h
+theorem pt_liesint_complementary_liesonleft_dlin {ω : Circle P} {β : Arc P ω} {p : P} (h : p LiesInt β.complement) : p LiesOnLeft (DLIN β.source β.target) := by
+  have hh : p LiesOnRight (DLIN β.target β.source) := by apply pt_liesint_liesonright_dlin h
   apply liesonleft_iff_liesonright_reverse.mpr
   rw [← DirLine.pt_pt_rev_eq_rev]
   exact hh
@@ -385,25 +386,52 @@ variable (ω : Circle P)
 
 namespace Chord
 
-protected def mk_pt_pt_circle {A B : P} [h : PtNe A B] (ha : A LiesOn ω) (hb : B LiesOn ω) : Chord P ω where
+protected def mk_pt_pt_circle {ω : Circle P} {A B : P} [h : PtNe A B] (ha : A LiesOn ω) (hb : B LiesOn ω) : Chord P ω where
   toSegND := SEG_nd A B h.out.symm
   ison := ⟨ha, hb⟩
 
-protected def IsOn (A : P) (s : Chord P ω) : Prop := A LiesOn s.toSegND
+protected def IsOn {ω : Circle P} (A : P) (s : Chord P ω) : Prop := A LiesOn s.toSegND
 
-protected def IsInt (A : P) (s : Chord P ω) : Prop := A LiesInt s.toSegND
+protected def IsInt {ω : Circle P} (A : P) (s : Chord P ω) : Prop := A LiesInt s.toSegND
 
-protected def carrier (s : Chord P ω) : Set P := { p : P | Chord.IsOn ω p s }
+protected def carrier {ω : Circle P} (s : Chord P ω) : Set P := { p : P | Chord.IsOn p s }
 
-protected def interior (s : Chord P ω) : Set P := { p : P | Chord.IsInt ω p s }
+protected def interior {ω : Circle P} (s : Chord P ω) : Set P := { p : P | Chord.IsInt p s }
 
 instance : Fig (Chord P ω) P where
-  carrier := Chord.carrier ω
+  carrier := Chord.carrier
 
 instance : Interior (Chord P ω) P where
-  interior := Chord.interior ω
+  interior := Chord.interior
 
-theorem pt_liesint_liesint_circle {A : P} {s : Chord P ω} (h : A LiesInt s) : A LiesInt ω := by
+protected def ne_endpts {ω : Circle P} (A : P) (s : Chord P ω) : Prop := (A ≠ s.1.source) ∧ (A ≠ s.1.target)
+
+theorem center_ne_endpts {ω : Circle P} (s : Chord P ω) : s.ne_endpts ω.center := by
+  constructor
+  · intro h
+    have : s.1.source LiesOn ω := s.2.1
+    rw [← h] at this
+    unfold lies_on Fig.carrier Circle.instFigCircle Circle.carrier Circle.IsOn at this
+    simp at this
+    have : ω.radius > 0 := ω.rad_pos
+    linarith
+  intro h
+  have : s.1.target LiesOn ω := s.2.2
+  rw [← h] at this
+  unfold lies_on Fig.carrier Circle.instFigCircle Circle.carrier Circle.IsOn at this
+  simp at this
+  have : ω.radius > 0 := ω.rad_pos
+  linarith
+
+instance source_ne_center {ω : Circle P} (s : Chord P ω) : PtNe s.1.source ω.center := ⟨ (center_ne_endpts s).1.symm ⟩
+
+instance target_ne_center {ω : Circle P} (s : Chord P ω) : PtNe s.1.target ω.center := ⟨ (center_ne_endpts s).2.symm ⟩
+
+protected def reverse {ω : Circle P} (s : Chord P ω) : Chord P ω where
+  toSegND := s.1.reverse
+  ison := ⟨s.2.2, s.2.1⟩
+
+theorem pt_liesint_liesint_circle {ω : Circle P} {A : P} {s : Chord P ω} (h : A LiesInt s) : A LiesInt ω := by
   have : s.1 SegInCir ω := by
     unfold Circle.seg_lies_inside_circle
     constructor
@@ -415,25 +443,68 @@ theorem pt_liesint_liesint_circle {A : P} {s : Chord P ω} (h : A LiesInt s) : A
 
 end Chord
 
-def Chord.mk_arc (β : Arc P ω) : Chord P ω where
+def Arc.toChord {ω : Circle P} (β : Arc P ω) : Chord P ω where
   toSegND := SEG_nd β.source β.target β.endpts_ne.out
   ison := β.ison
 
-def Arc.mk_chord (s : Chord P ω) : Arc P ω where
+def Chord.toArc {ω : Circle P} (s : Chord P ω) : Arc P ω where
   source := s.1.source
   target := s.1.target
   ison := s.2
   endpts_ne := ⟨s.1.2⟩
 
+theorem Circle.complementary_arc_toChord_eq_reverse {ω : Circle P} (β : Arc P ω) : β.complement.toChord = β.toChord.reverse := sorry
+
+theorem Circle.reverse_chord_toArc_eq_complement {ω : Circle P} (s : Chord P ω) : s.reverse.toArc = s.toArc.complement := sorry
+
 namespace Chord
 
-protected def length (s : Chord P ω) : ℝ := s.1.length
+protected def length {ω : Circle P} (s : Chord P ω) : ℝ := s.1.length
 
-protected def IsDiameter (s : Chord P ω) : Prop := ω.center LiesOn s
+protected def IsDiameter {ω : Circle P} (s : Chord P ω) : Prop := ω.center LiesOn s
 
-theorem diameter_length_eq_twice_radius {s : Chord P ω} (h : Chord.IsDiameter ω s) : s.length = 2 * ω.radius := sorry
+theorem diameter_iff_antipide {ω : Circle P} {s : Chord P ω} : Chord.IsDiameter s ↔ Circle.IsAntipode ω s.2.1 s.2.2 := by
+  haveI : PtNe s.1.source s.1.target := ⟨s.1.2.symm⟩
+  constructor
+  · unfold Chord.IsDiameter
+    intro hl
+    have : colinear s.1.source s.1.target ω.center := by
+      apply Line.pt_pt_linear
+      apply SegND.lies_on_toLine_of_lie_on hl
+    apply (Circle.antipode_iff_colinear s.1.source s.1.target s.2.1 s.2.2).mpr (flip_colinear_snd_trd this)
+  unfold Circle.IsAntipode
+  intro hf
+  have : VEC s.1.source ω.center = VEC ω.center s.1.target := pt_flip_vec_eq hf
+  unfold Chord.IsDiameter
+  show ω.center LiesOn s.1
+  apply SegND.lies_on_iff.mpr
+  use (1 / 2 : ℝ)
+  constructor
+  · norm_num
+  constructor
+  · norm_num
+  apply pt_flip_vec_eq_half_vec hf
 
-theorem diameter_iff_antipide {s : Chord P ω} : Chord.IsDiameter ω s ↔ Circle.IsAntipode ω s.2.1 s.2.2 := sorry
+theorem diameter_length_eq_twice_radius {ω : Circle P} {s : Chord P ω} (h : Chord.IsDiameter s) : s.length = 2 * ω.radius := by
+  have : VEC s.1.source ω.center = VEC ω.center s.1.target := by
+    apply pt_flip_vec_eq
+    show Circle.IsAntipode ω s.2.1 s.2.2
+    apply diameter_iff_antipide.mp h
+  have : VEC s.1.source s.1.target = (2 : ℝ) • (VEC s.1.source ω.center) := by
+    calc
+      _ = VEC s.1.source ω.center + VEC ω.center s.1.target := by rw [vec_add_vec]
+      _ = (2 : ℝ) • (VEC s.1.source ω.center) := by rw [← this, two_smul]
+  calc
+    _ = s.1.length := rfl
+    _ = ‖VEC s.1.source s.1.target‖ := by
+      show dist s.1.source s.1.target = ‖VEC s.1.source s.1.target‖
+      rw [dist_comm, NormedAddTorsor.dist_eq_norm']
+      rfl
+    _ = 2 * (dist ω.center s.1.source) := by
+      rw [this, NormedAddTorsor.dist_eq_norm', norm_smul]
+      norm_num
+      rfl
+    _ = 2 * ω.radius := by rw [s.2.1]
 
 end Chord
 

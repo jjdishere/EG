@@ -21,11 +21,6 @@ theorem pt_flip_center_is_midpoint {A B O : P} (h : B = pt_flip A O) : O = (SEG 
   unfold Seg.midpoint
   apply (eq_vadd_iff_vsub_eq _ _ _).mpr
   show VEC A O = (1 / 2 : ℝ) • (VEC A B)
-  symm
-  calc
-    _ = (1 / 2 : ℝ) • (VEC A O + VEC O B) := by rw [vec_add_vec]
-    _ = VEC A O := by
-      rw [← pt_flip_vec_eq h, ← two_smul ℝ, smul_smul]
-      simp
+  exact pt_flip_vec_eq_half_vec h
 
 end EuclidGeom

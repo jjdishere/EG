@@ -8,23 +8,63 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P] (ω : Circle P)
+variable {P : Type _} [EuclideanPlane P]
 
 open AngValue Angle Circle
 
+section cangle
+
+attribute [instance] Arc.source_ne_center Arc.target_ne_center Chord.source_ne_center Chord.target_ne_center
+
+def Arc.cangle {ω : Circle P} (β : Arc P ω) : Angle P := ANG β.source ω.center β.target
+
+def Arc.IsMajor {ω : Circle P} (β : Arc P ω) : Prop := β.cangle.value.toReal < 0
+
+def Arc.IsMinor {ω : Circle P} (β : Arc P ω) : Prop := β.cangle.value.toReal > 0
+
+def Chord.cangle {ω : Circle P} (s : Chord P ω) : Angle P := ANG s.1.source ω.center s.1.target
+
+theorem Circle.cangle_of_arc_eq_cangle_of_chord {ω : Circle P} (β : Arc P ω) : β.cangle = β.toChord.cangle := sorry
+
+theorem Circle.cangle_of_chord_eq_cangle_of_arc {ω : Circle P} (s : Chord P ω) : s.cangle = s.toArc.cangle := sorry
+
+theorem Chord.cangle_eq_pi_iff_is_diameter {ω : Circle P} (s : Chord P ω) : s.cangle.value = π ↔ Chord.IsDiameter s := sorry
+
+theorem Circle.cangle_of_complementary_arc_eq_neg {ω : Circle P} (β : Arc P ω) : β.complement.cangle.value = -β.cangle.value := sorry
+
+theorem Circle.cangle_of_reverse_chord_eq_neg {ω : Circle P} (s : Chord P ω) : s.reverse.cangle.value = -s.cangle.value := sorry
+
+theorem Chord.cangle_eq_iff_length_eq {ω : Circle P} (s₁ : Chord P ω) (s₂ : Chord P ω) : s₁.cangle.value = s₂.cangle.value ↔ s₁.length = s₂.length := sorry
+
+end cangle
+
+
+section iangle
+
+attribute [instance] Arc.pt_ne_source Arc.pt_ne_target  -- why can't work
+
+def Arc.IsIangle {ω : Circle P} (β : Arc P ω) (ang : Angle P) : Prop := (ang.source LiesOn ω) ∧ (β.ne_endpts ang.source) ∧ (β.source LiesOn ang.start_ray) ∧ (β.target LiesOn ang.end_ray)
+
+def Chord.IsIangle {ω : Circle P} (s : Chord P ω) (ang : Angle P) : Prop := (ang.source LiesOn ω) ∧ (s.ne_endpts ang.source) ∧ (s.1.source LiesOn ang.start_ray) ∧ (s.1.target LiesOn ang.end_ray)
+
+theorem Arc.angle_mk_pt_is_iangle {ω : Circle P} {A : P} {β : Arc P ω} (h₁ : A LiesOn ω) (h₂ : β.ne_endpts A) : β.IsIangle (ANG β.source A β.target h₂.1.symm h₂.2.symm) := sorry
+
+theorem Chord.angle_mk_pt_is_iangle {ω : Circle P} {A : P} {s : Chord P ω} (h₁ : A LiesOn ω) (h₂ : s.ne_endpts A) : s.IsIangle (ANG s.1.source A s.1.target h₂.1.symm h₂.2.symm) := sorry
+
+theorem Circle.iangle_of_arc_is_iangle_of_toChord {ω : Circle P} {A : P} {β : Arc P ω} {ang : Angle P} (h : β.IsIangle ang) : β.toChord.IsIangle ang := sorry
+
+theorem Circle.iangle_of_chord_is_iangle_of_toArc {ω : Circle P} {A : P} {s : Chord P ω} {ang : Angle P} (h : s.IsIangle ang) : s.toArc.IsIangle ang := sorry
+
+theorem Arc.cangle_eq_two_times_inscribed_angle {ω : Circle P} {A : P} {β : Arc P ω} {ang : Angle P} (h : β.IsIangle ang) : β.cangle.value = 2 • ang.value := sorry
+
+theorem Chord.cangle_eq_two_times_inscribed_angle {ω : Circle P} {A : P} {s : Chord P ω} {ang : Angle P} (h : s.IsIangle ang) : s.cangle.value = 2 • ang.value := sorry
+
+end iangle
+
+
 section angle -- need a change
 
-def Circle.angle_mk_pt_arc (p : P) (β : Arc P ω) (h : Arc.Isnot_arc_endpts ω p β) : Angle P := ANG β.source p β.target h.1.symm h.2.symm
-
-namespace Arc
-
-protected def cangle (β : Arc P ω) : Angle P := angle_mk_pt_arc ω ω.center β (center_isnot_arc_endpts ω β)
-
-protected def IsMajor (β : Arc P ω) : Prop := (β.cangle ω).value.toReal < 0
-
-protected def IsMinor (β : Arc P ω) : Prop := (β.cangle ω).value.toReal > 0
-
-end Arc
+def Circle.angle_mk_pt_arc (p : P) (β : Arc P ω) (h : Arc.ne_endpts ω p β) : Angle P := ANG β.source p β.target h.1.symm h.2.symm
 
 end angle
 
@@ -46,7 +86,7 @@ theorem inscribed_angle_of_complementary_arc_is_negative {p : P} {β : Arc P ω}
   apply TriangleND.liesonright_angle_isneg
   exact (Arc.pt_liesint_liesonright_dlin ω h)
 
-theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P ω} (h₁ : p LiesOn ω) (h₂ : Arc.Isnot_arc_endpts ω p β) : (β.cangle ω).value = 2 • (angle_mk_pt_arc ω p β h₂).value := by
+theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P ω} (h₁ : p LiesOn ω) (h₂ : Arc.ne_endpts ω p β) : (β.cangle ω).value = 2 • (angle_mk_pt_arc ω p β h₂).value := by
   haveI : PtNe p β.source := ⟨h₂.1⟩
   haveI : PtNe p β.target := ⟨h₂.2⟩
   haveI : PtNe p ω.center := Circle.pt_lieson_ne_center h₁
@@ -88,7 +128,7 @@ theorem cangle_eq_two_times_inscribed_angle {p : P} {β : Arc P ω} (h₁ : p Li
     _ = 2 • (angle_mk_pt_arc ω p β h₂).value := rfl
 
 /-
-theorem inscribed_angle_of_diameter_eq_mod_pi {p : P} {β : Arc P ω} (h₁ : p LiesOn ω) (h₂ : Arc.IsAntipode β.source β.target β.ison.1 β.ison.2) (h₃ : Arc.Isnot_arc_endpts p β) : (angle_mk_pt_Arc P ω β h₃).dvalue = ∡[π / 2] := by
+theorem inscribed_angle_of_diameter_eq_mod_pi {p : P} {β : Arc P ω} (h₁ : p LiesOn ω) (h₂ : Arc.IsAntipode β.source β.target β.ison.1 β.ison.2) (h₃ : Arc.ne_endpts p β) : (angle_mk_pt_Arc P ω β h₃).dvalue = ∡[π / 2] := by
   have : β.cangle.value = π := h₂
   have : 2 • (angle_mk_pt_Arc P ω β h₃).value = π := by
     rw [← this, ← cangle_eq_two_times_inscribed_angle]
@@ -104,11 +144,11 @@ theorem inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt {A B C : P} {ω : Circle 
   let β : Arc P ω := ARC A B h₁ h₂
   have hh₁ : C LiesOn ω := h₃
   have hh₂ : Arc.IsAntipode β.source β.target β.ison.1 β.ison.2 := h
-  have hh₃ : Arc.Isnot_arc_endpts C β := ⟨hne₃.out, hne₂.out.symm⟩
+  have hh₃ : Arc.ne_endpts C β := ⟨hne₃.out, hne₂.out.symm⟩
   apply inscribed_angle_of_diameter_eq_mod_pi hh₁ hh₂ hh₃
 -/
 
-theorem inscribed_angle_on_same_arc_is_invariant_mod_pi {A B : P} {β : Arc P ω} (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) (hne₁ : Arc.Isnot_arc_endpts ω A β) (hne₂ : Arc.Isnot_arc_endpts ω B β) : (angle_mk_pt_arc ω A β hne₁).dvalue = (angle_mk_pt_arc ω B β hne₂).dvalue := by
+theorem inscribed_angle_on_same_arc_is_invariant_mod_pi {A B : P} {β : Arc P ω} (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) (hne₁ : Arc.ne_endpts ω A β) (hne₂ : Arc.ne_endpts ω B β) : (angle_mk_pt_arc ω A β hne₁).dvalue = (angle_mk_pt_arc ω B β hne₂).dvalue := by
   have eq : 2 • (angle_mk_pt_arc ω A β hne₁).value = 2 • (angle_mk_pt_arc ω B β hne₂).value := by rw [← cangle_eq_two_times_inscribed_angle ω h₁ hne₁, ← cangle_eq_two_times_inscribed_angle ω h₂ hne₂]
   exact coe_eq_coe_iff_two_nsmul_eq.mpr eq
 
@@ -119,7 +159,7 @@ namespace Arc
 
 protected def iangle (β : Arc P ω) : AngDValue := sorry
 
-theorem inscribed_angle_dvalue_eq_iangle {p : P} {β : Arc P ω} (h₁ : p LiesOn ω) (h₂ : Isnot_arc_endpts ω p β) : (angle_mk_pt_arc ω p β h₂).dvalue = β.iangle := by
+theorem inscribed_angle_dvalue_eq_iangle {p : P} {β : Arc P ω} (h₁ : p LiesOn ω) (h₂ : ne_endpts ω p β) : (angle_mk_pt_arc ω p β h₂).dvalue = β.iangle := by
   sorry
 
 theorem angle_of_osculation : sorry := sorry
