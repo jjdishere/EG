@@ -8,12 +8,12 @@ open Line
 variable {P : Type _} [EuclideanPlane P] {α β γ : Type*} [ProjObj α] [ProjObj β] [ProjObj γ]
   {l₁ : α} {l₂ : β} {l₃ : γ}
 
-def perpendicular (l₁ : α) (l₂ : β) : Prop :=
+def Perpendicular (l₁ : α) (l₂ : β) : Prop :=
   ProjObj.toProj l₁ = (ProjObj.toProj l₂).perp
 
-scoped infix : 50 " IsPerpendicularTo " => perpendicular
+scoped infix : 50 " IsPerpendicularTo " => Perpendicular
 
-scoped infix : 50 " ⟂ " => perpendicular
+scoped infix : 50 " ⟂ " => Perpendicular
 
 section Notation
 open Lean
@@ -21,29 +21,29 @@ open Lean
 syntax (name := perpendicularNotation) (priority := high) term:50 " ⟂ " term:51 : term
 
 @[macro perpendicularNotation] def perpendicularNotationImpl : Macro
-  | `($l:term ⟂ $r:term) => `(perpendicular $l $r)
+  | `($l:term ⟂ $r:term) => `(Perpendicular $l $r)
   | _ => Macro.throwUnsupported
 
 end Notation
 
-namespace perpendicular
+namespace Perpendicular
 
 @[simp]
 protected theorem irrefl (l : α) : ¬ (l ⟂ l) :=
   sorry
 
 protected theorem symm (h : l₁ ⟂ l₂) : (l₂ ⟂ l₁) := by
-  rw [perpendicular, Proj.perp, h, Proj.perp, vadd_vadd]
+  rw [Perpendicular, Proj.perp, h, Proj.perp, vadd_vadd]
   norm_cast
   simp
 
-end perpendicular
+end Perpendicular
 
 section Perpendicular_and_parallel
 
 theorem parallel_of_perp_perp (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ⟂ l₃) : l₁ ∥ l₃ := by
-  unfold perpendicular at h₂
-  simp only [perpendicular, h₂, Proj.perp_perp] at h₁
+  unfold Perpendicular at h₂
+  simp only [Perpendicular, h₂, Proj.perp_perp] at h₁
   exact h₁
 
 theorem perp_of_parallel_perp (h₁ : l₁ ∥ l₂) (h₂ : l₂ ⟂ l₃) : l₁ ⟂ l₃ := Eq.trans h₁ h₂
@@ -51,6 +51,8 @@ theorem perp_of_parallel_perp (h₁ : l₁ ∥ l₂) (h₂ : l₂ ⟂ l₃) : l�
 alias Parallel.trans_perp := perp_of_parallel_perp
 
 theorem perp_of_perp_parallel (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ∥ l₃) : l₁ ⟂ l₃ := h₁.trans (congrArg Proj.perp h₂)
+
+alias Parallel.trans_perp := perp_of_parallel_perp
 
 theorem toProj_ne_toProj_of_perp (h : l₁ ⟂ l₂) : ProjObj.toProj l₁ ≠ ProjObj.toProj l₂ :=
   sorry
@@ -70,7 +72,7 @@ theorem toProj_of_perp_line_eq_toProj_perp (A : P) (l : Line P) : (perp_line A l
 theorem perp_line_perp (A : P) (l : Line P) : perp_line A l ⟂ l := toProj_of_perp_line_eq_toProj_perp A l
 
 theorem toProj_ne_perp_toProj (A : P) (l : Line P) : l.toProj ≠ (perp_line A l).toProj :=
-  Ne.trans_eq (perpendicular.irrefl l) (toProj_of_perp_line_eq_toProj_perp A l).symm
+  Ne.trans_eq (Perpendicular.irrefl l) (toProj_of_perp_line_eq_toProj_perp A l).symm
 
 def perp_foot (A : P) (l : Line P) : P := Line.inx l (perp_line A l) (toProj_ne_perp_toProj A l)
 
