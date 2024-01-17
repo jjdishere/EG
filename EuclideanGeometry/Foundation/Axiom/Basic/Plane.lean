@@ -117,4 +117,10 @@ def delabVecNDMkPtPt : Delab := do
 @[simp]
 lemma VecND.coe_mkPtPt (A B : P) [_h : Fact (B ≠ A)] : VEC_nd A B = VEC A B := rfl
 
+@[simp]
+theorem VecND.neg_vecND (A B : P) [_h : Fact (B ≠ A)] : (- VEC_nd A B)= VEC_nd B A _h.1.symm := by
+  haveI : Fact (A ≠ B) := ⟨_h.1.symm⟩
+  ext
+  simp only [ne_eq, RayVector.coe_neg, coe_mkPtPt, neg_vec]
+
 end EuclidGeom
