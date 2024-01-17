@@ -51,7 +51,7 @@ theorem IsND_of_oppo_of_IsND (nontriv : ang.IsND) : ang.oppo.IsND := by sorry
 
 end Angle
 
-section parallel
+section Parallel
 variable {P : Type _} [EuclideanPlane P]
 -- should be stated use mod 2pi first, then back to pi or -pi
 
@@ -90,7 +90,7 @@ theorem value_eq_of_isalternateintang {ang₁ ang₂ : Angle P} (h : IsAlternate
 theorem value_eq_of_corresponding_angle {l₁ l₂ l : DirLine P} (h : l₁.toDir = l₂.toDir) (g : ¬ l ∥ l₁) : (Angle.mk_dirline_dirline l₁ l (Ne.symm g)).value = (Angle.mk_dirline_dirline l₂ l (Ne.symm (ne_of_ne_of_eq g (Quotient.sound (h ▸ PM.con.refl _))))).value := sorry
 -/
 
-end parallel
+end Parallel
 
 namespace Angle
 

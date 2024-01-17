@@ -94,8 +94,8 @@ theorem qdr_nd_is_parallelogram_nd_permute_iff {P : Type*} [EuclideanPlane P] (q
   unfold Quadrilateral_nd.IsParallelogram_para
   unfold Quadrilateral_nd.IsParallelogram_para at a
   rcases a with ⟨k,q⟩
-  unfold parallel
-  unfold parallel at k q
+  unfold Parallel
+  unfold Parallel at k q
   have K₁: qdr_nd.permute.edge_nd₁₂.toProj = qdr_nd.edge_nd₂₃.toProj := by rfl
   have K₂: qdr_nd.permute.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.reverse.toProj := by rfl
   have K₃: qdr_nd.edge_nd₁₄.reverse.toProj = qdr_nd.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
@@ -127,8 +127,8 @@ theorem qdr_nd_is_parallelogram_nd_permute_iff {P : Type*} [EuclideanPlane P] (q
   unfold Quadrilateral_nd.IsParallelogram_para
   unfold Quadrilateral_nd.IsParallelogram_para at a
   rcases a with ⟨k,q⟩
-  unfold parallel
-  unfold parallel at k q
+  unfold Parallel
+  unfold Parallel at k q
   have K₂: qdr_nd.permute.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.reverse.toProj := by rfl
   have K₃: qdr_nd.edge_nd₁₄.reverse.toProj = qdr_nd.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
   rw [K₃] at K₂
@@ -154,158 +154,12 @@ theorem prg_is_parallelogram_nd_permute_iff {P : Type*} [EuclideanPlane P] (prg 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 1st, 2nd and 3rd points are not collinear, then qdr_nd is a parallelogram_nd.-/
 theorem Parallelogram_not_collinear₁₂₃ {P : Type*} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (para: qdr_nd.1 IsParallelogram) (h: ¬ Collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd IsParallelogram_nd := by
 
-  have hba : qdr_nd.point₂ ≠ qdr_nd.point₁ := by
-    unfold Collinear at h
-    exact (ne_of_not_collinear h).2.2
-  have hbc : qdr_nd.point₂ ≠ qdr_nd.point₃ :=by
-    exact (ne_of_not_collinear h).1.symm
-  have hca: qdr_nd.point₃ ≠ qdr_nd.point₁ :=by
-    exact (ne_of_not_collinear h).2.1.symm
-  have had : qdr_nd.point₁ ≠ qdr_nd.point₄ := by
-    by_contra k
-    unfold Quadrilateral.IsParallelogram at para
-    have o : VEC qdr_nd.point₁ qdr_nd.point₂ = VEC qdr_nd.point₁ qdr_nd.point₃ := by
-      simp only [para, k.symm]
-    rw [EuclidGeom.Vec.mkPtPt] at o
-    rw [EuclidGeom.Vec.mkPtPt] at o
-    have oo : qdr_nd.point₂= qdr_nd.point₃ := by
-      exact vsub_left_cancel o
-    exact hbc oo
+  constructor
+  · constructor
+    · rw [oarea_eq_oarea_iff_parallel_ne]
 
-  have hbd : qdr_nd.point₂ ≠ qdr_nd.point₄ := by
-    by_contra k₁
-    unfold Quadrilateral.IsParallelogram at para
-    have o: VEC qdr_nd.point₁ qdr_nd.point₂ = VEC qdr_nd.point₂ qdr_nd.point₃ := by
-      simp[para,k₁.symm]
-    have oo: Collinear qdr_nd.point₂ qdr_nd.point₁ qdr_nd.point₃ := by
-      have ooo:∃ t : ℝ,VEC qdr_nd.point₂ qdr_nd.point₃ = t • VEC qdr_nd.point₂ qdr_nd.point₁ := by
-        use -1
-        simp only [neg_smul, one_smul, neg_vec]
-        rw[o]
-      exact collinear_of_vec_eq_smul_vec' ooo
-    simp only [collinear213 oo, not_true_eq_false] at h
-  have hcd : qdr_nd.point₃ ≠ qdr_nd.point₄ := by
-    by_contra k₂
-    have k₂₂ : VEC qdr_nd.point₄ qdr_nd.point₃=0 := by
-      simp only [k₂, vec_same_eq_zero]
-    unfold Quadrilateral.IsParallelogram at para
-    have k₂₃: qdr_nd.point₁=qdr_nd.point₂ :=by
-      rw [k₂₂] at para
-      simp only [para, (eq_iff_vec_eq_zero qdr_nd.point₁ qdr_nd.point₂).mpr, vec_same_eq_zero]
-    simp only [k₂₃.symm, ne_eq, not_true_eq_false] at hba
-  have t : ¬ Collinear qdr_nd.point₂ qdr_nd.point₁ qdr_nd.point₃ := by
-    by_contra k
-    simp only [collinear213 k, not_true_eq_false] at h
-  have x : ¬ collinear_of_nd (A := qdr_nd.point₂) (B := qdr_nd.point₁) (C := qdr_nd.point₃) := by
-    unfold Collinear at t
-    simp only [hca, hbc, hba.symm, or_self, dite_false] at t
-    simp only [t, not_false_eq_true]
-  have l₁ : qdr_nd.edge_nd₁₂.toProj=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₂, _⟩ := by rfl
-  have l₁' : qdr_nd.edge_nd₁₂.toProj=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp hba.symm⟩ := by
-    have y₁:VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp hba.symm⟩=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hba⟩ := by
-      have z₁: VEC qdr_nd.point₂ qdr_nd.point₁ =- VEC qdr_nd.point₁ qdr_nd.point₂ := by
-        simp only [neg_vec]
-      simp only [ne_eq, z₁, VecND.mk_neg', VecND.neg_toProj]
-    simp only [l₁, ne_eq, y₁]
-  have l₂ : qdr_nd.edge_nd₂₃.toProj=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₃, _⟩ := by rfl
-  have l₂' : qdr_nd.edge_nd₂₃.toProj=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hbc⟩ := by
-    have y₂:VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hbc⟩=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hbc.symm⟩ := by
-      have z₂: VEC qdr_nd.point₃ qdr_nd.point₂ =- VEC qdr_nd.point₂ qdr_nd.point₃ := by
-        simp only[neg_vec]
-      simp only [ne_eq, z₂, VecND.mk_neg', VecND.neg_toProj]
-    simp only [l₂, ne_eq, y₂]
-  have l₃ : qdr_nd.edge_nd₃₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₄, _⟩ := by rfl
-  have l₃' : qdr_nd.edge_nd₃₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hcd⟩ := by
-    have y₃:VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hcd⟩=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₄, (ne_iff_vec_ne_zero _ _).mp hcd.symm⟩ := by
-      have z₃: VEC qdr_nd.point₄ qdr_nd.point₃ =- VEC qdr_nd.point₃ qdr_nd.point₄ := by
-        simp only [neg_vec]
-      simp only [ne_eq, z₃, VecND.mk_neg', VecND.neg_toProj]
-    simp only [l₃, ne_eq, y₃]
-  have l₄ : qdr_nd.edge_nd₁₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₄, _⟩ := by rfl
-  have l₄' : qdr_nd.edge_nd₁₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp had⟩ := by
-    have y₄:VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp had⟩=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₄, (ne_iff_vec_ne_zero _ _).mp had.symm⟩ := by
-      have z₄: VEC qdr_nd.point₄ qdr_nd.point₁ =- VEC qdr_nd.point₁ qdr_nd.point₄ := by
-        simp [neg_vec]
-      simp only [ne_eq, z₄, VecND.mk_neg', VecND.neg_toProj]
-    simp only [l₄, ne_eq, y₄]
-  have s : ¬ qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₂₃.toProj := by
-    unfold collinear_of_nd at x
-    simp only [l₁', ne_eq, l₂]
-    exact x
-  have v₁ : qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₃₄.toProj := by
-    unfold Quadrilateral.IsParallelogram at para
-    have v₁₁₁:VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hba⟩ = VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hcd⟩ := by
-      simp only [ne_eq, para]
-    simp only [l₁, ne_eq, v₁₁₁, l₃']
-  have v₁₁ : toProj qdr_nd.edge_nd₁₂ = toProj qdr_nd.edge_nd₃₄ := by exact v₁
-  have v₂ : qdr_nd.edge_nd₂₃.toProj = qdr_nd.edge_nd₁₄.toProj := by
-    unfold Quadrilateral.IsParallelogram at para
-    have v₂₂: VEC qdr_nd.point₁ qdr_nd.point₄ = VEC qdr_nd.point₂ qdr_nd.point₃ := by
-      rw [← vec_add_vec qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₄]
-      rw [← vec_add_vec qdr_nd.point₂ qdr_nd.point₄ qdr_nd.point₃]
-      rw [para]
-      exact add_comm (VEC qdr_nd.point₄ qdr_nd.point₃) (VEC qdr_nd.point₂ qdr_nd.point₄)
-    simp only [l₂, ne_eq, v₂₂, l₄]
-  have v₂₁ : toProj qdr_nd.edge_nd₂₃ = toProj qdr_nd.edge_nd₁₄ := by exact v₂
-  have s₁ : ¬ qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₂₃.toProj := by
-    by_contra k₃
-    have k₃₃: collinear_of_nd (A := qdr_nd.point₂) (B := qdr_nd.point₁) (C := qdr_nd.point₃) := by
-      rw[l₁',l₂] at k₃
-      exact k₃
-    have k₃₄: Collinear qdr_nd.point₂ qdr_nd.point₁ qdr_nd.point₃ := by
-      sorry
-    simp only [k₃₄, not_true_eq_false] at t
-  have s₂ : ¬ qdr_nd.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj := by
-    rw [v₁.symm]
-    by_contra k
-    exact s k.symm
-  have s₃ : ¬ qdr_nd.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.toProj := by
-    rw [v₂.symm]
-    by_contra k
-    exact s₂ k.symm
-  have s₄ : ¬ qdr_nd.edge_nd₁₄.toProj = qdr_nd.edge_nd₁₂.toProj := by
-    rw[v₁]
-    by_contra k
-    exact s₃ k.symm
-  constructor
-  constructor
-  unfold parallel
-  simp only [v₁₁]
-  unfold parallel
-  simp only [v₂₁]
-  constructor
-  simp only [h, not_false_eq_true]
-  by_contra m₃
-  have m₂ :  ¬ Collinear qdr_nd.point₃ qdr_nd.point₂ qdr_nd.point₄ := by
-    by_contra k₁
-    unfold Collinear at k₁
-    simp [hbd.symm,hcd,hbc] at k₁
-    unfold collinear_of_nd at k₁
-    have p₄:qdr_nd.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj  := by
-      rw[l₂',l₃]
-      exact k₁
-    simp[p₄] at s₂
-  simp [collinear213 m₃] at m₂
-  by_contra m₅
-  have m₄ :  ¬ Collinear qdr_nd.point₄ qdr_nd.point₃ qdr_nd.point₁ := by
-    by_contra k₂
-    unfold Collinear at k₂
-    simp [hca.symm,hcd,had.symm] at k₂
-    unfold collinear_of_nd at k₂
-    have p₅:qdr_nd.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.toProj := by
-      rw[l₄',l₃']
-      exact k₂
-    simp[p₅] at s₃
-  simp [collinear213 m₅] at m₄
-  by_contra m₇
-  have m₆ :  ¬ Collinear qdr_nd.point₁ qdr_nd.point₄ qdr_nd.point₂ := by
-    by_contra k₃
-    unfold Collinear at k₃
-    have p₆:qdr_nd.edge_nd₁₄.toProj = qdr_nd.edge_nd₁₂.toProj := by
-      rw[l₄,l₁]
-      exact k₃
-    simp [p₆] at s₄
-  simp [collinear213 m₇] at m₆
+    · rw [oarea_eq_oarea_iff_parallel_ne]
+
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 2nd, 3rd and 4th points are not collinear, then qdr_nd is a parallelogram_nd.-/
 theorem Parallelogram_not_collinear₂₃₄ {P : Type*} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (para: qdr_nd.1 IsParallelogram) (h: ¬ Collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd IsParallelogram_nd := by
@@ -809,7 +663,7 @@ theorem qdr_cvx_is_prg_nd_of_eq_length_eq_length_variant (h₁ : (SEG A B).lengt
 theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) (h₂ : qdr_cvx.edge_nd₁₂.length = qdr_cvx.edge_nd₃₄.length) : qdr_cvx.IsParallelogram_nd := by
   unfold Quadrilateral_nd.IsParallelogram_nd
   constructor
-  unfold parallel at h₁
+  unfold Parallel at h₁
   have h: qdr_cvx.edge_nd₁₂.toDir = qdr_cvx.edge_nd₃₄.toDir ∨ qdr_cvx.edge_nd₁₂.toDir = - qdr_cvx.edge_nd₃₄.toDir := by
     apply Dir.toProj_eq_toProj_iff.1
     exact h₁
@@ -906,7 +760,7 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qd
 theorem qdr_cvx_is_prg_nd_of_para_eq_length_variant (h₁ : (SEG_nd A B (QDR_cvx A B C D nd cvx).nd₁₂.out) ∥ (SEG_nd C D (QDR_cvx A B C D nd cvx).nd₃₄.out)) (h₂ : (SEG_nd A B (QDR_cvx A B C D nd cvx).nd₁₂.out).length = (SEG_nd C D (QDR_cvx A B C D nd cvx).nd₃₄.out).length) : (Quadrilateral_nd.mk_is_nd nd) IsParallelogram_nd := by
    unfold Quadrilateral_nd.IsParallelogram_nd
    constructor
-   unfold parallel at h₁
+   unfold Parallel at h₁
    have h: (QDR_cvx A B C D nd cvx).edge_nd₁₂.toDir = (QDR_cvx A B C D nd cvx).edge_nd₃₄.toDir ∨ (QDR_cvx A B C D nd cvx).edge_nd₁₂.toDir = - (QDR_cvx A B C D nd cvx).edge_nd₃₄.toDir := by
      apply Dir.toProj_eq_toProj_iff.1
      exact h₁
@@ -1016,7 +870,7 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edge_nd₁₄ ∥ q
     apply SegND.length_of_rev_eq_length
   have H₁: permute_convex.edge_nd₁₂.toProj = permute_convex.edge_nd₃₄.toProj := by
     rw [K₁, K₃]
-    unfold parallel at h₁
+    unfold Parallel at h₁
     exact h₁.symm
   have H₂: permute_convex.edge_nd₁₂.length = permute_convex.edge_nd₃₄.length := by
     rw [K₂, K₄]
@@ -1027,13 +881,13 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edge_nd₁₄ ∥ q
   unfold Quadrilateral_nd.IsParallelogram_para
   unfold Quadrilateral_nd.IsParallelogram_para at para
   rcases para with ⟨para₁, para₂⟩
-  unfold parallel
+  unfold Parallel
   have K₉: permute_convex.edge_nd₁₄.reverse.toProj = qdr_cvx.edge_nd₁₂.toProj := by rfl
   have K₁₀: permute_convex.edge_nd₁₄.reverse.toProj = permute_convex.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
   have K₈: permute_convex.edge_nd₂₃.toProj = qdr_cvx.edge_nd₃₄.toProj := by rfl
   rw [K₁₀] at K₉
-  unfold parallel at para₁
-  unfold parallel at para₂
+  unfold Parallel at para₁
+  unfold Parallel at para₂
   constructor
   have key: qdr_cvx.edge_nd₁₂.toProj = qdr_cvx.edge_nd₃₄.toProj := by
     rw [K₉.symm, K₈.symm]
@@ -1062,7 +916,7 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length'_variant (h₁ : (SEG_nd A D (QDR_cv
      apply SegND.length_of_rev_eq_length
    have H₁: permute_convex.edge_nd₁₂.toProj = permute_convex.edge_nd₃₄.toProj := by
      rw [K₁, K₃]
-     unfold parallel at h₁
+     unfold Parallel at h₁
      exact h₁.symm
    have H₂: permute_convex.edge_nd₁₂.1.length = permute_convex.edge_nd₃₄.1.length := by
      rw [K₂, K₄]
@@ -1078,8 +932,8 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length'_variant (h₁ : (SEG_nd A D (QDR_cv
    have K₁₀: permute_convex.edge_nd₁₄.reverse.toProj = permute_convex.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
    have K₈: permute_convex.edge_nd₂₃.toProj = (QDR_cvx A B C D nd cvx).edge_nd₃₄.toProj := by rfl
    rw [K₁₀] at K₉
-   unfold parallel at para₁
-   unfold parallel at para₂
+   unfold Parallel at para₁
+   unfold Parallel at para₂
    constructor
    have key: (QDR_cvx A B C D nd cvx).edge_nd₁₂.toProj = (QDR_cvx A B C D nd cvx).edge_nd₃₄.toProj := by
      rw [K₉.symm, K₈.symm]
@@ -1439,7 +1293,7 @@ theorem nd_eq_length_of_is_prg_nd (h : qdr.IsParallelogram_nd) : (SEG_nd qdr.poi
   rcases h with ⟨a,b⟩
   unfold Quadrilateral_nd.IsParallelogram_para at a
   rcases a with ⟨p,q⟩
-  unfold parallel at p q
+  unfold Parallel at p q
 
   rcases b with ⟨b₁,b₂,b₃,b₄⟩
   sorry
@@ -1457,7 +1311,7 @@ theorem nd_eq_length_of_is_prg_nd'  (h : qdr.IsParallelogram_nd) : (SEG_nd qdr.p
   rcases h with ⟨a,b⟩
   unfold Quadrilateral_nd.IsParallelogram_para at a
   rcases a with ⟨p,q⟩
-  unfold parallel at p q
+  unfold Parallel at p q
   rcases b with ⟨b₁,b₂,b₃,b₄⟩
   sorry
   simp only [j, dite_false] at h
