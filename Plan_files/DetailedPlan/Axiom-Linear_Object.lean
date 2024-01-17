@@ -14,7 +14,7 @@ Ray.lean -- Define (directed) segments and rays
     SEG_nd = SegND.mk -- Rewrite the standard function of making a nondegenerate segment; i.e. for (A B : P) and (nd : B ≠ A), SEG_nd A B nd gives the nondegenerate segment with source A and target B.
     Ray.mk_pt_pt -- Given two points (A B : P) and that they are not equal (nd : B ≠ A), Ray.mk_pt_pt A B nd returns the ray starting from A in the direction of B, i.e. (SEG_nd A B nd).toRay.
     RAY = Ray.mk_pt_pt -- Rewrite the making function of a ray from points (A B : P) and (nd : B ≠ A).
-  
+
   Coersion :
     Ray.toProj -- Given a (ray : Ray P), ray.toProj returns the Proj of a ray (defined from Ray.toDir)
     Ray.IsOn -- Given (a : P) (ray : Ray P), IsOn a ray is the property that point lies on a ray, namely, ∃ (t : ℝ), 0 ≤ t ∧ VEC ray.source a = t • ray.toDir.toVec.
@@ -98,7 +98,7 @@ Ray.lean -- Define (directed) segments and rays
     Seg.midpt_lies_on -- midpoint of a segment lies in its carrier
     SegND.midpt_lies_int -- if a segment is nondegenerate, the midpoint lies in its interior
     midpt_iff_same_toVec_source_and_target -- a point is the midpoint of a segment iff (SEG l.source p).toVec = (SEG p l.target).toVec
-    
+
 
     dist_target_eq_dist_source_of_midpt -- the midpoint of a segment has equal distance to the source and the target
     is_midpoint_iff_in_seg_and_dist_target_eq_dist_source -- a point is the midpoint of a segment if and only if it lies on the segment and it has same distance to the source and target
@@ -116,13 +116,13 @@ Colinarity.lean -- Define the relative positions of points on rays
 
   Definitions :
     (defn) collinear_of_nd : Prop -- Given three distinct points (A B C : P), return whether the three points are collinear, i.e. whether (VEC A B).toProj = (VEC A C).toProj
-    (defn) collinear : Prop -- Given three points (A B C : P), return whether they are collinear; if at least two of them are equal, then they are considered automatically collinear.
-  
+    (defn) Collinear : Prop -- Given three points (A B C : P), return whether they are collinear; if at least two of them are equal, then they are considered automatically collinear.
+
   Theorems :
     collinear_of_vec_eq_smul_vec -- Given three points (A B C : P), if VEC A C = t ⬝ VEC A B for some t ∈ ℝ, then A B C are collinear
     collinear_of_vec_eq_smul_vec' -- same as collinear_of_vec_eq_smul_vec, excepted stated in the form of existence of t
     collinear_iff_eq_smul_vec_of_ne -- Given three points (A B C : P) with (B ≠ A), then A B C are collinear if and only if VEC A C = r ⬝ VEC A B for some r ∈ ℝ
-    
+
 
 
 -/
@@ -130,14 +130,14 @@ Colinarity.lean -- Define the relative positions of points on rays
 /-!
 Line.lean -- Define lines
 
-  Setoid : 
+  Setoid :
     same_extn_line -- the equivalent relation of admitting the same underlying line on rays
 
-  Classes : 
+  Classes :
     class of Line -- define Line as the quotient of Ray with respect to relation same_extn_line
 
   Make :
-    LIN = Line.mk_pt_pt -- 
+    LIN = Line.mk_pt_pt --
     Line.mk_pt_proj --
     Line.mk_pt_dir --
     Line.mk_pt_vec_nd --
@@ -163,7 +163,7 @@ Line.lean -- Define lines
       snd_pt_lies_on_line_of_pt_pt --
       eq_line_of_pt_pt_of_ne --
       eq_of_pt_pt_lies_on_of_ne -- 2 ne pts lies on 2 lines implies 2 lines are the same
-    coercion : theorems related to coercions 
+    coercion : theorems related to coercions
       SegND.toLine_eq_toRay_toLine --
       line_of_pt_pt_eq_ray_toLine --
       line_of_pt_pt_eq_seg_nd_toLine --
@@ -191,5 +191,5 @@ Line.lean -- Define lines
     lies_on_of_SegND_toProj_eq_toProj --
     lies_on_iff_eq_toProj_of_lies_on --
     Line.exist_pt_beyond_pt --
-  
+
 -/

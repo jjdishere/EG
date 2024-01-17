@@ -21,7 +21,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_collinear_ABC : ¬ collinear A B C
+  not_collinear_ABC : ¬ Collinear A B C
   regular_ABC : (▵ A B C).IsRegular
 --Claim $A \ne B$
   A_ne_B : A ≠ B :=
@@ -61,9 +61,9 @@ Thus, $\triangle BDA \cong \triangle CEB$ (by SAS).
 Therefore, $BD = CE$.
 -/
   --We have that $B, D, A$ is not collinear.
-  have not_collinear_BDA : ¬ collinear e.B e.D e.A := by sorry
+  have not_collinear_BDA : ¬ Collinear e.B e.D e.A := by sorry
   --We have that $C, E, B$ is not collinear.
-  have not_collinear_CEB : ¬ collinear e.C e.E e.B := by sorry
+  have not_collinear_CEB : ¬ Collinear e.C e.E e.B := by sorry
   --We have $D \ne B$.
   have D_ne_B : e.D ≠ e.B := by sorry
   --We have $A \ne B$.

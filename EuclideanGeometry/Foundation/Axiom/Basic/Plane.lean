@@ -117,4 +117,45 @@ def delabVecNDMkPtPt : Delab := do
 @[simp]
 lemma VecND.coe_mkPtPt (A B : P) [_h : Fact (B ≠ A)] : VEC_nd A B = VEC A B := rfl
 
+/- Definition of the wedge of three points.-/
+
+section wedge
+
+def wedge (A B C : P) : ℝ := Vec.det (VEC A B) (VEC A C)
+
+def oarea (A B C : P) : ℝ := wedge A B C / 2
+
+@[simp]
+theorem wedge_self₁₂ (A C : P) : wedge A A C = 0 := by
+  unfold wedge
+  simp
+
+@[simp]
+theorem wedge_self₂₃ (A C : P) : wedge C A A = 0 := by
+  unfold wedge
+  simp
+
+@[simp]
+theorem wedge_self₃₁ (A C : P) : wedge A C A = 0 := by
+  unfold wedge
+  simp
+
+theorem wedge213 (A B C : P) : wedge B A C = - wedge A B C := by
+  unfold wedge
+  rw [← neg_vec A B,← vec_sub_vec A B C, map_sub]
+  simp only [map_neg, LinearMap.neg_apply, Vec.det_self, neg_zero, sub_zero]
+
+theorem wedge132 (A B C : P) : wedge A C B = - wedge A B C := by
+  unfold wedge
+  rw [Vec.det_skew]
+
+theorem wedge312 (A B C : P) : wedge C A B = wedge A B C := by
+  rw [wedge213, wedge132, neg_neg]
+
+theorem wedge231 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge312, wedge312]
+
+theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, wedge231]
+
+end wedge
+
 end EuclidGeom

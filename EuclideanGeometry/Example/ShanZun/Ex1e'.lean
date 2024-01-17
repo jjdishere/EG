@@ -15,7 +15,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_collinear_ABC : ¬ collinear A B C
+  not_collinear_ABC : ¬ Collinear A B C
   -- Claim : $B \ne A$
   B_ne_A : B ≠ A :=
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
@@ -57,7 +57,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_collinear_ABC : ¬ collinear A B C
+  not_collinear_ABC : ¬ Collinear A B C
   -- Claim :$C \ne A$
   C_ne_A : C ≠ A :=
     -- This is because vertices $A, C$ of a nondegenerate triangle are distinct.

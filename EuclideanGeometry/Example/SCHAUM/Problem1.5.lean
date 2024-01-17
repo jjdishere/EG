@@ -79,9 +79,9 @@ As a consequence, we know that $PQRS$ is a parallelogram.
   -- We have $C \ne B$.
   have C_ne_B : e.C ≠ e.B := by sorry
   -- We have that $A, P, C$ is not collinear.
-  have not_collinear_APC : ¬ collinear e.A e.P e.C := by sorry
+  have not_collinear_APC : ¬ Collinear e.A e.P e.C := by sorry
   -- We have that $A, S, C$ is not collinear.
-  have not_collinear_ASC : ¬ collinear e.A e.S e.C := by sorry
+  have not_collinear_ASC : ¬ Collinear e.A e.S e.C := by sorry
   -- We have that $S$ lies on $AD$ by applying symmetry to the fact that $S$ lies on $DA$.
   have S_int_AD : e.S LiesInt (SEG e.A e.D) := Seg.lies_int_rev_iff_lies_int.mp e.S_int_DA
   -- We have that $Q$ lies on $CB$ by applying symmetry to the fact that $Q$ lies on $BC$.

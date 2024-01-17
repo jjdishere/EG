@@ -42,7 +42,7 @@ noncomputable section
 namespace EuclidGeom
 
 class LinFig (α : Type*) (P : outParam <| Type*) [outParam <| EuclideanPlane P] extends Fig α P where
-  collinear' : ∀ {A B C : P} {F : α}, A LiesOn F → B LiesOn F → C LiesOn F → collinear A B C
+  collinear' : ∀ {A B C : P} {F : α}, A LiesOn F → B LiesOn F → C LiesOn F → Collinear A B C
 
 class ProjObj (β : Type _) where
   toProj : β → Proj

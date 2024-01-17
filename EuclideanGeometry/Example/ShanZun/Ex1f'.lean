@@ -18,7 +18,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ collinear A B C
+  hnd : ¬ Collinear A B C
   hreg : (▵ A B C).IsRegular
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
@@ -115,8 +115,8 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (S
     right
     exact sixty₂
   -- $BFE$ is not collinear because $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
-  have BFE_not_collinear : ¬ collinear e.B e.F e.E := sorry
-  have BEF_not_collinear : ¬ collinear e.B e.E e.F := sorry
+  have BFE_not_collinear : ¬ Collinear e.B e.F e.E := sorry
+  have BEF_not_collinear : ¬ Collinear e.B e.E e.F := sorry
   -- $\triangle BFE$ is regular because $BF = EB$ and $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
   have BFE_is_regular : (TRI_nd e.B e.F e.E BFE_not_collinear).1.IsRegular := by
     apply regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg
@@ -161,8 +161,8 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (S
     _ = (SEG e.B e.E).length := by
       simp only [length_of_rev_eq_length']
   -- $BEC$ is not collinear and $FED$ is not collinear
-  have BEC_not_collinear : ¬ collinear e.B e.E e.C := sorry
-  have FED_not_collinear : ¬ collinear e.F e.E e.D := sorry
+  have BEC_not_collinear : ¬ Collinear e.B e.E e.C := sorry
+  have FED_not_collinear : ¬ Collinear e.F e.E e.D := sorry
   -- $\triangle BCE$ is anti-congruence to $\triangle FDE$
   have cong : (TRI_nd e.B e.E e.C BEC_not_collinear) ≅ₐ (TRI_nd e.F e.E e.D FED_not_collinear) := TriangleND.acongr_of_SAS DF_eq_CB.symm ang_EBC_eq_neg_ang_EFD FE_eq_BE.symm
   -- $EC = ED$ because $\triangle BCE \cong \triangle FDE$
@@ -182,7 +182,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ collinear A B C
+  hnd : ¬ Collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
 instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
@@ -226,7 +226,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ collinear A B C
+  hnd : ¬ Collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
 instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
@@ -269,7 +269,7 @@ such that $AE = 2 EC$
 Prove that $AF = 3 FB$ -/
 
 -- We have acute triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ collinear A B C} {hacute : TriangleND.IsAcute (TRI_nd A B C hnd)}
+variable {A B C : P} {hnd : ¬ Collinear A B C} {hacute : TriangleND.IsAcute (TRI_nd A B C hnd)}
 -- 这个题应该需要加锐角三角形的限制，否则需要条件中的$AE = 2 EC$是有向线段的相等
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
@@ -292,7 +292,7 @@ let the angle bisectors of $\angle ADB$ and $\angle ADC$ intersect $AB$ and $AC$
 Prove that $EF \parallel BC$-/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -320,7 +320,7 @@ $CD,BE$ intersects at $O$
 Prove that $OE = \frac{1}{4} BE$-/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- $D$ is midpoint of $AB$
 variable {D : P} {hd : D = (SEG A B).midpoint}
 -- $E$ lies on $AC$ such that $AE = 2 CE$,
@@ -339,7 +339,7 @@ The parallel line to $AC$ of $E,F$ intersect $BC$ at $G,H$ respectively,
 Prove that $EG + FH = AC$-/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -396,7 +396,7 @@ the angle bisector of $\angle ABC$ intersect $AD$ and $AC$ at $M,N$ respectively
 Prove that $AB^2 - AN^2 = BM \times BN$-/
 
 -- Let triangle $\triangle ABC$ be a right triangle with $\angle BAC = 90^{circ}$
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma a_ne_b : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry

@@ -12,7 +12,7 @@ namespace AOPS_Problem_5_7
 Prove that $\frac{EY}{EX}=\frac{AD}{DB} -/
 
 --Triangle A B C
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 lemma b_ne_a : B ≠ A := sorry
 lemma c_ne_a : C ≠ A := sorry
 lemma c_ne_b : C ≠ B := sorry
@@ -60,7 +60,7 @@ Prove that $IJ\prar BC$-/
 --It is simpler to use vectors but I think we should avoid vectors.
 
 --Nontrivial triangle A B C
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 lemma b_ne_a : B ≠ A := sorry
 lemma c_ne_a : C ≠ A := sorry
 lemma c_ne_b : C ≠ B := sorry
@@ -82,7 +82,7 @@ namespace AOPS_Problem_5_14
 Prove that AX^2 = BX \codt CX. -/
 
 -- In right triangle $\triangle PQR$, $\angle QPR = 90^{\circ}$
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma a_ne_b : A ≠ B := sorry
 lemma b_ne_c : B ≠ C := sorry
@@ -102,7 +102,7 @@ $M$ is the midpoint of $AB$
 Prove that $MQ \parallel BC$ -/
 
 -- We have triangle $\triangle ABC$ with $AC \ne BC$
-variable {A B C : P} {hnd : ¬ collinear A B C} {hne : (SEG A C).length ≠ (SEG B C).length}
+variable {A B C : P} {hnd : ¬ Collinear A B C} {hne : (SEG A C).length ≠ (SEG B C).length}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma a_ne_b : A ≠ B := sorry
 lemma b_ne_c : B ≠ C := sorry

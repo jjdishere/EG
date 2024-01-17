@@ -14,7 +14,7 @@ namespace Shan_Problem_1_9
 Prove that $AB = 2\cdot DE$. -/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma a_ne_b : A ≠ B := sorry
 lemma b_ne_c : B ≠ C := sorry
@@ -49,7 +49,7 @@ theorem Shan_Problem_1_9 : (SEG A B).length = 2 * (SEG D E).length := by
   -- $\angle DFE = \angle FED$
   have ang₄ : ∠ E F D f_ne_e.symm f_ne_d.symm = ∠ D E F d_ne_e f_ne_e := sorry
   -- $D F E$ is not collinear
-  have dfe_not_collinear : ¬ collinear D F E := sorry
+  have dfe_not_collinear : ¬ Collinear D F E := sorry
   -- $ED = DF$ because $\triangle DFE$ is isoceles
   have dfe_isoceles : (TRI_nd D F E dfe_not_collinear).1.IsIsoceles := by
     apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mpr
@@ -68,7 +68,7 @@ namespace Shan_Problem_1_10
 Prove that $AD = DC$. -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {hnd : ¬ collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
+variable {A B C : P} {hnd : ¬ Collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma a_ne_b : A ≠ B := sorry
 lemma b_ne_c : B ≠ C := sorry
@@ -116,7 +116,7 @@ theorem Shan_Problem_1_10 : (SEG A D).length = (SEG D C).length := by
   -- $\angle BMC = 2\pi / 5$
   have ang₁ : ∠ B M C b_ne_m m_ne_c.symm = ↑ (2 * π / 5) := sorry
   -- $BAM$ is not collinear
-  have bam_not_collinear : ¬ collinear B A M := sorry
+  have bam_not_collinear : ¬ Collinear B A M := sorry
   -- $\triangle BAM$ is isoceles
   have isocele₁ : (TRI_nd B A M bam_not_collinear).1.IsIsoceles := sorry
   -- Let $N$ be the midpoint of $AC$

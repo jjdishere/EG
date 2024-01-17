@@ -38,7 +38,7 @@ def oarea (tr : Triangle P) : ℝ := EuclidGeom.oarea tr.1 tr.2 tr.3
 def area (tr : Triangle P) : ℝ := |tr.oarea|
 
 @[pp_dot]
-def IsND (tr : Triangle P) : Prop := ¬ collinear tr.1 tr.2 tr.3
+def IsND (tr : Triangle P) : Prop := ¬ Collinear tr.1 tr.2 tr.3
 
 end Triangle
 
@@ -108,7 +108,7 @@ namespace Triangle
 
 -- When we have DirFig, rewrite this definition.
 protected def IsInt (A : P) (tr : Triangle P) : Prop := by
-  by_cases h : collinear tr.1 tr.2 tr.3
+  by_cases h : Collinear tr.1 tr.2 tr.3
   -- why not using ¬ tr.IsND?
   · exact False
   · let tr_nd : TriangleND P := ⟨tr, h⟩
@@ -192,9 +192,9 @@ end Triangle
 
 namespace TriangleND
 
-def perm_vertices : (TriangleND P) := ⟨tr_nd.1.perm_vertices, flip_collinear_snd_trd.mt $ flip_collinear_fst_snd.mt tr_nd.2⟩
+def perm_vertices : (TriangleND P) := ⟨tr_nd.1.perm_vertices, collinear132.mt $ collinear213.mt tr_nd.2⟩
 
-def flip_vertices : (TriangleND P) := ⟨tr_nd.1.flip_vertices, flip_collinear_snd_trd.mt tr_nd.2⟩
+def flip_vertices : (TriangleND P) := ⟨tr_nd.1.flip_vertices, collinear132.mt tr_nd.2⟩
 
 theorem eq_self_of_perm_vertices_three_times : tr_nd.perm_vertices.perm_vertices.perm_vertices = tr_nd := rfl
   --exact tr_nd.1.eq_self_of_perm_vertices_three_times
@@ -230,7 +230,7 @@ theorem reverse_orient_of_flip_vertices : tr_nd.is_cclock = ¬ tr_nd.flip_vertic
   · intro P
     simp at P
     have ne0' : wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ ≠ 0 := by
-      have : ¬ collinear tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ := by
+      have : ¬ Collinear tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ := by
         exact tr_nd.2
       apply (collinear_iff_wedge_eq_zero tr_nd.point₁ tr_nd.point₂ tr_nd.point₃).not.mp
       exact this
@@ -245,7 +245,7 @@ theorem is_inside_of_is_inside_flip_vertices (tr_nd : Triangle P) (p : P) (insid
 
 end TriangleND
 
-def TriangleND.mk (A B C : P) (h : ¬ collinear A B C) : TriangleND P := Subtype.mk (Triangle.mk A B C) h
+def TriangleND.mk (A B C : P) (h : ¬ Collinear A B C) : TriangleND P := Subtype.mk (Triangle.mk A B C) h
 
 scoped notation "TRI" => Triangle.mk
 scoped notation "▵" => Triangle.mk
@@ -314,19 +314,19 @@ theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr
   rw [not_not]
   by_cases h₁ : VEC B C = 0
   · simp only [(eq_iff_vec_eq_zero B C).2 h₁]
-    apply flip_collinear_fst_trd
-    exact triv_collinear _ _
+    apply collinear321
+    exact triv_collinear₁₂ _ _
   · by_cases h₂ : VEC C A = 0
     · simp only [(eq_iff_vec_eq_zero C A).2 h₂]
-      apply flip_collinear_snd_trd
-      exact triv_collinear _ _
+      apply collinear132
+      exact triv_collinear₁₂ _ _
     · have g : SameRay ℝ (VEC B C) (VEC C A)
       · rw [sameRay_iff_norm_add, ← eq]
         congr <;>
         exact Seg.length_eq_norm_toVec
       rcases SameRay.exists_pos g h₁ h₂ with ⟨_, ⟨_, ⟨_, ⟨_, g⟩⟩⟩⟩
       rw [← neg_vec C B, ← neg_one_smul ℝ, ← mul_smul, mul_neg_one, ← eq_inv_smul_iff₀ (by linarith), ← mul_smul] at g
-      exact perm_collinear_snd_trd_fst (collinear_of_vec_eq_smul_vec g)
+      exact collinear312 (collinear_of_vec_eq_smul_vec g)
 
 theorem triangle_ineq' (nontriv : tr.IsND) : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length := by
   have ne : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length := by
@@ -345,7 +345,7 @@ theorem nontrivial_of_edge_sum_gt_edge : tr.edge₁.length + tr.edge₂.length >
 
 So funny. Can you get it? -/
 
-theorem edge_sum_eq_edge_iff_collinear : collinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry
+theorem edge_sum_eq_edge_iff_collinear : Collinear tr.1 tr.2 tr.3 ↔ (tr.edge₁.length + tr.edge₂.length = tr.edge₃.length) ∨ (tr.edge₂.length + tr.edge₃.length = tr.edge₁.length) ∨ (tr.edge₃.length + tr.edge₁.length = tr.edge₂.length) := sorry
 /- area ≥ 0, nontrivial → >0, =0 → trivial -/
 
 end Triangle

@@ -64,8 +64,8 @@ theorem result1 {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (
   Thus $\triangle MBP \congr \triangle NCQ$ (by AAS),
   which implies $PM = QN$.
   -/
-  have not_collinear_MBP : ¬ collinear e.M e.B e.P := by sorry
-  have not_collinear_NDQ : ¬ collinear e.N e.D e.Q := by sorry
+  have not_collinear_MBP : ¬ Collinear e.M e.B e.P := by sorry
+  have not_collinear_NDQ : ¬ Collinear e.N e.D e.Q := by sorry
   have B_ne_M : e.B ≠ e.M := by sorry
   have P_ne_M : e.P ≠ e.M := by sorry
   have D_ne_N : e.D ≠ e.N := by sorry

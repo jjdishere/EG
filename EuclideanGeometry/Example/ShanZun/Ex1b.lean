@@ -14,7 +14,7 @@ namespace Shan_Problem_1_5
 Prove that $AF = EF$. -/
 
 -- Let $\triangle ABC$ be an triangle.
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 def tri : Triangle P := ▵ A B C
 -- Claim: $B \ne C$. This is because vertices of nondegenerate triangles are distinct.
 lemma A_ne_C : A ≠ C := (ne_of_not_collinear hnd).2.1
@@ -52,7 +52,7 @@ Prove that for any point $D$ on the base $BC$,
 the sum of the the distance of $D$ to $AB$ and to $AC$ is independent of $D$. -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {hnd : ¬ collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
+variable {A B C : P} {hnd : ¬ Collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
