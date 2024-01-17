@@ -1276,9 +1276,6 @@ end ddist
 
 section order
 
-instance instOrderedAddTorsor (l : DirLine P) : OrderedAddTorsor ℝ l.carrier.Elem :=
-  AddTorsor.OrderedAddTorsor_of_OrderedAddCommGroup ℝ l.carrier.Elem
-
 instance instLinearOrderedAddTorsor (l : DirLine P) : LinearOrderedAddTorsor ℝ l.carrier.Elem :=
   AddTorsor.LinearOrderedAddTorsor_of_LinearOrderedAddCommGroup ℝ l.carrier.Elem
 

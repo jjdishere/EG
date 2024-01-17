@@ -162,9 +162,13 @@ def IsSuppl (ang₁ ang₂ : Angle P) : Prop := ang₁ = ang₂.suppl
 
 theorem value_add_value_eq_pi_of_isSuppl (h : ang₁.IsSuppl ang₂) : ang₁.value + ang₂.value = π := sorry
 
-theorem dir_eq_neg_dir_of_value_add_eq_pi_of_dir_eq (hs : ang₁.source = ang₂.source) (hd : ang₁.dir₁ = ang₂.dir₂) (hv : ang₁.value + ang₂.value = π) : ang₁.dir₂ = - ang₂.dir₁ := sorry
+theorem dir_eq_neg_dir_of_value_add_eq_pi_of_dir_eq (hd : ang₁.dir₁ = ang₂.dir₂) (hv : ang₁.value + ang₂.value = π) : ang₁.dir₂ = - ang₂.dir₁ := sorry
+
+theorem dir_eq_of_value_add_eq_pi_of_dir_eq_neg_dir (hd : ang₁.dir₂ = - ang₂.dir₁) (hv : ang₁.value + ang₂.value = π) : ang₁.dir₁ = ang₂.dir₂ := sorry
 
 theorem isSuppl_of_value_add_eq_pi_of_dir_eq_of_source_eq (hs : ang₁.source = ang₂.source) (hd : ang₁.dir₁ = ang₂.dir₂) (hv : ang₁.value + ang₂.value = π) : ang₁.IsSuppl ang₂ := sorry
+
+theorem isSuppl_of_value_add_eq_pi_of_dir_eq_neg_dir_of_source_eq (hs : ang₁.source = ang₂.source) (hd : ang₁.dir₂ = - ang₂.dir₁) (hv : ang₁.value + ang₂.value = π) : ang₁.IsSuppl ang₂ := sorry
 
 end supplementary
 
@@ -176,7 +180,7 @@ def reverse (ang : Angle P) : Angle P where
   dir₁ := ang.dir₂
   dir₂ := ang.dir₁
 
-variable {ang : Angle P}
+variable {ang ang₁ ang₂ : Angle P}
 
 @[simp]
 theorem rev_source : ang.reverse.source = ang.source := rfl
@@ -236,6 +240,19 @@ theorem suppl_rev_oppo_eq_rev_suppl : ang.suppl.reverse.oppo = ang.reverse.suppl
 
 theorem rev_oppo_eq_oppo_rev : ang.reverse.oppo = ang.oppo.reverse := rfl
 
+@[pp_dot]
+def IsReverse (ang₁ ang₂ : Angle P) : Prop := ang₁ = ang₂.reverse
+
+theorem value_eq_neg_value_isReverse (h : ang₁.IsReverse ang₂) : ang₁.value = - ang₂.value := sorry
+/-
+theorem dir_eq_neg_dir_of_value_add_eq_pi_of_dir_eq (hd : ang₁.dir₁ = ang₂.dir₂) (hv : ang₁.value + ang₂.value = π) : ang₁.dir₂ = - ang₂.dir₁ := sorry
+
+theorem dir_eq_of_value_add_eq_pi_of_dir_eq_neg_dir (hd : ang₁.dir₂ = - ang₂.dir₁) (hv : ang₁.value + ang₂.value = π) : ang₁.dir₁ = ang₂.dir₂ := sorry
+
+theorem isSuppl_of_value_add_eq_pi_of_dir_eq_of_source_eq (hs : ang₁.source = ang₂.source) (hd : ang₁.dir₁ = ang₂.dir₂) (hv : ang₁.value + ang₂.value = π) : ang₁.IsSuppl ang₂ := sorry
+
+theorem isSuppl_of_value_add_eq_pi_of_dir_eq_neg_dir_of_source_eq (hs : ang₁.source = ang₂.source) (hd : ang₁.dir₂ = - ang₂.dir₁) (hv : ang₁.value + ang₂.value = π) : ang₁.IsSuppl ang₂ := sorry
+ -/
 end reverse
 
 end Angle

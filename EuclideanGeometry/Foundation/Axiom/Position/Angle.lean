@@ -574,8 +574,11 @@ open AngValue
 
 variable {ang ang₁ ang₂ : Angle P} {A O B : P} [PtNe A O] [PtNe B O]
 
-theorem value_eq_zero_of_same_dir (h : ang.dir₁ = ang.dir₂) : ang.value = 0 := by
-  rw [value, h, vsub_self]
+theorem angDiff_eq_zero_of_same_dir {dir₁ dir₂ : Dir} (h : dir₁ = dir₂) : AngDiff dir₁ dir₂ = 0 :=
+  vsub_eq_zero_iff_eq.mpr h.symm
+
+theorem same_dir_iff_value_eq_zero : ang.dir₁ = ang.dir₂ ↔ ang.value = 0 :=
+  ⟨angDiff_eq_zero_of_same_dir, fun h ↦ (eq_of_vsub_eq_zero h).symm⟩
 
 theorem value_eq_pi_of_eq_neg_dir (h : ang.dir₁ = - ang.dir₂) : ang.value = π :=
   (eq_neg_of_vsub_eq_pi ang.dir₂ ang.dir₁).mp (by rw [h, neg_neg])
@@ -610,6 +613,15 @@ theorem dvalue_eq_zero_of_same_dir (h : ang.dir₁ = ang.dir₂) : ang.dvalue = 
 
 theorem dvalue_eq_pi_of_eq_neg_dir (h : ang.dir₁ = - ang.dir₂) : ang.dvalue = 0 := by
   simp only [dvalue_eq_vsub, toProj_eq_toProj_iff.mpr (.inr h), vsub_self]
+
+theorem dAngDiff_eq_zero_of_same_proj {proj₁ proj₂ : Proj} (h : proj₁ = proj₂) : DAngDiff proj₁ proj₂ = 0 :=
+  vsub_eq_zero_iff_eq.mpr h.symm
+
+theorem same_proj_iff_dvalue_eq_zero : ang.proj₁ = ang.proj₂ ↔ ang.dvalue = 0 :=
+  eq_comm.trans vsub_eq_zero_iff_eq.symm
+
+theorem same_proj_iff_isND : ang.proj₁ = ang.proj₂ ↔ ¬ ang.IsND :=
+  same_proj_iff_dvalue_eq_zero.trans not_isND_iff_coe.symm
 
 theorem dvalue_eq_of_dir_eq (h₁ : ang₁.dir₁ = ang₂.dir₁) (h₂ : ang₁.dir₂ = ang₂.dir₂) : ang₁.dvalue = ang₂.dvalue := by
   simp only [dvalue_eq_vsub, congrArg Dir.toProj h₁, congrArg Dir.toProj h₂]

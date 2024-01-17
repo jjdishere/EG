@@ -135,8 +135,13 @@ Therefore, $DX = EY$.
   -- We have $X \ne B$ as X is on the interior of ray $BA$ and therefore different to the source $B$.
   have X_ne_B : e.X ≠ e.B := X_int_ray_BA.2
   -- We have $X, B, D$ are not collinear because $D$ doesn't lies on line $AB$ and $B$ doesn't coincide with $X$.
-  have not_collinear_XBD : ¬ collinear e.X e.B e.D := by sorry
-    /- exact not_collinear_with_perp_foot_of_ne_perp_foot e.D e.B e.X (LIN e.A e.B e.B_ne_A) (Line.snd_pt_lies_on_mk_pt_pt e.B_ne_A) D_not_on_AB e.hd (X_ne_B).symm -/
+  have not_collinear_XBD : ¬ collinear e.X e.B e.D := by
+    by_contra h
+    haveI : PtNe e.X e.B := ⟨X_ne_B⟩
+    have : e.D LiesOn LIN e.X e.B := Line.pt_pt_maximal h
+    have : LIN e.X e.B = LIN e.A e.B _ := sorry
+    have : e.D LiesOn LIN e.A e.B _ := sorry
+    exact D_not_on_AB this
   -- We have $D \ne X$.
   have D_ne_X : e.D ≠ e.X := by sorry
   -- In isoceles triangle $ABC$, we have $\angle CBA = - \angle BCA$.
