@@ -110,7 +110,6 @@ section Perpendicular_inner_product
 theorem perp_of_inner_product_eq_zero (v w : VecND) (h : inner v.1 w.1 = (0 : ℝ)) : v ⟂ w := by
   unfold perpendicular Proj.perp
   rw [Proj.vadd_coe_left]
-  unfold Dir.rotate
   erw [Proj.map_vecND_toProj]
   simp only [Dir.map_apply, ne_eq, LinearEquiv.restrictScalars_apply, VecND.toDir_toProj]
   erw [VecND.toProj_eq_toProj_iff]
@@ -122,13 +121,28 @@ theorem perp_of_inner_product_eq_zero (v w : VecND) (h : inner v.1 w.1 = (0 : �
     contrapose! hw
     obtain ⟨rfl, rfl⟩ := hw
     rfl
-  rcases this with (h | h)
+  rcases this
   · use yv / xw
     field_simp
     linarith
   · use -xv / yw
     field_simp
     linarith
+
+theorem inner_product_eq_zero_of_perp (v w : VecND) (h : v ⟂ w) : inner v.1 w.1 = (0 : ℝ) := by
+  unfold perpendicular Proj.perp at h
+  rw [Proj.vadd_coe_left] at h
+  erw [Proj.map_vecND_toProj] at h
+  simp only [Dir.map_apply, ne_eq, LinearEquiv.restrictScalars_apply, VecND.toDir_toProj] at h 
+  erw [VecND.toProj_eq_toProj_iff] at h
+  obtain ⟨ ⟨ xv, yv ⟩, hv ⟩ := v
+  obtain ⟨ ⟨ xw, yw ⟩, hw ⟩ := w
+  rw [Vec.real_inner_apply]
+  simp only [Vec.rotate_mk, AngValue.cos_coe, Real.cos_pi_div_two, zero_mul, AngValue.sin_coe, Real.sin_pi_div_two, one_mul, zero_sub, zero_add, Vec.smul_mk, mul_neg, Vec.mk.injEq] at h ⊢
+  obtain ⟨a, ⟨ h₁, h₂ ⟩⟩ := h
+  rw [h₁, h₂]
+  linarith
+
 
 end Perpendicular_inner_product
 
