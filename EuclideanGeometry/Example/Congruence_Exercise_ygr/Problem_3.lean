@@ -33,12 +33,12 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
   Because $DB = DC$ ,we have $\angle D B C = -\angle D C B$
   $\angle A B D = \angle A B C - \angle D B C = \angle D C B - \angle A C B = --\angle A C D$
   -/
-  have h₁ : ¬ colinear e.A e.B e.C := by
-    exact (Quadrilateral_cvx.not_colinear₁₂₄ (QDR_cvx e.A e.B e.D e.C e.cvx_ABDC))
-  have h₂ : ¬ colinear e.D e.B e.C := by
-    have h₂' : ¬ colinear e.B e.D e.C := by
-      exact (Quadrilateral_cvx.not_colinear₂₃₄ (QDR_cvx e.A e.B e.D e.C e.cvx_ABDC))
-    apply flip_colinear_fst_snd.mt h₂'
+  have h₁ : ¬ collinear e.A e.B e.C := by
+    exact (Quadrilateral_cvx.not_collinear₁₂₄ (QDR_cvx e.A e.B e.D e.C e.cvx_ABDC))
+  have h₂ : ¬ collinear e.D e.B e.C := by
+    have h₂' : ¬ collinear e.B e.D e.C := by
+      exact (Quadrilateral_cvx.not_collinear₂₃₄ (QDR_cvx e.A e.B e.D e.C e.cvx_ABDC))
+    apply flip_collinear_fst_snd.mt h₂'
   have C_ne_B : e.C ≠ e.B := by
     exact (Quadrilateral_cvx.nd₂₄ (QDR_cvx e.A e.B e.D e.C e.cvx_ABDC))
   --Because $AB = AC$ ,we have $\angle A B C = -\angle A C B$.

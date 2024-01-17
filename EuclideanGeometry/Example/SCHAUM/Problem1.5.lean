@@ -144,8 +144,8 @@ As a consequence, we know that $PQRS$ is a parallelogram.
       _= (SEG e.Q e.C).length := by exact length_of_rev_eq_length' (A := e.Q) (B := e.C)
     -- We have that $ASCQ$ is a parallelogram, because $AS, e.QC$ are of the same direction and $AS = QC$.
     have isprg_ASCQ : (QDR e.A e.S e.C e.Q).IsParallelogram_nd := by exact vec_eq_of_eq_dir_and_eq_length S_ne_A Q_ne_C.symm dir_as_eq_dir_qc_rev AS_eq_QC
-    -- Since $A, S, C$ is not colinear, we know that the parallelogram $ASCQ$ is non-degenerate.
-    exact is_prg_nd_of_is_prg_not_colinear₁₂₃ (QDR e.A e.S e.C e.Q) isprg_ASCQ not_colinear_ASC
+    -- Since $A, S, C$ is not collinear, we know that the parallelogram $ASCQ$ is non-degenerate.
+    exact is_prg_nd_of_is_prg_not_collinear₁₂₃ (QDR e.A e.S e.C e.Q) isprg_ASCQ not_collinear_ASC
   -- We have that the midpoint of $PR$ is the same as the midpoint of $AC$.
   have midpr_eq_midac : (SEG e.P e.R).midpoint = (SEG e.A e.C).midpoint := by
     calc

@@ -48,7 +48,7 @@ This file records all linear objects and describe their relation.
 toDirLine toLine carrier compatibility can be shown in general
 
 ## Detailed Description of Classes in Axiom/Linear
-* `LinFig` : The class of linear figures, i.e. every three points in the carrier is colinear.
+* `LinFig` : The class of linear figures, i.e. every three points in the carrier is collinear.
 * `DirObj` : The class of objects with direction, i.e. equipped with a `toDir` method. It does not have to be a plane figure, e.g. `VecND` and `Dir` itself.
 * `DirFig` : The class of linear figures with direction, that is equivalent to say, each figure is equipped with a `toDirLine` method.
 * `ProjObj` : The class of objects with projective direction, i.e. equipped with a `toDir` method. It does not have to be a plane figure, e.g. `VecND` and `Proj` itself.
