@@ -250,7 +250,7 @@ class Triangle' (P : Type _) [EuclideanPlane P] where
   point₁ : P
   point₂ : P
   point₃ : P
-  nontriv : ¬ collinear point₁ point₂ point₃
+  nontriv : ¬ Collinear point₁ point₂ point₃
 
 namespace Triangle
 
@@ -286,20 +286,20 @@ scoped infix : 50 " IsInsideLTriangle " => Triangle.IsInside
 
 end nondeg_tri
 
-section collinear
+section Collinear
 
 variable {P : Type _} [EuclideanPlane P]
 
-theorem collinear_ACB_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear A C B := sorry
+theorem collinear_ACB_of_collinear_ABC {A B C : P} (h : Collinear A B C): Collinear A C B := sorry
 
-theorem collinear_BAC_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear B A C := sorry
+theorem collinear_BAC_of_collinear_ABC {A B C : P} (h : Collinear A B C): Collinear B A C := sorry
 
-theorem collinear_BCA_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear B C A := sorry
+theorem collinear_BCA_of_collinear_ABC {A B C : P} (h : Collinear A B C): Collinear B C A := sorry
 
-theorem collinear_CAB_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear C A B := sorry
+theorem collinear_CAB_of_collinear_ABC {A B C : P} (h : Collinear A B C): Collinear C A B := sorry
 
-theorem collinear_CBA_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear C B A := sorry
-end collinear
+theorem collinear_CBA_of_collinear_ABC {A B C : P} (h : Collinear A B C): Collinear C B A := sorry
+end Collinear
 
 /-!
 section HasFallsOn

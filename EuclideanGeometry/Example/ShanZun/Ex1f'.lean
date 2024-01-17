@@ -18,7 +18,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ collinear A B C
+  hnd : ¬ Collinear A B C
   hreg : (▵ A B C).IsRegular
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
@@ -114,8 +114,8 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (S
     right
     exact sixty₂
   -- $BFE$ is not collinear because $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
-  have BFE_not_collinear : ¬ collinear e.B e.F e.E := sorry
-  have BEF_not_collinear : ¬ collinear e.B e.E e.F := sorry
+  have BFE_not_collinear : ¬ Collinear e.B e.F e.E := sorry
+  have BEF_not_collinear : ¬ Collinear e.B e.E e.F := sorry
   -- $\triangle BFE$ is regular because $BF = EB$ and $\angle FBE = \frac{\pi}{3}$ or $ - \frac{\pi}{3}$
   have BFE_is_regular : (TRI_nd e.B e.F e.E BFE_not_collinear).1.IsRegular := by
     apply regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg
@@ -160,8 +160,8 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (S
     _ = (SEG e.B e.E).length := by
       simp only [length_of_rev_eq_length']
   -- $BEC$ is not collinear and $FED$ is not collinear
-  have BEC_not_collinear : ¬ collinear e.B e.E e.C := sorry
-  have FED_not_collinear : ¬ collinear e.F e.E e.D := sorry
+  have BEC_not_collinear : ¬ Collinear e.B e.E e.C := sorry
+  have FED_not_collinear : ¬ Collinear e.F e.E e.D := sorry
   -- $\triangle BCE$ is anti-congruence to $\triangle FDE$
   have cong : (TRI_nd e.B e.E e.C BEC_not_collinear) ≅ₐ (TRI_nd e.F e.E e.D FED_not_collinear) := TriangleND.acongr_of_SAS DF_eq_CB.symm ang_EBC_eq_neg_ang_EFD FE_eq_BE.symm
   -- $EC = ED$ because $\triangle BCE \cong \triangle FDE$
@@ -181,7 +181,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ collinear A B C
+  hnd : ¬ Collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
 instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
@@ -225,7 +225,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ collinear A B C
+  hnd : ¬ Collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
 instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
@@ -272,7 +272,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ collinear A B C
+  hnd : ¬ Collinear A B C
   hacute : TriangleND.IsAcute (TRI_nd A B C hnd)
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
@@ -303,7 +303,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ collinear A B C
+  hnd : ¬ Collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
 instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
@@ -343,7 +343,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ collinear A B C
+  hnd : ¬ Collinear A B C
 -- $D$ is midpoint of $AB$
   D : Plane
   hd : D = (SEG A B).midpoint
@@ -369,7 +369,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ collinear A B C
+  hnd : ¬ Collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
 instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
@@ -469,7 +469,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  hnd : ¬ collinear A B C
+  hnd : ¬ Collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
 instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩

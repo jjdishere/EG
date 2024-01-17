@@ -276,8 +276,8 @@ theorem DirLC_intersection_eq_inxpts {l : DirLine P} {ω : Circle P} {A : P} (h 
     have : dist_pt_line ω.center l = ω.radius := h''
     have : dist_pt_line ω.center l < ω.radius := h'
     linarith⟩
-  have hc : collinear A (Inxpts h).front (Inxpts h).back := Line.linear h₁ (inx_pts_lieson_dlin h).1 (inx_pts_lieson_dlin h).2
-  have hnc : ¬ (collinear A (Inxpts h).front (Inxpts h).back) := three_pts_lieson_circle_not_collinear h₃ (inx_pts_lieson_circle h).1 (inx_pts_lieson_circle h).2
+  have hc : Collinear A (Inxpts h).front (Inxpts h).back := Line.linear h₁ (inx_pts_lieson_dlin h).1 (inx_pts_lieson_dlin h).2
+  have hnc : ¬ (Collinear A (Inxpts h).front (Inxpts h).back) := three_pts_lieson_circle_not_collinear h₃ (inx_pts_lieson_circle h).1 (inx_pts_lieson_circle h).2
   tauto
 
 theorem pt_pt_tangent_eq_tangent_pt {A B : P} {ω : Circle P} (h₁ : A LiesOut ω) (h₂ : B LiesOn ω) (ht : (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) Tangent ω) : B = Tangentpt ht := by

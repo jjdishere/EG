@@ -23,7 +23,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_collinear_ABC : ¬ collinear A B C
+  not_collinear_ABC : ¬ Collinear A B C
   isoceles_ABC : (▵ A B C).IsIsoceles
 --Let $D$ be point on the segment $BC$
   D : Plane
@@ -105,7 +105,7 @@ Therefore, $DX = EY$.
   -- We have $Y \ne C$ as Y is on the interior of ray $CA$ and therefore different to the source $C$.
   have Y_ne_C : e.Y ≠ e.C := Y_int_ray_CA.2
   -- We have $Y, C, E$ are not collinear because $E$ doesn't lies on line $AC$ and $C$ doesn't coincide with $Y$.
-  have not_collinear_YCE : ¬ collinear e.Y e.C e.E := by exact not_collinear_with_perp_foot_of_ne_perp_foot e.E e.C e.Y (LIN e.A e.C e.C_ne_A) (Line.snd_pt_lies_on_mk_pt_pt e.C_ne_A) E_not_on_AC e.he (Y_ne_C).symm
+  have not_collinear_YCE : ¬ Collinear e.Y e.C e.E := by exact not_collinear_with_perp_foot_of_ne_perp_foot e.E e.C e.Y (LIN e.A e.C e.C_ne_A) (Line.snd_pt_lies_on_mk_pt_pt e.C_ne_A) E_not_on_AC e.he (Y_ne_C).symm
   -- We have $E \ne Y$.
   have E_ne_Y : e.E ≠ e.Y := by sorry
 
@@ -135,7 +135,7 @@ Therefore, $DX = EY$.
   -- We have $X \ne B$ as X is on the interior of ray $BA$ and therefore different to the source $B$.
   have X_ne_B : e.X ≠ e.B := X_int_ray_BA.2
   -- We have $X, B, D$ are not collinear because $D$ doesn't lies on line $AB$ and $B$ doesn't coincide with $X$.
-  have not_collinear_XBD : ¬ collinear e.X e.B e.D := by
+  have not_collinear_XBD : ¬ Collinear e.X e.B e.D := by
     by_contra h
     haveI : PtNe e.X e.B := ⟨X_ne_B⟩
     have : e.D LiesOn LIN e.X e.B := Line.pt_pt_maximal h

@@ -20,8 +20,8 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   h₁ : (SEG A B).length = (SEG D C).length
   h₂ : (SEG D B).length = (SEG A C).length
   -- nondegenerate
-  hnd₁ : ¬ collinear D B A
-  hnd₂ : ¬ collinear A C D
+  hnd₁ : ¬ Collinear D B A
+  hnd₂ : ¬ Collinear A C D
   D_ne_A : D ≠ A :=(ne_of_not_collinear hnd₁).2.1
   -- $B,C$ is on the same side of line $AD$.
   B_side : IsOnRightSide B (SEG_nd A D D_ne_A)

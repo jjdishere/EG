@@ -80,25 +80,6 @@ def Parallelogram.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (
   toQuadrilateral := (QDR A B C D)
   is_parallelogram := h
 
-scoped notation "PRG" => Parallelogram.mk_pt_pt_pt_pt
-
-/-- Make a parallelogram with a quadrilateral, and using condition IsPrg. -/
-def Parallelogram.mk_isPrg {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsPrg) : Parallelogram P where
-  toQuadrilateral := qdr
-  is_parallelogram := h
-
-scoped notation "PRG'" => Parallelogram.mk_isPrg
-
-/-- Vectors point₁ point₂ and point₄ point₃ in a parallelogram are equal. -/
-theorem Parallelogram.eq_vec_of_isPrg {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} : VEC prg.point₁ prg.point₂ = VEC prg.point₄ prg.point₃ := prg.is_parallelogram
-
-/-- Vectors point₁ point₄ and point₂ point₃ in a parallelogram are equal. -/
-theorem Parallelogram.eq_vec_of_isPrg' {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} : VEC prg.point₁ prg.point₄ = VEC prg.point₂ prg.point₃ := by rw [← vec_add_vec prg.point₁ prg.point₂ prg.point₄, ← vec_add_vec prg.point₂ prg.point₄ prg.point₃, prg.is_parallelogram, add_comm]
-
-/-- A parallelogram which satisfies Prallelogram.InGPos satisfies IsParaPara. -/
-theorem Parallelogram.parapara_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsParaPara:= by
-  unfold Quadrilateral.IsParaPara
-  sorry
 
 /-- A parallelogram which satisfies Prallelogram.InGPos is convex. -/
 theorem Parallelogram.cvx_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsConvex:= by sorry
@@ -256,29 +237,29 @@ variable (qdr_nd : QuadrilateralND P)
 variable (prg : Parallelogram P)
 
 /-- If the 2nd, 3rd and 4th points of a parallelogram are not collinear, then it is a parallelogram_nd. -/
-theorem isPrgND_of_prg_not_collinear₁ (h : ¬ collinear prg.point₂ prg.point₃ prg.point₄) : prg.IsPrgND := by
+theorem isPrgND_of_prg_not_collinear₁ (h : ¬ Collinear prg.point₂ prg.point₃ prg.point₄) : prg.IsPrgND := by
   sorry
 
 /-- If the 3rd, 4th and 1st points of a parallelogram are not collinear, then it is a parallelogram_nd. -/
-theorem isPrgND_of_prg_not_collinear₂ (h: ¬ collinear prg.point₃ prg.point₄ prg.point₁) : prg.IsPrgND := by
+theorem isPrgND_of_prg_not_collinear₂ (h: ¬ Collinear prg.point₃ prg.point₄ prg.point₁) : prg.IsPrgND := by
   sorry
 
 /-- If the 4th, 1st and 2nd points of a parallelogram are not collinear, then it is a parallelogram_nd. -/
-theorem isPrgND_of_prg_not_collinear₃ (h: ¬ collinear prg.point₄ prg.point₁ prg.point₂) : prg.IsPrgND := by
+theorem isPrgND_of_prg_not_collinear₃ (h: ¬ Collinear prg.point₄ prg.point₁ prg.point₂) : prg.IsPrgND := by
   sorry
 
 /-- If the 1st, 2nd and 3rd points of a parallelogram are not collinear, then it is a parallelogram_nd. -/
-theorem isPrgND_of_prg_not_collinear₄ (h: ¬ collinear prg.point₁ prg.point₂ prg.point₃) : prg.IsPrgND := by
+theorem isPrgND_of_prg_not_collinear₄ (h: ¬ Collinear prg.point₁ prg.point₂ prg.point₃) : prg.IsPrgND := by
   sorry
 
 /- We leave these four theorems as interface for the user. They are simply replica of the theorems above. -/
-theorem prg_isPrgND_iff_not_collinear₁ : prg.IsPrgND ↔ (¬ collinear prg.point₂ prg.point₃ prg.point₄) := sorry
+theorem prg_isPrgND_iff_not_collinear₁ : prg.IsPrgND ↔ (¬ Collinear prg.point₂ prg.point₃ prg.point₄) := sorry
 
-theorem prg_isPrgND_iff_not_collinear₂ : prg.IsPrgND ↔ (¬ collinear prg.point₃ prg.point₄ prg.point₁) := sorry
+theorem prg_isPrgND_iff_not_collinear₂ : prg.IsPrgND ↔ (¬ Collinear prg.point₃ prg.point₄ prg.point₁) := sorry
 
-theorem prg_isPrgND_iff_not_collinear₃ : prg.IsPrgND ↔ (¬ collinear prg.point₄ prg.point₁ prg.point₂) := sorry
+theorem prg_isPrgND_iff_not_collinear₃ : prg.IsPrgND ↔ (¬ Collinear prg.point₄ prg.point₁ prg.point₂) := sorry
 
-theorem prg_isPrgND_iff_not_collinear₄ : prg.IsPrgND ↔ (¬ collinear prg.point₁ prg.point₂ prg.point₃) := sorry
+theorem prg_isPrgND_iff_not_collinear₄ : prg.IsPrgND ↔ (¬ Collinear prg.point₁ prg.point₂ prg.point₃) := sorry
 
 end criteria_prgND_of_prg
 
@@ -293,32 +274,32 @@ variable {A B C D : P} (nd : (QDR A B C D).IsND)
 variable (qdr : Quadrilateral P) (qdr_nd : QuadrilateralND P)
 
 /-- If a QuadrilateralND satisfies IsParaPara and its 1st, 2nd and 3rd points are not collinear, then it is a parallelogram_nd. -/
-theorem qdrND_is_prgND_of_parapara_not_collinear₄ (h: qdr_nd.IsParaPara) (notcollinear : ¬ collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd.IsPrgND := by
+theorem qdrND_is_prgND_of_parapara_not_collinear₄ (h: qdr_nd.IsParaPara) (notcollinear : ¬ Collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd.IsPrgND := by
   sorry
 
 /-- If a QuadrilateralND satisfies IsParaPara and its 2nd, 3rd and 4th points are not collinear, then it is a parallelogram_nd. -/
-theorem qdrND_is_prgND_of_parapara_not_collinear₁ (h: qdr_nd.IsParaPara) (notcollinear : ¬ collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsPrgND := by
+theorem qdrND_is_prgND_of_parapara_not_collinear₁ (h: qdr_nd.IsParaPara) (notcollinear : ¬ Collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsPrgND := by
   sorry
 
 /-- If a QuadrilateralND satisfies IsParaPara and its 3rd, 4th and 1st points are not collinear, then it is a parallelogram_nd. -/
-theorem qdrND_is_prgND_of_parapara_not_collinear₂ (h: qdr_nd.IsParaPara) (notcollinear : ¬ collinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsPrgND := by
+theorem qdrND_is_prgND_of_parapara_not_collinear₂ (h: qdr_nd.IsParaPara) (notcollinear : ¬ Collinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsPrgND := by
   sorry
 
 /-- If a QuadrilateralND satisfies IsParaPara and its 4th, 1st and 2nd points are not collinear, then it is a parallelogram_nd. -/
-theorem qdrND_is_prgND_of_parapara_not_collinear₃ (h: qdr_nd.IsParaPara) (notcollinear : ¬ collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsPrgND := sorry
+theorem qdrND_is_prgND_of_parapara_not_collinear₃ (h: qdr_nd.IsParaPara) (notcollinear : ¬ Collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsPrgND := sorry
 
 /-- If the 1st, 3rd and 2nd, 4th angle of a QuadrilateralND are equal in value respectively, and its 1st, 2nd and 3rd points are not collinear, then it is a parallelogram_nd. -/
-theorem qdrND_is_prgND_of_eq_angle_value_eq_angle_value_not_collinear₄ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd.IsPrgND := by
+theorem qdrND_is_prgND_of_eq_angle_value_eq_angle_value_not_collinear₄ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ Collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd.IsPrgND := by
   sorry
 
 /-- If the 1st, 3rd and 2nd, 4th angle of a QuadrilateralND are equal in value respectively, and its 2nd, 3rd and 4th points are not collinear, then it is a parallelogram_nd. -/
-theorem qdrND_is_prgND_of_eq_angle_value_eq_angle_value_not_collinear₁ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsPrgND := by sorry
+theorem qdrND_is_prgND_of_eq_angle_value_eq_angle_value_not_collinear₁ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ Collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsPrgND := by sorry
 
 /-- If the 1st, 3rd and 2nd, 4th angle of a QuadrilateralND are equal in value respectively, and its 3rd, 4th and 1st points are not collinear, then it is a parallelogram_nd. -/
-theorem qdrND_is_prgND_of_eq_angle_value_eq_angle_value_not_collinear₂ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ collinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsPrgND := by sorry
+theorem qdrND_is_prgND_of_eq_angle_value_eq_angle_value_not_collinear₂ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ Collinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsPrgND := by sorry
 
 /-- If the 1st, 3rd and 2nd, 4th angle of a QuadrilateralND are equal in value respectively, and its 4th, 1st and 2nd points are not collinear, then it is a parallelogram_nd. -/
-theorem qdrND_is_prgND_of_eq_angle_value_eq_angle_value_not_collinear₃ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsPrgND := by sorry
+theorem qdrND_is_prgND_of_eq_angle_value_eq_angle_value_not_collinear₃ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ Collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsPrgND := by sorry
 
 /-- If edge_nd₁₂, edge_nd₃₄ and edge_nd₁₄, edge_nd₂₃ of a QuadrilateralND are equal in value respectively, and angle₁ and angle₃ are of the same sign, then it is a parallelogram_nd. -/
 theorem qdrND_is_prgND_of_eq_length_eq_length_eq_angle_sign (h₁ : qdr_nd.edge_nd₁₂.length = qdr_nd.edge_nd₃₄.length) (h₂ : qdr_nd.edge_nd₁₄.length = qdr_nd.edge_nd₂₃.length) (h : (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₃.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg)) : qdr_nd.IsPrgND := by sorry

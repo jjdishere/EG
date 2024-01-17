@@ -41,17 +41,17 @@ theorem nd_of_nd (h : tr₁.IsCongr tr₂) (nd : tr₁.IsND) : tr₂.IsND := by
   rw [Triangle.edge_sum_eq_edge_iff_collinear] at col
   rcases col with l₁ | l₂ | l₃
   . simp only [<-h.1, <-h.2, <-h.3] at l₁
-    have col' : collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
+    have col' : Collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
       rw [Triangle.edge_sum_eq_edge_iff_collinear]
       exact .inl l₁
     exact nd col'
   . simp only [<-h.1, <-h.2, <-h.3] at l₂
-    have col' : collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
+    have col' : Collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
       rw [Triangle.edge_sum_eq_edge_iff_collinear]
       exact .inr (.inl l₂)
     exact nd col'
   . simp only [<-h.1, <-h.2, <-h.3] at l₃
-    have col' : collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
+    have col' : Collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
       rw [Triangle.edge_sum_eq_edge_iff_collinear]
       exact .inr (.inr l₃)
     exact nd col'
@@ -161,17 +161,17 @@ theorem nd_of_nd (h : tr₁.IsACongr tr₂) (nd : tr₁.IsND) : tr₂.IsND := by
   rw [Triangle.edge_sum_eq_edge_iff_collinear] at col
   rcases col with l₁ | l₂ | l₃
   . simp only [<-h.1, <-h.2, <-h.3] at l₁
-    have col' : collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
+    have col' : Collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
       rw [Triangle.edge_sum_eq_edge_iff_collinear]
       exact .inl l₁
     exact nd col'
   . simp only [<-h.1, <-h.2, <-h.3] at l₂
-    have col' : collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
+    have col' : Collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
       rw [Triangle.edge_sum_eq_edge_iff_collinear]
       exact .inr (.inl l₂)
     exact nd col'
   . simp only [<-h.1, <-h.2, <-h.3] at l₃
-    have col' : collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
+    have col' : Collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
       rw [Triangle.edge_sum_eq_edge_iff_collinear]
       exact .inr (.inr l₃)
     exact nd col'
@@ -928,17 +928,17 @@ theorem congr_or_acongr_of_SSS (e₁ : tr₁.edge₁.length = tr₂.edge₁.leng
       rw [Triangle.edge_sum_eq_edge_iff_collinear] at nd₂
       rcases nd₂ with l₁ | l₂ | l₃
       . simp only [<-e₁, <-e₂, <-e₃] at l₁
-        have col' : collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
+        have col' : Collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
           rw [Triangle.edge_sum_eq_edge_iff_collinear]
           exact .inl l₁
         exact nd₁ col'
       . simp only [<-e₁, <-e₂, <-e₃] at l₂
-        have col' : collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
+        have col' : Collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
           rw [Triangle.edge_sum_eq_edge_iff_collinear]
           exact .inr (.inl l₂)
         exact nd₁ col'
       . simp only [<-e₁, <-e₂, <-e₃] at l₃
-        have col' : collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
+        have col' : Collinear tr₁.point₁ tr₁.point₂ tr₁.point₃ := by
           rw [Triangle.edge_sum_eq_edge_iff_collinear]
           exact .inr (.inr l₃)
         exact nd₁ col'

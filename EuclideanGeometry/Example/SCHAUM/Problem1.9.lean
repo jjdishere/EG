@@ -22,7 +22,7 @@ structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_collinear_ABC : ¬ collinear A B C
+  not_collinear_ABC : ¬ Collinear A B C
   isoceles_ABC : (▵ A B C).IsIsoceles
 -- Claim $B \ne A$.
   B_ne_A : B ≠ A :=

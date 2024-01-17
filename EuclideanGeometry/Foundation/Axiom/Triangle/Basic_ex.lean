@@ -174,7 +174,7 @@ theorem anti_cclock_of_IsOnOppositeSide (A B C D : P) [hne : PtNe B A] (h : IsOn
 
 lemma liesonleft_ne_pts {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (DLIN A B)) : (C ≠ A) ∧ (C ≠ B) := by
   have h': C LiesOnLeft (RAY A B) := by exact h
-  have : ¬ collinear A B C := by
+  have : ¬ Collinear A B C := by
     apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     simp only [h', true_or]
   have c_ne_a : C ≠ A := (ne_of_not_collinear this).2.1.symm
@@ -183,7 +183,7 @@ lemma liesonleft_ne_pts {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (DLIN A B
 
 theorem liesonleft_angle_ispos {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (DLIN A B)) : (∠ A C B (liesonleft_ne_pts h).1.symm (liesonleft_ne_pts h).2.symm).IsPos := by
   have h': C LiesOnLeft (RAY A B) := by exact h
-  have ABC_nd: ¬ collinear A B C := by
+  have ABC_nd: ¬ Collinear A B C := by
     apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     simp only [h', true_or]
   have c : (TRI_nd A B C ABC_nd).is_cclock = C LiesOnLeft (SEG_nd A B) := by
@@ -200,7 +200,7 @@ theorem liesonleft_angle_ispos {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (D
 
 lemma liesonright_ne_pts {A B C : P} [hne : PtNe B A] (h : C LiesOnRight (DLIN A B)) : (C ≠ A) ∧ (C ≠ B) := by
   have h': C LiesOnRight (RAY A B) := by exact h
-  have : ¬ collinear A B C := by
+  have : ¬ Collinear A B C := by
     apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     simp only [h', or_true]
   have c_ne_a : C ≠ A := (ne_of_not_collinear this).2.1.symm
@@ -210,7 +210,7 @@ lemma liesonright_ne_pts {A B C : P} [hne : PtNe B A] (h : C LiesOnRight (DLIN A
 theorem liesonright_angle_isneg {A B C : P} [hne : PtNe B A] (h : C LiesOnRight (DLIN A B)) : (∠ A C B (liesonright_ne_pts h).1.symm (liesonright_ne_pts h).2.symm).IsNeg := by
   have h': C LiesOnRight (RAY A B) := by exact h
   have h'' : C LiesOnRight (SEG_nd A B) := by exact h
-  have ABC_nd: ¬ collinear A B C := by
+  have ABC_nd: ¬ Collinear A B C := by
     apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     simp only [h', or_true]
   have c : (TRI_nd A B C ABC_nd).is_cclock = C LiesOnLeft (SEG_nd A B) := by
