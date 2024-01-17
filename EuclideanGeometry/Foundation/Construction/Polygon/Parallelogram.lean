@@ -371,7 +371,7 @@ theorem qdrcvx_is_prgND_of_eq_angle_value_eq_angle_value (h₁ : qdr_cvx.angle�
 theorem qdrcvx_is_prgND_of_diag_eq_midpt (h' : qdr_cvx.diag_nd₁₃.midpoint = qdr_cvx.diag_nd₂₄.midpoint) : qdr_cvx.IsPrgND := by sorry
 
 /-- Given four points ABCD and Quadrilateral ABCD IsConvex, and the midpoint of the diagonal AC and BD is the same, Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem qdrcvx_isPrgND_of_diag_eq_midpt_variant (h' : (SEG A C).midpoint = (SEG B D).midpoint) : (QDR_cvx' cvx).IsPrgND := by
+theorem qdrcvx_is_prgND_of_diag_eq_midpt_variant (h' : (SEG A C).midpoint = (SEG B D).midpoint) : (QDR_cvx' cvx).IsPrgND := by
   sorry
 
 end criteria_prgND_of_qdrcvx
