@@ -15,7 +15,7 @@ Prove that $AD = BC$.
 -- $AD$ and $BC$ intersect at $O$.
 variable {A B C D O: P} {h1 : O LiesInt (SEG A D)} {h2 : O LiesInt (SEG B C)}
 -- nondegenerate
-variable {hnd1 : ¬ colinear C B A} {hnd2 : ¬ colinear D A B}
+variable {hnd1 : ¬ collinear C B A} {hnd2 : ¬ collinear D A B}
 lemma a_ne_b : A ≠ B := by sorry
 lemma a_ne_c : A ≠ C := by sorry
 lemma a_ne_d : A ≠ D := by sorry
@@ -33,7 +33,7 @@ theorem Wuwowuji_Problem_1_7 : (SEG A D).length = (SEG B C).length := by
   have o_ne_b : O ≠ B := by sorry
   have o_ne_c : O ≠ C := by sorry
   have o_ne_d : O ≠ D := by sorry
-  have hnd3 : ¬ colinear O A B := by sorry
+  have hnd3 : ¬ collinear O A B := by sorry
   -- $▵ OAB$ is isoceles because $OA = OB$.
   have hisoc : (TRI_nd O A B hnd3).1.IsIsoceles := by
     calc

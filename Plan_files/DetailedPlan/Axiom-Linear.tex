@@ -148,13 +148,13 @@ RAY := Ray.mk_pt_pt : This is to abbreviate Ray.mk_pt_pt into RAY.
 In this file, we define the relative positions of points on rays
 
   Definitions :
-    (defn) colinear_of_nd : Prop -- Given three distinct points (A B C : P), return whether the three points are colinear, i.e. whether (VEC A B).toProj = (VEC A C).toProj
-    (defn) colinear : Prop -- Given three points (A B C : P), return whether they are colinear; if at least two of them are equal, then they are considered automatically colinear.
+    (defn) collinear_of_nd : Prop -- Given three distinct points (A B C : P), return whether the three points are collinear, i.e. whether (VEC A B).toProj = (VEC A C).toProj
+    (defn) collinear : Prop -- Given three points (A B C : P), return whether they are collinear; if at least two of them are equal, then they are considered automatically collinear.
   
   Theorems :
-    colinear_of_vec_eq_smul_vec -- Given three points (A B C : P), if VEC A C = t ⬝ VEC A B for some t ∈ ℝ, then A B C are colinear
-    colinear_of_vec_eq_smul_vec' -- same as colinear_of_vec_eq_smul_vec, excepted stated in the form of existence of t
-    colinear_iff_eq_smul_vec_of_ne -- Given three points (A B C : P) with (B ≠ A), then A B C are colinear if and only if VEC A C = r ⬝ VEC A B for some r ∈ ℝ
+    collinear_of_vec_eq_smul_vec -- Given three points (A B C : P), if VEC A C = t ⬝ VEC A B for some t ∈ ℝ, then A B C are collinear
+    collinear_of_vec_eq_smul_vec' -- same as collinear_of_vec_eq_smul_vec, excepted stated in the form of existence of t
+    collinear_iff_eq_smul_vec_of_ne -- Given three points (A B C : P) with (B ≠ A), then A B C are collinear if and only if VEC A C = r ⬝ VEC A B for some r ∈ ℝ
     
 
 \Section{Content in Line.lean}
@@ -162,7 +162,7 @@ In this file, we define the relative positions of points on rays
 In this file, we define the concept of lines.
 
   Classes : 
-    class of Line -- A line is a subset of the plane P that satisfies three properties, namely colinarity - every 3 pts on line colinear; maximality - pt that colinear with 2 different pts on line falls on the line; nontriviality - a line contains at least 2 pts
+    class of Line -- A line is a subset of the plane P that satisfies three properties, namely colinarity - every 3 pts on line collinear; maximality - pt that collinear with 2 different pts on line falls on the line; nontriviality - a line contains at least 2 pts
 
   Make :
     LIN = Line.mk_pt_pt -- 
@@ -178,11 +178,11 @@ In this file, we define the concept of lines.
   (coercion compatibility)
     fst_pt_lies_on_line_of_pt_pt --
     snd_pt_lies_on_line_of_pt_pt --
-    lies_on_line_of_pt_pt_iff_colinear --
+    lies_on_line_of_pt_pt_iff_collinear --
     lies_on_iff_lies_on_iff_line_eq_line --
     eq_line_of_pt_pt_of_ne --
     eq_of_pt_pt_lies_on_of_ne -- 2 ne pts lies on 2 lines implies 2 liones are the same
-    colinear_iff_exist_line_lies_on --
+    collinear_iff_exist_line_lies_on --
 
     Ray.lies_on_toLine_of_lie_on --
     SegND.lies_on_toLine_of_lie_on --

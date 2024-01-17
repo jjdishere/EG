@@ -16,7 +16,7 @@ Prove that $DM = EM$.
 -/
 /--/
 --Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {not_colinear_ABC: ¬ colinear A B C} {isoceles_ABC: (▵ A B C).IsIsoceles}
+variable {A B C : P} {not_collinear_ABC: ¬ collinear A B C} {isoceles_ABC: (▵ A B C).IsIsoceles}
 --Let $D$ be a point on $AB$.
 variable {D : P} {D_on_seg: D LiesInt (SEG A B)}
 --Let $E$ be a point on $AC$
@@ -31,7 +31,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_colinear_ABC : ¬ colinear A B C
+  not_collinear_ABC : ¬ collinear A B C
   isoc_ABC : (▵ A B C).IsIsoceles
   --Let $D$ be a point on $AB$.
   D : Plane
@@ -66,20 +66,20 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
       _ = (SEG e.C e.A).length := e.isoc_ABC.symm
       _ = (SEG e.A e.C).length := length_of_rev_eq_length'
   --Triangle B D M nondegenerate.
-  have h₁ : ¬ colinear e.B e.D e.M := by sorry
+  have h₁ : ¬ collinear e.B e.D e.M := by sorry
   --Triangle C E M nondegenerate.
-  have h₂ : ¬ colinear e.C e.E e.M := by sorry
+  have h₂ : ¬ collinear e.C e.E e.M := by sorry
   --Points not equal for the definition of angle is not invalid.
   --$D \ne B$ and $M \ne B$ for ∠ D B M.
-  haveI d_ne_b : PtNe e.D e.B := ⟨ (ne_of_not_colinear h₁).2.2⟩
-  haveI m_ne_b : PtNe e.M e.B := ⟨ (ne_of_not_colinear h₁).2.1.symm⟩
+  haveI d_ne_b : PtNe e.D e.B := ⟨ (ne_of_not_collinear h₁).2.2⟩
+  haveI m_ne_b : PtNe e.M e.B := ⟨ (ne_of_not_collinear h₁).2.1.symm⟩
   --$E \ne C$ and $M \ne C$ for ∠ E C M
-  haveI e_ne_c : PtNe e.E e.C := ⟨ (ne_of_not_colinear h₂).2.2 ⟩
-  haveI m_ne_c : PtNe e.M e.C := ⟨ (ne_of_not_colinear h₂).2.1.symm⟩
+  haveI e_ne_c : PtNe e.E e.C := ⟨ (ne_of_not_collinear h₂).2.2 ⟩
+  haveI m_ne_c : PtNe e.M e.C := ⟨ (ne_of_not_collinear h₂).2.1.symm⟩
   --$A \ne B$ and $C \ne B$ and $A \ne C$ and $B \ne C$ in nondegenerate triangle $A B C$.
-  haveI a_ne_b : PtNe e.A e.B := ⟨ (ne_of_not_colinear e.not_colinear_ABC).2.2.symm ⟩
-  haveI c_ne_b : PtNe e.C e.B := ⟨ (ne_of_not_colinear e.not_colinear_ABC).1 ⟩
-  haveI a_ne_c : PtNe e.A e.C := ⟨ (ne_of_not_colinear e.not_colinear_ABC).2.1 ⟩
+  haveI a_ne_b : PtNe e.A e.B := ⟨ (ne_of_not_collinear e.not_collinear_ABC).2.2.symm ⟩
+  haveI c_ne_b : PtNe e.C e.B := ⟨ (ne_of_not_collinear e.not_collinear_ABC).1 ⟩
+  haveI a_ne_c : PtNe e.A e.C := ⟨ (ne_of_not_collinear e.not_collinear_ABC).2.1 ⟩
   --We have $BD = AB - AD = AC - AE = CE$.
   have h₃ : (SEG e.B e.D).length = (SEG e.C e.E).length := by
     calc
@@ -103,7 +103,7 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
     exact dist_target_eq_dist_source_of_midpt (seg := SEG e.B e.C)
   --Because $\angle A B C = -\angle A C B$ we have $\angle D B M = -\angle E C M$
   have h₅₀ : ∠ e.C e.B e.A  = ∠ e.A e.C e.B := by
-      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ e.A e.B e.C, e.not_colinear_ABC⟩)).mp
+      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ e.A e.B e.C, e.not_collinear_ABC⟩)).mp
       exact e.isoc_ABC
   have M_int_BC : e.M LiesInt (SEG_nd e.B e.C) := by
     sorry

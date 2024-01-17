@@ -328,6 +328,85 @@ theorem Ray.not_rev_para_rev_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r
 theorem DirLine.not_rev_para_rev_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l.reverse ∥ l'.reverse :=
   DirFig.not_rev_para_rev_of_not_para h
 
+theorem DirFig.para_rev_iff_para : l₁ ∥ reverse l₂ ↔ l₁ ∥ l₂ := sorry
+
+@[simp]
+theorem SegND.para_rev_iff_para {s s' : SegND P} : s ∥ s'.reverse ↔  s ∥ s' := sorry
+
+@[simp]
+theorem Ray.para_rev_iff_para {r r' : Ray P} : r ∥ r'.reverse ↔ r ∥ r' := sorry
+
+@[simp]
+theorem DirLine.para_rev_iff_para {l l' : DirLine P} : l ∥ l'.reverse ↔ l ∥ l' := sorry
+
+theorem DirFig.not_para_rev_iff_not_para : ¬ l₁ ∥ reverse l₂ ↔ ¬ l₁ ∥ l₂ :=
+  para_rev_iff_para.not
+
+@[simp]
+theorem SegND.not_para_rev_iff_not_para {s s' : SegND P} : ¬ s ∥ s'.reverse ↔ ¬ s ∥ s' :=
+  para_rev_iff_para.not
+
+@[simp]
+theorem Ray.not_para_rev_iff_not_para {r r' : Ray P} : ¬ r ∥ r'.reverse ↔ ¬ r ∥ r' :=
+  para_rev_iff_para.not
+
+@[simp]
+theorem DirLine.not_para_rev_iff_not_para {l l' : DirLine P} : ¬ l ∥ l'.reverse ↔ ¬ l ∥ l' :=
+  para_rev_iff_para.not
+
+theorem DirFig.rev_para_iff_para : reverse l₁ ∥ l₂ ↔ l₁ ∥ l₂ := sorry
+
+@[simp]
+theorem SegND.rev_para_iff_para {s s' : SegND P} : s.reverse ∥ s' ↔ s ∥ s':= sorry
+
+@[simp]
+theorem Ray.rev_para_iff_para {r r' : Ray P} : r.reverse ∥ r' ↔ r ∥ r' := sorry
+
+@[simp]
+theorem DirLine.rev_para_iff_para {l l' : DirLine P} : l.reverse ∥ l' ↔  l ∥ l' := sorry
+
+theorem DirFig.not_rev_para_iff_not_para : ¬ reverse l₁ ∥ l₂ ↔ ¬ l₁ ∥ l₂ :=
+  rev_para_iff_para.not
+
+@[simp]
+theorem SegND.not_rev_para_iff_not_para {s s' : SegND P} : ¬ s.reverse ∥ s' ↔ ¬ s ∥ s' :=
+  rev_para_iff_para.not
+
+@[simp]
+theorem Ray.not_rev_para_iff_not_para {r r' : Ray P} : ¬ r.reverse ∥ r' ↔ ¬ r ∥ r' :=
+  rev_para_iff_para.not
+
+@[simp]
+theorem DirLine.not_rev_para_iff_not_para {l l' : DirLine P} : ¬ l.reverse ∥ l' ↔ ¬ l ∥ l' :=
+  rev_para_iff_para.not
+
+theorem DirFig.rev_para_rev_iff_para : reverse l₁ ∥ reverse l₂ ↔ l₁ ∥ l₂ := sorry
+
+@[simp]
+theorem SegND.rev_para_rev_iff_para {s s' : SegND P} : s.reverse ∥ s'.reverse ↔ s ∥ s' := sorry
+
+@[simp]
+theorem Ray.rev_para_rev_iff_para {r r' : Ray P} : r.reverse ∥ r'.reverse ↔ r ∥ r' := sorry
+
+@[simp]
+theorem DirLine.rev_para_rev_iff_para {l l' : DirLine P} : l.reverse ∥ l'.reverse ↔ l ∥ l' :=
+  sorry
+
+theorem DirFig.not_rev_para_rev_iff_not_para : ¬ reverse l₁ ∥ reverse l₂ ↔ ¬ l₁ ∥ l₂ :=
+  rev_para_rev_iff_para.not
+
+@[simp]
+theorem SegND.not_rev_para_rev_iff_not_para {s s' : SegND P} : ¬ s.reverse ∥ s'.reverse ↔ ¬ s ∥ s' :=
+  rev_para_rev_iff_para.not
+
+@[simp]
+theorem Ray.not_rev_para_rev_iff_not_para {r r' : Ray P} : ¬ r.reverse ∥ r'.reverse ↔ ¬ r ∥ r' :=
+  rev_para_rev_iff_para.not
+
+@[simp]
+theorem DirLine.not_rev_para_rev_iff_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l.reverse ∥ l'.reverse :=
+  DirFig.not_rev_para_rev_of_not_para h
+
 end reverse
 
 end coercion_theorem
@@ -367,7 +446,7 @@ theorem Vec.linear_combination_of_not_colinear_vecND {u v : VecND} (w : Vec) (h'
   · by_contra h₂
     let _ := VecND.toProj_eq_toProj_iff.2 h₂
     tauto
-  exact @linear_combination_of_not_colinear' u.1 v.1 w v.2 h₁
+  exact @linear_combination_of_not_collinear' u.1 v.1 w v.2 h₁
 
 /-- Given two directions $\vec u$ and $\vec v$ of different projective directions, any vector $w$ is the linear combination of $\vec u$ and $\vec v$ with coefficients, namely, $\vec w = c_u(\vec u, \vec v, \vec w) \vec u + c_v(\vec u, \vec v, \vec w) \vec v$. -/
 theorem Vec.linear_combination_of_not_colinear_dir {u v : Dir} (w : Vec) (h' : u.toProj ≠ v.toProj) : w = (cu u.unitVec v.unitVec w) • u.unitVec + (cv u.unitVec v.unitVec w) • v.unitVec := by
@@ -388,7 +467,7 @@ theorem Vec.linear_combination_of_not_colinear_dir {u v : Dir} (w : Vec) (h' : u
     have hv3 : v.unitVec = v'.1 := rfl
     rw [hu3, hv3, ←hu2, ←hv2, ← VecND.toProj_eq_toProj_iff] at h
     tauto
-  exact @linear_combination_of_not_colinear' u.unitVec v.unitVec w (VecND.ne_zero _) (h₁ h')
+  exact @linear_combination_of_not_collinear' u.unitVec v.unitVec w (VecND.ne_zero _) (h₁ h')
 
 -- This function in fact does not require $r_1$ and $r_2$ to be unparallel, but please only use this under the unparallel assumption.`
 /-- Given two unparallel rays, this function returns the intersection of their associated lines. -/
@@ -400,7 +479,7 @@ theorem inx_of_extn_line_symm (r₁ r₂ : Ray P) (h : ¬ r₁ ∥ r₂) :
   have hsymm : cu r₁.toDir.unitVecND r₂.toDir.unitVecND (VEC r₁.source r₂.source) • r₁.toDir.unitVec =
       cu r₂.toDir.unitVecND r₁.toDir.unitVecND (VEC r₂.source r₁.source) • r₂.toDir.unitVec +
       (r₂.source -ᵥ r₁.source)
-  · have h := Vec.linear_combination_of_not_colinear_dir (VEC r₁.source r₂.source) (Ne.symm h)
+  · have h := Vec.linear_combination_of_not_collinear_dir (VEC r₁.source r₂.source) (Ne.symm h)
     nth_rw 1 [← cu_cv, Vec.mkPtPt] at h
     rw [h, ← neg_vec r₁.source r₂.source, cu_neg, neg_smul]
     exact eq_neg_add_of_add_eq rfl
@@ -506,13 +585,13 @@ theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l�
   let x := cu (VEC A B) (VEC C D) (VEC A C)
   let y := cv (VEC A B) (VEC C D) (VEC A C)
   have e : VEC A C = x • VEC A B + y • VEC C D := by
-    apply Vec.linear_combination_of_not_colinear_vecND (VEC A C) e'
+    apply Vec.linear_combination_of_not_collinear_vecND (VEC A C) e'
   have h : VEC C (x • VEC A B +ᵥ A) = - y • VEC C D := by
     rw [← vec_sub_vec A _ _, vec_of_pt_vadd_pt_eq_vec _ _, e]
     simp only [Complex.real_smul, sub_add_cancel', neg_smul]
-  exact ⟨x • VEC A B +ᵥ A, (lies_on_iff_colinear_of_ne_lies_on_lies_on hab.1 hab.2.1 _).2
-    (colinear_of_vec_eq_smul_vec (vec_of_pt_vadd_pt_eq_vec A _)),
-    (lies_on_iff_colinear_of_ne_lies_on_lies_on hcd.1 hcd.2.1 _).2 (colinear_of_vec_eq_smul_vec h)⟩
+  exact ⟨x • VEC A B +ᵥ A, (lies_on_iff_collinear_of_ne_lies_on_lies_on hab.1 hab.2.1 _).2
+    (collinear_of_vec_eq_smul_vec (vec_of_pt_vadd_pt_eq_vec A _)),
+    (lies_on_iff_collinear_of_ne_lies_on_lies_on hcd.1 hcd.2.1 _).2 (collinear_of_vec_eq_smul_vec h)⟩
 
 /-- If two lines are not parallel, then there exists a unique point in their intersection. -/
 theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l₁ ∥ l₂) : ∃! p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by

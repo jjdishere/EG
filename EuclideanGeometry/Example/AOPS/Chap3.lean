@@ -15,10 +15,10 @@ Theorem: We have $BX = CY$ and $MX = MY$.
 -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {hnd : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
+variable {A B C : P} {hnd : ¬ collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
 -- Claim: $A \ne B$ and $A \neq C$. This is because vertices of nondegenerate triangles are distinct.
-lemma A_ne_B : A ≠ B := (ne_of_not_colinear hnd).2.2.symm
-lemma A_ne_C : A ≠ C := (ne_of_not_colinear hnd).2.1
+lemma A_ne_B : A ≠ B := (ne_of_not_collinear hnd).2.2.symm
+lemma A_ne_C : A ≠ C := (ne_of_not_collinear hnd).2.1
 -- Let $X$ and $Y$ be points on the interior of the segments of $AC$ and $AB$, respectively.
 variable {X Y : P} {hx : X LiesInt (SEG A C)} {hy : Y LiesInt (SEG A B)}
 -- Claim: $X \neq B$ and $Y \neq C$. This is because: $X$ is an interior point of an edge of a triangle, so it is not equal to a vertex $B$ of the triangle; similarly, $Y$ is an interior point of an edge of a triangle, so it is not equal to a vertex $C$ of the triangle.
