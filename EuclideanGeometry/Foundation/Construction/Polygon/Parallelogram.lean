@@ -36,16 +36,6 @@ In this section we define two types of parallelograms. 'parallel_nd' deals with 
 
 -/
 
-/-- A quadrilateral satisfies InGPos if every 3 vertices are not collinear. -/
-@[pp_dot]
-structure Quadrilateral.InGPos {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop where
-  not_collinear₁₂₃: ( ¬ collinear qdr.point₁ qdr.point₂ qdr.point₃)
-  not_collinear₂₃₄: ( ¬ collinear qdr.point₂ qdr.point₃ qdr.point₄)
-  not_collinear₃₄₁: ( ¬ collinear qdr.point₃ qdr.point₄ qdr.point₁)
-  not_collinear₄₁₂: ( ¬ collinear qdr.point₄ qdr.point₁ qdr.point₂)
-
--- scoped postfix : 50 "IsPrg_GPos" => Quadrilateral.GPos
-
 -- /-- A QuadrilateralND satisfies IsPara if two sets of opposite sides are parallel respectively. -/
 -- @[pp_dot]
 -- def QuadrilateralND.IsParaPara {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := ( qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) ∧ (qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃)
@@ -99,14 +89,6 @@ def Parallelogram.mk_isPrg {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral 
 
 scoped notation "PRG'" => Parallelogram.mk_isPrg
 
-/-- A parallelogram which satisfies Prallelogram.InGPos satisfies IsND. -/
-theorem Parallelogram.nd_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsND:= by
-  constructor
-  · exact (ne_of_not_collinear InGPos.not_collinear₁₂₃).right.right
-  · exact (ne_of_not_collinear InGPos.not_collinear₂₃₄).right.right
-  · exact (ne_of_not_collinear InGPos.not_collinear₃₄₁).right.right
-  · exact (ne_of_not_collinear InGPos.not_collinear₄₁₂).right.right.symm
-
 /-- Vectors point₁ point₂ and point₄ point₃ in a parallelogram are equal. -/
 theorem Parallelogram.eq_vec_of_isPrg {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} : VEC prg.point₁ prg.point₂ = VEC prg.point₄ prg.point₃ := prg.is_parallelogram
 
@@ -116,11 +98,7 @@ theorem Parallelogram.eq_vec_of_isPrg' {P : Type _} [EuclideanPlane P] {prg : Pa
 /-- A parallelogram which satisfies Prallelogram.InGPos satisfies IsParaPara. -/
 theorem Parallelogram.parapara_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsParaPara:= by
   unfold Quadrilateral.IsParaPara
-  simp only [prg.nd_of_gpos InGPos,dite_true]
-  constructor
-  · unfold parallel
-    sorry
-  · sorry
+  sorry
 
 /-- A parallelogram which satisfies Prallelogram.InGPos is convex. -/
 theorem Parallelogram.cvx_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsConvex:= by sorry
@@ -226,10 +204,10 @@ theorem qdr_isPrg_iff_perm_isPrg : (qdr.IsPrg) ↔ ((qdr.perm).IsPrg) := by
   rw [vsub_sub_vsub_comm]
 
 /-- If a quadrilateral is a parallelogram_nd, then its perm is also a parallelogram_nd. -/
-theorem qdr_isPrgND_iff_perm_isPrgND : (qdr.IsPrgND) ↔ ((qdr.perm).IsPrgND) := by sorry
+theorem prgND_iff_perm_prgND : (qdr.IsPrgND) ↔ ((qdr.perm).IsPrgND) := by sorry
 
 /-- If a quadrilateral satisfies IsParaPara, then its perm also satisfies IsParaPara. -/
-theorem qdr_IsParaPara_iff_perm_IsParaPara : (qdr.IsParaPara) ↔ ((qdr.perm).IsParaPara) := by sorry
+theorem para_iff_perm_para : (qdr.IsParaPara) ↔ ((qdr.perm).IsParaPara) := by sorry
 
 /-- If a quadrilateral_nd satisfies IsParaPara, then its perm also satisfies IsParaPara. -/
 theorem qdrND_IsParaPara_iff_perm_IsParaPara : (qdr_nd.IsParaPara) ↔ ((qdr_nd.perm).IsParaPara) := by sorry

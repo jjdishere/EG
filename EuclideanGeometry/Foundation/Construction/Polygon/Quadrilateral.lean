@@ -128,6 +128,16 @@ def QuadrilateralND.mk_nd {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P
 
 scoped notation "QDR_nd'" => QuadrilateralND.mk_nd
 
+/-- A quadrilateral satisfies InGPos if every 3 vertices are not collinear. -/
+@[pp_dot]
+structure Quadrilateral.InGPos {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop where
+  not_collinear₁₂₃: ( ¬ collinear qdr.point₁ qdr.point₂ qdr.point₃)
+  not_collinear₂₃₄: ( ¬ collinear qdr.point₂ qdr.point₃ qdr.point₄)
+  not_collinear₃₄₁: ( ¬ collinear qdr.point₃ qdr.point₄ qdr.point₁)
+  not_collinear₄₁₂: ( ¬ collinear qdr.point₄ qdr.point₁ qdr.point₂)
+
+-- scoped postfix : 50 "IsPrg_GPos" => Quadrilateral.GPos
+
 namespace QuadrilateralND
 
 section property_nd
@@ -241,6 +251,16 @@ theorem flip_angle₄_value_eq_neg_angle₂ : qdr_nd.flip.angle₄.value = - qdr
   congr 1
 
 end property_nd
+
+/-- A Quadrilateral which satisfies InGPos satisfies IsND. -/
+theorem nd_of_gpos {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (InGPos : qdr.InGPos): qdr.IsND:= by
+  constructor
+  · exact (ne_of_not_collinear InGPos.not_collinear₁₂₃).right.right
+  · exact (ne_of_not_collinear InGPos.not_collinear₂₃₄).right.right
+  · exact (ne_of_not_collinear InGPos.not_collinear₃₄₁).right.right
+  · exact (ne_of_not_collinear InGPos.not_collinear₄₁₂).right.right.symm
+
+instance {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} : Coe qdr.InGPos qdr.IsND := {coe := nd_of_gpos}
 
 end QuadrilateralND
 
