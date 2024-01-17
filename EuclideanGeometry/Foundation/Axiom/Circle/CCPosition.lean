@@ -160,7 +160,9 @@ theorem intangent_pt_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : �
         have : VEC_nd ω₁.center ω₂.center = - VEC_nd ω₂.center ω₁.center := by
           ext; simp only [ne_eq, RayVector.coe_neg, VecND.coe_mkPtPt]
           rw [neg_vec]
-        have : (VEC_nd ω₁.center ω₂.center).toDir.unitVec = - (VEC_nd ω₂.center ω₁.center).toDir.unitVec := by rw [this]; simp
+        have : (VEC_nd ω₁.center ω₂.center).toDir.unitVec = - (VEC_nd ω₂.center ω₁.center).toDir.unitVec := by
+          rw [this]
+          simp only [VecND.neg_toDir, Dir.neg_unitVec]
         rw [this, smul_neg, sub_eq_add_neg]
       _ = ‖(‖VEC_nd ω₁.center ω₂.center‖ + ω₁.radius) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
         rw [add_smul, VecND.norm_smul_toDir_unitVec]
@@ -184,12 +186,12 @@ theorem intangentpt_centers_collinear {ω₁ : Circle P} {ω₂ : Circle P} (h :
         unfold Intangentpt
         simp
       _ = ω₁.radius • (- (VEC_nd ω₁.center ω₂.center).toDir.unitVec) := by
-        -- note: 为什么没有 neg_vecND
+        -- note: 为什么没有 neg_vecND `现在有了`
         trans ω₁.radius • (-VEC_nd ω₁.center ω₂.center).toDir.unitVec
         · unfold VecND.mkPtPt Vec.mkPtPt
           congr
           rw [← neg_eq_iff_eq_neg, neg_vsub_eq_vsub_rev]
-        · simp
+        · simp only [VecND.neg_toDir, Dir.neg_unitVec, smul_neg]
       _ = - ω₁.radius • (VEC_nd ω₁.center ω₂.center).toDir.unitVec := by
         rw [smul_neg, neg_smul]
       _ = (- ω₁.radius) • ‖VEC ω₁.center ω₂.center‖⁻¹ • VEC ω₁.center ω₂.center := rfl

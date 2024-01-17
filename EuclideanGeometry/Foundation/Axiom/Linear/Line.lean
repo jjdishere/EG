@@ -737,41 +737,56 @@ theorem Line.nontriv (l : Line P) : ∃ (A B : P), A LiesOn l ∧ B LiesOn l ∧
   rcases r.nontriv with ⟨A, B, g⟩
   exact ⟨A, B, ⟨ray_subset_line h g.1, ray_subset_line h g.2.1, g.2.2⟩⟩
 
-/-- The theorem states that, for a point $A$ and a ray $r$, `REMOVE THIS THEOREM!!!!` a point A lies on a ray r and A is not the source of r, or A lies on the reverse of r and A is not the source of r, or A is the source of r if and only if A lies on r or A lies on the reverse of r. -/
-theorem Ray.lies_on_ray_or_lies_on_ray_rev_iff {r : Ray P} {A : P} : A LiesOn r ∧ A ≠ r.source ∨ A LiesOn r.reverse ∧ A ≠ r.source ∨ A = r.source ↔ A LiesOn r ∨ A LiesOn r.reverse := ⟨
-  fun | .inl h => .inl h.1
-      | .inr h => .casesOn h (fun h => .inr h.1) (fun h => .inr (by rw[h]; exact source_lies_on)),
-  fun | .inl h => if g : A = r.source then .inr (.inr g) else .inl ⟨h, g⟩
-      | .inr h => if g : A = r.source then .inr (.inr g) else .inr (.inl ⟨h, g⟩)⟩
-
 /-- Given a point and a ray $r$, $A$ lies on the line associated to $r$ if and only if $A$ lies either in the interior of $r$ or the interior of the reverse of $r$ or $A$ is the source of $r$. -/
-theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source {A : P} {r : Ray P} : (A LiesOn r.toLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) := by
-  rw [lies_int_def, lies_int_def, source_of_rev_eq_source, lies_on_ray_or_lies_on_ray_rev_iff, lies_on_toLine_iff_lies_on_or_lies_on_rev]
+theorem Ray.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source {A : P} {r : Ray P} : (A LiesOn r.toLine) ↔ (A LiesInt r) ∨ (A LiesInt r.reverse) ∨ (A = r.source) := ⟨
+  fun | .inl h => if g : A = r.source then .inr (.inr g) else .inl ⟨h, g⟩
+      | .inr h => if g : A = r.source then .inr (.inr g) else .inr (.inl ⟨h, g⟩),
+  fun | .inl h => .inl h.1
+      | .inr h => .casesOn h (fun h => .inr h.1) (fun h => .inr (by rw[h]; exact source_lies_on))⟩
 
 /-- If a point $A$ does not lie in the interior of a nondegenerate segment, then $A$ lies on the line of the segment if and only if it lies on the extension ray of the segment or it lies on the extension ray of the reverse of the segment. -/
 theorem SegND.lies_on_extn_or_rev_extn_iff_lies_on_toLine_of_not_lies_on {A : P} {seg_nd : SegND P} (h : ¬ A LiesInt seg_nd.1) : A LiesOn seg_nd.toLine ↔ (A LiesOn seg_nd.extension) ∨ (A LiesOn seg_nd.reverse.extension) := by
-  sorry
-  /-
   constructor
-  · intro hh
-    rcases (seg_nd.toRay.lies_on_toline_iff_lies_on_or_lies_on_rev).mp hh with h₁ | h₂
-    · by_cases ax : A = seg_nd.1.source
-      · rw [ax]
-        exact .inr Ray.source_lies_on
-      by_cases ay : A = seg_nd.1.target
-      · rw [ay]
-        exact .inl Ray.source_lies_on
-      exact .casesOn (lies_on_seg_nd_or_extension_of_lies_on_toRay h₁)
-        (fun h₁ ↦ (h ⟨h₁, ax, ay⟩).elim) (fun h₁ ↦ .inl h₁)
+  intro hh
+  rcases (seg_nd.toRay.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source).mp hh with h₁ | h₂ | h₃
+  by_cases ax : A = seg_nd.1.source
+  rw [ax]
+  exact .inr Ray.source_lies_on
+  by_cases ay : A = seg_nd.1.target
+  rw [ay]
+  exact .inl Ray.source_lies_on
+  exact .casesOn (lies_on_seg_nd_or_extension_of_lies_on_toRay h₁)
+    (fun h₁ ↦ (h ⟨h₁, ax, ay⟩).elim) (fun h₁ ↦ .inl h₁)
+  rw [rev_extn_eq_toRay_rev]
+  exact .inr h₂
+  right
+  simp only [h₃, toRay_source]
+  have L1: seg_nd.source = seg_nd.reverse.target := rfl
+  rw [L1]
+  have L2: seg_nd.reverse.target = seg_nd.reverse.extension.source:= by
+    rfl
+  rw [L2]
+  simp only [Ray.source_lies_on]
+  intro hh
+  rcases hh with h₁ | h₂
+  rw [seg_nd.toRay.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source ]
+  left
+  apply lies_int_toRay_of_lies_on_extn
+  apply h₁
+  let r := (seg_nd.toRay)
+  rw [r.lies_on_toLine_iff_lies_int_or_lies_int_rev_or_eq_source]
+  right
+  have h₃: r.reverse = seg_nd.reverse.extension:= by
     rw [rev_extn_eq_toRay_rev]
-    exact .inr h₂
-  · exact fun hh ↦ .casesOn hh
-      (fun h₁ ↦ Eq.mpr (seg_nd.toline_eq_extn_toline ▸ Eq.refl (A LiesOn seg_nd.toLine))
-        ((seg_nd.extension.lies_on_toline_iff_lies_on_or_lies_on_rev).mpr (.inl h₁)))
-      (fun h₂ ↦ (seg_nd.toRay.lies_on_toline_iff_lies_on_or_lies_on_rev).mpr <| .inr <| by
-        rw [← rev_extn_eq_toRay_rev]
-        exact h₂)
- -/
+  rw [h₃]
+  by_cases hhh: A = seg_nd.source
+  right
+  exact hhh
+  left
+  rw [Ray.lies_int_def]
+  constructor
+  apply h₂
+  exact hhh
 
 /-- Given a point $X$ and a nondegenerate segment $seg_nd$, if $X$ lies on the extension ray of $seg_nd$, then $X$ lies on the line associated with $seg_nd$. -/
 theorem SegND.lies_on_toLine_of_lies_on_extn {X : P} {seg_nd : SegND P} (lieson : X LiesOn seg_nd.extension) : X LiesOn seg_nd.toLine := by
