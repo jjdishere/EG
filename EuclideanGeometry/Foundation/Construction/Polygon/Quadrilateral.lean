@@ -464,7 +464,7 @@ instance nd₁₃ : PtNe qdr_cvx.point₃ qdr_cvx.point₁ := Fact.mk <| by
   have g : qdr_cvx.angle₂.value = 0 := by
     unfold QuadrilateralND.angle₂
     simp only [h]
-    apply value_eq_zero_of_same_dir
+    apply same_dir_iff_value_eq_zero.mp
     simp only [mk_pt_pt_pt_dir₁, mk_pt_pt_pt_dir₂]
   have k₁ : ¬ qdr_cvx.angle₂.value.IsPos := by
     rw [g]
