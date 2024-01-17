@@ -515,7 +515,7 @@ end cooperation_with_parallel
 scoped infix : 55 " LiesOnLeft " => IsOnLeftSide
 scoped infix : 55 " LiesOnRight " => IsOnRightSide
 
-section handside
+section handside_with_ang
 
 theorem same_sign_of_parallel (A B : P) (ray : Ray P) [bnea : PtNe B A] (para : parallel (RAY A B)  ray) : odist_sign A ray = odist_sign B ray := by
   unfold odist_sign
@@ -523,6 +523,45 @@ theorem same_sign_of_parallel (A B : P) (ray : Ray P) [bnea : PtNe B A] (para : 
 
 --Is discussed with IsOnSameSide only except odist_sign = 0
 theorem same_odist_sign_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l = odist_sign B l) : ∀ (C : P) , Seg.IsOn C (SEG A B) → odist_sign C l = odist_sign A l := sorry
+
+--some simple coertion between angle and left or right
+theorem LiesOnLeft_of_ang_pos (A : P) (ray : Ray P) [ne : PtNe A ray.source] (h : (Angle.mk ray.source ray.toDir (RAY ray.source A).toDir).IsPos) : A LiesOnLeft ray := by
+  unfold IsOnLeftSide
+  show odist' A ray > 0
+  have : odist' A ray = (SEG ray.source A).length * sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value) := by
+    simp only [odist'_eq_length_mul_sin A ray]
+    congr
+  simp only [this]
+  have sin : sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value) > 0 := by
+    apply AngValue.isPos_iff_zero_lt_sin.mp
+    exact h
+  have len : (SEG ray.source A).length > 0 := by
+    show (SEG_nd ray.source A).length > 0
+    apply EuclidGeom.length_pos
+  positivity
+
+lemma SB_class {a b : ℝ} (apos : a > 0) (bneg : b < 0) : a * b < 0 := by
+  have : a * (-b) > 0 := by
+    have : -b > 0 := by linarith
+    positivity
+  linarith
+
+theorem LiesOnRight_of_ang_neg (A : P) (ray : Ray P) [ne : PtNe A ray.source] (h : (Angle.mk ray.source ray.toDir (RAY ray.source A).toDir).IsNeg) : A LiesOnRight ray := by
+  unfold IsOnRightSide
+  show odist' A ray < 0
+  have : odist' A ray = (SEG ray.source A).length * sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value) := by
+    simp only [odist'_eq_length_mul_sin A ray]
+    congr
+  simp only [this]
+  have sin : (sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value)) < 0 := by
+    apply sin_lt_zero_of_isNeg
+    exact h
+  --have -sin : -(sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value)) > 0 := by
+    --linarith
+  have len : (SEG ray.source A).length > 0 := by
+    show (SEG_nd ray.source A).length > 0
+    apply EuclidGeom.length_pos
+  exact SB_class len sin
 
 --Is discussed with relative side
 --theorem no_intersect_of_same_odist_sign (A B : P) (l : DirLine P) (signeq : odist_sign A l * odist_sign B l = 1) : ∀ (C : P) , Seg.IsOn C (SEG A B) → ¬ Line.IsOn C l := sorry
@@ -542,7 +581,7 @@ lemma ne_of_isonleft_of_lieson (A B : P) (r : DirLine P) (aliesonr : A LiesOn r)
 theorem isonleft_of_isintray_of_isonleft (r : DirLine P) (A B C: P) (aliesonr : Line.IsOn A r) (bliesonleft : IsOnLeftSide B r) (conab : Ray.IsInt C (RAY A B (ne_of_isonleft_of_lieson A B r aliesonr bliesonleft))) : IsOnLeftSide C r := sorry
 -/
 
-end handside
+end handside_with_ang
 
 section relative_side
 
@@ -1545,46 +1584,6 @@ section intersect_of_ray
 /- Statement of his theorem should change, since ray₀.source ≠ ray₂.source. -/
 theorem intersect_of_ray_on_left_iff (ray₁ ray₂ : Ray P) (h : ray₂.source ≠ ray₁.source) : let ray₀ := Ray.mk_pt_pt ray₁.source ray₂.source h; (0 < (Angle.mk_two_ray_of_eq_source ray₀ ray₁ rfl).value.toReal) ∧ ((Angle.mk_two_ray_of_eq_source ray₀ ray₁ rfl).value.toReal < (Angle.mk_two_ray_of_eq_source ray₀ ray₂ sorry).value.toReal) ∧ ((Angle.mk_two_ray_of_eq_source ray₀ ray₂ sorry).value.toReal < π) ↔ (∃ A : P, (A LiesOn ray₁) ∧ (A LiesOn ray₂) ∧ (A LiesOnLeft ray₀))  := sorry
 
-theorem LiesOnLeft_of_ang_pos (A : P) (ray : Ray P) [ne : PtNe A ray.source] (h : (Angle.mk ray.source ray.toDir (RAY ray.source A).toDir).IsPos) : A LiesOnLeft ray := by
-  unfold IsOnLeftSide
-  show odist' A ray > 0
-  have : odist' A ray = (SEG ray.source A).length * sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value) := by
-    simp only [odist'_eq_length_mul_sin A ray]
-    congr
-  simp only [this]
-  have sin : sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value) > 0 := by
-    apply AngValue.isPos_iff_zero_lt_sin.mp
-    exact h
-  have len : (SEG ray.source A).length > 0 := by
-    show (SEG_nd ray.source A).length > 0
-    apply EuclidGeom.length_pos
-  positivity
-
-lemma SB_class {a b : ℝ} (apos : a > 0) (bneg : b < 0) : a * b < 0 := by
-  have : a * (-b) > 0 := by
-    have : -b > 0 := by linarith
-    positivity
-  linarith
-
-theorem LiesOnRight_of_ang_neg (A : P) (ray : Ray P) [ne : PtNe A ray.source] (h : (Angle.mk ray.source ray.toDir (RAY ray.source A).toDir).IsNeg) : A LiesOnRight ray := by
-  unfold IsOnRightSide
-  show odist' A ray < 0
-  have : odist' A ray = (SEG ray.source A).length * sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value) := by
-    simp only [odist'_eq_length_mul_sin A ray]
-    congr
-  simp only [this]
-  have sin : (sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value)) < 0 := by
-    apply sin_lt_zero_of_isNeg
-    exact h
-  --have -sin : -(sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value)) > 0 := by
-    --linarith
-  have len : (SEG ray.source A).length > 0 := by
-    show (SEG_nd ray.source A).length > 0
-    apply EuclidGeom.length_pos
-  exact SB_class len sin
-
-
-
 lemma SB_simp (a b : ℝ) (h : b≠ 0): a + (-a / b) * b = 0 := by field_simp
 
 theorem exist_inx_DirLine_Ray_of_source_LiesOnLeft_and_included_ang_neg (ray : Ray P) (dl : DirLine P) (left : ray.source LiesOnLeft dl)(h : (ray.toDir -ᵥ dl.toDir).IsNeg ) : ∃ C : P , C IsInxOf ray dl := by
@@ -1705,7 +1704,16 @@ theorem exist_inx_DirLine_Ray_of_source_LiesOnRight_and_included_ang_pos (ray : 
   simp only [on_ray,on_dl]
   simp only [and_self]
 
-theorem exist_inx_ray_ray_of_ang_pos_pos_sum_pos (ray₁ ray₂ : Ray P) [ne : PtNe ray₁.source ray₂.source] (h₁ : (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).IsPos) (h₂ : (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).IsPos) (gt : (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).value.toReal > (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).value.toReal): ∃ C : P , C IsInxOf ray₁ ray₂ := by
+lemma logic (P : Prop) : (¬ P) ∨ P := by
+  by_contra H
+  have : ¬ P := by
+    by_contra p
+    absurd H
+    simp only [p, not_true_eq_false, or_true]
+  absurd H
+  simp only [this, not_false_eq_true, or_false]
+
+theorem exist_inx_ray_ray_of_ang_pos_pos_sum_pos (ray₁ ray₂ : Ray P) [ne : PtNe ray₁.source ray₂.source] (h₁ : (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).IsPos) (h₂ : (Angle.mk ray₂.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).IsPos) (gt : (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).value.toReal > (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).value.toReal): ∃ C : P , C IsInxOf ray₁ ray₂ := by
   have neg0 : (ray₁.toDir -ᵥ ray₂.toDir).IsNeg := by
     sorry
   have neg : (ray₁.toDir -ᵥ ray₂.toDirLine.toDir).IsNeg := neg0
@@ -1716,9 +1724,11 @@ theorem exist_inx_ray_ray_of_ang_pos_pos_sum_pos (ray₁ ray₂ : Ray P) [ne : P
       exact neg0
     simp at this
     exact this
-  have l' : ray₁.source LiesOnLeft ray₂ := by sorry
+  have l' : ray₁.source LiesOnLeft ray₂ := by
+    sorry
   have l : ray₁.source LiesOnLeft ray₂.toDirLine := by exact l'
-  have r' : ray₂.source LiesOnRight ray₁ := by sorry
+  have r' : ray₂.source LiesOnRight ray₁ := by
+    sorry
   have r : ray₂.source LiesOnRight ray₁.toDirLine := by exact r'
   have r1d2 : ∃ C : P , C IsInxOf ray₁ ray₂.toDirLine := by
     exact exist_inx_DirLine_Ray_of_source_LiesOnLeft_and_included_ang_neg ray₁ ray₂.toDirLine l neg
@@ -1729,8 +1739,33 @@ theorem exist_inx_ray_ray_of_ang_pos_pos_sum_pos (ray₁ ray₂ : Ray P) [ne : P
   unfold is_inx at h1
   unfold is_inx at h2
   have s : C₁ = C₂ := by
-    by_contra h
-    sorry
+    have c11: C₁ LiesOn ray₁.toLine := by
+      apply lies_on_of_lies_on_toline C₁ ray₁
+      exact h1.1
+    have c12: C₁ LiesOn ray₂.toLine := by
+      show C₁ LiesOn ray₂.toDirLine.toLine
+      apply lies_on_of_lies_on_toline C₁ ray₂.toDirLine
+      exact h1.2
+    have c21: C₂ LiesOn ray₁.toLine := by
+      show C₂ LiesOn ray₁.toDirLine.toLine
+      apply lies_on_of_lies_on_toline C₂ ray₁.toDirLine
+      exact h2.2
+    have c22: C₂ LiesOn ray₂.toLine := by
+      apply lies_on_of_lies_on_toline C₂ ray₂
+      exact h2.1
+
+    have x1 : C₁ IsInxOf ray₁.toLine ray₂.toLine := by
+      unfold is_inx
+      simp only [c11, c12, and_self]
+    have x2 : C₂ IsInxOf ray₁.toLine ray₂.toLine := by
+      unfold is_inx
+      simp only [c21, c22, and_self]
+    have para : (¬ (parallel ray₁.toLine ray₂.toLine)) ∨ (parallel ray₁.toLine ray₂.toLine) := logic (parallel ray₁.toLine ray₂.toLine)
+    rcases para with np|p
+    · exact unique_of_inx_of_line_of_not_para np x2 x1
+    · have eqLine : ray₁.toLine = ray₂.toLine := by
+        exact eq_of_parallel_and_pt_lies_on c11 c12 p
+      sorry
   use C₁
   unfold is_inx
   simp only [h1.1]
