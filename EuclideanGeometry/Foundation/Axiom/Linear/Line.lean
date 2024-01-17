@@ -1163,6 +1163,9 @@ instance instOrderedAddTorsor (l : DirLine P) : OrderedAddTorsor ℝ l.carrier.E
 instance instLinearOrderedAddTorsor (l : DirLine P) : LinearOrderedAddTorsor ℝ l.carrier.Elem :=
   AddTorsor.LinearOrderedAddTorsor_of_LinearOrderedAddCommGroup ℝ l.carrier.Elem
 
+
+instance (priority := high) (l : DirLine P) : LinearOrder l.carrier.Elem := inferInstance
+
 /-- The theorem states that for two points $A$ and $B$ on a directed line $l$, we write $A \leq B$ if the distance from $A$ to $B$ is nonnegative. -/
 theorem le_iff_zero_le_ddist {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : (⟨A, ha⟩ : l.carrier.Elem) ≤ ⟨B, hb⟩ ↔ 0 ≤ ddist ha hb :=
   vsub_le_zero_iff_zero_le_vsub_rev (⟨A, ha⟩ : l.carrier.Elem) ⟨B, hb⟩
