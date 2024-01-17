@@ -107,6 +107,12 @@ theorem Parallelogram.nd_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallel
   · exact (ne_of_not_collinear InGPos.not_collinear₃₄₁).right.right
   · exact (ne_of_not_collinear InGPos.not_collinear₄₁₂).right.right.symm
 
+/-- Vectors point₁ point₂ and point₄ point₃ in a parallelogram are equal. -/
+theorem Parallelogram.eq_vec_of_isPrg {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} : VEC prg.point₁ prg.point₂ = VEC prg.point₄ prg.point₃ := prg.is_parallelogram
+
+/-- Vectors point₁ point₄ and point₂ point₃ in a parallelogram are equal. -/
+theorem Parallelogram.eq_vec_of_isPrg' {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} : VEC prg.point₁ prg.point₄ = VEC prg.point₂ prg.point₃ := by rw [← vec_add_vec prg.point₁ prg.point₂ prg.point₄, ← vec_add_vec prg.point₂ prg.point₄ prg.point₃, prg.is_parallelogram, add_comm]
+
 /-- A parallelogram which satisfies Prallelogram.InGPos satisfies IsParaPara. -/
 theorem Parallelogram.parapara_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsParaPara:= by
   unfold Quadrilateral.IsParaPara
@@ -136,23 +142,28 @@ scoped postfix : 50 "IsPrgND" => Quadrilateral.IsPrgND
 -- scoped postfix : 50 "nd_IsPrgND" => QuadrilateralND.IsPrgND
 
 theorem QuadrilateralND.parapara_iff_para_para {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : (qdr_nd.IsParaPara) ↔ (qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) ∧ (qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) := by
-  sorry
+  constructor
+  unfold Quadrilateral.IsParaPara
+  simp only [dite_true, qdr_nd.nd, and_imp]
+  exact fun a a_1 ↦ { left := a, right := a_1 }
+  unfold Quadrilateral.IsParaPara
+  simp only [dite_true, qdr_nd.nd,and_imp]
+  exact fun a a_1 ↦ { left := a, right := a_1 }
 
 /-- A parallelogram_nd satisfies InGPos. -/
-theorem ParallelogramND.gpos_of_prgnd {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.InGPos := by
-  sorry
-
-/-- A parallelogram_nd satisfies InGPos. -/
-theorem ParallelogramND.gpos_of_prgnd_variant {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsPrgND) : (QDR A B C D).InGPos := by
-  sorry
+theorem ParallelogramND.gpos_of_prgnd {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.InGPos := ⟨prg_nd.not_collinear₁₂₃, prg_nd.not_collinear₂₃₄, prg_nd.not_collinear₃₄₁, prg_nd.not_collinear₄₁₂⟩
 
 /-- A parallelogram_nd satisfies IsParaPara. -/
 theorem ParallelogramND.parapara_of_prgnd {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.IsParaPara := by
-  sorry
+  unfold Quadrilateral.IsParaPara
+  simp only [dite_true, prg_nd.nd]
+  unfold parallel
+  constructor
+  have h: VEC prg_nd.point₁ prg_nd.point₂ = VEC prg_nd.point₄ prg_nd.point₃ := prg_nd.is_parallelogram
+  have p: (VEC_nd prg_nd.point₁ prg_nd.point₂ prg_nd.nd₁₂.out).toProj = (VEC_nd prg_nd.point₄ prg_nd.point₃ prg_nd.nd₃₄.out.symm).toProj := by
 
--- `the necessity of variant theorems needs further discuss`
-/-- A parallelogram_nd satisfies IsParaPara. -/
-theorem ParallelogramND.parapara_of_prgnd_variant {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D) IsPrgND) : (QDR A B C D).IsParaPara := by
+    sorry
+  sorry
   sorry
 
 def ParallelogramND.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (h: (QDR A B C D) IsPrgND) : ParallelogramND P where
@@ -161,6 +172,13 @@ def ParallelogramND.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P)
   is_parallelogram := h.right
 
 scoped notation "PRG_nd" => ParallelogramND.mk_pt_pt_pt_pt
+
+def ParallelogramND.mk_isPrgND {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsPrgND) : ParallelogramND P where
+  toQuadrilateral := qdr
+  nd := h.left; convex := h.left
+  is_parallelogram := h.right
+
+scoped notation "PRG_nd'" => ParallelogramND.mk_isPrgND
 
 /-
  Using the property above, we leave such a shortcut in a way people usually sense a parallelogram. A quadrilateral A B C D is parallelogram_nd if it is ND, is a parallelogram, and satisfies InGPos.
@@ -409,12 +427,6 @@ theorem eq_length_of_isPrg'_variant (h : (QDR A B C D).IsPrg) : (SEG A D).length
 /-- The midpoints of segments point₁ point₃ and point₂ point₄ in a parallelogram are exactly the same. -/
 theorem eq_midpt_of_diag_of_isPrg : (prg.diag₁₃).midpoint = (prg.diag₂₄).midpoint := by sorry
 
-/-- Vectors point₁ point₂ and point₄ point₃ in a parallelogram are equal. -/
-theorem eq_vec_of_isPrg : VEC prg.point₁ prg.point₂ = VEC prg.point₄ prg.point₃ := prg.is_parallelogram
-
-/-- Vectors point₁ point₄ and point₂ point₃ in a parallelogram are equal. -/
-theorem eq_vec_of_isPrg' : VEC prg.point₁ prg.point₄ = VEC prg.point₂ prg.point₃ := by rw [← vec_add_vec prg.point₁ prg.point₂ prg.point₄, ← vec_add_vec prg.point₂ prg.point₄ prg.point₃, prg.is_parallelogram, add_comm]
-
 /-- In a parallelogram the sum of the square of the sides is equal to that of the two diags. -/
 theorem parallelogram_law : 2 * (prg.edge₁₂).length ^ 2 + 2 * (prg.edge₂₃).length ^ 2 = (prg.diag₁₃).length ^ 2 + (prg.diag₂₄).length ^ 2 := by sorry
 
@@ -431,14 +443,10 @@ variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
 variable {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P)
 
 /-- In a parallelogram_nd, edge_nd₁₂ and edge₃₄ are parallel. -/
-theorem para_of_isPrgND : prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ := by
-  have h: prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ ∧ prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := prg_nd.parapara_iff_para_para.mp prg_nd.parapara_of_prgnd
-  exact h.left
+theorem para_of_isPrgND : prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ := (prg_nd.parapara_iff_para_para.mp prg_nd.parapara_of_prgnd).left
 
 /-- In a parallelogram_nd, edge_nd₁₄ and edge₂₃ are parallel. -/
-theorem para_of_isPrgND' : prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := by
-  have h: prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ ∧ prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := prg_nd.parapara_iff_para_para.mp prg_nd.parapara_of_prgnd
-  exact h.right
+theorem para_of_isPrgND' : prg_nd.edge_nd₁₄ ∥ prg_nd.edge_nd₂₃ := (prg_nd.parapara_iff_para_para.mp prg_nd.parapara_of_prgnd).right
 
 /-- The toDirs of edge_nd₁₂ and edge_nd₃₄ of a parallelogram_nd remain reverse. -/
 theorem todir_eq_of_isPrgND : prg_nd.edge_nd₁₂.toDir = - prg_nd.edge_nd₃₄.toDir := by sorry
