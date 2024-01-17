@@ -99,9 +99,22 @@ def Parallelogram.mk_isPrg {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral 
 
 scoped notation "PRG'" => Parallelogram.mk_isPrg
 
+/-- A parallelogram which satisfies Prallelogram.InGPos satisfies IsND. -/
+theorem Parallelogram.nd_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsND:= by
+  constructor
+  · exact (ne_of_not_collinear InGPos.not_collinear₁₂₃).right.right
+  · exact (ne_of_not_collinear InGPos.not_collinear₂₃₄).right.right
+  · exact (ne_of_not_collinear InGPos.not_collinear₃₄₁).right.right
+  · exact (ne_of_not_collinear InGPos.not_collinear₄₁₂).right.right.symm
+
 /-- A parallelogram which satisfies Prallelogram.InGPos satisfies IsParaPara. -/
 theorem Parallelogram.parapara_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsParaPara:= by
-  sorry
+  unfold Quadrilateral.IsParaPara
+  simp only [prg.nd_of_gpos InGPos,dite_true]
+  constructor
+  · unfold parallel
+    sorry
+  · sorry
 
 /-- A parallelogram which satisfies Prallelogram.InGPos is convex. -/
 theorem Parallelogram.cvx_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsConvex:= by sorry
