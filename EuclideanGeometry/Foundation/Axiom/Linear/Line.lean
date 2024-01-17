@@ -1195,7 +1195,7 @@ instance instRealNormedAddTorsor (l : DirLine P) : NormedAddTorsor ℝ l.carrier
     have h : @inner ℝ _ _ (VEC B A) l.toDir.unitVec • l.toDir.unitVec = VEC B A := by
       rcases exist_real_vec_eq_smul_toDir_of_lies_on hb ha with ⟨t, h⟩
       rw [h, real_inner_smul_self_left l.toDir.unitVec t]
-      simp
+      simp only [VecND.norm_coe, Dir.norm_unitVecND, mul_one]
     rw [h]
     exact vsub_vadd A B
   vadd_vsub' := by

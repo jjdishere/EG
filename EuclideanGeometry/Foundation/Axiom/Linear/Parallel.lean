@@ -191,7 +191,6 @@ end parallel_iff_coercion_parallel
 section reverse
 
 variable {α β : Type*} [DirFig α P] [DirFig β P] {l₁ : α} {l₂ : β}
--- Add `iff` theorems and @[simp]
 
 theorem DirFig.para_rev_of_para (h : l₁ ∥ l₂) : l₁ ∥ reverse l₂ :=
   h.trans (rev_toProj_eq_toProj l₂).symm
@@ -264,6 +263,54 @@ theorem Ray.not_rev_para_rev_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r
 
 theorem DirLine.not_rev_para_rev_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l.reverse ∥ l'.reverse :=
   DirFig.not_rev_para_rev_of_not_para h
+/-
+theorem DirFig.rev_para_of_para (h : l₁ ∥ l₂) : reverse l₁ ∥ l₂ :=
+  (rev_toProj_eq_toProj l₁).trans h
+
+theorem SegND.rev_para_of_para {s s' : SegND P} (h : s ∥ s') : s.reverse ∥ s' :=
+  DirFig.rev_para_of_para h
+
+theorem Ray.rev_para_of_para {r r' : Ray P} (h : r ∥ r') : r.reverse ∥ r' :=
+  DirFig.rev_para_of_para h
+
+theorem DirLine.rev_para_of_para {l l' : DirLine P} (h : l ∥ l') : l.reverse ∥ l' :=
+  DirFig.rev_para_of_para h
+
+theorem DirFig.not_rev_para_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ l₂ :=
+  fun hn ↦ h ((congrArg ProjObj.toProj rev_rev).symm.trans (rev_para_of_para hn) )
+
+theorem SegND.not_rev_para_of_not_para {s s' : SegND P} (h : ¬ s ∥ s') : ¬ s.reverse ∥ s' :=
+  DirFig.not_rev_para_of_not_para h
+
+theorem Ray.not_rev_para_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r.reverse ∥ r' :=
+  DirFig.not_rev_para_of_not_para h
+
+theorem DirLine.not_rev_para_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l.reverse ∥ l' :=
+  DirFig.not_rev_para_of_not_para h
+
+theorem DirFig.rev_para_rev_of_para (h : l₁ ∥ l₂) : reverse l₁ ∥ reverse l₂ :=
+  rev_para_of_para (para_rev_of_para h)
+
+theorem SegND.rev_para_rev_of_para {s s' : SegND P} (h : s ∥ s') : s.reverse ∥ s'.reverse :=
+  DirFig.rev_para_rev_of_para h
+
+theorem Ray.rev_para_rev_of_para {r r' : Ray P} (h : r ∥ r') : r.reverse ∥ r'.reverse :=
+  DirFig.rev_para_rev_of_para h
+
+theorem DirLine.rev_para_rev_of_para {l l' : DirLine P} (h : l ∥ l') : l.reverse ∥ l'.reverse :=
+  DirFig.rev_para_rev_of_para h
+
+theorem DirFig.not_rev_para_rev_of_not_para (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ reverse l₂ :=
+  not_rev_para_of_not_para (not_para_rev_of_not_para h)
+
+theorem SegND.not_rev_para_rev_of_not_para {s s' : SegND P} (h : ¬ s ∥ s') : ¬ s.reverse ∥ s'.reverse :=
+  DirFig.not_rev_para_rev_of_not_para h
+
+theorem Ray.not_rev_para_rev_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r.reverse ∥ r'.reverse :=
+  DirFig.not_rev_para_rev_of_not_para h
+
+theorem DirLine.not_rev_para_rev_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l.reverse ∥ l'.reverse :=
+  DirFig.not_rev_para_rev_of_not_para h -/
 
 end reverse
 
