@@ -534,7 +534,7 @@ theorem LiesOnLeft_of_ang_pos (A : P) (ray : Ray P) [ne : PtNe A ray.source] (h 
     exact h
   have len : (SEG ray.source A).length > 0 := by
     show (SEG_nd ray.source A).length > 0
-    apply EuclidGeom.length_pos
+    apply SegND.length_pos
   positivity
 
 lemma SB_class {a b : ℝ} (apos : a > 0) (bneg : b < 0) : a * b < 0 := by
@@ -557,7 +557,7 @@ theorem LiesOnRight_of_ang_neg (A : P) (ray : Ray P) [ne : PtNe A ray.source] (h
     --linarith
   have len : (SEG ray.source A).length > 0 := by
     show (SEG_nd ray.source A).length > 0
-    apply EuclidGeom.length_pos
+    apply SegND.length_pos
   exact SB_class len sin
 
 --Is discussed with relative side
@@ -1710,7 +1710,7 @@ theorem exist_inx_DirLine_Ray_of_source_LiesOnRight_and_included_ang_pos (ray : 
 
 
 
-theorem exist_inx_ray_ray_of_ang_pos_pos_sum_pos (ray₁ ray₂ : Ray P) [ne : PtNe ray₁.source ray₂.source] (h₁ : (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).IsPos) (h₂ : (Angle.mk ray₂.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).IsPos) (gt : ((Angle.mk ray₂.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).value - (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).value).IsPos ): ∃ C : P , C IsInxOf ray₁ ray₂ := by
+theorem exist_inx_ray_ray_of_ang_pos_pos_gt (ray₁ ray₂ : Ray P) [ne : PtNe ray₁.source ray₂.source] (h₁ : (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).IsPos) (h₂ : (Angle.mk ray₂.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).IsPos) (gt : ((Angle.mk ray₂.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).value - (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).value).IsPos ): ∃ C : P , C IsInxOf ray₁ ray₂ := by
   have negDir: (SEG_nd ray₁.source ray₂.source).toDir = -(SEG_nd ray₂.source ray₁.source).toDir := by
     show (SEG_nd ray₂.source ray₁.source).reverse.toDir = -(SEG_nd ray₂.source ray₁.source).toDir
     apply SegND.toDir_of_rev_eq_neg_toDir
@@ -1811,13 +1811,62 @@ theorem exist_inx_ray_ray_of_ang_pos_pos_sum_pos (ray₁ ray₂ : Ray P) [ne : P
       have eqProj : ray₁.toDir.toProj = (SEG_nd ray₁.source ray₂.source).toDir.toProj := by
         show ray₁.toLine.toProj = (SEG_nd ray₁.source ray₂.source).toLine.toProj
         congr 1
-      --exact a theorem that would be add
-      sorry
+      have D : ¬ (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).IsND := by
+        apply same_proj_iff_isND.mp
+        exact eqProj.symm
+      exact not_isPos_of_not_isND D
   use C₁
   unfold is_inx
   simp only [h1.1]
   simp only [s]
   simp only [h2.1, and_self]
+
+theorem exist_inx_ray_ray_of_ang_neg_neg_lt (ray₁ ray₂ : Ray P) [ne : PtNe ray₁.source ray₂.source] (h₁ : (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).IsNeg) (h₂ : (Angle.mk ray₂.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).IsNeg) (lt : ((Angle.mk ray₂.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).value - (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).value).IsNeg ): ∃ C : P , C IsInxOf ray₁ ray₂ := by
+  have negDir: (SEG_nd ray₁.source ray₂.source).toDir = -(SEG_nd ray₂.source ray₁.source).toDir := by
+    show (SEG_nd ray₂.source ray₁.source).reverse.toDir = -(SEG_nd ray₂.source ray₁.source).toDir
+    apply SegND.toDir_of_rev_eq_neg_toDir
+  have negDir': (SEG_nd ray₂.source ray₁.source).toDir = -(SEG_nd ray₁.source ray₂.source).toDir := by
+    show (SEG_nd ray₁.source ray₂.source).reverse.toDir = -(SEG_nd ray₁.source ray₂.source).toDir
+    apply SegND.toDir_of_rev_eq_neg_toDir
+  have pos1 : (Angle.mk ray₂.source (SEG_nd ray₂.source ray₁.source).toDir ray₂.toDir).IsPos := by
+    have pi : (Angle.mk ray₂.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).value = (Angle.mk ray₂.source (SEG_nd ray₂.source ray₁.source).toDir ray₂.toDir).value + ↑(π) := by
+      simp only [negDir]
+      unfold Angle.value
+      exact Dir.neg_vsub_right ray₂.toDir (SEG_nd ray₂.source ray₁.source).toDir
+    apply AngValue.add_pi_isNeg_iff_isPos.mp
+    simp only [←pi]
+    exact h₂
+  have pos2 : (Angle.mk ray₁.source (SEG_nd ray₂.source ray₁.source).toDir ray₁.toDir).IsPos := by
+    have pi' : (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).value = (Angle.mk ray₁.source (SEG_nd ray₂.source ray₁.source).toDir ray₁.toDir).value + ↑(π) := by
+      simp only [negDir]
+      unfold Angle.value
+      exact Dir.neg_vsub_right ray₁.toDir (SEG_nd ray₂.source ray₁.source).toDir
+    apply AngValue.add_pi_isNeg_iff_isPos.mp
+    simp only [←pi']
+    exact h₁
+  have gt : ((Angle.mk ray₁.source (SEG_nd ray₂.source ray₁.source).toDir ray₁.toDir).value - (Angle.mk ray₂.source (SEG_nd ray₂.source ray₁.source).toDir ray₂.toDir).value).IsPos := by
+    have p : (Angle.mk ray₂.source (SEG_nd ray₂.source ray₁.source).toDir ray₂.toDir).value = (Angle.mk ray₂.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).value + ↑(π) := by
+      simp only [negDir']
+      unfold Angle.value
+      exact Dir.neg_vsub_right ray₂.toDir (SEG_nd ray₁.source ray₂.source).toDir
+    have p' : (Angle.mk ray₁.source (SEG_nd ray₂.source ray₁.source).toDir ray₁.toDir).value = (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).value + ↑(π) := by
+      simp only [negDir']
+      unfold Angle.value
+      exact Dir.neg_vsub_right ray₁.toDir (SEG_nd ray₁.source ray₂.source).toDir
+    simp only [p,p']
+    simp only [Dir.quotient_mk_eq, SegND.mkPtPt_toDir, add_sub_add_right_eq_sub]
+    have : (-((Angle.mk ray₂.source (SEG_nd ray₁.source ray₂.source).toDir ray₂.toDir).value - (Angle.mk ray₁.source (SEG_nd ray₁.source ray₂.source).toDir ray₁.toDir).value)).IsPos := by
+      apply neg_isPos_iff_isNeg.mpr
+      exact lt
+    simp at this
+    exact this
+  have : ∃ C : P , C IsInxOf ray₂ ray₁ := by
+    exact exist_inx_ray_ray_of_ang_pos_pos_gt ray₂ ray₁ pos1 pos2 gt
+  rcases this with ⟨C,h⟩
+  unfold is_inx at h
+  use C
+  unfold is_inx
+  simp only [h.2, h.1, and_self]
 
 end intersect_of_ray
 
