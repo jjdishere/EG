@@ -355,12 +355,12 @@ scoped notation p "IsIntersectionOf" A B => IsIntersectionPoint p A B
 class HasProj (α : Type _) where
   toProj : (α → Proj)
 
-def parallel {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := HasProj.toProj A = HasProj.toProj B
+def Parallel {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := HasProj.toProj A = HasProj.toProj B
 
-scoped notation A "IsParallelTo" B => parallel A B
-scoped notation A "∥" B => parallel A B
+scoped notation A "IsParallelTo" B => Parallel A B
+scoped notation A "∥" B => Parallel A B
 
-namespace parallel
+namespace Parallel
 
 protected theorem refl {α : Type _} (A : α) [HasProj α] : A ∥ A := rfl
 
@@ -368,7 +368,7 @@ protected theorem symm {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj 
 
 protected theorem trans {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ]: (A ∥ B) → (B ∥ C) → (A ∥ C) := Eq.trans
 
-end parallel
+end Parallel
 
 def perpendicular {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := sorry
 

@@ -50,7 +50,9 @@ theorem parallel_of_perp_perp (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ⟂ l₃) : l�
   simp only [perpendicular, h₂, Proj.perp_perp] at h₁
   exact h₁
 
-theorem perp_of_parallel_perp (h₁ : l₁ ∥ l₂) (h₂ : l₂ ⟂ l₃) : l₁ ⟂ l₃ := h₁.trans h₂
+theorem perp_of_parallel_perp (h₁ : l₁ ∥ l₂) (h₂ : l₂ ⟂ l₃) : l₁ ⟂ l₃ := Eq.trans h₁ h₂
+
+alias Parallel.trans_perp := perp_of_parallel_perp
 
 theorem perp_of_perp_parallel (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ∥ l₃) : l₁ ⟂ l₃ := h₁.trans (congrArg Proj.perp h₂)
 
