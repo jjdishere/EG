@@ -82,16 +82,19 @@ section fig_coecion_parallel
 /-- Given a nondegenate segment, it is parallel to the ray associated to this nondegenerate segment. -/
 theorem SegND.para_toRay (seg_nd : SegND P) : seg_nd ∥ seg_nd.toRay := rfl
 
+/-- Given a nondegenerate segment, it is parallel to its associated directed line. -/
 theorem SegND.para_toDirLine (seg_nd : SegND P) : seg_nd ∥ seg_nd.toDirLine := rfl
 
 /-- Given a nondegenate segment, it is parallel to the extension line of this nondegenerate segment. -/
 theorem SegND.para_toLine (seg_nd : SegND P) : seg_nd ∥ seg_nd.toLine := rfl
 
+/-- Given a ray, the ray is parallel to the directed line associated to the ray. -/
 theorem Ray.para_toDirLine (ray : Ray P) : ray ∥ ray.toDirLine := rfl
 
 /-- Given a ray, the ray is parallel to the line associated to the ray. -/
 theorem Ray.para_toLine (ray : Ray P) : ray ∥ ray.toLine := rfl
 
+/-- A directed line is parallel to the line associated to the directed line. -/
 theorem DirLine.para_toLine (dlin : DirLine P) : dlin ∥ dlin.toLine := (DirLine.toLine_toProj_eq_toProj dlin).symm
 
 end fig_coecion_parallel
@@ -107,10 +110,14 @@ section parallel_iff_coercion_parallel
 /-- If two nondegenerate segements are parallel, then their associated rays are parallel. -/
 theorem SegND.para_toRay_of_para (seg_nd seg_nd' : SegND P) : seg_nd ∥ seg_nd' → seg_nd.toRay ∥ seg_nd'.toRay := id
 
+/-- If the associated rays of two nondegenerate segments are parallel, then the two segments are parallel. -/
 theorem SegND.para_of_para_toRay (seg_nd seg_nd' : SegND P) : seg_nd.toRay ∥ seg_nd'.toRay → seg_nd ∥ seg_nd' := id
 
+/-- Given two nondegenerate segments, they are parallel if and only if their associated rays are parallel.
+-/
 theorem SegND.para_iff_para_toRay (seg_nd seg_nd' : SegND P) : seg_nd.toRay ∥ seg_nd'.toRay ↔ seg_nd ∥ seg_nd' := ⟨id, id⟩
 
+/-- If two nondegenerate segments are not parallel, then their associated rays are not parallel. -/
 theorem SegND.not_para_toRay_of_not_para (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' → ¬ seg_nd.toRay ∥ seg_nd'.toRay := id
 
 /-- If the associated rays of two nondegenerate segments are not parallel, then the two segments are not parallel. -/
@@ -119,40 +126,56 @@ theorem SegND.not_para_of_not_para_toRay (seg_nd seg_nd' : SegND P) : ¬ seg_nd.
 /-- Given two nondegenerate segments, they are not parallel if and only if their associated rays are not parallel. -/
 theorem SegND.not_para_iff_not_para_toRay (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' ↔ ¬ seg_nd.toRay ∥ seg_nd'.toRay  := ⟨id, id⟩
 
+/-- If two nondegenerate segments are parallel, then their associated directed lines are parallel. -/
 theorem SegND.para_toDirLine_of_para (seg_nd seg_nd' : SegND P) : seg_nd ∥ seg_nd' → seg_nd.toDirLine ∥ seg_nd'.toDirLine := id
 
+/-- If two nondegenerate segments have parallel directed lines, then the segments themselves are parallel. -/
 theorem SegND.para_of_para_toDirLine (seg_nd seg_nd' : SegND P) : seg_nd.toDirLine ∥ seg_nd'.toDirLine → seg_nd ∥ seg_nd' := id
 
+/-- Given two nondegenerate segments, their associated direction lines are parallel if and only if the segments are parallel. -/
 theorem SegND.para_iff_para_toDirLine (seg_nd seg_nd' : SegND P) : seg_nd.toDirLine ∥ seg_nd'.toDirLine ↔ seg_nd ∥ seg_nd' := ⟨id, id⟩
 
 /-- If two nondegenerate segments are not parallel, then their associated directed lines are not parallel. -/
 theorem SegND.not_para_toDirLine_of_not_para (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' → ¬ seg_nd.toDirLine ∥ seg_nd'.toDirLine := id
 
+/-- If the associated directed lines of two nondegenerate segments are not parallel, then the two segments are not parallel. -/
 theorem SegND.not_para_of_not_para_toDirLine (seg_nd seg_nd' : SegND P) : ¬ seg_nd.toDirLine ∥ seg_nd'.toDirLine → ¬ seg_nd ∥ seg_nd' := id
 
+/-- Given two nondegenerate segments, they are not parallel if and only if their associated directed lines are not parallel. -/
 theorem SegND.not_para_iff_not_para_toDirLine (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' ↔ ¬ seg_nd.toDirLine ∥ seg_nd'.toDirLine := ⟨id, id⟩
 
+/-- If two nondegenerate segments are parallel, then their associated lines are parallel. -/
 theorem SegND.para_toLine_of_para (seg_nd seg_nd' : SegND P) : seg_nd ∥ seg_nd' → seg_nd.toLine ∥ seg_nd'.toLine := id
 
+/-- If the lines associated to two nondegenerate segments are parallel, then the two segments are parallel. -/
 theorem SegND.para_of_para_toLine (seg_nd seg_nd' : SegND P) : seg_nd.toLine ∥ seg_nd'.toLine → seg_nd ∥ seg_nd' := id
 
+/-- The nondegenerate segments $s$ and $s'$ are parallel if and only if their associated lines are parallel. -/
 theorem SegND.para_iff_para_toLine (seg_nd seg_nd' : SegND P) : seg_nd.toLine ∥ seg_nd'.toLine ↔ seg_nd ∥ seg_nd' := ⟨id, id⟩
 
+/-- Given two nondegenerate segments, if they are not parallel, then their associated lines are not parallel.
+-/
 theorem SegND.not_para_toLine_of_not_para (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' → ¬ seg_nd.toLine ∥ seg_nd'.toLine := id
 
 /-- Given two nondegenerate segments, their asscociated lines are not parallel if and only if they are not parallel. -/
 theorem SegND.not_para_of_not_para_toLine (seg_nd seg_nd' : SegND P) : ¬ seg_nd.toLine ∥ seg_nd'.toLine → ¬ seg_nd ∥ seg_nd' := id
 
+/-- This theorem states that two nondegenerate segments are not parallel if and only if their associated lines are not parallel. -/
 theorem SegND.not_para_iff_not_para_toLine (seg_nd seg_nd' : SegND P) : ¬ seg_nd ∥ seg_nd' ↔ ¬ seg_nd.toLine ∥ seg_nd'.toLine  := ⟨id, id⟩
 
+/-- If the directed lines associated to two rays are parallel, then the two rays are parallel. -/
 theorem Ray.para_of_para_toDirLine (ray ray' : Ray P) : ray.toDirLine ∥ ray'.toDirLine → ray ∥ ray' := id
 
+/-- This theorem states that two rays are parallel if and only if their associated direction lines are parallel. -/
 theorem Ray.para_iff_para_toDirLine (ray ray' : Ray P) : ray.toDirLine ∥ ray'.toDirLine ↔ ray ∥ ray' := ⟨id, id⟩
 
+/-- If two rays are not parallel, then their associated directed lines are not parallel. -/
 theorem Ray.not_para_toDirLine_of_not_para (ray ray' : Ray P) : ¬ ray ∥ ray' → ¬ ray.toDirLine ∥ ray'.toDirLine := id
 
+/-- If the directed lines associated to two rays are not parallel, then the two rays are not parallel. -/
 theorem Ray.not_para_of_not_para_toDirLine (ray ray' : Ray P) : ¬ ray.toDirLine ∥ ray'.toDirLine → ¬ ray ∥ ray' := id
 
+/-- If two rays are not parallel, then their associated directed lines are not parallel. -/
 theorem Ray.not_para_iff_not_para_toDirLine (ray ray' : Ray P) : ¬ ray ∥ ray' ↔ ¬ ray.toDirLine ∥ ray'.toDirLine := ⟨id, id⟩
 
 /-- Given two parallel rays, their extension lines are parallel. -/
@@ -161,34 +184,44 @@ theorem Ray.para_toLine_of_para (ray ray' : Ray P) : ray ∥ ray' → ray.toLine
 /-- If the lines associated to two rays are parallel, then thew two rays are parallel. -/
 theorem Ray.para_of_para_toLine (ray ray' : Ray P) : ray.toLine ∥ ray'.toLine → ray ∥ ray' := id
 
+/-- The extension lines of two rays are parallel if and only if the rays themselves are parallel. -/
 theorem Ray.para_iff_para_toLine (ray ray' : Ray P) : ray.toLine ∥ ray'.toLine ↔ ray ∥ ray' := ⟨id, id⟩
 
 /-- Given two rays, if their extension lines are not parallel, they are not parallel. -/
 theorem Ray.not_para_toLine_of_not_para (ray ray' : Ray P) : ¬ ray ∥ ray' → ¬ ray.toLine ∥ ray'.toLine := id
 
+/-- If two rays have non-parallel associated lines, then the rays themselves are not parallel. -/
 theorem Ray.not_para_of_not_para_toLine (ray ray' : Ray P) : ¬ ray.toLine ∥ ray'.toLine → ¬ ray ∥ ray' := id
 
+/-- This theorem states that two rays are not parallel if and only if their associated lines are not parallel. -/
 theorem Ray.not_para_iff_not_para_toLine (ray ray' : Ray P) : ¬ ray ∥ ray' ↔ ¬ ray.toLine ∥ ray'.toLine  := ⟨id, id⟩
 
+/-- If two directed lines are parallel, then their associated lines are also parallel. -/
 theorem DirLine.para_toLine_of_para {l₁ l₂ : DirLine P} (h : l₁ ∥ l₂) : l₁.toLine ∥ l₂.toLine := by
   induction l₁ using DirLine.ind
   induction l₂ using DirLine.ind
   exact h
 
+/-- Given two directed lines $l_1$ and $l_2$, if their associated lines are parallel, then the two directed lines are parallel. -/
 theorem DirLine.para_of_para_toLine {l₁ l₂ : DirLine P} (h : l₁.toLine ∥ l₂.toLine) : l₁ ∥ l₂ := by
   induction l₁ using DirLine.ind
   induction l₂ using DirLine.ind
   exact h
 
+/-- Given two directed lines $l_1$ and $l_2$, $l_1$ is parallel to $l_2$ if and only if the underlying lines of $l_1$ and $l_2$ are parallel.
+-/
 theorem DirLine.para_toLine_iff_para (l₁ l₂ : DirLine P) : l₁.toLine ∥ l₂.toLine ↔ l₁ ∥ l₂ :=
   ⟨para_of_para_toLine, para_toLine_of_para⟩
 
+/-- The non-parallelism of two direction lines $l_1$ and $l_2$ is equivalent to the non-parallelism of their associated lines. -/
 theorem DirLine.not_para_toLine_iff_not_para (l₁ l₂ : DirLine P) : ¬ l₁.toLine ∥ l₂.toLine ↔ ¬ l₁ ∥ l₂ :=
   (para_toLine_iff_para l₁ l₂).not
 
+/-- Given two directed lines l₁ and l₂, if they are not parallel, then their associated lines are not parallel. -/
 theorem DirLine.not_para_toLine_of_not_para {l₁ l₂ : DirLine P} (h : ¬ l₁ ∥ l₂) : ¬ l₁.toLine ∥ l₂.toLine :=
   (not_para_toLine_iff_not_para l₁ l₂).mpr h
 
+/-- Given two directed lines l₁ and l₂, if their associated lines are not parallel, then the two directed lines are not parallel. -/
 theorem DirLine.not_para_of_not_para_toLine {l₁ l₂ : DirLine P} (h : ¬ l₁.toLine ∥ l₂.toLine) : ¬ l₁ ∥ l₂ :=
   (not_para_toLine_iff_not_para l₁ l₂).mp h
 
@@ -203,25 +236,31 @@ variable {α β : Type*} [DirFig α P] [DirFig β P]
 theorem DirFig.para_rev_of_para {l₁ : α} {l₂ : β} (h : l₁ ∥ l₂) : l₁ ∥ reverse l₂ :=
   h.trans (rev_toProj_eq_toProj l₂).symm
 
+/-- Given two nondegenerate segments, if they are parallel, then the reverse of the second segment is parallel to the first segment. -/
 theorem SegND.para_rev_of_para {s s' : SegND P} (h : s ∥ s') : s ∥ s'.reverse :=
   DirFig.para_rev_of_para h
 
+/-- If two rays are parallel, then one ray is parallel to the reverse of the other ray. -/
 theorem Ray.para_rev_of_para {r r' : Ray P} (h : r ∥ r') : r ∥ r'.reverse :=
   DirFig.para_rev_of_para h
 
-theorem DirLine.para_rev_of_para {l l' : DirLine P} (h : l ∥ l') : l ∥ l'.reverse :=
+/-- Given two parallel directed lines $l_1$ and $l_2$, $l_1$ is parallel to the reverse of $l_2$. -/
+theorem DirLine.para_rev_of_para {l₁ l₂ : DirLine P} (h : l₁ ∥ l₂) : l₁ ∥ l₂.reverse :=
   DirFig.para_rev_of_para h
 
 /-- For two directed figures $l_1$ and $l_2$, if they are not parallel, then $l_1$ is not parallel to the reverse of $l_2$. -/
 theorem DirFig.not_para_rev_of_not_para {l₁ : α} {l₂ : β} (h : ¬ l₁ ∥ l₂) : ¬ l₁ ∥ reverse l₂ :=
   fun hn ↦ h ((para_rev_of_para hn).trans (congrArg ProjObj.toProj (rev_rev)))
 
+/-- If two nondegenerate segments $s$ and $s'$ are not parallel, then $s$ is not parallel to the reverse of $s'$. -/
 theorem SegND.not_para_rev_of_not_para {s s' : SegND P} (h : ¬ s ∥ s') : ¬ s ∥ s'.reverse :=
   DirFig.not_para_rev_of_not_para h
 
+/-- Given two rays, if their extension lines are not parallel, they are not parallel. -/
 theorem Ray.not_para_rev_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r ∥ r'.reverse :=
   DirFig.not_para_rev_of_not_para h
 
+/-- If two directed lines $l$ and $l'$ are not parallel, then $l$ is not parallel to the reverse of $l'$. -/
 theorem DirLine.not_para_rev_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l ∥ l'.reverse :=
   DirFig.not_para_rev_of_not_para h
 
@@ -233,45 +272,59 @@ theorem DirFig.rev_para_of_para {l₁ : α} {l₂ : β} (h : l₁ ∥ l₂) : re
 theorem SegND.rev_para_of_para {s s' : SegND P} (h : s ∥ s') : s.reverse ∥ s' :=
   DirFig.rev_para_of_para h
 
+/-- If two rays $r$ and $r'$ are parallel, then the reverse of $r$ is parallel to $r'$. -/
 theorem Ray.rev_para_of_para {r r' : Ray P} (h : r ∥ r') : r.reverse ∥ r' :=
   DirFig.rev_para_of_para h
 
+/-- If two directed lines $l$ and $l'$ are parallel, then the reverse of $l$ is parallel to $l'$. -/
 theorem DirLine.rev_para_of_para {l l' : DirLine P} (h : l ∥ l') : l.reverse ∥ l' :=
   DirFig.rev_para_of_para h
 
+/-- Given two directed figures $l_1$ and $l_2$, if they are not parallel, then the reverse of $l_1$ is not parallel to $l_2$. -/
 theorem DirFig.not_rev_para_of_not_para {l₁ : α} {l₂ : β} (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ l₂ :=
   fun hn ↦ h ((congrArg ProjObj.toProj rev_rev).symm.trans (rev_para_of_para hn) )
 
+/-- Given two nondegenerate segments, if they are not parallel, then reverse of the first segment is not parallel to the second segment. -/
 theorem SegND.not_rev_para_of_not_para {s s' : SegND P} (h : ¬ s ∥ s') : ¬ s.reverse ∥ s' :=
   DirFig.not_rev_para_of_not_para h
 
+/-- Given two rays $r$ and $r'$, if they are not parallel, then the reverse of $r$ is not parallel to $r'$. -/
 theorem Ray.not_rev_para_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r.reverse ∥ r' :=
   DirFig.not_rev_para_of_not_para h
 
+/-- Given two directed lines $l$ and $l'$, if they are not parallel, then the reverse of $l$ is not parallel to $l'$. -/
 theorem DirLine.not_rev_para_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l.reverse ∥ l' :=
   DirFig.not_rev_para_of_not_para h
 
+/-- If two directed figures $l_1$ and $l_2$ are parallel, then the reverse of $l_1$ is parallel to the reverse of $l_2$. -/
 theorem DirFig.rev_para_rev_of_para {l₁ : α} {l₂ : β} (h : l₁ ∥ l₂) : reverse l₁ ∥ reverse l₂ :=
   rev_para_of_para (para_rev_of_para h)
 
+/--`AI` Given two nondegenerate segments $s$ and $s'$, if they are parallel, then their reverses are parallel. -/
 theorem SegND.rev_para_rev_of_para {s s' : SegND P} (h : s ∥ s') : s.reverse ∥ s'.reverse :=
   DirFig.rev_para_rev_of_para h
 
+/-- If two rays are parallel, then their reverse rays are also parallel. -/
 theorem Ray.rev_para_rev_of_para {r r' : Ray P} (h : r ∥ r') : r.reverse ∥ r'.reverse :=
   DirFig.rev_para_rev_of_para h
 
+/-- If two directed lines $l_1$ and $l_2$ are parallel, then their reverses are parallel. -/
 theorem DirLine.rev_para_rev_of_para {l l' : DirLine P} (h : l ∥ l') : l.reverse ∥ l'.reverse :=
   DirFig.rev_para_rev_of_para h
 
+/-- Given two unparallel directed figures, then their reverses are not parallel either. -/
 theorem DirFig.not_rev_para_rev_of_not_para {l₁ : α} {l₂ : β} (h : ¬ l₁ ∥ l₂) : ¬ reverse l₁ ∥ reverse l₂ :=
   not_rev_para_of_not_para (not_para_rev_of_not_para h)
 
+/-- Given two nondegenerate segments, if they are not parallel, then their reverses are not parallel. -/
 theorem SegND.not_rev_para_rev_of_not_para {s s' : SegND P} (h : ¬ s ∥ s') : ¬ s.reverse ∥ s'.reverse :=
   DirFig.not_rev_para_rev_of_not_para h
 
+/-- Given two rays $r$ and $r'$, if they are not parallel, then their reverse rays are not parallel. -/
 theorem Ray.not_rev_para_rev_of_not_para {r r' : Ray P} (h : ¬ r ∥ r') : ¬ r.reverse ∥ r'.reverse :=
   DirFig.not_rev_para_rev_of_not_para h
 
+/-- Given two unparallel lines, their reverses are not parallel. -/
 theorem DirLine.not_rev_para_rev_of_not_para {l l' : DirLine P} (h : ¬ l ∥ l') : ¬ l.reverse ∥ l'.reverse :=
   DirFig.not_rev_para_rev_of_not_para h
 
