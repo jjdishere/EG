@@ -32,10 +32,10 @@ variable {E : P} {he : E LiesOn (line_ad (hnd := hnd) (d_mid := d_mid))}
 variable {be_eq_ac : (SEG B E).length = (SEG A C).length}
 lemma B_ne_E : B ≠ E := by
   have h : ¬(SEG B E).length = 0 := by
-    rw [be_eq_ac, (length_eq_zero_iff_deg (seg := SEG A C)).not, ← ne_eq]
+    rw [be_eq_ac, ((SEG A C).length_eq_zero_iff_deg).not, ← ne_eq]
     exact (A_ne_C (hnd := hnd)).symm
   rw [ne_eq]
-  rw [(length_eq_zero_iff_deg (seg := SEG B E)).not] at h
+  rw [((SEG B E).length_eq_zero_iff_deg).not] at h
   exact Ne.symm h
 def SegND_be : SegND P := ⟨SEG B E, Ne.symm (B_ne_E (hnd := hnd) (be_eq_ac := be_eq_ac))⟩
 variable {be_not_parallel_ac : ¬ (SegND_be (hnd := hnd) (be_eq_ac := be_eq_ac)) ∥ (SegND_ac (hnd := hnd))}

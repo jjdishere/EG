@@ -180,7 +180,7 @@ lemma pts_lieson_circle_vec_eq {A B : P} {ω : Circle P} [hne : PtNe B A] (hl₁
         _ > ω.radius ^ 2 := by
           simp
     linarith⟩
-  apply distinct_pts_same_dist_vec_eq
+  apply vec_eq_dist_eq_of_lies_on_line_pt_pt_of_ptNe
   · have : (perp_foot ω.center (LIN A B)) LiesOn (LIN A B) := perp_foot_lies_on_line _ _
     have : collinear A B (perp_foot ω.center (LIN A B)) := Line.pt_pt_linear this
     have : collinear (perp_foot ω.center (LIN A B)) A B := perm_collinear_trd_fst_snd this

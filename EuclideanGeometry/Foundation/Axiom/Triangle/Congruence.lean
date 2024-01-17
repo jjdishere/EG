@@ -589,17 +589,15 @@ theorem cosine_eq_of_SSS (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.
   have cos₂ : 2 * (tr_nd₂.1.edge₃.length * tr_nd₂.1.edge₂.length * cos tr_nd₂.angle₁.value) = tr_nd₂.1.edge₃.length ^ 2 + tr_nd₂.1.edge₂.length ^ 2 - tr_nd₂.1.edge₁.length^2 := Triangle.cosine_rule tr_nd₂
   rw [e₁,e₂,e₃,←cos₂] at cos₁
   field_simp at cos₁
-  have u₁ : 0 < tr_nd₂.1.edge₃.length := by
-    exact length_pos_iff_nd.mpr tr_nd₂.edge_nd₃.2
-  have u₂ : 0 < tr_nd₂.1.edge₂.length := by
-    exact length_pos_iff_nd.mpr tr_nd₂.edge_nd₂.2
+  have u₁ : 0 < tr_nd₂.1.edge₃.length := Seg.length_pos_iff_nd.mpr tr_nd₂.edge_nd₃.2
+  have u₂ : 0 < tr_nd₂.1.edge₂.length := Seg.length_pos_iff_nd.mpr tr_nd₂.edge_nd₂.2
   have h0 : (tr_nd₂.1.edge₃.length * tr_nd₂.1.edge₂.length) > 0 := by
     field_simp [u₁,u₂]
   rcases cos₁ with x | y
-  ·apply x
-  ·have h1 : ¬((tr_nd₂.1.edge₃.length * tr_nd₂.1.edge₂.length)) = 0 := ne_of_gt h0
-   absurd h1 y
-   exact False.elim (h1 y)
+  · apply x
+  · have h1 : ¬((tr_nd₂.1.edge₃.length * tr_nd₂.1.edge₂.length)) = 0 := ne_of_gt h0
+    absurd h1 y
+    exact False.elim (h1 y)
 
 theorem congr_of_SSS_of_eq_orientation (e₁ : tr_nd₁.edge₁.length = tr_nd₂.edge₁.length) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length) (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) (c : tr_nd₁.is_cclock ↔  tr_nd₂.is_cclock) : tr_nd₁ ≅ tr_nd₂ := by
   have a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value := by

@@ -112,8 +112,7 @@ theorem iscclock_iff_liesonleft₃ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr
       apply oarea_eq_length_mul_odist_div_two
     unfold oarea
     unfold Triangle.oarea
-    have pos : tr_nd.edge_nd₃.length > 0 := by
-      apply EuclidGeom.length_pos
+    have _ : tr_nd.edge_nd₃.length > 0 := tr_nd.edge_nd₃.length_pos
     simp only [this, eq_iff_iff]
     symm
     constructor

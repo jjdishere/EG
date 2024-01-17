@@ -893,7 +893,7 @@ variable (G : outParam Type*) (P : Type*)
 partial order on the `AddTorsor` along with a corresponding structure of partial ordered `AddTorsor`
 induced by the partial ordered group. This is not an instance, since we do not want it to
 conflict with other partial order structures that may exist on the `AddTorsor`. -/
-def OrderedAddTorsor_of_OrderedAddCommGroup [outParam (OrderedAddCommGroup G)] [AddTorsor G P] : OrderedAddTorsor G P where
+local instance OrderedAddTorsor_of_OrderedAddCommGroup [outParam (OrderedAddCommGroup G)] [AddTorsor G P] : OrderedAddTorsor G P where
   vsub_vadd' := vsub_vadd'
   vadd_vsub' := vadd_vsub'
   le a b := a -ᵥ b ≤ 0
@@ -914,18 +914,19 @@ def OrderedAddTorsor_of_OrderedAddCommGroup [outParam (OrderedAddCommGroup G)] [
 linearly order on the `AddTorsor` along with a corresponding structure of linearly ordered `AddTorsor`
 induced by the linearly ordered group. This is not an instance, since we do not want it to
 conflict with other linearly order structures that may exist on the `AddTorsor`. -/
-theorem LinearOrderedAddTorsor_of_LinearOrderedAddCommGroup [outParam (LinearOrderedAddCommGroup G)] [AddTorsor G P] : LinearOrderedAddTorsor G P := {
-  OrderedAddTorsor_of_OrderedAddCommGroup G P with
+noncomputable local instance LinearOrderedAddTorsor_of_LinearOrderedAddCommGroup [outParam (LinearOrderedAddCommGroup G)] [AddTorsor G P] : LinearOrderedAddTorsor G P where
   le_total := fun a b ↦
     (or_congr_right (vsub_le_zero_iff_zero_le_vsub_rev b a)).mpr (LinearOrder.le_total (a -ᵥ b) 0)
   decidableLE := decRel fun _ ↦ _
-}
+  vsub_vadd' := vsub_vadd'
+  vadd_vsub' := vadd_vsub'
+  vadd_right_le := vadd_right_le
 
 /-- If the group acting on an `AddTorsor` is a circular ordered group, then there is a natual
 circular order on the `AddTorsor` along with a corresponding structure of circular ordered `AddTorsor`
 induced by the circular ordered group. This is not an instance, since we do not want it to
 conflict with other circular order structures that may exist on the `AddTorsor`. -/
-def CircularOrderedAddTorsor_of_CircularOrderedAddCommGroup [outParam (CircularOrderedAddCommGroup G)] [AddTorsor G P] : CircularOrderedAddTorsor G P where
+local instance CircularOrderedAddTorsor_of_CircularOrderedAddCommGroup [outParam (CircularOrderedAddCommGroup G)] [AddTorsor G P] : CircularOrderedAddTorsor G P where
   vsub_vadd' := vsub_vadd'
   vadd_vsub' := vadd_vsub'
   btw a b c := btw 0 (b -ᵥ a) (c -ᵥ a)

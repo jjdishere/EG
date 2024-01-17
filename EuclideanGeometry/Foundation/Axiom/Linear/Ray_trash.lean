@@ -16,8 +16,4 @@ variable {P : Type _} [EuclideanPlane P] (seg_nd : SegND P)
   by the way in_seg shoud be renamed by current naming system
 -/
 
--- 以前的length_pos_iff_nd不是很好用，现在加一个PtNe的版本,但是PtNe是instance，以后还需要修改
-/-- A segment has positive length if and only if its source is not equal to its target. -/
-theorem length_pos_iff_PtNe {seg : Seg P} : 0 < seg.length ↔ (PtNe seg.source seg.target) := sorry
-
 end EuclidGeom
