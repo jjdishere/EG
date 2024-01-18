@@ -80,6 +80,25 @@ def Parallelogram.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (
   toQuadrilateral := (QDR A B C D)
   is_parallelogram := h
 
+scoped notation "PRG" => Parallelogram.mk_pt_pt_pt_pt
+
+/-- Make a parallelogram with a quadrilateral, and using condition IsPrg. -/
+def Parallelogram.mk_isPrg {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsPrg) : Parallelogram P where
+  toQuadrilateral := qdr
+  is_parallelogram := h
+
+scoped notation "PRG'" => Parallelogram.mk_isPrg
+
+/-- Vectors point₁ point₂ and point₄ point₃ in a parallelogram are equal. -/
+theorem Parallelogram.eq_vec_of_isPrg {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} : VEC prg.point₁ prg.point₂ = VEC prg.point₄ prg.point₃ := prg.is_parallelogram
+
+/-- Vectors point₁ point₄ and point₂ point₃ in a parallelogram are equal. -/
+theorem Parallelogram.eq_vec_of_isPrg' {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} : VEC prg.point₁ prg.point₄ = VEC prg.point₂ prg.point₃ := by rw [← vec_add_vec prg.point₁ prg.point₂ prg.point₄, ← vec_add_vec prg.point₂ prg.point₄ prg.point₃, prg.is_parallelogram, add_comm]
+
+/-- A parallelogram which satisfies Prallelogram.InGPos satisfies IsParaPara. -/
+theorem Parallelogram.parapara_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsParaPara:= by
+  unfold Quadrilateral.IsParaPara
+  sorry
 
 /-- A parallelogram which satisfies Prallelogram.InGPos is convex. -/
 theorem Parallelogram.cvx_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsConvex:= by sorry
