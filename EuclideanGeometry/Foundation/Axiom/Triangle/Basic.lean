@@ -73,13 +73,13 @@ abbrev edge₂ : Seg P := tr_nd.1.edge₂
 abbrev edge₃ : Seg P := tr_nd.1.edge₃
 
 @[pp_dot]
-def edge_nd₁ : SegND P := ⟨tr_nd.1.edge₁, tr_nd.nontriv₁.out⟩
+def edgeND₁ : SegND P := ⟨tr_nd.1.edge₁, tr_nd.nontriv₁.out⟩
 
 @[pp_dot]
-def edge_nd₂ : SegND P := ⟨tr_nd.1.edge₂, tr_nd.nontriv₂.out⟩
+def edgeND₂ : SegND P := ⟨tr_nd.1.edge₂, tr_nd.nontriv₂.out⟩
 
 @[pp_dot]
-def edge_nd₃ : SegND P := ⟨tr_nd.1.edge₃, tr_nd.nontriv₃.out⟩
+def edgeND₃ : SegND P := ⟨tr_nd.1.edge₃, tr_nd.nontriv₃.out⟩
 
 @[pp_dot]
 abbrev oarea : ℝ := tr_nd.1.oarea
@@ -212,7 +212,7 @@ theorem same_orient_of_perm_vertices : tr_nd.is_cclock = (tr_nd.perm_vertices.is
   have eq : wedge tr_nd.perm_vertices.point₁ tr_nd.perm_vertices.point₂ tr_nd.perm_vertices.point₃ = wedge tr_nd.point₁ tr_nd.point₂ tr_nd.point₃ := by
     calc
       _= wedge tr_nd.point₂ tr_nd.point₃ tr_nd.point₁ := by rfl
-      _=_ := by exact wedge231 tr_nd.point₁ tr_nd.point₂ tr_nd.point₃
+      _=_ := by exact wedge312 tr_nd.point₁ tr_nd.point₂ tr_nd.point₃
   simp only [w1,w2,eq]
 
 theorem reverse_orient_of_flip_vertices : tr_nd.is_cclock = ¬ tr_nd.flip_vertices.is_cclock := by
@@ -374,11 +374,11 @@ theorem angle₁_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsPos
     simp only [eq_iff_iff]
     have pos3 : tr_nd.edge₃.length > 0 := by
       calc
-        _= tr_nd.edge_nd₃.length := by rfl
+        _= tr_nd.edgeND₃.length := by rfl
         _>0 := by apply EuclidGeom.length_pos
     have pos2 : tr_nd.edge₂.length > 0 := by
       calc
-        _= tr_nd.edge_nd₂.length := by rfl
+        _= tr_nd.edgeND₂.length := by rfl
         _>0 := by apply EuclidGeom.length_pos
     constructor
     · intro P

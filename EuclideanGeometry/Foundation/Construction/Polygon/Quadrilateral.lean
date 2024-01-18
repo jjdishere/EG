@@ -127,19 +127,43 @@ instance nd₁₄ : PtNe qdr_nd.1.4 qdr_nd.1.1 := Fact.mk qdr_nd.nd.nd₁₄
 
 /-- The edge from the first point to the second point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₁₂ : SegND P := SEG_nd qdr_nd.point₁ qdr_nd.point₂
+def edgeND₁₂ : SegND P := SEG_nd qdr_nd.point₁ qdr_nd.point₂
+
+@[simp]
+lemma edgeND₁₂_source : qdr_nd.edgeND₁₂.source = qdr_nd.point₁ := rfl
+
+@[simp]
+lemma edgeND₁₂_target : qdr_nd.edgeND₁₂.target = qdr_nd.point₂ := rfl
 
 /-- The edge from the second point to the third point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₂₃ : SegND P := SEG_nd qdr_nd.point₂ qdr_nd.point₃
+def edgeND₂₃ : SegND P := SEG_nd qdr_nd.point₂ qdr_nd.point₃
+
+@[simp]
+lemma edgeND₂₃_source : qdr_nd.edgeND₂₃.source = qdr_nd.point₂ := rfl
+
+@[simp]
+lemma edgeND₂₃_target : qdr_nd.edgeND₂₃.target = qdr_nd.point₃ := rfl
 
 /-- The edge from the third point to the fourth point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₃₄ : SegND P := SEG_nd qdr_nd.point₃ qdr_nd.point₄
+def edgeND₃₄ : SegND P := SEG_nd qdr_nd.point₃ qdr_nd.point₄
+
+@[simp]
+lemma edgeND₃₄_source : qdr_nd.edgeND₃₄.source = qdr_nd.point₃ := rfl
+
+@[simp]
+lemma edgeND₃₄_target : qdr_nd.edgeND₃₄.target = qdr_nd.point₄ := rfl
 
 /-- The edge from the fourth point to the first point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₁₄ : SegND P := SEG_nd qdr_nd.point₁ qdr_nd.point₄
+def edgeND₄₁ : SegND P := SEG_nd qdr_nd.point₄ qdr_nd.point₁
+
+@[simp]
+lemma edgeND₄₁_source : qdr_nd.edgeND₄₁.source = qdr_nd.point₄ := rfl
+
+@[simp]
+lemma edgeND₄₁_target : qdr_nd.edgeND₄₁.target = qdr_nd.point₁ := rfl
 
 /--angle at point₁ of qdr_nd-/
 @[pp_dot]
@@ -253,15 +277,15 @@ variable {P : Type _} [EuclideanPlane P] {A B C D : P}
 
 structure is_convex_of_three_sides_of_same_side' where
   qdr_nd : Quadrilateral_nd P
-  same_side₁ : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = odist_sign qdr_nd.point₂ qdr_nd.edge_nd₃₄
-  same_side₂ : odist_sign qdr_nd.point₂ qdr_nd.edge_nd₁₄.reverse = odist_sign qdr_nd.point₃ qdr_nd.edge_nd₁₄.reverse
-  same_side₃ : odist_sign qdr_nd.point₃ qdr_nd.edge_nd₁₂ = odist_sign qdr_nd.point₄ qdr_nd.edge_nd₁₂
+  same_side₁ : odist_sign qdr_nd.point₁ qdr_nd.edgeND₃₄ = odist_sign qdr_nd.point₂ qdr_nd.edgeND₃₄
+  same_side₂ : odist_sign qdr_nd.point₂ qdr_nd.edgeND₄₁ = odist_sign qdr_nd.point₃ qdr_nd.edgeND₄₁
+  same_side₃ : odist_sign qdr_nd.point₃ qdr_nd.edgeND₁₂ = odist_sign qdr_nd.point₄ qdr_nd.edgeND₁₂
 
 /- Given Quadrilateral_nd qdr_nd, if qdr_nd.point₁ and qdr_nd.point₂ are at the same side of qdr_nd.nd₃₄, and it also holds for nd₄₁ and nd₁₂, then it's convex. -/
 theorem is_convex_of_three_sides_of_same_side (p : is_convex_of_three_sides_of_same_side' (P := P)) : p.qdr_nd IsConvex := by
   let qdr_nd := p.qdr_nd
   sorry
-  -- by_cases h : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = 1
+  -- by_cases h : odist_sign qdr_nd.point₁ qdr_nd.edgeND₃₄ = 1
   --
 
 structure is_convex_of_diag_inx_lies_int' where
@@ -466,19 +490,19 @@ instance nd₁₄ : PtNe qdr_cvx.point₄ qdr_cvx.point₁ := by infer_instance
 
 /-- The edge from the first point to the second point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₁₂ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂
+def edgeND₁₂ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₂
 
 /-- The edge from the second point to the third point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₂₃ : SegND P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃
+def edgeND₂₃ : SegND P := SEG_nd qdr_cvx.point₂ qdr_cvx.point₃
 
 /-- The edge from the third point to the fourth point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₃₄ : SegND P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄
+def edgeND₃₄ : SegND P := SEG_nd qdr_cvx.point₃ qdr_cvx.point₄
 
 /-- The edge from the fourth point to the first point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₁₄ : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₄
+def edgeND₄₁.reverse : SegND P := SEG_nd qdr_cvx.point₁ qdr_cvx.point₄
 -/
 
 /-- Given a convex quadrilateral qdr_cvx, its 1st, 2nd and 3rd points are not collinear, i.e. the projective direction of the vector $\overrightarrow{point₁ point₂}$ is not the same as the projective direction of the vector $\overrightarrow{point₁ point₃}$. -/

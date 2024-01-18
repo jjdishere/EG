@@ -177,12 +177,12 @@ theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : TriangleND P} : �
     rw [← h₂] at g
     sorry
   have er : A₁.end_ray.toDirLine = A₂.end_ray.toDirLine.reverse := by
-    have h₃ : A₁.end_ray = tri_nd.edge_nd₃.toRay := rfl
-    have h₄ : A₂.end_ray = tri_nd.edge_nd₃.reverse.toRay := rfl
+    have h₃ : A₁.end_ray = tri_nd.edgeND₃.toRay := rfl
+    have h₄ : A₂.end_ray = tri_nd.edgeND₃.reverse.toRay := rfl
     rw [h₃]
     rw [h₄]
-    have h₅ : tri_nd.edge_nd₃.reverse.toDirLine.reverse = tri_nd.edge_nd₃.reverse.reverse.toDirLine := by rw [SegND.toDirLine_rev_eq_rev_toDirLine]
-    have h₆ : tri_nd.edge_nd₃.reverse.reverse.toDirLine = tri_nd.edge_nd₃.toDirLine := rfl
+    have h₅ : tri_nd.edgeND₃.reverse.toDirLine.reverse = tri_nd.edgeND₃.reverse.reverse.toDirLine := by rw [SegND.toDirLine_rev_eq_rev_toDirLine]
+    have h₆ : tri_nd.edgeND₃.reverse.reverse.toDirLine = tri_nd.edgeND₃.toDirLine := rfl
     rw [h₆] at h₅
     exact h₅.symm
   have g₁ : IsConsecutiveIntAng A₁ A₂ := ⟨sr, er⟩
