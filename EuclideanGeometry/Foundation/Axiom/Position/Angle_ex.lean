@@ -259,7 +259,7 @@ end Angle
 
 
 
-section parallel
+section Parallel
 
 variable {P : Type _} [EuclideanPlane P]
 -- should be stated use mod 2pi first, then back to pi or -pi
