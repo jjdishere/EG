@@ -40,7 +40,7 @@ theorem wedge_eq_length_mul_length_mul_sin (A B C : P) [bnea : PtNe B A] [cnea :
   rw [Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec]
   exact (VecND.norm_mul_sin (VEC_nd A B) (VEC_nd A C)).symm
 
-theorem collinear_iff_wedge_eq_zero (A B C : P) : (collinear A B C) ↔ (wedge A B C = 0) := by
+theorem collinear_iff_wedge_eq_zero (A B C : P) : (Collinear A B C) ↔ (wedge A B C = 0) := by
   dsimp only [wedge]
   by_cases h : PtNe B A
   · have vecabnd : VEC A B ≠ 0 := by
@@ -60,13 +60,11 @@ theorem collinear_iff_wedge_eq_zero (A B C : P) : (collinear A B C) ↔ (wedge A
     field_simp [vecab0]
     intro
     rw [h]
-    exact triv_collinear A C
+    exact triv_collinear₁₂ A C
 
-theorem not_collinear_iff_wedge_ne_zero (A B C : P) : (¬ collinear A B C) ↔ (wedge A B C ≠ 0) := by
+theorem not_collinear_iff_wedge_ne_zero (A B C : P) : (¬ Collinear A B C) ↔ (wedge A B C ≠ 0) := by
   rw [collinear_iff_wedge_eq_zero]
 
-theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬collinear A B C) : (0 < wedge A B C) ↔ (Angle.mk_pt_pt_pt B A C (ne_of_not_collinear nd).2.2 (ne_of_not_collinear nd).2.1.symm).value.IsPos := by
-  have h1 : 0 < dist A B := by
 theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬Collinear A B C) : (0 < wedge A B C) ↔ (Angle.mk_pt_pt_pt B A C (ne_of_not_collinear nd).2.2 (ne_of_not_collinear nd).2.1.symm).value.IsPos := by
   have h1 : 0 < dist A B := by
       have abnd : (SEG A B).IsND := (ne_of_not_collinear nd).2.2
@@ -395,12 +393,12 @@ end oriented_area
 
 section cooperation_with_parallel
 
-theorem odist_eq_odist_of_parallel' (A B : P) (ray : Ray P) [bnea : PtNe B A] (para : parallel (SEG_nd A B) ray) : odist A ray =odist B ray := by
+theorem odist_eq_odist_of_parallel' (A B : P) (ray : Ray P) [bnea : PtNe B A] (para : Parallel (SEG_nd A B) ray) : odist A ray =odist B ray := by
   unfold odist
   have h1 : Vec.det ray.2.unitVec (VEC ray.1 B) = Vec.det ray.2.unitVec (VEC ray.1 A) + Vec.det ray.2.unitVec (VEC A B)
   · rw [← map_add, ←vec_add_vec ray.1 A B]
   have h2 : Vec.det ray.2.unitVec (VEC A B) = 0
-  · unfold parallel at para
+  · unfold Parallel at para
     have h3 : Dir.toProj ray.2 = (VEC_nd A B).toProj := para.symm
     have h4 : VecND.toProj ray.2.unitVecND = (VEC_nd A B).toProj := by
       rw [← h3]
@@ -415,9 +413,9 @@ theorem odist_eq_odist_of_parallel' (A B : P) (ray : Ray P) [bnea : PtNe B A] (p
 
 --theorem odist_eq_odist_of_parallel {α} [DirFig α P] (A B : P) (df : α) [bnea : PtNe B A] (para : parallel (SEG_nd A B) df) : odist A df = odist B df := sorry
 
-theorem odist_eq_odist_iff_parallel_ne {α} [DirFig α P] (A B : P) (df : α) [bnea : PtNe B A] : (parallel (SEG_nd A B) df) ↔ odist A df = odist B df := by
-  have coer1 : (parallel (SEG_nd A B) df) = (parallel (SEG_nd A B) (toDirLine df)) := by
-    unfold parallel
+theorem odist_eq_odist_iff_parallel_ne {α} [DirFig α P] (A B : P) (df : α) [bnea : PtNe B A] : (Parallel (SEG_nd A B) df) ↔ odist A df = odist B df := by
+  have coer1 : (Parallel (SEG_nd A B) df) = (Parallel (SEG_nd A B) (toDirLine df)) := by
+    unfold Parallel
     have : toProj df = toProj (toDirLine df) := by
       simp only [← DirObj.toDir_toProj_eq_toProj]
       congr
@@ -460,7 +458,7 @@ theorem odist_eq_odist_iff_parallel_ne {α} [DirFig α P] (A B : P) (df : α) [b
     simp only [eq_iff_iff]
     exact VecND.det_eq_zero_iff_toProj_eq_toProj (u := ray.toDir.unitVecND) (v := VEC_nd A B)
   simp only [h,h']
-  unfold parallel
+  unfold Parallel
   have : toProj (SEG_nd A B) = (VEC_nd A B).toProj := by rfl
   constructor
   · intro p
@@ -473,14 +471,14 @@ theorem odist_eq_odist_iff_parallel_ne {α} [DirFig α P] (A B : P) (df : α) [b
     simp only [Dir.unitVecND_toProj]
     rfl
 
-theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : (parallel (SEG_nd A B) (SEG_nd C D)) ↔ wedge A B C = wedge A B D := by
+theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : (Parallel (SEG_nd A B) (SEG_nd C D)) ↔ wedge A B C = wedge A B D := by
   have : (wedge A B C = wedge A B D) = (odist C (SEG_nd A B) = odist D (SEG_nd A B)) := by
     symm
     simp only [eq_iff_iff]
     exact wedge_eq_wedge_iff_odist_eq_odist_of_ne A B C D
   simp only [this]
-  have : (parallel (SEG_nd A B) (SEG_nd C D)) = (parallel (SEG_nd C D) (SEG_nd A B)) := by
-    unfold parallel
+  have : (Parallel (SEG_nd A B) (SEG_nd C D)) = (Parallel (SEG_nd C D) (SEG_nd A B)) := by
+    unfold Parallel
     simp only [eq_iff_iff]
     constructor
     · intro P
@@ -490,7 +488,7 @@ theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) [bnea : PtNe B A] [dn
   simp only [this]
   exact odist_eq_odist_iff_parallel_ne C D (SEG_nd A B)
 
-theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : (parallel (SEG_nd A B) (SEG_nd C D)) ↔ oarea A B C = oarea A B D := by
+theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : (Parallel (SEG_nd A B) (SEG_nd C D)) ↔ oarea A B C = oarea A B D := by
   unfold oarea
   have : (wedge A B C / 2 = wedge A B D / 2) = (wedge A B C = wedge A B D) := by
     simp only [eq_iff_iff]
@@ -513,7 +511,7 @@ scoped infix : 55 " LiesOnRight " => IsOnRightSide
 
 section handside_with_ang
 
-theorem same_sign_of_parallel (A B : P) (ray : Ray P) [bnea : PtNe B A] (para : parallel (RAY A B)  ray) : odist_sign A ray = odist_sign B ray := by
+theorem same_sign_of_parallel (A B : P) (ray : Ray P) [bnea : PtNe B A] (para : Parallel (RAY A B)  ray) : odist_sign A ray = odist_sign B ray := by
   unfold odist_sign
   rw [odist_eq_odist_of_parallel' A B ray para]
 
@@ -1789,7 +1787,7 @@ theorem exist_inx_ray_ray_of_ang_pos_pos_gt (ray₁ ray₂ : Ray P) [ne : PtNe r
     have x2 : C₂ IsInxOf ray₁.toLine ray₂.toLine := by
       unfold is_inx
       simp only [c21, c22, and_self]
-    have para : (¬ (parallel ray₁.toLine ray₂.toLine)) ∨ (parallel ray₁.toLine ray₂.toLine) := by tauto
+    have para : (¬ (Parallel ray₁.toLine ray₂.toLine)) ∨ (Parallel ray₁.toLine ray₂.toLine) := by tauto
     rcases para with np|p
     · exact unique_of_inx_of_line_of_not_para np x2 x1
     · have eqLine : ray₁.toLine = ray₂.toLine := by
