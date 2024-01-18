@@ -84,7 +84,6 @@ end Seg
 /-- A \emph{nondegenerate segment} is a segment $AB$ that is nondegenerate, i.e. $A \neq B$. -/
 def SegND (P : Type _) [EuclideanPlane P] := {seg : Seg P // seg.IsND}
 
-
 end definition
 
 variable {P : Type _} [EuclideanPlane P]
@@ -240,6 +239,8 @@ abbrev source (seg_nd : SegND P) : P := seg_nd.1.source
 /-- Given a nondegenerate segment, this function returns the target of the segment. -/
 @[pp_dot]
 abbrev target (seg_nd : SegND P) : P := seg_nd.1.target
+
+instance {s : SegND P} : PtNe s.target s.source := ⟨s.2⟩
 
 /-- Given a nondegenerate segment $AB$, this function returns the nondegenerate vector $\overrightarrow{AB}$. -/
 @[pp_dot]
@@ -804,7 +805,14 @@ theorem nd_of_rev_of_nd {seg : Seg P} (nd : seg.IsND) : seg.reverse.IsND := by
   apply nd
 
 /-- Given a nondegenerate segment $AB$, this function returns the reversed nondegenerate segment $BA$. -/
+@[pp_dot]
 def SegND.reverse (seg_nd : SegND P) : SegND P := ⟨seg_nd.1.reverse, nd_of_rev_of_nd seg_nd.2⟩
+
+@[simp]
+lemma SegND.reverse_source (seg_nd : SegND P) : seg_nd.reverse.source = seg_nd.target := rfl
+
+@[simp]
+lemma SegND.reverse_target (seg_nd : SegND P) : seg_nd.reverse.target = seg_nd.source := rfl
 
 /-- The reverse of a nondegenerate segment $AB$ is the nondegenerate segment $BA$. -/
 @[simp]
