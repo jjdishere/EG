@@ -9,7 +9,29 @@ open Classical AngValue Angle
 
 variable {P : Type*} [EuclideanPlane P]
 
+/- Definition of the wedge of three points.-/
+
 section wedge
+
+def wedge (A B C : P) : ℝ := Vec.det (VEC A B) (VEC A C)
+
+def oarea (A B C : P) : ℝ := wedge A B C / 2
+
+theorem wedge213 (A B C : P) : wedge B A C = - wedge A B C := by
+  unfold wedge
+  rw [← neg_vec A B,← vec_sub_vec A B C, map_sub]
+  simp only [map_neg, LinearMap.neg_apply, Vec.det_self, neg_zero, sub_zero]
+
+theorem wedge132 (A B C : P) : wedge A C B = - wedge A B C := by
+  unfold wedge
+  rw [Vec.det_skew]
+
+theorem wedge312 (A B C : P) : wedge C A B = wedge A B C := by
+  rw [wedge213, wedge132, neg_neg]
+
+theorem wedge231 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge312, wedge312]
+
+theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, wedge231]
 
 theorem wedge_eq_length_mul_length_mul_sin (A B C : P) [bnea : PtNe B A] [cnea : PtNe C A] : wedge A B C = (SEG A B).length * (SEG A C).length * sin (ANG B A C).value := by
   unfold wedge
@@ -18,6 +40,33 @@ theorem wedge_eq_length_mul_length_mul_sin (A B C : P) [bnea : PtNe B A] [cnea :
   rw [Seg.length_eq_norm_toVec, Seg.length_eq_norm_toVec]
   exact (VecND.norm_mul_sin (VEC_nd A B) (VEC_nd A C)).symm
 
+theorem collinear_iff_wedge_eq_zero (A B C : P) : (collinear A B C) ↔ (wedge A B C = 0) := by
+  dsimp only [wedge]
+  by_cases h : PtNe B A
+  · have vecabnd : VEC A B ≠ 0 := by
+      exact (ne_iff_vec_ne_zero A B).mp h.out
+    rw [← Vec.det_skew, neg_eq_zero, Vec.det_eq_zero_iff_eq_smul_right]
+    simp only [vecabnd, false_or]
+    constructor
+    · intro k
+      exact collinear_iff_eq_smul_vec_of_ne.mp k
+    · intro k
+      exact collinear_iff_eq_smul_vec_of_ne.mpr k
+  · simp [PtNe, fact_iff] at h
+    have vecab0 : VEC A B = 0 := by
+      exact (eq_iff_vec_eq_zero A B).mp h
+    constructor
+    intro
+    field_simp [vecab0]
+    intro
+    rw [h]
+    exact triv_collinear A C
+
+theorem not_collinear_iff_wedge_ne_zero (A B C : P) : (¬ collinear A B C) ↔ (wedge A B C ≠ 0) := by
+  rw [collinear_iff_wedge_eq_zero]
+
+theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬collinear A B C) : (0 < wedge A B C) ↔ (Angle.mk_pt_pt_pt B A C (ne_of_not_collinear nd).2.2 (ne_of_not_collinear nd).2.1.symm).value.IsPos := by
+  have h1 : 0 < dist A B := by
 theorem wedge_pos_iff_angle_pos (A B C : P) (nd : ¬Collinear A B C) : (0 < wedge A B C) ↔ (Angle.mk_pt_pt_pt B A C (ne_of_not_collinear nd).2.2 (ne_of_not_collinear nd).2.1.symm).value.IsPos := by
   have h1 : 0 < dist A B := by
       have abnd : (SEG A B).IsND := (ne_of_not_collinear nd).2.2
@@ -441,12 +490,7 @@ theorem wedge_eq_wedge_iff_parallel_of_ne_ne (A B C D : P) [bnea : PtNe B A] [dn
   simp only [this]
   exact odist_eq_odist_iff_parallel_ne C D (SEG_nd A B)
 
-theorem oarea_eq_oarea_iff_parallel_ne (s₁ s₂ : SegND P) :
-    s₁ ∥ s₂ ↔ oarea s₁.source s₁.target s₂.source = oarea s₁.source s₁.target s₂.target := by
-  let A := s₁.source
-  let B := s₁.target
-  let C := s₂.source
-  let D := s₂.target
+theorem oarea_eq_oarea_iff_parallel_ne (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : (parallel (SEG_nd A B) (SEG_nd C D)) ↔ oarea A B C = oarea A B D := by
   unfold oarea
   have : (wedge A B C / 2 = wedge A B D / 2) = (wedge A B C = wedge A B D) := by
     simp only [eq_iff_iff]
