@@ -663,7 +663,7 @@ theorem value_eq_pi_of_lies_int_seg_nd {A B C : P} [PtNe C A] (h : B LiesInt (SE
   value_eq_pi_of_eq_neg_dir ((SEG_nd A C).toDir_eq_neg_toDir_of_lies_int h)
 
 theorem collinear_iff_dvalue_eq_zero : Collinear O A B ↔ (ANG A O B).dvalue = 0 :=
-  collinear_iff_toProj_eq_of_ptNe.trans vsub_eq_zero_iff_eq.symm
+  collinear_iff_toProj_eq_of_ptNe.trans (eq_comm.trans vsub_eq_zero_iff_eq.symm)
 
 theorem collinear_iff_not_isND : Collinear O A B ↔ ¬ (ANG A O B).IsND :=
   collinear_iff_dvalue_eq_zero.trans not_isND_iff_coe.symm
