@@ -10,89 +10,127 @@ open Classical
 
 variable {P : Type _} [EuclideanPlane P]
 
-section Collinear
+section collinear
+
+/-- Given three distinct (ordered) points $A$, $B$, $C$, this function returns whether they are collinear, i.e. whether the projective direction of the vector $\overrightarrow{AB}$ is the same as the projective direction of the vector $\overrightarrow{AC}$. -/
+def collinear_of_nd {A B C : P} [_hac : PtNe A C] [_hba : PtNe B A] : Prop :=
+  VecND.toProj (VEC_nd A B) = VecND.toProj (VEC_nd A C)
 
 /-- Given three points $A$, $B$, $C$, return whether they are collinear: if at least two of them are equal, then they are considered collinear; if the three points are distinct, we use the earlier definition of colinarity for distinct points. -/
-def Collinear (A B C : P) : Prop := wedge A B C = 0
+def collinear (A B C : P) : Prop :=
+  if h : (C = B) ∨ (A = C) ∨ (B = A) then True
+  else by
+    push_neg at h
+    exact collinear_of_nd (_hac := ⟨h.2.1⟩) (_hba := ⟨h.2.2⟩)
 
-theorem collinear_iff_wedge_eq_zero (A B C : P) : (Collinear A B C) ↔ (wedge A B C = 0) := .rfl
-
-theorem not_collinear_iff_wedge_ne_zero (A B C : P) : (¬ Collinear A B C) ↔ (wedge A B C ≠ 0) := .rfl
+-- The definition of collinear now includes two cases: the degenerate case and the nondegenerate case. We use to_dir' to avoid problems involving using conditions of an "if" in its "then" and "else". And we only use VEC to define collinear.
 
 /-- Given three points $A$, $B$, $C$ and a real number $t$, if the vector $\overrightarrow{AC}$ is $t$ times the vector $\overrightarrow{AB}$, then $A$, $B$, and $C$ are collinear. -/
-theorem collinear_of_vec_eq_smul_vec {A B C : P} {t : ℝ} (e : VEC A C = t • VEC A B) : Collinear A B C := by
-  unfold Collinear wedge
-  rw [e]
-  simp
+theorem collinear_of_vec_eq_smul_vec {A B C : P} {t : ℝ} (e : VEC A C = t • VEC A B) : collinear A B C := by
+  have : collinear A B C = True := by
+    unfold collinear
+    apply dite_eq_left_iff.mpr
+    simp only [eq_iff_iff, iff_true]
+    intro h'
+    push_neg at h'
+    unfold collinear_of_nd
+    rw [eq_comm, VecND.toProj_eq_toProj_iff]
+    exact ⟨t, e⟩
+  tauto
 
 /-- Given three points $A$, $B$, $C$, if the vector $\overrightarrow{AC}$ is a scalar multiple of the vector $\overrightarrow{AB}$, then $A$, $B$, $C$ are collinear. -/
-theorem collinear_of_vec_eq_smul_vec' {A B C : P} : (∃ t : ℝ, VEC A C = t • VEC A B) → Collinear A B C := by
+theorem collinear_of_vec_eq_smul_vec' {A B C : P} : (∃ t : ℝ, VEC A C = t • VEC A B) → collinear A B C := by
   intro ⟨_, e⟩
   exact collinear_of_vec_eq_smul_vec e
 
 /-- Given three points $A$, $B$, $C$ such that $B \neq A$, we have $A$, $B$, $C$ are collinear if and only if the vector $\overrightarrow{AC}$ is a scalar multiple of the vector $\overrightarrow{AB}$. -/
-theorem collinear_iff_eq_smul_vec_of_ne {A B C : P} [g : PtNe B A] : Collinear A B C ↔ ∃ r : ℝ, VEC A C = r • VEC A B := by
+theorem collinear_iff_eq_smul_vec_of_ne {A B C : P} [g : PtNe B A] : collinear A B C ↔ ∃ r : ℝ , VEC A C = r • VEC A B := by
   constructor
   · intro c
-    unfold Collinear wedge at c
-    rwa [Vec.det_eq_zero_iff_eq_smul_left, or_iff_right] at c
-    rw [← Ne, ← ne_iff_vec_ne_zero]
-    exact g.elim
-  · exact collinear_of_vec_eq_smul_vec'
+    rw [← iff_true (collinear A B C), ← eq_iff_iff] at c
+    unfold collinear at c
+    rw [dite_eq_left_iff] at c
+    by_cases h : (C = B) ∨ (A = C) ∨ (B = A)
+    · by_cases h : C = A
+      · use 0
+        rw [h]
+        simp only [vec_same_eq_zero, zero_smul]
+      · have h : B = C := by have := g.out; tauto
+        use 1
+        rw [h]
+        simp only [one_smul]
+    · specialize c h
+      push_neg at h
+      unfold collinear_of_nd at c
+      simp only [ne_eq, eq_iff_iff, iff_true] at c
+      rwa [eq_comm, VecND.toProj_eq_toProj_iff] at c
+  · intro ⟨_, e⟩
+    exact collinear_of_vec_eq_smul_vec e
+
 
 -- Please rewrite this part, use minimal theorems, but create a tactic called `collinearity`
 /-- For any two points $A$ and $C$, the points $A$, $A$, $C$ are collinear. -/
-@[simp]
-theorem triv_collinear₁₂ (A C : P) : (Collinear A A C) := by
-  unfold Collinear
-  simp
+theorem triv_collinear₁₂ (A C : P) : (collinear A A C) := by
+  rw [← iff_true (collinear A A C), ← eq_iff_iff]
+  unfold collinear
+  rw [dite_eq_left_iff]
+  intro h
+  push_neg at h
+  exfalso
+  exact h.2.2 rfl
 
-/-- For any two points $A$ and $C$, the points $A$, $C$, $C$ are collinear. -/
-@[simp]
-theorem triv_collinear₁₂₂₃ (A C : P) : (Collinear A C C) := by
-  unfold Collinear
-  simp
+theorem collinear_of_trd_eq_snd (A : P) {B C : P} (h : C = B) : collinear A B C :=
+  (dite_prop_iff_or (C = B ∨ A = C ∨ B = A)).mpr (.inl ⟨.inl h, trivial⟩)
 
-/-- For any two points $A$ and $C$, the points $A$, $C$, $A$ are collinear. -/
-@[simp]
-theorem triv_collinear₁₂₃₁ (A C : P) : (Collinear A C A) := by
-  unfold Collinear
-  simp
+theorem collinear_of_fst_eq_snd (B : P) {A C : P} (h : A = C) : collinear A B C :=
+  (dite_prop_iff_or (C = B ∨ A = C ∨ B = A)).mpr (.inl ⟨.inr (.inl h), trivial⟩)
 
-theorem collinear_of_trd_eq_snd (A : P) {B C : P} (h : C = B) : Collinear A B C := by
-  simp [h]
-
-theorem collinear_of_fst_eq_snd (B : P) {A C : P} (h : A = C) : Collinear A B C := by
-  simp [h]
-
-theorem collinear_of_snd_eq_fst {A B : P} (C : P) (h : B = A)  : Collinear A B C := by
-  simp [h]
+theorem collinear_of_snd_eq_fst {A B : P} (C : P) (h : B = A)  : collinear A B C :=
+  (dite_prop_iff_or (C = B ∨ A = C ∨ B = A)).mpr (.inl ⟨.inr (.inr h), trivial⟩)
 
 /-- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are collinear (in that order), then $A$, $C$, $B$ are collinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity. -/
-theorem collinear132 {A B C : P} (h : Collinear A B C) : Collinear A C B := by
-  unfold Collinear at h ⊢
-  rwa [wedge132, neg_eq_zero] at h
+theorem collinear132 {A B C : P} (c : collinear A B C) : collinear A C B := by
+  by_cases h : B ≠ A ∧ C ≠ A
+  · haveI : PtNe B A := ⟨h.1⟩
+    rcases collinear_iff_eq_smul_vec_of_ne.1 c with ⟨t, e⟩
+    have ht : t ≠ 0 := by
+      by_contra ht'
+      rw [ht', zero_smul] at e
+      have _ : C = A := ((eq_iff_vec_eq_zero A C).2 e)
+      tauto
+    exact collinear_of_vec_eq_smul_vec (Eq.symm ((inv_smul_eq_iff₀ ht).2 e))
+  · rw [← iff_true (collinear _ _ _), ← eq_iff_iff]
+    unfold collinear
+    rw [dite_eq_left_iff]
+    intro g
+    exfalso
+    push_neg at *
+    exact g.2.2 $ h g.2.1.symm
 
 /-- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are collinear (in that order), then $B$, $A$, $C$ are collinear (in that order); in other words, in the definition of colinarity, swapping the first two of the three points does not change property of the three points being collinear. -/
-theorem collinear213 {A B C : P} (h : Collinear A B C) : Collinear B A C := by
-  unfold Collinear at h ⊢
-  rwa [wedge213, neg_eq_zero] at h
+theorem collinear213 {A B C : P} (c : collinear A B C) : collinear B A C := by
+  by_cases h : B = A
+  · rw [h]
+    exact triv_collinear₁₂ _ _
+  · haveI : PtNe B A := ⟨h⟩
+    rw [collinear_iff_eq_smul_vec_of_ne] at c
+    rcases c with ⟨r, e⟩
+    have e' : VEC B C = (1 - r) • VEC B A := by
+      rw [← vec_sub_vec A B C, e, ← neg_vec A B, smul_neg, sub_smul, neg_sub, one_smul]
+    exact collinear_of_vec_eq_smul_vec e'
 
-theorem collinear312 {A B C : P} (h : Collinear A B C) : Collinear B C A := by
-  unfold Collinear at h ⊢
-  rwa [wedge312] at h
+theorem collinear312 {A B C : P} (h : collinear A B C) : collinear B C A :=
+  flip_collinear_snd_trd (flip_collinear_fst_snd h)
 
-theorem collinear231 {A B C : P} (h : Collinear A B C) : Collinear C A B := by
-  unfold Collinear at h ⊢
-  rwa [wedge231] at h
+theorem collinear231 {A B C : P} (h : collinear A B C) : collinear C A B :=
+  perm_collinear_snd_trd_fst (perm_collinear_snd_trd_fst h)
 
-theorem collinear321 {A B C : P} (h : Collinear A B C) : Collinear C B A := by
-  unfold Collinear at h ⊢
-  rwa [wedge321, neg_eq_zero] at h
+theorem collinear321 {A B C : P} (h : collinear A B C) : collinear C B A :=
+  perm_collinear_snd_trd_fst (flip_collinear_snd_trd h)
 
 -- the proof of this theorem using def of line seems to be easier
 /-- Given four points $A$, $B$, $C$, $D$ with $B \neq A$, if $A$, $B$, $C$ are collinear, and if $A$, $B$, $D$ are collinear, then $A$, $C$, $D$ are collinear. -/
-theorem collinear_of_collinear_collinear_ne {A B C D: P} (h₁ : Collinear A B C) (h₂ : Collinear A B D) [h : PtNe B A] : (Collinear A C D) := by
+theorem collinear_of_collinear_collinear_ne {A B C D: P} (h₁ : collinear A B C) (h₂ : collinear A B D) [h : PtNe B A] : (collinear A C D) := by
   have ac : ∃ r : ℝ , VEC A C = r • VEC A B := collinear_iff_eq_smul_vec_of_ne.mp h₁
   have ad : ∃ s : ℝ , VEC A D = s • VEC A B := collinear_iff_eq_smul_vec_of_ne.mp h₂
   rcases ac with ⟨r,eq⟩
@@ -106,23 +144,30 @@ theorem collinear_of_collinear_collinear_ne {A B C D: P} (h₁ : Collinear A B C
   use s/r
   rw [smul_smul, div_mul_cancel _ nd]
 
-set_option push_neg.use_distrib true in
 /-- Given three points $A$, $B$, $C$, if they are not collinear, then they are pairwise distinct, i.e. $C \neq B$, $A \neq C$, and $B \neq A$. -/
-theorem ne_of_not_collinear {A B C : P} (h : ¬ Collinear A B C) : (C ≠ B) ∧ (A ≠ C) ∧ (B ≠ A) := by
-  push_neg
-  contrapose! h
-  obtain (rfl | rfl | rfl) := h <;> simp
+theorem ne_of_not_collinear {A B C : P} (h : ¬ collinear A B C) : (C ≠ B) ∧ (A ≠ C) ∧ (B ≠ A) := by
+  rw [← iff_true (collinear A B C), ← eq_iff_iff] at h
+  unfold collinear at h
+  rw [dite_eq_left_iff] at h
+  push_neg at h
+  rcases h with ⟨g, _⟩
+  tauto
 
-theorem collinear_iff_toProj_eq_of_ptNe {A B C : P} [hba : PtNe B A] [hca : PtNe C A] : Collinear A B C ↔ (VEC_nd A C).toProj = (VEC_nd A B).toProj := by
-  rw [collinear_iff_eq_smul_vec_of_ne, VecND.toProj_eq_toProj_iff]
-  rfl
+theorem collinear_iff_toProj_eq_of_ptNe {A B C : P} [hba : PtNe B A] [hca : PtNe C A] : collinear A B C ↔ (VEC_nd A B).toProj = (VEC_nd A C).toProj := by
+  if hbc : B = C then simp only [hbc, collinear_of_trd_eq_snd A rfl]
+  else
+    refine' ⟨fun h ↦ _, fun h ↦ _⟩
+    exact ((dite_prop_iff_and _).mp h).2 <| by
+      push_neg
+      exact ⟨Ne.symm hbc, hca.1.symm, hba.1⟩
+    exact (dite_prop_iff_and _).mpr ⟨fun _ ↦ trivial, fun _ ↦ h⟩
 
-end Collinear
+end collinear
 
 section compatibility
 
 /-- If $A$, $B$, $C$ are three points which lie on a ray, then they are collinear. -/
-theorem Ray.collinear_of_lies_on {A B C : P} {ray : Ray P} (hA : A LiesOn ray) (hB : B LiesOn ray) (hC : C LiesOn ray) : Collinear A B C := by
+theorem Ray.collinear_of_lies_on {A B C : P} {ray : Ray P} (hA : A LiesOn ray) (hB : B LiesOn ray) (hC : C LiesOn ray) : collinear A B C := by
   rcases hA with ⟨a,_,Ap⟩
   rcases hB with ⟨b,_,Bp⟩
   rcases hC with ⟨c,_,Cp⟩
@@ -143,7 +188,7 @@ theorem Ray.collinear_of_lies_on {A B C : P} {ray : Ray P} (hA : A LiesOn ray) (
   rw [ac, ab, smul_smul, div_mul_cancel _ nd]
 
 /-- If $A$, $B$, $C$ are three points which lie on a segment, then they are collinear. -/
-theorem Seg.collinear_of_lies_on {A B C : P} {seg : Seg P} (hA : A LiesOn seg) (hB : B LiesOn seg) (hC : C LiesOn seg) : Collinear A B C := by
+theorem Seg.collinear_of_lies_on {A B C : P} {seg : Seg P} (hA : A LiesOn seg) (hB : B LiesOn seg) (hC : C LiesOn seg) : collinear A B C := by
   by_cases nd : seg.source =seg.target
   . rcases hA with ⟨_,_,_,a⟩
     simp only [nd, vec_same_eq_zero, smul_zero] at a
@@ -169,7 +214,7 @@ Note that we do not need all reverse, extension line,... here. instead we should
 end compatibility
 
 /-- There exists three points $A$, $B$, $C$ on the plane such that they are not collinear. -/
-theorem nontriv_of_plane {H : Type _} [h : EuclideanPlane H] : ∃ A B C : H, ¬(Collinear A B C) := by
+theorem nontriv_of_plane {H : Type _} [h : EuclideanPlane H] : ∃ A B C : H, ¬(collinear A B C) := by
   rcases h.nonempty with ⟨A⟩
   let B := (⟨1, 0⟩ : Vec) +ᵥ A
   let C := (⟨0, 1⟩ : Vec) +ᵥ A
