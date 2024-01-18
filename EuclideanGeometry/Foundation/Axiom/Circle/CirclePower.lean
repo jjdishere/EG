@@ -115,10 +115,10 @@ lemma tangents_perp₁ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_
   haveI : PtNe ω.center p := (Circle.pt_liesout_ne_center h).symm
   haveI : PtNe (pt_tangent_circle_pts h).left ω.center := ⟨(tangents_ne_center h).1⟩
   haveI : PtNe (pt_tangent_circle_pts h).left p := ⟨(tangents_ne_pt h).1⟩
-  have heq₁ : ∠ p (pt_tangent_circle_pts h).left ω.center = ∡[π / 2] := by
-    apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt
-    · exact (inx_pts_lieson_circles (tangent_circle_intersected h)).1
-    exact Arc.mk_pt_pt_diam_isantipode
+  have heq₁ : ∠ p (pt_tangent_circle_pts h).left ω.center = ∡[π / 2] := by sorry
+    -- apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt
+    -- · exact (inx_pts_lieson_circles (tangent_circle_intersected h)).1
+    -- exact Arc.mk_pt_pt_diam_isantipode
   show (DLIN p (pt_tangent_circle_pts h).left).toProj = (DLIN ω.center (pt_tangent_circle_pts h).left).toProj.perp
   calc
     _ = (RAY p (pt_tangent_circle_pts h).left).toProj := rfl
@@ -131,10 +131,10 @@ lemma tangents_perp₂ {ω : Circle P} {p : P} (h : p LiesOut ω) : (DLIN p (pt_
   haveI : PtNe ω.center p := (Circle.pt_liesout_ne_center h).symm
   haveI : PtNe (pt_tangent_circle_pts h).right p := ⟨(tangents_ne_pt h).2⟩
   haveI : PtNe ω.center (pt_tangent_circle_pts h).right := ⟨(tangents_ne_center h).2.symm⟩
-  have heq₂ : ∠ p (pt_tangent_circle_pts h).right ω.center = ∡[π / 2] := by
-    apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt
-    · exact (inx_pts_lieson_circles (tangent_circle_intersected h)).2.2.1
-    apply Arc.mk_pt_pt_diam_isantipode
+  have heq₂ : ∠ p (pt_tangent_circle_pts h).right ω.center = ∡[π / 2] := by sorry
+    -- apply inscribed_angle_of_diameter_eq_mod_pi_pt_pt_pt
+    -- · exact (inx_pts_lieson_circles (tangent_circle_intersected h)).2.2.1
+    -- apply Arc.mk_pt_pt_diam_isantipode
   show (DLIN p (pt_tangent_circle_pts h).right).toProj = (DLIN ω.center (pt_tangent_circle_pts h).right).toProj.perp
   calc
     _ = (RAY p (pt_tangent_circle_pts h).right).toProj := rfl

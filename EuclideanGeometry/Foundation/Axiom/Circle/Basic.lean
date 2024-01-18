@@ -382,6 +382,10 @@ structure Chord (P : Type _) [EuclideanPlane P] (ω : Circle P) where
   toSegND : SegND P
   ison : (toSegND.source LiesOn ω) ∧ (toSegND.target LiesOn ω)
 
+instance Chord.IsND {ω : Circle P} (s : Chord P ω) : PtNe s.1.source s.1.target := ⟨s.1.2.symm⟩
+
+attribute [instance] Chord.IsND
+
 variable (ω : Circle P)
 
 namespace Chord
@@ -453,9 +457,9 @@ def Chord.toArc {ω : Circle P} (s : Chord P ω) : Arc P ω where
   ison := s.2
   endpts_ne := ⟨s.1.2⟩
 
-theorem Circle.complementary_arc_toChord_eq_reverse {ω : Circle P} (β : Arc P ω) : β.complement.toChord = β.toChord.reverse := sorry
+theorem Circle.complementary_arc_toChord_eq_reverse {ω : Circle P} (β : Arc P ω) : β.complement.toChord = β.toChord.reverse := rfl
 
-theorem Circle.reverse_chord_toArc_eq_complement {ω : Circle P} (s : Chord P ω) : s.reverse.toArc = s.toArc.complement := sorry
+theorem Circle.reverse_chord_toArc_eq_complement {ω : Circle P} (s : Chord P ω) : s.reverse.toArc = s.toArc.complement := rfl
 
 namespace Chord
 
