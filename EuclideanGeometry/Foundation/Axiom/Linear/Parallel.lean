@@ -55,11 +55,11 @@ instance (α : Type*) [ProjObj α] : IsEquiv α Parallel where
   symm _ _ := Eq.symm
   trans _ _ _ := Eq.trans
 
-/-- This is to rewrite \verb|parallel l l'| as \verb|l ParallelTo l'| -/
-scoped infix : 50 " ParallelTo " => parallel
+/-- This is to rewrite \verb|Parallel l l'| as \verb|l ParallelTo l'| -/
+scoped infix : 50 " ParallelTo " => Parallel
 
-/-- This is to rewrite \verb|parallel l l'| as $l \parallel l'$. -/
-scoped infix : 50 " ∥ " => parallel
+/-- This is to rewrite \verb|Parallel l l'| as $l \parallel l'$. -/
+scoped infix : 50 " ∥ " => Parallel
 
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coercions, ... -/
 
