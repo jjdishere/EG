@@ -161,41 +161,17 @@ instance nd₁₄ : PtNe qdr_nd.1.4 qdr_nd.1.1 := Fact.mk qdr_nd.nd.nd₁₄
 @[pp_dot]
 def edgeND₁₂ : SegND P := SEG_nd qdr_nd.point₁ qdr_nd.point₂
 
-@[simp]
-lemma edgeND₁₂_source : qdr_nd.edgeND₁₂.source = qdr_nd.point₁ := rfl
-
-@[simp]
-lemma edgeND₁₂_target : qdr_nd.edgeND₁₂.target = qdr_nd.point₂ := rfl
-
 /-- The edge from the second point to the third point of a quadrilateral -/
 @[pp_dot]
 def edgeND₂₃ : SegND P := SEG_nd qdr_nd.point₂ qdr_nd.point₃
-
-@[simp]
-lemma edgeND₂₃_source : qdr_nd.edgeND₂₃.source = qdr_nd.point₂ := rfl
-
-@[simp]
-lemma edgeND₂₃_target : qdr_nd.edgeND₂₃.target = qdr_nd.point₃ := rfl
 
 /-- The edge from the third point to the fourth point of a quadrilateral -/
 @[pp_dot]
 def edgeND₃₄ : SegND P := SEG_nd qdr_nd.point₃ qdr_nd.point₄
 
-@[simp]
-lemma edgeND₃₄_source : qdr_nd.edgeND₃₄.source = qdr_nd.point₃ := rfl
-
-@[simp]
-lemma edgeND₃₄_target : qdr_nd.edgeND₃₄.target = qdr_nd.point₄ := rfl
-
 /-- The edge from the fourth point to the first point of a quadrilateral -/
 @[pp_dot]
 def edgeND₄₁ : SegND P := SEG_nd qdr_nd.point₄ qdr_nd.point₁
-
-@[simp]
-lemma edgeND₄₁_source : qdr_nd.edgeND₄₁.source = qdr_nd.point₄ := rfl
-
-@[simp]
-lemma edgeND₄₁_target : qdr_nd.edgeND₄₁.target = qdr_nd.point₁ := rfl
 
 /--angle at point₁ of qdr_nd-/
 @[pp_dot]
