@@ -7,6 +7,6 @@ noncomputable section
 namespace EuclidGeom
 
 @[ext]
-structure Trapezoid (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
+structure Trapezoid (P : Type*) [EuclideanPlane P] extends Quadrilateral_cvx P where
 
 end EuclidGeom

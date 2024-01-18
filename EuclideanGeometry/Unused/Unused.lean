@@ -8,12 +8,12 @@ namespace EuclidGeom
 /- Another way of defining 2DVecSpace before define EuclideanPlane，-/
 section Cartesian2dVectorSpace
 /- -/
-class Cartesian2dVectorSpace (V : Type _)  extends  NormedAddCommGroup V, InnerProductSpace ℝ V where
+class Cartesian2dVectorSpace (V : Type*)  extends  NormedAddCommGroup V, InnerProductSpace ℝ V where
   dim_two : FiniteDimensional.finrank ℝ V = 2
   basis : Basis (Fin 2) ℝ V
   orthonormal : Orthonormal ℝ basis
 
-variable {V : Type _} [h : Cartesian2dVectorSpace V]
+variable {V : Type*} [h : Cartesian2dVectorSpace V]
 
 def x_coordinate (v : V) := (Basis.coord h.basis 0).toFun v
 
@@ -85,7 +85,7 @@ end Pythagoras
 
 section Pythagoras
 
-theorem Pythagoras_of_ne_ne_perp' (P : Type _) [EuclideanPlane P] {A B C : P} (hab : B ≠ A) (hac : C ≠ A) (h : (SegND.toProj ⟨SEG A B, hab⟩).perp = (SegND.toProj ⟨SEG A C, hac⟩)) : (SEG A B).length ^ 2 + (SEG A C).length ^ 2 = (SEG B C).length ^ 2 := by
+theorem Pythagoras_of_ne_ne_perp' (P : Type*) [EuclideanPlane P] {A B C : P} (hab : B ≠ A) (hac : C ≠ A) (h : (SegND.toProj ⟨SEG A B, hab⟩).perp = (SegND.toProj ⟨SEG A C, hac⟩)) : (SEG A B).length ^ 2 + (SEG A C).length ^ 2 = (SEG B C).length ^ 2 := by
   have i : Vec.InnerProductSpace.Core.inner (VEC A B) (VEC A C) = 0 := inner_eq_zero_of_toProj_perp_eq_toProj (SegND.toVecND ⟨SEG A B, hab⟩) (SegND.toVecND ⟨SEG A C, hac⟩) h
   rw [Seg.length_sq_eq_inner_toVec_toVec (SEG A B), Seg.length_sq_eq_inner_toVec_toVec (SEG A C), Seg.length_sq_eq_inner_toVec_toVec (SEG B C)]
   simp only [seg_toVec_eq_vec]
@@ -97,7 +97,7 @@ theorem Pythagoras_of_ne_ne_perp' (P : Type _) [EuclideanPlane P] {A B C : P} (h
   rw [← zero_add ((VEC A B).fst * (VEC A B).fst), ← zero_add ((VEC A B).fst * (VEC A B).fst), ← neg_zero, ← i]
   ring
 
-theorem Pythagoras_of_perp_foot' (P : Type _) [EuclideanPlane P] (A B : P) {l : Line P} (h : B LiesOn l) : (SEG A (perp_foot A l)).length ^ 2 + (SEG B (perp_foot A l)).length ^ 2 = (SEG A B).length ^ 2 := by
+theorem Pythagoras_of_perp_foot' (P : Type*) [EuclideanPlane P] (A B : P) {l : Line P} (h : B LiesOn l) : (SEG A (perp_foot A l)).length ^ 2 + (SEG B (perp_foot A l)).length ^ 2 = (SEG A B).length ^ 2 := by
   sorry
 
 end Pythagoras
@@ -106,23 +106,23 @@ end Pythagoras
 /- unused sketch of undirected lines, segments-/
 section undirected
 
-class Line' (P : Type _) [EuclideanPlane P] where
+class Line' (P : Type*) [EuclideanPlane P] where
 -- What is a line??? to be affine subspaces of dimension 1, citing affine vector spaces?
 -- carrier : Set P
 -- linearity
 
-class GSeg' (P : Type _) [EuclideanPlane P] where
+class GSeg' (P : Type*) [EuclideanPlane P] where
 -- a multiset of 2 points? or just never mention this?
 
-class Seg' (P : Type _) [EuclideanPlane P] where
+class Seg' (P : Type*) [EuclideanPlane P] where
 -- a multiset of 2 diff points? or just never mention this?
 -- carrier
 
-def IsOnLine' {P : Type _} [EuclideanPlane P] (a : P) (l : Line' P) : Prop := sorry
+def IsOnLine' {P : Type*} [EuclideanPlane P] (a : P) (l : Line' P) : Prop := sorry
 
 infixl : 50 "LiesOn" => IsOnLine'
 
-instance {P : Type _} [EuclideanPlane P] : Coe (Ray P) (Line' P) where
+instance {P : Type*} [EuclideanPlane P] : Coe (Ray P) (Line' P) where
   coe := sorry
 
 end undirected
@@ -131,19 +131,19 @@ section angle
 namespace Angle
 open Classical
 
-noncomputable def angle_of_three_points' {P : Type _} [h : EuclideanPlane P] (A O B : P) : ℝ := if ((A = O) ∨ (B = O)) then 0 else AngValue.toReal (value (mk_pt_pt_pt A O B sorry sorry))
+noncomputable def angle_of_three_points' {P : Type*} [h : EuclideanPlane P] (A O B : P) : ℝ := if ((A = O) ∨ (B = O)) then 0 else AngValue.toReal (value (mk_pt_pt_pt A O B sorry sorry))
 end Angle
 end angle
 
 section nondeg
 
 /- Directed segment -/
-class DSeg (P : Type _) [EuclideanPlane P] extends Ray P, Seg P where
+class DSeg (P : Type*) [EuclideanPlane P] extends Ray P, Seg P where
   on_ray : IsOnRay target toRay
   non_triv : target ≠ source
 
 /- Define a point lies on an oriented segment, a line, a segment, immediate consequences -/
-def IsOnDSeg {P : Type _} [EuclideanPlane P] (a : P) (l : DSeg P) : Prop :=
+def IsOnDSeg {P : Type*} [EuclideanPlane P] (a : P) (l : DSeg P) : Prop :=
   ∃ (t : ℝ), 0 ≤ t ∧ t ≤ 1 ∧ a = t • (l.target -ᵥ l.source) +ᵥ l.source
 
 end nondeg
@@ -152,12 +152,12 @@ scoped infix : 50 " LiesOnDSeg " => IsOnDSeg
 
 section nondeg
 
-instance {P : Type _} [EuclideanPlane P] : Coe (DSeg P) (Seg P) where
+instance {P : Type*} [EuclideanPlane P] : Coe (DSeg P) (Seg P) where
   coe := fun _ => DSeg.toSeg
 
 /- def of DirSeg from GDirSeg if length ≠ 0 -/
 
--- def Seg.toDSeg_of_nontriv {P : Type _} [EuclideanPlane P] (l : Seg P) (nontriv : l.target ≠ l.source): DSeg P where
+-- def Seg.toDSeg_of_nontriv {P : Type*} [EuclideanPlane P] (l : Seg P) (nontriv : l.target ≠ l.source): DSeg P where
 --   source := l.source
 --   target := l.target
 --   toDir := Vec.toDir (l.target -ᵥ l.source) (vsub_ne_zero.mpr nontriv)
@@ -166,16 +166,16 @@ instance {P : Type _} [EuclideanPlane P] : Coe (DSeg P) (Seg P) where
 
 -- theorems "if p LiesOnDSeg l, then p LiesOn l.toRay and p LiesOn l.toSeg"
 
--- theorem DSeg.pt_on_toRay_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toRay := sorry
+-- theorem DSeg.pt_on_toRay_of_pt_on_DSeg {P : Type*} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toRay := sorry
 
-theorem DSeg.pt_on_toseg_of_pt_on_DSeg {P : Type _} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toSeg := sorry
+theorem DSeg.pt_on_toseg_of_pt_on_DSeg {P : Type*} [EuclideanPlane P] (p : P) (l : DSeg P) (lieson : p LiesOnDSeg l) : p LiesOn l.toSeg := sorry
 
 -- mk method of DirSeg giving 2 distinct point
-def DSeg.mk_pt_pt {P : Type _} [EuclideanPlane P] (A B : P) (h : B ≠ A) : DSeg P := sorry
+def DSeg.mk_pt_pt {P : Type*} [EuclideanPlane P] (A B : P) (h : B ≠ A) : DSeg P := sorry
 
 namespace DSeg
 
-variable {P: Type _} [EuclideanPlane P] (seg : DSeg P) (gseg : Seg P)
+variable {P: Type*} [EuclideanPlane P] (seg : DSeg P) (gseg : Seg P)
 
 -- source and targets are on generalized directed segments
 theorem source_lies_on_seg : seg.source LiesOnDSeg seg := by sorry
@@ -202,7 +202,7 @@ theorem DSeg.rev_toseg_eq_toseg_rev : seg.reverse.toSeg = (seg.toSeg).reverse :=
 
 -- theorem Seg.rev_toDSeg_eq_toDSeg_rev (nontriv : gseg.target ≠ gseg.source) : (gseg.reverse).toDSeg_of_nontriv (Seg.nontriv_of_rev_of_nontriv gseg nontriv) = (gseg.toDSeg_of_nontriv nontriv).reverse := sorry
 
-variable {P: Type _} [EuclideanPlane P] (v : ℝ × ℝ) (seg : DSeg P)
+variable {P: Type*} [EuclideanPlane P] (v : ℝ × ℝ) (seg : DSeg P)
 
 -- parallel translate a directed segments
 
@@ -220,7 +220,7 @@ end nondeg
 
 
 section pos_neg_ray
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 def IsOnPosSide (A : P) (ray : Ray P) : Prop := by
   by_cases A = ray.source
@@ -246,7 +246,7 @@ open Classical
 
 /- Class of generalized triangles -/
 /-
-class Triangle' (P : Type _) [EuclideanPlane P] where
+class Triangle' (P : Type*) [EuclideanPlane P] where
   point₁ : P
   point₂ : P
   point₃ : P
@@ -254,7 +254,7 @@ class Triangle' (P : Type _) [EuclideanPlane P] where
 
 namespace Triangle
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 def nontriv₁ (tr : Triangle P) := (ne_of_not_collinear tr.nontriv).1
 
@@ -288,7 +288,7 @@ end nondeg_tri
 
 section collinear
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 theorem collinear_ACB_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear A C B := sorry
 
@@ -304,11 +304,11 @@ end collinear
 /-!
 section HasFallsOn
 
-class HasFallsOn (α β : Type _) [HasLiesOn P α] [HasLiesOn P β] where
+class HasFallsOn (α β : Type*) [HasLiesOn P α] [HasLiesOn P β] where
   falls_on : α → β → Prop
   lies_on_falls_on : ∀ (p : P) (A : α) (B : β), HasLiesOn.lies_on p A → falls_on A B → HasLiesOn.lies_on p B
 
-class HasFallsIn (α β : Type _) [HasLiesIn P α] [HasLiesIn P β] where
+class HasFallsIn (α β : Type*) [HasLiesIn P α] [HasLiesIn P β] where
   falls_in : α → β → Prop
   lies_in_falls_in : ∀ (p : P) (A : α) (B : β), HasLiesIn.lies_in p A → falls_in A B → HasLiesIn.lies_in p B
 
@@ -322,9 +322,9 @@ end HasFallsOn
 
 -- scoped notation A "LiesInt" F => HasLiesInt.lies_int A F
 
-def IsFallsOn {α β : Type _} (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] : Prop := ∀ (A : P), (A LiesOn A) → (A LiesOn B)
+def IsFallsOn {α β : Type*} (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] : Prop := ∀ (A : P), (A LiesOn A) → (A LiesOn B)
 
-def IsFallsIn {α β : Type _} (A : α) (B : β) [HasLiesIn P α] [HasLiesIn P β] : Prop := ∀ (A : P), (A LiesIn A) → (A LiesIn B)
+def IsFallsIn {α β : Type*} (A : α) (B : β) [HasLiesIn P α] [HasLiesIn P β] : Prop := ∀ (A : P), (A LiesIn A) → (A LiesIn B)
 
 -- LiesOn → LiesInt is FallsInt ?
 
@@ -333,60 +333,60 @@ scoped notation A "FallsIn" B "Over" P => IsFallsIn P A B
 
 namespace IsFallsOn
 
-protected theorem refl {P : Type _} {α : Type _} (A : α) [HasLiesOn P α] : A FallsOn A Over P := by tauto
+protected theorem refl {P : Type*} {α : Type*} (A : α) [HasLiesOn P α] : A FallsOn A Over P := by tauto
 
-protected theorem trans {P : Type _} {α β γ : Type _} (A : α) (B : β) (C : γ) [HasLiesOn P α] [HasLiesOn P β] [HasLiesOn P γ] : (A FallsOn B Over P) → (B FallsOn C Over P) → (A FallsOn C Over P)   := by tauto
+protected theorem trans {P : Type*} {α β γ : Type*} (A : α) (B : β) (C : γ) [HasLiesOn P α] [HasLiesOn P β] [HasLiesOn P γ] : (A FallsOn B Over P) → (B FallsOn C Over P) → (A FallsOn C Over P)   := by tauto
 
 end IsFallsOn
 
 namespace IsFallsIn
 
-protected theorem refl {P : Type _} {α : Type _} (A : α) [HasLiesIn P α] : A FallsIn A Over P := by tauto
+protected theorem refl {P : Type*} {α : Type*} (A : α) [HasLiesIn P α] : A FallsIn A Over P := by tauto
 
-protected theorem trans {P : Type _} {α β γ : Type _} (A : α) (B : β) (C : γ) [HasLiesIn P α] [HasLiesIn P β] [HasLiesIn P γ] : (A FallsIn B Over P) → (B FallsIn C Over P) → (A FallsIn C Over P)   := by tauto
+protected theorem trans {P : Type*} {α β γ : Type*} (A : α) (B : β) (C : γ) [HasLiesIn P α] [HasLiesIn P β] [HasLiesIn P γ] : (A FallsIn B Over P) → (B FallsIn C Over P) → (A FallsIn C Over P)   := by tauto
 
 end IsFallsIn
 
-def IsIntersectionPoint {P : Type _} {α β : Type _} (A : P) (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] := (A LiesOn A) ∧ (A LiesOn B)
+def IsIntersectionPoint {P : Type*} {α β : Type*} (A : P) (A : α) (B : β) [HasLiesOn P α] [HasLiesOn P β] := (A LiesOn A) ∧ (A LiesOn B)
 
 scoped notation p "IsIntersectionOf" A B => IsIntersectionPoint p A B
 
 /-
-class HasProj (α : Type _) where
+class HasProj (α : Type*) where
   toProj : (α → Proj)
 
-def parallel {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := HasProj.toProj A = HasProj.toProj B
+def parallel {α β : Type*} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := HasProj.toProj A = HasProj.toProj B
 
 scoped notation A "IsParallelTo" B => parallel A B
 scoped notation A "∥" B => parallel A B
 
 namespace parallel
 
-protected theorem refl {α : Type _} (A : α) [HasProj α] : A ∥ A := rfl
+protected theorem refl {α : Type*} (A : α) [HasProj α] : A ∥ A := rfl
 
-protected theorem symm {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : (A ∥ B) → (B ∥ A) := Eq.symm
+protected theorem symm {α β : Type*} (A : α) (B : β) [HasProj α] [HasProj β] : (A ∥ B) → (B ∥ A) := Eq.symm
 
-protected theorem trans {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ]: (A ∥ B) → (B ∥ C) → (A ∥ C) := Eq.trans
+protected theorem trans {α β γ : Type*} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ]: (A ∥ B) → (B ∥ C) → (A ∥ C) := Eq.trans
 
 end parallel
 
-def perpendicular {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := sorry
+def perpendicular {α β : Type*} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := sorry
 
 scoped notation A "IsPerpendicularTo" B => perpendicular A B
 scoped notation A "⟂" B => perpendicular A B
 
 namespace perpendicular
 
-protected theorem irrefl {α : Type _} (A : α) [HasProj α] : ¬ (A ⟂ A) := by sorry
+protected theorem irrefl {α : Type*} (A : α) [HasProj α] : ¬ (A ⟂ A) := by sorry
 
-protected theorem symm {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : (A ⟂ B) → (B ⟂ A) := sorry
+protected theorem symm {α β : Type*} (A : α) (B : β) [HasProj α] [HasProj β] : (A ⟂ B) → (B ⟂ A) := sorry
 
 end perpendicular
 
-theorem parallel_of_perp_perp {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ] : (A ⟂ B) → (B ⟂ C) → (A ∥ C)  := sorry
+theorem parallel_of_perp_perp {α β γ : Type*} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ] : (A ⟂ B) → (B ⟂ C) → (A ∥ C)  := sorry
 -/ -/
 
-structure IsAngBis {P : Type _} [EuclideanPlane P] (ang : Angle P) (ray : Ray P) : Prop where intro ::
+structure IsAngBis {P : Type*} [EuclideanPlane P] (ang : Angle P) (ray : Ray P) : Prop where intro ::
   eq_vtx : ang.source = ray.source
   bisect_ang : 2 * (Angle.mk ang.start_ray ray eq_vtx).value = ang.value
 

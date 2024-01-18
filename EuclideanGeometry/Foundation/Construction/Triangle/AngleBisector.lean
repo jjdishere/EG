@@ -14,7 +14,7 @@ namespace EuclidGeom
 
 open AngValue Angle
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 -- Feel free to change the name of the theorems and comments into better ones, or add sections to better organize theorems.
 -- `Currently, the theorems are not well-organized, please follow the plan file to write and add theorems in this file into the plan file if they are not already in the plan`

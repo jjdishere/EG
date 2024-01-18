@@ -8,7 +8,7 @@ namespace EuclidGeom
 
 open Classical
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 section collinear
 
@@ -214,7 +214,7 @@ Note that we do not need all reverse, extension line,... here. instead we should
 end compatibility
 
 /-- There exists three points $A$, $B$, $C$ on the plane such that they are not collinear. -/
-theorem nontriv_of_plane {H : Type _} [h : EuclideanPlane H] : ∃ A B C : H, ¬(collinear A B C) := by
+theorem nontriv_of_plane {H : Type*} [h : EuclideanPlane H] : ∃ A B C : H, ¬(collinear A B C) := by
   rcases h.nonempty with ⟨A⟩
   let B := (⟨1, 0⟩ : Vec) +ᵥ A
   let C := (⟨0, 1⟩ : Vec) +ᵥ A

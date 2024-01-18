@@ -54,7 +54,7 @@ section definition
 
 /-- A \emph{ray} consists of a pair of a point $P$ and a direction; it is the ray that starts at the point and extends in the given direction. -/
 @[ext]
-structure Ray (P : Type _) [EuclideanPlane P] where
+structure Ray (P : Type*) [EuclideanPlane P] where
   /-- returns the source of the ray. -/
   source : P
   /-- returns the direction of the ray. -/
@@ -66,7 +66,7 @@ alias Ray.mk_pt_dir := Ray.mk
 
 /-- A \emph{Segment} consists of a pair of points: the source and the target; it is the segment from the source to the target. (We allow the source and the target to be the same.) -/
 @[ext]
-structure Seg (P : Type _) [EuclideanPlane P] where
+structure Seg (P : Type*) [EuclideanPlane P] where
   /-- returns the source of the segment. -/
   source : P
   /-- returns the target of the segment. -/
@@ -77,17 +77,17 @@ attribute [pp_dot] Seg.source Seg.target
 namespace Seg
 
 /-- Given a segment $AB$, this function returns whether the segment $AB$ is nondegenerate, i.e. whether $A \neq B$. -/
-def IsND {P : Type _} [EuclideanPlane P] (seg : Seg P) : Prop := seg.target ≠ seg.source
+def IsND {P : Type*} [EuclideanPlane P] (seg : Seg P) : Prop := seg.target ≠ seg.source
 
 end Seg
 
 /-- A \emph{nondegenerate segment} is a segment $AB$ that is nondegenerate, i.e. $A \neq B$. -/
-def SegND (P : Type _) [EuclideanPlane P] := {seg : Seg P // seg.IsND}
+def SegND (P : Type*) [EuclideanPlane P] := {seg : Seg P // seg.IsND}
 
 
 end definition
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 
 section make

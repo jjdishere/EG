@@ -32,7 +32,7 @@ open Angle
 
 /-- Class of Quadrilateral: A quadrilateral consists of four points; it is the generalized quadrilateral formed by these four points -/
 @[ext]
-structure Quadrilateral (P : Type _) [EuclideanPlane P] where
+structure Quadrilateral (P : Type*) [EuclideanPlane P] where
   point₁ : P
   point₂ : P
   point₃ : P
@@ -42,7 +42,7 @@ structure Quadrilateral (P : Type _) [EuclideanPlane P] where
 scoped notation "QDR" => Quadrilateral.mk
 
 namespace Quadrilateral
-variable {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P}
+variable {P : Type*} [EuclideanPlane P] {qdr : Quadrilateral P}
 
 /-- Given a quadrilateral qdr, qdr.edge₁₂ is the edge from the first point to the second point of a quadrilateral. -/
 @[pp_dot]
@@ -102,7 +102,7 @@ end Quadrilateral
 A quadrilateral is called non-degenerate if the points that adjacent is not same
 -/
 @[pp_dot]
-structure Quadrilateral.IsND {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop where
+structure Quadrilateral.IsND {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop where
   nd₁₂ : (qdr.2 ≠ qdr.1)
   nd₂₃ : (qdr.3 ≠ qdr.2)
   nd₃₄ : (qdr.4 ≠ qdr.3)
@@ -112,17 +112,17 @@ structure Quadrilateral.IsND {P : Type _} [EuclideanPlane P] (qdr : Quadrilatera
 Class of nd Quadrilateral: A nd quadrilateral is quadrilateral with the property of nd.
 -/
 @[ext]
-structure QuadrilateralND (P : Type _) [EuclideanPlane P] extends Quadrilateral P where
+structure QuadrilateralND (P : Type*) [EuclideanPlane P] extends Quadrilateral P where
   nd : toQuadrilateral.IsND
 
-def QuadrilateralND.mk_pt_pt_pt_pt_nd {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) : QuadrilateralND P where
+def QuadrilateralND.mk_pt_pt_pt_pt_nd {P : Type*} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) : QuadrilateralND P where
   toQuadrilateral := (QDR A B C D)
   nd := h
 
 scoped notation "QDR_nd" => QuadrilateralND.mk_pt_pt_pt_pt_nd
 
 /-- Given a property that a quadrilateral qdr is nd, this function returns qdr itself as an object in the class of nd quadrilateral -/
-def QuadrilateralND.mk_nd {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr.IsND) : QuadrilateralND P where
+def QuadrilateralND.mk_nd {P : Type*} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr.IsND) : QuadrilateralND P where
   toQuadrilateral := qdr
   nd := h
 
@@ -130,7 +130,7 @@ scoped notation "QDR_nd'" => QuadrilateralND.mk_nd
 
 /-- A quadrilateral satisfies InGPos if every 3 vertices are not collinear. -/
 @[pp_dot]
-structure Quadrilateral.InGPos {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop where
+structure Quadrilateral.InGPos {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop where
   not_collinear₁₂₃: ( ¬ collinear qdr.point₁ qdr.point₂ qdr.point₃)
   not_collinear₂₃₄: ( ¬ collinear qdr.point₂ qdr.point₃ qdr.point₄)
   not_collinear₃₄₁: ( ¬ collinear qdr.point₃ qdr.point₄ qdr.point₁)
@@ -143,7 +143,7 @@ namespace QuadrilateralND
 section property_nd
 -- properties of nd quadrilateral `to be added`
 
-variable {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P)
+variable {P : Type*} [EuclideanPlane P] (qdr_nd : QuadrilateralND P)
 
 /-- The edge from the first point to the second point of a QuadrilateralND is non-degenerate. -/
 instance nd₁₂ : PtNe qdr_nd.1.2 qdr_nd.1.1 := Fact.mk qdr_nd.nd.nd₁₂
@@ -253,14 +253,14 @@ theorem flip_angle₄_value_eq_neg_angle₂ : qdr_nd.flip.angle₄.value = - qdr
 end property_nd
 
 /-- A Quadrilateral which satisfies InGPos satisfies IsND. -/
-theorem nd_of_gpos {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (InGPos : qdr.InGPos): qdr.IsND:= by
+theorem nd_of_gpos {P : Type*} [EuclideanPlane P] {qdr : Quadrilateral P} (InGPos : qdr.InGPos): qdr.IsND:= by
   constructor
   · exact (ne_of_not_collinear InGPos.not_collinear₁₂₃).right.right
   · exact (ne_of_not_collinear InGPos.not_collinear₂₃₄).right.right
   · exact (ne_of_not_collinear InGPos.not_collinear₃₄₁).right.right
   · exact (ne_of_not_collinear InGPos.not_collinear₄₁₂).right.right.symm
 
-instance {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} : Coe qdr.InGPos qdr.IsND := {coe := nd_of_gpos}
+instance {P : Type*} [EuclideanPlane P] {qdr : Quadrilateral P} : Coe qdr.InGPos qdr.IsND := {coe := nd_of_gpos}
 
 end QuadrilateralND
 
@@ -268,16 +268,16 @@ end QuadrilateralND
 A Quadrilateral is called convex if it's ND and four angles have the same sign.
 -/
 -- @[pp_dot]
--- def QuadrilateralND.IsConvex {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₃.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg)
+-- def QuadrilateralND.IsConvex {P : Type*} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₃.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg)
 
 -- @[pp_dot]
--- def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
+-- def Quadrilateral.IsConvex {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
 --   by_cases h : qdr.IsND
 --   · exact (QuadrilateralND.mk_nd h).IsConvex
 --   · exact False
 
 @[pp_dot]
-def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
+def Quadrilateral.IsConvex {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases h : qdr.IsND
   · have qdr_nd : QuadrilateralND P := QDR_nd' h
     exact (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₃.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg)
@@ -285,51 +285,51 @@ def Quadrilateral.IsConvex {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral 
 
 scoped postfix : 50 "IsConvex" => Quadrilateral.IsConvex
 
-theorem Quadrilateral.isND_of_is_convex {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr.IsConvex) : qdr.IsND := by
+theorem Quadrilateral.isND_of_is_convex {P : Type*} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr.IsConvex) : qdr.IsND := by
   by_contra g
   unfold Quadrilateral.IsConvex at h
   simp only [g, dite_false] at h
 
-instance {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} : Coe qdr.IsConvex qdr.IsND := {coe := Quadrilateral.isND_of_is_convex}
+instance {P : Type*} [EuclideanPlane P] {qdr : Quadrilateral P} : Coe qdr.IsConvex qdr.IsND := {coe := Quadrilateral.isND_of_is_convex}
 
--- theorem QuadrilateralND.toqdr_cvx_of_cvx {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} (h : qdr_nd.IsConvex) : qdr_nd.toQuadrilateral.IsConvex := by
+-- theorem QuadrilateralND.toqdr_cvx_of_cvx {P : Type*} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} (h : qdr_nd.IsConvex) : qdr_nd.toQuadrilateral.IsConvex := by
 --   have k : qdr_nd.toQuadrilateral.IsND := qdr_nd.nd
 --   have l : qdr_nd = (QDR_nd' k) := rfl
 --   rw [l] at h
 --   unfold Quadrilateral.IsConvex
 --   simp only [k, h, dite_eq_ite, ite_true]
 
--- instance {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} : Coe qdr_nd.IsConvex qdr_nd.toQuadrilateral.IsConvex := {coe := QuadrilateralND.toqdr_cvx_of_cvx}
+-- instance {P : Type*} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} : Coe qdr_nd.IsConvex qdr_nd.toQuadrilateral.IsConvex := {coe := QuadrilateralND.toqdr_cvx_of_cvx}
 
-theorem Quadrilateral.nd_cvx_iff_cvx {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : qdr_nd.IsConvex ↔ (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₃.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg) := by
+theorem Quadrilateral.nd_cvx_iff_cvx {P : Type*} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : qdr_nd.IsConvex ↔ (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₃.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg) := by
   unfold Quadrilateral.IsConvex
   have nd : qdr_nd.toQuadrilateral.IsND := qdr_nd.nd
   simp only [nd, dite_true]
   rfl
 
-theorem Quadrilateral_cvx.nd_is_convex_iff_is_convex {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : qdr_nd.IsConvex ↔ qdr_nd.toQuadrilateral.IsConvex := by
+theorem Quadrilateral_cvx.nd_is_convex_iff_is_convex {P : Type*} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : qdr_nd.IsConvex ↔ qdr_nd.toQuadrilateral.IsConvex := by
   unfold Quadrilateral.IsConvex
   simp only [qdr_nd.nd, dite_true]
 
-instance {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} : Coe qdr_nd.IsConvex qdr_nd.toQuadrilateral.IsConvex := {coe := (Quadrilateral_cvx.nd_is_convex_iff_is_convex qdr_nd).mp}
+instance {P : Type*} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} : Coe qdr_nd.IsConvex qdr_nd.toQuadrilateral.IsConvex := {coe := (Quadrilateral_cvx.nd_is_convex_iff_is_convex qdr_nd).mp}
 
-instance {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} : Coe qdr_nd.toQuadrilateral.IsConvex qdr_nd.IsConvex := {coe := (Quadrilateral_cvx.nd_is_convex_iff_is_convex qdr_nd).mpr}
+instance {P : Type*} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} : Coe qdr_nd.toQuadrilateral.IsConvex qdr_nd.IsConvex := {coe := (Quadrilateral_cvx.nd_is_convex_iff_is_convex qdr_nd).mpr}
 
 /--
 Class of Convex Quadrilateral: A convex quadrilateral is quadrilateral with the property of convex.
 -/
 @[ext]
-structure Quadrilateral_cvx (P : Type _) [EuclideanPlane P] extends QuadrilateralND P where
+structure Quadrilateral_cvx (P : Type*) [EuclideanPlane P] extends QuadrilateralND P where
   convex : toQuadrilateral.IsConvex
 
-def Quadrilateral_cvx.mk_pt_pt_pt_pt_convex {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P where
+def Quadrilateral_cvx.mk_pt_pt_pt_pt_convex {P : Type*} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P where
   toQuadrilateral := (QDR A B C D)
   nd := h
   convex := h
 
 scoped notation "QDR_cvx" => Quadrilateral_cvx.mk_pt_pt_pt_pt_convex
 
-def Quadrilateral_cvx.mk_cvx {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr.IsConvex) : Quadrilateral_cvx P where
+def Quadrilateral_cvx.mk_cvx {P : Type*} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr.IsConvex) : Quadrilateral_cvx P where
   toQuadrilateralND := QDR_nd' h
   convex := h
 
@@ -337,15 +337,15 @@ scoped notation "QDR_cvx'" => Quadrilateral_cvx.mk_cvx
 
 namespace Quadrilateral_cvx
 
--- def mk_is_convex {P : Type _} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P := mk_pt_pt_pt_pt_convex A B C D h
+-- def mk_is_convex {P : Type*} [EuclideanPlane P] {A B C D : P} (h : (QDR A B C D).IsConvex) : Quadrilateral_cvx P := mk_pt_pt_pt_pt_convex A B C D h
 
 -- /-- Given a property that a quadrilateral qdr is convex, this function returns qdr itself as an object in the class of convex quadrilateral-/
--- def mk_nd_is_convex {P : Type _} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} (h : qdr_nd.IsConvex) : Quadrilateral_cvx P where
+-- def mk_nd_is_convex {P : Type*} [EuclideanPlane P] {qdr_nd : QuadrilateralND P} (h : qdr_nd.IsConvex) : Quadrilateral_cvx P where
 --   toQuadrilateralND := qdr_nd
 --   convex := h
 
 section criteria_cvx
-variable {P : Type _} [EuclideanPlane P] {A B C D : P}
+variable {P : Type*} [EuclideanPlane P] {A B C D : P}
 
 structure is_convex_of_three_sides_of_same_side' where
   qdr_nd : QuadrilateralND P
@@ -389,7 +389,7 @@ end criteria_cvx
 section property_cvx
 -- properties of convex quadrilateral `to be added`
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 variable (qdr : Quadrilateral P)
 variable (qdr_nd : QuadrilateralND P)
 variable (qdr_cvx : Quadrilateral_cvx P)
@@ -573,7 +573,7 @@ end Quadrilateral_cvx
 section criteria
 -- the criteria of a quadrilateral being convex `to be added`
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 end criteria
 

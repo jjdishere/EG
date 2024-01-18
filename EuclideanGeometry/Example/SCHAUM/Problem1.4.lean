@@ -4,7 +4,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {Plane : Type _} [EuclideanPlane Plane]
+variable {Plane : Type*} [EuclideanPlane Plane]
 
 namespace Problem1_4_
 /-Let $B$ $D$ be points on segment $AF$, such that $AD = BF$. Let $C$ be a point.

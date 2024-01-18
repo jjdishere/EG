@@ -6,7 +6,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Shan_Problem_1_7
 /- In $\triangle ABC$, $\angle ACB = \pi /2$. Let $D$ be the midpoint of $AB$.

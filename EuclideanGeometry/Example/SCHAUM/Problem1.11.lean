@@ -4,14 +4,14 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {Plane : Type _} [EuclideanPlane Plane]
+variable {Plane : Type*} [EuclideanPlane Plane]
 
 namespace SCHAUM_Problem_1_11
 /-
 If $ABCD$ is a parallelogram and $EFCD$ is a parallelogram, then $ABFE$ is a parallelogram.
 -/
 
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
   -- $ABCD$ is a parallelogram.
   A : Plane
   B : Plane
@@ -23,7 +23,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   F : Plane
   EFCD_IsPRG : (QDR E F C D) IsPRG
 -- Prove that $ABFE$ is a parallelogram.
-theorem result (Plane : Type _) [EuclideanPlane Plane] (e : Setting Plane) : (QDR e.A e.B e.F e.E) IsPRG := by
+theorem result (Plane : Type*) [EuclideanPlane Plane] (e : Setting Plane) : (QDR e.A e.B e.F e.E) IsPRG := by
   /-
   Because $ABCD$ is a parallelogram, $\overarrow{AB} = \overarrow{DC}$.
   Because $EFCD$ is a parallelogram, $\overarrow{EF} = \overarrow{DC}$.

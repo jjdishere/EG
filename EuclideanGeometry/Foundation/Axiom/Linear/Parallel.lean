@@ -20,7 +20,7 @@ namespace EuclidGeom
 
 open Line
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 /-
 /-- A linear object is one of the following five types: a nondegenerate vector, a direction, a ray, a nondegenerate segment, or a line.
 In the following, we define natural ways to view a nondegenerate vector, a direction, a ray, a nondegenerate segment or a line, as a linear object.
@@ -526,7 +526,7 @@ theorem inx_eq_of_same_extn_line {a₁ b₁ a₂ b₂ : Ray P} (g₁ : same_extn
   exact h₂ (congrArg Line.toProj heq)
 
 -- This theorem deals only with `HEq`
-theorem heq_funext {c₁ c₂ d: Sort _} (e : c₁ = c₂) {f₁ : c₁ → d} {f₂ : c₂ → d} (h : ∀ (s : c₁) (t : c₂), f₁ s = f₂ t) : HEq f₁ f₂ := Function.hfunext e (fun _ _ _ => (heq_of_eq (h _ _)))
+theorem heq_funext {c₁ c₂ d: Sort*} (e : c₁ = c₂) {f₁ : c₁ → d} {f₂ : c₂ → d} (h : ∀ (s : c₁) (t : c₂), f₁ s = f₂ t) : HEq f₁ f₂ := Function.hfunext e (fun _ _ _ => (heq_of_eq (h _ _)))
 
 theorem heq_of_inx_of_extn_line (a₁ b₁ a₂ b₂ : Ray P) (h₁ : same_extn_line a₁ a₂) (h₂ : same_extn_line b₁ b₂) : HEq (fun h => inx_of_extn_line a₁ b₁ h) (fun h => inx_of_extn_line a₂ b₂ h) := by
   have e : (Ray.toProj a₁ ≠ Ray.toProj b₁) = (Ray.toProj a₂ ≠ Ray.toProj b₂) := by

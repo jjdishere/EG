@@ -6,7 +6,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {Plane : Type _} [EuclideanPlane Plane]
+variable {Plane : Type*} [EuclideanPlane Plane]
 
 namespace SCHAUM_Problem_1_14
 /-
@@ -15,7 +15,7 @@ Let $ABCD$ be a parallelogram. Let $P$ and $Q$ be points on the segments $AB$ an
 Prove that $PM = QN$ and $PM \parallel QN$.
 -/
 
-structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1 (Plane : Type*) [EuclideanPlane Plane] where
   -- Let $ABCD$ be a parallelogram.
   A : Plane
   B : Plane
@@ -37,23 +37,23 @@ structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
   perp_foot_N : N = perp_foot Q (LIN B D D_ne_B)
 
 -- Because $P$ is not on line $BD$, $M$, the foot of the perpendicular from $P$ to the diagonal $BD$ doesn't equal to $P$.
-lemma not_P_lieson_BD {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : ¬ e.P LiesOn (LIN e.B e.D e.D_ne_B) := sorry
-lemma not_Q_lieson_BD {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : ¬ e.Q LiesOn (LIN e.B e.D e.D_ne_B) := sorry
-lemma M_ne_P {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : e.M ≠ e.P := by
+lemma not_P_lieson_BD {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : ¬ e.P LiesOn (LIN e.B e.D e.D_ne_B) := sorry
+lemma not_Q_lieson_BD {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : ¬ e.Q LiesOn (LIN e.B e.D e.D_ne_B) := sorry
+lemma M_ne_P {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : e.M ≠ e.P := by
   simp only [e.perp_foot_M]
   exact (perp_foot_eq_self_iff_lies_on e.P (LIN e.B e.D e.D_ne_B)).not.mpr (not_P_lieson_BD)
-lemma N_ne_Q {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : e.N ≠ e.Q := by
+lemma N_ne_Q {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : e.N ≠ e.Q := by
   simp only [e.perp_foot_N]
   exact (perp_foot_eq_self_iff_lies_on e.Q (LIN e.B e.D e.D_ne_B)).not.mpr (not_Q_lieson_BD)
 
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends (Setting1 Plane) where
+structure Setting2 (Plane : Type*) [EuclideanPlane Plane] extends (Setting1 Plane) where
   not_P_lieson_BD : ¬ P LiesOn (LIN B D D_ne_B) := not_P_lieson_BD
   not_Q_lieson_BD : ¬ Q LiesOn (LIN B D D_ne_B) := not_Q_lieson_BD
   M_ne_P : M ≠ P := M_ne_P
   N_ne_Q : N ≠ Q := N_ne_Q
 
 -- Prove that $PM = QN$.
-theorem result1 {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (SEG e.P e.M).length = (SEG e.Q e.N).length := by
+theorem result1 {Plane : Type*} [EuclideanPlane Plane] (e : Setting2 Plane) : (SEG e.P e.M).length = (SEG e.Q e.N).length := by
   /- Because quadrilateral $ABCD$ is a parallelogram, $AB \parallel CD$, thus the alternate interior angle $\angle ABD = \angle CDB$,
   therefore $\angle PBM = \angle ABD = \angle CDB = \angle QDN$. Also, $\angle BMP = \pm\frac{\pi}{2}$, $\angle DNQ = \pm\frac{\pi}{2}$
   because $M$ and $N$ are the foot of perpendicular from $P$, $Q$ to $BD$, respectively.
@@ -77,7 +77,7 @@ theorem result1 {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (
   exact MBP_congr_NCQ.edge₂
 
 -- Prove that $PM \parallel QN$.
-theorem result2 {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (LIN e.P e.M e.M_ne_P) ∥ (LIN e.Q e.N e.N_ne_Q) := by
+theorem result2 {Plane : Type*} [EuclideanPlane Plane] (e : Setting2 Plane) : (LIN e.P e.M e.M_ne_P) ∥ (LIN e.Q e.N e.N_ne_Q) := by
   -- We have $PM \perp BD$ because $M$ is the perpendicular foot from $P$ to $BD$.
   have PM_perp_BD : LIN e.P e.M e.M_ne_P ⟂ LIN e.B e.D e.D_ne_B := by
     simp only [e.perp_foot_M]

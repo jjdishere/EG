@@ -5,7 +5,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Shan_Problem_2_11
 /- Let $\triangle ABC$ be a regular triangle,
@@ -13,7 +13,7 @@ Let $E$ be a point on the extension of $BA$ and $D$ a point on the extension of 
 such that $AE = BD$, connect $CE,DE$
 Prove that $CE = DE$ -/
 
-structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1  (Plane : Type*) [EuclideanPlane Plane] where
 -- Let $\triangle ABC$ be a regular triangle
   A : Plane
   B : Plane
@@ -21,11 +21,11 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   hnd : ¬ collinear A B C
   hreg : (▵ A B C).IsRegular
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
-instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
-instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
+instance A_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
+instance B_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
+instance C_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
 
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+structure Setting2 (Plane : Type*) [EuclideanPlane Plane] extends Setting1 Plane where
 -- Let $E$ be a point on the extension of $BA$ and $D$ a point on the extension of $BC$
   D : Plane
   E : Plane
@@ -35,7 +35,7 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
   h : (SEG A E).length = (SEG B D).length
 
 -- Theorem : $CE = DE$
-theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (SEG e.C e.E).length = (SEG e.D e.E).length := by
+theorem Result {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : (SEG e.C e.E).length = (SEG e.D e.E).length := by
 /-
   Extend $BD$ to $F$ such that $DF = BC$.
   Then $BF = BD + DF = AE + AB = BE$, and $\angle FBE = 60^{\circ}$  or $-60^{\circ}$.
@@ -176,18 +176,18 @@ $F,G$ are points of trisection of $AC$,
 line $DF$ and $EG$ intersect at $H$
 Prove that quadrilateral $ABCH$ is parallelogram -/
 
-structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1  (Plane : Type*) [EuclideanPlane Plane] where
 -- We have triangle $\triangle ABC$
   A : Plane
   B : Plane
   C : Plane
   hnd : ¬ collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
-instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
-instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
+instance A_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
+instance B_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
+instance C_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
 
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+structure Setting2 (Plane : Type*) [EuclideanPlane Plane] extends Setting1 Plane where
 -- $D$ is midpoint of $BA$, $E$ is midpoint of $BC$
   D : Plane
   E : Plane
@@ -200,16 +200,16 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
   hg : G LiesInt (SEG_nd A C)
   htri : (SEG A F).length = (SEG F G).length ∧ (SEG F G).length = (SEG G C).length
 -- Claim: $F \ne D$ and $G \ne E$
-instance F_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.F e.D := ⟨sorry⟩
-instance G_ne_E {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.G e.E := ⟨sorry⟩
+instance F_ne_D {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.F e.D := ⟨sorry⟩
+instance G_ne_E {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.G e.E := ⟨sorry⟩
 
-structure Setting3 (Plane : Type _) [EuclideanPlane Plane] extends Setting2 Plane where
+structure Setting3 (Plane : Type*) [EuclideanPlane Plane] extends Setting2 Plane where
 -- $H$ is the intersection of line $DF$ and $EG$
   H : Plane
   hh : is_inx H (LIN D F) (LIN E G)
 
 -- Theorem : quadrilateral $ABCH$ is parallelogram
-theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting3 Plane} : QDR e.A e.B e.C e.H IsPRG := sorry
+theorem Result {Plane : Type*} [EuclideanPlane Plane] {e : Setting3 Plane} : QDR e.A e.B e.C e.H IsPRG := sorry
 
 end Shan_Problem_2_22
 
@@ -220,18 +220,18 @@ $F,G$ are points lies on line $BC$,
 such that $FB = CG$ and $AF \parallel BE$ ,
 Prove that $AG \parallel DC$-/
 
-structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1  (Plane : Type*) [EuclideanPlane Plane] where
 -- We have triangle $\triangle ABC$
   A : Plane
   B : Plane
   C : Plane
   hnd : ¬ collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
-instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
-instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
+instance A_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
+instance B_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
+instance C_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
 
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+structure Setting2 (Plane : Type*) [EuclideanPlane Plane] extends Setting1 Plane where
 -- $D,E$ are points in $AB,AC$ respectively
   D : Plane
   E : Plane
@@ -245,18 +245,18 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
 -- We have $FB = CG$
   hedge : (SEG F B).length = (SEG C G).length
 -- Claim : $F \ne A$ and $E \ne B$
-instance F_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.F e.A := ⟨sorry⟩
-instance E_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.E e.B := ⟨sorry⟩
+instance F_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.F e.A := ⟨sorry⟩
+instance E_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.E e.B := ⟨sorry⟩
 
-structure Setting3 (Plane : Type _) [EuclideanPlane Plane] extends Setting2 Plane where
+structure Setting3 (Plane : Type*) [EuclideanPlane Plane] extends Setting2 Plane where
 -- We have $AF \parallel BE$
   hpara : (SEG_nd A F) ∥ (SEG_nd B E)
 -- Claim: $G \ne A$ and $D \ne C$
-instance G_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting3 Plane} : PtNe e.G e.A := ⟨sorry⟩
-instance D_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting3 Plane} : PtNe e.D e.C := ⟨sorry⟩
+instance G_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting3 Plane} : PtNe e.G e.A := ⟨sorry⟩
+instance D_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting3 Plane} : PtNe e.D e.C := ⟨sorry⟩
 
 -- Theorem : $AG \parallel DC$
-theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting3 Plane} : (SEG_nd e.A e.G) ∥ (SEG_nd e.C e.D) := sorry
+theorem Result {Plane : Type*} [EuclideanPlane Plane] {e : Setting3 Plane} : (SEG_nd e.A e.G) ∥ (SEG_nd e.C e.D) := sorry
 
 end Shan_Problem_2_36
 
@@ -267,7 +267,7 @@ $BE, CF$ are heights,
 such that $AE = 2 EC$
 Prove that $AF = 3 FB$ -/
 
-structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1  (Plane : Type*) [EuclideanPlane Plane] where
 -- We have acute triangle $\triangle ABC$
   A : Plane
   B : Plane
@@ -275,11 +275,11 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   hnd : ¬ collinear A B C
   hacute : TriangleND.IsAcute (TRI_nd A B C hnd)
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
-instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
-instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
+instance A_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
+instance B_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
+instance C_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
 
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+structure Setting2 (Plane : Type*) [EuclideanPlane Plane] extends Setting1 Plane where
 -- $D,E$ are points in $AB,AC$ respectively
   E : Plane
   F : Plane
@@ -289,7 +289,7 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
   h : (SEG A E).length = 2 * (SEG E C).length
 
 -- Theorem : $AF = 3 FB$
-theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (SEG e.A e.F).length = 3 * (SEG e.F e.B).length := sorry
+theorem Result {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : (SEG e.A e.F).length = 3 * (SEG e.F e.B).length := sorry
 
 end Shan_Problem_2_37
 
@@ -298,37 +298,37 @@ namespace Shan_Problem_2_38
 let the angle bisectors of $\angle ADB$ and $\angle ADC$ intersect $AB$ and $AC$ at $E,F$,
 Prove that $EF \parallel BC$-/
 
-structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1  (Plane : Type*) [EuclideanPlane Plane] where
 -- We have triangle $\triangle ABC$
   A : Plane
   B : Plane
   C : Plane
   hnd : ¬ collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
-instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
-instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
+instance A_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
+instance B_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
+instance C_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
 
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+structure Setting2 (Plane : Type*) [EuclideanPlane Plane] extends Setting1 Plane where
 -- $D$ is the midpoint of $BC$
   D : Plane
   hd : D = (SEG B C).midpoint
 -- Claim: $A \ne D$ and $B \ne D$ and $C \ne D$
-instance A_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.A e.D := ⟨sorry⟩
-instance B_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.B e.D := ⟨sorry⟩
-instance C_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.C e.D := ⟨sorry⟩
+instance A_ne_D {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.A e.D := ⟨sorry⟩
+instance B_ne_D {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.B e.D := ⟨sorry⟩
+instance C_ne_D {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.C e.D := ⟨sorry⟩
 
-structure Setting3 (Plane : Type _) [EuclideanPlane Plane] extends Setting2 Plane where
+structure Setting3 (Plane : Type*) [EuclideanPlane Plane] extends Setting2 Plane where
 -- let the angle bisectors of $\angle ADB$ and $\angle ADC$ intersect $AB$ and $AC$ at $E,F$
   E : Plane
   F : Plane
   he : is_inx E (ANG A D B).AngBis (SEG A B)
   hf : is_inx F (ANG A D C).AngBis (SEG A C)
 -- Claim: $F \ne E$
-instance F_ne_E {Plane : Type _} [EuclideanPlane Plane] {e : Setting3 Plane} : PtNe e.F e.E := ⟨sorry⟩
+instance F_ne_E {Plane : Type*} [EuclideanPlane Plane] {e : Setting3 Plane} : PtNe e.F e.E := ⟨sorry⟩
 
 -- Theorem : $EF \parallel BC$
-theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting3 Plane} : (SEG_nd e.E e.F) ∥ (SEG_nd e.B e.C) := sorry
+theorem Result {Plane : Type*} [EuclideanPlane Plane] {e : Setting3 Plane} : (SEG_nd e.E e.F) ∥ (SEG_nd e.B e.C) := sorry
 
 end Shan_Problem_2_38
 
@@ -338,7 +338,7 @@ $E$ lies on $AC$ such that $AE = 2 CE$,
 $CD,BE$ intersects at $O$
 Prove that $OE = \frac{1}{4} BE$-/
 
-structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1  (Plane : Type*) [EuclideanPlane Plane] where
 -- We have triangle $\triangle ABC$
   A : Plane
   B : Plane
@@ -355,7 +355,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   ho : is_inx O (SEG C D) (SEG B E)
 
 -- Theorem : $OE = \frac{1}{4} BE$
-theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : (SEG e.O e.E).length = (1 / 4) * (SEG e.B e.E).length := sorry
+theorem Result {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : (SEG e.O e.E).length = (1 / 4) * (SEG e.B e.E).length := sorry
 
 end Shan_Problem_2_42
 
@@ -364,18 +364,18 @@ namespace Shan_Problem_2_43
 The parallel line to $AC$ of $E,F$ intersect $BC$ at $G,H$ respectively,
 Prove that $EG + FH = AC$-/
 
-structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1  (Plane : Type*) [EuclideanPlane Plane] where
 -- We have triangle $\triangle ABC$
   A : Plane
   B : Plane
   C : Plane
   hnd : ¬ collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
-instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
-instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
+instance A_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
+instance B_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
+instance C_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
 
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+structure Setting2 (Plane : Type*) [EuclideanPlane Plane] extends Setting1 Plane where
 -- $E,F$ lies on $AB$ such that $AE = FB$
   E : Plane
   F : Plane
@@ -395,7 +395,7 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
   hh : is_inx H l₂ (SEG B C)
 
 -- Theorem : $EG + FH = AC$
-theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (SEG e.E e.G).length + (SEG e.F e.H).length = (SEG e.A e.C).length := sorry
+theorem Result {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : (SEG e.E e.G).length + (SEG e.F e.H).length = (SEG e.A e.C).length := sorry
 
 end Shan_Problem_2_43
 
@@ -404,7 +404,7 @@ namespace Shan_Problem_2_44
 $A₁,B₁,C₁$ are points on line $l₁$ such that $AA₁ \parallel BB₁ \parallel CC₁$.
 Prove that $BB₁ = \frac{n}{m+n} AA₁ + \frac{m}{m+n} CC₁$-/
 
-structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1  (Plane : Type*) [EuclideanPlane Plane] where
 -- We have line $l$ and points $A,B,C$ lies on $l
   l : Line Plane
   A : Plane
@@ -434,7 +434,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   hpara₂ : (SEG_nd B B₁) ∥ (SEG_nd C C₁)
 
 -- Theorem : $BB₁ = \frac{n}{m+n} AA₁ + \frac{m}{m+n} CC₁$
-theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : (SEG e.B e.B₁).length = (e.n / (e.m+e.n)) * (SEG e.A e.A₁).length + (e.m/(e.m+e.n)) * (SEG e.C e.C₁).length := sorry
+theorem Result {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : (SEG e.B e.B₁).length = (e.n / (e.m+e.n)) * (SEG e.A e.A₁).length + (e.m/(e.m+e.n)) * (SEG e.C e.C₁).length := sorry
 
 end Shan_Problem_2_44
 
@@ -442,7 +442,7 @@ namespace Shan_Problem_2_48
 /- $ABCD$ are convex quadrilateral, $AC$ and $BD$ intersect at $E$,
 Prove that area of $\triangle ABD$ : area of $\triangle CBD = AE : CE$  -/
 
-structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1  (Plane : Type*) [EuclideanPlane Plane] where
 -- We have convex quadrilateral $ABCD$
   A : Plane
   B : Plane
@@ -455,7 +455,7 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
 
 
 -- Theorem : area of $\triangle ABC :$ area of $\triangle DBC = AE : DE$
-theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : Triangle.area (▵ e.A e.B e.D) / Triangle.area (▵ e.C e.B e.D) = (SEG e.A e.E).length / (SEG e.D e.E).length := sorry
+theorem Result {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : Triangle.area (▵ e.A e.B e.D) / Triangle.area (▵ e.C e.B e.D) = (SEG e.A e.E).length / (SEG e.D e.E).length := sorry
 
 end Shan_Problem_2_48
 
@@ -464,18 +464,18 @@ namespace Shan_Problem_2_52
 the angle bisector of $\angle ABC$ intersect $AD$ and $AC$ at $M,N$ respectively,
 Prove that $AB^2 - AN^2 = BM \times BN$-/
 
-structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1  (Plane : Type*) [EuclideanPlane Plane] where
 -- Let triangle $\triangle ABC$
   A : Plane
   B : Plane
   C : Plane
   hnd : ¬ collinear A B C
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
-instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
-instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
-instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
+instance A_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd).2.2.symm⟩
+instance B_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd).1.symm⟩
+instance C_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear e.hnd).2.1.symm⟩
 
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+structure Setting2 (Plane : Type*) [EuclideanPlane Plane] extends Setting1 Plane where
 --$\triangle ABC$ is a right triangle with $\angle BAC = 90^{circ}$
   hright : ∠ B A C = ↑ (π / 2)
 -- $AD$ is the height of $\triangle ABC$
@@ -490,6 +490,6 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
   hn : is_inx N (SEG A C) l
 
 -- Theorem : $AB^2 - AN^2 = BM \times BN$
-theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : (SEG e.A e.B).length * (SEG e.A e.B).length - (SEG e.A e.N).length * (SEG e.A e.N).length = (SEG e.B e.M).length * (SEG e.B e.N).length := sorry
+theorem Result {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : (SEG e.A e.B).length * (SEG e.A e.B).length - (SEG e.A e.N).length * (SEG e.A e.N).length = (SEG e.B e.M).length * (SEG e.B e.N).length := sorry
 
 end Shan_Problem_2_52

@@ -9,12 +9,12 @@ namespace EuclidGeom
 
 /- Class of Circles-/
 @[ext]
-structure Circle (P : Type _) [EuclideanPlane P] where
+structure Circle (P : Type*) [EuclideanPlane P] where
   center : P
   radius : ℝ
   rad_pos : 0 < radius
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Circle
 

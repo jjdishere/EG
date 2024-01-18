@@ -9,7 +9,7 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 -- Prefer to define IsIsocelesTriangle than to just state the properties. Isoceles triangle by definition has a prefered orientation
 

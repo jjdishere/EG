@@ -13,7 +13,7 @@ namespace Shan_Problem_1_7
 
 Prove that $CD = AB / 2$. -/
 
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
   -- Let $\triangle ABC$ be a nontrivial triangle in which $\angle ACB= \pi/2$.
   A : Plane
   B : Plane
@@ -35,7 +35,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   D : Plane
   hD : D = (SEG A B).midpoint
 
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.C e.D).length = (SEG e.A e.B).length/2 := by
+theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.C e.D).length = (SEG e.A e.B).length/2 := by
   have D_ne_A: e.D ≠ e.A := by
     rw[e.hD]
     apply (SegND.midpt_lies_int (seg_nd := SEG_nd e.A e.B (e.B_ne_A))).2.1
@@ -179,7 +179,7 @@ namespace Shan_Problem_1_8
 
 Prove that $FG \perp DE$. -/
 
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
   -- Let $\triangle ABC$ be a nontrivial triangle in which $\angle ACB= \pi/2$.
   A : Plane
   B : Plane
@@ -212,7 +212,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   E_ne_D : E ≠ D := sorry
 
 -- Theorem : $FG \perp DE$
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) :(SEG_nd e.F e.G e.G_ne_F) ⟂ (SEG_nd e.D e.E e.E_ne_D) := sorry
+theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) :(SEG_nd e.F e.G e.G_ne_F) ⟂ (SEG_nd e.D e.E e.E_ne_D) := sorry
 
 end Shan_Problem_1_8
 

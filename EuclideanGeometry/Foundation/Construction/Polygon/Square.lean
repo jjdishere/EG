@@ -8,6 +8,6 @@ noncomputable section
 namespace EuclidGeom
 
 @[ext]
-structure Square (P : Type _) [EuclideanPlane P] extends Rhombus P, Rectangle P
+structure Square (P : Type*) [EuclideanPlane P] extends Rhombus P, Rectangle P
 
 end EuclidGeom

@@ -18,7 +18,7 @@ such that $AP = CR$ and $AS = CQ$.
 
 Prove that $PQRS$ is a parallelogram.
 -/
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
 --Let $ABCD$ be a parallelogram
   A : Plane
   B : Plane
@@ -42,7 +42,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
 --such that $AS = CQ$
   AS_eq_CQ : (SEG A S).length = (SEG C Q).length
 --Prove that $PQRS$ is a parallelogram
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (QDR e.P e.Q e.R e.S).IsParallelogram_nd := by
+theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : (QDR e.P e.Q e.R e.S).IsParallelogram_nd := by
 /-
 In parallelogram $ABCD$, we have $AB, DC$ are of the same direction.
 Since $P$ lies on $AB$, we have $AP, AB$ are of the same direction.

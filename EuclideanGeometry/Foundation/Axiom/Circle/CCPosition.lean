@@ -4,7 +4,7 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence_trash
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 section position
 
@@ -251,7 +251,7 @@ lemma intersected_centers_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω
 end CC
 
 @[ext]
-structure CCInxpts (P : Type _) [EuclideanPlane P] where
+structure CCInxpts (P : Type*) [EuclideanPlane P] where
   left : P
   right : P
 

@@ -12,14 +12,14 @@ namespace EuclidGeom
 open AngValue Angle
 
 @[ext]
-structure Arc (P : Type _) [EuclideanPlane P] where
+structure Arc (P : Type*) [EuclideanPlane P] where
   source : P
   target : P
   circle : Circle P
   ison : (source LiesOn circle) ∧ (target LiesOn circle)
   endpts_ne : PtNe target source
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Arc
 

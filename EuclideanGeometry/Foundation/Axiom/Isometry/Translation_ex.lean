@@ -7,7 +7,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P: Type _} [EuclideanPlane P] (v : Vec)
+variable {P: Type*} [EuclideanPlane P] (v : Vec)
 
 -- We fix the amount of translation to be v
 

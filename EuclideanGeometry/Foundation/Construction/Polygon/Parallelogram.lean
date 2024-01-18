@@ -38,20 +38,20 @@ In this section we define two types of parallelograms. 'parallel_nd' deals with 
 
 -- /-- A QuadrilateralND satisfies IsPara if two sets of opposite sides are parallel respectively. -/
 -- @[pp_dot]
--- def QuadrilateralND.IsParaPara {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := ( qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) ∧ (qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃)
+-- def QuadrilateralND.IsParaPara {P : Type*} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := ( qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) ∧ (qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃)
 
 -- -- scoped postfix : 50 "IsParaPara" => QuadrilateralND.IsParaPara
 
 -- /-- A quadrilateral satisfies IsPara if it is a QuadrilateralND and satisfies IsPara as a QuadrilateralND. -/
 -- @[pp_dot]
--- def Quadrilateral.IsParaPara {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
+-- def Quadrilateral.IsParaPara {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
 --   by_cases h : qdr.IsND
 --   · exact (QuadrilateralND.mk_nd h).IsParaPara
 --   · exact False
 
 /-- A quadrilateral satisfies IsPara if it is a QuadrilateralND and satisfies IsPara as a QuadrilateralND. -/
 @[pp_dot]
-def Quadrilateral.IsParaPara {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
+def Quadrilateral.IsParaPara {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases h : qdr.IsND
   · have qdr_nd : QuadrilateralND P := QDR_nd' h
     exact (qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) ∧ (qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃)
@@ -59,67 +59,67 @@ def Quadrilateral.IsParaPara {P : Type _} [EuclideanPlane P] (qdr : Quadrilatera
 
 /-- A quadrilateral is called parallelogram if VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃.-/
 @[pp_dot]
-def Quadrilateral.IsPrg {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃
+def Quadrilateral.IsPrg {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃
 
 scoped postfix : 50 "IsPrg" => Quadrilateral.IsPrg
 
 -- `shall we define this?`
 -- /-- A QuadrilateralND is called parallelogram if VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃.-/
 -- @[pp_dot]
--- def QuadrilateralND.IsPrg {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := VEC qdr_nd.point₁ qdr_nd.point₂ = VEC qdr_nd.point₄ qdr_nd.point₃
+-- def QuadrilateralND.IsPrg {P : Type*} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := VEC qdr_nd.point₁ qdr_nd.point₂ = VEC qdr_nd.point₄ qdr_nd.point₃
 
 -- scoped postfix : 50 "nd_IsPrg" => QuadrilateralND.IsPrg
 
 /-- We define parallelogram as a structure. -/
 @[ext]
-structure Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral P where
+structure Parallelogram (P : Type*) [EuclideanPlane P] extends Quadrilateral P where
   is_parallelogram : toQuadrilateral IsPrg
 
 /-- Make a parallelogram with 4 points on a plane, and using condition IsPrg. -/
-def Parallelogram.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D) IsPrg) : Parallelogram P where
+def Parallelogram.mk_pt_pt_pt_pt {P : Type*} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D) IsPrg) : Parallelogram P where
   toQuadrilateral := (QDR A B C D)
   is_parallelogram := h
 
 scoped notation "PRG" => Parallelogram.mk_pt_pt_pt_pt
 
 /-- Make a parallelogram with a quadrilateral, and using condition IsPrg. -/
-def Parallelogram.mk_isPrg {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsPrg) : Parallelogram P where
+def Parallelogram.mk_isPrg {P : Type*} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsPrg) : Parallelogram P where
   toQuadrilateral := qdr
   is_parallelogram := h
 
 scoped notation "PRG'" => Parallelogram.mk_isPrg
 
 /-- Vectors point₁ point₂ and point₄ point₃ in a parallelogram are equal. -/
-theorem Parallelogram.eq_vec_of_isPrg {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} : VEC prg.point₁ prg.point₂ = VEC prg.point₄ prg.point₃ := prg.is_parallelogram
+theorem Parallelogram.eq_vec_of_isPrg {P : Type*} [EuclideanPlane P] {prg : Parallelogram P} : VEC prg.point₁ prg.point₂ = VEC prg.point₄ prg.point₃ := prg.is_parallelogram
 
 /-- Vectors point₁ point₄ and point₂ point₃ in a parallelogram are equal. -/
-theorem Parallelogram.eq_vec_of_isPrg' {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} : VEC prg.point₁ prg.point₄ = VEC prg.point₂ prg.point₃ := by rw [← vec_add_vec prg.point₁ prg.point₂ prg.point₄, ← vec_add_vec prg.point₂ prg.point₄ prg.point₃, prg.is_parallelogram, add_comm]
+theorem Parallelogram.eq_vec_of_isPrg' {P : Type*} [EuclideanPlane P] {prg : Parallelogram P} : VEC prg.point₁ prg.point₄ = VEC prg.point₂ prg.point₃ := by rw [← vec_add_vec prg.point₁ prg.point₂ prg.point₄, ← vec_add_vec prg.point₂ prg.point₄ prg.point₃, prg.is_parallelogram, add_comm]
 
 /-- A parallelogram which satisfies Prallelogram.InGPos satisfies IsParaPara. -/
-theorem Parallelogram.parapara_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsParaPara:= by
+theorem Parallelogram.parapara_of_gpos {P : Type*} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsParaPara:= by
   unfold Quadrilateral.IsParaPara
   sorry
 
 /-- A parallelogram which satisfies Prallelogram.InGPos is convex. -/
-theorem Parallelogram.cvx_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsConvex:= by sorry
+theorem Parallelogram.cvx_of_gpos {P : Type*} [EuclideanPlane P] {prg : Parallelogram P} (InGPos : prg.InGPos): prg.IsConvex:= by sorry
 
 /-- We define parallelogram_nd as a structure. -/
 @[ext]
-structure ParallelogramND (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P, Parallelogram P
+structure ParallelogramND (P : Type*) [EuclideanPlane P] extends Quadrilateral_cvx P, Parallelogram P
 
 /-- A quadrilateral is parallelogram_nd if it is both convex and satisfies qualities of a parallelogram. This definition is in agreement with the structure above. -/
 @[pp_dot]
-def Quadrilateral.IsPrgND {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := qdr IsConvex ∧ qdr IsPrg
+def Quadrilateral.IsPrgND {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := qdr IsConvex ∧ qdr IsPrg
 
 scoped postfix : 50 "IsPrgND" => Quadrilateral.IsPrgND
 
 -- /-- A QuadrilateralND is parallelogram_nd if its toQuadrilateral is both convex and satisfies qualities of a parallelogram. -/
 -- @[pp_dot]
--- def QuadrilateralND.IsPrgND {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := Quadrilateral.IsPrgND qdr_nd.toQuadrilateral
+-- def QuadrilateralND.IsPrgND {P : Type*} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := Quadrilateral.IsPrgND qdr_nd.toQuadrilateral
 
 -- scoped postfix : 50 "nd_IsPrgND" => QuadrilateralND.IsPrgND
 
-theorem QuadrilateralND.parapara_iff_para_para {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : (qdr_nd.IsParaPara) ↔ (qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) ∧ (qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) := by
+theorem QuadrilateralND.parapara_iff_para_para {P : Type*} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : (qdr_nd.IsParaPara) ↔ (qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) ∧ (qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) := by
   constructor
   unfold Quadrilateral.IsParaPara
   simp only [dite_true, qdr_nd.nd, and_imp]
@@ -129,10 +129,10 @@ theorem QuadrilateralND.parapara_iff_para_para {P : Type _} [EuclideanPlane P] (
   exact fun a a_1 ↦ { left := a, right := a_1 }
 
 /-- A parallelogram_nd satisfies InGPos. -/
-theorem ParallelogramND.gpos_of_prgnd {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.InGPos := ⟨prg_nd.not_collinear₁₂₃, prg_nd.not_collinear₂₃₄, prg_nd.not_collinear₃₄₁, prg_nd.not_collinear₄₁₂⟩
+theorem ParallelogramND.gpos_of_prgnd {P : Type*} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.InGPos := ⟨prg_nd.not_collinear₁₂₃, prg_nd.not_collinear₂₃₄, prg_nd.not_collinear₃₄₁, prg_nd.not_collinear₄₁₂⟩
 
 /-- A parallelogram_nd satisfies IsParaPara. -/
-theorem ParallelogramND.parapara_of_prgnd {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.IsParaPara := by
+theorem ParallelogramND.parapara_of_prgnd {P : Type*} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.IsParaPara := by
   unfold Quadrilateral.IsParaPara
   simp only [dite_true, prg_nd.nd]
   unfold parallel
@@ -144,14 +144,14 @@ theorem ParallelogramND.parapara_of_prgnd {P : Type _} [EuclideanPlane P] (prg_n
   sorry
   sorry
 
-def ParallelogramND.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (h: (QDR A B C D) IsPrgND) : ParallelogramND P where
+def ParallelogramND.mk_pt_pt_pt_pt {P : Type*} [EuclideanPlane P] (A B C D : P) (h: (QDR A B C D) IsPrgND) : ParallelogramND P where
   toQuadrilateral := (QDR A B C D)
   nd := h.left; convex := h.left
   is_parallelogram := h.right
 
 scoped notation "PRG_nd" => ParallelogramND.mk_pt_pt_pt_pt
 
-def ParallelogramND.mk_isPrgND {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsPrgND) : ParallelogramND P where
+def ParallelogramND.mk_isPrgND {P : Type*} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsPrgND) : ParallelogramND P where
   toQuadrilateral := qdr
   nd := h.left; convex := h.left
   is_parallelogram := h.right
@@ -160,7 +160,7 @@ scoped notation "PRG_nd'" => ParallelogramND.mk_isPrgND
 
 /-
  Using the property above, we leave such a shortcut in a way people usually sense a parallelogram. A quadrilateral A B C D is parallelogram_nd if it is ND, is a parallelogram, and satisfies InGPos.
-def ParallelogramND.mk_prgND_of_gpos {P : Type _} [EuclideanPlane P] {prg : Parallelogram P} (gpos: prg.InGPos): ParallelogramND P where
+def ParallelogramND.mk_prgND_of_gpos {P : Type*} [EuclideanPlane P] {prg : Parallelogram P} (gpos: prg.InGPos): ParallelogramND P where
   toQuadrilateral := prg.toQuadrilateral
   nd := sorry
   convex := sorry
@@ -170,7 +170,7 @@ def ParallelogramND.mk_prgND_of_gpos {P : Type _} [EuclideanPlane P] {prg : Para
 scoped notation "non_triv_PRG_nd" => ParallelogramND.mk_prgND_of_gpos
 
 A quadrilateral A B C D is parallelogram_nd if it is ND, is a parallelogram, and satisfies IsParaPara.
---def ParallelogramND.mk_prgND_of_para {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsPrg) (IsPara: (QDR_nd A B C D h).IsParaPara): ParallelogramND P where
+--def ParallelogramND.mk_prgND_of_para {P : Type*} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsPrg) (IsPara: (QDR_nd A B C D h).IsParaPara): ParallelogramND P where
   point₁ := A; point₂ := B; point₃ := C; point₄ := D
   nd := h
   convex := sorry
@@ -180,14 +180,14 @@ A quadrilateral A B C D is parallelogram_nd if it is ND, is a parallelogram, and
 scoped notation "IsParaPara_PRG_nd" => ParallelogramND.mk_parallelogram_para
 
 here is two theorem using first version of definition of PRG_nd, may not useful currently.
-theorem Quadrilateral.IsPrg_nd_redef {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) (h: qdr.IsND) (h': qdr IsPrg) (h': (((QuadrilateralND.mk_nd h).angle₁.value.IsPos ∧ (QuadrilateralND.mk_nd h).angle₃.value.IsPos) ∨ ((QuadrilateralND.mk_nd h).angle₁.value.IsNeg ∧ (QuadrilateralND.mk_nd h).angle₃.value.IsNeg) ∨ ((QuadrilateralND.mk_nd h).angle₂.value.IsPos ∧ (QuadrilateralND.mk_nd h).angle₄.value.IsPos) ∨ ((QuadrilateralND.mk_nd h).angle₂.value.IsNeg ∧ (QuadrilateralND.mk_nd h).angle₄.value.IsNeg))) : (QuadrilateralND.mk_nd h).IsPrgND := sorry
+theorem Quadrilateral.IsPrg_nd_redef {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P) (h: qdr.IsND) (h': qdr IsPrg) (h': (((QuadrilateralND.mk_nd h).angle₁.value.IsPos ∧ (QuadrilateralND.mk_nd h).angle₃.value.IsPos) ∨ ((QuadrilateralND.mk_nd h).angle₁.value.IsNeg ∧ (QuadrilateralND.mk_nd h).angle₃.value.IsNeg) ∨ ((QuadrilateralND.mk_nd h).angle₂.value.IsPos ∧ (QuadrilateralND.mk_nd h).angle₄.value.IsPos) ∨ ((QuadrilateralND.mk_nd h).angle₂.value.IsNeg ∧ (QuadrilateralND.mk_nd h).angle₄.value.IsNeg))) : (QuadrilateralND.mk_nd h).IsPrgND := sorry
 
-theorem Parallelogram.parallelogramIs_nd_redef {P : Type _} [EuclideanPlane P] (prg : Parallelogram P) (h': prg.1.IsND) (k: ((QuadrilateralND.mk_nd h').angle₁.value.IsPos ∧ (QuadrilateralND.mk_nd h').angle₃.value.IsPos) ∨ ((QuadrilateralND.mk_nd h').angle₁.value.IsNeg ∧ (QuadrilateralND.mk_nd h').angle₃.value.IsNeg) ∨ ((QuadrilateralND.mk_nd h').angle₂.value.IsPos ∧ (QuadrilateralND.mk_nd h').angle₄.value.IsPos) ∨ ((QuadrilateralND.mk_nd h').angle₂.value.IsNeg ∧ (QuadrilateralND.mk_nd h').angle₄.value.IsNeg)) : (QuadrilateralND.mk_nd h').IsPrgND := sorry
+theorem Parallelogram.parallelogramIs_nd_redef {P : Type*} [EuclideanPlane P] (prg : Parallelogram P) (h': prg.1.IsND) (k: ((QuadrilateralND.mk_nd h').angle₁.value.IsPos ∧ (QuadrilateralND.mk_nd h').angle₃.value.IsPos) ∨ ((QuadrilateralND.mk_nd h').angle₁.value.IsNeg ∧ (QuadrilateralND.mk_nd h').angle₃.value.IsNeg) ∨ ((QuadrilateralND.mk_nd h').angle₂.value.IsPos ∧ (QuadrilateralND.mk_nd h').angle₄.value.IsPos) ∨ ((QuadrilateralND.mk_nd h').angle₂.value.IsNeg ∧ (QuadrilateralND.mk_nd h').angle₄.value.IsNeg)) : (QuadrilateralND.mk_nd h').IsPrgND := sorry
 -/
 
 section perm
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 variable (qdr : Quadrilateral P)
 variable (qdr_nd : QuadrilateralND P)
 variable (qdr_cvx : Quadrilateral_cvx P)
@@ -219,7 +219,7 @@ end perm
 
 section flip
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 variable (qdr : Quadrilateral P)
 variable (qdr_nd : QuadrilateralND P)
 variable (qdr_cvx : Quadrilateral_cvx P)
@@ -251,7 +251,7 @@ end flip
 
 section criteria_prgND_of_prg
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 variable (qdr_nd : QuadrilateralND P)
 variable (prg : Parallelogram P)
 
@@ -288,7 +288,7 @@ end criteria_prgND_of_prg
 
 section criteria_prgND_of_qdrND
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 variable {A B C D : P} (nd : (QDR A B C D).IsND)
 variable (qdr : Quadrilateral P) (qdr_nd : QuadrilateralND P)
 
@@ -330,12 +330,12 @@ end criteria_prgND_of_qdrND
 
 section criteria_prg_of_qdrND
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 variable {A B C D: P}
 variable (nd : (QDR A B C D).IsND)
 variable (cvx : (QDR A B C D).IsConvex)
-variable {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P)
-variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
+variable {P : Type*} [EuclideanPlane P] (qdr_nd : QuadrilateralND P)
+variable {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P)
 
 -- `why this theorem used two set of parallel and equal?`
 /-- If edge_nd₁₂ and edge_nd₃₄ of a QuadrilateralND are equal in value and parallel, and so do edge_nd₁₄ and edge_nd₂₃, then it is a parallelogram. -/
@@ -354,12 +354,12 @@ end criteria_prg_of_qdrND
 
 section criteria_prgND_of_qdrcvx
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 variable {A B C D : P}
 variable (nd : (QDR A B C D).IsND)
 variable (cvx : (QDR A B C D).IsConvex)
-variable {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
-variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
+variable {P : Type*} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
+variable {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P)
 
 /-- If edge_nd₁₂ and edge_nd₃₄ of a quadrilateral_cvx are parallel, and so do edge_nd₁₄ and edge_nd₂₃, then it is a parallelogram_nd. -/
 theorem qdrcvx_is_prgND_of_parapara (h₁ : qdr_cvx.IsParaPara) : qdr_cvx.IsPrgND := by sorry
@@ -387,10 +387,10 @@ end criteria_prgND_of_qdrcvx
 
 section property
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 variable {A B C D : P}
-variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
-variable {P : Type _} [EuclideanPlane P] (prg : Parallelogram P)
+variable {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P)
+variable {P : Type*} [EuclideanPlane P] (prg : Parallelogram P)
 
 /-- The lengths of segments point₁ point₂ and point₃ point₄ in a parallelogram are equal. -/
 theorem eq_length_of_isPrg : (prg.edge₁₂).length = (prg.edge₃₄).length := by sorry
@@ -415,10 +415,10 @@ end property
 
 section property_nd
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 variable {A B C D : P}
-variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
-variable {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P)
+variable {P : Type*} [EuclideanPlane P] (qdr : Quadrilateral P)
+variable {P : Type*} [EuclideanPlane P] (prg_nd : ParallelogramND P)
 
 /-- In a parallelogram_nd, edge_nd₁₂ and edge₃₄ are parallel. -/
 theorem para_of_isPrgND : prg_nd.edge_nd₁₂ ∥ prg_nd.edge_nd₃₄ := (prg_nd.parapara_iff_para_para.mp prg_nd.parapara_of_prgnd).left

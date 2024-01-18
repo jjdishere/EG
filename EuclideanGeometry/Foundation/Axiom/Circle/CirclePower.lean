@@ -6,7 +6,7 @@ import EuclideanGeometry.Foundation.Axiom.Circle.IncribedAngle
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 open DirLC CC Angle
 
@@ -50,7 +50,7 @@ section tangent
 namespace Circle
 
 @[ext]
-structure Tangents (P : Type _) [EuclideanPlane P] where
+structure Tangents (P : Type*) [EuclideanPlane P] where
   left : P
   right : P
 

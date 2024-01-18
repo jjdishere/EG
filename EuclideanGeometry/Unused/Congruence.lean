@@ -13,7 +13,7 @@ namespace EuclidGeom
 
 /- congruences of triangles, separate definitions for reversing orientation or not, (requiring all sides and angles being the same)-/
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 -- only define congrence for TriangleND
 --def IsCongr (tr_nd₁ tr_nd₂: TriangleND P) : Prop := (tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.length ∧ tr_nd₁.1.edge₂.length = tr_nd₂.1.edge₂.length ∧ tr_nd₁.1.edge₃.length = tr_nd₂.1.edge₃.length ∧ tr_nd₁.angle₁.value = tr_nd₂.angle₁.value ∧ tr_nd₁.angle₂.value = tr_nd₂.angle₂.value ∧ tr_nd₁.angle₃.value = tr_nd₂.angle₃.value)
 def IsCongr (tr₁ tr₂: Triangle P) : Prop := by

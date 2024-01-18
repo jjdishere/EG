@@ -14,7 +14,7 @@ Let $Q$ be the foot of perpendicular from $E$ to $BC$.
 Prove that $DP = EQ$.
 -/
 
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
   -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
   A : Plane
   B : Plane
@@ -41,7 +41,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   hQ : Q = perp_foot E (LIN B C B_ne_C.symm)
 
 /- # Another Style of Setting-/
-structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1 (Plane : Type*) [EuclideanPlane Plane] where
   -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
   A : Plane
   B : Plane
@@ -58,11 +58,11 @@ structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
   AE_eq_AD : (SEG A E).length = (SEG A D).length
 
 -- Claim: $B \ne C$.
-lemma B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: e.B ≠ e.C := by
+lemma B_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane}: e.B ≠ e.C := by
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
   exact (ne_of_not_collinear e.not_collinear_ABC).1.symm
 
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+structure Setting2 (Plane : Type*) [EuclideanPlane Plane] extends Setting1 Plane where
   B_ne_C : B ≠ C := B_ne_C
   -- Let $P$ be the foot of perpendicular from $D$ to $BC$.
   P : Plane
@@ -72,7 +72,7 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
   hQ : Q = perp_foot E (LIN B C B_ne_C.symm)
 
 -- Prove that $DP = EQ$.
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.D e.P).length = (SEG e.E e.Q).length := by
+theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.D e.P).length = (SEG e.E e.Q).length := by
 /-
   In the isoceles triangle $ABC$, we have $AB = AC$.
   Thus we have $BD = AB - AD = AC - AE = CE$.

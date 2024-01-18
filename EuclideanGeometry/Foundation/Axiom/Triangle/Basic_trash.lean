@@ -4,7 +4,7 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 namespace EuclidGeom
 open AngValue
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 structure TriangleND.IsAcute (tr_nd : TriangleND P) : Prop where
   angle₁ : tr_nd.angle₁.IsAcu

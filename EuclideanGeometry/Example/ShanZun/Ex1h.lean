@@ -4,7 +4,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Shan_Problem_2_21
 /- In a parallelelogram ABCD, E and F lies on the segment AC, and $AE=FC$

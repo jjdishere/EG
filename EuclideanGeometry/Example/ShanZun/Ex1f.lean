@@ -5,7 +5,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Shan_Problem_2_11
 /- Let $\triangle ABC$ be a regular triangle,

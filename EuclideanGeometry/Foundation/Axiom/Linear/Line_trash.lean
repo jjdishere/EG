@@ -3,6 +3,6 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 end EuclidGeom

@@ -4,7 +4,7 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular_trash
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 section DirLC
 
@@ -56,7 +56,7 @@ theorem intersect_iff_tangent_or_secant {l : DirLine P} {ω : Circle P} : (DirLi
 end DirLC
 
 @[ext]
-structure DirLCInxpts (P : Type _) [EuclideanPlane P] where
+structure DirLCInxpts (P : Type*) [EuclideanPlane P] where
   front : P
   back : P
 

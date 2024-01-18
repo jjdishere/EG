@@ -6,7 +6,7 @@ namespace EuclidGeom
 
 open Classical
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 section oarea_method
 

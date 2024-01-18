@@ -4,7 +4,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace AOPS_Problem_5_7
 /- Let $\triangle ABC$ be a triangle, and let $D$, $E$ be two points in the interior of $AB$ and $AC$ respectively such that $DE\parallel BC$ . $X$ lies inside $AB$ and $Y$ lies on the ray $XE$ so that $AY\parallel XC$

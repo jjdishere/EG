@@ -156,7 +156,7 @@ instance : IntFig Triangle where
 
 end TriangleND
 
-variable {P : Type _} [EuclideanPlane P] (tr : Triangle P) (tr_nd : TriangleND P)
+variable {P : Type*} [EuclideanPlane P] (tr : Triangle P) (tr_nd : TriangleND P)
 
 namespace Triangle
 

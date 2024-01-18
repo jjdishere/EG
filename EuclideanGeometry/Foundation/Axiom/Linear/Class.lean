@@ -44,7 +44,7 @@ namespace EuclidGeom
 class LinFig (α : Type*) (P : outParam <| Type*) [outParam <| EuclideanPlane P] extends Fig α P where
   collinear' : ∀ {A B C : P} {F : α}, A LiesOn F → B LiesOn F → C LiesOn F → collinear A B C
 
-class ProjObj (β : Type _) where
+class ProjObj (β : Type*) where
   toProj : β → Proj
 
 -- the information here is abundant, choose toProj' + a field carrier_to_proj_eq_to_proj is also enough. Or even ∃ A B ∈ carrier, A ≠ B is enough. toProj' can be defined later. However, we choose to write this way in order to avoid `∃` and use as many rfl as possible.
@@ -54,7 +54,7 @@ class ProjFig (α : Type*) (P : outParam <| Type*) [outParam <| EuclideanPlane P
   carrier_subset_toLine {F} : carrier F ⊆ (toLine F).carrier
   toLine_toProj_eq_toProj {F} : (toLine F).toProj = toProj' F
 
-class DirObj (β : Type _) extends ProjObj β where
+class DirObj (β : Type*) extends ProjObj β where
   toDir : β → Dir
   toDir_toProj_eq_toProj : ∀ {G : β}, (toDir G).toProj = toProj G
 
@@ -69,7 +69,7 @@ class DirFig (α : Type*) (P : outParam <| Type*) [outParam <| EuclideanPlane P]
   toDirLine_rev_eq_to_rev_toDirLine {F} : ((toDirLine F).reverse = toDirLine (reverse F))
 
 section fig_to_obj
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 instance {α} [ProjFig α P] : ProjObj α where
   toProj := ProjFig.toProj'
@@ -86,7 +86,7 @@ export DirFig (toDir' toDirLine toDir_toProj_eq_toProj toDirLine_toLine_eq_toLin
 export DirObj (toDir)
 
 section instances
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 -- Fun Fact: Vec is none of these. Id is LinFig.
 
 instance : DirObj VecND where
@@ -167,7 +167,7 @@ section theorems
 
 open Line DirLine
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 theorem carrier_toProj_eq_toProj {α} {A B : P} [ProjFig α P] {F : α} [_h : PtNe B A] (ha : A LiesOn F) (hb : B LiesOn F) : (SEG_nd A B).toProj = toProj' F :=
   (toProj_eq_seg_nd_toProj_of_lies_on (carrier_subset_toLine ha) (carrier_subset_toLine hb)).trans toLine_toProj_eq_toProj

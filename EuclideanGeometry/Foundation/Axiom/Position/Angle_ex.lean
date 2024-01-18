@@ -11,7 +11,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Angle
 
@@ -261,7 +261,7 @@ end Angle
 
 section parallel
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 -- should be stated use mod 2pi first, then back to pi or -pi
 
 structure IsCorrespondingAng (ang₁ ang₂ : Angle P) : Prop where
