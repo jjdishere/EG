@@ -69,26 +69,36 @@ theorem collinear_of_snd_eq_fst {A B : P} (C : P) (h : B = A)  : Collinear A B C
   simp [h]
 
 /-- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are collinear (in that order), then $A$, $C$, $B$ are collinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity. -/
-theorem collinear132 {A B C : P} (h : Collinear A B C) : Collinear A C B := by
-  unfold Collinear at h ⊢
-  rwa [wedge132, neg_eq_zero] at h
+theorem collinear132 {A B C : P} : Collinear A B C ↔ Collinear A C B := by
+  unfold Collinear
+  rw [wedge132, neg_eq_zero]
+
+alias ⟨Collinear.elim₁₃₂, _⟩ := collinear132
 
 /-- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are collinear (in that order), then $B$, $A$, $C$ are collinear (in that order); in other words, in the definition of colinarity, swapping the first two of the three points does not change property of the three points being collinear. -/
-theorem collinear213 {A B C : P} (h : Collinear A B C) : Collinear B A C := by
-  unfold Collinear at h ⊢
-  rwa [wedge213, neg_eq_zero] at h
+theorem collinear213 {A B C : P} : Collinear A B C ↔ Collinear B A C := by
+  unfold Collinear
+  rw [wedge213, neg_eq_zero]
 
-theorem collinear312 {A B C : P} (h : Collinear A B C) : Collinear B C A := by
-  unfold Collinear at h ⊢
-  rwa [wedge312] at h
+alias ⟨Collinear.elim₂₁₃, _⟩ := collinear213
 
-theorem collinear231 {A B C : P} (h : Collinear A B C) : Collinear C A B := by
-  unfold Collinear at h ⊢
-  rwa [wedge231] at h
+theorem collinear231 {A B C : P} : Collinear A B C ↔ Collinear B C A := by
+  unfold Collinear
+  rw [wedge231]
 
-theorem collinear321 {A B C : P} (h : Collinear A B C) : Collinear C B A := by
-  unfold Collinear at h ⊢
-  rwa [wedge321, neg_eq_zero] at h
+alias ⟨Collinear.elim₂₃₁, _⟩ := collinear231
+
+theorem collinear312 {A B C : P} : Collinear A B C ↔ Collinear C A B := by
+  unfold Collinear
+  rw [wedge312]
+
+alias ⟨Collinear.elim₃₁₂, _⟩ := collinear312
+
+theorem collinear321 {A B C : P} : Collinear A B C ↔ Collinear C B A := by
+  unfold Collinear
+  rw [wedge321, neg_eq_zero]
+
+alias ⟨Collinear.elim₃₂₁, _⟩ := collinear321
 
 -- the proof of this theorem using def of line seems to be easier
 /-- Given four points $A$, $B$, $C$, $D$ with $B \neq A$, if $A$, $B$, $C$ are collinear, and if $A$, $B$, $D$ are collinear, then $A$, $C$, $D$ are collinear. -/

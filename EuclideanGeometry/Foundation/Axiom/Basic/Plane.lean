@@ -68,6 +68,10 @@ theorem ne_iff_vec_ne_zero (A B : P) : B ≠ A ↔ VEC A B ≠ 0 := (eq_iff_vec_
 theorem vec_add_vec (A B C : P) : VEC A B + VEC B C = VEC A C := by
   rw [add_comm, Vec.mkPtPt, Vec.mkPtPt, Vec.mkPtPt, vsub_add_vsub_cancel]
 
+theorem vec_vadd_right (A B : P) (v : Vec) : VEC A (v +ᵥ B) = v + VEC A B := vadd_vsub_assoc v B A
+
+theorem vec_vadd_left (A B : P) (v : Vec) : VEC (v +ᵥ A) B = VEC A B - v := vsub_vadd_eq_vsub_sub B A v
+
 @[simp]
 theorem vec_of_pt_vadd_pt_eq_vec (A : P) (v : Vec) : VEC A (v +ᵥ A) = v := vadd_vsub v A
 
@@ -142,19 +146,33 @@ theorem wedge_self₃₁ (A C : P) : wedge A C A = 0 := by
 
 theorem wedge213 (A B C : P) : wedge B A C = - wedge A B C := by
   unfold wedge
-  rw [← neg_vec A B,← vec_sub_vec A B C, map_sub]
+  rw [← neg_vec A B, ← vec_sub_vec A B C, map_sub]
   simp only [map_neg, LinearMap.neg_apply, Vec.det_self, neg_zero, sub_zero]
 
 theorem wedge132 (A B C : P) : wedge A C B = - wedge A B C := by
   unfold wedge
   rw [Vec.det_skew]
 
-theorem wedge312 (A B C : P) : wedge C A B = wedge A B C := by
+theorem wedge231 (A B C : P) : wedge C A B = wedge A B C := by
   rw [wedge213, wedge132, neg_neg]
 
-theorem wedge231 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge312, wedge312]
+theorem wedge312 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge231, wedge231]
 
-theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, wedge231]
+theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, wedge312]
+
+lemma wedge_def₁ (A B C : P) : wedge A B C = Vec.det (VEC A B) (VEC A C) := rfl
+
+lemma wedge_def₂ (A B C : P) : wedge A B C = Vec.det (VEC B C) (VEC B A) := by
+  rw [← wedge_def₁, wedge231]
+
+lemma wedge_def₃ (A B C : P) : wedge A B C = Vec.det (VEC C A) (VEC C B) := by
+  rw [← wedge_def₂, wedge231]
+
+lemma wedge_vadd (A B C : P) (v : Vec) : wedge A B (v +ᵥ C) = Vec.det (VEC A B) v + wedge A B C := by
+  simp [wedge, vec_vadd_right]
+
+lemma wedge_smul_vec_self_vadd (A B C : P) (k : ℝ) : wedge A B (k • VEC A B +ᵥ C) = wedge A B C := by
+  simp [wedge_vadd]
 
 end wedge
 
