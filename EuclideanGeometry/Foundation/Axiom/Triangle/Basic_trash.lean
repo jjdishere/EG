@@ -22,7 +22,7 @@ theorem edge_toLine_not_para_of_not_collinear {A B C : P} (h : ¬ collinear A B 
     exact (SEG_nd B C (ne_of_not_collinear h).1).source_lies_on_toLine
     exact h1
   have a_lies_on_ab : A LiesOn (LIN A B (ne_of_not_collinear h).2.2) := (SEG_nd A B (ne_of_not_collinear h).2.2).source_lies_on_toLine
-  have a_not_lies_on_bc := (Line.lies_on_line_of_pt_pt_iff_collinear (_h := ⟨(ne_of_not_collinear h).1⟩) A).mp.mt (Collinear.perm₁₃₂.mt (Collinear.perm₂₁₃.mt h))
+  have a_not_lies_on_bc := (Line.lies_on_line_of_pt_pt_iff_collinear (_h := ⟨(ne_of_not_collinear h).1⟩) A).mp.mt (flip_collinear_snd_trd.mt (flip_collinear_fst_snd.mt h))
   simp only[← eq1] at a_not_lies_on_bc
   apply a_not_lies_on_bc
   exact a_lies_on_ab
@@ -34,7 +34,7 @@ theorem edge_toLine_not_para_of_not_collinear {A B C : P} (h : ¬ collinear A B 
     exact (SEG_nd C A (ne_of_not_collinear h).2.1).source_lies_on_toLine
     exact h2
   have b_lies_on_bc : B LiesOn (LIN B C (ne_of_not_collinear h).1) := (SEG_nd B C (ne_of_not_collinear h).1).source_lies_on_toLine
-  have b_not_lies_on_ca := (Line.lies_on_line_of_pt_pt_iff_collinear (_h := ⟨(ne_of_not_collinear h).2.1⟩) B).mp.mt (Collinear.perm₂₁₃.mt (Collinear.perm₁₃₂.mt h))
+  have b_not_lies_on_ca := (Line.lies_on_line_of_pt_pt_iff_collinear (_h := ⟨(ne_of_not_collinear h).2.1⟩) B).mp.mt (flip_collinear_fst_snd.mt (flip_collinear_snd_trd.mt h))
   simp only[← eq2] at b_not_lies_on_ca
   apply b_not_lies_on_ca
   exact b_lies_on_bc

@@ -41,7 +41,7 @@ theorem odist_eq_divratio_mul_odist (A B C : P) (dl : DirLine P) (colin : collin
   simp only [map_smul, smul_eq_mul]
 
 theorem  wedge_eq_divratio_mul_wedge_of_collinear_collinear (A B C D E : P) (colin : collinear A B C) [cnea : PtNe C A] (colin' : collinear A D E) : wedge D B E = (divratio A B C) * wedge D C E := by
-  rw[← wedge231 D B E, wedge_eq_wedge_add_wedge_of_collinear E A D B (Collinear.perm₃₁₂ colin'), ← wedge231 D C E, wedge_eq_wedge_add_wedge_of_collinear E A D C (Collinear.perm₃₁₂ colin'), wedge213 A B D, wedge231 A B E, wedge213 A C D, wedge231 A C E,wedge_eq_divratio_mul_wedge_of_collinear A B C D colin,wedge_eq_divratio_mul_wedge_of_collinear A B C E colin]
+  rw[← wedge231 D B E, wedge_eq_wedge_add_wedge_of_collinear E A D B (perm_collinear_trd_fst_snd colin'), ← wedge231 D C E, wedge_eq_wedge_add_wedge_of_collinear E A D C (perm_collinear_trd_fst_snd colin'), wedge213 A B D, wedge231 A B E, wedge213 A C D, wedge231 A C E,wedge_eq_divratio_mul_wedge_of_collinear A B C D colin,wedge_eq_divratio_mul_wedge_of_collinear A B C E colin]
   ring
 
 theorem ratio_eq_wedge_div_wedge_of_collinear_collinear_notcoliear (A B C D E : P) (colin : collinear A B C) [cnea : PtNe C A] (colin' : collinear A D E) (ncolin : ¬ collinear D C E) : divratio A B C = (wedge D B E) / (wedge D C E) := by

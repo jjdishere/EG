@@ -39,10 +39,10 @@ def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
         exact triv_collinear _ _
       · by_cases tz = tx
         · rw [pt_eq_pt_of_eq_smul_smul h hz hx]
-          exact Collinear.perm₁₃₂ $ triv_collinear _ _
+          exact flip_collinear_snd_trd $ triv_collinear _ _
         · have h : ty = tz := by tauto
           rw [pt_eq_pt_of_eq_smul_smul h hy hz]
-          exact Collinear.perm₂₁₃ $ Collinear.perm₁₃₂ $ triv_collinear _ _
+          exact flip_collinear_fst_snd $ flip_collinear_snd_trd $ triv_collinear _ _
   maximal x y := by
     unfold Membership.mem Set.instMembershipSet Set.Mem setOf
     simp only [forall_exists_index]

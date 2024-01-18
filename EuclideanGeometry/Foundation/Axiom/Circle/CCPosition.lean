@@ -115,7 +115,7 @@ theorem extangent_pt_centers_collinear {ω₁ : Circle P} {ω₂ : Circle P} (h 
         simp
       _ = ω₁.radius • (‖VEC ω₁.center ω₂.center‖⁻¹ • (VEC ω₁.center ω₂.center)) := rfl
       _ = (ω₁.radius * ‖VEC ω₁.center ω₂.center‖⁻¹) • (VEC ω₁.center ω₂.center) := by apply smul_smul
-  apply Collinear.perm₁₃₂ (collinear_of_vec_eq_smul_vec this)
+  apply flip_collinear_snd_trd (collinear_of_vec_eq_smul_vec this)
 
 end CC
 

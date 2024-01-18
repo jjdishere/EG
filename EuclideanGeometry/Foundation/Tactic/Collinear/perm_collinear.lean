@@ -35,31 +35,31 @@ def evalPerm_collinear : Tactic := fun stx =>
       catch
         _ => pure ()
       try
-        let t <- `(tactic| refine Collinear.perm₂₁₃ $x0)
+        let t <- `(tactic| refine flip_collinear_fst_snd $x0)
         evalTactic t
         return
       catch
         _ => pure ()
       try
-        let t <- `(tactic| refine Collinear.perm₁₃₂ $x0)
+        let t <- `(tactic| refine flip_collinear_snd_trd $x0)
         evalTactic t
         return
       catch
         _ => pure ()
       try
-        let t <- `(tactic| refine Collinear.perm₂₁₃ (Collinear.perm₁₃₂ $x0))
+        let t <- `(tactic| refine flip_collinear_fst_snd (flip_collinear_snd_trd $x0))
         evalTactic t
         return
       catch
         _ => pure ()
       try
-        let t <- `(tactic| refine Collinear.perm₁₃₂ (Collinear.perm₂₁₃ $x0))
+        let t <- `(tactic| refine flip_collinear_snd_trd (flip_collinear_fst_snd $x0))
         evalTactic t
         return
       catch
         _ => pure ()
       try
-        let t <- `(tactic| refine Collinear.perm₂₁₃ (Collinear.perm₁₃₂ (Collinear.perm₂₁₃ $x0)))
+        let t <- `(tactic| refine flip_collinear_fst_snd (flip_collinear_snd_trd (flip_collinear_fst_snd $x0)))
         evalTactic t
         return
       catch
