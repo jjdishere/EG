@@ -183,7 +183,7 @@ lemma pts_lieson_circle_vec_eq {A B : P} {ω : Circle P} [hne : PtNe B A] (hl₁
   apply distinct_pts_same_dist_vec_eq
   · have : (perp_foot ω.center (LIN A B)) LiesOn (LIN A B) := perp_foot_lies_on_line _ _
     have : Collinear A B (perp_foot ω.center (LIN A B)) := Line.pt_pt_linear this
-    have : Collinear (perp_foot ω.center (LIN A B)) A B := collinear231 this
+    have : Collinear (perp_foot ω.center (LIN A B)) A B := Collinear.perm₂₃₁ this
     apply Line.pt_pt_maximal this
   apply (sq_eq_sq dist_nonneg dist_nonneg).mp
   calc

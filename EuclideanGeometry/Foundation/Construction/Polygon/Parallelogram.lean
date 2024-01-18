@@ -165,7 +165,7 @@ theorem Parallelogram_not_collinear₁₂₃ {P : Type*} [EuclideanPlane P] (qdr
       simp [wedge132 _ _ qdr_nd.point₄]
   · constructor
     · exact h
-    · rw [collinear132]
+    · rw [Collinear.perm₁₃₂rm₁₃₂]
 
     ·
     ·
@@ -351,12 +351,12 @@ theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (h₁ : qdr_nd.edge
     rw [(smul_smul (- r) c (VEC qdr_nd.point₁ qdr_nd.point₂)).symm,eq''.symm,neg_smul,eq.symm]
     exact (neg_vec qdr_nd.point₃ qdr_nd.point₁).symm
   by_contra iscollinear
-  apply collinear321 at iscollinear
+  apply Collinear.perm₃₂₁ at iscollinear
   rw [collinear_iff_eq_smul_vec_of_ne] at iscollinear
   rcases iscollinear with ⟨r,eq⟩
   apply notcollinear
   have para : qdr_nd.edgeND₃₄.toVecND ∥ qdr_nd.edgeND₁₂.toVecND := by sorry
-  apply collinear321
+  apply Collinear.perm₃₂₁
   rw [collinear_iff_eq_smul_vec_of_ne]
   rcases (para_vec qdr_nd.edgeND₃₄.toVecND qdr_nd.edgeND₁₂.toVecND para) with ⟨c,eq'⟩
   have eq'' : (VEC qdr_nd.point₃ qdr_nd.point₄) = c • (VEC qdr_nd.point₁ qdr_nd.point₂) := eq'

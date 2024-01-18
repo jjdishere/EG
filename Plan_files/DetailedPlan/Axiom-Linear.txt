@@ -366,10 +366,10 @@ Theorem \verb|collinear_iff_eq_smul_vec_of_ne|: Given three points $A$, $B$, $C$
 Theorem \verb|triv_collinear₁₂|: For any two points $A$ and $C$, the points $A$, $A$, $C$ are collinear.
 
 \item 
-Theorem \verb|collinear132|: Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are collinear (in that order), then $A$, $C$, $B$ are collinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity.
+Theorem \verb|Collinear.perm₁₃₂|: Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are collinear (in that order), then $A$, $C$, $B$ are collinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity.
 
 \item 
-Theorem \verb|collinear213|: Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are collinear (in that order), then $B$, $A$, $C$ are collinear (in that order); in other words, in the definition of colinarity, swapping the first two of the three points does not change property of the three points being collinear.
+Theorem \verb|Collinear.perm₂₁₃|: Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are collinear (in that order), then $B$, $A$, $C$ are collinear (in that order); in other words, in the definition of colinarity, swapping the first two of the three points does not change property of the three points being collinear.
 
 \item 
 Theorem \verb|collinear_of_collinear_collinear_ne|: Given four points $A$, $B$, $C$, $D$ with $B \neq A$, if $A$, $B$, $C$ are collinear, and if $A$, $B$, $D$ are collinear, then $A$, $C$, $D$ are collinear.

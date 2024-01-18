@@ -93,21 +93,21 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
     have : Collinear e.A e.B E := by
       apply collinear_of_collinear_collinear_ne adb_collinear h' D_ne_A
     have neghnd : Collinear e.A e.B e.C := by
-      apply collinear_of_collinear_collinear_ne (collinear132 this) aec_collinear E_ne_A
+      apply collinear_of_collinear_collinear_ne (Collinear.perm₁₃₂ this) aec_collinear E_ne_A
     exact e.not_collinear_ABC neghnd
   have not_collinear_CDE : ¬ Collinear e.C e.D E := by
     intro h
     have : Collinear e.C e.D e.A := by
-      apply collinear132
+      apply Collinear.perm₁₃₂
       apply collinear_of_collinear_collinear_ne
-      apply (collinear132 (collinear213 (collinear132 aec_collinear)))
-      apply collinear132 h
+      apply (Collinear.perm₁₃₂ (Collinear.perm₂₁₃ (Collinear.perm₁₃₂ aec_collinear)))
+      apply Collinear.perm₁₃₂ h
       apply E_ne_C
     have : Collinear e.A e.B e.C := by
       apply collinear_of_collinear_collinear_ne
       apply adb_collinear
       -- apply e.hD
-      apply (collinear132 (collinear213 (collinear132 this)))
+      apply (Collinear.perm₁₃₂ (Collinear.perm₂₁₃ (Collinear.perm₁₃₂ this)))
       apply D_ne_A
     apply e.not_collinear_ABC this
 

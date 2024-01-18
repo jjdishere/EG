@@ -161,7 +161,7 @@ theorem antipode_iff_collinear (A B : P) {ω : Circle P} [h : PtNe B A] (h₁ : 
 
 theorem mk_pt_pt_diam_isantipode {A B : P} [h : PtNe A B] : Arc.IsAntipode A B (Circle.mk_pt_pt_diam_fst_lieson) (Circle.mk_pt_pt_diam_snd_lieson) := by
   have hc : Collinear (SEG A B).midpoint A B := by
-    apply collinear231
+    apply Collinear.perm₂₃₁
     apply Line.pt_pt_linear
     show (SEG A B).midpoint LiesOn (SEG_nd A B).toLine
     apply SegND.lies_on_toLine_of_lie_on
