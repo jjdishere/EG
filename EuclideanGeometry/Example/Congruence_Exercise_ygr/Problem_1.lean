@@ -35,10 +35,10 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   h₂ : (SEG B C).length = (SEG D E).length
 attribute [instance] Setting1.B_ne_F
 lemma hnd₁ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ Collinear e.B e.A e.C := by
-  apply collinear213.mt
+  apply Collinear.perm₂₁₃.mt
   exact e.ABC_nd
 lemma hnd₂ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ Collinear e.D e.F e.E := by
-  apply collinear231.mt
+  apply Collinear.perm₂₃₁.mt
   exact e.EDF_nd
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.A e.B := ⟨(ne_of_not_collinear hnd₁).2.2⟩
 instance D_ne_E {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.E := ⟨(ne_of_not_collinear hnd₂).2.1⟩

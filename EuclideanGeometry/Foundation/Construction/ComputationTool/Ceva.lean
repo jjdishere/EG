@@ -49,28 +49,28 @@ attribute [instance] a_ne_b b_ne_c c_ne_a d_ne_a d_ne_b d_ne_c
 --$D,C,A$ are not collinear
 lemma ncolin_dca : ¬ Collinear D C A := by
   intro h0
-  exact cad_nd (collinear312 h0)
+  exact cad_nd (Collinear.perm₃₁₂ h0)
 
 --$E,B,C$ are collinear
 lemma colin_ebc : Collinear E B C := by
   have h : E LiesOn LIN C B := by
     rw [e_def]
     apply Line.inx_lies_on_fst
-  exact collinear321 (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$E,D,A$ are collinear
 lemma colin_eda : Collinear E D A := by
   have h : E LiesOn LIN A D := by
     rw [e_def]
     apply Line.inx_lies_on_snd
-  exact collinear321 (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$C\ne E$
 instance c_ne_e : PtNe C E := Fact.mk <| by
   have h : Collinear E D A := colin_eda
   intro k
   rw [←k] at h
-  exact ncolin_dca (collinear213 h)
+  exact ncolin_dca (Collinear.perm₂₁₃ h)
 
 --$EB/EC=S_{\trian}DBA/S_{\trian}DCA$
 lemma dratio_ebc_eq_wedge_div_wedge : divratio E B C = (wedge D B A) / (wedge D C A) :=
@@ -79,28 +79,28 @@ lemma dratio_ebc_eq_wedge_div_wedge : divratio E B C = (wedge D B A) / (wedge D 
 --$D,A,B$ are not collinear
 lemma ncolin_dab : ¬ Collinear D A B := by
   intro h0
-  exact abd_nd (collinear312 h0)
+  exact abd_nd (Collinear.perm₃₁₂ h0)
 
 --$F,C,A$ are collinear
 lemma colin_fca : Collinear F C A := by
   have h : F LiesOn LIN A C := by
     rw [f_def]
     apply Line.inx_lies_on_fst
-  exact collinear321 (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$F,D,B$ are collinear
 lemma colin_fdb : Collinear F D B := by
   have h : F LiesOn LIN B D := by
     rw [f_def]
     apply Line.inx_lies_on_snd
-  exact collinear321 (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$A\ne F$
 instance a_ne_f : PtNe A F := Fact.mk <| by
   have h : Collinear F D B := colin_fdb
   intro k
   rw [←k] at h
-  exact ncolin_dab (collinear213 h)
+  exact ncolin_dab (Collinear.perm₂₁₃ h)
 
 --$FC/FA=S_{\trian}DCB/S_{\trian}DAB$
 lemma dratio_fca_eq_wedge_div_wedge : divratio F C A = (wedge D C B) / (wedge D A B) :=
@@ -109,28 +109,28 @@ lemma dratio_fca_eq_wedge_div_wedge : divratio F C A = (wedge D C B) / (wedge D 
 --$D,B,C$ are not collinear
 lemma ncolin_dbc : ¬ Collinear D B C := by
   intro h0
-  exact bcd_nd (collinear312 h0)
+  exact bcd_nd (Collinear.perm₃₁₂ h0)
 
 --$G,A,B$ are collinear
 lemma colin_gab : Collinear G A B := by
   have h : G LiesOn LIN B A _ := by
     rw [g_def]
     apply Line.inx_lies_on_fst
-  exact collinear321 (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$G,D,C$ are collinear
 lemma colin_gdc : Collinear G D C := by
   have h : G LiesOn LIN C D _ := by
     rw [g_def]
     apply Line.inx_lies_on_snd
-  exact collinear321 (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$A\ne F$
 instance b_ne_g : PtNe B G := Fact.mk <| by
   have h : Collinear G D C := colin_gdc
   intro k
   rw [←k] at h
-  exact ncolin_dbc (collinear213 h)
+  exact ncolin_dbc (Collinear.perm₂₁₃ h)
 
 --$GA/GB=S_{\trian}DAC/S_{\trian}DBC$
 lemma dratio_gab_eq_wedge_div_wedge : divratio G A B = (wedge D A C) / (wedge D B C) := ratio_eq_wedge_div_wedge_of_collinear_collinear_notcoliear G A B D C colin_gab colin_gdc ncolin_dbc

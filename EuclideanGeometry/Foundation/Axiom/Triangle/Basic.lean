@@ -192,9 +192,9 @@ end Triangle
 
 namespace TriangleND
 
-def perm_vertices : (TriangleND P) := ⟨tr_nd.1.perm_vertices, collinear132.mt $ collinear213.mt tr_nd.2⟩
+def perm_vertices : (TriangleND P) := ⟨tr_nd.1.perm_vertices, Collinear.perm₁₃₂.mt $ Collinear.perm₂₁₃.mt tr_nd.2⟩
 
-def flip_vertices : (TriangleND P) := ⟨tr_nd.1.flip_vertices, collinear132.mt tr_nd.2⟩
+def flip_vertices : (TriangleND P) := ⟨tr_nd.1.flip_vertices, Collinear.perm₁₃₂.mt tr_nd.2⟩
 
 theorem eq_self_of_perm_vertices_three_times : tr_nd.perm_vertices.perm_vertices.perm_vertices = tr_nd := rfl
   --exact tr_nd.1.eq_self_of_perm_vertices_three_times
@@ -314,11 +314,11 @@ theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr
   rw [not_not]
   by_cases h₁ : VEC B C = 0
   · simp only [(eq_iff_vec_eq_zero B C).2 h₁]
-    apply collinear321
+    apply Collinear.perm₃₂₁
     exact triv_collinear₁₂ _ _
   · by_cases h₂ : VEC C A = 0
     · simp only [(eq_iff_vec_eq_zero C A).2 h₂]
-      apply collinear132
+      apply Collinear.perm₁₃₂
       exact triv_collinear₁₂ _ _
     · have g : SameRay ℝ (VEC B C) (VEC C A)
       · rw [sameRay_iff_norm_add, ← eq]
@@ -326,7 +326,7 @@ theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr
         exact Seg.length_eq_norm_toVec
       rcases SameRay.exists_pos g h₁ h₂ with ⟨_, ⟨_, ⟨_, ⟨_, g⟩⟩⟩⟩
       rw [← neg_vec C B, ← neg_one_smul ℝ, ← mul_smul, mul_neg_one, ← eq_inv_smul_iff₀ (by linarith), ← mul_smul] at g
-      exact collinear312 (collinear_of_vec_eq_smul_vec g)
+      exact Collinear.perm₃₁₂ (collinear_of_vec_eq_smul_vec g)
 
 theorem triangle_ineq' (nontriv : tr.IsND) : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length := by
   have ne : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length := by
