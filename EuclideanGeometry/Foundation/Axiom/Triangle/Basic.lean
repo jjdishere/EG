@@ -326,7 +326,7 @@ theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr
         exact Seg.length_eq_norm_toVec
       rcases SameRay.exists_pos g h₁ h₂ with ⟨_, ⟨_, ⟨_, ⟨_, g⟩⟩⟩⟩
       rw [← neg_vec C B, ← neg_one_smul ℝ, ← mul_smul, mul_neg_one, ← eq_inv_smul_iff₀ (by linarith), ← mul_smul] at g
-      exact Collinear.perm₃₁₂ (collinear_of_vec_eq_smul_vec g)
+      exact Collinear.perm₂₃₁ (collinear_of_vec_eq_smul_vec g)
 
 theorem triangle_ineq' (nontriv : tr.IsND) : tr.edge₁.length + tr.edge₂.length > tr.edge₃.length := by
   have ne : tr.edge₁.length + tr.edge₂.length ≠ tr.edge₃.length := by

@@ -53,7 +53,7 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : �
   Thus $\angle B D E = -\angle C B A $.
   -/
   have hnd₁' : ¬ Collinear e.C e.A e.B := by
-    apply Collinear.perm₂₃₁.mt
+    apply Collinear.perm₃₁₂.mt
     exact e.hnd₁
   --$DB = BC$
   have e₂ : (SEG e.D e.B).length = (SEG e.B e.C).length := by
