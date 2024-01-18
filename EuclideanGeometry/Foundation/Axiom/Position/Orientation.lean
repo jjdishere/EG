@@ -26,12 +26,12 @@ theorem wedge132 (A B C : P) : wedge A C B = - wedge A B C := by
   unfold wedge
   rw [Vec.det_skew]
 
-theorem wedge312 (A B C : P) : wedge C A B = wedge A B C := by
+theorem wedge231 (A B C : P) : wedge C A B = wedge A B C := by
   rw [wedge213, wedge132, neg_neg]
 
-theorem wedge231 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge312, wedge312]
+theorem wedge312 (A B C : P) : wedge B C A = wedge A B C := by rw [wedge231, wedge231]
 
-theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge213, wedge231]
+theorem wedge321 (A B C : P) : wedge C B A = - wedge A B C := by rw [wedge132, wedge231]
 
 theorem wedge_eq_length_mul_length_mul_sin (A B C : P) [bnea : PtNe B A] [cnea : PtNe C A] : wedge A B C = (SEG A B).length * (SEG A C).length * sin (ANG B A C).value := by
   unfold wedge
