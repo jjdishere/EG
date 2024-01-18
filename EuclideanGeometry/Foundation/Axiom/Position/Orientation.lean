@@ -427,53 +427,33 @@ theorem parallel_iff_odist_eq_odist_right {α} [DirFig α P] (A B : P) (df : α)
     simp only [Dir.unitVecND_toProj]
     rfl
 
-theorem wedge_eq_wedge_iff_parallel_left (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : SEG_nd A B ∥ SEG_nd C D ↔ wedge A B C = wedge A B D := by
+theorem wedge_eq_wedge_iff_parallel_left {A B C D : P} [bnea : PtNe B A] [dnec : PtNe D C] : wedge A B C = wedge A B D ↔ SEG_nd A B ∥ SEG_nd C D := by
+  rw [← odist_eq_odist_iff_wedge_eq_wedge, parallel_comm, parallel_iff_odist_eq_odist_right]
+
+theorem wedge_eq_wedge_iff_parallel_right {A B C D : P} [bnea : PtNe B A] [dnec : PtNe D C] : wedge C D A = wedge C D B ↔ SEG_nd A B ∥ SEG_nd C D := by
   rw [← odist_eq_odist_iff_wedge_eq_wedge, parallel_iff_odist_eq_odist_right]
 
-theorem wedge_eq_wedge_iff_parallel (A B C D : P) [bnea : PtNe B A] [dnec : PtNe D C] : SEG_nd A B ∥ SEG_nd C D ↔ wedge A B C = wedge A B D := by
-  have : (wedge A B C = wedge A B D) = (odist C (SEG_nd A B) = odist D (SEG_nd A B)) := by
-    symm
-    simp only [eq_iff_iff]
-    exact wedge_eq_wedge_iff_odist_eq_odist_of_ne A B C D
-  simp only [this]
-  have : (Parallel (SEG_nd A B) (SEG_nd C D)) = (Parallel (SEG_nd C D) (SEG_nd A B)) := by
-    unfold Parallel
-    simp only [eq_iff_iff]
-    constructor
-    · intro P
-      exact P.symm
-    · intro P
-      exact P.symm
-  simp only [this]
-  exact odist_eq_odist_iff_parallel_ne C D (SEG_nd A B)
+theorem parallel_iff_wedge_eq_wedge_left {s₁ s₂ : SegND P} : s₁ ∥ s₂ ↔ wedge s₁.source s₁.target s₂.source = wedge s₁.source s₁.target s₂.target :=
+  wedge_eq_wedge_iff_parallel_left.symm
 
-theorem oarea_eq_oarea_iff_parallel_ne (s₁ s₂ : SegND P) :
-    s₁ ∥ s₂ ↔ oarea s₁.source s₁.target s₂.source = oarea s₁.source s₁.target s₂.target := by
-  let A := s₁.source
-  let B := s₁.target
-  let C := s₂.source
-  let D := s₂.target
-  if hba : B = A then
-    subst hba; simp
+theorem parallel_iff_wedge_eq_wedge_right {s₁ s₂ : SegND P} : s₁ ∥ s₂ ↔ wedge s₂.source s₂.target s₁.source = wedge s₂.source s₂.target s₁.target :=
+  wedge_eq_wedge_iff_parallel_right.symm
 
-    sorry
+theorem oarea_eq_oarea_iff_parallel_left {A B C D : P} [bnea : PtNe B A] [dnec : PtNe D C] : oarea A B C = oarea A B D ↔ SEG_nd A B ∥ SEG_nd C D := by
+  rw [← wedge_eq_wedge_iff_parallel_left]
+  unfold oarea
+  field_simp
 
-  else
-    unfold oarea
-    have : (wedge A B C / 2 = wedge A B D / 2) = (wedge A B C = wedge A B D) := by
-      simp only [eq_iff_iff]
-      constructor
-      · intro P
-        calc
-          _= wedge A B C /2 *2 := by simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true,
-            div_mul_cancel]
-          _= wedge A B D /2 *2 := by simp only [P]
-          _=_ := by simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, div_mul_cancel]
-      · intro P
-        simp only [P]
-    simp only [this]
-    haveI : PtNe B A := ⟨hab⟩
-    exact wedge_eq_wedge_iff_parallel_of_ne_ne A B C D
+theorem oarea_eq_oarea_iff_parallel_right {A B C D : P} [bnea : PtNe B A] [dnec : PtNe D C] : oarea C D A = oarea C D B ↔ SEG_nd A B ∥ SEG_nd C D := by
+  rw [← wedge_eq_wedge_iff_parallel_right]
+  unfold oarea
+  field_simp
+
+theorem parallel_iff_oarea_eq_oarea_left {s₁ s₂ : SegND P} : s₁ ∥ s₂ ↔ oarea s₁.source s₁.target s₂.source = oarea s₁.source s₁.target s₂.target :=
+  oarea_eq_oarea_iff_parallel_left.symm
+
+theorem parallel_iff_oarea_eq_oarea_right {s₁ s₂ : SegND P} : s₁ ∥ s₂ ↔ oarea s₂.source s₂.target s₁.source = oarea s₂.source s₂.target s₁.target :=
+  oarea_eq_oarea_iff_parallel_right.symm
 
 end cooperation_with_parallel
 

@@ -46,13 +46,15 @@ theorem parallel_of_perp_perp (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ⟂ l₃) : l�
   simp only [Perpendicular, h₂, Proj.perp_perp] at h₁
   exact h₁
 
+alias Perpendicular.trans := parallel_of_perp_perp
+
 theorem perp_of_parallel_perp (h₁ : l₁ ∥ l₂) (h₂ : l₂ ⟂ l₃) : l₁ ⟂ l₃ := Eq.trans h₁ h₂
 
 alias Parallel.trans_perp := perp_of_parallel_perp
 
-theorem perp_of_perp_parallel (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ∥ l₃) : l₁ ⟂ l₃ := h₁.trans (congrArg Proj.perp h₂)
+theorem perp_of_perp_parallel (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ∥ l₃) : l₁ ⟂ l₃ := Eq.trans h₁ (congrArg Proj.perp h₂)
 
-alias Parallel.trans_perp := perp_of_parallel_perp
+alias Perpendicular.trans_parallel := perp_of_perp_parallel
 
 theorem toProj_ne_toProj_of_perp (h : l₁ ⟂ l₂) : ProjObj.toProj l₁ ≠ ProjObj.toProj l₂ :=
   sorry
