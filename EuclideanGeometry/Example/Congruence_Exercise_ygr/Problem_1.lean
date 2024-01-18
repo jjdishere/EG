@@ -38,7 +38,7 @@ lemma hnd₁ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ Co
   apply Collinear.perm₂₁₃.mt
   exact e.ABC_nd
 lemma hnd₂ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ Collinear e.D e.F e.E := by
-  apply Collinear.perm₂₃₁.mt
+  apply Collinear.perm₃₁₂.mt
   exact e.EDF_nd
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.A e.B := ⟨(ne_of_not_collinear hnd₁).2.2⟩
 instance D_ne_E {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.E := ⟨(ne_of_not_collinear hnd₂).2.1⟩

@@ -119,14 +119,14 @@ theorem Collinear.perm₂₁₃ {A B C : P} (c : collinear A B C) : collinear B 
       rw [← vec_sub_vec A B C, e, ← neg_vec A B, smul_neg, sub_smul, neg_sub, one_smul]
     exact collinear_of_vec_eq_smul_vec e'
 
-theorem Collinear.perm₃₁₂ {A B C : P} (h : collinear A B C) : collinear B C A :=
-  flip_collinear_snd_trd (flip_collinear_fst_snd h)
+theorem Collinear.perm₂₃₁ {A B C : P} (h : collinear A B C) : collinear B C A :=
+  Collinear.perm₁₃₂ (Collinear.perm₂₁₃ h)
 
-theorem Collinear.perm₂₃₁ {A B C : P} (h : collinear A B C) : collinear C A B :=
-  perm_collinear_snd_trd_fst (perm_collinear_snd_trd_fst h)
+theorem Collinear.perm₃₁₂ {A B C : P} (h : collinear A B C) : collinear C A B :=
+  Collinear.perm₂₃₁ (Collinear.perm₂₃₁ h)
 
 theorem Collinear.perm₃₂₁ {A B C : P} (h : collinear A B C) : collinear C B A :=
-  perm_collinear_snd_trd_fst (flip_collinear_snd_trd h)
+  Collinear.perm₂₃₁ (Collinear.perm₁₃₂ h)
 
 -- the proof of this theorem using def of line seems to be easier
 /-- Given four points $A$, $B$, $C$, $D$ with $B \neq A$, if $A$, $B$, $C$ are collinear, and if $A$, $B$, $D$ are collinear, then $A$, $C$, $D$ are collinear. -/

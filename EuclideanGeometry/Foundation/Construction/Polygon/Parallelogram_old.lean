@@ -184,7 +184,7 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type _) [EuclideanPlane P] (qd
          simp only [neg_smul, one_smul, neg_vec]
          rw[o]
        exact collinear_of_vec_eq_smul_vec' ooo
-     simp only [flip_collinear_fst_snd oo, not_true_eq_false] at h
+     simp only [Collinear.perm₂₁₃ oo, not_true_eq_false] at h
    have hcd : qdr_nd.point₃ ≠ qdr_nd.point₄ := by
      by_contra k₂
      have k₂₂ : VEC qdr_nd.point₄ qdr_nd.point₃=0 := by
@@ -196,7 +196,7 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type _) [EuclideanPlane P] (qd
      simp only [k₂₃.symm, ne_eq, not_true_eq_false] at hba
    have t : ¬ Collinear qdr_nd.point₂ qdr_nd.point₁ qdr_nd.point₃ := by
      by_contra k
-     simp only [flip_collinear_fst_snd k, not_true_eq_false] at h
+     simp only [Collinear.perm₂₁₃ k, not_true_eq_false] at h
    have x : ¬ collinear_of_nd (A := qdr_nd.point₂) (B := qdr_nd.point₁) (C := qdr_nd.point₃) := by
      unfold collinear at t
      simp only [hca, hbc, hba.symm, or_self, dite_false] at t
@@ -287,7 +287,7 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type _) [EuclideanPlane P] (qd
        rw[l₂',l₃]
        exact k₁
      simp[p₄] at s₂
-   simp [flip_collinear_fst_snd m₃] at m₂
+   simp [Collinear.perm₂₁₃ m₃] at m₂
    by_contra m₅
    have m₄ :  ¬ Collinear qdr_nd.point₄ qdr_nd.point₃ qdr_nd.point₁ := by
      by_contra k₂
@@ -298,7 +298,7 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type _) [EuclideanPlane P] (qd
        rw[l₄',l₃']
        exact k₂
      simp[p₅] at s₃
-   simp [flip_collinear_fst_snd m₅] at m₄
+   simp [Collinear.perm₂₁₃ m₅] at m₄
    by_contra m₇
    have m₆ :  ¬ Collinear qdr_nd.point₁ qdr_nd.point₄ qdr_nd.point₂ := by
      by_contra k₃
@@ -309,7 +309,7 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type _) [EuclideanPlane P] (qd
        rw[l₄,l₁]
        exact k₃
      simp [p₆] at s₄
-   simp [flip_collinear_fst_snd m₇] at m₆
+   simp [Collinear.perm₂₁₃ m₇] at m₆
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 2nd, 3rd and 4th points are not collinear, then qdr_nd is a parallelogram_nd.-/
 theorem Parallelogram_not_collinear₂₃₄ (P : Type _) [EuclideanPlane P] (qdr_nd : QuadrilateralND P) (para: qdr_nd.1 IsParallelogram) (h: ¬ Collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd IsParallelogram_nd := by
@@ -492,12 +492,12 @@ theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (h₁ : qdr_nd.edge
     rw [(smul_smul (- r) c (VEC qdr_nd.point₁ qdr_nd.point₂)).symm,eq''.symm,neg_smul,eq.symm]
     exact (neg_vec qdr_nd.point₃ qdr_nd.point₁).symm
   by_contra iscollinear
-  apply flip_collinear_fst_trd at iscollinear
+  apply Collinear.perm₃₂₁ at iscollinear
   rw [collinear_iff_eq_smul_vec_of_ne] at iscollinear
   rcases iscollinear with ⟨r,eq⟩
   apply notcollinear
   have para : qdr_nd.edge_nd₃₄.toVecND ∥ qdr_nd.edge_nd₁₂.toVecND := by sorry
-  apply flip_collinear_fst_trd
+  apply Collinear.perm₃₂₁
   rw [collinear_iff_eq_smul_vec_of_ne]
   rcases (para_vec qdr_nd.edge_nd₃₄.toVecND qdr_nd.edge_nd₁₂.toVecND para) with ⟨c,eq'⟩
   have eq'' : (VEC qdr_nd.point₃ qdr_nd.point₄) = c • (VEC qdr_nd.point₁ qdr_nd.point₂) := eq'

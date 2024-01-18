@@ -49,7 +49,7 @@ attribute [instance] a_ne_b b_ne_c c_ne_a d_ne_a d_ne_b d_ne_c
 --$D,C,A$ are not collinear
 lemma ncolin_dca : ¬ Collinear D C A := by
   intro h0
-  exact cad_nd (Collinear.perm₃₁₂ h0)
+  exact cad_nd (Collinear.perm₂₃₁ h0)
 
 --$E,B,C$ are collinear
 lemma colin_ebc : Collinear E B C := by
@@ -79,7 +79,7 @@ lemma dratio_ebc_eq_wedge_div_wedge : divratio E B C = (wedge D B A) / (wedge D 
 --$D,A,B$ are not collinear
 lemma ncolin_dab : ¬ Collinear D A B := by
   intro h0
-  exact abd_nd (Collinear.perm₃₁₂ h0)
+  exact abd_nd (Collinear.perm₂₃₁ h0)
 
 --$F,C,A$ are collinear
 lemma colin_fca : Collinear F C A := by
@@ -109,7 +109,7 @@ lemma dratio_fca_eq_wedge_div_wedge : divratio F C A = (wedge D C B) / (wedge D 
 --$D,B,C$ are not collinear
 lemma ncolin_dbc : ¬ Collinear D B C := by
   intro h0
-  exact bcd_nd (Collinear.perm₃₁₂ h0)
+  exact bcd_nd (Collinear.perm₂₃₁ h0)
 
 --$G,A,B$ are collinear
 lemma colin_gab : Collinear G A B := by

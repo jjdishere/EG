@@ -12,7 +12,7 @@ section ratio
 /-
 Below is the definition of divratio using ddist, which I think might not be a good idea.
 
-def divratio (A B C : P) (colin : Collinear A B C) (cnea : C ≠ A) : ℝ := (DirLine.ddist (B := B) (DirLine.pt_pt_maximal cnea (Collinear.perm₁₃₂ (triv_collinear₁₂ A C))) (DirLine.pt_pt_maximal cnea (Collinear.perm₁₃₂ colin))) / (DirLine.ddist (DirLine.pt_pt_maximal cnea (Collinear.perm₁₃₂ (triv_collinear₁₂ A C))) (DirLine.pt_pt_maximal cnea (Collinear.perm₂₃₁ (triv_collinear₁₂ C A))))
+def divratio (A B C : P) (colin : Collinear A B C) (cnea : C ≠ A) : ℝ := (DirLine.ddist (B := B) (DirLine.pt_pt_maximal cnea (Collinear.perm₁₃₂ (triv_collinear₁₂ A C))) (DirLine.pt_pt_maximal cnea (Collinear.perm₁₃₂ colin))) / (DirLine.ddist (DirLine.pt_pt_maximal cnea (Collinear.perm₁₃₂ (triv_collinear₁₂ A C))) (DirLine.pt_pt_maximal cnea (Collinear.perm₃₁₂ (triv_collinear₁₂ C A))))
 -/
 
 def divratio (A B C : P) : ℝ := ((VEC A B)/(VEC A C)).1
