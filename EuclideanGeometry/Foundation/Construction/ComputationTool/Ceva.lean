@@ -56,7 +56,7 @@ lemma colin_ebc : Collinear E B C := by
   have h : E LiesOn LIN C B := by
     rw [e_def]
     apply Line.inx_lies_on_fst
-  exact Collinear.perm₃₂₁rm₃₂₁ (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$E,D,A$ are collinear
 lemma colin_eda : Collinear E D A := by
@@ -123,7 +123,7 @@ lemma colin_gdc : Collinear G D C := by
   have h : G LiesOn LIN C D _ := by
     rw [g_def]
     apply Line.inx_lies_on_snd
-  exact Collinear.perm₃₂₁rm₃₂₁ (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$A\ne F$
 instance b_ne_g : PtNe B G := Fact.mk <| by

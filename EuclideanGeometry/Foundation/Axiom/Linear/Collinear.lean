@@ -19,6 +19,11 @@ theorem collinear_iff_wedge_eq_zero (A B C : P) : (Collinear A B C) ↔ (wedge A
 
 theorem not_collinear_iff_wedge_ne_zero (A B C : P) : (¬ Collinear A B C) ↔ (wedge A B C ≠ 0) := .rfl
 
+lemma collinear_iff_collinear {A B C D : P} [PtNe B A] (h : ∃ k : ℝ, VEC C D = k • VEC A B) : Collinear A B C ↔ Collinear A B D := by
+  unfold Collinear
+  rw [← wedge_eq_wedge_iff] at h
+  rw [h]
+
 /-- Given three points $A$, $B$, $C$ and a real number $t$, if the vector $\overrightarrow{AC}$ is $t$ times the vector $\overrightarrow{AB}$, then $A$, $B$, and $C$ are collinear. -/
 theorem collinear_of_vec_eq_smul_vec {A B C : P} {t : ℝ} (e : VEC A C = t • VEC A B) : Collinear A B C := by
   unfold Collinear wedge
