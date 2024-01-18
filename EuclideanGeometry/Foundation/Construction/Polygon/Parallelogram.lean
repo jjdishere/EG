@@ -54,7 +54,7 @@ In this section we define two types of parallelograms. 'parallel_nd' deals with 
 def Quadrilateral.IsParaPara {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases h : qdr.IsND
   · have qdr_nd : QuadrilateralND P := QDR_nd' h
-    exact (qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄) ∧ (qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃)
+    exact (qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄) ∧ (qdr_nd.edgeND₄₁ ∥ qdr_nd.edgeND₂₃)
   · exact False
 
 /-- A quadrilateral is called parallelogram if VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃.-/
@@ -119,7 +119,7 @@ scoped postfix : 50 "IsPrgND" => Quadrilateral.IsPrgND
 
 -- scoped postfix : 50 "nd_IsPrgND" => QuadrilateralND.IsPrgND
 
-theorem QuadrilateralND.parapara_iff_para_para {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : (qdr_nd.IsParaPara) ↔ (qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄) ∧ (qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃) := by
+theorem QuadrilateralND.parapara_iff_para_para {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : (qdr_nd.IsParaPara) ↔ (qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄) ∧ (qdr_nd.edgeND₄₁ ∥ qdr_nd.edgeND₂₃) := by
   constructor
   unfold Quadrilateral.IsParaPara
   simp only [dite_true, qdr_nd.nd, and_imp]
@@ -135,7 +135,7 @@ theorem ParallelogramND.gpos_of_prgnd {P : Type _} [EuclideanPlane P] (prg_nd : 
 theorem ParallelogramND.parapara_of_prgnd {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P) : prg_nd.IsParaPara := by
   unfold Quadrilateral.IsParaPara
   simp only [dite_true, prg_nd.nd]
-  unfold parallel
+  unfold Parallel
   constructor
   have h: VEC prg_nd.point₁ prg_nd.point₂ = VEC prg_nd.point₄ prg_nd.point₃ := prg_nd.is_parallelogram
   have p: (VEC_nd prg_nd.point₁ prg_nd.point₂ prg_nd.nd₁₂.out).toProj = (VEC_nd prg_nd.point₄ prg_nd.point₃ prg_nd.nd₃₄.out.symm).toProj := by
@@ -321,10 +321,10 @@ theorem qdrND_is_prgND_of_eq_angle_value_eq_angle_value_not_collinear₂ (h₁ :
 theorem qdrND_is_prgND_of_eq_angle_value_eq_angle_value_not_collinear₃ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ Collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsPrgND := by sorry
 
 /-- If edgeND₁₂, edgeND₃₄ and edgeND₁₄, edgeND₂₃ of a QuadrilateralND are equal in value respectively, and angle₁ and angle₃ are of the same sign, then it is a parallelogram_nd. -/
-theorem qdrND_is_prgND_of_eq_length_eq_length_eq_angle_sign (h₁ : qdr_nd.edgeND₁₂.length = qdr_nd.edgeND₃₄.length) (h₂ : qdr_nd.edgeND₁₄.length = qdr_nd.edgeND₂₃.length) (h : (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₃.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg)) : qdr_nd.IsPrgND := by sorry
+theorem qdrND_is_prgND_of_eq_length_eq_length_eq_angle_sign (h₁ : qdr_nd.edgeND₁₂.length = qdr_nd.edgeND₃₄.length) (h₂ : qdr_nd.edgeND₄₁.length = qdr_nd.edgeND₂₃.length) (h : (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₃.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg)) : qdr_nd.IsPrgND := by sorry
 
 /-- If edgeND₁₂, edgeND₃₄ and edgeND₁₄, edgeND₂₃ of a QuadrilateralND are equal in value respectively, and angle₂ and angle₄ are of the same sign, then it is a parallelogram_nd. -/
-theorem qdrND_is_prgND_of_eq_length_eq_length_eq_angle_sign' (h₁ : qdr_nd.edgeND₁₂.length = qdr_nd.edgeND₃₄.length) (h₂ : qdr_nd.edgeND₁₄.length = qdr_nd.edgeND₂₃.length) (h : (qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg)) : qdr_nd.IsPrgND := by sorry
+theorem qdrND_is_prgND_of_eq_length_eq_length_eq_angle_sign' (h₁ : qdr_nd.edgeND₁₂.length = qdr_nd.edgeND₃₄.length) (h₂ : qdr_nd.edgeND₄₁.length = qdr_nd.edgeND₂₃.length) (h : (qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg)) : qdr_nd.IsPrgND := by sorry
 
 end criteria_prgND_of_qdrND
 
@@ -339,7 +339,7 @@ variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
 
 -- `why this theorem used two set of parallel and equal?`
 /-- If edgeND₁₂ and edgeND₃₄ of a QuadrilateralND are equal in value and parallel, and so do edgeND₁₄ and edgeND₂₃, then it is a parallelogram. -/
-theorem qdrND_is_prg_of_parapara_eq_length_eq_length (h : qdr_nd.IsParaPara) (h₂ : qdr_nd.edgeND₁₂.length = qdr_nd.edgeND₃₄.length) (H₂ : qdr_nd.edgeND₁₄.length = qdr_nd.edgeND₂₃.length): qdr_nd.IsPrg := by
+theorem qdrND_is_prg_of_parapara_eq_length_eq_length (h : qdr_nd.IsParaPara) (h₂ : qdr_nd.edgeND₁₂.length = qdr_nd.edgeND₃₄.length) (H₂ : qdr_nd.edgeND₄₁.length = qdr_nd.edgeND₂₃.length): qdr_nd.IsPrg := by
   sorry
 
 /-- If the midpoint of the two diags of a QuadrilateralND are exactly the same, then it is a parallelogram. -/
@@ -365,7 +365,7 @@ variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
 theorem qdrcvx_is_prgND_of_parapara (h₁ : qdr_cvx.IsParaPara) : qdr_cvx.IsPrgND := by sorry
 
 /-- If edgeND₁₂ and edgeND₃₄ of a quadrilateral_cvx are equal in length, and so do edgeND₁₄ and edgeND₂₃, then it is a parallelogram_nd. -/
-theorem qdrcvx_is_prgND_of_eq_length_eq_length (h₁ : qdr_cvx.edgeND₁₂.length = qdr_cvx.edgeND₃₄.length) (h₂ : qdr_cvx.edgeND₁₄.length = qdr_cvx.edgeND₂₃.length) : qdr_cvx.IsPrgND := by sorry
+theorem qdrcvx_is_prgND_of_eq_length_eq_length (h₁ : qdr_cvx.edgeND₁₂.length = qdr_cvx.edgeND₃₄.length) (h₂ : qdr_cvx.edgeND₄₁.length = qdr_cvx.edgeND₂₃.length) : qdr_cvx.IsPrgND := by sorry
 
 /-- If edgeND₁₂ and edgeND₃₄ of a quadrilateral_cvx are not only equal in length but also parallel, then it is a parallelogram_nd. -/
 theorem qdrcvx_is_prgND_of_para_eq_length (h₁ : qdr_cvx.edgeND₁₂ ∥ qdr_cvx.edgeND₃₄) (h₂ : qdr_cvx.edgeND₁₂.length = qdr_cvx.edgeND₃₄.length) : qdr_cvx.IsPrgND := by sorry
@@ -424,13 +424,13 @@ variable {P : Type _} [EuclideanPlane P] (prg_nd : ParallelogramND P)
 theorem para_of_isPrgND : prg_nd.edgeND₁₂ ∥ prg_nd.edgeND₃₄ := (prg_nd.parapara_iff_para_para.mp prg_nd.parapara_of_prgnd).left
 
 /-- In a parallelogram_nd, edgeND₁₄ and edge₂₃ are parallel. -/
-theorem para_of_isPrgND' : prg_nd.edgeND₁₄ ∥ prg_nd.edgeND₂₃ := (prg_nd.parapara_iff_para_para.mp prg_nd.parapara_of_prgnd).right
+theorem para_of_isPrgND' : prg_nd.edgeND₄₁ ∥ prg_nd.edgeND₂₃ := (prg_nd.parapara_iff_para_para.mp prg_nd.parapara_of_prgnd).right
 
 /-- The toDirs of edgeND₁₂ and edgeND₃₄ of a parallelogram_nd remain reverse. -/
 theorem todir_eq_of_isPrgND : prg_nd.edgeND₁₂.toDir = - prg_nd.edgeND₃₄.toDir := by sorry
 
 /-- The toDirs of edgeND₁₄ and edgeND₂₃ of a parallelogram_nd remain the same. -/
-theorem todir_eq_of_isPrgND' : prg_nd.edgeND₁₄.toDir = prg_nd.edgeND₂₃.toDir := by sorry
+theorem todir_eq_of_isPrgND' : prg_nd.edgeND₄₁.toDir = - prg_nd.edgeND₂₃.toDir := by sorry
 
 /-- In a parallelogram_nd, angle₂ and angle₄ are equal. -/
 theorem eq_angle_value_of_isPrgND : prg_nd.angle₂.value = prg_nd.angle₄.value := by sorry
