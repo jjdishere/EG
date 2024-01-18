@@ -59,7 +59,7 @@ lemma B_ne_C : B ≠ C := (ne_of_not_collinear hnd).1.symm
 variable {D E : P} {hd : D LiesInt (SEG_nd A B (B_ne_a (hnd := hnd))).extension} {he : E LiesInt (SEG_nd A C (c_ne_a (hnd := hnd))).extension}
 -- Claim: $E \ne B$ and $D \ne C$. This is because $E$ lies on line $AC$, but $B$ doesn't lies on $AC$; $D$ lies on line $AB$, but $C$ doesn't lies on $AB$.
 lemma e_ne_B : E ≠ B := by -- for $E \ne B$
-  have b_not_lieson_ac := (Line.lies_on_line_of_pt_pt_iff_collinear (_h := ⟨ c_ne_a (hnd := hnd)⟩) B).mp.mt (flip_collinear_snd_trd.mt hnd) -- $B$ doesn't lies on line $AC$ because $A, B, C$ not collinear
+  have b_not_lieson_ac := (Line.lies_on_line_of_pt_pt_iff_collinear (_h := ⟨ c_ne_a (hnd := hnd)⟩) B).mp.mt (Collinear.perm₁₃₂.mt hnd) -- $B$ doesn't lies on line $AC$ because $A, B, C$ not collinear
   have e_lieson_ac := SegND.lies_on_toLine_of_lies_on_extn (Ray.lies_on_of_lies_int he) -- $E$ lieson line $AC$ because $E$ lies in the extension of $AC$
   exact ne_of_lieson_and_not_lieson e_lieson_ac b_not_lieson_ac -- $E \ne B$ because $E$ lies on line $AC$, but $B$ doesn't lies on line $AC$
 lemma d_ne_c : D ≠ C := by -- for $D \ne C$

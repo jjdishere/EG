@@ -93,21 +93,21 @@ theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : (SEG
     have : collinear e.A e.B E := by
       apply collinear_of_collinear_collinear_ne adb_collinear h' D_ne_A
     have neghnd : collinear e.A e.B e.C := by
-      apply collinear_of_collinear_collinear_ne (flip_collinear_snd_trd this) aec_collinear E_ne_A
+      apply collinear_of_collinear_collinear_ne (Collinear.perm₁₃₂ this) aec_collinear E_ne_A
     exact e.not_collinear_ABC neghnd
   have not_collinear_CDE : ¬ collinear e.C e.D E := by
     intro h
     have : collinear e.C e.D e.A := by
-      apply flip_collinear_snd_trd
+      apply Collinear.perm₁₃₂
       apply collinear_of_collinear_collinear_ne
-      apply (flip_collinear_snd_trd (flip_collinear_fst_snd (flip_collinear_snd_trd aec_collinear)))
-      apply flip_collinear_snd_trd h
+      apply (Collinear.perm₁₃₂ (Collinear.perm₂₁₃ (Collinear.perm₁₃₂ aec_collinear)))
+      apply Collinear.perm₁₃₂ h
       apply E_ne_C
     have : collinear e.A e.B e.C := by
       apply collinear_of_collinear_collinear_ne
       apply adb_collinear
       -- apply e.hD
-      apply (flip_collinear_snd_trd (flip_collinear_fst_snd (flip_collinear_snd_trd this)))
+      apply (Collinear.perm₁₃₂ (Collinear.perm₂₁₃ (Collinear.perm₁₃₂ this)))
       apply D_ne_A
     apply e.not_collinear_ABC this
 

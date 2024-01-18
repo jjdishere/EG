@@ -89,7 +89,7 @@ theorem collinear_of_snd_eq_fst {A B : P} (C : P) (h : B = A)  : collinear A B C
   (dite_prop_iff_or (C = B ∨ A = C ∨ B = A)).mpr (.inl ⟨.inr (.inr h), trivial⟩)
 
 /-- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are collinear (in that order), then $A$, $C$, $B$ are collinear (in that order); in other words, swapping the last two of the three points does not change the definition of colinarity. -/
-theorem flip_collinear_snd_trd {A B C : P} (c : collinear A B C) : collinear A C B := by
+theorem Collinear.perm₁₃₂ {A B C : P} (c : collinear A B C) : collinear A C B := by
   by_cases h : B ≠ A ∧ C ≠ A
   · haveI : PtNe B A := ⟨h.1⟩
     rcases collinear_iff_eq_smul_vec_of_ne.1 c with ⟨t, e⟩
@@ -108,7 +108,7 @@ theorem flip_collinear_snd_trd {A B C : P} (c : collinear A B C) : collinear A C
     exact g.2.2 $ h g.2.1.symm
 
 /-- Given three points $A$, $B$, and $C$, if $A$, $B$, $C$ are collinear (in that order), then $B$, $A$, $C$ are collinear (in that order); in other words, in the definition of colinarity, swapping the first two of the three points does not change property of the three points being collinear. -/
-theorem flip_collinear_fst_snd {A B C : P} (c : collinear A B C) : collinear B A C := by
+theorem Collinear.perm₂₁₃ {A B C : P} (c : collinear A B C) : collinear B A C := by
   by_cases h : B = A
   · rw [h]
     exact triv_collinear _ _
@@ -119,14 +119,14 @@ theorem flip_collinear_fst_snd {A B C : P} (c : collinear A B C) : collinear B A
       rw [← vec_sub_vec A B C, e, ← neg_vec A B, smul_neg, sub_smul, neg_sub, one_smul]
     exact collinear_of_vec_eq_smul_vec e'
 
-theorem perm_collinear_snd_trd_fst {A B C : P} (h : collinear A B C) : collinear B C A :=
-  flip_collinear_snd_trd (flip_collinear_fst_snd h)
+theorem Collinear.perm₂₃₁ {A B C : P} (h : collinear A B C) : collinear B C A :=
+  Collinear.perm₁₃₂ (Collinear.perm₂₁₃ h)
 
-theorem perm_collinear_trd_fst_snd {A B C : P} (h : collinear A B C) : collinear C A B :=
-  perm_collinear_snd_trd_fst (perm_collinear_snd_trd_fst h)
+theorem Collinear.perm₃₁₂ {A B C : P} (h : collinear A B C) : collinear C A B :=
+  Collinear.perm₂₃₁ (Collinear.perm₂₃₁ h)
 
-theorem flip_collinear_fst_trd {A B C : P} (h : collinear A B C) : collinear C B A :=
-  perm_collinear_snd_trd_fst (flip_collinear_snd_trd h)
+theorem Collinear.perm₃₂₁ {A B C : P} (h : collinear A B C) : collinear C B A :=
+  Collinear.perm₂₃₁ (Collinear.perm₁₃₂ h)
 
 -- the proof of this theorem using def of line seems to be easier
 /-- Given four points $A$, $B$, $C$, $D$ with $B \neq A$, if $A$, $B$, $C$ are collinear, and if $A$, $B$, $D$ are collinear, then $A$, $C$, $D$ are collinear. -/

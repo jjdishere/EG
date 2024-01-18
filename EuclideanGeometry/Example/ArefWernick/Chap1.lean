@@ -61,7 +61,7 @@ lemma B_ne_f : B ≠ F := by
       exact ⟨(SegND B C (ne_of_not_collinear hnd).1).source_lies_on_toLine , (SegND A B (ne_of_not_collinear hnd).2.2).target_lies_on_toLine ⟩
     exact d_ne_b (unique_of_inx_of_line_of_not_para line_neq inxb.symm inxd.symm)
   have bcd_notcoli : ¬ collinear B C D := (Line.lies_on_line_of_pt_pt_iff_collinear (b_ne_c (hnd := hnd)).symm D).mpr.mt d_not_lies_on_bc
-  have b_not_lies_on_cd : ¬ B LiesOn (LIN C D d_ne_c) := (Line.lies_on_line_of_pt_pt_iff_collinear d_ne_c B).mp.mt (flip_collinear_snd_trd.mt (flip_collinear_fst_snd.mt bcd_notcoli))
+  have b_not_lies_on_cd : ¬ B LiesOn (LIN C D d_ne_c) := (Line.lies_on_line_of_pt_pt_iff_collinear d_ne_c B).mp.mt (Collinear.perm₁₃₂.mt (Collinear.perm₂₁₃.mt bcd_notcoli))
   have f_lies_on_seg_cd : F LiesOn (SegND C D d_ne_c).1 := hf.2
   exact (ne_of_lieson_and_not_lieson (SegND.lies_on_toLine_of_lie_on f_lies_on_seg_cd) b_not_lies_on_cd).symm
 lemma d_ne_f : D ≠ F := sorry

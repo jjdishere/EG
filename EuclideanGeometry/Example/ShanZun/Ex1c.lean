@@ -29,7 +29,7 @@ lemma d_ne_a: D ≠ A := by
   use C
   by_contra h
   have : collinear A B C :=by
-    apply flip_collinear_fst_snd h
+    apply Collinear.perm₂₁₃ h
   trivial
 --Introduce the midpoint E of AC
 variable {E : P} {he : E=  (SEG A C).midpoint}
@@ -92,7 +92,7 @@ lemma hnd': ¬ collinear A D E := by
     exact hnd
     exact hd
   have neghnd : collinear A B C := by
-    apply collinear_of_collinear_collinear_ne (flip_collinear_snd_trd this) aec_collinear e_ne_a
+    apply collinear_of_collinear_collinear_ne (Collinear.perm₁₃₂ this) aec_collinear e_ne_a
     exact he
     use B
     use C
@@ -102,12 +102,12 @@ lemma hnd': ¬ collinear A D E := by
 lemma hnd'' : ¬ collinear C D E := by
   intro h
   have : collinear C D A := by
-    apply flip_collinear_snd_trd
+    apply Collinear.perm₁₃₂
     apply collinear_of_collinear_collinear_ne
-    apply (flip_collinear_snd_trd (flip_collinear_fst_snd (flip_collinear_snd_trd aec_collinear)))
+    apply (Collinear.perm₁₃₂ (Collinear.perm₂₁₃ (Collinear.perm₁₃₂ aec_collinear)))
     use E
     exact he
-    apply flip_collinear_snd_trd h
+    apply Collinear.perm₁₃₂ h
     apply e_ne_C
     apply hnd
     exact he
@@ -115,7 +115,7 @@ lemma hnd'' : ¬ collinear C D E := by
     apply collinear_of_collinear_collinear_ne
     apply adb_collinear
     apply hd
-    apply (flip_collinear_snd_trd (flip_collinear_fst_snd (flip_collinear_snd_trd this)))
+    apply (Collinear.perm₁₃₂ (Collinear.perm₂₁₃ (Collinear.perm₁₃₂ this)))
     apply d_ne_a
     apply hnd
     exact hd

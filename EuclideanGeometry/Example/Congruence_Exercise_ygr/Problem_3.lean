@@ -38,7 +38,7 @@ theorem Result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : ∠ 
   have h₂ : ¬ collinear e.D e.B e.C := by
     have h₂' : ¬ collinear e.B e.D e.C := by
       exact (Quadrilateral_cvx.not_collinear₂₃₄ (QDR_cvx e.A e.B e.D e.C e.cvx_ABDC))
-    apply flip_collinear_fst_snd.mt h₂'
+    apply Collinear.perm₂₁₃.mt h₂'
   have C_ne_B : e.C ≠ e.B := by
     exact (Quadrilateral_cvx.nd₂₄ (QDR_cvx e.A e.B e.D e.C e.cvx_ABDC))
   --Because $AB = AC$ ,we have $\angle A B C = -\angle A C B$.
