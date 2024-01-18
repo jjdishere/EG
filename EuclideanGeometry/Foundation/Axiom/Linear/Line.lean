@@ -1088,7 +1088,7 @@ theorem collinear_iff_exist_line_lies_on (A B C : P) : Collinear A B C ↔ ∃ l
     if h : PtNe B A then exact (lies_on_iff_collinear_of_ne_lies_on_lies_on ha hb C).mp hc
     else
       simp [PtNe, fact_iff] at h
-      simp [h]
+      simp only [h, collinear, or_true, dite_true]
 
 end Line
 
