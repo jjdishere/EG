@@ -42,14 +42,6 @@ variable {P : Type*} {α β γ}
 
 section carrier
 
-abbrev PtNe [EuclideanPlane P] (A B : P) : Prop :=
-  Fact <| A ≠ B
-
-instance PtNe.symm [EuclideanPlane P] {A B : P} [h : PtNe A B] : PtNe B A := ⟨h.out.symm⟩
-
-@[simp]
-lemma pt_ne [EuclideanPlane P] {A B : P} [h : PtNe A B] : A ≠ B := @Fact.out _ h
-
 /-- The class of plane figures. We say `α` is a plane figure, if for every given Euclidean plane `P`, `α P` is a collection of specific figures on `P`, each equipped with a carrier set of type `Set P`. -/
 class Fig (α : Type*) (P : outParam <| Type*) where
   carrier : α → Set P

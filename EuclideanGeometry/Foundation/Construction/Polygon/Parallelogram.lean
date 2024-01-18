@@ -43,6 +43,32 @@ structure Quadrilateral_nd.Parallelogram_non_triv {P : Type _} [EuclideanPlane P
 @[pp_dot]
 def Quadrilateral.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃
 
+lemma Quadrilateral.isParallelogram_def₁₂ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} :
+    qdr.IsParallelogram ↔ VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃ :=
+  .rfl
+
+alias ⟨Quadrilateral.IsParallelogram.elim₁₂, _⟩ := Quadrilateral.isParallelogram_def₁₂
+
+lemma Quadrilateral.isParallelogram_def₃₂ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} :
+    qdr.IsParallelogram ↔ VEC qdr.point₃ qdr.point₂ = VEC qdr.point₄ qdr.point₁ := by
+  rw [isParallelogram_def₁₂]
+  dsimp [(VEC · ·)]
+  rw [← sub_eq_zero, ← sub_eq_zero (a := _ -ᵥ _), vsub_sub_vsub_comm]
+
+alias ⟨Quadrilateral.IsParallelogram.elim₃₂, _⟩ := Quadrilateral.isParallelogram_def₃₂
+
+lemma Quadrilateral.isParallelogram_def₂₃ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} :
+    qdr.IsParallelogram ↔ VEC qdr.point₂ qdr.point₃ = VEC qdr.point₁ qdr.point₄ := by
+  rw [← neg_inj, neg_vec, neg_vec, qdr.isParallelogram_def₃₂]
+
+alias ⟨Quadrilateral.IsParallelogram.elim₂₃, _⟩ := Quadrilateral.isParallelogram_def₂₃
+
+lemma Quadrilateral.isParallelogram_def₁₄ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} :
+    qdr.IsParallelogram ↔ VEC qdr.point₁ qdr.point₄ = VEC qdr.point₂ qdr.point₃ := by
+  rw [qdr.isParallelogram_def₂₃, eq_comm]
+
+alias ⟨Quadrilateral.IsParallelogram.elim₁₄, _⟩ := Quadrilateral.isParallelogram_def₁₄
+
 /-- A quadrilateral satisfies IsParallelogram_para if two sets of opposite sides are parallel respectively. -/
 @[pp_dot]
 def Quadrilateral_nd.IsParallelogram_para {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : Prop := ( qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄) ∧ (qdr_nd.edgeND₄₁.reverse ∥ qdr_nd.edgeND₂₃)
@@ -165,10 +191,13 @@ theorem Parallelogram_not_collinear₁₂₃ {P : Type*} [EuclideanPlane P] (qdr
       simp [wedge132 _ _ qdr_nd.point₄]
   · constructor
     · exact h
-    · rw [Collinear.perm₁₃₂]
+    · rw [collinear231] at h
 
-    ·
-    ·
+    · rw [collinear132] at h
+      rw [collinear312]
+
+    · rw [collinear231]
+
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 2nd, 3rd and 4th points are not collinear, then qdr_nd is a parallelogram_nd.-/
 theorem Parallelogram_not_collinear₂₃₄ {P : Type*} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) (para: qdr_nd.1 IsParallelogram) (h: ¬ Collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd IsParallelogram_nd := by
@@ -330,7 +359,7 @@ theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (h₁ : qdr_nd.edge
       by_contra is_zero
       rw [is_zero] at l₁
       have not_nd₁₂ : qdr_nd.point₂ = qdr_nd.point₁ := by
-        apply (eq_iff_vec_eq_zero qdr_nd.point₁ qdr_nd.point₂).mpr
+        apply eq_iff_vec_eq_zero.mpr
         rw [l₁]
         exact zero_smul ℝ (VEC qdr_nd.point₂ qdr_nd.point₃)
       exact qdr_nd.nd₁₂.out not_nd₁₂
@@ -372,7 +401,7 @@ theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (h₁ : qdr_nd.edge
     by_contra is_zero
     rw [is_zero] at l₁
     have not_nd₂₃ : qdr_nd.point₂ = qdr_nd.point₃ := by
-      apply (eq_iff_vec_eq_zero qdr_nd.point₃ qdr_nd.point₂).mpr
+      apply eq_iff_vec_eq_zero.mpr
       rw [l₁]
       exact zero_smul ℝ (VEC qdr_nd.point₁ qdr_nd.point₂)
     exact qdr_nd.nd₂₃.out not_nd₂₃.symm

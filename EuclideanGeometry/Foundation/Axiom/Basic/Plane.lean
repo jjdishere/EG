@@ -33,6 +33,14 @@ class EuclideanPlane (P : Type _) extends MetricSpace P, NormedAddTorsor Vec P
 
 variable {P : Type _} [EuclideanPlane P]
 
+abbrev PtNe (A B : P) : Prop :=
+  Fact <| A ≠ B
+
+instance PtNe.symm [EuclideanPlane P] {A B : P} [h : PtNe A B] : PtNe B A := ⟨h.out.symm⟩
+
+@[simp]
+lemma pt_ne [EuclideanPlane P] {A B : P} [h : PtNe A B] : A ≠ B := @Fact.out _ h
+
 def Vec.mkPtPt (A B : P) : Vec := (B -ᵥ A)
 
 scoped notation "VEC" => Vec.mkPtPt
@@ -60,9 +68,9 @@ theorem neg_vec_norm_eq (A B : P) : ‖- VEC A B‖ = ‖VEC A B‖ := by
 theorem vec_norm_eq_rev (A B : P) : ‖VEC A B‖ = ‖VEC B A‖ := by
   rw [← neg_vec, neg_vec_norm_eq]
 
-theorem eq_iff_vec_eq_zero (A B : P) : B = A ↔ VEC A B = 0 := vsub_eq_zero_iff_eq.symm
+theorem eq_iff_vec_eq_zero {A B : P} : B = A ↔ VEC A B = 0 := vsub_eq_zero_iff_eq.symm
 
-theorem ne_iff_vec_ne_zero (A B : P) : B ≠ A ↔ VEC A B ≠ 0 := (eq_iff_vec_eq_zero A B).not
+theorem ne_iff_vec_ne_zero {A B : P} : B ≠ A ↔ VEC A B ≠ 0 := eq_iff_vec_eq_zero.not
 
 @[simp]
 theorem vec_add_vec (A B C : P) : VEC A B + VEC B C = VEC A C := by
@@ -92,10 +100,10 @@ theorem vec_sub_vec' (O A B: P) : VEC A O - VEC B O = VEC A B := by
 theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = tB) (ha : VEC O A = tA • v) (hb : VEC O B = tB • v) : A = B := by
   have hc : VEC A B = VEC O B - VEC O A := (vec_sub_vec O A B).symm
   rw [ha, hb, ← sub_smul, Iff.mpr sub_eq_zero h.symm, zero_smul] at hc
-  exact ((eq_iff_vec_eq_zero A B).2 hc).symm
+  exact (eq_iff_vec_eq_zero.2 hc).symm
 
 
-def VecND.mkPtPt (A B : P) (h : B ≠ A) : VecND := ⟨Vec.mkPtPt A B, (ne_iff_vec_ne_zero A B).mp h⟩
+def VecND.mkPtPt (A B : P) (h : B ≠ A) : VecND := ⟨Vec.mkPtPt A B, ne_iff_vec_ne_zero.mp h⟩
 
 @[inherit_doc VecND.mkPtPt]
 scoped syntax "VEC_nd" ws term:max ws term:max (ws term:max)? : term
@@ -173,6 +181,10 @@ lemma wedge_vadd (A B C : P) (v : Vec) : wedge A B (v +ᵥ C) = Vec.det (VEC A B
 
 lemma wedge_smul_vec_self_vadd (A B C : P) (k : ℝ) : wedge A B (k • VEC A B +ᵥ C) = wedge A B C := by
   simp [wedge_vadd]
+
+lemma wedge_eq_wedge_iff (A B C D : P) [PtNe B A] : wedge A B C = wedge A B D ↔ ∃ k : ℝ, VEC C D = k • VEC A B := by
+  rw [eq_comm, ← sub_eq_zero, wedge, wedge, ← map_sub, vec_sub_vec, Vec.det_eq_zero_iff_eq_smul_left,
+    or_iff_right (ne_iff_vec_ne_zero.mp pt_ne)]
 
 end wedge
 

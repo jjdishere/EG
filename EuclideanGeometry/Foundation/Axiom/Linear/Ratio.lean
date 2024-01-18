@@ -21,7 +21,7 @@ theorem ratio_is_real' (A B C : P) (colin : Collinear A B C) [cnea : PtNe C A] :
   have h0 : Collinear A C B := Collinear.perm₁₃₂ colin
   rw [collinear_iff_eq_smul_vec_of_ne] at h0
   rcases h0 with ⟨r , h1⟩
-  have h2 : VEC A C ≠ 0 := (ne_iff_vec_ne_zero A C).mp cnea.out
+  have h2 : VEC A C ≠ 0 := ne_iff_vec_ne_zero.mp cnea.out
   rw [h1]
   calc
     (r • VEC A C / VEC A C).im = ((r : ℂ) • VEC A C / VEC A C).im := rfl
@@ -37,7 +37,7 @@ theorem ratio_is_real (A B C : P) (colin : Collinear A B C) [cnea : PtNe C A] : 
   exact Complex.ext h0 h1.symm
 
 theorem vec_eq_vec_smul_ratio (A B C : P) (colin : Collinear A B C) [cnea : PtNe C A] : VEC A B = (divratio A B C) • (VEC A C) := by
-  have h0 : VEC A C ≠ 0 := (ne_iff_vec_ne_zero A C).mp cnea.out
+  have h0 : VEC A C ≠ 0 := ne_iff_vec_ne_zero.mp cnea.out
   have h1 : VEC A B = ((VEC A B) / (VEC A C)) • VEC A C := by
     field_simp
   rw [h1, ratio_is_real A B C colin]
@@ -58,7 +58,7 @@ theorem ratio_eq_ratio_div_ratio_minus_one (A B C : P) [cnea : PtNe C A] (colin 
     rw[h3]
   have h4 : VEC B A / VEC B C = (((divratio A B C / (divratio A B C - 1)) : ℝ ) : ℂ) := by
     rw [h0, h1]
-    have h5 : VEC A C ≠ 0 := (ne_iff_vec_ne_zero A C).mp cnea.out
+    have h5 : VEC A C ≠ 0 := ne_iff_vec_ne_zero.mp cnea.out
     field_simp
     norm_cast
     rw [Vec.neg_cdiv, Vec.smul_cdiv, Vec.cdiv_self h5, neg_div, ← div_neg]

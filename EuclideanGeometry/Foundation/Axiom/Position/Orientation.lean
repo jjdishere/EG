@@ -62,9 +62,9 @@ theorem odist'_eq_length_mul_sin (A : P) (ray : Ray P) [h : PtNe A ray.source] :
 
 theorem wedge_eq_length_mul_odist' (A B C : P) [bnea : PtNe B A] : (wedge A B C) = (SEG A B).length * odist' C (RAY A B) := by
   by_cases p : C = A
-  · have vecrayc0 : VEC (RAY A B).source C = 0 := (eq_iff_vec_eq_zero A C).mp p
+  · have vecrayc0 : VEC (RAY A B).source C = 0 := eq_iff_vec_eq_zero.mp p
     dsimp only [wedge, odist']
-    field_simp [(eq_iff_vec_eq_zero A C).mp p, vecrayc0]
+    field_simp [eq_iff_vec_eq_zero.mp p, vecrayc0]
   · haveI cnea : PtNe C A := ⟨p⟩
     rw [wedge_eq_length_mul_length_mul_sin,
       @odist'_eq_length_mul_sin _ _ C (RAY A B) cnea, ← mul_assoc]

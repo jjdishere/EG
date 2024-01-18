@@ -9,7 +9,7 @@ theorem same_dist_eq_or_eq_neg {A B C : P} [hne : PtNe B A] (h : C LiesOn (LIN A
   have : LIN A B = (RAY A B).toLine := rfl
   rw [this] at h
   rcases Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev.mp h with h | h
-  · left; apply (eq_iff_vec_eq_zero _ _).mpr
+  · left; apply eq_iff_vec_eq_zero.mpr
     have : VEC A C = (dist A C) • (RAY A B).2.unitVec := Ray.vec_eq_dist_smul_toDir_of_lies_on h
     calc
       _ = VEC A C - VEC A B := by rw [vec_sub_vec]
@@ -49,7 +49,7 @@ theorem midpoint_dist_eq_iff_eq_endpts {A B C : P} [hne : PtNe B C] (h : A LiesO
     rcases same_dist_eq_or_eq_neg this hh with h₁ | h₂
     · left; exact h₁
     right
-    apply (eq_iff_vec_eq_zero _ _).mpr
+    apply eq_iff_vec_eq_zero.mpr
     calc
       _ = VEC (SEG B C).midpoint A - VEC (SEG B C).midpoint C := by rw [vec_sub_vec]
       _ = VEC B (SEG B C).midpoint - VEC (SEG B C).midpoint C := by rw [h₂]

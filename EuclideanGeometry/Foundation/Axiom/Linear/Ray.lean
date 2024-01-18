@@ -244,7 +244,7 @@ instance {s : SegND P} : PtNe s.target s.source := ⟨s.2⟩
 
 /-- Given a nondegenerate segment $AB$, this function returns the nondegenerate vector $\overrightarrow{AB}$. -/
 @[pp_dot]
-def toVecND (seg_nd : SegND P) : VecND := ⟨VEC seg_nd.source seg_nd.target, (ne_iff_vec_ne_zero _ _).mp seg_nd.2⟩
+def toVecND (seg_nd : SegND P) : VecND := ⟨VEC seg_nd.source seg_nd.target, ne_iff_vec_ne_zero.mp seg_nd.2⟩
 
 /-- Given a nondegenerate segment $AB$, this function returns the direction associated to the segment, defined by normalizing the nondegenerate vector $\overrightarrow{AB}$. -/
 @[pp_dot]
@@ -1190,7 +1190,7 @@ theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {X : P} {seg_nd : SegN
     have: A=0:=by linarith
     rw [this] at ha
     simp only [Dir.toVec_neg_eq_neg_toVec, smul_neg, zero_smul, neg_zero] at ha
-    apply (eq_iff_vec_eq_zero _ _).mpr
+    apply eq_iff_vec_eq_zero.mpr
     exact ha
   have raysourcesource:seg_nd.extension.source=seg_nd.1.target:=by
     rfl
@@ -1546,7 +1546,7 @@ theorem SegND.exist_pt_beyond_pt (l : SegND P) : (∃ q : P, l.target LiesInt (S
     If a segment contains an interior point, then it is nondegenerate-/
 theorem Seg.nd_of_exist_int_pt {X : P} {seg : Seg P} (h : X LiesInt seg) : seg.IsND := by
   rcases h with ⟨⟨_, ⟨_, _, e⟩⟩, p_ne_s, _⟩
-  have t : VEC seg.source X ≠ 0 := (ne_iff_vec_ne_zero seg.source X).mp p_ne_s
+  have t : VEC seg.source X ≠ 0 := ne_iff_vec_ne_zero.mp p_ne_s
   rw [e] at t
   exact Iff.mp vsub_ne_zero (right_ne_zero_of_smul t)
 
