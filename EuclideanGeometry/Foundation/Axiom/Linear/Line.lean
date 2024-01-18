@@ -1030,12 +1030,10 @@ namespace Line
 theorem pt_pt_linear {A B C : P} [_h : PtNe B A] (hc : C LiesOn (LIN A B)) : Collinear A B C :=
   if hcb : C = B then collinear_of_trd_eq_snd A hcb
   else if hac : A = C then collinear_of_fst_eq_snd B hac
-  else haveI : PtNe C B := ⟨hcb⟩; haveI : PtNe A C := ⟨hac⟩; Collinear.perm₂₁₃ <| by
-    rw [Line.lies_on_iff_eq_toProj_of_lies_on snd_pt_lies_on_mk_pt_pt] at hc
-    rw [collinear_iff_toProj_eq_of_ptNe]
-    trans (VEC_nd A B).toProj
-    · exact hc
-    · exact Ray.toProj_eq_toProj_of_mk_pt_pt -- TODO: refactor
+  else haveI : PtNe C B := ⟨hcb⟩
+  perm_collinear_trd_fst_snd <| (dite_prop_iff_or _).mpr <| .inr ⟨by push_neg; exact ⟨hac, Fact.out, hcb⟩,
+    ((lies_on_iff_eq_toProj_of_lies_on snd_pt_lies_on_mk_pt_pt).mp hc).trans <|
+      congrArg toProj line_of_pt_pt_eq_rev⟩
 
 /-- The theorem states that if three points $A$, $B$, and $C$ lie on the same line $l$, then they are collinear. -/
 theorem linear {l : Line P} {A B C : P} (h₁ : A LiesOn l) (h₂ : B LiesOn l) (h₃ : C LiesOn l) : Collinear A B C := by
