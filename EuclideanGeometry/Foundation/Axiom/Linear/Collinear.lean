@@ -167,7 +167,7 @@ end Collinear
 section compatibility
 
 /-- If $A$, $B$, $C$ are three points which lie on a ray, then they are collinear. -/
-theorem Ray.collinear_of_lies_on {A B C : P} {ray : Ray P} (hA : A LiesOn ray) (hB : B LiesOn ray) (hC : C LiesOn ray) : collinear A B C := by
+theorem Ray.collinear_of_lies_on {A B C : P} {ray : Ray P} (hA : A LiesOn ray) (hB : B LiesOn ray) (hC : C LiesOn ray) : Collinear A B C := by
   rcases hA with ⟨a,_,Ap⟩
   rcases hB with ⟨b,_,Bp⟩
   rcases hC with ⟨c,_,Cp⟩
@@ -188,7 +188,7 @@ theorem Ray.collinear_of_lies_on {A B C : P} {ray : Ray P} (hA : A LiesOn ray) (
   rw [ac, ab, smul_smul, div_mul_cancel _ nd]
 
 /-- If $A$, $B$, $C$ are three points which lie on a segment, then they are collinear. -/
-theorem Seg.collinear_of_lies_on {A B C : P} {seg : Seg P} (hA : A LiesOn seg) (hB : B LiesOn seg) (hC : C LiesOn seg) : collinear A B C := by
+theorem Seg.collinear_of_lies_on {A B C : P} {seg : Seg P} (hA : A LiesOn seg) (hB : B LiesOn seg) (hC : C LiesOn seg) : Collinear A B C := by
   by_cases nd : seg.source =seg.target
   . rcases hA with ⟨_,_,_,a⟩
     simp only [nd, vec_same_eq_zero, smul_zero] at a
