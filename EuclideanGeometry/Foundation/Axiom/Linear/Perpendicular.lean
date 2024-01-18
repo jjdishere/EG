@@ -124,7 +124,7 @@ end Perpendicular_constructions
 section Perpendicular_inner_product
 
 theorem perp_of_inner_product_eq_zero (v w : VecND) (h : inner v.1 w.1 = (0 : ℝ)) : v ⟂ w := by
-  unfold perpendicular Proj.perp
+  unfold Perpendicular Proj.perp
   rw [Proj.vadd_coe_left]
   erw [Proj.map_vecND_toProj]
   simp only [Dir.map_apply, ne_eq, LinearEquiv.restrictScalars_apply, VecND.toDir_toProj]
@@ -146,7 +146,7 @@ theorem perp_of_inner_product_eq_zero (v w : VecND) (h : inner v.1 w.1 = (0 : �
     linarith
 
 theorem inner_product_eq_zero_of_perp (v w : VecND) (h : v ⟂ w) : inner v.1 w.1 = (0 : ℝ) := by
-  unfold perpendicular Proj.perp at h
+  unfold Perpendicular Proj.perp at h
   rw [Proj.vadd_coe_left] at h
   erw [Proj.map_vecND_toProj] at h
   simp only [Dir.map_apply, ne_eq, LinearEquiv.restrictScalars_apply, VecND.toDir_toProj] at h
