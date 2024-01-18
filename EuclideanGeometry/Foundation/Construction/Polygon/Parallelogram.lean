@@ -165,7 +165,7 @@ theorem Parallelogram_not_collinear₁₂₃ {P : Type*} [EuclideanPlane P] (qdr
       simp [wedge132 _ _ qdr_nd.point₄]
   · constructor
     · exact h
-    · rw [Collinear.perm₁₃₂rm₁₃₂]
+    · rw [Collinear.perm₁₃₂]
 
     ·
     ·

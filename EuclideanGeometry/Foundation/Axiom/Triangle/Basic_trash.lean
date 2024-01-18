@@ -34,7 +34,7 @@ theorem edge_toLine_not_para_of_not_collinear {A B C : P} (h : ¬ Collinear A B 
     exact (SEG_nd C A (ne_of_not_collinear h).2.1).source_lies_on_toLine
     exact h2
   have b_lies_on_bc : B LiesOn (LIN B C (ne_of_not_collinear h).1) := (SEG_nd B C (ne_of_not_collinear h).1).source_lies_on_toLine
-  have b_not_lies_on_ca := (Line.lies_on_line_of_pt_pt_iff_collinear (_h := ⟨(ne_of_not_collinear h).2.1⟩) B).mp.mt (Collinear.perm₂₁₃.mt (Collinear.perm₁₃₂rm₁₃₂.mt h))
+  have b_not_lies_on_ca := (Line.lies_on_line_of_pt_pt_iff_collinear (_h := ⟨(ne_of_not_collinear h).2.1⟩) B).mp.mt (Collinear.perm₂₁₃.mt (Collinear.perm₁₃₂.mt h))
   simp only[← eq2] at b_not_lies_on_ca
   apply b_not_lies_on_ca
   exact b_lies_on_bc

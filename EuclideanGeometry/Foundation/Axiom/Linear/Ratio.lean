@@ -12,13 +12,13 @@ section ratio
 /-
 Below is the definition of divratio using ddist, which I think might not be a good idea.
 
-def divratio (A B C : P) (colin : Collinear A B C) (cnea : C ≠ A) : ℝ := (DirLine.ddist (B := B) (DirLine.pt_pt_maximal cnea (Collinear.perm₁₃₂rm₁₃₂rm₁₃₂ (triv_collinear₁₂ A C))) (DirLine.pt_pt_maximal cnea (Collinear.perm₁₃₂ colin))) / (DirLine.ddist (DirLine.pt_pt_maximal cnea (Collinear.perm₁₃₂ (triv_collinear₁₂ A C))) (DirLine.pt_pt_maximal cnea (Collinear.perm₃₁₂ (triv_collinear₁₂ C A))))
+def divratio (A B C : P) (colin : Collinear A B C) (cnea : C ≠ A) : ℝ := (DirLine.ddist (B := B) (DirLine.pt_pt_maximal cnea (Collinear.perm₁₃₂ (triv_collinear₁₂ A C))) (DirLine.pt_pt_maximal cnea (Collinear.perm₁₃₂ colin))) / (DirLine.ddist (DirLine.pt_pt_maximal cnea (Collinear.perm₁₃₂ (triv_collinear₁₂ A C))) (DirLine.pt_pt_maximal cnea (Collinear.perm₃₁₂ (triv_collinear₁₂ C A))))
 -/
 
 def divratio (A B C : P) : ℝ := ((VEC A B)/(VEC A C)).1
 
 theorem ratio_is_real' (A B C : P) (colin : Collinear A B C) [cnea : PtNe C A] : ((VEC A B)/(VEC A C)).2 = 0 := by
-  have h0 : Collinear A C B := Collinear.perm₁₃₂rm₁₃₂ colin
+  have h0 : Collinear A C B := Collinear.perm₁₃₂ colin
   rw [collinear_iff_eq_smul_vec_of_ne] at h0
   rcases h0 with ⟨r , h1⟩
   have h2 : VEC A C ≠ 0 := (ne_iff_vec_ne_zero A C).mp cnea.out
