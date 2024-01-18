@@ -7,8 +7,8 @@ noncomputable section
 namespace EuclidGeom
 
 class Parallelogram (P : Type _) [EuclideanPlane P] extends Quadrilateral_cvx P where
-  para : LinearObj.seg_nd toQuadrilateral_cvx.edge_nd₁₂ ∥ toQuadrilateral_cvx.edge_nd₃₄
-  para' : LinearObj.seg_nd toQuadrilateral_cvx.edge_nd₂₃ ∥ toQuadrilateral_cvx.edge_nd₄₁
+  para : LinearObj.seg_nd toQuadrilateral_cvx.edgeND₁₂ ∥ toQuadrilateral_cvx.edgeND₃₄
+  para' : LinearObj.seg_nd toQuadrilateral_cvx.edgeND₂₃ ∥ toQuadrilateral_cvx.edgeND₄₁
 
 /-
 section make
@@ -23,7 +23,7 @@ end Parallelogram
 end make
 -/
 
-def Quadrilateral_cvx.is_parallelogram {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := (LinearObj.seg_nd qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) ∧ (LinearObj.seg_nd qdr_cvx.edge_nd₂₃ ∥ qdr_cvx.edge_nd₄₁)
+def Quadrilateral_cvx.is_parallelogram {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P) : Prop := (LinearObj.seg_nd qdr_cvx.edgeND₁₂ ∥ qdr_cvx.edgeND₃₄) ∧ (LinearObj.seg_nd qdr_cvx.edgeND₂₃ ∥ qdr_cvx.edgeND₄₁)
 
 def Quadrilateral.is_parallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop := by
   by_cases qdr.IsConvex 

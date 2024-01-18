@@ -104,15 +104,15 @@ the uniqueness of the graph and how to use it to determine the orientation.
 -/
 variable (tr_nd : TriangleND P)
 
-theorem iscclock_iff_liesonleft₃ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.3 LiesOnLeft tr_nd.edge_nd₃ := by
+theorem iscclock_iff_liesonleft₃ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.3 LiesOnLeft tr_nd.edgeND₃ := by
   unfold is_cclock
   unfold IsOnLeftSide
-  have h : (0 < tr_nd.oarea) = (0 < odist tr_nd.1.3 tr_nd.edge_nd₃) := by
-    have : EuclidGeom.oarea tr_nd.1.1 tr_nd.1.2 tr_nd.1.3 = tr_nd.edge₃.length * odist tr_nd.1.3 tr_nd.edge_nd₃ /2 := by
+  have h : (0 < tr_nd.oarea) = (0 < odist tr_nd.1.3 tr_nd.edgeND₃) := by
+    have : EuclidGeom.oarea tr_nd.1.1 tr_nd.1.2 tr_nd.1.3 = tr_nd.edge₃.length * odist tr_nd.1.3 tr_nd.edgeND₃ /2 := by
       apply oarea_eq_length_mul_odist_div_two
     unfold oarea
     unfold Triangle.oarea
-    have _ : tr_nd.edge_nd₃.length > 0 := tr_nd.edge_nd₃.length_pos
+    have _ : tr_nd.edgeND₃.length > 0 := tr_nd.edgeND₃.length_pos
     simp only [this, eq_iff_iff]
     symm
     constructor
@@ -120,17 +120,17 @@ theorem iscclock_iff_liesonleft₃ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr
       positivity
     · intro p
       apply pos_of_mul_pos_left (b := tr_nd.edge₃.length/2)
-      · have simp : odist tr_nd.1.3 tr_nd.edge_nd₃ * (tr_nd.edge₃.length / 2) = tr_nd.edge₃.length * odist tr_nd.1.3 tr_nd.edge_nd₃ / 2  := by ring
+      · have simp : odist tr_nd.1.3 tr_nd.edgeND₃ * (tr_nd.edge₃.length / 2) = tr_nd.edge₃.length * odist tr_nd.1.3 tr_nd.edgeND₃ / 2  := by ring
         rw [simp]
         exact p
       · positivity
   exact h
-theorem iscclock_iff_liesonleft₁ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.1 LiesOnLeft tr_nd.edge_nd₁ := by
+theorem iscclock_iff_liesonleft₁ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.1 LiesOnLeft tr_nd.edgeND₁ := by
   have h : tr_nd.is_cclock = (tr_nd.perm_vertices.is_cclock) := by
     apply same_orient_of_perm_vertices
   simp only [h]
   apply iscclock_iff_liesonleft₃
-theorem iscclock_iff_liesonleft₂ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.2 LiesOnLeft tr_nd.edge_nd₂ := by
+theorem iscclock_iff_liesonleft₂ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.2 LiesOnLeft tr_nd.edgeND₂ := by
   have h : tr_nd.is_cclock = (tr_nd.perm_vertices.is_cclock) := by
     apply same_orient_of_perm_vertices
   simp only [h]
