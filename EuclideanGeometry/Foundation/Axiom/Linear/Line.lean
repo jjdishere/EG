@@ -1031,7 +1031,7 @@ theorem pt_pt_linear {A B C : P} [_h : PtNe B A] (hc : C LiesOn (LIN A B)) : Col
   if hcb : C = B then collinear_of_trd_eq_snd A hcb
   else if hac : A = C then collinear_of_fst_eq_snd B hac
   else haveI : PtNe C B := ⟨hcb⟩
-  perm_collinear_trd_fst_snd <| (dite_prop_iff_or _).mpr <| .inr ⟨by push_neg; exact ⟨hac, Fact.out, hcb⟩,
+  Collinear.perm₃₁₂ <| (dite_prop_iff_or _).mpr <| .inr ⟨by push_neg; exact ⟨hac, Fact.out, hcb⟩,
     ((lies_on_iff_eq_toProj_of_lies_on snd_pt_lies_on_mk_pt_pt).mp hc).trans <|
       congrArg toProj line_of_pt_pt_eq_rev⟩
 
@@ -1051,7 +1051,7 @@ theorem pt_pt_maximal {A B C : P} [_h : PtNe B A] (Co : Collinear A B C) : C Lie
     exact snd_pt_lies_on_mk_pt_pt
   else haveI : PtNe C B := ⟨hcb⟩
   (lies_on_iff_eq_toProj_of_lies_on snd_pt_lies_on_mk_pt_pt).mpr <|
-    (collinear_iff_toProj_eq_of_ptNe.mp (Collinear.perm₂₁₃ Co)).trans <|
+    (collinear_iff_toProj_eq_of_ptNe.mp Co.perm₂₃₁).trans <|
       congrArg Line.toProj (line_of_pt_pt_eq_rev (_h := _h)).symm
 
 /-- Given two distinct points $A$ and $B$ on a line $l$, if a point $C$ is so that $A$, $B$, and $C$ are collinear, then $C$ lines on $l$. -/
@@ -1088,7 +1088,7 @@ theorem collinear_iff_exist_line_lies_on (A B C : P) : Collinear A B C ↔ ∃ l
     if h : PtNe B A then exact (lies_on_iff_collinear_of_ne_lies_on_lies_on ha hb C).mp hc
     else
       simp [PtNe, fact_iff] at h
-      simp only [h, collinear, or_true, dite_true]
+      simp only [h, Collinear, or_true, dite_true]
 
 end Line
 
