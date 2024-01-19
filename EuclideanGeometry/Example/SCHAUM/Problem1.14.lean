@@ -64,8 +64,8 @@ theorem result1 {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (
   Thus $\triangle MBP \congr \triangle NCQ$ (by AAS),
   which implies $PM = QN$.
   -/
-  have not_collinear_MBP : ¬ collinear e.M e.B e.P := by sorry
-  have not_collinear_NDQ : ¬ collinear e.N e.D e.Q := by sorry
+  have not_collinear_MBP : ¬ Collinear e.M e.B e.P := by sorry
+  have not_collinear_NDQ : ¬ Collinear e.N e.D e.Q := by sorry
   have B_ne_M : e.B ≠ e.M := by sorry
   have P_ne_M : e.P ≠ e.M := by sorry
   have D_ne_N : e.D ≠ e.N := by sorry
@@ -85,7 +85,7 @@ theorem result2 {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (
   -- We have $BD \perp QN$ because $N$ is the perpendicular foot from $Q$ to $BD$.
   have BD_perp_QN : LIN e.B e.D e.D_ne_B ⟂ LIN e.Q e.N e.N_ne_Q := by
     simp only [e.perp_foot_N]
-    exact perpendicular.symm (line_of_self_perp_foot_perp_line_of_not_lies_on e.not_Q_lieson_BD)
+    exact Perpendicular.symm (line_of_self_perp_foot_perp_line_of_not_lies_on e.not_Q_lieson_BD)
   -- then $PM \perp QN$ because $PM \perp BD$ and $BD \perp QN$.
   exact parallel_of_perp_perp (l₂ := (LIN e.B e.D e.D_ne_B)) PM_perp_BD BD_perp_QN
 

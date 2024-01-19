@@ -14,7 +14,7 @@ Prove that $∠DAB = ∠CAE$.
 -/
 /--/
 --Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {not_collinear_ABC: ¬ collinear A B C} {isoceles_ABC: (▵ A B C).IsIsoceles}
+variable {A B C : P} {not_collinear_ABC: ¬ Collinear A B C} {isoceles_ABC: (▵ A B C).IsIsoceles}
 --Let $D$ and $E$ be two points on $BC$
 variable {D : P} {D_Int_BC: D LiesInt (SEG B C)}
 variable {E : P} {E_Int_BC: E LiesInt (SEG B C)}
@@ -35,7 +35,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_collinear_ABC : ¬ collinear A B C
+  not_collinear_ABC : ¬ Collinear A B C
   isoc_ABC : (▵ A B C).IsIsoceles
   --Let $D$ and $E$ be two points on $BC$
   D : Plane
@@ -78,9 +78,9 @@ theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠
       _= (SEG e.A e.B).length := length_of_rev_eq_length' --$BA = AB$ by symmetry
       _= (SEG e.C e.A).length := e.isoc_ABC.symm -- $AB = CA$ by isoceles.
   --Triangle B A D nondegenerate.
-  have hnd₁ : ¬ collinear e.B e.A e.D := by sorry
+  have hnd₁ : ¬ Collinear e.B e.A e.D := by sorry
   --Triangle C A E nondegenerate.
-  have hnd₂ : ¬ collinear e.C e.A e.E := by sorry
+  have hnd₂ : ¬ Collinear e.C e.A e.E := by sorry
   --Beacause $BD = CE$ we have $DB = EC$.
   have h₁ : (SEG e.D e.B).length = (SEG e.E e.C).length := by
     calc

@@ -106,7 +106,7 @@ theorem extangent_pt_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : �
           rw [norm_smul, Dir.norm_unitVec, mul_one, Real.norm_of_nonneg ω₂.rad_pos.le]
   exact this
 
-theorem extangent_pt_centers_collinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Extangent ω₂) : collinear ω₁.center (Extangentpt h) ω₂.center := by
+theorem extangent_pt_centers_collinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Extangent ω₂) : Collinear ω₁.center (Extangentpt h) ω₂.center := by
   haveI : PtNe ω₁.center ω₂.center := ⟨extangent_centers_distinct h⟩
   have : VEC ω₁.center (Extangentpt h) = (ω₁.radius * ‖VEC ω₁.center ω₂.center‖⁻¹) • (VEC ω₁.center ω₂.center) := by
     calc
@@ -115,7 +115,7 @@ theorem extangent_pt_centers_collinear {ω₁ : Circle P} {ω₂ : Circle P} (h 
         simp
       _ = ω₁.radius • (‖VEC ω₁.center ω₂.center‖⁻¹ • (VEC ω₁.center ω₂.center)) := rfl
       _ = (ω₁.radius * ‖VEC ω₁.center ω₂.center‖⁻¹) • (VEC ω₁.center ω₂.center) := by apply smul_smul
-  apply flip_collinear_snd_trd (collinear_of_vec_eq_smul_vec this)
+  apply Collinear.perm₁₃₂ (collinear_of_vec_eq_smul_vec this)
 
 end CC
 
@@ -160,7 +160,9 @@ theorem intangent_pt_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : �
         have : VEC_nd ω₁.center ω₂.center = - VEC_nd ω₂.center ω₁.center := by
           ext; simp only [ne_eq, RayVector.coe_neg, VecND.coe_mkPtPt]
           rw [neg_vec]
-        have : (VEC_nd ω₁.center ω₂.center).toDir.unitVec = - (VEC_nd ω₂.center ω₁.center).toDir.unitVec := by rw [this]; simp
+        have : (VEC_nd ω₁.center ω₂.center).toDir.unitVec = - (VEC_nd ω₂.center ω₁.center).toDir.unitVec := by
+          rw [this]
+          simp only [VecND.neg_toDir, Dir.neg_unitVec]
         rw [this, smul_neg, sub_eq_add_neg]
       _ = ‖(‖VEC_nd ω₁.center ω₂.center‖ + ω₁.radius) • (VEC_nd ω₁.center ω₂.center).toDir.unitVec‖ := by
         rw [add_smul, VecND.norm_smul_toDir_unitVec]
@@ -176,7 +178,7 @@ theorem intangent_pt_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : �
   show Circle.IsOn (Intangentpt h) ω₂
   exact this
 
-theorem intangentpt_centers_collinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intangent ω₂) : collinear ω₁.center ω₂.center (Intangentpt h) := by
+theorem intangentpt_centers_collinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intangent ω₂) : Collinear ω₁.center ω₂.center (Intangentpt h) := by
   haveI : PtNe ω₁.center ω₂.center := ⟨h.2⟩
   have : VEC ω₁.center (Intangentpt h) = (- ω₁.radius * ‖(VEC ω₁.center ω₂.center)‖⁻¹) • VEC ω₁.center ω₂.center := by
     calc
@@ -184,12 +186,12 @@ theorem intangentpt_centers_collinear {ω₁ : Circle P} {ω₂ : Circle P} (h :
         unfold Intangentpt
         simp
       _ = ω₁.radius • (- (VEC_nd ω₁.center ω₂.center).toDir.unitVec) := by
-        -- note: 为什么没有 neg_vecND
+        -- note: 为什么没有 neg_vecND `现在有了`
         trans ω₁.radius • (-VEC_nd ω₁.center ω₂.center).toDir.unitVec
         · unfold VecND.mkPtPt Vec.mkPtPt
           congr
           rw [← neg_eq_iff_eq_neg, neg_vsub_eq_vsub_rev]
-        · simp
+        · simp only [VecND.neg_toDir, Dir.neg_unitVec, smul_neg]
       _ = - ω₁.radius • (VEC_nd ω₁.center ω₂.center).toDir.unitVec := by
         rw [smul_neg, neg_smul]
       _ = (- ω₁.radius) • ‖VEC ω₁.center ω₂.center‖⁻¹ • VEC ω₁.center ω₂.center := rfl
@@ -391,11 +393,11 @@ theorem inx_pts_lieson_circles {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ 
       apply Real.sqrt_sq (by linarith [ω₂.rad_pos])
       apply mul_ne_zero (by norm_num) (dist_ne_zero.mpr cne.out)
 
-lemma inx_pts_not_collinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (¬ collinear (Inxpts h).left ω₁.center ω₂.center) ∧ (¬ collinear (Inxpts h).right ω₁.center ω₂.center) := by
+lemma inx_pts_not_collinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (¬ Collinear (Inxpts h).left ω₁.center ω₂.center) ∧ (¬ Collinear (Inxpts h).right ω₁.center ω₂.center) := by
   constructor
   · intro hc
     set tri : Triangle P := ▵ (Inxpts h).left ω₁.center ω₂.center with tri_def
-    have : collinear tri.1 tri.2 tri.3 := hc
+    have : Collinear tri.1 tri.2 tri.3 := hc
     rw [Triangle.edge_sum_eq_edge_iff_collinear] at this
     rcases this with heq | (heq | heq)
     · rw [tri_def] at heq
@@ -430,7 +432,7 @@ lemma inx_pts_not_collinear {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Int
     linarith
   intro hc
   set tri : Triangle P := ▵ (Inxpts h).right ω₁.center ω₂.center with tri_def
-  have : collinear tri.1 tri.2 tri.3 := hc
+  have : Collinear tri.1 tri.2 tri.3 := hc
   rw [Triangle.edge_sum_eq_edge_iff_collinear] at this
   rcases this with heq | (heq | heq)
   · rw [tri_def] at heq

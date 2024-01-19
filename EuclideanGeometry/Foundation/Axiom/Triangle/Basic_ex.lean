@@ -104,15 +104,15 @@ the uniqueness of the graph and how to use it to determine the orientation.
 -/
 variable (tr_nd : TriangleND P)
 
-theorem iscclock_iff_liesonleft₃ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.3 LiesOnLeft tr_nd.edge_nd₃ := by
+theorem iscclock_iff_liesonleft₃ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.3 LiesOnLeft tr_nd.edgeND₃ := by
   unfold is_cclock
   unfold IsOnLeftSide
-  have h : (0 < tr_nd.oarea) = (0 < odist tr_nd.1.3 tr_nd.edge_nd₃) := by
-    have : EuclidGeom.oarea tr_nd.1.1 tr_nd.1.2 tr_nd.1.3 = tr_nd.edge₃.length * odist tr_nd.1.3 tr_nd.edge_nd₃ /2 := by
+  have h : (0 < tr_nd.oarea) = (0 < odist tr_nd.1.3 tr_nd.edgeND₃) := by
+    have : EuclidGeom.oarea tr_nd.1.1 tr_nd.1.2 tr_nd.1.3 = tr_nd.edge₃.length * odist tr_nd.1.3 tr_nd.edgeND₃ /2 := by
       apply oarea_eq_length_mul_odist_div_two
     unfold oarea
     unfold Triangle.oarea
-    have _ : tr_nd.edge_nd₃.length > 0 := tr_nd.edge_nd₃.length_pos
+    have _ : tr_nd.edgeND₃.length > 0 := tr_nd.edgeND₃.length_pos
     simp only [this, eq_iff_iff]
     symm
     constructor
@@ -120,17 +120,17 @@ theorem iscclock_iff_liesonleft₃ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr
       positivity
     · intro p
       apply pos_of_mul_pos_left (b := tr_nd.edge₃.length/2)
-      · have simp : odist tr_nd.1.3 tr_nd.edge_nd₃ * (tr_nd.edge₃.length / 2) = tr_nd.edge₃.length * odist tr_nd.1.3 tr_nd.edge_nd₃ / 2  := by ring
+      · have simp : odist tr_nd.1.3 tr_nd.edgeND₃ * (tr_nd.edge₃.length / 2) = tr_nd.edge₃.length * odist tr_nd.1.3 tr_nd.edgeND₃ / 2  := by ring
         rw [simp]
         exact p
       · positivity
   exact h
-theorem iscclock_iff_liesonleft₁ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.1 LiesOnLeft tr_nd.edge_nd₁ := by
+theorem iscclock_iff_liesonleft₁ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.1 LiesOnLeft tr_nd.edgeND₁ := by
   have h : tr_nd.is_cclock = (tr_nd.perm_vertices.is_cclock) := by
     apply same_orient_of_perm_vertices
   simp only [h]
   apply iscclock_iff_liesonleft₃
-theorem iscclock_iff_liesonleft₂ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.2 LiesOnLeft tr_nd.edge_nd₂ := by
+theorem iscclock_iff_liesonleft₂ (tr_nd : TriangleND P) : tr_nd.is_cclock = tr_nd.1.2 LiesOnLeft tr_nd.edgeND₂ := by
   have h : tr_nd.is_cclock = (tr_nd.perm_vertices.is_cclock) := by
     apply same_orient_of_perm_vertices
   simp only [h]
@@ -174,7 +174,7 @@ theorem anti_cclock_of_IsOnOppositeSide (A B C D : P) [hne : PtNe B A] (h : IsOn
 
 lemma liesonleft_ne_pts {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (DLIN A B)) : (C ≠ A) ∧ (C ≠ B) := by
   have h': C LiesOnLeft (RAY A B) := by exact h
-  have : ¬ collinear A B C := by
+  have : ¬ Collinear A B C := by
     apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     simp only [h', true_or]
   have c_ne_a : C ≠ A := (ne_of_not_collinear this).2.1.symm
@@ -183,7 +183,7 @@ lemma liesonleft_ne_pts {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (DLIN A B
 
 theorem liesonleft_angle_ispos {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (DLIN A B)) : (∠ A C B (liesonleft_ne_pts h).1.symm (liesonleft_ne_pts h).2.symm).IsPos := by
   have h': C LiesOnLeft (RAY A B) := by exact h
-  have ABC_nd: ¬ collinear A B C := by
+  have ABC_nd: ¬ Collinear A B C := by
     apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     simp only [h', true_or]
   have c : (TRI_nd A B C ABC_nd).is_cclock = C LiesOnLeft (SEG_nd A B) := by
@@ -200,7 +200,7 @@ theorem liesonleft_angle_ispos {A B C : P} [hne : PtNe B A] (h : C LiesOnLeft (D
 
 lemma liesonright_ne_pts {A B C : P} [hne : PtNe B A] (h : C LiesOnRight (DLIN A B)) : (C ≠ A) ∧ (C ≠ B) := by
   have h': C LiesOnRight (RAY A B) := by exact h
-  have : ¬ collinear A B C := by
+  have : ¬ Collinear A B C := by
     apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     simp only [h', or_true]
   have c_ne_a : C ≠ A := (ne_of_not_collinear this).2.1.symm
@@ -210,7 +210,7 @@ lemma liesonright_ne_pts {A B C : P} [hne : PtNe B A] (h : C LiesOnRight (DLIN A
 theorem liesonright_angle_isneg {A B C : P} [hne : PtNe B A] (h : C LiesOnRight (DLIN A B)) : (∠ A C B (liesonright_ne_pts h).1.symm (liesonright_ne_pts h).2.symm).IsNeg := by
   have h': C LiesOnRight (RAY A B) := by exact h
   have h'' : C LiesOnRight (SEG_nd A B) := by exact h
-  have ABC_nd: ¬ collinear A B C := by
+  have ABC_nd: ¬ Collinear A B C := by
     apply not_collinear_of_LiesOnLeft_or_LiesOnRight
     simp only [h', or_true]
   have c : (TRI_nd A B C ABC_nd).is_cclock = C LiesOnLeft (SEG_nd A B) := by

@@ -391,7 +391,7 @@ theorem SegND.lies_int_iff {X : P} {seg_nd : SegND P}: X LiesInt seg_nd ↔ ∃ 
     · constructor
       · contrapose! nt
         have : t = 1 := by linarith
-        simp [this] at ht
+        simp only [this, Seg.mk_source_target, one_smul] at ht
         rw [← vec_sub_vec seg_nd.source]
         exact sub_eq_zero_of_eq ht
       · exact ht
@@ -402,27 +402,35 @@ theorem SegND.lies_int_iff {X : P} {seg_nd : SegND P}: X LiesInt seg_nd ↔ ∃ 
       rw [SegND.source] at ht
       rw [ht, smul_ne_zero_iff]
       exact ⟨ by linarith, seg_nd.toVecND.2⟩
-    · simp [SegND.toVecND] at ht
+    · simp only [ne_eq, toVecND, Seg.mk_source_target] at ht
       rw [ne_iff_vec_ne_zero]
       have h1 : VEC seg_nd.target X = (t - 1) • seg_nd.toVecND.1 := by
         rw [sub_smul]
-        simp [SegND.toVecND]
+        simp only [ne_eq, toVecND, Seg.mk_source_target, one_smul]
         rw [← ht]
         exact (vec_sub_vec _ _ _).symm
       rw [SegND.target] at h1
       rw [h1, smul_ne_zero_iff]
       exact ⟨by linarith, seg_nd.toVecND.2⟩
 
-/-- For a nondegenerate segment $AB$, if a point $X$ lies on $AB$ the $X$ not equal to $A$. -/
+/-- For a nondegenerate segment $AB$, if a point $X$ lies on the interior of $AB$ then $X$ not equal to $A$. -/
 theorem SegND.ne_source_of_lies_int {X : P} {s : SegND P} (h : X LiesInt s) : X ≠ s.source :=
   h.ne_source
 
-/-- For a nondegenerate segment $AB$, if a point $X$ lies on $AB$ the $X$ not equal to $B$. -/
+/-- For a nondegenerate segment $AB$, if a point $X$ lies on the interior of $AB$ then $X$ not equal to $B$. -/
 theorem SegND.ne_target_of_lies_int {X : P} {s : SegND P} (h : X LiesInt s) : X ≠ s.target :=
   h.ne_target
 
 /-- For a segment $AB$, if there exists an interior point $X$, then it is nondegenerate. -/
-theorem Seg.isND_of_pt_liesint {seg : Seg P} {X : P} (h : X LiesInt seg) : seg.IsND := by sorry
+theorem Seg.isND_of_pt_liesint {seg : Seg P} {X : P} (h : X LiesInt seg) : seg.IsND := by
+  rcases h.1 with ⟨t, ⟨_, ⟨_, H⟩⟩⟩
+  rw [IsND]
+  by_contra H1
+  rw [eq_iff_vec_eq_zero] at H1
+  rw [H1, smul_zero] at H
+  apply h.2
+  rw [eq_iff_vec_eq_zero]
+  apply H
 
 /-- For a segment $AB$, a point $X$ lies in the interior of $AB$ if and only if $AB$ is nondegenerate, and there exist a real number $t$ satisfying that $0 < t < 1$ and that the vector $\overrightarrow{AX}$ is same as $t \cdot \overrightarrow{AB}$. -/
 theorem Seg.lies_int_iff {X : P} {seg : Seg P}: X LiesInt seg ↔ seg.IsND ∧ (∃ (t : ℝ) , 0 < t ∧ t < 1 ∧ VEC seg.source X = t • seg.toVec) := by
@@ -504,6 +512,16 @@ theorem SegND.lies_on_toRay_of_lies_on {X : P} {seg_nd : SegND P} (h : X LiesOn 
 theorem SegND.lies_int_toRay_of_lies_int {X : P} {seg_nd : SegND P} (h : X LiesInt seg_nd) : X LiesInt seg_nd.toRay :=
   ⟨SegND.lies_on_toRay_of_lies_on h.1, h.2⟩
 
+/-- Given a nondegenerate segment $seg_nd$, the target of $seg_nd$ lies on the interior of the
+ray associated to $seg_nd$ -/
+theorem SegND.target_lies_int_toRay {seg_nd : SegND P} : seg_nd.target LiesInt seg_nd.toRay := by
+  have H: seg_nd.target LiesOn seg_nd.toRay:= by
+    apply SegND.lies_on_toRay_of_lies_on
+    exact target_lies_on
+  rw [Ray.lies_int_def]; constructor
+  apply H
+  apply seg_nd.2
+
 /-- Given two distinct points $A$ and $B$, $B$ lies on the ray $AB$. -/
 theorem Ray.snd_pt_lies_on_mk_pt_pt {A B : P} [h : PtNe B A] : B LiesOn (RAY A B) := by
   show B LiesOn (SEG_nd A B).toRay
@@ -521,14 +539,15 @@ theorem Ray.pt_pt_toDir_eq_ray_toDir {ray : Ray P} {A : P} (h : A LiesInt ray) :
     rfl
   · simp [ht]
 
-/-- Given a point $A$ on a ray, the ray starting at the source of the ray in the direction of $A$ is the same as the original ray. -/
+/-- Given a point $A$ on the interior of a ray, the ray starting at the source of the ray in the direction of $A$ is the same as the original ray. -/
 theorem Ray.pt_pt_eq_ray {ray : Ray P} {A : P} (h : A LiesInt ray) : RAY ray.1 A h.2 = ray :=
   (Ray.ext _ ray) rfl (pt_pt_toDir_eq_ray_toDir h)
 
-/-- Given a point $A$ on a ray, the ray associated to the segment from the source of the ray to $A$ is the same as the original ray. -/
+/-- Given a point $A$ on the interior of a ray, the ray associated to the segment from the source of the ray to $A$ is the same as the original ray. -/
 theorem Ray.source_int_toRay_eq_ray {ray : Ray P} {A : P} (h : A LiesInt ray) : (SEG_nd ray.source A h.2).toRay = ray :=
   Ray.pt_pt_eq_ray h
 
+/-- Given a point $A$ on the interior of a ray, the vector from the source of the ray to $A$ is equal to the distance of the source and $A$ times the direction vector of the original ray. -/
 theorem Ray.vec_eq_dist_smul_toDir_of_lies_on {A : P} {r : Ray P} (h : A LiesOn r) : VEC r.1 A = (dist r.1 A) • r.toDir.unitVec := by
   by_cases heq : A = r.1
   · rw [← heq, vec_same_eq_zero, dist_self, zero_smul]
@@ -537,7 +556,8 @@ theorem Ray.vec_eq_dist_smul_toDir_of_lies_on {A : P} {r : Ray P} (h : A LiesOn 
   have h₁ : RAY r.1 A h.2 = r := Ray.pt_pt_eq_ray h
   calc
     _ = (VEC_nd r.1 A h.2).1 := rfl
-    _ = ‖VEC_nd r.1 A h.2‖ • (VEC_nd r.1 A h.2).toDir.unitVec := by simp
+    _ = ‖VEC_nd r.1 A h.2‖ • (VEC_nd r.1 A h.2).toDir.unitVec := by simp only [ne_eq,
+      VecND.norm_smul_toDir_unitVec]
     _ = (dist r.1 A) • (VEC_nd r.1 A h.2).toDir.unitVec := by
       rw [dist_comm, NormedAddTorsor.dist_eq_norm']
       rfl
@@ -546,10 +566,10 @@ theorem Ray.vec_eq_dist_smul_toDir_of_lies_on {A : P} {r : Ray P} (h : A LiesOn 
 
 /-- Given two segments $seg_1$ and $seg_2$, if the source and the target of the $seg_1$ both lie on $seg_2$, then every point of $seg_1$ lies on $seg_2$. -/
 theorem every_pt_lies_on_seg_of_source_and_target_lies_on_seg {seg₁ seg₂ : Seg P} (h₁ : seg₁.source LiesOn seg₂) (h₂ : seg₁.target LiesOn seg₂) {A : P} (ha : A LiesOn seg₁) : (A LiesOn seg₂) := by
-  rcases h₁ with ⟨x,xnonneg,xle1,hx⟩
-  rcases h₂ with ⟨y,ynonneg,yle1,hy⟩
-  rcases ha with ⟨t,tnonneg,tleone,ht⟩
-  rw [←vec_add_vec seg₁.source seg₂.source,←vec_add_vec seg₁.source seg₂.source seg₁.target,←neg_vec,hx,hy,neg_add_eq_iff_eq_add,←neg_smul,smul_add,smul_smul,smul_smul,←add_smul,←add_smul,←add_assoc,mul_neg,←sub_eq_add_neg,←one_mul x,←mul_assoc,←sub_mul,mul_one] at ht
+  rcases h₁ with ⟨x, xnonneg, xle1, hx⟩
+  rcases h₂ with ⟨y, ynonneg, yle1, hy⟩
+  rcases ha with ⟨t, tnonneg, tleone, ht⟩
+  rw [←vec_add_vec seg₁.source seg₂.source, ←vec_add_vec seg₁.source seg₂.source seg₁.target, ←neg_vec, hx, hy, neg_add_eq_iff_eq_add, ←neg_smul, smul_add, smul_smul, smul_smul, ←add_smul, ←add_smul, ←add_assoc, mul_neg, ←sub_eq_add_neg, ←one_mul x, ←mul_assoc, ←sub_mul, mul_one] at ht
   use ( (1- t) * x + t * y)
   constructor
   apply add_nonneg
@@ -574,19 +594,19 @@ theorem every_pt_lies_int_seg_of_source_and_target_lies_int_seg {seg₁ seg₂ :
   constructor
   apply ((Seg.lies_int_iff).mp h₁).1
   rw [Seg.lies_int_iff] at h₁ h₂
-  rcases h₁ with ⟨ _ ,x,xpos,xlt1,hx⟩
-  rcases h₂ with ⟨ _ ,y,ypos,ylt1,hy⟩
-  rcases ha with ⟨t,tnonneg,tle1,ht⟩
+  rcases h₁ with ⟨ _ , x, xpos, xlt1, hx⟩
+  rcases h₂ with ⟨ _ , y, ypos, ylt1, hy⟩
+  rcases ha with ⟨t, tnonneg, tle1, ht⟩
   use ( (1- t) * x + t * y)
-  by_cases h : 0=t
+  by_cases h : 0 = t
   constructor
   simp only [←h, sub_zero, one_mul, zero_mul, add_zero]
   exact xpos
   constructor
   simp only [←h, sub_zero, one_mul, zero_mul, add_zero]
   exact xlt1
-  rw [←h,zero_smul,←eq_iff_vec_eq_zero] at ht
-  simp only [← h, sub_zero, one_mul, zero_mul, add_zero,ht,hx]
+  rw [←h, zero_smul, ←eq_iff_vec_eq_zero] at ht
+  simp only [← h, sub_zero, one_mul, zero_mul, add_zero, ht, hx]
   constructor
   apply lt_of_lt_of_le (mul_pos (lt_of_le_of_ne tnonneg h) ypos)
   simp only [le_add_iff_nonneg_left, gt_iff_lt, sub_pos]
@@ -594,44 +614,44 @@ theorem every_pt_lies_int_seg_of_source_and_target_lies_int_seg {seg₁ seg₂ :
   linarith
   linarith
   constructor
-  have: (1-t)*x+t*y<(1-t)*x+t:=by
+  have: (1 - t) * x + t * y < (1 - t) * x + t := by
     simp only [add_lt_add_iff_left, gt_iff_lt]
     nth_rw 2[←mul_one t]
     apply mul_lt_mul_of_pos_left ylt1 (lt_of_le_of_ne tnonneg h)
   apply lt_of_lt_of_le this
-  have :1=1-t+t:=by norm_num
+  have : 1 = 1 - t + t := by norm_num
   nth_rw 2 [this]
   apply add_le_add
-  nth_rw 2[←mul_one (1-t)]
+  nth_rw 2[←mul_one (1 - t)]
   apply mul_le_mul
   linarith
   linarith
   linarith
   linarith
   linarith
-  rw [←vec_add_vec seg₂.1 seg₁.1 A,ht,←vec_sub_vec seg₂.1 seg₁.1 seg₁.2,hy,hx,←sub_smul,smul_smul,←add_smul,←sub_eq_zero,←sub_smul,smul_eq_zero]
+  rw [←vec_add_vec seg₂.1 seg₁.1 A, ht, ←vec_sub_vec seg₂.1 seg₁.1 seg₁.2, hy, hx, ←sub_smul, smul_smul, ←add_smul, ←sub_eq_zero, ←sub_smul, smul_eq_zero]
   left
   ring
 
 /-- Given two segments $seg_1$ and $seg_2$, if the source and the target of $seg_1$ both lie on $seg_2$, and if $A$ is a point in the interior of $seg_1$, then $A$ lies in the interior of $seg_2$. -/
 theorem every_int_pt_lies_int_seg_of_source_and_target_lies_on_seg {seg₁ seg₂ : Seg P} (h₁ : seg₁.source LiesOn seg₂) (h₂ : seg₁.target LiesOn seg₂) {A : P} (ha : A LiesInt seg₁) : A LiesInt seg₂ := by
   apply (Seg.lies_int_iff).mpr
-  rcases h₁ with ⟨x,xnonneg,xle1,hx⟩
-  rcases h₂ with ⟨y,ynonneg,yle1,hy⟩
-  rcases (Seg.lies_int_iff).mp ha with ⟨nd,t,tpos,tlt1,ht⟩
+  rcases h₁ with ⟨x, xnonneg, xle1, hx⟩
+  rcases h₂ with ⟨y, ynonneg, yle1, hy⟩
+  rcases (Seg.lies_int_iff).mp ha with ⟨nd, t, tpos, tlt1, ht⟩
   constructor
-  rw [Seg.IsND,ne_iff_vec_ne_zero]
+  rw [Seg.IsND, ne_iff_vec_ne_zero]
   contrapose! nd
-  rw [nd,smul_zero,←eq_iff_vec_eq_zero] at hx hy
-  rw [Seg.IsND,not_not,eq_iff_vec_eq_zero,hx,hy,vec_same_eq_zero]
-  rw [Seg.toVec,←vec_sub_vec seg₂.1,← vec_sub_vec seg₂.1 seg₁.1 seg₁.2,sub_eq_iff_eq_add,hx,hy,←sub_smul,smul_smul,←add_smul] at ht
+  rw [nd, smul_zero, ←eq_iff_vec_eq_zero] at hx hy
+  rw [Seg.IsND, not_not, eq_iff_vec_eq_zero, hx, hy, vec_same_eq_zero]
+  rw [Seg.toVec, ←vec_sub_vec seg₂.1, ← vec_sub_vec seg₂.1 seg₁.1 seg₁.2, sub_eq_iff_eq_add, hx, hy, ←sub_smul, smul_smul, ←add_smul] at ht
   use ( (1- t) * x + t * y)
-  have ynex:y≠x:= by
+  have ynex : y ≠ x := by
     contrapose! nd
-    rw [Seg.IsND,not_not,eq_iff_vec_eq_zero,←vec_sub_vec seg₂.1,hx,hy,←sub_smul,nd,sub_self,zero_smul]
+    rw [Seg.IsND, not_not, eq_iff_vec_eq_zero, ←vec_sub_vec seg₂.1, hx, hy, ←sub_smul, nd, sub_self,zero_smul]
   constructor
-  by_cases h : 0=x
-  rw [←h,mul_zero,zero_add]
+  by_cases h : 0 = x
+  rw [←h, mul_zero, zero_add]
   apply mul_pos
   exact tpos
   apply lt_of_le_of_ne
@@ -639,7 +659,7 @@ theorem every_int_pt_lies_int_seg_of_source_and_target_lies_on_seg {seg₁ seg�
   rw [h]
   symm
   exact ynex
-  have :0<(1-t)*x:=by
+  have : 0 < (1 - t) * x := by
     apply mul_pos
     linarith
     apply lt_of_le_of_ne xnonneg h
@@ -649,8 +669,8 @@ theorem every_int_pt_lies_int_seg_of_source_and_target_lies_on_seg {seg₁ seg�
   linarith
   linarith
   constructor
-  by_cases h : 1=x
-  simp only [←h,mul_one,sub_add,sub_lt_iff_lt_add,lt_add_iff_pos_right, sub_pos, gt_iff_lt]
+  by_cases h : 1 = x
+  simp only [←h, mul_one, sub_add, sub_lt_iff_lt_add, lt_add_iff_pos_right, sub_pos, gt_iff_lt]
   nth_rw 2[←mul_one t]
   apply mul_lt_mul_of_pos_left
   apply lt_of_le_of_ne
@@ -658,29 +678,29 @@ theorem every_int_pt_lies_int_seg_of_source_and_target_lies_on_seg {seg₁ seg�
   rw [h]
   exact ynex
   exact tpos
-  have :(1-t)*x+t*y<(1-t)+t*y:=by
+  have :(1 - t) * x + t * y < (1 - t) + t * y := by
     simp only [add_lt_add_iff_right, gt_iff_lt, sub_pos]
-    nth_rw 2 [← mul_one (1-t)]
+    nth_rw 2 [← mul_one (1 - t)]
     apply mul_lt_mul_of_pos_left
     apply lt_of_le_of_ne xle1
     symm
     exact h
     linarith
   apply lt_of_lt_of_le this
-  rw [sub_add,tsub_le_iff_right, le_add_iff_nonneg_right, sub_nonneg,←mul_one t,mul_assoc,one_mul]
+  rw [sub_add, tsub_le_iff_right, le_add_iff_nonneg_right, sub_nonneg, ←mul_one t,mul_assoc, one_mul]
   apply mul_le_mul _ yle1 ynonneg
   linarith
   linarith
-  rw [ht,←sub_eq_zero,Seg.toVec,←sub_smul,smul_eq_zero]
+  rw [ht, ←sub_eq_zero, Seg.toVec, ←sub_smul, smul_eq_zero]
   left
   ring
 
 /-- Given a segment and a ray, if the source and the target of the segment both lie on the ray, and if $A$ is a point on the segment, then $A$ lies on the ray. -/
 theorem every_pt_lies_on_ray_of_source_and_target_lies_on_ray {seg : Seg P} {ray : Ray P} (h₁ : seg.source LiesOn ray) (h₂: seg.target LiesOn ray) {A : P} (ha : A LiesOn seg) : A LiesOn ray :=by
-  rcases h₁ with ⟨x,xnonneg,hx⟩
-  rcases h₂ with ⟨y,ynonneg,hy⟩
-  rcases ha with ⟨t,tnonneg,tleone,ht⟩
-  rw [←vec_add_vec seg.source ray.source,←vec_add_vec seg.source ray.source seg.target,←neg_vec,hx,hy,neg_add_eq_iff_eq_add,←neg_smul,smul_add,smul_smul,smul_smul,←add_smul,←add_smul,←add_assoc,mul_neg,←sub_eq_add_neg,←one_mul x,←mul_assoc,←sub_mul,mul_one] at ht
+  rcases h₁ with ⟨x, xnonneg, hx⟩
+  rcases h₂ with ⟨y, ynonneg, hy⟩
+  rcases ha with ⟨t, tnonneg, tleone, ht⟩
+  rw [←vec_add_vec seg.source ray.source, ←vec_add_vec seg.source ray.source seg.target, ←neg_vec, hx, hy, neg_add_eq_iff_eq_add, ←neg_smul, smul_add, smul_smul, smul_smul, ←add_smul, ←add_smul, ←add_assoc, mul_neg, ←sub_eq_add_neg, ←one_mul x, ←mul_assoc, ←sub_mul,mul_one] at ht
   use ( (1- t) * x + t * y)
   constructor
   apply add_nonneg
@@ -694,14 +714,14 @@ theorem every_pt_lies_on_ray_of_source_and_target_lies_on_ray {seg : Seg P} {ray
 
 /-- Given a segment and a ray, if the source and the target of the segment both lie in the interior of the ray, and if $A$ is a point on the segment, then $A$ lies in the interior of the ray.-/
 theorem every_pt_lies_int_ray_of_source_and_target_lies_int_ray {seg : Seg P} {ray : Ray P} (h₁ : seg.source LiesInt ray) (h₂ : seg.target LiesInt ray) {A : P} (ha : A LiesOn seg) : A LiesInt ray := by
-  rcases (Ray.lies_int_iff.mp h₁) with ⟨x,xpos,hx⟩
-  rcases (Ray.lies_int_iff.mp h₂) with ⟨y,ypos,hy⟩
+  rcases (Ray.lies_int_iff.mp h₁) with ⟨x, xpos, hx⟩
+  rcases (Ray.lies_int_iff.mp h₂) with ⟨y, ypos, hy⟩
   apply Ray.lies_int_iff.mpr
-  rcases ha with ⟨t,tnonneg,tle1,ht⟩
-  rw [←vec_sub_vec ray.source,←vec_sub_vec ray.source seg.source seg.target,hx,hy,sub_eq_iff_eq_add,←sub_smul,smul_smul,←add_smul,mul_sub] at ht
-  use (t*y+(1-t)*x)
+  rcases ha with ⟨t, tnonneg, tle1, ht⟩
+  rw [←vec_sub_vec ray.source, ←vec_sub_vec ray.source seg.source seg.target, hx, hy, sub_eq_iff_eq_add, ←sub_smul,smul_smul, ←add_smul, mul_sub] at ht
+  use (t * y + (1 - t) * x)
   constructor
-  by_cases h : 0=t
+  by_cases h : 0 = t
   rw [←h]
   linarith
   apply lt_of_lt_of_le (mul_pos (lt_of_le_of_ne tnonneg h) ypos)
@@ -709,24 +729,24 @@ theorem every_pt_lies_int_ray_of_source_and_target_lies_int_ray {seg : Seg P} {r
   apply mul_nonneg
   linarith
   linarith
-  rw [ht,←sub_eq_zero,←sub_smul,smul_eq_zero]
+  rw [ht, ←sub_eq_zero, ←sub_smul, smul_eq_zero]
   left
   ring
 
 /-- Given a segment and a ray, if the source and the target of the segment both lie on the ray, and if $A$ is a point in the interior of the segment, then $A$ lies in the interior of the ray. -/
 theorem every_int_pt_lies_int_ray_of_source_and_target_lies_on_ray {seg : Seg P} {ray : Ray P} (h₁ : seg.source LiesOn ray) (h₂ : seg.target LiesOn ray) {A : P} (ha : A LiesInt seg) : A LiesInt ray := by
-  rcases h₁ with ⟨x,xnonneg,hx⟩
-  rcases h₂ with ⟨y,ynonneg,hy⟩
+  rcases h₁ with ⟨x, xnonneg, hx⟩
+  rcases h₂ with ⟨y, ynonneg, hy⟩
   rcases Seg.lies_int_iff.mp ha with ⟨nd, t, tpos, tlt1, ht⟩
-  simp only [Seg.toVec,←vec_sub_vec ray.1 seg.1,hx,hy,sub_eq_iff_eq_add,←sub_smul,smul_smul,←add_smul] at ht
+  simp only [Seg.toVec, ←vec_sub_vec ray.1 seg.1, hx, hy, sub_eq_iff_eq_add, ←sub_smul, smul_smul, ←add_smul] at ht
   apply Ray.lies_int_iff.mpr
-  use (1-t)*x+t*y
-  have ynex:y≠x:= by
+  use (1 - t) * x + t * y
+  have ynex : y ≠ x := by
     contrapose! nd
-    rw [Seg.IsND,not_not,eq_iff_vec_eq_zero,←vec_sub_vec ray.1,hx,hy,←sub_smul,nd,sub_self,zero_smul]
+    rw [Seg.IsND, not_not, eq_iff_vec_eq_zero, ←vec_sub_vec ray.1, hx, hy, ←sub_smul, nd, sub_self, zero_smul]
   constructor
-  by_cases h : 0=x
-  rw [←h,mul_zero,zero_add]
+  by_cases h : 0 = x
+  rw [←h, mul_zero, zero_add]
   apply mul_pos
   exact tpos
   apply lt_of_le_of_ne
@@ -734,7 +754,7 @@ theorem every_int_pt_lies_int_ray_of_source_and_target_lies_on_ray {seg : Seg P}
   rw [h]
   symm
   exact ynex
-  have :0<(1-t)*x:=by
+  have : 0 < (1 - t) * x := by
     apply mul_pos
     linarith
     apply lt_of_le_of_ne xnonneg h
@@ -743,7 +763,7 @@ theorem every_int_pt_lies_int_ray_of_source_and_target_lies_on_ray {seg : Seg P}
   apply mul_nonneg
   linarith
   linarith
-  rw [ht,←sub_eq_zero,←sub_smul,smul_eq_zero]
+  rw [ht, ←sub_eq_zero, ←sub_smul, smul_eq_zero]
   left
   ring
 
@@ -751,25 +771,29 @@ theorem every_int_pt_lies_int_ray_of_source_and_target_lies_on_ray {seg : Seg P}
 theorem every_pt_lies_on_ray_of_source_lies_on_ray_and_same_dir {ray₁ ray₂ : Ray P} (e : ray₁.toDir = ray₂.toDir) (h : ray₁.source LiesOn ray₂) {A : P} (ha : A LiesOn ray₁) : A LiesOn ray₂ := by
   rcases h with ⟨x,xnonneg,hx⟩
   rcases ha with ⟨t,tnonneg,ht⟩
-  use x+t
+  use x + t
   constructor
   linarith
-  rw [←vec_add_vec ray₂.source ray₁.source A,hx,ht,e,add_smul]
+  rw [←vec_add_vec ray₂.source ray₁.source A, hx, ht, e, add_smul]
 
 /-- Given two rays $ray_1$ and $ray_2$ with same direction, if the source of $ray_1$ lies in the interior of $ray_2$, and if $A$ is a point on $ray_1$, then $A$ lies in the interior of $ray_2$. -/
 theorem every_pt_lies_int_ray_of_source_lies_int_ray_and_same_dir {ray₁ ray₂ : Ray P} (e : ray₁.toDir = ray₂.toDir) (h : ray₁.source LiesInt ray₂) {A : P} (ha : A LiesOn ray₁) : A LiesInt ray₂ := by
   apply Ray.lies_int_iff.mpr
-  rcases ha with ⟨t,tnonneg,ht⟩
+  rcases ha with ⟨t, tnonneg, ht⟩
   rcases Ray.lies_int_iff.mp h with ⟨x, xpos, hx⟩
   rw [e] at ht
-  use x+t
+  use x + t
   constructor
   linarith
-  rw [←vec_add_vec ray₂.1 ray₁.1,hx,ht,add_smul]
+  rw [←vec_add_vec ray₂.1 ray₁.1, hx, ht, add_smul]
 
-theorem SegND.toDir_eq_of_lies_int {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd seg_nd.source A h.ne_source).toDir = seg_nd.toDir := sorry
-
-theorem SegND.toDir_eq_neg_toDir_of_lies_int {A : P} {s : SegND P} (h : A LiesInt s) : (VEC_nd A s.source h.2.symm).toDir = - (VEC_nd A s.target h.3.symm).toDir := sorry
+/--Given a nondegenerate segment $Segnd$ and a point $A$ lies in the interior of it. Then the direction of the nondegenerate segment from the source of $Segnd$ to $A$ equals the direction of $Segnd$.  -/
+theorem SegND.source_pt_toDir_eq_toDir_of_lies_int {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd seg_nd.source A h.ne_source).toDir = seg_nd.toDir := by
+  show (RAY seg_nd.source A h.ne_source).toDir = seg_nd.toRay.toDir
+  congr 1
+  have : A LiesInt (seg_nd.toRay) := by
+    exact lies_int_toRay_of_lies_int h
+  exact Ray.pt_pt_eq_ray this
 
 end lieson_compatibility
 
@@ -797,11 +821,7 @@ def Seg.reverse (seg : Seg P) : Seg P where
 theorem seg_rev {A B : P} : (SEG A B).reverse = SEG B A := rfl
 
 /-- If a segment is nondegenerate, so is its reverse segment. -/
-theorem nd_of_rev_of_nd {seg : Seg P} (nd : seg.IsND) : seg.reverse.IsND := by
-  simp only [Seg.IsND]
-  push_neg
-  symm
-  apply nd
+theorem nd_of_rev_of_nd {seg : Seg P} (nd : seg.IsND) : seg.reverse.IsND := nd.symm
 
 /-- Given a nondegenerate segment $AB$, this function returns the reversed nondegenerate segment $BA$. -/
 def SegND.reverse (seg_nd : SegND P) : SegND P := ⟨seg_nd.1.reverse, nd_of_rev_of_nd seg_nd.2⟩
@@ -836,10 +856,12 @@ theorem SegND.rev_rev_eq_self {seg_nd : SegND P} : seg_nd.reverse.reverse = seg_
 theorem Ray.toDir_of_rev_eq_neg_toDir {ray : Ray P} : ray.reverse.toDir = - ray.toDir := rfl
 
 /-- Given a ray, the direction vector of the reversed ray is the negative of the direction vector of the ray. -/
-theorem Ray.unitVecND_of_rev_eq_neg_unitVecND {ray : Ray P} : ray.reverse.toDir.unitVecND = - ray.toDir.unitVecND := by simp
+theorem Ray.unitVecND_of_rev_eq_neg_unitVecND {ray : Ray P} : ray.reverse.toDir.unitVecND = - ray.toDir.unitVecND := by
+  simp only [reverse_toDir, Dir.neg_unitVecND]
 
 /-- Given a ray, the direction vector of the reversed ray is the negative of the direction vector of the ray. -/
-theorem Ray.unitVec_of_rev_eq_neg_unitVec {ray : Ray P} : ray.reverse.toDir.unitVec = - ray.toDir.unitVec := by simp
+theorem Ray.unitVec_of_rev_eq_neg_unitVec {ray : Ray P} : ray.reverse.toDir.unitVec = - ray.toDir.unitVec := by
+  simp only [reverse_toDir, Dir.neg_unitVec]
 
 /-- Given a ray, the projective direction of the reversed ray is the same as that of the ray. -/
 @[simp]
@@ -926,7 +948,7 @@ theorem SegND.lies_on_rev_iff_lies_on {A : P} {seg_nd : SegND P} : A LiesOn seg_
 theorem SegND.lies_int_rev_iff_lies_int {A : P} {seg_nd : SegND P} : A LiesInt seg_nd.reverse ↔ A LiesInt seg_nd :=
   seg_nd.1.lies_int_rev_iff_lies_int
 
-/-- Given a ray, a point $A$ lies on the ray if and only if there exists a nonpositive real number $t$ such that the vector from the source of the ray to $A$ is $t$ times the direction vector of the ray. -/
+/-- Given a ray, a point $A$ lies on the reverse of the ray if and only if there exists a nonpositive real number $t$ such that the vector from the source of the ray to $A$ is $t$ times the direction vector of the ray. -/
 theorem pt_lies_on_ray_rev_iff_vec_opposite_dir {A : P} {ray : Ray P} : A LiesOn ray.reverse ↔ ∃ t : ℝ, (t ≤ 0) ∧ VEC ray.source A = t • ray.toDir.unitVec := by
   constructor <;>
   · rintro ⟨u, ⟨hu, h⟩⟩
@@ -949,7 +971,8 @@ theorem pt_lies_on_line_from_ray_iff_vec_parallel {A : P} {ray : Ray P} : (A Lie
     · right
       use -t
       have : t ≤ 0 := by linarith
-      simp [this, h]
+      simp only [Left.nonneg_neg_iff, this, Ray.reverse_source, h, Ray.reverse_toDir,
+        Dir.neg_unitVec, smul_neg, neg_smul, neg_neg, and_self]
 
 /-- A point is equal to the source of a ray if and only if it lies on the ray and it lies on the reverse of the ray. -/
 theorem Ray.eq_source_iff_lies_on_and_lies_on_rev {A : P} {ray : Ray P} : A = ray.source ↔ (A LiesOn ray) ∧ (A LiesOn ray.reverse) := by
@@ -1010,7 +1033,7 @@ theorem lies_on_iff_lies_on_toRay_and_rev_toRay {X : P} {seg_nd : SegND P} : X L
   rintro ⟨⟨a,anneg,h⟩,b,bnneg,h'⟩
   simp only [SegND.toRay] at h h'
   rw [SegND.toDir_of_rev_eq_neg_toDir, Dir.neg_unitVec] at h'
-  simp only [SegND.reverse,Seg.reverse] at h'
+  simp only [SegND.reverse, Seg.reverse] at h'
   simp only [RayVector.coe_neg, smul_neg] at h'
   have asumbvec : (a + b) • seg_nd.toDir.unitVecND.1 = seg_nd.toVecND.1 := by
     have := vec_add_vec seg_nd.source X seg_nd.target
@@ -1046,18 +1069,18 @@ theorem lies_on_pt_toDir_of_pt_lies_on_rev {A B : P} {ray : Ray P} (hA : A LiesO
   constructor; · linarith
   dsimp
   rw [add_smul, ← vec_sub_vec ray.source, ha, hb]
-  simp
+  simp only [Dir.neg_unitVec, smul_neg, sub_neg_eq_add]
 
 /-- Given two rays $ray_1$ and $ray_2$ in same direction, the source of $ray_1$ lies on $ray_2$ if and only if the source of $ray_2$ lies on the reverse of $ray_1$. -/
 theorem lies_on_iff_lies_on_rev_of_same_toDir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = ray₂.toDir) : ray₁.source LiesOn ray₂ ↔ ray₂.source LiesOn ray₁.reverse := by
   constructor
   · intro ⟨t, ht, eq⟩
     refine' ⟨t, ht, _⟩
-    simp [h, ← eq, neg_vec]
+    simp only [Ray.reverse_source, Ray.reverse_toDir, h, Dir.neg_unitVec, smul_neg, ← eq, neg_vec]
   · intro ⟨t, ht, eq⟩
     refine' ⟨t, ht, _⟩
     dsimp at eq
-    simp [← neg_vec ray₁.source, eq, h]
+    simp only [← neg_vec ray₁.source, eq, h, Dir.neg_unitVec, smul_neg, neg_neg]
 
 /-- Given two rays $ray_1$ and $ray_2$ in same direction, the source of $ray_1$ lies in the interior of $ray_2$ if and only if the source of $ray_2$ lies in the interior of the reverse of $ray_1$. -/
 theorem lies_int_iff_lies_int_rev_of_same_toDir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = ray₂.toDir) : ray₁.source LiesInt ray₂ ↔ ray₂.source LiesInt ray₁.reverse := ⟨
@@ -1069,10 +1092,10 @@ theorem lies_on_iff_lies_on_of_neg_toDir {ray₁ ray₂ : Ray P} (h : ray₁.toD
   constructor
   · intro ⟨t, ht, eq⟩
     refine' ⟨t, ht, _⟩
-    simp [h, ← eq, neg_vec]
+    simp only [h, Dir.neg_unitVec, smul_neg, ← eq, neg_vec]
   · intro ⟨t, ht, eq⟩
     refine' ⟨t, ht, _⟩
-    simp [← neg_vec ray₁.source, h, eq]
+    simp only [← neg_vec ray₁.source, eq, h, Dir.neg_unitVec, smul_neg, neg_neg]
 
 /-- Given two rays $ray_1$ and $ray_2$ in the opposite direction, the source of $ray_1$ lies in the interior of $ray_2$ if and only if the source of $ray_2$ lies in the interior of $ray_1$. -/
 theorem lies_int_iff_lies_int_of_neg_toDir {ray₁ ray₂ : Ray P} (h : ray₁.toDir = - ray₂.toDir) : ray₁.source LiesInt ray₂ ↔ ray₂.source LiesInt ray₁ := ⟨
@@ -1106,9 +1129,10 @@ theorem lies_on_or_rev_iff_exist_real_vec_eq_smul {A : P} {ray : Ray P} : (A Lie
       exact ⟨t,k,ht⟩
     right
     let u := -t
-    simp at k
+    simp only [not_le] at k
     have hu : VEC ray.reverse.1 A = u • ray.reverse.toDir.unitVecND := by
-      simp
+      simp only [Ray.reverse_source, ne_eq, Ray.reverse_toDir, Dir.neg_unitVecND, RayVector.coe_neg,
+        Dir.coe_unitVecND, smul_neg, neg_smul, neg_neg]
       exact ht
     exact ⟨-t, neg_nonneg.mpr k.le, hu⟩
 
@@ -1120,7 +1144,33 @@ theorem ray_toProj_eq_mk_pt_pt_toProj {A B : P} {ray : Ray P} [h : PtNe B A] (ha
   have h0 : tb - ta ≠ 0 := (smul_ne_zero_iff.mp (heq.symm.trans_ne (vsub_ne_zero.mpr Fact.out))).1
   apply Dir.toProj_eq_toProj_iff_unitVec.mpr
   use (tb - ta)⁻¹ * ‖VEC_nd A B‖
-  simp [← (inv_smul_eq_iff₀ h0).mpr heq, Units.smul_def, mul_smul]
+  simp only [← (inv_smul_eq_iff₀ h0).mpr heq, Ray.mkPtPt_toDir, mul_smul,
+    VecND.norm_smul_toDir_unitVec, ne_eq, VecND.coe_mkPtPt]
+
+/--Given a nondegenerate segment $Segnd$ and a point $A$ lies in the interior of it. Then the direction of the nondegenerate segment from $A$ to the target of $Segnd$ equals the direction of $Segnd$.  -/
+theorem SegND.pt_target_toDir_eq_toDir_of_lies_int {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target h.ne_target.symm).toDir = seg_nd.toDir := by
+  show (VEC_nd A seg_nd.target h.ne_target.symm).toDir = (VEC_nd seg_nd.source seg_nd.target seg_nd.2).toDir
+  haveI : PtNe A seg_nd.target := ⟨h.3⟩
+  have l2: (VEC_nd A seg_nd.target h.3.symm).toDir = - (VEC_nd seg_nd.target A h.3).toDir := by
+    rw [← VecND.neg_toDir]
+    congr
+    rw [VecND.neg_vecND]
+  let s1:= seg_nd.reverse
+  have h1: A LiesInt s1:= by
+    exact lies_int_rev_iff_lies_int.mpr h
+  have l22: (VEC_nd seg_nd.target A h.3).toDir = s1.toDir:= by
+    rw[← SegND.source_pt_toDir_eq_toDir_of_lies_int h1]
+    rfl
+  rw [l2, l22, ← VecND.neg_toDir]
+  congr
+  simp only [toVecND_of_rev_eq_neg_toVecND, neg_neg]
+  rfl
+/--Given a nondegenerate segment $Segnd$ and a point $A$ lies in the interior of it. Then the direction of the nondegenerate vector from $A$ to the source of $Segnd$ equals the opposite direction of the nondegenerate vector from $A$ to the target of $Segnd$.  -/
+theorem SegND.toDir_eq_neg_toDir_of_lies_int {A : P} {seg_nd : SegND P} (h : A LiesInt seg_nd) : (VEC_nd A seg_nd.source h.2.symm).toDir = - (VEC_nd A seg_nd.target h.3.symm).toDir := by
+  haveI : PtNe A seg_nd.source := ⟨h.2⟩
+  rw [← VecND.neg_vecND, VecND.neg_toDir]
+  exact neg_inj.mpr <|
+    (source_pt_toDir_eq_toDir_of_lies_int h).trans (pt_target_toDir_eq_toDir_of_lies_int h).symm
 
 end reverse
 
@@ -1167,43 +1217,39 @@ theorem eq_target_iff_lies_on_lies_on_extn {A : P} {seg_nd : SegND P} : (A LiesO
     exact ⟨SegND.target_lies_on, Ray.source_lies_on⟩
 
 /-- Given a nondegenerate segment $AB$, if a point $X$ belongs to the interior of the extension ray of $AB$, then $B$ lies in the interior of $AX$. -/
-theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {X : P} {seg_nd : SegND P} (liesint : X LiesInt seg_nd.extension) : seg_nd.target LiesInt SEG seg_nd.source X := by
-  sorry
-/- To come back to clean up this proof later.
-  rcases liesint with ⟨⟨a,anonneg,ha⟩,nonsource⟩
-  have raysourcesegtarget:seg_nd.1.target=seg_nd.extension.1:=by
+theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {X : P} {seg_nd : SegND P}
+(liesint : X LiesInt seg_nd.extension) : seg_nd.target LiesInt SEG seg_nd.source X  := by
+  rcases liesint with ⟨⟨a, anonneg, ha⟩, nonsource⟩
+  have raysourcesegtarget:seg_nd.1.target = seg_nd.extension.1 := by
     rfl
-  have sourcetargetA:VEC seg_nd.1.source seg_nd.1.target+VEC seg_nd.1.target X=VEC seg_nd.1.source X:=by
+  have sourcetargetA : VEC seg_nd.1.source seg_nd.1.target + VEC seg_nd.1.target X =
+  VEC seg_nd.1.source X := by
     rw [vec_add_vec]
-  have vec_ndtoVec:VEC seg_nd.1.source seg_nd.1.target=seg_nd.toVecND.1:=by
+  have vec_ndtoVec : VEC seg_nd.1.source seg_nd.1.target = seg_nd.toVecND.1 := by
     rfl
-  have apos:0 < a:=by
+  have apos:0 < a := by
     contrapose! nonsource
-    have: A=0:=by linarith
+    have : a = 0 := by
+      linarith
     rw [this] at ha
-    simp only [Dir.toVec_neg_eq_neg_toVec, smul_neg, zero_smul, neg_zero] at ha
+    simp only [smul_neg, zero_smul, neg_zero] at ha
     apply (eq_iff_vec_eq_zero _ _).mpr
     exact ha
-  have raysourcesource:seg_nd.extension.source=seg_nd.1.target:=by
+  have raysourcesource : seg_nd.extension.source = seg_nd.1.target := by
     rfl
-  have seg_pos:0< VecND.norm (SegND.toVecND seg_nd):=by
-    simp only [ne_eq, norm_of_VecND_eq_norm_of_VecND_fst,Vec.norm]
-    apply norm_pos_iff.mpr (seg_nd.toVecND.2)
-  have seg_nonzero:VecND.norm (SegND.toVecND seg_nd)≠0:=by linarith
-  have aseg_pos:0 < VecND.norm (SegND.toVecND seg_nd)+a:=by
+  have seg_pos : 0 < norm (SegND.toVecND seg_nd) := by
+    simp only [VecND.norm_pos]
+  have seg_nonzero : norm (SegND.toVecND seg_nd) ≠ 0 := by linarith
+  have aseg_pos : 0 <norm (SegND.toVecND seg_nd) + a:=by
     linarith
-  have aseg_nonzero:VecND.norm (SegND.toVecND seg_nd)+a≠ 0:=by
+  have aseg_nonzero : norm (SegND.toVecND seg_nd) + a ≠ 0:=by
     linarith
-  have raydir:seg_nd.extension.toDir.toVec=seg_nd.toVecND.toDir.toVec:=by
-    rw [Ray.toDir_of_rev_eq_neg_toDir]
-    rw [Ray.toDir_of_rev_eq_neg_toDir,←SegND.toDir_eq_toRay_toDir,SegND.toDir_of_rev_eq_neg_toDir,neg_neg]
   constructor
-  use (seg_nd.toVecND.norm)*(seg_nd.toVecND.norm+a)⁻¹
+  use (norm (SegND.toVecND seg_nd)) * (norm (seg_nd.toVecND) + a)⁻¹
   constructor
   apply mul_nonneg
   linarith[seg_pos]
   norm_num
-  rw [←norm_of_VecND_eq_norm_of_VecND_fst]
   linarith
   constructor
   rw [←mul_inv_cancel aseg_nonzero]
@@ -1211,20 +1257,21 @@ theorem target_lies_int_seg_source_pt_of_pt_lies_int_extn {X : P} {seg_nd : SegN
   linarith
   linarith
   norm_num
-  rw [← norm_of_VecND_eq_norm_of_VecND_fst]
   linarith
   linarith
   simp only [Seg.target]
   rw [←raysourcesegtarget] at ha
-  rw [←sourcetargetA,ha,vec_ndtoVec,←VecND.norm_smul_toDir_eq_self (seg_nd.toVecND),←norm_of_VecND_eq_norm_of_VecND_fst,raydir]
-  rw [←add_smul,← mul_smul,mul_assoc,inv_mul_cancel,mul_one]
+  rw [←sourcetargetA, ha, vec_ndtoVec]
+  have raydir : seg_nd.extension.toDir.unitVec = seg_nd.toVecND.toDir.unitVec := by
+    exact rfl
+  rw [raydir, ←VecND.norm_smul_toDir_unitVec (seg_nd.toVecND), ←add_smul,
+  ← mul_smul,mul_assoc,inv_mul_cancel,mul_one]
   linarith
-  constructor
   exact seg_nd.2
   rw [←raysourcesegtarget] at nonsource
   symm
   exact nonsource
--/
+
 
 /-- If a point lies on the ray associated to a segment, then either it lies on the segment or it lies on the extension ray of the segment. -/
 theorem lies_on_seg_nd_or_extension_of_lies_on_toRay {seg_nd : SegND P} {A : P} (h : A LiesOn seg_nd.toRay) : A LiesOn seg_nd ∨ A LiesOn seg_nd.extension := by
@@ -1243,7 +1290,34 @@ theorem lies_on_seg_nd_or_extension_of_lies_on_toRay {seg_nd : SegND P} {A : P} 
       simp [eq, mul_smul]
       rfl⟩
 
-theorem lies_int_toRay_of_lies_on_extn {seg_nd : SegND P} (A : P) (h : A LiesOn seg_nd.extension) : A LiesInt seg_nd.toRay := by sorry
+/--If a point lies on the extension ray associated to a nondegenerate segment, then it lies on the
+interior of the ray associated to the segment-/
+theorem lies_int_toRay_of_lies_on_extn {seg_nd : SegND P} (A : P) (h : A LiesOn seg_nd.extension) : A LiesInt seg_nd.toRay := by
+  by_cases H : A = seg_nd.target
+  rw [H]
+  apply SegND.target_lies_int_toRay
+  have H1: A LiesInt seg_nd.extension := by
+    rw [Ray.lies_int_def]; constructor
+    apply h
+    exact H
+  have H2: seg_nd.target LiesInt SEG seg_nd.source A := by
+    exact target_lies_int_seg_source_pt_of_pt_lies_int_extn H1
+  by_cases L : A ≠ seg_nd.source
+  haveI : PtNe A seg_nd.source:= ⟨ L⟩
+  have H4: seg_nd.toRay = (SEG_nd seg_nd.source A).toRay := by
+    apply (SEG_nd seg_nd.source A).toRay.pt_pt_eq_ray
+    exact lies_int_toRay_of_lies_int H2
+  rw [H4]
+  apply SegND.target_lies_int_toRay
+  rw [ne_eq, not_not] at L
+  have H5: A LiesOn seg_nd := by
+    rw [L]
+    exact source_lies_on
+  have H6: A = seg_nd.target := by
+    rw [← eq_target_iff_lies_on_lies_on_extn]
+    exact ⟨H5, h⟩
+  by_contra
+  exact H H6
 
 theorem not_lies_int_rev_extn_of_lies_on {A : P} {seg_nd : SegND P} (lieson : A LiesOn seg_nd.1) : ¬ A LiesInt seg_nd.reverse.extension := by
   apply Ray.not_lies_int_of_lies_on_rev
@@ -1258,22 +1332,39 @@ end SegND
 
 namespace Ray
 
--- Define the extpoint of a ray to be a point lies on the ray.toLine which has given distence to the ray.source
+-- Define the extpoint of a ray to be a point lies on the ray.toLine which has given distance to the ray.source
 def extpoint (l : Ray P) (t : ℝ) : P := t • l.toDir.unitVec +ᵥ l.source
 
-theorem extpoint_lies_on_of_nonneg {r : Ray P} {t : ℝ} (ht : 0 ≤ t) : r.extpoint t LiesOn r := sorry
+theorem extpoint_lies_on_of_nonneg {r : Ray P} {t : ℝ} (ht : 0 ≤ t) : r.extpoint t LiesOn r := by
+  rw [extpoint, Ray.lies_on_iff]
+  use t
+  constructor
+  apply ht
+  simp only [vec_of_pt_vadd_pt_eq_vec]
 
 theorem lies_on_of_eq_nonneg_extpoint {r : Ray P} {A : P} {t : ℝ} (ht : 0 ≤ t) (h : A = Ray.extpoint r t) : A LiesOn r := by
   rw [h]
   exact extpoint_lies_on_of_nonneg ht
 
-theorem extpoint_lies_int_of_pos {r : Ray P} {t : ℝ} (ht : 0 < t) : r.extpoint t LiesInt r := sorry
+theorem extpoint_lies_int_of_pos {r : Ray P} {t : ℝ} (ht : 0 < t) : r.extpoint t LiesInt r := by
+  rw [extpoint, Ray.lies_int_iff]
+  use t
+  constructor
+  apply ht
+  simp only [vec_of_pt_vadd_pt_eq_vec]
 
-theorem lies_int_of_eq_pos_extpoint {r : Ray P} {A : P} {t : ℝ} (ht : 0 < t) (h : A = Ray.extpoint r t) : A LiesInt r := sorry
+theorem lies_int_of_eq_pos_extpoint {r : Ray P} {A : P} {t : ℝ} (ht : 0 < t) (h : A = Ray.extpoint r t) : A LiesInt r := by
+  rw[h]
+  exact extpoint_lies_int_of_pos ht
 
-theorem dist_of_extpoint {r : Ray P}  {t : ℝ} (ht : 0 ≤ t) : dist r.source (r.extpoint t) = t := sorry
+theorem dist_of_extpoint {r : Ray P}  {t : ℝ} (ht : 0 ≤ t) : dist r.source (r.extpoint t) = t := by
+  rw [dist_comm, NormedAddTorsor.dist_eq_norm', extpoint, vadd_vsub, norm_smul,
+  Dir.norm_unitVec, mul_one]
+  exact Real.norm_of_nonneg ht
 
-theorem dist_eq_of_eq_extpoint {r : Ray P} {A : P} {t : ℝ} (ht : 0 ≤ t) (h : A = Ray.extpoint r t) : dist r.source A = t := sorry
+theorem dist_eq_of_eq_extpoint {r : Ray P} {A : P} {t : ℝ} (ht : 0 ≤ t) (h : A = Ray.extpoint r t) : dist r.source A = t := by
+  rw[h]
+  exact dist_of_extpoint ht
 
 end Ray
 
@@ -1356,7 +1447,21 @@ theorem length_eq_length_add_length {seg : Seg P} {A : P} (lieson : A LiesOn seg
     norm_smul, norm_smul, ← add_mul, Real.norm_of_nonneg a, Real.norm_of_nonneg (sub_nonneg.mpr b)]
   linarith
 
-theorem SegND.length_eq_length_add_length_of_lies_on_extn {seg_nd : SegND P} {A : P} (h : A LiesOn seg_nd.extension) : (SEG seg_nd.source A).length = seg_nd.1.length + (SEG seg_nd.target A).length := sorry
+theorem SegND.length_eq_length_add_length_of_lies_on_extn {seg_nd : SegND P} {A : P}
+(h : A LiesOn seg_nd.extension) : (SEG seg_nd.source A).length =
+seg_nd.1.length + (SEG seg_nd.target A).length := by
+  have H1: seg_nd.target LiesOn SEG seg_nd.source A:= by
+    by_cases H: A = seg_nd.target
+    rw [H]
+    exact Seg.target_lies_on
+    have h1: A LiesInt seg_nd.extension:= by
+      rw [Ray.lies_int_def]; constructor
+      apply h
+      exact H
+    have h2: seg_nd.target LiesInt SEG seg_nd.source A := by
+      exact target_lies_int_seg_source_pt_of_pt_lies_int_extn h1
+    exact Seg.lies_on_of_lies_int h2
+  rw [length_eq_length_add_length H1]
 
 end length
 
@@ -1502,10 +1607,23 @@ theorem Seg.eq_midpt_iff_in_seg_and_dist_target_eq_dist_source {X : P} {seg : Se
       exact (eq_add_of_sub_eq (mul_right_cancel₀ h0 h)).symm
     exact midpt_of_vector_from_source (by rw [ht, h])
 
-theorem SegND.eq_midpt_iff_in_seg_and_dist_target_eq_dist_source {X : P} {seg_nd : SegND P} : X = seg_nd.midpoint ↔ (X LiesOn seg_nd) ∧ (SEG seg_nd.source X).length = (SEG X seg_nd.target).length :=
+theorem SegND.eq_midpt_iff_in_seg_and_dist_target_eq_dist_source {X : P} {seg_nd : SegND P} :
+X = seg_nd.midpoint ↔
+(X LiesOn seg_nd) ∧ (SEG seg_nd.source X).length = (SEG X seg_nd.target).length :=
   seg_nd.1.eq_midpt_iff_in_seg_and_dist_target_eq_dist_source
 
-theorem Seg.reverse_midpt_eq_midpt {seg : Seg P} : seg.reverse.midpoint = seg.midpoint := sorry
+theorem Seg.reverse_midpt_eq_midpt {seg : Seg P} : seg.reverse.midpoint = seg.midpoint := by
+  rw [Seg.eq_midpt_iff_in_seg_and_dist_target_eq_dist_source]
+  let m := seg.reverse.midpoint
+  have H2: (m LiesOn seg.reverse) ∧ (SEG seg.reverse.source m).length = (SEG m seg.reverse.target).length:= by
+    exact eq_midpt_iff_in_seg_and_dist_target_eq_dist_source.mp rfl
+  rcases H2 with ⟨H1, H2⟩
+  constructor
+  exact lies_on_rev_iff_lies_on.mp H1
+  show (SEG seg.reverse.target m).length = (SEG m seg.reverse.source).length
+  rw [length_of_rev_eq_length', ←H2, length_of_rev_eq_length']
+
+
 
 theorem SegND.reverse_midpt_eq_midpt {seg_nd : SegND P} : seg_nd.reverse.midpoint = seg_nd.midpoint :=
   seg_nd.1.reverse_midpt_eq_midpt
@@ -1525,7 +1643,22 @@ theorem SegND.target_eq_vec_vadd_target_midpt {seg_nd : SegND P} : seg_nd.target
   Seg.midpt_of_same_vector_to_source_and_target (vadd_vsub seg_nd.toVecND.1 seg_nd.target).symm
 
 /-- `This theorem should be replaced! B is midpt of A and B + VEC A B, midpt liesint a seg_nd` Given a nondegenerate segment $AB$, B lies in the interior of the segment of $A(B + \overrightarrow{AB})$. -/
-theorem SegND.target_lies_int_seg_source_vec_vadd_target {seg_nd : SegND P} : seg_nd.target LiesInt (SEG seg_nd.source (seg_nd.toVecND.1 +ᵥ seg_nd.target)) := sorry
+theorem SegND.target_lies_int_seg_source_vec_vadd_target {seg_nd : SegND P} : seg_nd.target LiesInt (SEG seg_nd.source (seg_nd.toVecND.1 +ᵥ seg_nd.target)) := by
+  have H1: seg_nd.target LiesOn (SEG seg_nd.source (seg_nd.toVecND.1 +ᵥ seg_nd.target)):= by
+    nth_rw 1[SegND.target_eq_vec_vadd_target_midpt]
+    exact Seg.midpt_lies_on
+  have H2: seg_nd.target ≠ seg_nd.source:= seg_nd.2
+  have H3: seg_nd.target ≠ (seg_nd.toVecND.1 +ᵥ seg_nd.target):= by
+    by_contra H4
+    nth_rw 1 [← zero_vadd Vec seg_nd.target] at H4
+    have H5: (0 : Vec)  = seg_nd.toVecND.1 := by
+      exact vadd_right_cancel _ H4
+    have H6: seg_nd.toVecND.1 ≠ (0: Vec) := by
+      simp only [ne_eq, VecND.ne_zero, not_false_eq_true]
+    exact H6 (id H5.symm)
+  exact ⟨H1, H2, H3⟩
+
+
   /- (SEG_nd seg_nd.1.1  <| fun h ↦ seg_nd.2 <| toVec_eq_zero_of_deg.mpr <| zero_eq_bit0.mp <|
     (vsub_eq_zero_iff_eq.mpr h).symm.trans <| vadd_vsub_assoc seg_nd.1.toVec
       seg_nd.1.2 seg_nd.1.1).lies_int_of_eq_midpt seg_nd.target_eq_vec_vadd_target_midpt -/

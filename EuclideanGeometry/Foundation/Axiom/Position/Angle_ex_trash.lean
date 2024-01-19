@@ -15,7 +15,7 @@ theorem perp_foot_eq_source_of_right_ang {A B C : P} [b_ne_a : PtNe B A] [c_ne_a
 
 theorem ang_acute_of_is_isoceles {A B C : P} (not_colinear_ABC : ¬ colinear A B C) (isoceles_ABC : (▵ A B C).IsIsoceles) : Angle.IsAcuteAngle (ANG C B A (ne_of_not_colinear not_colinear_ABC).1 (ne_of_not_colinear not_colinear_ABC).2.2.symm) := by sorry
 
-theorem ang_acute_of_is_isoceles_variant {A B C : P} (not_collinear_ABC : ¬ collinear A B C) (isoceles_ABC : (▵ A B C).IsIsoceles) : Angle.IsAcu (ANG A C B (ne_of_not_collinear not_collinear_ABC).2.1 (ne_of_not_collinear not_collinear_ABC).1.symm) := by sorry
+theorem ang_acute_of_is_isoceles_variant {A B C : P} (not_collinear_ABC : ¬ Collinear A B C) (isoceles_ABC : (▵ A B C).IsIsoceles) : Angle.IsAcu (ANG A C B (ne_of_not_collinear not_collinear_ABC).2.1 (ne_of_not_collinear not_collinear_ABC).1.symm) := by sorry
 
 theorem is_acute_of_is_acute_rev {O A B : P} (h1 : A ≠ O) (h2 : B ≠ O) (h3 : Angle.IsAcu (ANG A O B h1 h2)) : Angle.IsAcu (ANG B O A h2 h1) := by sorry
 

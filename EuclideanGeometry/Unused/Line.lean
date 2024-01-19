@@ -4,17 +4,17 @@ noncomputable section
 namespace EuclidGeom
 
 @[ext]
-class Line (P : Type _) [EuclideanPlane P] where 
+class Line (P : Type _) [EuclideanPlane P] where
   carrier : Set P
-  linear : ∀ (A B C : P), (A ∈ carrier) → (B ∈ carrier) → (C ∈ carrier) → collinear A B C
-  maximal : ∀ (A B : P), (A ∈ carrier) → (B ∈ carrier) → (B ≠ A) → (∀ (C : P), collinear A B C → (C ∈ carrier))
+  linear : ∀ (A B C : P), (A ∈ carrier) → (B ∈ carrier) → (C ∈ carrier) → Collinear A B C
+  maximal : ∀ (A B : P), (A ∈ carrier) → (B ∈ carrier) → (B ≠ A) → (∀ (C : P), Collinear A B C → (C ∈ carrier))
   nontriv : ∃ (A B : P), (A ∈ carrier) ∧ (B ∈ carrier) ∧ (B ≠ A)
 
 namespace Line
 
-variable  {P : Type _} [EuclideanPlane P] 
+variable  {P : Type _} [EuclideanPlane P]
 
--- define a line from two points 
+-- define a line from two points
 
 def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
   carrier := {C : P | ∃ t : ℝ, VEC A C = t • VEC A B}
@@ -36,13 +36,13 @@ def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
     · have h' : (ty = tx) ∨ (tz = tx) ∨ (ty = tz) := by tauto
       by_cases ty = tx
       · rw [pt_eq_pt_of_eq_smul_smul h hy hx]
-        exact triv_collinear _ _
+        exact triv_collinear₁₂ _ _
       · by_cases tz = tx
         · rw [pt_eq_pt_of_eq_smul_smul h hz hx]
-          exact flip_collinear_snd_trd $ triv_collinear _ _
+          exact Collinear.perm₁₃₂ $ triv_collinear₁₂ _ _
         · have h : ty = tz := by tauto
           rw [pt_eq_pt_of_eq_smul_smul h hy hz]
-          exact flip_collinear_fst_snd $ flip_collinear_snd_trd $ triv_collinear _ _
+          exact Collinear.perm₂₁₃ $ Collinear.perm₁₃₂ $ triv_collinear₁₂ _ _
   maximal x y := by
     unfold Membership.mem Set.instMembershipSet Set.Mem setOf
     simp only [forall_exists_index]
@@ -67,7 +67,7 @@ def mk_pt_pt (A B : P) (h : B ≠ A) : Line P where
 
 end Line
 
-scoped notation "LIN" => Line.mk_pt_pt 
+scoped notation "LIN" => Line.mk_pt_pt
 
 namespace Line
 
@@ -82,12 +82,12 @@ instance : Carrier P (Line P) where
 
 end Line
 
--- Now we introduce useful theorems to avoid using more unfolds in further proofs. 
+-- Now we introduce useful theorems to avoid using more unfolds in further proofs.
 variable {P : Type _} [EuclideanPlane P]
 
 section Compaitiblity_of_coercions_of_mk_pt_pt
 
--- The first point and the second point in Line.mk_pt_pt LiesOn the line it make. 
+-- The first point and the second point in Line.mk_pt_pt LiesOn the line it make.
 
 theorem fst_pt_lies_on_line_of_pt_pt {A B : P} (h : B ≠ A) : A LiesOn LIN A B h := by
   unfold lies_on Carrier.carrier Line.instCarrierLine
@@ -110,7 +110,7 @@ theorem pt_lies_on_line_of_pt_pt_of_ne {A B : P} (h: B ≠ A) : A LiesOn LIN A B
   exact fst_pt_lies_on_line_of_pt_pt h
   exact snd_pt_lies_on_line_of_pt_pt h
 
-theorem lies_on_line_of_pt_pt_iff_collinear {A B : P} (h : B ≠ A) : ∀ X : P, (X LiesOn (LIN A B h)) ↔ collinear A B X := by
+theorem lies_on_line_of_pt_pt_iff_collinear {A B : P} (h : B ≠ A) : ∀ X : P, (X LiesOn (LIN A B h)) ↔ Collinear A B X := by
   intro X
   constructor
   intro hx
@@ -164,7 +164,7 @@ def Line.toProj (l : Line P) : Proj :=
   -- by choose pr _ using (exist_unique_proj_of_line l)
   -- exact pr
 
--- If you don't want to use Classical.choose, please use this theorem to simplify your Line.toProj. 
+-- If you don't want to use Classical.choose, please use this theorem to simplify your Line.toProj.
 
 theorem line_toProj_eq_seg_nd_toProj_of_lies_on {A B : P} {l : Line P} (ha : A LiesOn l) (hb : B LiesOn l) (hab : B ≠ A) : SegND.toProj ⟨SEG A B, hab⟩ = l.toProj := (Classical.choose_spec (exist_unique_proj_of_line l)).1 A B ha hb hab
 
@@ -180,7 +180,7 @@ section Compatibility_of_LiesOn
 
 -- This is also a typical proof that shows how to use the four conditions in the def of a line. Please write it shorter in future.
 
-theorem lies_on_iff_collinear_of_ne_lies_on_lies_on {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : ∀ C : P, (C LiesOn l) ↔ collinear A B C := by
+theorem lies_on_iff_collinear_of_ne_lies_on_lies_on {A B : P} {l : Line P} (h : B ≠ A) (ha : A LiesOn l) (hb : B LiesOn l) : ∀ C : P, (C LiesOn l) ↔ Collinear A B C := by
   intro C
   constructor
   intro hc
@@ -219,13 +219,13 @@ theorem eq_line_of_pt_pt_of_ne {A B : P} {l : Line P} (h : B ≠ A) (ha : A Lies
 
 theorem eq_of_pt_pt_lies_on_of_ne {A B : P} (h : B ≠ A) {l₁ l₂ : Line P}(hA₁ : A LiesOn l₁) (hB₁ : B LiesOn l₁) (hA₂ : A LiesOn l₂) (hB₂ : B LiesOn l₂) : l₁ = l₂ := sorry
 
-theorem collinear_iff_exist_line_lies_on (A B C : P) : collinear A B C ↔ ∃ l : Line P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) := by
+theorem collinear_iff_exist_line_lies_on (A B C : P) : Collinear A B C ↔ ∃ l : Line P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) := by
   sorry
 
 end Compatibility_of_LiesOn
 /- def coe from ray to line-/
 
-def Ray.toLine (r : Ray P) := LIN r.source (r.toDir.toVec +ᵥ r.source) (by 
+def Ray.toLine (r : Ray P) := LIN r.source (r.toDir.toVec +ᵥ r.source) (by
   simp only [ne_eq, vadd_eq_self_iff_vec_eq_zero]
   exact Dir.toVec_ne_zero r.toDir)
 
@@ -284,12 +284,12 @@ theorem lies_on_of_SegND_toProj_eq_toProj {A B : P} {l : Line P} (ha : A LiesOn 
   let g := line_toProj_eq_seg_nd_toProj_of_lies_on ha h.1 h.2
   rw [← hp] at g
   unfold SegND.toProj SegND.toVecND at g
-  simp only [ne_eq] at g 
-  have c : collinear A X B := by
-    rw [← iff_true (collinear A X B), ← eq_iff_iff]
-    unfold collinear collinear_of_nd
+  simp only [ne_eq] at g
+  have c : Collinear A X B := by
+    rw [← iff_true (Collinear A X B), ← eq_iff_iff]
+    unfold Collinear collinear_of_nd
     simp [g]
-    by_cases (B = X ∨ A = B ∨ X = A) 
+    by_cases (B = X ∨ A = B ∨ X = A)
     · simp only [h, dite_eq_ite]
     · simp only [h, dite_eq_ite]
   exact (lies_on_iff_collinear_of_ne_lies_on_lies_on h.2 ha h.1 B).2 c
@@ -307,8 +307,8 @@ end Archimedean_property
 section Line_passing_point_with_given_Proj
 
 theorem exist_line_of_pt_proj (A : P) (pr : Proj) : ∃ l : Line P, A LiesOn l ∧ l.toProj = pr := by
-  rcases Quot.exists_rep pr with ⟨dir, hd⟩ 
-  let r : Ray P := ⟨A, dir⟩ 
+  rcases Quot.exists_rep pr with ⟨dir, hd⟩
+  let r : Ray P := ⟨A, dir⟩
   use r.toLine
   constructor
   exact Ray.lies_on_toLine_of_lie_on (Ray.source_lies_on r)
@@ -326,12 +326,12 @@ theorem exist_unique_line_of_pt_proj (A : P) (pr : Proj) : ∃! l : Line P, A Li
     simp only [ne_eq, vadd_eq_self_iff_vec_eq_zero, Dir.toVec_ne_zero dir, not_false_eq_true]
   apply (lies_on_iff_lies_on_iff_line_eq_line l₂ l₁).1
   intro X
-  by_cases X = A 
+  by_cases X = A
   · rw [h]
     tauto
   · rw [lies_on_iff_eq_toProj_of_lies_on hl₁.1 h, hl₁.2, lies_on_iff_eq_toProj_of_lies_on hl₂.1 h, hl₂.2]
 
-def Line.mk_pt_proj (A : P) (pr : Proj) : Line P := 
+def Line.mk_pt_proj (A : P) (pr : Proj) : Line P :=
   Classical.choose (exist_unique_line_of_pt_proj A pr)
 
 theorem pt_lies_on_and_proj_eq_of_line_mk_pt_proj (A : P) (pr : Proj) : A LiesOn (Line.mk_pt_proj A pr) ∧ (Line.mk_pt_proj A pr).toProj = pr := by

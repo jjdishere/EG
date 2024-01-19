@@ -14,9 +14,9 @@ class CevaCfgClass (P : outParam <| Type*) [outParam <| EuclideanPlane P] where
   (A B C : P)
   --Let $D$ be a point not lying on $AB$, $BC$ and $CA$.
   D : P
-  abd_nd : ¬collinear A B D
-  bcd_nd : ¬collinear B C D
-  cad_nd : ¬collinear C A D
+  abd_nd : ¬Collinear A B D
+  bcd_nd : ¬Collinear B C D
+  cad_nd : ¬Collinear C A D
 
   a_ne_b : PtNe A B := ⟨(ne_of_not_collinear abd_nd).2.2.symm⟩
   b_ne_c : PtNe B C := ⟨(ne_of_not_collinear bcd_nd).2.2.symm⟩
@@ -47,90 +47,90 @@ variable {P : Type*} [EuclideanPlane P] [cfg : CevaCfgClass P]
 attribute [instance] a_ne_b b_ne_c c_ne_a d_ne_a d_ne_b d_ne_c
 
 --$D,C,A$ are not collinear
-lemma ncolin_dca : ¬ collinear D C A := by
+lemma ncolin_dca : ¬ Collinear D C A := by
   intro h0
-  exact cad_nd (perm_collinear_snd_trd_fst h0)
+  exact cad_nd (Collinear.perm₂₃₁ h0)
 
 --$E,B,C$ are collinear
-lemma colin_ebc : collinear E B C := by
+lemma colin_ebc : Collinear E B C := by
   have h : E LiesOn LIN C B := by
     rw [e_def]
     apply Line.inx_lies_on_fst
-  exact flip_collinear_fst_trd (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$E,D,A$ are collinear
-lemma colin_eda : collinear E D A := by
+lemma colin_eda : Collinear E D A := by
   have h : E LiesOn LIN A D := by
     rw [e_def]
     apply Line.inx_lies_on_snd
-  exact flip_collinear_fst_trd (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$C\ne E$
 instance c_ne_e : PtNe C E := Fact.mk <| by
-  have h : collinear E D A := colin_eda
+  have h : Collinear E D A := colin_eda
   intro k
   rw [←k] at h
-  exact ncolin_dca (flip_collinear_fst_snd h)
+  exact ncolin_dca (Collinear.perm₂₁₃ h)
 
 --$EB/EC=S_{\trian}DBA/S_{\trian}DCA$
 lemma dratio_ebc_eq_wedge_div_wedge : divratio E B C = (wedge D B A) / (wedge D C A) :=
   ratio_eq_wedge_div_wedge_of_collinear_collinear_notcoliear E B C D A colin_ebc colin_eda ncolin_dca
 
 --$D,A,B$ are not collinear
-lemma ncolin_dab : ¬ collinear D A B := by
+lemma ncolin_dab : ¬ Collinear D A B := by
   intro h0
-  exact abd_nd (perm_collinear_snd_trd_fst h0)
+  exact abd_nd (Collinear.perm₂₃₁ h0)
 
 --$F,C,A$ are collinear
-lemma colin_fca : collinear F C A := by
+lemma colin_fca : Collinear F C A := by
   have h : F LiesOn LIN A C := by
     rw [f_def]
     apply Line.inx_lies_on_fst
-  exact flip_collinear_fst_trd (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$F,D,B$ are collinear
-lemma colin_fdb : collinear F D B := by
+lemma colin_fdb : Collinear F D B := by
   have h : F LiesOn LIN B D := by
     rw [f_def]
     apply Line.inx_lies_on_snd
-  exact flip_collinear_fst_trd (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$A\ne F$
 instance a_ne_f : PtNe A F := Fact.mk <| by
-  have h : collinear F D B := colin_fdb
+  have h : Collinear F D B := colin_fdb
   intro k
   rw [←k] at h
-  exact ncolin_dab (flip_collinear_fst_snd h)
+  exact ncolin_dab (Collinear.perm₂₁₃ h)
 
 --$FC/FA=S_{\trian}DCB/S_{\trian}DAB$
 lemma dratio_fca_eq_wedge_div_wedge : divratio F C A = (wedge D C B) / (wedge D A B) :=
   ratio_eq_wedge_div_wedge_of_collinear_collinear_notcoliear F C A D B colin_fca colin_fdb ncolin_dab
 
 --$D,B,C$ are not collinear
-lemma ncolin_dbc : ¬ collinear D B C := by
+lemma ncolin_dbc : ¬ Collinear D B C := by
   intro h0
-  exact bcd_nd (perm_collinear_snd_trd_fst h0)
+  exact bcd_nd (Collinear.perm₂₃₁ h0)
 
 --$G,A,B$ are collinear
-lemma colin_gab : collinear G A B := by
+lemma colin_gab : Collinear G A B := by
   have h : G LiesOn LIN B A _ := by
     rw [g_def]
     apply Line.inx_lies_on_fst
-  exact flip_collinear_fst_trd (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$G,D,C$ are collinear
-lemma colin_gdc : collinear G D C := by
+lemma colin_gdc : Collinear G D C := by
   have h : G LiesOn LIN C D _ := by
     rw [g_def]
     apply Line.inx_lies_on_snd
-  exact flip_collinear_fst_trd (Line.pt_pt_linear h)
+  exact Collinear.perm₃₂₁ (Line.pt_pt_linear h)
 
 --$A\ne F$
 instance b_ne_g : PtNe B G := Fact.mk <| by
-  have h : collinear G D C := colin_gdc
+  have h : Collinear G D C := colin_gdc
   intro k
   rw [←k] at h
-  exact ncolin_dbc (flip_collinear_fst_snd h)
+  exact ncolin_dbc (Collinear.perm₂₁₃ h)
 
 --$GA/GB=S_{\trian}DAC/S_{\trian}DBC$
 lemma dratio_gab_eq_wedge_div_wedge : divratio G A B = (wedge D A C) / (wedge D B C) := ratio_eq_wedge_div_wedge_of_collinear_collinear_notcoliear G A B D C colin_gab colin_gdc ncolin_dbc
@@ -155,9 +155,9 @@ lemma CevaCfg.ceva_theorem {P : Type*} [EuclideanPlane P] (cfg : CevaCfg P) :
   CevaCfgClass.ceva_theorem (cfg := cfg)
 
 variable {P : Type*} [EuclideanPlane P] {A B C D : P}
-  (abd_nd : ¬collinear A B D)
-  (bcd_nd : ¬collinear B C D)
-  (cad_nd : ¬collinear C A D)
+  (abd_nd : ¬Collinear A B D)
+  (bcd_nd : ¬Collinear B C D)
+  (cad_nd : ¬Collinear C A D)
   (ba_npara_cd : ¬ LIN B A (ne_of_not_collinear abd_nd).2.2.symm ∥ LIN C D (ne_of_not_collinear cad_nd).2.1.symm)
   (cb_npara_ad : ¬ LIN C B (ne_of_not_collinear bcd_nd).2.2.symm ∥ LIN A D (ne_of_not_collinear abd_nd).2.1.symm)
   (ac_npara_bd : ¬ LIN A C (ne_of_not_collinear cad_nd).2.2.symm ∥ LIN B D (ne_of_not_collinear bcd_nd).2.1.symm)

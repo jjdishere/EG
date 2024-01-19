@@ -19,7 +19,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_collinear_ABC : ¬ collinear A B C
+  not_collinear_ABC : ¬ Collinear A B C
   isoceles_ABC : (▵ A B C).IsIsoceles
   --Let $D$ be a point on $AB$.
   D : Plane
@@ -46,7 +46,7 @@ structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
-  not_collinear_ABC : ¬ collinear A B C
+  not_collinear_ABC : ¬ Collinear A B C
   hisoc : (▵ A B C).IsIsoceles
   --Let $D$ be a point on $AB$.
   D : Plane
@@ -118,7 +118,7 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
   -- We have $C \ne B$.
   have C_ne_B : e.C ≠ e.B := (ne_of_not_collinear e.not_collinear_ABC).1
   -- We have $\triangle PBD$ is nondegenerate
-  have not_collinear_PBD : ¬ collinear e.P e.B e.D := by sorry
+  have not_collinear_PBD : ¬ Collinear e.P e.B e.D := by sorry
   -- We have $B \ne D$.
   have B_ne_D : e.B ≠ e.D := (ne_of_not_collinear not_collinear_PBD).1.symm
   -- We have $P \ne D$.
@@ -126,7 +126,7 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SE
   -- We have $P \ne B$.
   have P_ne_B : e.P ≠ e.B := (ne_of_not_collinear not_collinear_PBD).2.2.symm
   -- We have $\triangle QCE$ is nondegenerate
-  have not_collinear_QCE : ¬ collinear e.Q e.C e.E := by sorry
+  have not_collinear_QCE : ¬ Collinear e.Q e.C e.E := by sorry
   -- We have $C \ne E$.
   have C_ne_E : e.C ≠ e.E := (ne_of_not_collinear not_collinear_QCE).1.symm
   -- We have $Q \ne E$.

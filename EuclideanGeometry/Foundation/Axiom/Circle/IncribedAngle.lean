@@ -91,8 +91,8 @@ def complement (β : Arc P) : Arc P where
 lemma liesint_arc_not_lieson_dlin {β : Arc P} {p : P} (h : p LiesInt β) : ¬ (p LiesOn (DLIN β.source β.target)) := by
   intro hl
   have hl : p LiesOn (LIN β.source β.target) := hl
-  have hco : collinear β.source β.target p := Line.pt_pt_linear hl
-  have hco' : ¬ (collinear β.source β.target p) := Circle.three_pts_lieson_circle_not_collinear (hne₂ := ⟨h.2.2⟩) (hne₃ := ⟨h.2.1.symm⟩) β.ison.1 β.ison.2 h.1.1
+  have hco : Collinear β.source β.target p := Line.pt_pt_linear hl
+  have hco' : ¬ (Collinear β.source β.target p) := Circle.three_pts_lieson_circle_not_collinear (hne₂ := ⟨h.2.2⟩) (hne₃ := ⟨h.2.1.symm⟩) β.ison.1 β.ison.2 h.1.1
   tauto
 
 theorem liesint_arc_liesonright_dlin {β : Arc P} {p : P} (h : p LiesInt β) : p LiesOnRight (DLIN β.source β.target) := by
@@ -132,7 +132,7 @@ theorem cangle_of_complementary_arc_are_opposite (β : Arc P) : β.cangle.value 
   show (∠ β.source β.circle.center β.target = -∠ β.target β.circle.center β.source)
   apply neg_value_of_rev_ang
 
-theorem antipode_iff_collinear (A B : P) {ω : Circle P} [h : PtNe B A] (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) : Arc.IsAntipode A B h₁ h₂ ↔ collinear ω.center A B := by
+theorem antipode_iff_collinear (A B : P) {ω : Circle P} [h : PtNe B A] (h₁ : A LiesOn ω) (h₂ : B LiesOn ω) : Arc.IsAntipode A B h₁ h₂ ↔ Collinear ω.center A B := by
   haveI : PtNe A ω.center := Circle.pt_lieson_ne_center h₁
   haveI : PtNe B ω.center := Circle.pt_lieson_ne_center h₂
   constructor
@@ -160,8 +160,8 @@ theorem antipode_iff_collinear (A B : P) {ω : Circle P} [h : PtNe B A] (h₁ : 
   exact value_eq_pi_of_lies_int_seg_nd hli
 
 theorem mk_pt_pt_diam_isantipode {A B : P} [h : PtNe A B] : Arc.IsAntipode A B (Circle.mk_pt_pt_diam_fst_lieson) (Circle.mk_pt_pt_diam_snd_lieson) := by
-  have hc : collinear (SEG A B).midpoint A B := by
-    apply perm_collinear_trd_fst_snd
+  have hc : Collinear (SEG A B).midpoint A B := by
+    apply Collinear.perm₃₁₂
     apply Line.pt_pt_linear
     show (SEG A B).midpoint LiesOn (SEG_nd A B).toLine
     apply SegND.lies_on_toLine_of_lie_on

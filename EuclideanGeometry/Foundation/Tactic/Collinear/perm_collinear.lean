@@ -8,7 +8,7 @@ variable {P : Type _} [EuclideanPlane P]
 
 def extractCollinear (expr : Q(Prop)) : MetaM (Option Expr) :=
   match expr with
-  | ~q(@EuclidGeom.collinear _ (_) _ _ _) =>
+  | ~q(@EuclidGeom.Collinear _ (_) _ _ _) =>
       return .some expr
   | _ => return .none
 
@@ -35,31 +35,31 @@ def evalPerm_collinear : Tactic := fun stx =>
       catch
         _ => pure ()
       try
-        let t <- `(tactic| refine flip_collinear_fst_snd $x0)
+        let t <- `(tactic| refine Collinear.perm₁₃₂ $x0)
         evalTactic t
         return
       catch
         _ => pure ()
       try
-        let t <- `(tactic| refine flip_collinear_snd_trd $x0)
+        let t <- `(tactic| refine Collinear.perm₂₁₃ $x0)
         evalTactic t
         return
       catch
         _ => pure ()
       try
-        let t <- `(tactic| refine flip_collinear_fst_snd (flip_collinear_snd_trd $x0))
+        let t <- `(tactic| refine Collinear.perm₃₁₂ $x0)
         evalTactic t
         return
       catch
         _ => pure ()
       try
-        let t <- `(tactic| refine flip_collinear_snd_trd (flip_collinear_fst_snd $x0))
+        let t <- `(tactic| refine Collinear.perm₂₃₁ $x0)
         evalTactic t
         return
       catch
         _ => pure ()
       try
-        let t <- `(tactic| refine flip_collinear_fst_snd (flip_collinear_snd_trd (flip_collinear_fst_snd $x0)))
+        let t <- `(tactic| refine Collinear.perm₃₂₁ $x0)
         evalTactic t
         return
       catch
@@ -68,7 +68,7 @@ def evalPerm_collinear : Tactic := fun stx =>
   | _ => throwUnsupportedSyntax
 
 
-example {A B C : P} {h : collinear B C A} : collinear A B C := by
+example {A B C : P} {h : Collinear B C A} : Collinear A B C := by
   perm_collinear
 
 end EuclidGeom

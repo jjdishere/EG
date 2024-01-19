@@ -107,15 +107,15 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
 --The pair of points (G,H) divides the segement AC into three segments with the same length.
 theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) :(SEG e.A e.G).length=(SEG e.G e.H).length ∧ (SEG e.A e.G).length=(SEG e.H e.C).length := by
   -- $▵AFG$ is nontrivial
-  have AFG_nd : ¬ collinear e.A e.F e.G := sorry
+  have AFG_nd : ¬ Collinear e.A e.F e.G := sorry
   -- $▵CBG$ is nontrivial
-  have CBG_nd : ¬ collinear e.C e.B e.G :=sorry
+  have CBG_nd : ¬ Collinear e.C e.B e.G :=sorry
   -- $▵ AFG ∼ ▵ CBG$ with ratio 1/2 by AAA
   have AFG_sim_CBG : (TRI_nd e.A e.F e.G AFG_nd) ∼ (TRI_nd e.C e.B e.G CBG_nd) := sorry
 --The following three may not be necessary since we can use the above three lemmas instead
 
-  have CEH_nd : ¬ collinear e.C e.E e.H := sorry
-  have ADH_nd : ¬ collinear e.A e.D e.H := sorry
+  have CEH_nd : ¬ Collinear e.C e.E e.H := sorry
+  have ADH_nd : ¬ Collinear e.A e.D e.H := sorry
   -- $▵ CEH ∼ ▵ ADH$ with ratio 1/2 by AAA
   have CEH_sim_ADH : (TRI_nd e.C e.E e.H CEH_nd) ∼ (TRI_nd e.A e.D e.H ADH_nd) := sorry
   -- length of segment AG is half of segment CG

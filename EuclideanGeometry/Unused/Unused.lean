@@ -250,7 +250,7 @@ class Triangle' (P : Type _) [EuclideanPlane P] where
   point₁ : P
   point₂ : P
   point₃ : P
-  nontriv : ¬ collinear point₁ point₂ point₃
+  nontriv : ¬ Collinear point₁ point₂ point₃
 
 namespace Triangle
 
@@ -286,20 +286,20 @@ scoped infix : 50 " IsInsideLTriangle " => Triangle.IsInside
 
 end nondeg_tri
 
-section collinear
+section Collinear
 
 variable {P : Type _} [EuclideanPlane P]
 
-theorem collinear_ACB_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear A C B := sorry
+theorem collinear_ACB_of_collinear_ABC {A B C : P} (h : Collinear A B C): Collinear A C B := sorry
 
-theorem collinear_BAC_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear B A C := sorry
+theorem collinear_BAC_of_collinear_ABC {A B C : P} (h : Collinear A B C): Collinear B A C := sorry
 
-theorem collinear_BCA_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear B C A := sorry
+theorem collinear_BCA_of_collinear_ABC {A B C : P} (h : Collinear A B C): Collinear B C A := sorry
 
-theorem collinear_CAB_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear C A B := sorry
+theorem collinear_CAB_of_collinear_ABC {A B C : P} (h : Collinear A B C): Collinear C A B := sorry
 
-theorem collinear_CBA_of_collinear_ABC {A B C : P} (h : collinear A B C): collinear C B A := sorry
-end collinear
+theorem collinear_CBA_of_collinear_ABC {A B C : P} (h : Collinear A B C): Collinear C B A := sorry
+end Collinear
 
 /-!
 section HasFallsOn
@@ -355,12 +355,12 @@ scoped notation p "IsIntersectionOf" A B => IsIntersectionPoint p A B
 class HasProj (α : Type _) where
   toProj : (α → Proj)
 
-def parallel {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := HasProj.toProj A = HasProj.toProj B
+def Parallel {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := HasProj.toProj A = HasProj.toProj B
 
-scoped notation A "IsParallelTo" B => parallel A B
-scoped notation A "∥" B => parallel A B
+scoped notation A "IsParallelTo" B => Parallel A B
+scoped notation A "∥" B => Parallel A B
 
-namespace parallel
+namespace Parallel
 
 protected theorem refl {α : Type _} (A : α) [HasProj α] : A ∥ A := rfl
 
@@ -368,20 +368,20 @@ protected theorem symm {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj 
 
 protected theorem trans {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ]: (A ∥ B) → (B ∥ C) → (A ∥ C) := Eq.trans
 
-end parallel
+end Parallel
 
-def perpendicular {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := sorry
+def Perpendicular {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := sorry
 
-scoped notation A "IsPerpendicularTo" B => perpendicular A B
-scoped notation A "⟂" B => perpendicular A B
+scoped notation A "IsPerpendicularTo" B => Perpendicular A B
+scoped notation A "⟂" B => Perpendicular A B
 
-namespace perpendicular
+namespace Perpendicular
 
 protected theorem irrefl {α : Type _} (A : α) [HasProj α] : ¬ (A ⟂ A) := by sorry
 
 protected theorem symm {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : (A ⟂ B) → (B ⟂ A) := sorry
 
-end perpendicular
+end Perpendicular
 
 theorem parallel_of_perp_perp {α β γ : Type _} (A : α) (B : β) (C : γ) [HasProj α] [HasProj β] [HasProj γ] : (A ⟂ B) → (B ⟂ C) → (A ∥ C)  := sorry
 -/ -/
