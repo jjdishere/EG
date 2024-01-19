@@ -131,10 +131,10 @@ scoped notation "QDR_nd'" => QuadrilateralND.mk_nd
 /-- A quadrilateral satisfies InGPos if every 3 vertices are not collinear. -/
 @[pp_dot]
 structure Quadrilateral.InGPos {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P) : Prop where
-  not_collinear₁₂₃: ( ¬ collinear qdr.point₁ qdr.point₂ qdr.point₃)
-  not_collinear₂₃₄: ( ¬ collinear qdr.point₂ qdr.point₃ qdr.point₄)
-  not_collinear₃₄₁: ( ¬ collinear qdr.point₃ qdr.point₄ qdr.point₁)
-  not_collinear₄₁₂: ( ¬ collinear qdr.point₄ qdr.point₁ qdr.point₂)
+  not_collinear₁₂₃: ( ¬ Collinear qdr.point₁ qdr.point₂ qdr.point₃)
+  not_collinear₂₃₄: ( ¬ Collinear qdr.point₂ qdr.point₃ qdr.point₄)
+  not_collinear₃₄₁: ( ¬ Collinear qdr.point₃ qdr.point₄ qdr.point₁)
+  not_collinear₄₁₂: ( ¬ Collinear qdr.point₄ qdr.point₁ qdr.point₂)
 
 -- scoped postfix : 50 "IsPrg_GPos" => Quadrilateral.GPos
 
@@ -159,19 +159,19 @@ instance nd₁₄ : PtNe qdr_nd.1.4 qdr_nd.1.1 := Fact.mk qdr_nd.nd.nd₁₄
 
 /-- The edge from the first point to the second point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₁₂ : SegND P := SEG_nd qdr_nd.point₁ qdr_nd.point₂
+def edgeND₁₂ : SegND P := SEG_nd qdr_nd.point₁ qdr_nd.point₂
 
 /-- The edge from the second point to the third point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₂₃ : SegND P := SEG_nd qdr_nd.point₂ qdr_nd.point₃
+def edgeND₂₃ : SegND P := SEG_nd qdr_nd.point₂ qdr_nd.point₃
 
 /-- The edge from the third point to the fourth point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₃₄ : SegND P := SEG_nd qdr_nd.point₃ qdr_nd.point₄
+def edgeND₃₄ : SegND P := SEG_nd qdr_nd.point₃ qdr_nd.point₄
 
 /-- The edge from the fourth point to the first point of a quadrilateral -/
 @[pp_dot]
-def edge_nd₁₄ : SegND P := SEG_nd qdr_nd.point₁ qdr_nd.point₄
+def edgeND₄₁ : SegND P := SEG_nd qdr_nd.point₄ qdr_nd.point₁
 
 /--angle at point₁ of qdr_nd-/
 @[pp_dot]
@@ -349,14 +349,14 @@ variable {P : Type _} [EuclideanPlane P] {A B C D : P}
 
 structure is_convex_of_three_sides_of_same_side' where
   qdr_nd : QuadrilateralND P
-  same_side₁ : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = odist_sign qdr_nd.point₂ qdr_nd.edge_nd₃₄
-  same_side₂ : odist_sign qdr_nd.point₂ qdr_nd.edge_nd₁₄.reverse = odist_sign qdr_nd.point₃ qdr_nd.edge_nd₁₄.reverse
-  same_side₃ : odist_sign qdr_nd.point₃ qdr_nd.edge_nd₁₂ = odist_sign qdr_nd.point₄ qdr_nd.edge_nd₁₂
+  same_side₁ : odist_sign qdr_nd.point₁ qdr_nd.edgeND₃₄ = odist_sign qdr_nd.point₂ qdr_nd.edgeND₃₄
+  same_side₂ : odist_sign qdr_nd.point₂ qdr_nd.edgeND₄₁ = odist_sign qdr_nd.point₃ qdr_nd.edgeND₄₁
+  same_side₃ : odist_sign qdr_nd.point₃ qdr_nd.edgeND₁₂ = odist_sign qdr_nd.point₄ qdr_nd.edgeND₁₂
 
 /- Given QuadrilateralND qdr_nd, if qdr_nd.point₁ and qdr_nd.point₂ are at the same side of qdr_nd.nd₃₄, and it also holds for nd₄₁ and nd₁₂, then it's convex. -/
 theorem is_convex_of_three_sides_of_same_side (p : is_convex_of_three_sides_of_same_side' (P := P)) : p.qdr_nd.IsConvex := by
   let qdr_nd := p.qdr_nd
-  by_cases h : odist_sign qdr_nd.point₁ qdr_nd.edge_nd₃₄ = 1
+  by_cases h : odist_sign qdr_nd.point₁ qdr_nd.edgeND₃₄ = 1
   · sorry
   · sorry
 
@@ -514,34 +514,34 @@ theorem diag_inx_lies_int : qdr_cvx.diag_inx LiesInt qdr_cvx.diag_nd₁₃ ∧ q
    -- exact k
 
 /-- Given a convex quadrilateral qdr_cvx, its 1st, 2nd and 3rd points are not collinear, i.e. the projective direction of the vector $\overrightarrow{point₁ point₂}$ is not the same as the projective direction of the vector $\overrightarrow{point₁ point₃}$. -/
-theorem not_collinear₁₂₃ : ¬ collinear qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ := sorry
+theorem not_collinear₁₂₃ : ¬ Collinear qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, its 2nd, 3rd and 4th points are not collinear, i.e. the projective direction of the vector $\overrightarrow{point₂ point₃}$ is not the same as the projective direction of the vector $\overrightarrow{point₂ point₄}$. -/
-theorem not_collinear₂₃₄ : ¬ collinear qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ := sorry
+theorem not_collinear₂₃₄ : ¬ Collinear qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, its 3rd, 4th and 1st points are not collinear, i.e. the projective direction of the vector $\overrightarrow{point₃ point₄}$ is not the same as the projective direction of the vector $\overrightarrow{point₃ point₁}$. -/
-theorem not_collinear₃₄₁ : ¬ collinear qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ := sorry
+theorem not_collinear₃₄₁ : ¬ Collinear qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, its 4th, 1st and 3rd points are not collinear, i.e. the projective direction of the vector $\overrightarrow{point₃ point₄}$ is not the same as the projective direction of the vector $\overrightarrow{point₃ point₁}$. -/
-theorem not_collinear₄₁₃ : ¬ collinear qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₃ := sorry
+theorem not_collinear₄₁₃ : ¬ Collinear qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₃ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, its 4th, 3rd and 1st points are not collinear, i.e. the projective direction of the vector $\overrightarrow{point₃ point₄}$ is not the same as the projective direction of the vector $\overrightarrow{point₃ point₁}$. -/
-theorem not_collinear₄₃₁ : ¬ collinear qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ := sorry
+theorem not_collinear₄₃₁ : ¬ Collinear qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, its 1st, 4th and 3rd points are not collinear, i.e. the projective direction of the vector $\overrightarrow{point₃ point₄}$ is not the same as the projective direction of the vector $\overrightarrow{point₃ point₁}$. -/
-theorem not_collinear₁₄₃ : ¬ collinear qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.point₃ := sorry
+theorem not_collinear₁₄₃ : ¬ Collinear qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.point₃ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, its 4th, 1st and 2nd points are not collinear, i.e. the projective direction of the vector $\overrightarrow{point₄ point₁}$ is not the same as the projective direction of the vector $\overrightarrow{point₄ point₂}$. -/
-theorem not_collinear₄₁₂ : ¬ collinear qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ := sorry
+theorem not_collinear₄₁₂ : ¬ Collinear qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, its 2nd, 1st and 4th points are not collinear, i.e. the projective direction of the vector $\overrightarrow{point₄ point₁}$ is not the same as the projective direction of the vector $\overrightarrow{point₄ point₂}$. -/
-theorem not_collinear₂₁₄ : ¬ collinear qdr_cvx.point₂ qdr_cvx.point₁ qdr_cvx.point₄ := sorry
+theorem not_collinear₂₁₄ : ¬ Collinear qdr_cvx.point₂ qdr_cvx.point₁ qdr_cvx.point₄ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, its 1st, 4th and 2nd points are not collinear, i.e. the projective direction of the vector $\overrightarrow{point₄ point₁}$ is not the same as the projective direction of the vector $\overrightarrow{point₄ point₂}$. -/
-theorem not_collinear₁₄₂ : ¬ collinear qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.point₂ := sorry
+theorem not_collinear₁₄₂ : ¬ Collinear qdr_cvx.point₁ qdr_cvx.point₄ qdr_cvx.point₂ := sorry
 
 /-- Given a convex quadrilateral qdr_cvx, its 1st, 2nd and 4th points are not collinear, i.e. the projective direction of the vector $\overrightarrow{point₄ point₁}$ is not the same as the projective direction of the vector $\overrightarrow{point₄ point₂}$. -/
-theorem not_collinear₁₂₄ : ¬ collinear qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ := sorry
+theorem not_collinear₁₂₄ : ¬ Collinear qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ := sorry
 
 -- We need to add a bunch of such theorems as they may be useful in discussing general quadrilaterals, i.e. not convex, even as contradictory in proofs.
 

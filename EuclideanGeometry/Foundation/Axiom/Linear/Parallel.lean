@@ -46,20 +46,20 @@ instance : LinearObj (Line P) where
 
 -- Our definition of parallel for LinearObj is very general. Not only can it apply to different types of Objs, but also include degenerate cases, such as ⊆(inclusions), =(equal).
 /-- Given two linear objects $l_1$ and $l_2$ (not necessarily of the same type), this function returns whether they are parallel, defined as having the same associated projective direction. -/
-def parallel {α β : Type*} [ProjObj α] [ProjObj β] (l₁ : α) (l₂ : β) : Prop :=
+def Parallel {α β : Type*} [ProjObj α] [ProjObj β] (l₁ : α) (l₂ : β) : Prop :=
   toProj l₁ = toProj l₂
 
 /-- Being parallel defines an equivalence relation among all linear objects, that is they satisfy the three conditions: (1) reflexive: every linear object $l$ is parallel to itself; (2) symmetric: if the linear object $l_1$ is parallel to the linear object $l_2$, then $l_2$ is $l_1$; (3) transitive: if the linear object $l_1$ is parallel to the linear object $l_2$, and if the linear object $l_2$ is parallel to the linear object $l_3$, then $l_1$ is parallel to $l_3$. -/
-instance (α : Type*) [ProjObj α] : IsEquiv α parallel where
+instance (α : Type*) [ProjObj α] : IsEquiv α Parallel where
   refl _ := rfl
   symm _ _ := Eq.symm
   trans _ _ _ := Eq.trans
 
-/-- This is to rewrite \verb|parallel l l'| as \verb|l ParallelTo l'| -/
-scoped infix : 50 " ParallelTo " => parallel
+/-- This is to rewrite \verb|Parallel l l'| as \verb|l ParallelTo l'| -/
+scoped infix : 50 " ParallelTo " => Parallel
 
-/-- This is to rewrite \verb|parallel l l'| as $l \parallel l'$. -/
-scoped infix : 50 " ∥ " => parallel
+/-- This is to rewrite \verb|Parallel l l'| as $l \parallel l'$. -/
+scoped infix : 50 " ∥ " => Parallel
 
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coercions, ... -/
 
@@ -438,7 +438,7 @@ theorem cu_neg (u v w : Vec) : cu u v (- w) = - cu u v w := by
   rfl
 
 /-- Let $\vec u$, $\vec v$ and $\vec w$ be three vectors such that $\vec v$ is nonzero and $\vec u$ is not a multiple of $\vec v$, then $\vec w$ is the linear combination of $\vec u$ and $\vec v$ with the first and second linear coefficients respectively, i.e. $\vec w = c_u(\vec u, \vec v, \vec w) \cdot \vec u + c_v(\vec u, \vec v, \vec w) \cdot \vec v$. -/
-theorem Vec.linear_combination_of_not_colinear' {u v w : Vec} (hu : v ≠ 0) (h' : ¬(∃ (t : ℝ), u = t • v)) : w = cu u v w • u + cv u v w • v := by
+theorem Vec.linear_combination_of_not_collinear' {u v w : Vec} (hu : v ≠ 0) (h' : ¬(∃ (t : ℝ), u = t • v)) : w = cu u v w • u + cv u v w • v := by
   have : u.fst * v.snd - u.snd * v.fst ≠ 0 := (det_eq_zero_iff_eq_smul_right.not.mpr (not_or.mpr ⟨hu, h'⟩))
   dsimp [cu, cv, det_apply]
   apply Vec.ext <;>
@@ -446,15 +446,15 @@ theorem Vec.linear_combination_of_not_colinear' {u v w : Vec} (hu : v ≠ 0) (h'
     ring
 
 /-- Given two nondegenerate vectors $\vec u$ and $\vec v$ of distinct projective directions, any vector $w$ is the linear combination of $\vec u$ and $\vec v$ with coefficients, namely, $\vec w = c_u(\vec u, \vec v, \vec w) \vec u + c_v(\vec u, \vec v, \vec w) \vec v$. -/
-theorem Vec.linear_combination_of_not_colinear_vecND {u v : VecND} (w : Vec) (h' : VecND.toProj u ≠ VecND.toProj v) : w = (cu u.1 v.1 w) • u.1 + (cv u.1 v.1 w) • v.1 := by
+theorem Vec.linear_combination_of_not_collinear_vecND {u v : VecND} (w : Vec) (h' : VecND.toProj u ≠ VecND.toProj v) : w = (cu u.1 v.1 w) • u.1 + (cv u.1 v.1 w) • v.1 := by
   have h₁ : ¬(∃ (t : ℝ), u.1 = t • v.1)
   · by_contra h₂
     let _ := VecND.toProj_eq_toProj_iff.2 h₂
     tauto
-  exact @linear_combination_of_not_colinear' u.1 v.1 w v.2 h₁
+  exact @linear_combination_of_not_collinear' u.1 v.1 w v.2 h₁
 
 /-- Given two directions $\vec u$ and $\vec v$ of different projective directions, any vector $w$ is the linear combination of $\vec u$ and $\vec v$ with coefficients, namely, $\vec w = c_u(\vec u, \vec v, \vec w) \vec u + c_v(\vec u, \vec v, \vec w) \vec v$. -/
-theorem Vec.linear_combination_of_not_colinear_dir {u v : Dir} (w : Vec) (h' : u.toProj ≠ v.toProj) : w = (cu u.unitVec v.unitVec w) • u.unitVec + (cv u.unitVec v.unitVec w) • v.unitVec := by
+theorem Vec.linear_combination_of_not_collinear_dir {u v : Dir} (w : Vec) (h' : u.toProj ≠ v.toProj) : w = (cu u.unitVec v.unitVec w) • u.unitVec + (cv u.unitVec v.unitVec w) • v.unitVec := by
   have h₁ : (u.toProj ≠ v.toProj) → ¬(∃ (t : ℝ), u.unitVec = t • v.unitVec)
   · by_contra h
     push_neg at h
@@ -472,7 +472,7 @@ theorem Vec.linear_combination_of_not_colinear_dir {u v : Dir} (w : Vec) (h' : u
     have hv3 : v.unitVec = v'.1 := rfl
     rw [hu3, hv3, ←hu2, ←hv2, ← VecND.toProj_eq_toProj_iff] at h
     tauto
-  exact @linear_combination_of_not_colinear' u.unitVec v.unitVec w (VecND.ne_zero _) (h₁ h')
+  exact @linear_combination_of_not_collinear' u.unitVec v.unitVec w (VecND.ne_zero _) (h₁ h')
 
 -- This function in fact does not require $r_1$ and $r_2$ to be unparallel, but please only use this under the unparallel assumption.`
 /-- Given two unparallel rays, this function returns the intersection of their associated lines. -/
@@ -484,7 +484,7 @@ theorem inx_of_extn_line_symm (r₁ r₂ : Ray P) (h : ¬ r₁ ∥ r₂) :
   have hsymm : cu r₁.toDir.unitVecND r₂.toDir.unitVecND (VEC r₁.source r₂.source) • r₁.toDir.unitVec =
       cu r₂.toDir.unitVecND r₁.toDir.unitVecND (VEC r₂.source r₁.source) • r₂.toDir.unitVec +
       (r₂.source -ᵥ r₁.source)
-  · have h := Vec.linear_combination_of_not_colinear_dir (VEC r₁.source r₂.source) (Ne.symm h)
+  · have h := Vec.linear_combination_of_not_collinear_dir (VEC r₁.source r₂.source) (Ne.symm h)
     nth_rw 1 [← cu_cv, Vec.mkPtPt] at h
     rw [h, ← neg_vec r₁.source r₂.source, cu_neg, neg_smul]
     exact eq_neg_add_of_add_eq rfl
@@ -590,7 +590,7 @@ theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ l�
   let x := cu (VEC A B) (VEC C D) (VEC A C)
   let y := cv (VEC A B) (VEC C D) (VEC A C)
   have e : VEC A C = x • VEC A B + y • VEC C D := by
-    apply Vec.linear_combination_of_not_colinear_vecND (VEC A C) e'
+    apply Vec.linear_combination_of_not_collinear_vecND (VEC A C) e'
   have h : VEC C (x • VEC A B +ᵥ A) = - y • VEC C D := by
     rw [← vec_sub_vec A _ _, vec_of_pt_vadd_pt_eq_vec _ _, e]
     simp only [Complex.real_smul, sub_add_cancel', neg_smul]

@@ -259,7 +259,7 @@ end Angle
 
 
 
-section parallel
+section Parallel
 
 variable {P : Type _} [EuclideanPlane P]
 -- should be stated use mod 2pi first, then back to pi or -pi
@@ -293,6 +293,6 @@ theorem value_eq_of_isAlternateIntAng {ang₁ ang₂ : Angle P} (h : IsAlternate
 theorem value_eq_of_corresponding_angle {l₁ l₂ l : DirLine P} (h : l₁.toDir = l₂.toDir) (g : ¬ l ∥ l₁) : (Angle.mk_dirline_dirline l₁ l (Ne.symm g)).value = (Angle.mk_dirline_dirline l₂ l (Ne.symm (ne_of_ne_of_eq g (Quotient.sound (h ▸ PM.con.refl _))))).value := sorry
 -/
 
-end parallel
+end Parallel
 
 end EuclidGeom

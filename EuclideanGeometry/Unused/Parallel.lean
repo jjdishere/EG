@@ -61,7 +61,7 @@ scoped infix : 50 " LiesOnarObj " => LinearObj.IsOnLinearObj
 
 -- Our definition of parallel for LinearObj is very general. Not only can it apply to different types of Objs, but also include degenerate cases, such as ⊆(inclusions), =(equal).
 
-def parallel' {α β: Type _} (l₁ : α) (l₂ : β) [Coe α (LinearObj P)] [Coe β (LinearObj P)] : Prop :=  LinearObj.toProj (P := P) (Coe.coe l₁) = LinearObj.toProj (P := P) (Coe.coe l₂)
+def Parallel' {α β: Type _} (l₁ : α) (l₂ : β) [Coe α (LinearObj P)] [Coe β (LinearObj P)] : Prop :=  LinearObj.toProj (P := P) (Coe.coe l₁) = LinearObj.toProj (P := P) (Coe.coe l₂)
 
 -- class PlaneFigure' (P : Type _) [EuclideanPlane P] {α : Type _} where
 
@@ -69,22 +69,22 @@ def parallel' {α β: Type _} (l₁ : α) (l₂ : β) [Coe α (LinearObj P)] [Co
 
 
 
-def parallel (l₁ l₂: LinearObj P) : Prop := l₁.toProj = l₂.toProj
+def Parallel (l₁ l₂: LinearObj P) : Prop := l₁.toProj = l₂.toProj
 
-instance : IsEquiv (LinearObj P) parallel where
+instance : IsEquiv (LinearObj P) Parallel where
   refl _ := rfl
   symm _ _ := Eq.symm
   trans _ _ _ := Eq.trans
 
-scoped infix : 50 " ParallelTo " => parallel
+scoped infix : 50 " ParallelTo " => Parallel
 
-scoped infix : 50 " ∥ " => parallel
+scoped infix : 50 " ∥ " => Parallel
 
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coercions, ... -/
 
 section parallel_theorem
 
-theorem ray_parallel_toLine_assoc_ray (ray : Ray P) :  parallel (LinearObj.ray ray) ray.toLine := sorry
+theorem ray_parallel_toLine_assoc_ray (ray : Ray P) :  Parallel (LinearObj.ray ray) ray.toLine := sorry
 
 theorem seg_parallel_toRay_assoc_seg_of_nontriv (seg_nd : SegND P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := sorry
 

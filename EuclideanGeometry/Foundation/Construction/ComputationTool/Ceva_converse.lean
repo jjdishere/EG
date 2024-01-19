@@ -13,16 +13,16 @@ structure Setting (P : Type _) [EuclideanPlane P] where
   A : P
   B : P
   C : P
-  not_collinear_ABC : ¬ collinear A B C
+  not_collinear_ABC : ¬ Collinear A B C
   -- Let $E$ be a point on $BC$.
   E : P
-  collinear_EBC : collinear E B C
+  collinear_EBC : Collinear E B C
   -- Let $F$ be a point on $CA$.
   F : P
-  collinear_FCA : collinear F C A
+  collinear_FCA : Collinear F C A
   -- Let $G$ be a point on $AB$.
   G : P
-  collinear_GAB : collinear G A B
+  collinear_GAB : Collinear G A B
   -- Claim : $E \ne A$.
   E_ne_A : E ≠ A := TriangleND.points_ne_of_collinear_of_not_collinear1 not_collinear_ABC collinear_EBC
   -- Claim : $F \ne B$.
@@ -64,11 +64,11 @@ theorem Ceva_converse_theorem {P : Type _} [EuclideanPlane P] (e : Setting P) : 
     rw [h1] at ratiomul
     field_simp at ratiomul
   /-
-  have collinear_DAE : collinear e.A e.E D := Line.pt_pt_linear (TriangleND.points_ne_of_collinear_of_not_collinear1 e.not_collinear_ABC e.collinear_EBC) (Line.inx_lies_on_fst (TriangleND.not_parallel_of_not_collinear_of_collinear_collinear e.not_collinear_ABC e.collinear_EBC e.collinear_FCA))
+  have collinear_DAE : Collinear e.A e.E D := Line.pt_pt_linear (TriangleND.points_ne_of_collinear_of_not_collinear1 e.not_collinear_ABC e.collinear_EBC) (Line.inx_lies_on_fst (TriangleND.not_parallel_of_not_collinear_of_collinear_collinear e.not_collinear_ABC e.collinear_EBC e.collinear_FCA))
   -/
-  have abd_nd : ¬ collinear e.A e.B D := (TriangleND.intersection_not_collinear_of_nondegenerate e.not_collinear_ABC e.collinear_EBC e.collinear_FCA E_ne_B E_ne_C F_ne_A F_ne_C D rfl).1
-  have bcd_nd : ¬ collinear e.B e.C D := (TriangleND.intersection_not_collinear_of_nondegenerate e.not_collinear_ABC e.collinear_EBC e.collinear_FCA E_ne_B E_ne_C F_ne_A F_ne_C D rfl).2.1
-  have cad_nd : ¬ collinear e.C e.A D := (TriangleND.intersection_not_collinear_of_nondegenerate e.not_collinear_ABC e.collinear_EBC e.collinear_FCA E_ne_B E_ne_C F_ne_A F_ne_C D rfl).2.2
+  have abd_nd : ¬ Collinear e.A e.B D := (TriangleND.intersection_not_collinear_of_nondegenerate e.not_collinear_ABC e.collinear_EBC e.collinear_FCA E_ne_B E_ne_C F_ne_A F_ne_C D rfl).1
+  have bcd_nd : ¬ Collinear e.B e.C D := (TriangleND.intersection_not_collinear_of_nondegenerate e.not_collinear_ABC e.collinear_EBC e.collinear_FCA E_ne_B E_ne_C F_ne_A F_ne_C D rfl).2.1
+  have cad_nd : ¬ Collinear e.C e.A D := (TriangleND.intersection_not_collinear_of_nondegenerate e.not_collinear_ABC e.collinear_EBC e.collinear_FCA E_ne_B E_ne_C F_ne_A F_ne_C D rfl).2.2
   sorry
 
 end Ceva's_converse_theorem

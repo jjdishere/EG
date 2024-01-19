@@ -54,7 +54,7 @@ theorem SCHAUM_Problem_1_12 : Quadrilateral.IsParallelogram (QDR A B C D) := by
   sorry
   /-
   apply is_prg_of_para_eq_length'
-  · unfold perpendicular at *
+  · unfold Perpendicular at *
     unfold parallel
     have h : toProj (SegND B C (c_ne_B (hconv := hconv))) = toProj (SegND A D (A_ne_d (hconv := hconv)).symm) := by
       calc

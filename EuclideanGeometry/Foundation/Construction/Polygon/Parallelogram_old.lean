@@ -35,10 +35,10 @@ In this section we define two types of parallelogram. 'parallel_nd' deals with t
 
 @[pp_dot]
 structure Quadrilateral_nd.Parallelogram_GPt {P : Type _} [EuclideanPlane P] (qdr_nd : Quadrilateral_nd P) : Prop where
-  not_collinear₁₂₃: ( ¬ collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃)
-  not_collinear₂₃₄: ( ¬ collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄)
-  not_collinear₃₄₁: ( ¬ collinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁)
-  not_collinear₄₁₂: ( ¬ collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂)
+  not_collinear₁₂₃: ( ¬ Collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃)
+  not_collinear₂₃₄: ( ¬ Collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄)
+  not_collinear₃₄₁: ( ¬ Collinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁)
+  not_collinear₄₁₂: ( ¬ Collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂)
 
 /-- A quadrilateral is called parallelogram if VEC qdr.point₁ qdr.point₂ = VEC qdr.point₄ qdr.point₃.-/
 @[pp_dot]
@@ -46,7 +46,7 @@ def Quadrilateral.IsParallelogram {P : Type _} [EuclideanPlane P] (qdr : Quadril
 
 /-- A quadrilateral satisfies IsParallelogram_para if two sets of opposite sides are parallel respectively. -/
 @[pp_dot]
-def QuadrilateralND.IsParallelogram_para {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := ( qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) ∧ (qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃)
+def QuadrilateralND.IsParallelogram_para {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P) : Prop := ( qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄) ∧ (qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃)
 
 /-- A quadrilateral satisfies IsParallelogram_nd if it satisfies both IsParallelogram_para and Parallelogram_GPt. It is now what we commonly call parallelogram.-/
 @[pp_dot]
@@ -97,18 +97,18 @@ theorem qdr_nd_is_parallelogram_nd_perm_iff (P : Type _) [EuclideanPlane P] (qdr
   rcases a with ⟨k,q⟩
   unfold parallel
   unfold parallel at k q
-  have K₁: qdr_nd.perm.edge_nd₁₂.toProj = qdr_nd.edge_nd₂₃.toProj := by rfl
-  have K₂: qdr_nd.perm.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.reverse.toProj := by rfl
-  have K₃: qdr_nd.edge_nd₁₄.reverse.toProj = qdr_nd.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
+  have K₁: qdr_nd.perm.edgeND₁₂.toProj = qdr_nd.edgeND₂₃.toProj := by rfl
+  have K₂: qdr_nd.perm.edgeND₃₄.toProj = qdr_nd.edgeND₁₄.reverse.toProj := by rfl
+  have K₃: qdr_nd.edgeND₁₄.reverse.toProj = qdr_nd.edgeND₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
   rw [K₃] at K₂
-  have K₄: qdr_nd.perm.edge_nd₁₂.toProj = qdr_nd.perm.edge_nd₃₄.toProj := by
+  have K₄: qdr_nd.perm.edgeND₁₂.toProj = qdr_nd.perm.edgeND₃₄.toProj := by
     rw [K₁, K₂]
     exact q.symm
-  have K₅: qdr_nd.perm.edge_nd₁₄.toProj = qdr_nd.edge_nd₁₂.reverse.toProj := by rfl
-  have K₆: qdr_nd.edge_nd₁₂.reverse.toProj = qdr_nd.edge_nd₁₂.toProj := by apply SegND.toProj_of_rev_eq_toProj
+  have K₅: qdr_nd.perm.edgeND₁₄.toProj = qdr_nd.edgeND₁₂.reverse.toProj := by rfl
+  have K₆: qdr_nd.edgeND₁₂.reverse.toProj = qdr_nd.edgeND₁₂.toProj := by apply SegND.toProj_of_rev_eq_toProj
   rw [K₆] at K₅
-  have K₇: qdr_nd.perm.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj := by rfl
-  have K₈: qdr_nd.perm.edge_nd₁₄.toProj = qdr_nd.perm.edge_nd₂₃.toProj := by
+  have K₇: qdr_nd.perm.edgeND₂₃.toProj = qdr_nd.edgeND₃₄.toProj := by rfl
+  have K₈: qdr_nd.perm.edgeND₁₄.toProj = qdr_nd.perm.edgeND₂₃.toProj := by
     rw [K₅, K₇]
     exact k
   constructor
@@ -130,13 +130,13 @@ theorem qdr_nd_is_parallelogram_nd_perm_iff (P : Type _) [EuclideanPlane P] (qdr
   rcases a with ⟨k,q⟩
   unfold parallel
   unfold parallel at k q
-  have K₂: qdr_nd.perm.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.reverse.toProj := by rfl
-  have K₃: qdr_nd.edge_nd₁₄.reverse.toProj = qdr_nd.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
+  have K₂: qdr_nd.perm.edgeND₃₄.toProj = qdr_nd.edgeND₁₄.reverse.toProj := by rfl
+  have K₃: qdr_nd.edgeND₁₄.reverse.toProj = qdr_nd.edgeND₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
   rw [K₃] at K₂
-  have K₅: qdr_nd.perm.edge_nd₁₄.toProj = qdr_nd.edge_nd₁₂.reverse.toProj := by rfl
-  have K₆: qdr_nd.edge_nd₁₂.reverse.toProj = qdr_nd.edge_nd₁₂.toProj := by apply SegND.toProj_of_rev_eq_toProj
+  have K₅: qdr_nd.perm.edgeND₁₄.toProj = qdr_nd.edgeND₁₂.reverse.toProj := by rfl
+  have K₆: qdr_nd.edgeND₁₂.reverse.toProj = qdr_nd.edgeND₁₂.toProj := by apply SegND.toProj_of_rev_eq_toProj
   rw [K₆] at K₅
-  have K₇: qdr_nd.perm.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj := by rfl
+  have K₇: qdr_nd.perm.edgeND₂₃.toProj = qdr_nd.edgeND₃₄.toProj := by rfl
   constructor
   constructor
   exact (Eq.congr (id K₅.symm) K₇).mpr q
@@ -153,7 +153,7 @@ theorem prg_is_parallelogram_nd_perm_iff (P : Type _) [EuclideanPlane P] (prg : 
   sorry
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 1st, 2nd and 3rd points are not collinear, then qdr_nd is a parallelogram_nd.-/
-theorem Parallelogram_not_collinear₁₂₃ (P : Type _) [EuclideanPlane P] (qdr_nd : QuadrilateralND P) (para: qdr_nd.1 IsParallelogram) (h: ¬ collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd IsParallelogram_nd := by
+theorem Parallelogram_not_collinear₁₂₃ (P : Type _) [EuclideanPlane P] (qdr_nd : QuadrilateralND P) (para: qdr_nd.1 IsParallelogram) (h: ¬ Collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd IsParallelogram_nd := by
 
    have hba : qdr_nd.point₂ ≠ qdr_nd.point₁ := by
      unfold collinear at h
@@ -184,7 +184,7 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type _) [EuclideanPlane P] (qd
          simp only [neg_smul, one_smul, neg_vec]
          rw[o]
        exact collinear_of_vec_eq_smul_vec' ooo
-     simp only [flip_collinear_fst_snd oo, not_true_eq_false] at h
+     simp only [Collinear.perm₂₁₃ oo, not_true_eq_false] at h
    have hcd : qdr_nd.point₃ ≠ qdr_nd.point₄ := by
      by_contra k₂
      have k₂₂ : VEC qdr_nd.point₄ qdr_nd.point₃=0 := by
@@ -194,52 +194,52 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type _) [EuclideanPlane P] (qd
        rw [k₂₂] at para
        simp only [para, (eq_iff_vec_eq_zero qdr_nd.point₁ qdr_nd.point₂).mpr, vec_same_eq_zero]
      simp only [k₂₃.symm, ne_eq, not_true_eq_false] at hba
-   have t : ¬ collinear qdr_nd.point₂ qdr_nd.point₁ qdr_nd.point₃ := by
+   have t : ¬ Collinear qdr_nd.point₂ qdr_nd.point₁ qdr_nd.point₃ := by
      by_contra k
-     simp only [flip_collinear_fst_snd k, not_true_eq_false] at h
+     simp only [Collinear.perm₂₁₃ k, not_true_eq_false] at h
    have x : ¬ collinear_of_nd (A := qdr_nd.point₂) (B := qdr_nd.point₁) (C := qdr_nd.point₃) := by
      unfold collinear at t
      simp only [hca, hbc, hba.symm, or_self, dite_false] at t
      simp only [t, not_false_eq_true]
-   have l₁ : qdr_nd.edge_nd₁₂.toProj=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₂, _⟩ := by rfl
-   have l₁' : qdr_nd.edge_nd₁₂.toProj=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp hba.symm⟩ := by
+   have l₁ : qdr_nd.edgeND₁₂.toProj=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₂, _⟩ := by rfl
+   have l₁' : qdr_nd.edgeND₁₂.toProj=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp hba.symm⟩ := by
      have y₁:VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp hba.symm⟩=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hba⟩ := by
        have z₁: VEC qdr_nd.point₂ qdr_nd.point₁ =- VEC qdr_nd.point₁ qdr_nd.point₂ := by
          simp only [neg_vec]
        simp only [ne_eq, z₁, VecND.mk_neg', VecND.neg_toProj]
      simp only [l₁, ne_eq, y₁]
-   have l₂ : qdr_nd.edge_nd₂₃.toProj=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₃, _⟩ := by rfl
-   have l₂' : qdr_nd.edge_nd₂₃.toProj=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hbc⟩ := by
+   have l₂ : qdr_nd.edgeND₂₃.toProj=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₃, _⟩ := by rfl
+   have l₂' : qdr_nd.edgeND₂₃.toProj=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hbc⟩ := by
      have y₂:VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hbc⟩=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hbc.symm⟩ := by
        have z₂: VEC qdr_nd.point₃ qdr_nd.point₂ =- VEC qdr_nd.point₂ qdr_nd.point₃ := by
          simp only[neg_vec]
        simp only [ne_eq, z₂, VecND.mk_neg', VecND.neg_toProj]
      simp only [l₂, ne_eq, y₂]
-   have l₃ : qdr_nd.edge_nd₃₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₄, _⟩ := by rfl
-   have l₃' : qdr_nd.edge_nd₃₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hcd⟩ := by
+   have l₃ : qdr_nd.edgeND₃₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₄, _⟩ := by rfl
+   have l₃' : qdr_nd.edgeND₃₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hcd⟩ := by
      have y₃:VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hcd⟩=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₄, (ne_iff_vec_ne_zero _ _).mp hcd.symm⟩ := by
        have z₃: VEC qdr_nd.point₄ qdr_nd.point₃ =- VEC qdr_nd.point₃ qdr_nd.point₄ := by
          simp only [neg_vec]
        simp only [ne_eq, z₃, VecND.mk_neg', VecND.neg_toProj]
      simp only [l₃, ne_eq, y₃]
-   have l₄ : qdr_nd.edge_nd₁₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₄, _⟩ := by rfl
-   have l₄' : qdr_nd.edge_nd₁₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp had⟩ := by
+   have l₄ : qdr_nd.edgeND₁₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₄, _⟩ := by rfl
+   have l₄' : qdr_nd.edgeND₁₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp had⟩ := by
      have y₄:VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp had⟩=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₄, (ne_iff_vec_ne_zero _ _).mp had.symm⟩ := by
        have z₄: VEC qdr_nd.point₄ qdr_nd.point₁ =- VEC qdr_nd.point₁ qdr_nd.point₄ := by
          simp [neg_vec]
        simp only [ne_eq, z₄, VecND.mk_neg', VecND.neg_toProj]
      simp only [l₄, ne_eq, y₄]
-   have s : ¬ qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₂₃.toProj := by
+   have s : ¬ qdr_nd.edgeND₁₂.toProj = qdr_nd.edgeND₂₃.toProj := by
      unfold collinear_of_nd at x
      simp only [l₁', ne_eq, l₂]
      exact x
-   have v₁ : qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₃₄.toProj := by
+   have v₁ : qdr_nd.edgeND₁₂.toProj = qdr_nd.edgeND₃₄.toProj := by
      unfold Quadrilateral.IsParallelogram at para
      have v₁₁₁:VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hba⟩ = VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hcd⟩ := by
        simp only [ne_eq, para]
      simp only [l₁, ne_eq, v₁₁₁, l₃']
-   have v₁₁ : toProj qdr_nd.edge_nd₁₂ = toProj qdr_nd.edge_nd₃₄ := by exact v₁
-   have v₂ : qdr_nd.edge_nd₂₃.toProj = qdr_nd.edge_nd₁₄.toProj := by
+   have v₁₁ : toProj qdr_nd.edgeND₁₂ = toProj qdr_nd.edgeND₃₄ := by exact v₁
+   have v₂ : qdr_nd.edgeND₂₃.toProj = qdr_nd.edgeND₁₄.toProj := by
      unfold Quadrilateral.IsParallelogram at para
      have v₂₂: VEC qdr_nd.point₁ qdr_nd.point₄ = VEC qdr_nd.point₂ qdr_nd.point₃ := by
        rw [← vec_add_vec qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₄]
@@ -247,8 +247,8 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type _) [EuclideanPlane P] (qd
        rw [para]
        exact add_comm (VEC qdr_nd.point₄ qdr_nd.point₃) (VEC qdr_nd.point₂ qdr_nd.point₄)
      simp only [l₂, ne_eq, v₂₂, l₄]
-   have v₂₁ : toProj qdr_nd.edge_nd₂₃ = toProj qdr_nd.edge_nd₁₄ := by exact v₂
-   have s₁ : ¬ qdr_nd.edge_nd₁₂.toProj = qdr_nd.edge_nd₂₃.toProj := by
+   have v₂₁ : toProj qdr_nd.edgeND₂₃ = toProj qdr_nd.edgeND₁₄ := by exact v₂
+   have s₁ : ¬ qdr_nd.edgeND₁₂.toProj = qdr_nd.edgeND₂₃.toProj := by
      by_contra k₃
      have k₃₃: collinear_of_nd (A := qdr_nd.point₂) (B := qdr_nd.point₁) (C := qdr_nd.point₃) := by
         rw[l₁',l₂] at k₃
@@ -257,15 +257,15 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type _) [EuclideanPlane P] (qd
        unfold collinear
        simp only [hca, hbc, hba.symm, or_self, k₃₃, dite_eq_ite, ite_self]
      simp only [k₃₄, not_true_eq_false] at t
-   have s₂ : ¬ qdr_nd.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj := by
+   have s₂ : ¬ qdr_nd.edgeND₂₃.toProj = qdr_nd.edgeND₃₄.toProj := by
      rw [v₁.symm]
      by_contra k
      exact s k.symm
-   have s₃ : ¬ qdr_nd.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.toProj := by
+   have s₃ : ¬ qdr_nd.edgeND₃₄.toProj = qdr_nd.edgeND₁₄.toProj := by
      rw [v₂.symm]
      by_contra k
      exact s₂ k.symm
-   have s₄ : ¬ qdr_nd.edge_nd₁₄.toProj = qdr_nd.edge_nd₁₂.toProj := by
+   have s₄ : ¬ qdr_nd.edgeND₁₄.toProj = qdr_nd.edgeND₁₂.toProj := by
      rw[v₁]
      by_contra k
      exact s₃ k.symm
@@ -278,49 +278,49 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type _) [EuclideanPlane P] (qd
    constructor
    simp only [h, not_false_eq_true]
    by_contra m₃
-   have m₂ :  ¬ collinear qdr_nd.point₃ qdr_nd.point₂ qdr_nd.point₄ := by
+   have m₂ :  ¬ Collinear qdr_nd.point₃ qdr_nd.point₂ qdr_nd.point₄ := by
      by_contra k₁
      unfold collinear at k₁
      simp [hbd.symm,hcd,hbc] at k₁
      unfold collinear_of_nd at k₁
-     have p₄:qdr_nd.edge_nd₂₃.toProj = qdr_nd.edge_nd₃₄.toProj  := by
+     have p₄:qdr_nd.edgeND₂₃.toProj = qdr_nd.edgeND₃₄.toProj  := by
        rw[l₂',l₃]
        exact k₁
      simp[p₄] at s₂
-   simp [flip_collinear_fst_snd m₃] at m₂
+   simp [Collinear.perm₂₁₃ m₃] at m₂
    by_contra m₅
-   have m₄ :  ¬ collinear qdr_nd.point₄ qdr_nd.point₃ qdr_nd.point₁ := by
+   have m₄ :  ¬ Collinear qdr_nd.point₄ qdr_nd.point₃ qdr_nd.point₁ := by
      by_contra k₂
      unfold collinear at k₂
      simp [hca.symm,hcd,had.symm] at k₂
      unfold collinear_of_nd at k₂
-     have p₅:qdr_nd.edge_nd₃₄.toProj = qdr_nd.edge_nd₁₄.toProj := by
+     have p₅:qdr_nd.edgeND₃₄.toProj = qdr_nd.edgeND₁₄.toProj := by
        rw[l₄',l₃']
        exact k₂
      simp[p₅] at s₃
-   simp [flip_collinear_fst_snd m₅] at m₄
+   simp [Collinear.perm₂₁₃ m₅] at m₄
    by_contra m₇
-   have m₆ :  ¬ collinear qdr_nd.point₁ qdr_nd.point₄ qdr_nd.point₂ := by
+   have m₆ :  ¬ Collinear qdr_nd.point₁ qdr_nd.point₄ qdr_nd.point₂ := by
      by_contra k₃
      unfold collinear at k₃
      simp [hbd,hba.symm,had.symm] at k₃
      unfold collinear_of_nd at k₃
-     have p₆:qdr_nd.edge_nd₁₄.toProj = qdr_nd.edge_nd₁₂.toProj := by
+     have p₆:qdr_nd.edgeND₁₄.toProj = qdr_nd.edgeND₁₂.toProj := by
        rw[l₄,l₁]
        exact k₃
      simp [p₆] at s₄
-   simp [flip_collinear_fst_snd m₇] at m₆
+   simp [Collinear.perm₂₁₃ m₇] at m₆
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 2nd, 3rd and 4th points are not collinear, then qdr_nd is a parallelogram_nd.-/
-theorem Parallelogram_not_collinear₂₃₄ (P : Type _) [EuclideanPlane P] (qdr_nd : QuadrilateralND P) (para: qdr_nd.1 IsParallelogram) (h: ¬ collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd IsParallelogram_nd := by
+theorem Parallelogram_not_collinear₂₃₄ (P : Type _) [EuclideanPlane P] (qdr_nd : QuadrilateralND P) (para: qdr_nd.1 IsParallelogram) (h: ¬ Collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd IsParallelogram_nd := by
   sorry
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 3rd, 4th and 1st points are not collinear, then qdr_nd is a parallelogram_nd.-/
-theorem Parallelogram_not_collinear₃₄₁ (P : Type _) [EuclideanPlane P] (qdr_nd : QuadrilateralND P) (para: qdr_nd.1 IsParallelogram) (h: ¬ collinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd IsParallelogram_nd := by
+theorem Parallelogram_not_collinear₃₄₁ (P : Type _) [EuclideanPlane P] (qdr_nd : QuadrilateralND P) (para: qdr_nd.1 IsParallelogram) (h: ¬ Collinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd IsParallelogram_nd := by
   sorry
 
 /-- If qdr_nd is non-degenerate and is a parallelogram, and its 4th, 1st and 2nd points are not collinear, then qdr_nd is a parallelogram_nd.-/
-theorem Parallelogram_not_collinear₄₁₂ (P : Type _) [EuclideanPlane P] (qdr_nd : QuadrilateralND P) (para: qdr_nd.1 IsParallelogram) (h: ¬ collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd IsParallelogram_nd := by
+theorem Parallelogram_not_collinear₄₁₂ (P : Type _) [EuclideanPlane P] (qdr_nd : QuadrilateralND P) (para: qdr_nd.1 IsParallelogram) (h: ¬ Collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd IsParallelogram_nd := by
   sorry
 
 /-- Make a parallelogram with 4 points on a plane.-/
@@ -329,7 +329,7 @@ def Parallelogram.mk_pt_pt_pt_pt {P : Type _} [EuclideanPlane P] (A B C D : P) (
   is_parallelogram := h
 
 /-- Make a parallelogram_nd with 4 points on a plane, and using condition non_collinear₁₂₃.-/
-def Parallelogram_nd.mk_pt_pt_pt_pt₄ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_collinear₁₂₃: ¬ collinear A B C) : Parallelogram_nd P where
+def Parallelogram_nd.mk_pt_pt_pt_pt₄ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_collinear₁₂₃: ¬ Collinear A B C) : Parallelogram_nd P where
   toQuadrilateral := (QDR A B C D)
   is_parallelogram := h'
   nd := h
@@ -337,7 +337,7 @@ def Parallelogram_nd.mk_pt_pt_pt_pt₄ {P : Type _} [EuclideanPlane P] (A B C D 
   is_parallelogram_GPt := sorry
 
 /-- Make a parallelogram_nd with 4 points on a plane, and using condition non_collinear₂₃₄.-/
-def Parallelogram_nd.mk_pt_pt_pt_pt₁ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_collinear₂₃₄: ¬ collinear B C D) : Parallelogram_nd P where
+def Parallelogram_nd.mk_pt_pt_pt_pt₁ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_collinear₂₃₄: ¬ Collinear B C D) : Parallelogram_nd P where
   toQuadrilateral := (QDR A B C D)
   is_parallelogram := h'
   nd := h
@@ -345,7 +345,7 @@ def Parallelogram_nd.mk_pt_pt_pt_pt₁ {P : Type _} [EuclideanPlane P] (A B C D 
   is_parallelogram_GPt := sorry
 
 /-- Make a parallelogram_nd with 4 points on a plane, and using condition non_collinear₃₄₁.-/
-def Parallelogram_nd.mk_pt_pt_pt_pt₂ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_collinear₃₄₁: ¬ collinear C D A) : Parallelogram_nd P where
+def Parallelogram_nd.mk_pt_pt_pt_pt₂ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_collinear₃₄₁: ¬ Collinear C D A) : Parallelogram_nd P where
   toQuadrilateral := (QDR A B C D)
   is_parallelogram := h'
   nd := h
@@ -353,7 +353,7 @@ def Parallelogram_nd.mk_pt_pt_pt_pt₂ {P : Type _} [EuclideanPlane P] (A B C D 
   is_parallelogram_GPt := sorry
 
 /-- Make a parallelogram_nd with 4 points on a plane, and using condition non_collinear₄₁₂.-/
-def Parallelogram_nd.mk_pt_pt_pt_pt₃ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_collinear₄₁₂: ¬ collinear D A B) : Parallelogram_nd P where
+def Parallelogram_nd.mk_pt_pt_pt_pt₃ {P : Type _} [EuclideanPlane P] (A B C D : P) (h : (QDR A B C D).IsND) (h': (QDR A B C D) IsParallelogram) (non_collinear₄₁₂: ¬ Collinear D A B) : Parallelogram_nd P where
   toQuadrilateral := (QDR A B C D)
   is_parallelogram := h'
   nd := h
@@ -381,7 +381,7 @@ def mk_parallelogram {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h 
   is_parallelogram := h
 
 /-- Make parallelogram_nd with a quadrilateral, using condition non_collinear₁₂₃.-/
-def mk_parallelogram_nd₄ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_collinear₁₂₃: ¬ collinear qdr.1 qdr.2 qdr.3) : Parallelogram_nd P where
+def mk_parallelogram_nd₄ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_collinear₁₂₃: ¬ Collinear qdr.1 qdr.2 qdr.3) : Parallelogram_nd P where
   toQuadrilateral := qdr
   is_parallelogram := h
   nd := h'
@@ -389,7 +389,7 @@ def mk_parallelogram_nd₄ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral 
   is_parallelogram_GPt := sorry
 
 /-- Make parallelogram_nd with a quadrilateral, using condition non_collinear₂₃₄.-/
-def mk_parallelogram_nd₁ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_collinear₂₃₄: ¬ collinear qdr.2 qdr.3 qdr.4) : Parallelogram_nd P where
+def mk_parallelogram_nd₁ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_collinear₂₃₄: ¬ Collinear qdr.2 qdr.3 qdr.4) : Parallelogram_nd P where
   toQuadrilateral := qdr
   is_parallelogram := h
   nd := h'
@@ -397,7 +397,7 @@ def mk_parallelogram_nd₁ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral 
   is_parallelogram_GPt := sorry
 
 /-- Make parallelogram_nd with a quadrilateral, using condition non_collinear₃₁₄.-/
-def mk_parallelogram_nd₂ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_collinear₃₄₁: ¬ collinear qdr.3 qdr.4 qdr.1) : Parallelogram_nd P where
+def mk_parallelogram_nd₂ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_collinear₃₄₁: ¬ Collinear qdr.3 qdr.4 qdr.1) : Parallelogram_nd P where
   toQuadrilateral := qdr
   is_parallelogram := h
   nd := h'
@@ -405,7 +405,7 @@ def mk_parallelogram_nd₂ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral 
   is_parallelogram_GPt := sorry
 
 /-- Make parallelogram_nd with a quadrilateral, using condition non_collinear₄₁₂.-/
-def mk_parallelogram_nd₃ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_collinear₄₁₂: ¬ collinear qdr.4 qdr.1 qdr.2) : Parallelogram_nd P where
+def mk_parallelogram_nd₃ {P : Type _} [EuclideanPlane P] {qdr : Quadrilateral P} (h : qdr IsParallelogram) (h': qdr.IsND) (non_collinear₄₁₂: ¬ Collinear qdr.4 qdr.1 qdr.2) : Parallelogram_nd P where
   toQuadrilateral := qdr
   is_parallelogram := h
   nd := h'
@@ -443,8 +443,8 @@ variable {P : Type _} [EuclideanPlane P]
 variable {A B C D : P} (nd : (QDR A B C D).IsND) (cvx : (QDR A B C D).IsConvex)
 variable (qdr : Quadrilateral P) (qdr_nd : QuadrilateralND P) (qdr_cvx : Quadrilateral_cvx P)
 
-/-- Given QuadrilateralND qdr_nd, qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄, qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃, and qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃ is not collinear, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcollinear : ¬ collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd.IsParallelogram_nd := by
+/-- Given QuadrilateralND qdr_nd, qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄, qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃, and qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃ is not collinear, then qdr_nd is a Parallelogram_nd. -/
+theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (h₁ : qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄) (h₂ : qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃) (notcollinear : ¬ Collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd.IsParallelogram_nd := by
   have para_vec (Vec1 Vec2 : VecND) (para : Vec1 ∥ Vec2) : ∃ c : ℝ , (Vec1 : Vec) = c • (Vec2 : Vec) := by
         apply VecND.toProj_eq_toProj_iff.mp
         exact para
@@ -456,9 +456,9 @@ theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (h₁ : qdr_nd.edge
     rw [collinear_iff_eq_smul_vec_of_ne] at iscollinear
     rcases iscollinear with ⟨r,eq⟩
     apply notcollinear
-    have para : qdr_nd.edge_nd₁₄.toVecND ∥ qdr_nd.edge_nd₂₃.toVecND := by sorry
+    have para : qdr_nd.edgeND₁₄.toVecND ∥ qdr_nd.edgeND₂₃.toVecND := by sorry
     rw [collinear_iff_eq_smul_vec_of_ne]
-    rcases (para_vec qdr_nd.edge_nd₁₄.toVecND qdr_nd.edge_nd₂₃.toVecND para) with ⟨c,eq'⟩
+    rcases (para_vec qdr_nd.edgeND₁₄.toVecND qdr_nd.edgeND₂₃.toVecND para) with ⟨c,eq'⟩
     have eq'' : (VEC qdr_nd.point₁ qdr_nd.point₄) = c • (VEC qdr_nd.point₂ qdr_nd.point₃) := eq'
     have l₁ : (VEC qdr_nd.point₁ qdr_nd.point₂) = (c - r) • (VEC qdr_nd.point₂ qdr_nd.point₃) := by
       rw [(vec_sub_vec' qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂).symm]
@@ -485,21 +485,21 @@ theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (h₁ : qdr_nd.edge
     rw [collinear_iff_eq_smul_vec_of_ne]
     rw [collinear_iff_eq_smul_vec_of_ne] at iscollinear
     rcases iscollinear with ⟨r,eq⟩
-    have para : qdr_nd.edge_nd₃₄.toVecND ∥ qdr_nd.edge_nd₁₂.toVecND := by sorry
-    rcases (para_vec qdr_nd.edge_nd₃₄.toVecND qdr_nd.edge_nd₁₂.toVecND para) with ⟨c,eq'⟩
+    have para : qdr_nd.edgeND₃₄.toVecND ∥ qdr_nd.edgeND₁₂.toVecND := by sorry
+    rcases (para_vec qdr_nd.edgeND₃₄.toVecND qdr_nd.edgeND₁₂.toVecND para) with ⟨c,eq'⟩
     have eq'' : (VEC qdr_nd.point₃ qdr_nd.point₄) = c • (VEC qdr_nd.point₁ qdr_nd.point₂) := eq'
     use - r * c
     rw [(smul_smul (- r) c (VEC qdr_nd.point₁ qdr_nd.point₂)).symm,eq''.symm,neg_smul,eq.symm]
     exact (neg_vec qdr_nd.point₃ qdr_nd.point₁).symm
   by_contra iscollinear
-  apply flip_collinear_fst_trd at iscollinear
+  apply Collinear.perm₃₂₁ at iscollinear
   rw [collinear_iff_eq_smul_vec_of_ne] at iscollinear
   rcases iscollinear with ⟨r,eq⟩
   apply notcollinear
-  have para : qdr_nd.edge_nd₃₄.toVecND ∥ qdr_nd.edge_nd₁₂.toVecND := by sorry
-  apply flip_collinear_fst_trd
+  have para : qdr_nd.edgeND₃₄.toVecND ∥ qdr_nd.edgeND₁₂.toVecND := by sorry
+  apply Collinear.perm₃₂₁
   rw [collinear_iff_eq_smul_vec_of_ne]
-  rcases (para_vec qdr_nd.edge_nd₃₄.toVecND qdr_nd.edge_nd₁₂.toVecND para) with ⟨c,eq'⟩
+  rcases (para_vec qdr_nd.edgeND₃₄.toVecND qdr_nd.edgeND₁₂.toVecND para) with ⟨c,eq'⟩
   have eq'' : (VEC qdr_nd.point₃ qdr_nd.point₄) = c • (VEC qdr_nd.point₁ qdr_nd.point₂) := eq'
   have l₁ : (VEC qdr_nd.point₃ qdr_nd.point₂) = (r + c) • (VEC qdr_nd.point₁ qdr_nd.point₂) := by
     rw [(vec_sub_vec' qdr_nd.point₄ qdr_nd.point₃ qdr_nd.point₂).symm]
@@ -524,58 +524,58 @@ theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (h₁ : qdr_nd.edge
   exact ne_zero t
 
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, AB ∥ CD, AD ∥ BC, and A B C is not collinear, then Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcollinear : ¬ collinear A B C) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (QDR_nd A B C D nd) h₁ h₂ notcollinear
+theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcollinear : ¬ Collinear A B C) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (QDR_nd A B C D nd) h₁ h₂ notcollinear
 
-/-- Given QuadrilateralND qdr_nd, qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄, qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃, and qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄ is not collinear, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₂₃₄ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcollinear : ¬ collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsParallelogram_nd := (qdr_nd_is_parallelogram_nd_perm_iff P qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ qdr_nd.perm (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcollinear)
+/-- Given QuadrilateralND qdr_nd, qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄, qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃, and qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄ is not collinear, then qdr_nd is a Parallelogram_nd. -/
+theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₂₃₄ (h₁ : qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄) (h₂ : qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃) (notcollinear : ¬ Collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsParallelogram_nd := (qdr_nd_is_parallelogram_nd_perm_iff P qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ qdr_nd.perm (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcollinear)
 
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, AB ∥ CD, AD ∥ BC, and B C D is not collinear, then Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₂₃₄_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcollinear : ¬ collinear B C D) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_para_para_not_collinear₂₃₄ (QDR_nd A B C D nd) h₁ h₂ notcollinear
+theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₂₃₄_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcollinear : ¬ Collinear B C D) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_para_para_not_collinear₂₃₄ (QDR_nd A B C D nd) h₁ h₂ notcollinear
 
-/-- Given QuadrilateralND qdr_nd, qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄, qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃, and qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁ is not collinear, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₃₄₁ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcollinear : ¬ collinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsParallelogram_nd := (qdr_nd_is_parallelogram_nd_perm_iff P qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_collinear₂₃₄ qdr_nd.perm (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcollinear)
+/-- Given QuadrilateralND qdr_nd, qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄, qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃, and qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁ is not collinear, then qdr_nd is a Parallelogram_nd. -/
+theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₃₄₁ (h₁ : qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄) (h₂ : qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃) (notcollinear : ¬ Collinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsParallelogram_nd := (qdr_nd_is_parallelogram_nd_perm_iff P qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_collinear₂₃₄ qdr_nd.perm (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcollinear)
 
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, AB ∥ CD, AD ∥ BC, and C D A is not collinear, then Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₃₄₁_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcollinear : ¬ collinear C D A) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_para_para_not_collinear₃₄₁ (QDR_nd A B C D nd) h₁ h₂ notcollinear
+theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₃₄₁_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcollinear : ¬ Collinear C D A) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_para_para_not_collinear₃₄₁ (QDR_nd A B C D nd) h₁ h₂ notcollinear
 
-/-- Given QuadrilateralND qdr_nd, qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄, qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃, and qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂ is not collinear, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₄₁₂ (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (notcollinear : ¬ collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsParallelogram_nd := (qdr_nd_is_parallelogram_nd_perm_iff P qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_collinear₃₄₁ qdr_nd.perm (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcollinear)
+/-- Given QuadrilateralND qdr_nd, qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄, qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃, and qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂ is not collinear, then qdr_nd is a Parallelogram_nd. -/
+theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₄₁₂ (h₁ : qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄) (h₂ : qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃) (notcollinear : ¬ Collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsParallelogram_nd := (qdr_nd_is_parallelogram_nd_perm_iff P qdr_nd).mpr (qdr_nd_is_prg_nd_of_para_para_not_collinear₃₄₁ qdr_nd.perm (SegND.para_rev_of_para h₂.symm) (SegND.para_rev_of_para h₁.symm).symm notcollinear)
 
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, AB ∥ CD, AD ∥ BC, and D A B is not collinear, then Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₄₁₂_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcollinear : ¬ collinear D A B) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_para_para_not_collinear₄₁₂ (QDR_nd A B C D nd) h₁ h₂ notcollinear
+theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₄₁₂_variant (h₁ : (SEG_nd A B (QDR_nd A B C D nd).nd₁₂.out) ∥ (SEG_nd C D (QDR_nd A B C D nd).nd₃₄.out)) (h₂ : (SEG_nd A D (QDR_nd A B C D nd).nd₁₄.out) ∥ (SEG_nd B C (QDR_nd A B C D nd).nd₂₃.out)) (notcollinear : ¬ Collinear D A B) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_para_para_not_collinear₄₁₂ (QDR_nd A B C D nd) h₁ h₂ notcollinear
 
 /-- Given QuadrilateralND qdr_nd, qdr_nd.angle₁.value = qdr_nd.angle₃.value, qdr_nd.angle₂.value = qdr_nd.angle₄.value, and qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃ is not collinear, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₁₂₃ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd.IsParallelogram_nd := by
+theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₁₂₃ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ Collinear qdr_nd.point₁ qdr_nd.point₂ qdr_nd.point₃) : qdr_nd.IsParallelogram_nd := by
   apply qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃
   sorry
   sorry
   exact notcollinear
 
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, ∠DAB = ∠BCD, ∠ABC = ∠CDA, and A B C is not collinear, then Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₁₂₃_variant (h₁ : (ANG D A B (QDR_nd A B C D nd).nd₁₄.out (QDR_nd A B C D nd).nd₁₂.out).value = (ANG B C D (QDR_nd A B C D nd).nd₂₃.out.symm (QDR_nd A B C D nd).nd₃₄.out).value) (h₂ : (ANG A B C (QDR_nd A B C D nd).nd₁₂.out.symm (QDR_nd A B C D nd).nd₂₃.out).value = (ANG C D A (QDR_nd A B C D nd).nd₃₄.out.symm (QDR_nd A B C D nd).nd₁₄.out.symm).value) (notcollinear : ¬ collinear A B C) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₁₂₃ (QDR_nd A B C D nd) h₁ h₂ notcollinear
+theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₁₂₃_variant (h₁ : (ANG D A B (QDR_nd A B C D nd).nd₁₄.out (QDR_nd A B C D nd).nd₁₂.out).value = (ANG B C D (QDR_nd A B C D nd).nd₂₃.out.symm (QDR_nd A B C D nd).nd₃₄.out).value) (h₂ : (ANG A B C (QDR_nd A B C D nd).nd₁₂.out.symm (QDR_nd A B C D nd).nd₂₃.out).value = (ANG C D A (QDR_nd A B C D nd).nd₃₄.out.symm (QDR_nd A B C D nd).nd₁₄.out.symm).value) (notcollinear : ¬ Collinear A B C) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₁₂₃ (QDR_nd A B C D nd) h₁ h₂ notcollinear
 
 /-- Given QuadrilateralND qdr_nd, qdr_nd.angle₁.value = qdr_nd.angle₃.value, qdr_nd.angle₂.value = qdr_nd.angle₄.value, and qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄ is not collinear, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₂₃₄ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsParallelogram_nd := by sorry
+theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₂₃₄ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ Collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄) : qdr_nd.IsParallelogram_nd := by sorry
 
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, ∠DAB = ∠BCD, ∠ABC = ∠CDA, and B C D is not collinear, then Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₂₃₄_variant (h₁ : (ANG D A B (QDR_nd A B C D nd).nd₁₄.out (QDR_nd A B C D nd).nd₁₂.out).value = (ANG B C D (QDR_nd A B C D nd).nd₂₃.out.symm (QDR_nd A B C D nd).nd₃₄.out).value) (h₂ : (ANG A B C (QDR_nd A B C D nd).nd₁₂.out.symm (QDR_nd A B C D nd).nd₂₃.out).value = (ANG C D A (QDR_nd A B C D nd).nd₃₄.out.symm (QDR_nd A B C D nd).nd₁₄.out.symm).value) (notcollinear : ¬ collinear B C D) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₂₃₄ (QDR_nd A B C D nd) h₁ h₂ notcollinear
+theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₂₃₄_variant (h₁ : (ANG D A B (QDR_nd A B C D nd).nd₁₄.out (QDR_nd A B C D nd).nd₁₂.out).value = (ANG B C D (QDR_nd A B C D nd).nd₂₃.out.symm (QDR_nd A B C D nd).nd₃₄.out).value) (h₂ : (ANG A B C (QDR_nd A B C D nd).nd₁₂.out.symm (QDR_nd A B C D nd).nd₂₃.out).value = (ANG C D A (QDR_nd A B C D nd).nd₃₄.out.symm (QDR_nd A B C D nd).nd₁₄.out.symm).value) (notcollinear : ¬ Collinear B C D) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₂₃₄ (QDR_nd A B C D nd) h₁ h₂ notcollinear
 
 /-- Given QuadrilateralND qdr_nd, qdr_nd.angle₁.value = qdr_nd.angle₃.value, qdr_nd.angle₂.value = qdr_nd.angle₄.value, and qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁ is not collinear, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₃₄₁ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ collinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsParallelogram_nd := by sorry
+theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₃₄₁ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ Collinear qdr_nd.point₃ qdr_nd.point₄ qdr_nd.point₁) : qdr_nd.IsParallelogram_nd := by sorry
 
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, ∠DAB = ∠BCD, ∠ABC = ∠CDA, and C D A is not collinear, then Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₃₄₁_variant (h₁ : (ANG D A B (QDR_nd A B C D nd).nd₁₄.out (QDR_nd A B C D nd).nd₁₂.out).value = (ANG B C D (QDR_nd A B C D nd).nd₂₃.out.symm (QDR_nd A B C D nd).nd₃₄.out).value) (h₂ : (ANG A B C (QDR_nd A B C D nd).nd₁₂.out.symm (QDR_nd A B C D nd).nd₂₃.out).value = (ANG C D A (QDR_nd A B C D nd).nd₃₄.out.symm (QDR_nd A B C D nd).nd₁₄.out.symm).value) (notcollinear : ¬ collinear C D A) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₃₄₁ (QDR_nd A B C D nd) h₁ h₂ notcollinear
+theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₃₄₁_variant (h₁ : (ANG D A B (QDR_nd A B C D nd).nd₁₄.out (QDR_nd A B C D nd).nd₁₂.out).value = (ANG B C D (QDR_nd A B C D nd).nd₂₃.out.symm (QDR_nd A B C D nd).nd₃₄.out).value) (h₂ : (ANG A B C (QDR_nd A B C D nd).nd₁₂.out.symm (QDR_nd A B C D nd).nd₂₃.out).value = (ANG C D A (QDR_nd A B C D nd).nd₃₄.out.symm (QDR_nd A B C D nd).nd₁₄.out.symm).value) (notcollinear : ¬ Collinear C D A) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₃₄₁ (QDR_nd A B C D nd) h₁ h₂ notcollinear
 
 /-- Given QuadrilateralND qdr_nd, qdr_nd.angle₁.value = qdr_nd.angle₃.value, qdr_nd.angle₂.value = qdr_nd.angle₄.value, and qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂ is not collinear, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₄₁₂ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsParallelogram_nd := by sorry
+theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₄₁₂ (h₁ : qdr_nd.angle₁.value = qdr_nd.angle₃.value) (h₂ : qdr_nd.angle₂.value = qdr_nd.angle₄.value) (notcollinear : ¬ Collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂) : qdr_nd.IsParallelogram_nd := by sorry
 
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, ∠DAB = ∠BCD, ∠ABC = ∠CDA, and D A B is not collinear, then Quadrilateral ABCD is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₄₁₂_variant (h₁ : (ANG D A B (QDR_nd A B C D nd).nd₁₄.out (QDR_nd A B C D nd).nd₁₂.out).value = (ANG B C D (QDR_nd A B C D nd).nd₂₃.out.symm (QDR_nd A B C D nd).nd₃₄.out).value) (h₂ : (ANG A B C (QDR_nd A B C D nd).nd₁₂.out.symm (QDR_nd A B C D nd).nd₂₃.out).value = (ANG C D A (QDR_nd A B C D nd).nd₃₄.out.symm (QDR_nd A B C D nd).nd₁₄.out.symm).value) (notcollinear : ¬ collinear D A B) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₄₁₂ (QDR_nd A B C D nd) h₁ h₂ notcollinear
+theorem qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₄₁₂_variant (h₁ : (ANG D A B (QDR_nd A B C D nd).nd₁₄.out (QDR_nd A B C D nd).nd₁₂.out).value = (ANG B C D (QDR_nd A B C D nd).nd₂₃.out.symm (QDR_nd A B C D nd).nd₃₄.out).value) (h₂ : (ANG A B C (QDR_nd A B C D nd).nd₁₂.out.symm (QDR_nd A B C D nd).nd₂₃.out).value = (ANG C D A (QDR_nd A B C D nd).nd₃₄.out.symm (QDR_nd A B C D nd).nd₁₄.out.symm).value) (notcollinear : ¬ Collinear D A B) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_eq_angle_value_eq_angle_value_not_collinear₄₁₂ (QDR_nd A B C D nd) h₁ h₂ notcollinear
 
-/-- Given QuadrilateralND qdr_nd, qdr_nd.edge_nd₁₂.length = qdr_nd.edge_nd₃₄.length, qdr_nd.edge_nd₁₄.length = qdr_nd.edge_nd₂₃.length, the signs of qdr_nd.angle₁ and qdr_nd.angle₃ are equal, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_eq_length_eq_length_eq_angle_sign (h₁ : qdr_nd.edge_nd₁₂.length = qdr_nd.edge_nd₃₄.length) (h₂ : qdr_nd.edge_nd₁₄.length = qdr_nd.edge_nd₂₃.length) (h : (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₃.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg)) : qdr_nd.IsParallelogram_nd := by
-  have nontriv₄₁₂ : ¬ collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂ := by sorry
-  have nontriv₂₃₄ : ¬ collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄ := by sorry
+/-- Given QuadrilateralND qdr_nd, qdr_nd.edgeND₁₂.length = qdr_nd.edgeND₃₄.length, qdr_nd.edgeND₁₄.length = qdr_nd.edgeND₂₃.length, the signs of qdr_nd.angle₁ and qdr_nd.angle₃ are equal, then qdr_nd is a Parallelogram_nd. -/
+theorem qdr_nd_is_prg_nd_of_eq_length_eq_length_eq_angle_sign (h₁ : qdr_nd.edgeND₁₂.length = qdr_nd.edgeND₃₄.length) (h₂ : qdr_nd.edgeND₁₄.length = qdr_nd.edgeND₂₃.length) (h : (qdr_nd.angle₁.value.IsPos ∧ qdr_nd.angle₃.value.IsPos) ∨ (qdr_nd.angle₁.value.IsNeg ∧ qdr_nd.angle₃.value.IsNeg)) : qdr_nd.IsParallelogram_nd := by
+  have nontriv₄₁₂ : ¬ Collinear qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂ := by sorry
+  have nontriv₂₃₄ : ¬ Collinear qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄ := by sorry
   have nd₂₄ : qdr_nd.point₄ ≠ qdr_nd.point₂ := by sorry
   have tr_nd₁ : TriangleND P := (TRI_nd qdr_nd.point₄ qdr_nd.point₁ qdr_nd.point₂ nontriv₄₁₂)
   have tr_nd₂ : TriangleND P := (TRI_nd qdr_nd.point₂ qdr_nd.point₃ qdr_nd.point₄ nontriv₂₃₄)
@@ -597,8 +597,8 @@ theorem qdr_nd_is_prg_nd_of_eq_length_eq_length_eq_angle_sign (h₁ : qdr_nd.edg
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, AB = CD, AD = BC, the signs of ∠DAB and ∠BCD are equal, then Quadrilateral ABCD is a Parallelogram_nd. -/
 theorem qdr_nd_is_prg_nd_of_eq_length_eq_length_eq_angle_sign_variant (h₁ : (SEG A B).length = (SEG C D).length) (h₂ : (SEG A D).length = (SEG B C).length) (h : ((ANG D A B (QDR_nd A B C D nd).nd₁₄.out (QDR_nd A B C D nd).nd₁₂.out).value.IsPos ∧ (ANG B C D (QDR_nd A B C D nd).nd₂₃.out.symm (QDR_nd A B C D nd).nd₃₄.out).value.IsPos) ∨ ((ANG D A B (QDR_nd A B C D nd).nd₁₄.out (QDR_nd A B C D nd).nd₁₂.out).value.IsNeg ∧ (ANG B C D (QDR_nd A B C D nd).nd₂₃.out.symm (QDR_nd A B C D nd).nd₃₄.out).value.IsNeg)) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_eq_length_eq_length_eq_angle_sign (QDR_nd A B C D nd) h₁ h₂ h
 
-/-- Given QuadrilateralND qdr_nd, qdr_nd.edge_nd₁₂.length = qdr_nd.edge_nd₃₄.length, qdr_nd.edge_nd₁₄.length = qdr_nd.edge_nd₂₃.length, the signs of qdr_nd.angle₂ and qdr_nd.angle₄ are equal, then qdr_nd is a Parallelogram_nd. -/
-theorem qdr_nd_is_prg_nd_of_eq_length_eq_length_eq_angle_sign' (h₁ : qdr_nd.edge_nd₁₂.length = qdr_nd.edge_nd₃₄.length) (h₂ : qdr_nd.edge_nd₁₄.length = qdr_nd.edge_nd₂₃.length) (h : (qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg)) : qdr_nd.IsParallelogram_nd := by sorry
+/-- Given QuadrilateralND qdr_nd, qdr_nd.edgeND₁₂.length = qdr_nd.edgeND₃₄.length, qdr_nd.edgeND₁₄.length = qdr_nd.edgeND₂₃.length, the signs of qdr_nd.angle₂ and qdr_nd.angle₄ are equal, then qdr_nd is a Parallelogram_nd. -/
+theorem qdr_nd_is_prg_nd_of_eq_length_eq_length_eq_angle_sign' (h₁ : qdr_nd.edgeND₁₂.length = qdr_nd.edgeND₃₄.length) (h₂ : qdr_nd.edgeND₁₄.length = qdr_nd.edgeND₂₃.length) (h : (qdr_nd.angle₂.value.IsPos ∧ qdr_nd.angle₄.value.IsPos) ∨ (qdr_nd.angle₂.value.IsNeg ∧ qdr_nd.angle₄.value.IsNeg)) : qdr_nd.IsParallelogram_nd := by sorry
 
 /-- Given four points ABCD and Quadrilateral ABCD IsNd, AB = CD, AD = BC, the signs of ∠ABC and ∠CDA are equal, then Quadrilateral ABCD is a Parallelogram_nd. -/
 theorem qdr_nd_is_prg_nd_of_eq_length_eq_length_eq_angle_sign'_variant (h₁ : (SEG A B).length = (SEG C D).length) (h₂ : (SEG A D).length = (SEG B C).length) (h : ((ANG A B C (QDR_nd A B C D nd).nd₁₂.out.symm (QDR_nd A B C D nd).nd₂₃.out).value.IsPos ∧ (ANG C D A (QDR_nd A B C D nd).nd₃₄.out.symm (QDR_nd A B C D nd).nd₁₄.out.symm).value.IsPos) ∨ ((ANG A B C (QDR_nd A B C D nd).nd₁₂.out.symm (QDR_nd A B C D nd).nd₂₃.out).value.IsNeg ∧ (ANG C D A (QDR_nd A B C D nd).nd₃₄.out.symm (QDR_nd A B C D nd).nd₁₄.out.symm).value.IsNeg)) : (QDR_nd A B C D nd).IsParallelogram_nd := qdr_nd_is_prg_nd_of_eq_length_eq_length_eq_angle_sign' (QDR_nd A B C D nd) h₁ h₂ h
@@ -613,8 +613,8 @@ variable (cvx : (QDR A B C D).IsConvex)
 variable {P : Type _} [EuclideanPlane P] (qdr_nd : QuadrilateralND P)
 variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
 
-/-- Given QuadrilateralND qdr_nd, and qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄ and (qdr_nd.edge_nd₁₂).length = (qdr_nd.edge_nd₃₄).length, and qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃ and (qdr_nd.edge_nd₁₄).length = (qdr_nd.edge_nd₂₃).length, qdr_nd is a Parallelogram. -/
-theorem qdr_nd_is_prg_of_para_eq_length_para_eq_length (h₁ : qdr_nd.edge_nd₁₂ ∥ qdr_nd.edge_nd₃₄) (h₂ : qdr_nd.edge_nd₁₂.length = qdr_nd.edge_nd₃₄.length) (H₁ : qdr_nd.edge_nd₁₄ ∥ qdr_nd.edge_nd₂₃) (h₂ : qdr_nd.edge_nd₁₄.length = qdr_nd.edge_nd₂₃.length): qdr_nd.IsParallelogram := by
+/-- Given QuadrilateralND qdr_nd, and qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄ and (qdr_nd.edgeND₁₂).length = (qdr_nd.edgeND₃₄).length, and qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃ and (qdr_nd.edgeND₁₄).length = (qdr_nd.edgeND₂₃).length, qdr_nd is a Parallelogram. -/
+theorem qdr_nd_is_prg_of_para_eq_length_para_eq_length (h₁ : qdr_nd.edgeND₁₂ ∥ qdr_nd.edgeND₃₄) (h₂ : qdr_nd.edgeND₁₂.length = qdr_nd.edgeND₃₄.length) (H₁ : qdr_nd.edgeND₁₄ ∥ qdr_nd.edgeND₂₃) (h₂ : qdr_nd.edgeND₁₄.length = qdr_nd.edgeND₂₃.length): qdr_nd.IsParallelogram := by
   sorry
 
 /-- Given four points ABCD and Quadrilateral ABCD IsConvex, and AB ∥ CD and AB = CD, Quadrilateral ABCD is a Parallelogram_nd. -/
@@ -639,8 +639,8 @@ variable (cvx : (QDR_nd A B C D nd).IsConvex)
 variable {P : Type _} [EuclideanPlane P] (qdr_cvx : Quadrilateral_cvx P)
 variable {P : Type _} [EuclideanPlane P] (qdr : Quadrilateral P)
 
-/-- Given Quadrilateral_cvx qdr_cvx, qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄ and qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.edge_nd₂₃, then qdr_cvx is a Parallelogram_nd. -/
-theorem qdr_cvx_is_prg_nd_of_para_para (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) (h₂ : qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.edge_nd₂₃) : qdr_cvx.IsParallelogram_nd := by
+/-- Given Quadrilateral_cvx qdr_cvx, qdr_cvx.edgeND₁₂ ∥ qdr_cvx.edgeND₃₄ and qdr_cvx.edgeND₁₄ ∥ qdr_cvx.edgeND₂₃, then qdr_cvx is a Parallelogram_nd. -/
+theorem qdr_cvx_is_prg_nd_of_para_para (h₁ : qdr_cvx.edgeND₁₂ ∥ qdr_cvx.edgeND₃₄) (h₂ : qdr_cvx.edgeND₁₄ ∥ qdr_cvx.edgeND₂₃) : qdr_cvx.IsParallelogram_nd := by
   unfold QuadrilateralND.IsParallelogram_nd
   constructor
   constructor
@@ -653,11 +653,11 @@ theorem qdr_cvx_is_prg_nd_of_para_para (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx
   -- exact qdr_cvx.not_collinear₃₄₁
   -- exact qdr_cvx.not_collinear₄₁₂
 
-/-- Given Quadrilateral_cvx qdr_cvx, and (qdr_cvx.edge_nd₁₂).length = (qdr_cvx.edge_nd₃₄).length and qdr_cvx.edge_nd₁₄.length = qdr_cvx.edge_nd₂₃.length, qdr_cvx is a Parallelogram_nd. -/
-theorem qdr_cvx_is_prg_nd_of_eq_length_eq_length (h₁ : qdr_cvx.edge_nd₁₂.length = qdr_cvx.edge_nd₃₄.length) (h₂ : qdr_cvx.edge_nd₁₄.length = qdr_cvx.edge_nd₂₃.length) : qdr_cvx.IsParallelogram_nd := by
+/-- Given Quadrilateral_cvx qdr_cvx, and (qdr_cvx.edgeND₁₂).length = (qdr_cvx.edgeND₃₄).length and qdr_cvx.edgeND₁₄.length = qdr_cvx.edgeND₂₃.length, qdr_cvx is a Parallelogram_nd. -/
+theorem qdr_cvx_is_prg_nd_of_eq_length_eq_length (h₁ : qdr_cvx.edgeND₁₂.length = qdr_cvx.edgeND₃₄.length) (h₂ : qdr_cvx.edgeND₁₄.length = qdr_cvx.edgeND₂₃.length) : qdr_cvx.IsParallelogram_nd := by
   unfold QuadrilateralND.IsParallelogram_nd
   constructor
-  have heq₁: qdr_cvx.edge_nd₁₄.length = qdr_cvx.edge_nd₁₄.reverse.length := qdr_cvx.edge_nd₁₄.reverse.length_of_rev_eq_length
+  have heq₁: qdr_cvx.edgeND₁₄.length = qdr_cvx.edgeND₁₄.reverse.length := qdr_cvx.edgeND₁₄.reverse.length_of_rev_eq_length
   have eq₁: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.not_collinear₄₁₂).edge₁.length = (TRI_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.not_collinear₂₃₄).edge₁.length := h₁
   have eq₂: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.not_collinear₄₁₂).edge₂.length = (TRI_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.not_collinear₂₃₄).edge₂.length := (TRI_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.not_collinear₂₃₄).edge₂.length_of_rev_eq_length
   have eq₃: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.not_collinear₄₁₂).edge₃.length = (TRI_nd qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.not_collinear₂₃₄).edge₃.length := by
@@ -698,24 +698,24 @@ theorem qdr_cvx_is_prg_nd_of_eq_length_eq_length (h₁ : qdr_cvx.edge_nd₁₂.l
     right
     exact near₂
   have very_close₂: qdr_cvx.triangle_nd₁.angle₃.end_ray ∥ qdr_cvx.triangle_nd₃.angle₃.end_ray := very_near₂
-  have close₁: qdr_cvx.edge_nd₁₄.toProj = qdr_cvx.triangle_nd₁.angle₁.start_ray.toProj := by
-    have third: qdr_cvx.edge_nd₁₄.reverse.toProj = qdr_cvx.edge_nd₁₄.toProj := qdr_cvx.edge_nd₁₄.toProj_of_rev_eq_toProj
+  have close₁: qdr_cvx.edgeND₁₄.toProj = qdr_cvx.triangle_nd₁.angle₁.start_ray.toProj := by
+    have third: qdr_cvx.edgeND₁₄.reverse.toProj = qdr_cvx.edgeND₁₄.toProj := qdr_cvx.edgeND₁₄.toProj_of_rev_eq_toProj
     exact id third.symm
-  have close₂: qdr_cvx.edge_nd₂₃.toProj = qdr_cvx.triangle_nd₃.angle₁.start_ray.toProj := by rfl
-  have close₃: qdr_cvx.edge_nd₁₂.toProj = qdr_cvx.triangle_nd₁.angle₃.end_ray.toProj := by
-    have last: qdr_cvx.edge_nd₁₂.reverse.toRay = qdr_cvx.triangle_nd₁.angle₃.end_ray := by rfl
-    have second: qdr_cvx.edge_nd₁₂.reverse.toProj = qdr_cvx.triangle_nd₁.angle₃.end_ray.toProj := by rfl
-    have third: qdr_cvx.edge_nd₁₂.reverse.toProj = qdr_cvx.edge_nd₁₂.toProj := qdr_cvx.edge_nd₁₂.toProj_of_rev_eq_toProj
+  have close₂: qdr_cvx.edgeND₂₃.toProj = qdr_cvx.triangle_nd₃.angle₁.start_ray.toProj := by rfl
+  have close₃: qdr_cvx.edgeND₁₂.toProj = qdr_cvx.triangle_nd₁.angle₃.end_ray.toProj := by
+    have last: qdr_cvx.edgeND₁₂.reverse.toRay = qdr_cvx.triangle_nd₁.angle₃.end_ray := by rfl
+    have second: qdr_cvx.edgeND₁₂.reverse.toProj = qdr_cvx.triangle_nd₁.angle₃.end_ray.toProj := by rfl
+    have third: qdr_cvx.edgeND₁₂.reverse.toProj = qdr_cvx.edgeND₁₂.toProj := qdr_cvx.edgeND₁₂.toProj_of_rev_eq_toProj
     rw [third.symm, second, last.symm]
-  have close₄: qdr_cvx.edge_nd₃₄.toProj = qdr_cvx.triangle_nd₃.angle₃.end_ray.toProj := by
-    have last: qdr_cvx.edge_nd₃₄.reverse.toRay = qdr_cvx.triangle_nd₃.angle₃.end_ray := by rfl
-    have second: qdr_cvx.edge_nd₃₄.reverse.toProj = qdr_cvx.triangle_nd₃.angle₃.end_ray.toProj := by rfl
-    have third: qdr_cvx.edge_nd₃₄.reverse.toProj = qdr_cvx.edge_nd₃₄.toProj := qdr_cvx.edge_nd₃₄.toProj_of_rev_eq_toProj
+  have close₄: qdr_cvx.edgeND₃₄.toProj = qdr_cvx.triangle_nd₃.angle₃.end_ray.toProj := by
+    have last: qdr_cvx.edgeND₃₄.reverse.toRay = qdr_cvx.triangle_nd₃.angle₃.end_ray := by rfl
+    have second: qdr_cvx.edgeND₃₄.reverse.toProj = qdr_cvx.triangle_nd₃.angle₃.end_ray.toProj := by rfl
+    have third: qdr_cvx.edgeND₃₄.reverse.toProj = qdr_cvx.edgeND₃₄.toProj := qdr_cvx.edgeND₃₄.toProj_of_rev_eq_toProj
     rw [third.symm, second, last.symm]
-  have win₁: qdr_cvx.edge_nd₁₂.toProj = qdr_cvx.edge_nd₃₄.toProj := by
+  have win₁: qdr_cvx.edgeND₁₂.toProj = qdr_cvx.edgeND₃₄.toProj := by
     rw [close₃, close₄]
     exact very_close₂
-  have win₂: qdr_cvx.edge_nd₁₄.toProj = qdr_cvx.edge_nd₂₃.toProj := by
+  have win₂: qdr_cvx.edgeND₁₄.toProj = qdr_cvx.edgeND₂₃.toProj := by
     rw [close₁, close₂]
     exact very_close₁
   exact ⟨win₁, win₂⟩
@@ -730,7 +730,7 @@ theorem qdr_cvx_is_prg_nd_of_eq_length_eq_length_variant (h₁ : (SEG A B).lengt
   sorry
   -- unfold QuadrilateralND.IsParallelogram_nd
   -- constructor
-  -- have heq₁: (SEG A D).length = (QDR_cvx A B C D nd cvx).edge_nd₁₄.reverse.length := (QDR_cvx A B C D nd cvx).edge_nd₁₄.reverse.length_of_rev_eq_length
+  -- have heq₁: (SEG A D).length = (QDR_cvx A B C D nd cvx).edgeND₁₄.reverse.length := (QDR_cvx A B C D nd cvx).edgeND₁₄.reverse.length_of_rev_eq_length
   -- have eq₁: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).not_collinear₄₁₂).edge₁.length = (TRI_nd (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_collinear₂₃₄).edge₁.length := h₁
   -- have eq₂: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).not_collinear₄₁₂).edge₂.length = (TRI_nd (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_collinear₂₃₄).edge₂.length := (TRI_nd (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_collinear₂₃₄).edge₂.length_of_rev_eq_length
   -- have eq₃: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).not_collinear₄₁₂).edge₃.length = (TRI_nd (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_collinear₂₃₄).edge₃.length := by
@@ -771,24 +771,24 @@ theorem qdr_cvx_is_prg_nd_of_eq_length_eq_length_variant (h₁ : (SEG A B).lengt
   --   right
   --   exact near₂
   -- have very_close₂: (QDR_cvx A B C D nd cvx).triangle_nd₁.angle₃.end_ray ∥ (QDR_cvx A B C D nd cvx).triangle_nd₃.angle₃.end_ray := very_near₂
-  -- have close₁: (QDR_cvx A B C D nd cvx).edge_nd₁₄.toProj = (QDR_cvx A B C D nd cvx).triangle_nd₁.angle₁.start_ray.toProj := by
-  --   have third: (QDR_cvx A B C D nd cvx).edge_nd₁₄.reverse.toProj = (QDR_cvx A B C D nd cvx).edge_nd₁₄.toProj := (QDR_cvx A B C D nd cvx).edge_nd₁₄.toProj_of_rev_eq_toProj
+  -- have close₁: (QDR_cvx A B C D nd cvx).edgeND₁₄.toProj = (QDR_cvx A B C D nd cvx).triangle_nd₁.angle₁.start_ray.toProj := by
+  --   have third: (QDR_cvx A B C D nd cvx).edgeND₁₄.reverse.toProj = (QDR_cvx A B C D nd cvx).edgeND₁₄.toProj := (QDR_cvx A B C D nd cvx).edgeND₁₄.toProj_of_rev_eq_toProj
   --   exact id third.symm
-  -- have close₂: (QDR_cvx A B C D nd cvx).edge_nd₂₃.toProj = (QDR_cvx A B C D nd cvx).triangle_nd₃.angle₁.start_ray.toProj := by rfl
-  -- have close₃: (QDR_cvx A B C D nd cvx).edge_nd₁₂.toProj = (QDR_cvx A B C D nd cvx).triangle_nd₁.angle₃.end_ray.toProj := by
-  --   have last: (QDR_cvx A B C D nd cvx).edge_nd₁₂.reverse.toRay = (QDR_cvx A B C D nd cvx).triangle_nd₁.angle₃.end_ray := by rfl
-  --   have second: (QDR_cvx A B C D nd cvx).edge_nd₁₂.reverse.toProj = (QDR_cvx A B C D nd cvx).triangle_nd₁.angle₃.end_ray.toProj := by rfl
-  --   have third: (QDR_cvx A B C D nd cvx).edge_nd₁₂.reverse.toProj = (QDR_cvx A B C D nd cvx).edge_nd₁₂.toProj := (QDR_cvx A B C D nd cvx).edge_nd₁₂.toProj_of_rev_eq_toProj
+  -- have close₂: (QDR_cvx A B C D nd cvx).edgeND₂₃.toProj = (QDR_cvx A B C D nd cvx).triangle_nd₃.angle₁.start_ray.toProj := by rfl
+  -- have close₃: (QDR_cvx A B C D nd cvx).edgeND₁₂.toProj = (QDR_cvx A B C D nd cvx).triangle_nd₁.angle₃.end_ray.toProj := by
+  --   have last: (QDR_cvx A B C D nd cvx).edgeND₁₂.reverse.toRay = (QDR_cvx A B C D nd cvx).triangle_nd₁.angle₃.end_ray := by rfl
+  --   have second: (QDR_cvx A B C D nd cvx).edgeND₁₂.reverse.toProj = (QDR_cvx A B C D nd cvx).triangle_nd₁.angle₃.end_ray.toProj := by rfl
+  --   have third: (QDR_cvx A B C D nd cvx).edgeND₁₂.reverse.toProj = (QDR_cvx A B C D nd cvx).edgeND₁₂.toProj := (QDR_cvx A B C D nd cvx).edgeND₁₂.toProj_of_rev_eq_toProj
   --   rw [third.symm, second, last.symm]
-  -- have close₄: (QDR_cvx A B C D nd cvx).edge_nd₃₄.toProj = (QDR_cvx A B C D nd cvx).triangle_nd₃.angle₃.end_ray.toProj := by
-  --   have last: (QDR_cvx A B C D nd cvx).edge_nd₃₄.reverse.toRay = (QDR_cvx A B C D nd cvx).triangle_nd₃.angle₃.end_ray := by rfl
-  --   have second: (QDR_cvx A B C D nd cvx).edge_nd₃₄.reverse.toProj = (QDR_cvx A B C D nd cvx).triangle_nd₃.angle₃.end_ray.toProj := by rfl
-  --   have third: (QDR_cvx A B C D nd cvx).edge_nd₃₄.reverse.toProj = (QDR_cvx A B C D nd cvx).edge_nd₃₄.toProj := (QDR_cvx A B C D nd cvx).edge_nd₃₄.toProj_of_rev_eq_toProj
+  -- have close₄: (QDR_cvx A B C D nd cvx).edgeND₃₄.toProj = (QDR_cvx A B C D nd cvx).triangle_nd₃.angle₃.end_ray.toProj := by
+  --   have last: (QDR_cvx A B C D nd cvx).edgeND₃₄.reverse.toRay = (QDR_cvx A B C D nd cvx).triangle_nd₃.angle₃.end_ray := by rfl
+  --   have second: (QDR_cvx A B C D nd cvx).edgeND₃₄.reverse.toProj = (QDR_cvx A B C D nd cvx).triangle_nd₃.angle₃.end_ray.toProj := by rfl
+  --   have third: (QDR_cvx A B C D nd cvx).edgeND₃₄.reverse.toProj = (QDR_cvx A B C D nd cvx).edgeND₃₄.toProj := (QDR_cvx A B C D nd cvx).edgeND₃₄.toProj_of_rev_eq_toProj
   --   rw [third.symm, second, last.symm]
-  -- have win₁: (QDR_cvx A B C D nd cvx).edge_nd₁₂.toProj = (QDR_cvx A B C D nd cvx).edge_nd₃₄.toProj := by
+  -- have win₁: (QDR_cvx A B C D nd cvx).edgeND₁₂.toProj = (QDR_cvx A B C D nd cvx).edgeND₃₄.toProj := by
   --   rw [close₃, close₄]
   --   exact very_close₂
-  -- have win₂: (QDR_cvx A B C D nd cvx).edge_nd₁₄.toProj = (QDR_cvx A B C D nd cvx).edge_nd₂₃.toProj := by
+  -- have win₂: (QDR_cvx A B C D nd cvx).edgeND₁₄.toProj = (QDR_cvx A B C D nd cvx).edgeND₂₃.toProj := by
   --   rw [close₁, close₂]
   --   exact very_close₁
   -- exact ⟨win₁, win₂⟩
@@ -798,12 +798,12 @@ theorem qdr_cvx_is_prg_nd_of_eq_length_eq_length_variant (h₁ : (SEG A B).lengt
   -- exact (QDR_cvx A B C D nd cvx).not_collinear₃₄₁
   -- exact (QDR_cvx A B C D nd cvx).not_collinear₄₁₂
 
-/-- Given Quadrilateral_cvx qdr_cvx, and qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄ and (qdr_cvx.edge_nd₁₂).length = (qdr_cvx.edge_nd₃₄).length, qdr_cvx is a Parallelogram_nd. -/
-theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qdr_cvx.edge_nd₃₄) (h₂ : qdr_cvx.edge_nd₁₂.length = qdr_cvx.edge_nd₃₄.length) : qdr_cvx.IsParallelogram_nd := by
+/-- Given Quadrilateral_cvx qdr_cvx, and qdr_cvx.edgeND₁₂ ∥ qdr_cvx.edgeND₃₄ and (qdr_cvx.edgeND₁₂).length = (qdr_cvx.edgeND₃₄).length, qdr_cvx is a Parallelogram_nd. -/
+theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edgeND₁₂ ∥ qdr_cvx.edgeND₃₄) (h₂ : qdr_cvx.edgeND₁₂.length = qdr_cvx.edgeND₃₄.length) : qdr_cvx.IsParallelogram_nd := by
   unfold QuadrilateralND.IsParallelogram_nd
   constructor
   unfold parallel at h₁
-  have h: qdr_cvx.edge_nd₁₂.toDir = qdr_cvx.edge_nd₃₄.toDir ∨ qdr_cvx.edge_nd₁₂.toDir = - qdr_cvx.edge_nd₃₄.toDir := by
+  have h: qdr_cvx.edgeND₁₂.toDir = qdr_cvx.edgeND₃₄.toDir ∨ qdr_cvx.edgeND₁₂.toDir = - qdr_cvx.edgeND₃₄.toDir := by
     apply Dir.toProj_eq_toProj_iff.1
     exact h₁
   have diag_ng_para: ¬ qdr_cvx.diag_nd₁₃.toProj = qdr_cvx.diag_nd₂₄.toProj := qdr_cvx.diag_not_para
@@ -811,15 +811,15 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qd
   -- Case that is not convex, goal is prove contra
   have angle₁_eq_angle₄: (ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁).value = (ANG qdr_cvx.point₂ qdr_cvx.point₁ qdr_cvx.point₄).value := by
     apply ang_eq_ang_of_toDir_rev_toDir
-    have ray₁₂_toDir_eq_SegND₁₂_toDir: qdr_cvx.edge_nd₁₂.toDir = (ANG qdr_cvx.point₂ qdr_cvx.point₁ qdr_cvx.point₄).start_ray.toDir := by rfl
-    have ray₄₃_toDir_eq_SegND₃₄_rev_toDir: qdr_cvx.edge_nd₃₄.reverse.toDir = (ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁).start_ray.toDir := by rfl
-    have SegND₄₃_toDir_neg_SegND₃₄_rev_toDir: qdr_cvx.edge_nd₃₄.reverse.toDir = - qdr_cvx.edge_nd₃₄.toDir := by apply SegND.toDir_of_rev_eq_neg_toDir
+    have ray₁₂_toDir_eq_SegND₁₂_toDir: qdr_cvx.edgeND₁₂.toDir = (ANG qdr_cvx.point₂ qdr_cvx.point₁ qdr_cvx.point₄).start_ray.toDir := by rfl
+    have ray₄₃_toDir_eq_SegND₃₄_rev_toDir: qdr_cvx.edgeND₃₄.reverse.toDir = (ANG qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁).start_ray.toDir := by rfl
+    have SegND₄₃_toDir_neg_SegND₃₄_rev_toDir: qdr_cvx.edgeND₃₄.reverse.toDir = - qdr_cvx.edgeND₃₄.toDir := by apply SegND.toDir_of_rev_eq_neg_toDir
     rw [ray₁₂_toDir_eq_SegND₁₂_toDir.symm, ray₄₃_toDir_eq_SegND₃₄_rev_toDir.symm, SegND₄₃_toDir_neg_SegND₃₄_rev_toDir, case_not_convex]
-    exact qdr_cvx.edge_nd₁₄.toDir_of_rev_eq_neg_toDir
+    exact qdr_cvx.edgeND₁₄.toDir_of_rev_eq_neg_toDir
   have IsCongrTo₁₄: TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁ IsCongrTo TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_collinear₁₂₄ := by
     have edge₂_eq: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).1.edge₂.length = (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_collinear₁₂₄).1.edge₂.length := by apply length_of_rev_eq_length'
     have edge₃_eq: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).1.edge₃.length = (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_collinear₁₂₄).1.edge₃.length := by
-      have eq_length: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).1.edge₃.length = qdr_cvx.edge_nd₃₄.length := by apply length_of_rev_eq_length'
+      have eq_length: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).1.edge₃.length = qdr_cvx.edgeND₃₄.length := by apply length_of_rev_eq_length'
       rw [eq_length]
       exact h₂.symm
     apply TriangleND.congr_of_SAS edge₂_eq angle₁_eq_angle₄ edge₃_eq
@@ -831,9 +831,9 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qd
   -- Use angle_eq to prove two diag para.
   have prepa₂: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).angle₃.start_ray.reverse.toDir = (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_collinear₁₂₄).angle₃.start_ray.toDir := by
     have prepaA: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).angle₃.start_ray.reverse.toDir = - (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).angle₃.start_ray.toDir := (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).angle₃.start_ray.toDir_of_rev_eq_neg_toDir
-    have prepaB: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).angle₃.start_ray.toDir = qdr_cvx.edge_nd₁₄.toDir := by rfl
-    have prepaC: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_collinear₁₂₄).angle₃.start_ray.toDir = qdr_cvx.edge_nd₁₄.reverse.toDir := by rfl
-    have prepaD: qdr_cvx.edge_nd₁₄.reverse.toDir = - qdr_cvx.edge_nd₁₄.toDir := qdr_cvx.edge_nd₁₄.toDir_of_rev_eq_neg_toDir
+    have prepaB: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).angle₃.start_ray.toDir = qdr_cvx.edgeND₁₄.toDir := by rfl
+    have prepaC: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_collinear₁₂₄).angle₃.start_ray.toDir = qdr_cvx.edgeND₁₄.reverse.toDir := by rfl
+    have prepaD: qdr_cvx.edgeND₁₄.reverse.toDir = - qdr_cvx.edgeND₁₄.toDir := qdr_cvx.edgeND₁₄.toDir_of_rev_eq_neg_toDir
     rw [prepaA, prepaB, prepaC, prepaD]
   have prepa₃: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).angle₃.end_ray.reverse.toDir = (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₄ qdr_cvx.not_collinear₁₂₄).angle₃.end_ray.toDir := (end_ray_toDir_rev_toDir_of_ang_rev_ang prepa₂.symm prepa₁).symm
   have prepa₄: (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).angle₃.end_ray.reverse.toDir = - (TRI_nd qdr_cvx.point₄ qdr_cvx.point₃ qdr_cvx.point₁ qdr_cvx.not_collinear₄₃₁).angle₃.end_ray.toDir := by
@@ -876,12 +876,12 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qd
     exact K₆
   have near: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_collinear₁₂₃).angle₃.end_ray.toDir = (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_collinear₃₄₁).angle₃.end_ray.reverse.toDir := end_ray_toDir_rev_toDir_of_ang_rev_ang pr₂ pr₁
   have J₁: (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_collinear₃₄₁).angle₃.end_ray.reverse.toDir = - (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_collinear₃₄₁).angle₃.end_ray.toDir := (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_collinear₃₄₁).angle₃.end_ray.toDir_of_rev_eq_neg_toDir
-  have J₂: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_collinear₁₂₃).angle₃.end_ray.toDir = qdr_cvx.edge_nd₂₃.reverse.toDir := by rfl
-  have J₃: (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_collinear₃₄₁).angle₃.end_ray.toDir = qdr_cvx.edge_nd₁₄.toDir := by rfl
-  have J₄: qdr_cvx.edge_nd₂₃.reverse.toDir = - qdr_cvx.edge_nd₂₃.toDir := qdr_cvx.edge_nd₂₃.toDir_of_rev_eq_neg_toDir
+  have J₂: (TRI_nd qdr_cvx.point₁ qdr_cvx.point₂ qdr_cvx.point₃ qdr_cvx.not_collinear₁₂₃).angle₃.end_ray.toDir = qdr_cvx.edgeND₂₃.reverse.toDir := by rfl
+  have J₃: (TRI_nd qdr_cvx.point₃ qdr_cvx.point₄ qdr_cvx.point₁ qdr_cvx.not_collinear₃₄₁).angle₃.end_ray.toDir = qdr_cvx.edgeND₁₄.toDir := by rfl
+  have J₄: qdr_cvx.edgeND₂₃.reverse.toDir = - qdr_cvx.edgeND₂₃.toDir := qdr_cvx.edgeND₂₃.toDir_of_rev_eq_neg_toDir
   rw [J₁, J₂, J₃, J₄] at near
   simp only [neg_inj] at near
-  have close: qdr_cvx.edge_nd₂₃.toProj = qdr_cvx.edge_nd₁₄.toProj := by
+  have close: qdr_cvx.edgeND₂₃.toProj = qdr_cvx.edgeND₁₄.toProj := by
     apply Dir.toProj_eq_toProj_iff.mpr
     left
     exact near
@@ -900,7 +900,7 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qd
   --  unfold QuadrilateralND.IsParallelogram_nd
   --  constructor
   --  unfold parallel at h₁
-  --  have h: (QDR_cvx A B C D nd cvx).edge_nd₁₂.toDir = (QDR_cvx A B C D nd cvx).edge_nd₃₄.toDir ∨ (QDR_cvx A B C D nd cvx).edge_nd₁₂.toDir = - (QDR_cvx A B C D nd cvx).edge_nd₃₄.toDir := by
+  --  have h: (QDR_cvx A B C D nd cvx).edgeND₁₂.toDir = (QDR_cvx A B C D nd cvx).edgeND₃₄.toDir ∨ (QDR_cvx A B C D nd cvx).edgeND₁₂.toDir = - (QDR_cvx A B C D nd cvx).edgeND₃₄.toDir := by
   --    apply Dir.toProj_eq_toProj_iff.1
   --    exact h₁
   --  have diag_ng_para: ¬ (QDR_cvx A B C D nd cvx).diag_nd₁₃.toProj = (QDR_cvx A B C D nd cvx).diag_nd₂₄.toProj := (QDR_cvx A B C D nd cvx).diag_not_para
@@ -908,15 +908,15 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qd
   --  -- Case that is not convex, goal is prove contra
   --  have angle₁_eq_angle₄: (ANG (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).nd₃₄.out.symm (QDR_cvx A B C D nd cvx).nd₁₄.out.symm).value = (ANG (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).nd₁₂.out (QDR_cvx A B C D nd cvx).nd₁₄.out).value := by
   --    apply ang_eq_ang_of_toDir_rev_toDir
-  --    have ray₁₂_toDir_eq_Seg_nd₁₂_toDir: (QDR_cvx A B C D nd cvx).edge_nd₁₂.toDir = (ANG (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).nd₁₂.out (QDR_cvx A B C D nd cvx).nd₁₄.out).start_ray.toDir := by rfl
-  --    have ray₄₃_toDir_eq_Seg_nd₃₄_rev_toDir: (QDR_cvx A B C D nd cvx).edge_nd₃₄.reverse.toDir = (ANG (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).nd₃₄.out.symm (QDR_cvx A B C D nd cvx).nd₁₄.out.symm).start_ray.toDir := by rfl
-  --    have Seg_nd₄₃_toDir_neg_Seg_nd₃₄_rev_toDir: (QDR_cvx A B C D nd cvx).edge_nd₃₄.reverse.toDir = - (QDR_cvx A B C D nd cvx).edge_nd₃₄.toDir := by apply SegND.toDir_of_rev_eq_neg_toDir
+  --    have ray₁₂_toDir_eq_Seg_nd₁₂_toDir: (QDR_cvx A B C D nd cvx).edgeND₁₂.toDir = (ANG (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).nd₁₂.out (QDR_cvx A B C D nd cvx).nd₁₄.out).start_ray.toDir := by rfl
+  --    have ray₄₃_toDir_eq_Seg_nd₃₄_rev_toDir: (QDR_cvx A B C D nd cvx).edgeND₃₄.reverse.toDir = (ANG (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).nd₃₄.out.symm (QDR_cvx A B C D nd cvx).nd₁₄.out.symm).start_ray.toDir := by rfl
+  --    have Seg_nd₄₃_toDir_neg_Seg_nd₃₄_rev_toDir: (QDR_cvx A B C D nd cvx).edgeND₃₄.reverse.toDir = - (QDR_cvx A B C D nd cvx).edgeND₃₄.toDir := by apply SegND.toDir_of_rev_eq_neg_toDir
   --    rw [ray₁₂_toDir_eq_Seg_nd₁₂_toDir.symm, ray₄₃_toDir_eq_Seg_nd₃₄_rev_toDir.symm, Seg_nd₄₃_toDir_neg_Seg_nd₃₄_rev_toDir, case_not_convex]
-  --    exact (QDR_cvx A B C D nd cvx).edge_nd₁₄.toDir_of_rev_eq_neg_toDir
+  --    exact (QDR_cvx A B C D nd cvx).edgeND₁₄.toDir_of_rev_eq_neg_toDir
   --  have IsCongrTo₁₄: TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁ IsCongrTo TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_collinear₁₂₄ := by
   --    have edge₂_eq: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).1.edge₂.length = (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_collinear₁₂₄).1.edge₂.length := by apply length_of_rev_eq_length'
   --    have edge₃_eq: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).1.edge₃.length = (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_collinear₁₂₄).1.edge₃.length := by
-  --      have eq_length: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).1.edge₃.length = (QDR_cvx A B C D nd cvx).edge_nd₃₄.length := by apply length_of_rev_eq_length'
+  --      have eq_length: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).1.edge₃.length = (QDR_cvx A B C D nd cvx).edgeND₃₄.length := by apply length_of_rev_eq_length'
   --      rw [eq_length]
   --      exact h₂.symm
   --    apply TriangleND.congr_of_SAS edge₂_eq angle₁_eq_angle₄ edge₃_eq
@@ -928,9 +928,9 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qd
   --  -- Use angle_eq to prove two diag para.
   --  have prepa₂: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).angle₃.start_ray.reverse.toDir = (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_collinear₁₂₄).angle₃.start_ray.toDir := by
   --    have prepaA: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).angle₃.start_ray.reverse.toDir = - (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).angle₃.start_ray.toDir := (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).angle₃.start_ray.toDir_of_rev_eq_neg_toDir
-  --    have prepaB: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).angle₃.start_ray.toDir = (QDR_cvx A B C D nd cvx).edge_nd₁₄.toDir := by rfl
-  --    have prepaC: (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_collinear₁₂₄).angle₃.start_ray.toDir = (QDR_cvx A B C D nd cvx).edge_nd₁₄.reverse.toDir := by rfl
-  --    have prepaD: (QDR_cvx A B C D nd cvx).edge_nd₁₄.reverse.toDir = - (QDR_cvx A B C D nd cvx).edge_nd₁₄.toDir := (QDR_cvx A B C D nd cvx).edge_nd₁₄.toDir_of_rev_eq_neg_toDir
+  --    have prepaB: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).angle₃.start_ray.toDir = (QDR_cvx A B C D nd cvx).edgeND₁₄.toDir := by rfl
+  --    have prepaC: (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_collinear₁₂₄).angle₃.start_ray.toDir = (QDR_cvx A B C D nd cvx).edgeND₁₄.reverse.toDir := by rfl
+  --    have prepaD: (QDR_cvx A B C D nd cvx).edgeND₁₄.reverse.toDir = - (QDR_cvx A B C D nd cvx).edgeND₁₄.toDir := (QDR_cvx A B C D nd cvx).edgeND₁₄.toDir_of_rev_eq_neg_toDir
   --    rw [prepaA, prepaB, prepaC, prepaD]
   --  have prepa₃: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).angle₃.end_ray.reverse.toDir = (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).not_collinear₁₂₄).angle₃.end_ray.toDir := (end_ray_toDir_rev_toDir_of_ang_rev_ang prepa₂.symm prepa₁).symm
   --  have prepa₄: (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).angle₃.end_ray.reverse.toDir = - (TRI_nd (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₄₃₁).angle₃.end_ray.toDir := by
@@ -973,12 +973,12 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qd
   --    exact K₆
   --  have near: (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂ (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).not_collinear₁₂₃).angle₃.end_ray.toDir = (TRI_nd (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₃₄₁).angle₃.end_ray.reverse.toDir := end_ray_toDir_rev_toDir_of_ang_rev_ang pr₂ pr₁
   --  have J₁: (TRI_nd (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₃₄₁).angle₃.end_ray.reverse.toDir = - (TRI_nd (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₃₄₁).angle₃.end_ray.toDir := (TRI_nd (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₃₄₁).angle₃.end_ray.toDir_of_rev_eq_neg_toDir
-  --  have J₂: (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂(QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).not_collinear₁₂₃).angle₃.end_ray.toDir = (QDR_cvx A B C D nd cvx).edge_nd₂₃.reverse.toDir := by rfl
-  --  have J₃: (TRI_nd (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₃₄₁).angle₃.end_ray.toDir = (QDR_cvx A B C D nd cvx).edge_nd₁₄.toDir := by rfl
-  --  have J₄: (QDR_cvx A B C D nd cvx).edge_nd₂₃.reverse.toDir = - (QDR_cvx A B C D nd cvx).edge_nd₂₃.toDir := (QDR_cvx A B C D nd cvx).edge_nd₂₃.toDir_of_rev_eq_neg_toDir
+  --  have J₂: (TRI_nd (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).point₂(QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).not_collinear₁₂₃).angle₃.end_ray.toDir = (QDR_cvx A B C D nd cvx).edgeND₂₃.reverse.toDir := by rfl
+  --  have J₃: (TRI_nd (QDR_cvx A B C D nd cvx).point₃ (QDR_cvx A B C D nd cvx).point₄ (QDR_cvx A B C D nd cvx).point₁ (QDR_cvx A B C D nd cvx).not_collinear₃₄₁).angle₃.end_ray.toDir = (QDR_cvx A B C D nd cvx).edgeND₁₄.toDir := by rfl
+  --  have J₄: (QDR_cvx A B C D nd cvx).edgeND₂₃.reverse.toDir = - (QDR_cvx A B C D nd cvx).edgeND₂₃.toDir := (QDR_cvx A B C D nd cvx).edgeND₂₃.toDir_of_rev_eq_neg_toDir
   --  rw [J₁, J₂, J₃, J₄] at near
   --  simp only [neg_inj] at near
-  --  have close: (QDR_cvx A B C D nd cvx).edge_nd₂₃.toProj = (QDR_cvx A B C D nd cvx).edge_nd₁₄.toProj := by
+  --  have close: (QDR_cvx A B C D nd cvx).edgeND₂₃.toProj = (QDR_cvx A B C D nd cvx).edgeND₁₄.toProj := by
   --    apply Dir.toProj_eq_toProj_iff.mpr
   --    left
   --    exact near
@@ -992,25 +992,25 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length (h₁ : qdr_cvx.edge_nd₁₂ ∥ qd
   --  exact (QDR_cvx A B C D nd cvx).not_collinear₃₄₁
   --  exact (QDR_cvx A B C D nd cvx).not_collinear₄₁₂
 
-/- Given Quadrilateral_cvx qdr_cvx, and qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.edge_nd₂₃ and (qdr_cvx.edge_nd₁₄).length = (qdr_cvx.edge_nd₂₃).length, qdr_cvx is a Parallelogram_nd. -/
-theorem qdr_cvx_is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edge_nd₁₄ ∥ qdr_cvx.edge_nd₂₃) (h₂ : qdr_cvx.edge_nd₁₄.length = qdr_cvx.edge_nd₂₃.length) : qdr_cvx.IsParallelogram_nd := by sorry
+/- Given Quadrilateral_cvx qdr_cvx, and qdr_cvx.edgeND₁₄ ∥ qdr_cvx.edgeND₂₃ and (qdr_cvx.edgeND₁₄).length = (qdr_cvx.edgeND₂₃).length, qdr_cvx is a Parallelogram_nd. -/
+theorem qdr_cvx_is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edgeND₁₄ ∥ qdr_cvx.edgeND₂₃) (h₂ : qdr_cvx.edgeND₁₄.length = qdr_cvx.edgeND₂₃.length) : qdr_cvx.IsParallelogram_nd := by sorry
   -- unfold QuadrilateralND.IsParallelogram_nd
   -- constructor
   -- let perm_convex := Quadrilateral_cvx.mk_is_convex qdr_cvx.perm_is_convex
-  -- have K₁: perm_convex.edge_nd₁₂.toProj = qdr_cvx.edge_nd₂₃.toProj := by rfl
-  -- have K₂: perm_convex.edge_nd₁₂.length = qdr_cvx.edge_nd₂₃.length := by rfl
-  -- have j₂: perm_convex.edge_nd₃₄ = qdr_cvx.edge_nd₁₄.reverse := by rfl
-  -- have K₃: perm_convex.edge_nd₃₄.toProj = qdr_cvx.edge_nd₁₄.toProj := by
+  -- have K₁: perm_convex.edgeND₁₂.toProj = qdr_cvx.edgeND₂₃.toProj := by rfl
+  -- have K₂: perm_convex.edgeND₁₂.length = qdr_cvx.edgeND₂₃.length := by rfl
+  -- have j₂: perm_convex.edgeND₃₄ = qdr_cvx.edgeND₁₄.reverse := by rfl
+  -- have K₃: perm_convex.edgeND₃₄.toProj = qdr_cvx.edgeND₁₄.toProj := by
   --   rw [j₂]
   --   apply SegND.toProj_of_rev_eq_toProj
-  -- have K₄: perm_convex.edge_nd₃₄.length = qdr_cvx.edge_nd₁₄.length := by
+  -- have K₄: perm_convex.edgeND₃₄.length = qdr_cvx.edgeND₁₄.length := by
   --   rw [j₂]
   --   apply SegND.length_of_rev_eq_length
-  -- have H₁: perm_convex.edge_nd₁₂.toProj = perm_convex.edge_nd₃₄.toProj := by
+  -- have H₁: perm_convex.edgeND₁₂.toProj = perm_convex.edgeND₃₄.toProj := by
   --   rw [K₁, K₃]
   --   unfold parallel at h₁
   --   exact h₁.symm
-  -- have H₂: perm_convex.edge_nd₁₂.length = perm_convex.edge_nd₃₄.length := by
+  -- have H₂: perm_convex.edgeND₁₂.length = perm_convex.edgeND₃₄.length := by
   --   rw [K₂, K₄]
   --   exact h₂.symm
   -- have H: perm_convex.IsParallelogram_nd := qdr_cvx_is_prg_nd_of_para_eq_length perm_convex H₁ H₂
@@ -1020,14 +1020,14 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edge_nd₁₄ ∥ q
   -- unfold QuadrilateralND.IsParallelogram_para at para
   -- rcases para with ⟨para₁, para₂⟩
   -- unfold parallel
-  -- have K₉: perm_convex.edge_nd₁₄.reverse.toProj = qdr_cvx.edge_nd₁₂.toProj := by rfl
-  -- have K₁₀: perm_convex.edge_nd₁₄.reverse.toProj = perm_convex.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
-  -- have K₈: perm_convex.edge_nd₂₃.toProj = qdr_cvx.edge_nd₃₄.toProj := by rfl
+  -- have K₉: perm_convex.edgeND₁₄.reverse.toProj = qdr_cvx.edgeND₁₂.toProj := by rfl
+  -- have K₁₀: perm_convex.edgeND₁₄.reverse.toProj = perm_convex.edgeND₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
+  -- have K₈: perm_convex.edgeND₂₃.toProj = qdr_cvx.edgeND₃₄.toProj := by rfl
   -- rw [K₁₀] at K₉
   -- unfold parallel at para₁
   -- unfold parallel at para₂
   -- constructor
-  -- have key: qdr_cvx.edge_nd₁₂.toProj = qdr_cvx.edge_nd₃₄.toProj := by
+  -- have key: qdr_cvx.edgeND₁₂.toProj = qdr_cvx.edgeND₃₄.toProj := by
   --   rw [K₉.symm, K₈.symm]
   --   exact para₂
   -- exact key
@@ -1039,24 +1039,24 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edge_nd₁₄ ∥ q
   -- exact qdr_cvx.not_collinear₄₁₂
 
 /- Given four points ABCD and Quadrilateral ABCD IsConvex, and AD ∥ BC and AD = BC, Quadrilateral ABCD is a Parallelogram_nd. -/
--- theorem qdr_cvx_is_prg_nd_of_para_eq_length'_variant (h₁ : (SEG_nd A D (QDR_cvx A B C D nd cvx).nd₁₄.out) ∥ (SEG_nd B C (QDR_cvx A B C D nd cvx).nd₂₃.out)) (h₂ : (QDR_cvx A B C D nd cvx).edge_nd₁₄.length = (QDR_cvx A B C D nd cvx).edge_nd₂₃.length) : (QuadrilateralND.mk_nd nd) IsParallelogram_nd := by
+-- theorem qdr_cvx_is_prg_nd_of_para_eq_length'_variant (h₁ : (SEG_nd A D (QDR_cvx A B C D nd cvx).nd₁₄.out) ∥ (SEG_nd B C (QDR_cvx A B C D nd cvx).nd₂₃.out)) (h₂ : (QDR_cvx A B C D nd cvx).edgeND₁₄.length = (QDR_cvx A B C D nd cvx).edgeND₂₃.length) : (QuadrilateralND.mk_nd nd) IsParallelogram_nd := by
 --    unfold QuadrilateralND.IsParallelogram_nd
 --    constructor
 --    let perm_convex := Quadrilateral_cvx.mk_is_convex (QDR_cvx A B C D nd cvx).perm_is_convex
---    have K₁: perm_convex.edge_nd₁₂.toProj = (QDR_cvx A B C D nd cvx).edge_nd₂₃.toProj := by rfl
---    have K₂: perm_convex.edge_nd₁₂.1.length = (QDR_cvx A B C D nd cvx).edge_nd₂₃.1.length := by rfl
---    have j₂: perm_convex.edge_nd₃₄ = (QDR_cvx A B C D nd cvx).edge_nd₁₄.reverse := by rfl
---    have K₃: perm_convex.edge_nd₃₄.toProj = (QDR_cvx A B C D nd cvx).edge_nd₁₄.toProj := by
+--    have K₁: perm_convex.edgeND₁₂.toProj = (QDR_cvx A B C D nd cvx).edgeND₂₃.toProj := by rfl
+--    have K₂: perm_convex.edgeND₁₂.1.length = (QDR_cvx A B C D nd cvx).edgeND₂₃.1.length := by rfl
+--    have j₂: perm_convex.edgeND₃₄ = (QDR_cvx A B C D nd cvx).edgeND₁₄.reverse := by rfl
+--    have K₃: perm_convex.edgeND₃₄.toProj = (QDR_cvx A B C D nd cvx).edgeND₁₄.toProj := by
 --      rw [j₂]
 --      apply SegND.toProj_of_rev_eq_toProj
---    have K₄: perm_convex.edge_nd₃₄.1.length = (QDR_cvx A B C D nd cvx).edge_nd₁₄.1.length := by
+--    have K₄: perm_convex.edgeND₃₄.1.length = (QDR_cvx A B C D nd cvx).edgeND₁₄.1.length := by
 --      rw [j₂]
 --      apply SegND.length_of_rev_eq_length
---    have H₁: perm_convex.edge_nd₁₂.toProj = perm_convex.edge_nd₃₄.toProj := by
+--    have H₁: perm_convex.edgeND₁₂.toProj = perm_convex.edgeND₃₄.toProj := by
 --      rw [K₁, K₃]
 --      unfold parallel at h₁
 --      exact h₁.symm
---    have H₂: perm_convex.edge_nd₁₂.1.length = perm_convex.edge_nd₃₄.1.length := by
+--    have H₂: perm_convex.edgeND₁₂.1.length = perm_convex.edgeND₃₄.1.length := by
 --      rw [K₂, K₄]
 --      exact h₂.symm
 --    have H: perm_convex.IsParallelogram_nd := qdr_cvx_is_prg_nd_of_para_eq_length perm_convex H₁ H₂
@@ -1066,14 +1066,14 @@ theorem qdr_cvx_is_prg_nd_of_para_eq_length' (h₁ : qdr_cvx.edge_nd₁₄ ∥ q
 --    unfold QuadrilateralND.IsParallelogram_para at para
 --    rcases para with ⟨para₁, para₂⟩
 --    unfold parallel
---    have K₉: perm_convex.edge_nd₁₄.reverse.toProj = (QDR_cvx A B C D nd cvx).edge_nd₁₂.toProj := by rfl
---    have K₁₀: perm_convex.edge_nd₁₄.reverse.toProj = perm_convex.edge_nd₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
---    have K₈: perm_convex.edge_nd₂₃.toProj = (QDR_cvx A B C D nd cvx).edge_nd₃₄.toProj := by rfl
+--    have K₉: perm_convex.edgeND₁₄.reverse.toProj = (QDR_cvx A B C D nd cvx).edgeND₁₂.toProj := by rfl
+--    have K₁₀: perm_convex.edgeND₁₄.reverse.toProj = perm_convex.edgeND₁₄.toProj := by apply SegND.toProj_of_rev_eq_toProj
+--    have K₈: perm_convex.edgeND₂₃.toProj = (QDR_cvx A B C D nd cvx).edgeND₃₄.toProj := by rfl
 --    rw [K₁₀] at K₉
 --    unfold parallel at para₁
 --    unfold parallel at para₂
 --    constructor
---    have key: (QDR_cvx A B C D nd cvx).edge_nd₁₂.toProj = (QDR_cvx A B C D nd cvx).edge_nd₃₄.toProj := by
+--    have key: (QDR_cvx A B C D nd cvx).edgeND₁₂.toProj = (QDR_cvx A B C D nd cvx).edgeND₃₄.toProj := by
 --      rw [K₉.symm, K₈.symm]
 --      exact para₂
 --    exact key

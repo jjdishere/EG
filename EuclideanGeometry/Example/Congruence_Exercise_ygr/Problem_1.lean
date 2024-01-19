@@ -24,8 +24,8 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   -- $A, E$ do not lie on $l$.
   A : Plane
   E : Plane
-  ABC_nd : ¬collinear A B C
-  EDF_nd : ¬collinear E D F
+  ABC_nd : ¬Collinear A B C
+  EDF_nd : ¬Collinear E D F
   -- need A and E be at the same side of l!!
   A_side : IsOnLeftSide A (SEG_nd B F)
   E_side : IsOnLeftSide E (SEG_nd B F)
@@ -34,11 +34,11 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   -- $BC = DE$
   h₂ : (SEG B C).length = (SEG D E).length
 attribute [instance] Setting1.B_ne_F
-lemma hnd₁ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ collinear e.B e.A e.C := by
-  apply flip_collinear_fst_snd.mt
+lemma hnd₁ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ Collinear e.B e.A e.C := by
+  apply Collinear.perm₂₁₃.mt
   exact e.ABC_nd
-lemma hnd₂ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ collinear e.D e.F e.E := by
-  apply perm_collinear_trd_fst_snd.mt
+lemma hnd₂ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ Collinear e.D e.F e.E := by
+  apply Collinear.perm₃₁₂.mt
   exact e.EDF_nd
 instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.A e.B := ⟨(ne_of_not_collinear hnd₁).2.2⟩
 instance D_ne_E {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.E := ⟨(ne_of_not_collinear hnd₂).2.1⟩

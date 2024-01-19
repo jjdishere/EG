@@ -13,7 +13,7 @@ namespace Shan_Problem_1_1
 Prove that $\angle DAE = (\angle CBA - \angle ACB) / 2$. -/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -50,7 +50,7 @@ such that $\angle EBC = \angle BCD$.
 Prove that $\angle CDA = \angle BEA$. -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {hnd : ¬ collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
+variable {A B C : P} {hnd : ¬ Collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
 -- Claim: $B \ne A$ and $C \ne A$ and $B \ne C$. This is because vertices of nondegenerate triangles are distinct.
 lemma B_ne_a : B ≠ A := (ne_of_not_collinear hnd).2.2
 lemma c_ne_a : C ≠ A := (ne_of_not_collinear hnd).2.1.symm
@@ -59,7 +59,7 @@ lemma B_ne_C : B ≠ C := (ne_of_not_collinear hnd).1.symm
 variable {D E : P} {hd : D LiesInt (SEG_nd A B (B_ne_a (hnd := hnd))).extension} {he : E LiesInt (SEG_nd A C (c_ne_a (hnd := hnd))).extension}
 -- Claim: $E \ne B$ and $D \ne C$. This is because $E$ lies on line $AC$, but $B$ doesn't lies on $AC$; $D$ lies on line $AB$, but $C$ doesn't lies on $AB$.
 lemma e_ne_B : E ≠ B := by -- for $E \ne B$
-  have b_not_lieson_ac := (Line.lies_on_line_of_pt_pt_iff_collinear (_h := ⟨ c_ne_a (hnd := hnd)⟩) B).mp.mt (flip_collinear_snd_trd.mt hnd) -- $B$ doesn't lies on line $AC$ because $A, B, C$ not collinear
+  have b_not_lieson_ac := (Line.lies_on_line_of_pt_pt_iff_collinear (_h := ⟨ c_ne_a (hnd := hnd)⟩) B).mp.mt (Collinear.perm₁₃₂.mt hnd) -- $B$ doesn't lies on line $AC$ because $A, B, C$ not collinear
   have e_lieson_ac := SegND.lies_on_toLine_of_lies_on_extn (Ray.lies_on_of_lies_int he) -- $E$ lieson line $AC$ because $E$ lies in the extension of $AC$
   exact ne_of_lieson_and_not_lieson e_lieson_ac b_not_lieson_ac -- $E \ne B$ because $E$ lies on line $AC$, but $B$ doesn't lies on line $AC$
 lemma d_ne_c : D ≠ C := by -- for $D \ne C$
@@ -89,9 +89,9 @@ theorem Shan_Problem_1_2 : ∠ C D A (d_ne_c (hnd := hnd) (hd := hd)).symm (d_ne
   -- $\angle CBD = \angle ECB$
   have ang₂ : ∠ C B D (B_ne_C (hnd := hnd)).symm d_ne_B = ∠ E C B e_ne_C (B_ne_C (hnd := hnd)) := sorry
   -- $C,B,D$ are not collinear
-  have not_coli_cbd : ¬ collinear C B D := sorry
+  have not_coli_cbd : ¬ Collinear C B D := sorry
   -- $B,C,E$ are not collinear
-  have not_coli_bec : ¬ collinear B C E := sorry
+  have not_coli_bec : ¬ Collinear B C E := sorry
   -- $\triangle CBD \cong \triangle BCE$
   have iso : (TRI_nd C B D not_coli_cbd) IsCongrTo (TRI_nd B C E not_coli_bec) := sorry
   -- $\angle CDB == \angle CDA$

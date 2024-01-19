@@ -149,7 +149,7 @@ In this file, we define the relative positions of points on rays
 
   Definitions :
     (defn) collinear_of_nd : Prop -- Given three distinct points (A B C : P), return whether the three points are collinear, i.e. whether (VEC A B).toProj = (VEC A C).toProj
-    (defn) collinear : Prop -- Given three points (A B C : P), return whether they are collinear; if at least two of them are equal, then they are considered automatically collinear.
+    (defn) Collinear : Prop -- Given three points (A B C : P), return whether they are collinear; if at least two of them are equal, then they are considered automatically collinear.
   
   Theorems :
     collinear_of_vec_eq_smul_vec -- Given three points (A B C : P), if VEC A C = t ⬝ VEC A B for some t ∈ ℝ, then A B C are collinear
