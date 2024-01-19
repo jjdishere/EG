@@ -177,141 +177,6 @@ theorem le_of_HAHAHA {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesO
     simp only [this, h, neg_zero]
   simp only [this, le_refl]
 
--- # Position Relations to Order Relations
--- linear order and LiesInt Seg
-theorem HOHOHO_of_lies_int_seg_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) (a_le_c : lelem A ha ≤ lelem C hc) : ((lelem A ha) < (lelem B hb)) ∧ ((lelem B hb) < (lelem C hc)) := by
-  have a_ne_c : A ≠ C := by
-    by_contra h'
-    simp only [h'] at hac
-    have : C ≠ C := by exact (Seg.lies_int_iff.mp hac).1
-    contradiction
-  have : lelem A ha ≠ lelem C hc := by
-    simp only [ne_eq, Subtype.mk.injEq, a_ne_c, not_false_eq_true]
-  have : lelem A ha < lelem C hc := by
-    apply lt_of_le_of_ne a_le_c this
-  rcases (HAHAHA_of_lt ha hc this) with ⟨x1, ⟨x1pos, hx1⟩⟩
-  rcases (Seg.lies_int_iff.mp hac) with ⟨_, ⟨x2, ⟨x2pos, ⟨x2lt1, hx2⟩⟩⟩⟩
-  have : (SEG A C).toVec = (VEC A C) := by simp only [seg_toVec_eq_vec]
-  simp only [this] at hx2
-  constructor
-  · apply lt_of_HAHAHA ha hb
-    use x2 * x1
-    constructor
-    · positivity
-    · simp only [mul_smul, hx1.symm]
-      exact hx2
-  · apply lt_of_HAHAHA hb hc
-    use (1 - x2) * x1
-    constructor
-    · simp only [gt_iff_lt, x1pos, mul_pos_iff_of_pos_right, sub_pos, x2lt1]
-    · simp only [mul_smul, hx1.symm]
-      calc
-      _= (VEC A C) - (VEC A B) := by simp only [vec_sub_vec]
-      _= 1 • (VEC A C) - x2 • (VEC A C) := by congr 1; simp only [one_smul]
-      _= 1 • (VEC A C) + (- x2) • (VEC A C) := by simp only [one_smul, neg_smul]; exact rfl
-      _= (1 + (-x2)) • (VEC A C) := by symm; simp only [add_smul 1 (-x2) (VEC A C), one_smul, neg_smul]
-      _= _ := by congr 1;
-
-theorem ord_of_lies_int_seg {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) : (((lelem A ha) < (lelem B hb)) ∧ ((lelem B hb) < (lelem C hc))) ∨ (((lelem A ha) > (lelem B hb)) ∧ ((lelem B hb) > (lelem C hc))) := by
-  have : lelem A ha ≠ lelem C hc := by
-    have a_ne_c : A ≠ C := by
-      by_contra h'
-      simp only [h'] at hac
-      have : C ≠ C := by exact (Seg.lies_int_iff.mp hac).1
-      contradiction
-    simp only [ne_eq, Subtype.mk.injEq, a_ne_c, not_false_eq_true]
-  have : (lelem A ha ≤ lelem C hc) ∨ (lelem C hc ≤ lelem A ha) := le_total (lelem A ha) (lelem C hc)
-  rcases this with (a_le_c | c_le_a)
-  · left
-    apply HOHOHO_of_lies_int_seg_and_le ha hb hc hac a_le_c
-  · right
-    have : lelem C hc < lelem B hb ∧ lelem B hb < lelem A ha := by
-      apply HOHOHO_of_lies_int_seg_and_le hc hb ha _ c_le_a
-      exact Seg.lies_int_rev_iff_lies_int.mp hac
-    simp only [gt_iff_lt, this, and_self]
-
-theorem lt_iff_lt_of_lies_int_seg₁₃ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) : (lelem A ha) < (lelem B hb) ↔ (lelem B hb) < (lelem C hc) := by
-  have : (((lelem A ha) < (lelem B hb)) ∧ ((lelem B hb) < (lelem C hc))) ∨ (((lelem A ha) > (lelem B hb)) ∧ ((lelem B hb) > (lelem C hc))) := ord_of_lies_int_seg ha hb hc hac
-  constructor
-  · rintro h1; by_contra h2; absurd this; push_neg
-    constructor
-    · simp only [h1, h2, not_false_eq_true, forall_true_left]; exact le_of_not_lt h2
-    · simp only [gt_iff_lt, (not_lt_of_le (le_of_lt h1)), IsEmpty.forall_iff]
-  · rintro h1; by_contra h2; absurd this; push_neg
-    constructor
-    · rintro h3; contradiction
-    · rintro _; exact le_of_lt h1
-
-
-theorem lt_iff_lt_of_lies_int_seg₁₂ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) : (lelem A ha) < (lelem B hb) ↔ (lelem A ha) < (lelem C hc) := by
-  have : (((lelem A ha) < (lelem B hb)) ∧ ((lelem B hb) < (lelem C hc))) ∨ (((lelem A ha) > (lelem B hb)) ∧ ((lelem B hb) > (lelem C hc))) := ord_of_lies_int_seg ha hb hc hac
-  constructor
-  · rintro h1; by_contra h2; absurd this; push_neg
-    constructor
-    · rintro _; by_contra h3; absurd h2; exact lt_trans h1 (lt_of_not_le h3)
-    · simp only [gt_iff_lt, not_lt_of_le (le_of_lt h1), IsEmpty.forall_iff]
-  · by_contra h3; push_neg at h3
-    rcases this with (hl | hr)
-    · absurd hl; push_neg at hl; simp only [not_and]; rintro h4; exfalso; absurd h4; exact not_lt_of_le h3.2
-    · have : lelem A ha > lelem C hc := gt_trans hr.1 hr.2
-      have : ¬ lelem A ha < lelem C hc := not_lt_of_le (le_of_lt (lt_trans hr.2 hr.1))
-      absurd this; exact h3.1
-
-theorem lt_iff_lt_of_lies_int_seg₂₃ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) : (lelem A ha) < (lelem C hc) ↔ (lelem B hb) < (lelem C hc) := by
-  simp only [(lt_iff_lt_of_lies_int_seg₁₂ ha hb hc hac).symm,
-    (lt_iff_lt_of_lies_int_seg₁₃ ha hb hc hac)]
-
--- linear order and LiesOn seg
-theorem HOHOHO_of_lies_on_seg_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesOn (SEG A C)) (a_le_c : lelem A ha ≤ lelem C hc) : ((lelem A ha) ≤ (lelem B hb)) ∧ ((lelem B hb) ≤ (lelem C hc)) := by
-  rcases eq_or_ne B A with (heq | h1)
-  simp only [heq, le_refl, a_le_c, and_self]
-  rcases eq_or_ne B C with (heq | h2)
-  simp only [heq, a_le_c, le_refl, and_self]
-  have : B LiesInt (SEG A C) := by
-    refine' ⟨hac, h1, h2⟩
-  exact ⟨le_of_lt (HOHOHO_of_lies_int_seg_and_le ha hb hc this a_le_c).1, le_of_lt (HOHOHO_of_lies_int_seg_and_le ha hb hc this a_le_c).2⟩
-
-theorem ord_of_lies_on_seg {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := by
-  have : (lelem A ha ≤ lelem C hc) ∨ (lelem C hc ≤ lelem A ha) := le_total (lelem A ha) (lelem C hc)
-  rcases this with (a_le_c | c_le_a)
-  · left
-    exact HOHOHO_of_lies_on_seg_and_le ha hb hc h a_le_c
-  · right
-    have : lelem C hc ≤ lelem B hb ∧ lelem B hb ≤ lelem A ha := by
-      apply HOHOHO_of_lies_on_seg_and_le hc hb ha _ c_le_a
-      exact Seg.lies_on_rev_iff_lies_on.mp h
-    simp only [ge_iff_le, this, and_self]
-
-theorem le_of_lies_on_seg_and_lt₃₁ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h1 : lelem A ha < lelem B hb) : lelem B hb ≤ lelem C hc := by
-  have : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := ord_of_lies_on_seg ha hb hc h
-  rcases this with (hl | hr)
-  · exact hl.2
-  · exfalso; absurd hr.1; exact not_le_of_lt h1
-
-theorem lt_of_lies_on_seg_and_lt₂₁ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h1 : lelem A ha < lelem B hb) : lelem A ha < lelem C hc := lt_of_lt_of_le h1 (le_of_lies_on_seg_and_lt₃₁ ha hb hc h h1)
-
-theorem le_of_lies_on_seg_and_lt₁₃ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h3 : lelem B hb < lelem C hc) : lelem A ha ≤ lelem B hb := by
-  have : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := ord_of_lies_on_seg ha hb hc h
-  rcases this with (hl | hr)
-  · exact hl.1
-  · exfalso; absurd hr.2; exact not_le_of_lt h3
-
-theorem lt_of_lies_on_seg_and_lt₂₃ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h3 : lelem B hb < lelem C hc) : lelem A ha < lelem C hc := lt_of_le_of_lt (le_of_lies_on_seg_and_lt₁₃ ha hb hc h h3) h3
-
-theorem le_of_lies_on_seg_and_le₁₂ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h2 : lelem A ha ≤ lelem C hc) : lelem A ha ≤ lelem B hb := by
-  have : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := ord_of_lies_on_seg ha hb hc h
-  rcases this with (hl | hr)
-  · exact hl.1
-  · exact le_trans h2 hr.2
-
-theorem le_of_lies_on_seg_and_le₃₂ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h2 : lelem A ha ≤ lelem C hc) : lelem B hb ≤ lelem C hc := by
-  have : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := ord_of_lies_on_seg ha hb hc h
-  rcases this with (hl | hr)
-  · exact hl.2
-  · exact le_trans hr.1 h2
-
--- linear order and lies int ray
-theorem HOHOHO : 1 = 1 := sorry
 -- # Order Relations to Position Relations
 -- linear order and LiesInt Seg
 theorem lies_int_seg_of_lt_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_lt_b : lelem A ha < lelem B hb) (b_lt_c : lelem B hb < lelem C hc) : B LiesInt (SEG A C) := by
@@ -515,6 +380,193 @@ theorem lies_on_seg_ext_of_gt_and_ge {Dl : DirLine P} {A B C : P} (ha : A LiesOn
     have : (VEC C B) = - (VEC B C) := by simp only [neg_vec]
     simp only [this, neg_inj, hx2]
 
+-- # Position Relations to Order Relations
+-- linear order and LiesInt Seg
+theorem HOHOHO_of_lies_int_seg_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) (a_le_c : lelem A ha ≤ lelem C hc) : ((lelem A ha) < (lelem B hb)) ∧ ((lelem B hb) < (lelem C hc)) := by
+  have a_ne_c : A ≠ C := by
+    by_contra h'
+    simp only [h'] at hac
+    have : C ≠ C := by exact (Seg.lies_int_iff.mp hac).1
+    contradiction
+  have : lelem A ha ≠ lelem C hc := by
+    simp only [ne_eq, Subtype.mk.injEq, a_ne_c, not_false_eq_true]
+  have : lelem A ha < lelem C hc := by
+    apply lt_of_le_of_ne a_le_c this
+  rcases (HAHAHA_of_lt ha hc this) with ⟨x1, ⟨x1pos, hx1⟩⟩
+  rcases (Seg.lies_int_iff.mp hac) with ⟨_, ⟨x2, ⟨x2pos, ⟨x2lt1, hx2⟩⟩⟩⟩
+  have : (SEG A C).toVec = (VEC A C) := by simp only [seg_toVec_eq_vec]
+  simp only [this] at hx2
+  constructor
+  · apply lt_of_HAHAHA ha hb
+    use x2 * x1
+    constructor
+    · positivity
+    · simp only [mul_smul, hx1.symm]
+      exact hx2
+  · apply lt_of_HAHAHA hb hc
+    use (1 - x2) * x1
+    constructor
+    · simp only [gt_iff_lt, x1pos, mul_pos_iff_of_pos_right, sub_pos, x2lt1]
+    · simp only [mul_smul, hx1.symm]
+      calc
+      _= (VEC A C) - (VEC A B) := by simp only [vec_sub_vec]
+      _= 1 • (VEC A C) - x2 • (VEC A C) := by congr 1; simp only [one_smul]
+      _= 1 • (VEC A C) + (- x2) • (VEC A C) := by simp only [one_smul, neg_smul]; exact rfl
+      _= (1 + (-x2)) • (VEC A C) := by symm; simp only [add_smul 1 (-x2) (VEC A C), one_smul, neg_smul]
+      _= _ := by congr 1;
+
+theorem ord_of_lies_int_seg {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) : (((lelem A ha) < (lelem B hb)) ∧ ((lelem B hb) < (lelem C hc))) ∨ (((lelem A ha) > (lelem B hb)) ∧ ((lelem B hb) > (lelem C hc))) := by
+  have : lelem A ha ≠ lelem C hc := by
+    have a_ne_c : A ≠ C := by
+      by_contra h'
+      simp only [h'] at hac
+      have : C ≠ C := by exact (Seg.lies_int_iff.mp hac).1
+      contradiction
+    simp only [ne_eq, Subtype.mk.injEq, a_ne_c, not_false_eq_true]
+  have : (lelem A ha ≤ lelem C hc) ∨ (lelem C hc ≤ lelem A ha) := le_total (lelem A ha) (lelem C hc)
+  rcases this with (a_le_c | c_le_a)
+  · left
+    apply HOHOHO_of_lies_int_seg_and_le ha hb hc hac a_le_c
+  · right
+    have : lelem C hc < lelem B hb ∧ lelem B hb < lelem A ha := by
+      apply HOHOHO_of_lies_int_seg_and_le hc hb ha _ c_le_a
+      exact Seg.lies_int_rev_iff_lies_int.mp hac
+    simp only [gt_iff_lt, this, and_self]
+
+theorem lt_iff_lt_of_lies_int_seg₁₃ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) : (lelem A ha) < (lelem B hb) ↔ (lelem B hb) < (lelem C hc) := by
+  have : (((lelem A ha) < (lelem B hb)) ∧ ((lelem B hb) < (lelem C hc))) ∨ (((lelem A ha) > (lelem B hb)) ∧ ((lelem B hb) > (lelem C hc))) := ord_of_lies_int_seg ha hb hc hac
+  constructor
+  · rintro h1; by_contra h2; absurd this; push_neg
+    constructor
+    · simp only [h1, h2, not_false_eq_true, forall_true_left]; exact le_of_not_lt h2
+    · simp only [gt_iff_lt, (not_lt_of_le (le_of_lt h1)), IsEmpty.forall_iff]
+  · rintro h1; by_contra h2; absurd this; push_neg
+    constructor
+    · rintro h3; contradiction
+    · rintro _; exact le_of_lt h1
+
+theorem lt_iff_lt_of_lies_int_seg₁₂ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) : (lelem A ha) < (lelem B hb) ↔ (lelem A ha) < (lelem C hc) := by
+  have : (((lelem A ha) < (lelem B hb)) ∧ ((lelem B hb) < (lelem C hc))) ∨ (((lelem A ha) > (lelem B hb)) ∧ ((lelem B hb) > (lelem C hc))) := ord_of_lies_int_seg ha hb hc hac
+  constructor
+  · rintro h1; by_contra h2; absurd this; push_neg
+    constructor
+    · rintro _; by_contra h3; absurd h2; exact lt_trans h1 (lt_of_not_le h3)
+    · simp only [gt_iff_lt, not_lt_of_le (le_of_lt h1), IsEmpty.forall_iff]
+  · by_contra h3; push_neg at h3
+    rcases this with (hl | hr)
+    · absurd hl; push_neg at hl; simp only [not_and]; rintro h4; exfalso; absurd h4; exact not_lt_of_le h3.2
+    · have : lelem A ha > lelem C hc := gt_trans hr.1 hr.2
+      have : ¬ lelem A ha < lelem C hc := not_lt_of_le (le_of_lt (lt_trans hr.2 hr.1))
+      absurd this; exact h3.1
+
+theorem lt_iff_lt_of_lies_int_seg₂₃ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) : (lelem A ha) < (lelem C hc) ↔ (lelem B hb) < (lelem C hc) := by
+  simp only [(lt_iff_lt_of_lies_int_seg₁₂ ha hb hc hac).symm,
+    (lt_iff_lt_of_lies_int_seg₁₃ ha hb hc hac)]
+
+-- linear order and LiesOn seg
+theorem HOHOHO_of_lies_on_seg_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesOn (SEG A C)) (a_le_c : lelem A ha ≤ lelem C hc) : ((lelem A ha) ≤ (lelem B hb)) ∧ ((lelem B hb) ≤ (lelem C hc)) := by
+  rcases eq_or_ne B A with (heq | h1)
+  simp only [heq, le_refl, a_le_c, and_self]
+  rcases eq_or_ne B C with (heq | h2)
+  simp only [heq, a_le_c, le_refl, and_self]
+  have : B LiesInt (SEG A C) := by
+    refine' ⟨hac, h1, h2⟩
+  exact ⟨le_of_lt (HOHOHO_of_lies_int_seg_and_le ha hb hc this a_le_c).1, le_of_lt (HOHOHO_of_lies_int_seg_and_le ha hb hc this a_le_c).2⟩
+
+theorem ord_of_lies_on_seg {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := by
+  have : (lelem A ha ≤ lelem C hc) ∨ (lelem C hc ≤ lelem A ha) := le_total (lelem A ha) (lelem C hc)
+  rcases this with (a_le_c | c_le_a)
+  · left
+    exact HOHOHO_of_lies_on_seg_and_le ha hb hc h a_le_c
+  · right
+    have : lelem C hc ≤ lelem B hb ∧ lelem B hb ≤ lelem A ha := by
+      apply HOHOHO_of_lies_on_seg_and_le hc hb ha _ c_le_a
+      exact Seg.lies_on_rev_iff_lies_on.mp h
+    simp only [ge_iff_le, this, and_self]
+
+theorem le_of_lies_on_seg_and_lt₃₁ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h1 : lelem A ha < lelem B hb) : lelem B hb ≤ lelem C hc := by
+  have : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := ord_of_lies_on_seg ha hb hc h
+  rcases this with (hl | hr)
+  · exact hl.2
+  · exfalso; absurd hr.1; exact not_le_of_lt h1
+
+theorem lt_of_lies_on_seg_and_lt₂₁ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h1 : lelem A ha < lelem B hb) : lelem A ha < lelem C hc := lt_of_lt_of_le h1 (le_of_lies_on_seg_and_lt₃₁ ha hb hc h h1)
+
+theorem le_of_lies_on_seg_and_lt₁₃ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h3 : lelem B hb < lelem C hc) : lelem A ha ≤ lelem B hb := by
+  have : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := ord_of_lies_on_seg ha hb hc h
+  rcases this with (hl | hr)
+  · exact hl.1
+  · exfalso; absurd hr.2; exact not_le_of_lt h3
+
+theorem lt_of_lies_on_seg_and_lt₂₃ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h3 : lelem B hb < lelem C hc) : lelem A ha < lelem C hc := lt_of_le_of_lt (le_of_lies_on_seg_and_lt₁₃ ha hb hc h h3) h3
+
+theorem le_of_lies_on_seg_and_le₁₂ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h2 : lelem A ha ≤ lelem C hc) : lelem A ha ≤ lelem B hb := by
+  have : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := ord_of_lies_on_seg ha hb hc h
+  rcases this with (hl | hr)
+  · exact hl.1
+  · exact le_trans h2 hr.2
+
+theorem le_of_lies_on_seg_and_le₃₂ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h2 : lelem A ha ≤ lelem C hc) : lelem B hb ≤ lelem C hc := by
+  have : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := ord_of_lies_on_seg ha hb hc h
+  rcases this with (hl | hr)
+  · exact hl.2
+  · exact le_trans hr.1 h2
+
+-- linear order and lies int ray
+theorem lt_iff_lt_of_lies_int_ray {Dl : DirLine P} {A B C : P} [hh : PtNe A C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesInt (RAY A C)) : lelem A ha < lelem C hc ↔ lelem A ha < lelem B hb := by
+  rcases Ray.lies_int_iff.mp h with ⟨x2, ⟨x2pos, hx2⟩⟩
+  rcases Ray.lies_int_iff.mp (Ray.snd_pt_lies_int_mk_pt_pt A C) with ⟨x1, ⟨x1pos, hx1⟩⟩
+  have h1 : (VEC A C) = (x1 / x2) • (VEC A B) := by
+    calc
+    _= x1 • (RAY A C).toDir.unitVec := hx1
+    _= ((x1 / x2) * x2) • (RAY A C).toDir.unitVec := by
+      congr 1; symm; apply div_mul_cancel_of_imp
+      by_contra h'; push_neg at h'; linarith
+    _= (x1 / x2) • (x2 • (RAY A C).toDir.unitVec) := by apply mul_smul
+    _= _ := by congr 1; symm; exact hx2
+  have h2 : (VEC A B) = (x2 / x1) • (VEC A C) := by
+    calc
+    _= x2 • (RAY A C).toDir.unitVec := hx2
+    _= ((x2 / x1) * x1) • (RAY A C).toDir.unitVec := by
+      congr 1; symm; apply div_mul_cancel_of_imp
+      by_contra h'; push_neg at h'; linarith
+    _= (x2 / x1) • (x1 • (RAY A C).toDir.unitVec) := by apply mul_smul
+    _= _ := by congr 1; symm; exact hx1
+  constructor
+  · rintro h1; rcases HAHAHA_of_lt ha hc h1 with ⟨x3, ⟨x3pos, hx3⟩⟩
+    apply lt_of_HAHAHA; use (x2 / x1) * x3
+    constructor
+    · positivity
+    · symm;
+      calc
+      _= (x2 / x1) • (x3 • Dl.toDir.unitVec) := by apply mul_smul
+      _= (x2 / x1) • (VEC A C) := by simp only [hx3]
+      _= _ := by symm; exact h2
+  · rintro h2; rcases HAHAHA_of_lt ha hb h2 with ⟨x3, ⟨x3pos, hx3⟩⟩
+    apply lt_of_HAHAHA; use (x1 / x2) * x3
+    constructor
+    · positivity
+    · symm;
+      calc
+      _= (x1 / x2) • (x3 • Dl.toDir.unitVec) := by apply mul_smul
+      _= (x1 / x2) • (VEC A B) := by simp only [hx3]
+      _= _ := by symm; exact h1
+
+-- linear order and lies on ray
+theorem lt_of_lies_on_ray_and_lt {Dl : DirLine P} {A B C : P} [hh : PtNe A C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (RAY A C)) (h1 : lelem A ha < lelem B hb) : lelem A ha < lelem C hc := by
+  have : lelem A ha ≠ lelem B hb := ne_of_lt h1
+  have : B ≠ A := by symm; exact (ne_iff_ne_as_line_elem ha hb).mpr this
+  have : B LiesInt (RAY A C) := by refine' ⟨h, this⟩
+  exact (lt_iff_lt_of_lies_int_ray ha hb hc this).mpr h1
+
+theorem le_of_lies_on_ray_and_lt {Dl : DirLine P} {A B C : P} [hh : PtNe A C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (RAY A C)) (h1 : lelem A ha < lelem C hc) : lelem A ha ≤ lelem B hb := by
+  rcases eq_or_ne A B with (heq | hne)
+  · simp only [heq, le_refl]
+  · have : B LiesInt (RAY A C) := by refine' ⟨h, hne.symm⟩
+    exact le_of_lt ((lt_iff_lt_of_lies_int_ray ha hb hc this).mp h1)
+
+-- linear order and LiesInt Seg.ext
+-- linear order and LiesOn Seg.ext
 end linear_order
 end DirLine
 
