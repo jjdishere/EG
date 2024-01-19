@@ -1,9 +1,6 @@
-import EuclideanGeometry.Foundation.Axiom.Position.Orientation
-import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
 import EuclideanGeometry.Foundation.Axiom.Linear.Line_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
-import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular
 import EuclideanGeometry.Foundation.Axiom.Basic.Plane_trash
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation_trash
 

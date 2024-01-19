@@ -1,5 +1,4 @@
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
-import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular_trash
 
 noncomputable section
 namespace EuclidGeom
