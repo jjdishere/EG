@@ -71,36 +71,6 @@ namespace DirLine
 section linear_order
 -- # preparatory theorems
 abbrev lelem (A : P) {l : DirLine P} (ha : A LiesOn l) : l.carrier.Elem := ⟨A, ha⟩
-
-lemma MEOW_total {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) : lelem A ha ≤ lelem B hb ∨ lelem B hb ≤ lelem A ha := by
-  rcases le_total (ddist ha hb) 0 with (h1 | h2)
-  · have : 0 ≤ ddist hb ha := by
-      calc
-      _≤ - ddist ha hb := by linarith
-      _= ddist hb ha := by unfold ddist; simp only [neg_vsub_eq_vsub_rev]
-    right; exact (DirLine.le_iff_zero_le_ddist hb ha).mpr this
-  · left; exact (DirLine.le_iff_zero_le_ddist ha hb).mpr h2
-
-lemma MEOW_not_lt_of_lt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : lelem A ha < lelem B hb) : ¬ lelem B hb < lelem A ha := by
-  by_contra h1
-  have : (0 : ℝ) < ddist ha hb := (DirLine.lt_iff_zero_lt_ddist ha hb).mp h
-  have : (0 : ℝ) < ddist hb ha := (DirLine.lt_iff_zero_lt_ddist hb ha).mp h1
-  have : ddist ha hb = - ddist hb ha := by unfold ddist; simp only [neg_vsub_eq_vsub_rev]
-  linarith
-
-lemma MEOW_not_lt_of_le {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : lelem A ha ≤ lelem B hb) : ¬ lelem B hb < lelem A ha := by
-  by_contra h1
-  have : (0 : ℝ) ≤ ddist ha hb := (DirLine.le_iff_zero_le_ddist ha hb).mp h
-  have : (0 : ℝ) < ddist hb ha := (DirLine.lt_iff_zero_lt_ddist hb ha).mp h1
-  have : ddist ha hb = - ddist hb ha := by unfold ddist; simp only [neg_vsub_eq_vsub_rev]
-  linarith
-
-lemma MEOW_not_le_of_lt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : lelem A ha < lelem B hb) : ¬ lelem B hb ≤ lelem A ha := by
-  by_contra h1
-  have : (0 : ℝ) < ddist ha hb := (DirLine.lt_iff_zero_lt_ddist ha hb).mp h
-  have : (0 : ℝ) ≤ ddist hb ha := (DirLine.le_iff_zero_le_ddist hb ha).mp h1
-  have : ddist ha hb = - ddist hb ha := by unfold ddist; simp only [neg_vsub_eq_vsub_rev]
-  linarith
 -- linear order and ne
 theorem ne_iff_ne_as_line_elem {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) : (A ≠ B) ↔ (lelem A ha ≠ lelem B hb) := by
   simp only [ne_eq, Subtype.mk.injEq]
@@ -250,7 +220,7 @@ theorem ord_of_lies_int_seg {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb 
       have : C ≠ C := by exact (Seg.lies_int_iff.mp hac).1
       contradiction
     simp only [ne_eq, Subtype.mk.injEq, a_ne_c, not_false_eq_true]
-  have : (lelem A ha ≤ lelem C hc) ∨ (lelem C hc ≤ lelem A ha) := MEOW_total ha hc
+  have : (lelem A ha ≤ lelem C hc) ∨ (lelem C hc ≤ lelem A ha) := le_total (lelem A ha) (lelem C hc)
   rcases this with (a_le_c | c_le_a)
   · left
     apply HOHOHO_of_lies_int_seg_and_le ha hb hc hac a_le_c
@@ -265,9 +235,8 @@ theorem lt_iff_lt_of_lies_int_seg₁₃ {Dl : DirLine P} {A B C : P} (ha : A Lie
   constructor
   · rintro h1; by_contra h2; absurd this; push_neg
     constructor
-    · simp only [h1, h2, not_false_eq_true, forall_true_left]
-      sorry
-    · simp only [gt_iff_lt, MEOW_not_lt_of_lt ha hb h1, IsEmpty.forall_iff]
+    · simp only [h1, h2, not_false_eq_true, forall_true_left]; exact le_of_not_lt h2
+    · simp only [gt_iff_lt, (not_lt_of_le (le_of_lt h1)), IsEmpty.forall_iff]
   · rintro h1; by_contra h2; absurd this; push_neg
     constructor
     · rintro h3; contradiction
@@ -279,13 +248,13 @@ theorem lt_iff_lt_of_lies_int_seg₁₂ {Dl : DirLine P} {A B C : P} (ha : A Lie
   constructor
   · rintro h1; by_contra h2; absurd this; push_neg
     constructor
-    · rintro _; by_contra h3; absurd h2; -- exact lt_trans h1 h3
-    · simp only [gt_iff_lt, MEOW_not_lt_of_lt ha hb h1, IsEmpty.forall_iff]
+    · rintro _; by_contra h3; absurd h2; exact lt_trans h1 (lt_of_not_le h3)
+    · simp only [gt_iff_lt, not_lt_of_le (le_of_lt h1), IsEmpty.forall_iff]
   · by_contra h3; push_neg at h3
     rcases this with (hl | hr)
-    · absurd hl; push_neg at hl; simp only [not_and]; rintro h4; exfalso; absurd h4; sorry
+    · absurd hl; push_neg at hl; simp only [not_and]; rintro h4; exfalso; absurd h4; exact not_lt_of_le h3.2
     · have : lelem A ha > lelem C hc := gt_trans hr.1 hr.2
-      have : ¬ lelem A ha < lelem C hc := MEOW_not_lt_of_lt hc ha (lt_trans hr.2 hr.1)
+      have : ¬ lelem A ha < lelem C hc := not_lt_of_le (le_of_lt (lt_trans hr.2 hr.1))
       absurd this; exact h3.1
 
 theorem lt_iff_lt_of_lies_int_seg₂₃ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) : (lelem A ha) < (lelem C hc) ↔ (lelem B hb) < (lelem C hc) := by
@@ -303,7 +272,7 @@ theorem HOHOHO_of_lies_on_seg_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn
   exact ⟨le_of_lt (HOHOHO_of_lies_int_seg_and_le ha hb hc this a_le_c).1, le_of_lt (HOHOHO_of_lies_int_seg_and_le ha hb hc this a_le_c).2⟩
 
 theorem ord_of_lies_on_seg {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := by
-  have : (lelem A ha ≤ lelem C hc) ∨ (lelem C hc ≤ lelem A ha) := MEOW_total ha hc
+  have : (lelem A ha ≤ lelem C hc) ∨ (lelem C hc ≤ lelem A ha) := le_total (lelem A ha) (lelem C hc)
   rcases this with (a_le_c | c_le_a)
   · left
     exact HOHOHO_of_lies_on_seg_and_le ha hb hc h a_le_c
@@ -317,7 +286,7 @@ theorem le_of_lies_on_seg_and_lt₃₁ {Dl : DirLine P} {A B C : P} (ha : A Lies
   have : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := ord_of_lies_on_seg ha hb hc h
   rcases this with (hl | hr)
   · exact hl.2
-  · exfalso; absurd hr.1; exact MEOW_not_le_of_lt ha hb h1
+  · exfalso; absurd hr.1; exact not_le_of_lt h1
 
 theorem lt_of_lies_on_seg_and_lt₂₁ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h1 : lelem A ha < lelem B hb) : lelem A ha < lelem C hc := lt_of_lt_of_le h1 (le_of_lies_on_seg_and_lt₃₁ ha hb hc h h1)
 
@@ -325,7 +294,7 @@ theorem le_of_lies_on_seg_and_lt₁₃ {Dl : DirLine P} {A B C : P} (ha : A Lies
   have : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := ord_of_lies_on_seg ha hb hc h
   rcases this with (hl | hr)
   · exact hl.1
-  · exfalso; absurd hr.2; exact MEOW_not_le_of_lt hb hc h3
+  · exfalso; absurd hr.2; exact not_le_of_lt h3
 
 theorem lt_of_lies_on_seg_and_lt₂₃ {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) (h3 : lelem B hb < lelem C hc) : lelem A ha < lelem C hc := lt_of_le_of_lt (le_of_lies_on_seg_and_lt₁₃ ha hb hc h h3) h3
 
