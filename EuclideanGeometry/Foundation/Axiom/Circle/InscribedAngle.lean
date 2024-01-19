@@ -28,9 +28,9 @@ theorem Circle.cangle_of_chord_eq_cangle_of_toArc {ω : Circle P} (s : Chord P �
 theorem Chord.cangle_eq_pi_iff_is_diameter {ω : Circle P} (s : Chord P ω) : s.cangle.value = π ↔ Chord.IsDiameter s := by
   constructor
   · intro heq
-    have : colinear ω.center s.1.source s.1.target := colinear_of_angle_eq_pi heq
+    have : Collinear ω.center s.1.source s.1.target := collinear_of_angle_eq_pi heq
     apply diameter_iff_antipide.mpr
-    apply (Circle.antipode_iff_colinear s.1.source s.1.target  _ _).mpr (flip_colinear_fst_snd this)
+    apply (Circle.antipode_iff_collinear s.1.source s.1.target  _ _).mpr (Collinear.perm₂₁₃ this)
   intro hd
   have : ω.center LiesInt s.1 := by
     constructor

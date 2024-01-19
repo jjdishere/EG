@@ -247,28 +247,28 @@ theorem antipode_symm {A B : P} {ω : Circle P} (ha : A LiesOn ω) (hb : B LiesO
 
 theorem antipode_center_is_midpoint {A B : P} {ω : Circle P} (ha : A LiesOn ω) (hb : B LiesOn ω) (h : IsAntipode ω ha hb) : ω.center = (SEG A B).midpoint := pt_flip_center_is_midpoint h
 
-theorem antipode_iff_colinear (A B : P) {ω : Circle P} [h : PtNe B A] (ha : A LiesOn ω) (hb : B LiesOn ω) : IsAntipode ω ha hb ↔ colinear A ω.center B := by
+theorem antipode_iff_collinear (A B : P) {ω : Circle P} [h : PtNe B A] (ha : A LiesOn ω) (hb : B LiesOn ω) : IsAntipode ω ha hb ↔ Collinear A ω.center B := by
   constructor
   · intro hh
-    apply pt_flip_colinear hh
+    apply pt_flip_collinear hh
   intro hcl
   haveI : PtNe A ω.center := pt_lieson_ne_center ha
-  have hl : B LiesOn LIN ω.center A := Line.pt_pt_maximal (flip_colinear_fst_snd hcl)
+  have hl : B LiesOn LIN ω.center A := Line.pt_pt_maximal (Collinear.perm₂₁₃ hcl)
   have heq : VEC A ω.center = VEC ω.center B := by
-    apply distinct_pts_same_dist_vec_eq hl
+    apply vec_eq_dist_eq_of_lies_on_line_pt_pt_of_ptNe hl
     rw [ha, hb]
   unfold IsAntipode pt_flip
   rw [heq, eq_vadd_iff_vsub_eq]
   rfl
 
 theorem mk_pt_pt_diam_isantipode {A B : P} [h : PtNe A B] : IsAntipode (mk_pt_pt_diam A B) mk_pt_pt_diam_fst_lieson mk_pt_pt_diam_snd_lieson := by
-  have hc : colinear A (SEG A B).midpoint B := by
-    apply flip_colinear_snd_trd
+  have hc : Collinear A (SEG A B).midpoint B := by
+    apply Collinear.perm₁₃₂
     apply Line.pt_pt_linear
     show (SEG A B).midpoint LiesOn (SEG_nd A B).toLine
     apply SegND.lies_on_toLine_of_lie_on
     apply Seg.midpt_lies_on
-  exact (antipode_iff_colinear _ _ mk_pt_pt_diam_fst_lieson mk_pt_pt_diam_snd_lieson).mpr hc
+  exact (antipode_iff_collinear _ _ mk_pt_pt_diam_fst_lieson mk_pt_pt_diam_snd_lieson).mpr hc
 
 end Circle
 
@@ -352,8 +352,8 @@ protected def complement {ω : Circle P} (β : Arc P ω) : Arc P ω where
 lemma pt_liesint_not_lieson_dlin {ω : Circle P} {β : Arc P ω} {p : P} (h : p LiesInt β) : ¬ (p LiesOn (DLIN β.source β.target)) := by
   intro hl
   have hl : p LiesOn (LIN β.source β.target) := hl
-  have hco : colinear β.source β.target p := Line.pt_pt_linear hl
-  have hco' : ¬ (colinear β.source β.target p) := Circle.three_pts_lieson_circle_not_colinear (hne₂ := ⟨h.2.2⟩) (hne₃ := ⟨h.2.1.symm⟩) β.ison.1 β.ison.2 h.1.1
+  have hco : Collinear β.source β.target p := Line.pt_pt_linear hl
+  have hco' : ¬ (Collinear β.source β.target p) := Circle.three_pts_lieson_circle_not_collinear (hne₂ := ⟨h.2.2⟩) (hne₃ := ⟨h.2.1.symm⟩) β.ison.1 β.ison.2 h.1.1
   tauto
 
 theorem pt_liesint_liesonright_dlin {ω : Circle P} {β : Arc P ω} {p : P} (h : p LiesInt β) : p LiesOnRight (DLIN β.source β.target) := by
@@ -472,10 +472,10 @@ theorem diameter_iff_antipide {ω : Circle P} {s : Chord P ω} : Chord.IsDiamete
   constructor
   · unfold Chord.IsDiameter
     intro hl
-    have : colinear s.1.source s.1.target ω.center := by
+    have : Collinear s.1.source s.1.target ω.center := by
       apply Line.pt_pt_linear
       apply SegND.lies_on_toLine_of_lie_on hl
-    apply (Circle.antipode_iff_colinear s.1.source s.1.target s.2.1 s.2.2).mpr (flip_colinear_snd_trd this)
+    apply (Circle.antipode_iff_collinear s.1.source s.1.target s.2.1 s.2.2).mpr (Collinear.perm₁₃₂ this)
   unfold Circle.IsAntipode
   intro hf
   have : VEC s.1.source ω.center = VEC ω.center s.1.target := pt_flip_vec_eq hf
