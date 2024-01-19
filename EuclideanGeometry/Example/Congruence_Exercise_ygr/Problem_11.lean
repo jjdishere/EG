@@ -62,16 +62,16 @@ instance F_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : Pt
 instance E_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : PtNe e.E e.D := ⟨(ne_of_not_colinear not_colinear_DEF).2.2⟩
 
 structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting Plane where
-  not_colinear_ACB : ¬ colinear A C B := not_colinear_ACB
-  not_colinear_DEF : ¬ colinear D E F := not_colinear_DEF
+  not_colinear_ACB : ¬ Collinear A C B := not_colinear_ACB
+  not_colinear_DEF : ¬ Collinear D E F := not_colinear_DEF
 
 -- Prove that $\angle BAC = - \angle FDE$.
 theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (∠ e.B e.A e.C) = - (∠ e.F e.D e.E) := by
   have E_int_BC : e.E LiesInt (SEG e.B e.C) := by
-    apply DirLine.lies_int_of_lt_and_lt e.B_on_l e.E_on_l e.C_on_l
+    apply DirLine.lies_int_seg_of_lt_and_lt e.B_on_l e.E_on_l e.C_on_l
     exact e.B_lt_E_on_l; exact e.E_lt_C_on_l
   have C_int_EF : e.C LiesInt (SEG e.E e.F) := by
-    apply DirLine.lies_int_of_lt_and_lt e.E_on_l e.C_on_l e.F_on_l
+    apply DirLine.lies_int_seg_of_lt_and_lt e.E_on_l e.C_on_l e.F_on_l
     exact e.E_lt_C_on_l; exact e.C_lt_F_on_l
   have CB_eq_EF : (SEG e.C e.B).length = (SEG e.E e.F).length := by
     calc

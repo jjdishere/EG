@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Linear.Class
+import EuclideanGeometry.Foundation.Axiom.Linear.Collinear
 
 noncomputable section
 
@@ -583,11 +584,26 @@ theorem OVO {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (
       · right; right; exact lies_on_seg_of_ge_and_ge ha hc hb c_le_a b_le_c
     · right; left; exact lies_on_seg_of_ge_and_ge ha hb hc b_le_a c_le_b
 
+theorem OVO_1 {l : Line P} {A B C : P} (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by
+  rcases eq_or_ne A B with (a_eq_b | a_ne_b)
+  · left; simp only [a_eq_b]; apply Seg.source_lies_on
+  · haveI : PtNe A B := ⟨a_ne_b⟩
+    have h1 : A LiesOn (RAY A B).toDirLine := by sorry
+    have h2 : B LiesOn (RAY A B).toDirLine := by sorry
+    have h3 : C LiesOn (RAY A B).toDirLine := by sorry
+    exact OVO h1 h2 h3
+
+theorem OVO_2 {A B C : P} (h : Collinear A B C) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by sorry
+
 theorem QWQ {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by
   rcases OVO ha hb hc with (h1 | (h2 | h3))
   · left; refine' ⟨h1, hh1.out, hh2.out⟩
   · right; left; refine' ⟨h2, hh1.out.symm, hh3.out⟩
   · right; right; refine' ⟨h3, hh2.out.symm, hh3.out.symm⟩
+
+theorem QWQ_1 {l : Line P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by sorry
+
+theorem QWQ_2 {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (h : Collinear A B C) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by sorry
 
 end linear_order
 end DirLine
