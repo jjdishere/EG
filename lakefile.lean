@@ -1,26 +1,13 @@
 import Lake
 open Lake DSL
 
-def moreServerArgs := #[
-  "-Dpp.unicode.fun=true", -- pretty-prints `fun a ↦ b`
-  "-Dpp.proofs.withType=false",
-  "-DautoImplicit=false",
-  "-DrelaxedAutoImplicit=false"
-]
-
-def moreLeanArgs := moreServerArgs
-
 package EG where
-  moreServerArgs := moreServerArgs
-  moreLeanArgs := moreLeanArgs
-/- for leanprover/lean4:v4.4.0-rc1
   leanOptions := #[
     ⟨`pp.unicode.fun, true⟩, -- pretty-prints `fun a ↦ b`
     ⟨`pp.proofs.withType, false⟩,
     ⟨`autoImplicit, false⟩,
     ⟨`relaxedAutoImplicit, false⟩
   ]
--/
 
 @[default_target]
 lean_lib «EuclideanGeometry» {

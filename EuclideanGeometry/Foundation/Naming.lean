@@ -43,7 +43,7 @@ acute -- acute angle
 rtri -- right triangle
 obtu -- obtuse angle
 actri -- acute triangle
-col -- colinear
+col -- collinear
 cyc -- cyclic
 inter -- interior
 on -- only in the case of circle

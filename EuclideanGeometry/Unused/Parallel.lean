@@ -61,7 +61,7 @@ scoped infix : 50 " LiesOnarObj " => LinearObj.IsOnLinearObj
 
 -- Our definition of parallel for LinearObj is very general. Not only can it apply to different types of Objs, but also include degenerate cases, such as ⊆(inclusions), =(equal).
 
-def parallel' {α β: Type _} (l₁ : α) (l₂ : β) [Coe α (LinearObj P)] [Coe β (LinearObj P)] : Prop :=  LinearObj.toProj (P := P) (Coe.coe l₁) = LinearObj.toProj (P := P) (Coe.coe l₂)
+def Parallel' {α β: Type _} (l₁ : α) (l₂ : β) [Coe α (LinearObj P)] [Coe β (LinearObj P)] : Prop :=  LinearObj.toProj (P := P) (Coe.coe l₁) = LinearObj.toProj (P := P) (Coe.coe l₂)
 
 -- class PlaneFigure' (P : Type _) [EuclideanPlane P] {α : Type _} where
 
@@ -69,22 +69,22 @@ def parallel' {α β: Type _} (l₁ : α) (l₂ : β) [Coe α (LinearObj P)] [Co
 
 
 
-def parallel (l₁ l₂: LinearObj P) : Prop := l₁.toProj = l₂.toProj
+def Parallel (l₁ l₂: LinearObj P) : Prop := l₁.toProj = l₂.toProj
 
-instance : IsEquiv (LinearObj P) parallel where
+instance : IsEquiv (LinearObj P) Parallel where
   refl _ := rfl
   symm _ _ := Eq.symm
   trans _ _ _ := Eq.trans
 
-scoped infix : 50 " ParallelTo " => parallel
+scoped infix : 50 " ParallelTo " => Parallel
 
-scoped infix : 50 " ∥ " => parallel
+scoped infix : 50 " ∥ " => Parallel
 
 /- lots of trivial parallel relation of vec of 2 pt lies on Line, coercions, ... -/
 
 section parallel_theorem
 
-theorem ray_parallel_toLine_assoc_ray (ray : Ray P) :  parallel (LinearObj.ray ray) ray.toLine := sorry
+theorem ray_parallel_toLine_assoc_ray (ray : Ray P) :  Parallel (LinearObj.ray ray) ray.toLine := sorry
 
 theorem seg_parallel_toRay_assoc_seg_of_nontriv (seg_nd : SegND P) : LinearObj.seg_nd seg_nd ∥ seg_nd.toRay := sorry
 
@@ -102,17 +102,17 @@ theorem exists_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l
   have e' : SegND.toProj ⟨SEG A B, hab.2.2⟩ ≠ SegND.toProj ⟨SEG C D, hcd.2.2⟩ := by
     rw [line_toProj_eq_seg_nd_toProj_of_lies_on hab.1 hab.2.1 hab.2.2, line_toProj_eq_seg_nd_toProj_of_lies_on hcd.1 hcd.2.1 hcd.2.2]
     exact h
-  have w : ∃ x y, VEC A C = x • VEC A B + y • VEC C D := linear_combination_of_not_colinear _ e'
+  have w : ∃ x y, VEC A C = x • VEC A B + y • VEC C D := linear_combination_of_not_collinear _ e'
   rcases w with ⟨x, ⟨y, e⟩⟩
   let X := x • VEC A B +ᵥ A
   use X
   constructor
-  exact (lies_on_iff_colinear_of_ne_lies_on_lies_on hab.2.2 hab.1 hab.2.1 _).2 (colinear_of_vec_eq_smul_vec (vec_of_pt_vadd_pt_eq_vec _ _))
-  apply (lies_on_iff_colinear_of_ne_lies_on_lies_on hcd.2.2 hcd.1 hcd.2.1 _).2
+  exact (lies_on_iff_collinear_of_ne_lies_on_lies_on hab.2.2 hab.1 hab.2.1 _).2 (collinear_of_vec_eq_smul_vec (vec_of_pt_vadd_pt_eq_vec _ _))
+  apply (lies_on_iff_collinear_of_ne_lies_on_lies_on hcd.2.2 hcd.1 hcd.2.1 _).2
   have e'' : VEC C X = (-y) • VEC C D := by
     rw [← vec_sub_vec A _ _, vec_of_pt_vadd_pt_eq_vec _ _, e]
     simp
-  exact colinear_of_vec_eq_smul_vec e''
+  exact collinear_of_vec_eq_smul_vec e''
 
 theorem exists_unique_intersection_of_nonparallel_lines {l₁ l₂ : Line P} (h : ¬ (l₁ ∥ (LinearObj.line l₂))) : ∃! p : P, p LiesOn l₁ ∧ p LiesOn l₂ := by
   rcases (exists_intersection_of_nonparallel_lines h) with ⟨X, ⟨h₁, h₂⟩⟩

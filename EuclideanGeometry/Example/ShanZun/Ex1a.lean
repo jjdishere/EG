@@ -14,7 +14,7 @@ namespace Shan_Problem_1_3
 Prove that $CD = 2 \cdot CE$. -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {hnd : ¬ colinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
+variable {A B C : P} {hnd : ¬ Collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -47,7 +47,7 @@ namespace Shan_Problem_1_4
 Prove that $BD = AC + CD$.-/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -65,27 +65,27 @@ theorem Shan_Problem_1_4 : (SEG B D).length = (SEG A C).length + (SEG C D).lengt
     (SEG_nd B C B_ne_C.symm).extension.dist_of_extpoint (SEG C A).length_nonneg
   -- $DE = AC + CD$
   have de_eq_ac_plus_cd : (SEG D E).length = (SEG A C).length + (SEG C D).length := sorry
-  -- $C A E$ is not colinear
-  have cae_not_colinear : ¬ colinear C A E := sorry
+  -- $C A E$ is not collinear
+  have cae_not_collinear : ¬ Collinear C A E := sorry
   -- $\triangle CAE$ is isoceles
-  have isoceles₁ : (TRI_nd C A E cae_not_colinear).1.IsIsoceles := by
+  have isoceles₁ : (TRI_nd C A E cae_not_collinear).1.IsIsoceles := by
     rw[← Seg.length_of_rev_eq_length (seg := (SEG C E))] at ce_eq_ca
     exact ce_eq_ca
   -- Claim: $E \ne A$ and $C \ne E$
   have e_ne_a : E ≠ A := sorry
   have c_ne_e : C ≠ E := sorry
   -- $\angle EAC = \angle CEA$
-  have ang₁ : ∠ E A C e_ne_a c_ne_a = ∠ C E A c_ne_a e_ne_a.symm := (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := TRI_nd C A E cae_not_colinear)).mp isoceles₁
+  have ang₁ : ∠ E A C e_ne_a c_ne_a = ∠ C E A c_ne_a e_ne_a.symm := (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := TRI_nd C A E cae_not_collinear)).mp isoceles₁
   -- $\angle ACB = 2 \angle CEA$
   have ang₂ : ∠ A C E c_ne_a.symm c_ne_e.symm = 2 • ∠ C E A c_ne_e e_ne_a.symm := sorry
   -- Claim: $E \ne B$
   have e_ne_b : E ≠ B := sorry
   -- $\angle EBA = \angle AEB$
   have ang₃ : ∠ E B A e_ne_b A_ne_B = ∠ A E B e_ne_a.symm e_ne_b.symm := sorry
-  -- $ABE$ is not colinear
-  have abe_not_colinear : ¬ colinear A B E := sorry
+  -- $ABE$ is not collinear
+  have abe_not_collinear : ¬ Collinear A B E := sorry
   -- $\triangle ABE$ is isoceles
-  have isoceles₂ : (TRI_nd A B E abe_not_colinear).1.IsIsoceles := by
+  have isoceles₂ : (TRI_nd A B E abe_not_collinear).1.IsIsoceles := by
     apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mpr
     exact ang₃
   -- $BD = DE$

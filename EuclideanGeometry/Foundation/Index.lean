@@ -6,7 +6,7 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Class
 /- Axiom.Linear -/
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
-import EuclideanGeometry.Foundation.Axiom.Linear.Colinear
+import EuclideanGeometry.Foundation.Axiom.Linear.Collinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Line
 import EuclideanGeometry.Foundation.Axiom.Linear.Class
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
@@ -40,7 +40,7 @@ import EuclideanGeometry.Foundation.Axiom.Circle.CirclePower
 import EuclideanGeometry.Foundation.Tactic.Congruence.Attr
 import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence
 -- import EuclideanGeometry.Foundation.Tactic.Congruence.Congruence' -- `need to avoid some name collision during initialization?`
-import EuclideanGeometry.Foundation.Tactic.Colinear.perm_colinear
+import EuclideanGeometry.Foundation.Tactic.Collinear.perm_collinear
 
 /- Constuction -/
 import EuclideanGeometry.Foundation.Construction.Inversion

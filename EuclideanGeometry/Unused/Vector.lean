@@ -781,7 +781,7 @@ theorem det_eq_zero_iff_eq_smul_left (u v : Vec) (hu : u ≠ 0) : u.1 * v.2 - u.
     rcases e
     ring
 
-theorem linear_combination_of_not_colinear' {u v w : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
+theorem linear_combination_of_not_collinear' {u v w : Vec} (hu : u ≠ 0) (h' : ¬(∃ (t : ℝ), v = t • u)) : ∃ (cu cv : ℝ), w = cu • u + cv • v := by
   have h₁ : (¬ (∃ (t : ℝ), v = t • u)) → (¬ (u.1 * v.2 - u.2 * v.1 = 0)) := by
     intro _
     by_contra h₂
@@ -802,13 +802,13 @@ theorem linear_combination_of_not_colinear' {u v w : Vec} (hu : u ≠ 0) (h' : �
   simp only [add_zero, Complex.add_im]
   ring
 
-theorem linear_combination_of_not_colinear {u v : VecND} (w : Vec) (h' : VecND.toProj u ≠ VecND.toProj v) : ∃ (cᵤ cᵥ : ℝ), w = cᵤ • u.1 + cᵥ • v.1 := by
+theorem linear_combination_of_not_collinear {u v : VecND} (w : Vec) (h' : VecND.toProj u ≠ VecND.toProj v) : ∃ (cᵤ cᵥ : ℝ), w = cᵤ • u.1 + cᵥ • v.1 := by
   have h₁ : (VecND.toProj u ≠ VecND.toProj v) → ¬(∃ (t : ℝ), v.1 = t • u.1) := by
     intro _
     by_contra h₂
     let _ := (VecND.toProj_eq_toProj_iff u v).2 h₂
     tauto
-  exact linear_combination_of_not_colinear' u.2 (h₁ h')
+  exact linear_combination_of_not_collinear' u.2 (h₁ h')
 
 end Linear_Algebra
 

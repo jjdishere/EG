@@ -26,7 +26,7 @@ def mk_pt_pt (O A : P) [h : PtNe O A] : Circle P where
   radius := dist O A
   rad_pos := dist_pos.mpr h.out
 
-def mk_pt_pt_pt (A B C: P) (h : ¬ colinear A B C) : Circle P := sorry
+def mk_pt_pt_pt (A B C: P) (h : ¬ Collinear A B C) : Circle P := sorry
 
 end Circle
 
@@ -163,7 +163,7 @@ end Circle
 end position
 
 
-section colinear
+section Collinear
 
 namespace Circle
 
@@ -187,10 +187,10 @@ lemma pts_lieson_circle_vec_eq {A B : P} {ω : Circle P} [hne : PtNe B A] (hl₁
         _ > ω.radius ^ 2 := by
           simp
     linarith⟩
-  apply distinct_pts_same_dist_vec_eq
+  apply vec_eq_dist_eq_of_lies_on_line_pt_pt_of_ptNe
   · have : (perp_foot ω.center (LIN A B)) LiesOn (LIN A B) := perp_foot_lies_on_line _ _
-    have : colinear A B (perp_foot ω.center (LIN A B)) := Line.pt_pt_linear this
-    have : colinear (perp_foot ω.center (LIN A B)) A B := perm_colinear_trd_fst_snd this
+    have : Collinear A B (perp_foot ω.center (LIN A B)) := Line.pt_pt_linear this
+    have : Collinear (perp_foot ω.center (LIN A B)) A B := Collinear.perm₃₁₂ this
     apply Line.pt_pt_maximal this
   apply (sq_eq_sq dist_nonneg dist_nonneg).mp
   calc
@@ -213,7 +213,7 @@ theorem pts_lieson_circle_perpfoot_eq_midpoint {A B : P} {ω : Circle P} [hne : 
     _ = VEC A (perp_foot ω.center (LIN A B)) - VEC A (SEG A B).midpoint := by rw [vec_sub_vec]
     _ = 0 := by rw [eq₁, eq₂]; simp
 
-theorem three_pts_lieson_circle_not_colinear {A B C : P} {ω : Circle P} [hne₁ : PtNe B A] [hne₂ : PtNe C B] [hne₃ : PtNe A C] (hl₁ : A LiesOn ω) (hl₂ : B LiesOn ω) (hl₃ : C LiesOn ω) : ¬ (colinear A B C) := by
+theorem three_pts_lieson_circle_not_collinear {A B C : P} {ω : Circle P} [hne₁ : PtNe B A] [hne₂ : PtNe C B] [hne₃ : PtNe A C] (hl₁ : A LiesOn ω) (hl₂ : B LiesOn ω) (hl₃ : C LiesOn ω) : ¬ (Collinear A B C) := by
   intro h
   have eq₁ : VEC A (perp_foot ω.center (LIN A B)) = VEC (perp_foot ω.center (LIN A B)) B := pts_lieson_circle_vec_eq hl₁ hl₂
   have eq₂ : VEC A (perp_foot ω.center (LIN A C)) = VEC (perp_foot ω.center (LIN A C)) C := pts_lieson_circle_vec_eq hl₁ hl₃
@@ -230,7 +230,7 @@ theorem three_pts_lieson_circle_not_colinear {A B C : P} {ω : Circle P} [hne₁
 
 end Circle
 
-end colinear
+end Collinear
 
 
 section antipode

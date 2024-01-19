@@ -14,7 +14,7 @@ such that $AE = BD$, connect $CE,DE$
 Prove that $CE = DE$ -/
 
 -- Let $\triangle ABC$ be a regular triangle
-variable {A B C : P} {hnd : ¬ colinear A B C} {hreg : (▵ A B C).IsRegular}
+variable {A B C : P} {hnd : ¬ Collinear A B C} {hreg : (▵ A B C).IsRegular}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -120,10 +120,10 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
     rw[← ang₁] at sixty₂
     right
     exact sixty₂
-  -- $BFE$ is not colinear
-  have BFE_not_colinear : ¬ colinear B F E := sorry
+  -- $BFE$ is not collinear
+  have BFE_not_collinear : ¬ Collinear B F E := sorry
   -- $\triangle BFE$ is regular
-  have BFE_is_regular : (TRI_nd B F E BFE_not_colinear).1.IsRegular := by
+  have BFE_is_regular : (TRI_nd B F E BFE_not_collinear).1.IsRegular := by
     apply regular_tri_of_isoceles_tri_of_fst_ang_eq_sixty_deg
     exact ang_EBF_eq_sixty
     rw[← Seg.length_of_rev_eq_length (seg := (SEG B E))] at BF_eq_BE
@@ -134,7 +134,7 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
     calc
     _ = - ∠ F B E F_ne_B E_ne_B := sorry
     _ = - ∠ E F B E_ne_F F_ne_B.symm := sorry
-    --((regular_tri_iff_eq_angle_of_nd_tri (TRI_nd B F E BFE_not_colinear)).mp BFE_is_regular).1.symm
+    --((regular_tri_iff_eq_angle_of_nd_tri (TRI_nd B F E BFE_not_collinear)).mp BFE_is_regular).1.symm
     _ = - ∠ E F D E_ne_F D_ne_F := sorry
   -- $FE = BE$ because $\triangle BFE$ is regular
   have FE_eq_BE : (SEG F E).length = (SEG B E).length := by
@@ -145,11 +145,11 @@ theorem Shan_Problem_2_11 : (SEG C E).length = (SEG D E).length := by
     -- $EB = BE$ by symmetry
     _ = (SEG B E).length := by
       simp only [length_of_rev_eq_length']
-  -- $BEC$ is not colinear and $FED$ is not colinear
-  have BEC_not_colinear : ¬ colinear B E C := sorry
-  have FED_not_colinear : ¬ colinear F E D := sorry
+  -- $BEC$ is not collinear and $FED$ is not collinear
+  have BEC_not_collinear : ¬ Collinear B E C := sorry
+  have FED_not_collinear : ¬ Collinear F E D := sorry
   -- $\triangle BCE$ is anti-congruence to $\triangle FDE$
-  have cong : (TRI_nd B E C BEC_not_colinear) ≅ₐ (TRI_nd F E D FED_not_colinear) := TriangleND.acongr_of_SAS DF_eq_CB.symm ang_EBC_eq_neg_ang_EFD FE_eq_BE.symm
+  have cong : (TRI_nd B E C BEC_not_collinear) ≅ₐ (TRI_nd F E D FED_not_collinear) := TriangleND.acongr_of_SAS DF_eq_CB.symm ang_EBC_eq_neg_ang_EFD FE_eq_BE.symm
   -- $EC = ED$ because $\triangle BCE \cong \triangle FDE$
   have EC_eq_ED : (SEG E C).length = (SEG E D).length := cong.edge₁
   rw[length_of_rev_eq_length', EC_eq_ED]
@@ -163,7 +163,7 @@ line $DF$ and $EG$ intersect at $H$
 Prove that quadrilateral $ABCH$ is parallelogram -/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -191,7 +191,7 @@ such that $FB = CG$ and $AF \parallel BE$ ,
 Prove that $AG \parallel DC$-/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -224,7 +224,7 @@ such that $AE = 2 EC$
 Prove that $AF = 3 FB$ -/
 
 -- We have acute triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C} {hacute : TriangleND.IsAcute (TRI_nd A B C hnd)}
+variable {A B C : P} {hnd : ¬ Collinear A B C} {hacute : TriangleND.IsAcute (TRI_nd A B C hnd)}
 -- 这个题应该需要加锐角三角形的限制，否则需要条件中的$AE = 2 EC$是有向线段的相等
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
@@ -247,7 +247,7 @@ let the angle bisectors of $\angle ADB$ and $\angle ADC$ intersect $AB$ and $AC$
 Prove that $EF \parallel BC$-/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -275,7 +275,7 @@ $CD,BE$ intersects at $O$
 Prove that $OE = \frac{1}{4} BE$-/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- $D$ is midpoint of $AB$
 variable {D : P} {hd : D = (SEG A B).midpoint}
 -- $E$ lies on $AC$ such that $AE = 2 CE$,
@@ -294,7 +294,7 @@ The parallel line to $AC$ of $E,F$ intersect $BC$ at $G,H$ respectively,
 Prove that $EG + FH = AC$-/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -351,7 +351,7 @@ the angle bisector of $\angle ABC$ intersect $AD$ and $AC$ at $M,N$ respectively
 Prove that $AB^2 - AN^2 = BM \times BN$-/
 
 -- Let triangle $\triangle ABC$ be a right triangle with $\angle BAC = 90^{circ}$
-variable {A B C : P} {hnd : ¬ colinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma a_ne_b : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
