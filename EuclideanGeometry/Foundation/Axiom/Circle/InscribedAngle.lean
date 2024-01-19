@@ -49,7 +49,7 @@ theorem Circle.cangle_of_complementary_arc_eq_neg {ω : Circle P} (β : Arc P ω
 theorem Circle.cangle_of_reverse_chord_eq_neg {ω : Circle P} (s : Chord P ω) : s.reverse.cangle.value = -s.cangle.value := by
   rw [Chord.reverse_cangle_reverse, rev_value_eq_neg_value]
 
-theorem Chord.cangle_eq_iff_length_eq {ω : Circle P} (s₁ : Chord P ω) (s₂ : Chord P ω) : s₁.cangle.value = s₂.cangle.value ↔ s₁.length = s₂.length := sorry
+theorem Chord.cangle_eq_iff_length_eq {ω : Circle P} (s₁ s₂ : Chord P ω) : s₁.cangle.value = s₂.cangle.value ↔ s₁.length = s₂.length := sorry
 
 end cangle
 
@@ -167,15 +167,27 @@ end iangle
 
 section iangdvalue
 
-def Arc.iangdv {ω : Circle P} (β : Arc P ω) : AngDValue := sorry
+def Arc.iangdv {ω : Circle P} (β : Arc P ω) : AngDValue := β.cangle.value.half
 
-def Chord.iangdv {ω : Circle P} (s : Chord P ω) : AngDValue := sorry
+def Chord.iangdv {ω : Circle P} (s : Chord P ω) : AngDValue := s.cangle.value.half
 
-theorem Arc.iangle_dvalue_eq {ω : Circle P} {β : Arc P ω} {ang : Angle P} (h : β.IsIangle ang) : ang.dvalue = β.iangdv := sorry
+theorem Arc.iangle_dvalue_eq {ω : Circle P} {β : Arc P ω} {ang : Angle P} (h : β.IsIangle ang) : ang.dvalue = β.iangdv := by
+  unfold iangdv
+  rw [cangle_eq_two_times_inscribed_angle h]
+  apply AngValue.coe_eq_coe_iff_two_nsmul_eq.mpr
+  simp
 
-theorem Chord.iangle_dvalue_eq {ω : Circle P} {s : Chord P ω} {ang : Angle P} (h : s.IsIangle ang) : ang.dvalue = s.iangdv := sorry
+theorem Chord.iangle_dvalue_eq {ω : Circle P} {s : Chord P ω} {ang : Angle P} (h : s.IsIangle ang) : ang.dvalue = s.iangdv := by
+  unfold iangdv
+  rw [cangle_eq_two_times_inscribed_angle h]
+  apply AngValue.coe_eq_coe_iff_two_nsmul_eq.mpr
+  simp
 
-theorem Circle.same_chord_same_iangle_dvalue {ω : Circle P} {s₁ s₂ : Chord P ω} {ang₁ ang₂ : Angle P} (h₁ : s₁.IsIangle ang₁) (h₂ : s₂.IsIangle ang₂) (h : s₁.length = s₂.length) : ang₁.dvalue = ang₂.dvalue := sorry
+theorem Circle.same_chord_same_iangle_dvalue {ω : Circle P} {s₁ s₂ : Chord P ω} {ang₁ ang₂ : Angle P} (h₁ : s₁.IsIangle ang₁) (h₂ : s₂.IsIangle ang₂) (h : s₁.length = s₂.length) : ang₁.dvalue = ang₂.dvalue := by
+  have : s₁.cangle.value = s₂.cangle.value := (Chord.cangle_eq_iff_length_eq s₁ s₂).mpr h
+  rw [Chord.iangle_dvalue_eq h₁, Chord.iangle_dvalue_eq h₂]
+  unfold Chord.iangdv
+  rw [this]
 
 end iangdvalue
 
