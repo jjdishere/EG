@@ -566,7 +566,29 @@ theorem le_of_lies_on_ray_and_lt {Dl : DirLine P} {A B C : P} [hh : PtNe A C] (h
     exact le_of_lt ((lt_iff_lt_of_lies_int_ray ha hb hc this).mp h1)
 
 -- linear order and LiesInt Seg.ext
+
 -- linear order and LiesOn Seg.ext
+
+-- # Corollary
+theorem OVO {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by
+  rcases le_total (lelem A ha) (lelem B hb) with (a_le_b | b_le_a)
+  · rcases le_total (lelem B hb) (lelem C hc) with (b_le_c | c_le_b)
+    · right; left; exact lies_on_seg_of_le_and_le ha hb hc a_le_b b_le_c
+    · rcases le_total (lelem A ha) (lelem C hc) with (a_le_c | c_le_a)
+      · right; right; exact lies_on_seg_of_le_and_le ha hc hb a_le_c c_le_b
+      · left; exact lies_on_seg_of_ge_and_ge hb ha hc a_le_b c_le_a
+  · rcases le_total (lelem B hb) (lelem C hc) with (b_le_c | c_le_b)
+    · rcases le_total (lelem A ha) (lelem C hc) with (a_le_c | c_le_a)
+      · left; exact lies_on_seg_of_le_and_le hb ha hc b_le_a a_le_c
+      · right; right; exact lies_on_seg_of_ge_and_ge ha hc hb c_le_a b_le_c
+    · right; left; exact lies_on_seg_of_ge_and_ge ha hb hc b_le_a c_le_b
+
+theorem QWQ {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by
+  rcases OVO ha hb hc with (h1 | (h2 | h3))
+  · left; refine' ⟨h1, hh1.out, hh2.out⟩
+  · right; left; refine' ⟨h2, hh1.out.symm, hh3.out⟩
+  · right; right; refine' ⟨h3, hh2.out.symm, hh3.out.symm⟩
+
 end linear_order
 end DirLine
 
