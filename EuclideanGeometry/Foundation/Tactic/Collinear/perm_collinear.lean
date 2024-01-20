@@ -4,7 +4,7 @@ namespace EuclidGeom
 
 open Lean Lean.Meta Lean.Elab Lean.Elab.Tactic Qq
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 def extractCollinear (expr : Q(Prop)) : MetaM (Option Expr) :=
   match expr with

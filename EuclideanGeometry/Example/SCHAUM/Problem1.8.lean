@@ -16,7 +16,7 @@ such that $CD = AE$.
 
 Prove that $AD = BE$
 -/
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
 --Let $\triangle ABC$ be a regular triangle.
   A : Plane
   B : Plane
@@ -44,7 +44,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
 --such that $CD = AE$
   CD_eq_AE : ((SEG C D).length = (SEG A E).length)
 --Prove that $AD = BE$
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ((SEG e.A e.D).length = (SEG e.B e.E).length):= by
+theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : ((SEG e.A e.D).length = (SEG e.B e.E).length):= by
 /-
 In regular triangle $ABC$, $\angle ABC = \angle BCA$.
 Since $D$ lies on the extension of $BC$, we know that $\angle ABD$ is the same as $\angle ABC$.

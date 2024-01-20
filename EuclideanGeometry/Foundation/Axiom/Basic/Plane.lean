@@ -29,9 +29,9 @@ noncomputable section
 namespace EuclidGeom
 
 /- Define Euclidean plane as normed vector space over ℝ of dimension 2 -/
-class EuclideanPlane (P : Type _) extends MetricSpace P, NormedAddTorsor Vec P
+class EuclideanPlane (P : Type*) extends MetricSpace P, NormedAddTorsor Vec P
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 def Vec.mkPtPt (A B : P) : Vec := (B -ᵥ A)
 

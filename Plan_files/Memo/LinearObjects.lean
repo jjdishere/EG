@@ -60,21 +60,21 @@ toDirLine toLine carrier compatibility can be shown in general
 -- Experiments of classes
 
 namespace EuclidGeom
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
-class ProjObj (P : Type _) [EuclideanPlane P] (α : Type _)where
+class ProjObj (P : Type*) [EuclideanPlane P] (α : Type*)where
   toProj : α → Proj
 
 instance : ProjObj P (Line P) where
   toProj := Line.toProj
 
-def to_Proj {P: Type _} [EuclideanPlane P] (l : Line P) : Proj := ProjObj.toProj P l
+def to_Proj {P: Type*} [EuclideanPlane P] (l : Line P) : Proj := ProjObj.toProj P l
 
-def toProj' ⦃P : Type _⦄ {α: Type _} [EuclideanPlane P] [ProjObj P α] (l : α) : Proj := ProjObj.toProj P l
+def toProj' ⦃P : Type*⦄ {α: Type*} [EuclideanPlane P] [ProjObj P α] (l : α) : Proj := ProjObj.toProj P l
 
-example {P : Type _} [EuclideanPlane P] (l : Line P) : l.toProj = to_Proj l := rfl
+example {P : Type*} [EuclideanPlane P] (l : Line P) : l.toProj = to_Proj l := rfl
 
-def to_Line {P : Type _ } {α: Type _} [EuclideanPlane P] ⦃h : ProjObj P α⦄ (l : α) : Line P := sorry
+def to_Line {P : Type* } {α: Type*} [EuclideanPlane P] ⦃h : ProjObj P α⦄ (l : α) : Line P := sorry
 
 variable (l : Line P)
 -- same name enables both writing style without overload
@@ -96,8 +96,8 @@ macro_rules
 #check Seg.carrier
 
 -- This is Plane Figure
-class PlaneFig (F : (P : Type _) -> [ EuclideanPlane P] -> Type _) where
-  carrier : {P : Type _} -> [EuclideanPlane P] -> F P -> Set P
+class PlaneFig (F : (P : Type*) -> [ EuclideanPlane P] -> Type*) where
+  carrier : {P : Type*} -> [EuclideanPlane P] -> F P -> Set P
 
 instance : PlaneFig Seg where
   carrier := Seg.carrier

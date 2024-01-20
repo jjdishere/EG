@@ -4,7 +4,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {Plane : Type _} [EuclideanPlane Plane]
+variable {Plane : Type*} [EuclideanPlane Plane]
 
 namespace Problem1_2_
 /-Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.Let $D$ be a point on $AB$.

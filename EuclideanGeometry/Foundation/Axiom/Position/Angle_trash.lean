@@ -5,7 +5,7 @@ namespace EuclidGeom
 
 open AngValue
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Angle
 

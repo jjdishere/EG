@@ -32,7 +32,7 @@ Note that `ℝ` is also used for representing the value of an angle (Algeraic Va
 -- The following suggestions may be bad. They are postponed.
 * `Dir` + `DirObj` + `P` to `DirObj` : Rotation of `DirObj`
 * `Proj` + `ProjObj` + `P` to `DirObj` : Rotation of `ProjObj`
-* `Rotation` : the general rotation's type is `{P : Type _} [EuclideanPlane P] (O : P) (dir : Dir) [Figure α] (F : α P) : α P`  `Maybe wrap outside a theorem use AngValue instead of Dir is better?`
+* `Rotation` : the general rotation's type is `{P : Type*} [EuclideanPlane P] (O : P) (dir : Dir) [Figure α] (F : α P) : α P`  `Maybe wrap outside a theorem use AngValue instead of Dir is better?`
 
 ### Detailed Sections
 

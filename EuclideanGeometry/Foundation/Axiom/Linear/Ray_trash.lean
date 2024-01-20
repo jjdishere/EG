@@ -5,7 +5,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P] (seg_nd : SegND P)
+variable {P : Type*} [EuclideanPlane P] (seg_nd : SegND P)
 
 -- theorem same_extn_of_source_lies_int {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target ) = seg_nd.extension
 

@@ -35,7 +35,7 @@ structure Angle (P : Type*) [EuclideanPlane P] where
 
 attribute [pp_dot] Angle.source Angle.dir₁ Angle.dir₂
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Angle
 

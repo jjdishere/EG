@@ -6,7 +6,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Shan_Problem_1_9
 /- In $\triangle ABC$, assume that $\angle CBA = 2\cdot \angle ACB$. Let $AD$ be the height and $AE$ the median.

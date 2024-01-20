@@ -9,12 +9,12 @@ namespace EuclidGeom
 
 /- Class of Circles-/
 @[ext]
-structure Circle (P : Type _) [EuclideanPlane P] where
+structure Circle (P : Type*) [EuclideanPlane P] where
   center : P
   radius : ℝ
   rad_pos : 0 < radius
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Circle
 
@@ -277,7 +277,7 @@ section arc
 variable (ω : Circle P)
 
 @[ext]
-structure Arc (P : Type _) [EuclideanPlane P] (ω : Circle P) where
+structure Arc (P : Type*) [EuclideanPlane P] (ω : Circle P) where
   source : P
   target : P
   ison : (source LiesOn ω) ∧ (target LiesOn ω)
@@ -375,7 +375,7 @@ end arc
 section chord
 
 @[ext]
-structure Chord (P : Type _) [EuclideanPlane P] (ω : Circle P) where
+structure Chord (P : Type*) [EuclideanPlane P] (ω : Circle P) where
   toSegND : SegND P
   ison : (toSegND.source LiesOn ω) ∧ (toSegND.target LiesOn ω)
 

@@ -6,14 +6,14 @@ noncomputable section
 
 namespace EuclidGeom
 namespace AOPS
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace AOPS_Problem_5_7
 /- Let $\triangle ABC$ be a triangle, and let $D$, $E$ be two points in the interior of $AB$ and $AC$ respectively such that $DE\parallel BC$ . $X$ lies inside $AB$ and $Y$ lies on the ray $XE$ so that $AY\parallel XC$
 
 Prove that $\frac{EY}{EX}=\frac{AD}{DB}$ -/
 
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
   -- Let $\triangle ABC$ be a nontrivial triangle
   A : Plane
   B : Plane
@@ -55,7 +55,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   hY₂ : (LIN A Y Y_ne_A)∥(LIN X C X_ne_C.symm)
 
 --$\frac{EY}{EX}=\frac{AD}{DB}$
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) :  (SEG e.E e.Y).length/(SEG e.E e.X).length = (SEG e.A e.D).length/(SEG e.D e.B).length := sorry
+theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) :  (SEG e.E e.Y).length/(SEG e.E e.X).length = (SEG e.A e.D).length/(SEG e.D e.B).length := sorry
 
 end AOPS_Problem_5_7
 
@@ -81,7 +81,7 @@ namespace AOPS_Exercise_5_3_2
 Prove that $IJ\prar BC$-/
 --It is simpler to use vectors but I think we should avoid vectors.
 
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
   -- Let $\triangle ABC$ be a nontrivial triangle
   A : Plane
   B : Plane
@@ -122,7 +122,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   -- Claim : $J \ne I$
   J_ne_I : J ≠ I := sorry
   --$IJ\parallel BC$
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : LIN e.I e.J e.J_ne_I ∥ LIN e.B e.C e.C_ne_B := sorry
+theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : LIN e.I e.J e.J_ne_I ∥ LIN e.B e.C e.C_ne_B := sorry
 
 end AOPS_Exercise_5_3_2
 end AOPS

@@ -3,7 +3,7 @@ import EuclideanGeometry.Foundation.Axiom.Circle.Basic
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 section DirLC
 
@@ -66,7 +66,7 @@ theorem pt_liesint_intersect {l : DirLine P} {ω : Circle P} {A : P} (h₁ : A L
 end DirLC
 
 @[ext]
-structure DirLCInxpts (P : Type _) [EuclideanPlane P] where
+structure DirLCInxpts (P : Type*) [EuclideanPlane P] where
   front : P
   back : P
 

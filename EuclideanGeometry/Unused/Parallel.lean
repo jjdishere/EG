@@ -3,14 +3,14 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Line
 noncomputable section
 namespace EuclidGeom
 
-inductive LinearObj (P : Type _) [EuclideanPlane P] where
+inductive LinearObj (P : Type*) [EuclideanPlane P] where
   | vec_nd (v : VecND)
   | dir (v : Dir)
   | ray (r : Ray P)
   | seg_nd (s : SegND P)
   | line (l : Line P)
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 section coercion
 
@@ -61,9 +61,9 @@ scoped infix : 50 " LiesOnarObj " => LinearObj.IsOnLinearObj
 
 -- Our definition of parallel for LinearObj is very general. Not only can it apply to different types of Objs, but also include degenerate cases, such as ⊆(inclusions), =(equal).
 
-def Parallel' {α β: Type _} (l₁ : α) (l₂ : β) [Coe α (LinearObj P)] [Coe β (LinearObj P)] : Prop :=  LinearObj.toProj (P := P) (Coe.coe l₁) = LinearObj.toProj (P := P) (Coe.coe l₂)
+def Parallel' {α β: Type*} (l₁ : α) (l₂ : β) [Coe α (LinearObj P)] [Coe β (LinearObj P)] : Prop :=  LinearObj.toProj (P := P) (Coe.coe l₁) = LinearObj.toProj (P := P) (Coe.coe l₂)
 
--- class PlaneFigure' (P : Type _) [EuclideanPlane P] {α : Type _} where
+-- class PlaneFigure' (P : Type*) [EuclideanPlane P] {α : Type*} where
 
 -- instance : PlaneFigure' P (LinearObj P) where
 

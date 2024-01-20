@@ -6,7 +6,7 @@ namespace EuclidGeom
 
 section setoid
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 -- `Future change plan` Change this to "structure" instead of "and".
 /-- We say that rays $r$ and $r'$ \emph{induce the same directed line} if, (1) they have the same direction, and (2) the source of $r'$ lies on $r$ or the reverse range of $r$.-/
@@ -128,12 +128,12 @@ theorem same_dir_line_le_same_extn_line : same_dir_line.setoid (P := P) ≤ same
 end setoid
 
 /-- A \emph{directed line} is the equivalence class of rays with the same directed lines. -/
-def DirLine (P : Type _) [EuclideanPlane P] := Quotient (@same_dir_line.setoid P _)
+def DirLine (P : Type*) [EuclideanPlane P] := Quotient (@same_dir_line.setoid P _)
 
 /-- A \emph{line} is the equivalence class of rays with the same exetnsion lines. -/
-def Line (P : Type _) [EuclideanPlane P] := Quotient (@same_extn_line.setoid P _)
+def Line (P : Type*) [EuclideanPlane P] := Quotient (@same_extn_line.setoid P _)
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 section make
 

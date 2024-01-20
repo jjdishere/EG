@@ -4,7 +4,7 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 
 

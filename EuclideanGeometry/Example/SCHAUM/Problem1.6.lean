@@ -13,7 +13,7 @@ Let $ABCD$ be a parallelogram, and let $P$, $Q$ be points on the segments $AB$ a
 
 Prove that $PB = QD$.
 -/
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
 --Let $ABCD$ be a parallelogram
   A : Plane
   B : Plane
@@ -29,7 +29,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
 --such that $AP = CQ$
   AP_eq_CQ : (SEG A P).length = (SEG C Q).length
 --Prove that $PB = QD$
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.P e.B).length = (SEG e.Q e.D).length := by
+theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.P e.B).length = (SEG e.Q e.D).length := by
 /-
 In the parallelogram $ABCD$ we have $AB = CD$.
 Therefore, $PB = AB - AP = CD - CQ = QD$.

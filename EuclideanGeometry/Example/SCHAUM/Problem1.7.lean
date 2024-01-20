@@ -18,7 +18,7 @@ Let $D$ and $E$ be points on the segment $BC$ such that $BD = CE$.
 Prove that the height of $D$ to $AB$ is the same as the height of $E$ to $AC$.
 -/
 
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
 --Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$
   A : Plane
   B : Plane
@@ -49,7 +49,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   he : Y = perp_foot E (LIN A C C_ne_A)
 --Prove that $DX = EY$.
 
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.D e.X).length = (SEG e.E e.Y).length := by
+theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.D e.X).length = (SEG e.E e.Y).length := by
 /-
 In isoceles triangle $ABC$, we have $\angle ABC$ and $\angle ACB$ are acute.
 From $D$ lies on $BC$ and $\angle ABC$ is acute, we know that $X$ lies on ray $BA$, so $\angle XBD$ is the same as $\angle ABC$.

@@ -12,7 +12,7 @@ $A,D$ are on the opposite side of line $BC$,which satisfies $BD \parallel CA$, $
 $E$ liesint $BC$ and $BE = AC$
 Prove that $\angle B D E = -\angle C B A $.
 -/
-structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1  (Plane : Type*) [EuclideanPlane Plane] where
   A : Plane
   B : Plane
   C : Plane
@@ -22,11 +22,11 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   hnd₂ : ¬ Collinear B C D
   --$A,D$ are on the opposite side of line $BC$,which satisfies $BD \para CA$(lemma needed), $BD = BC$
   BD_eq_BC : (SEG B D).length = (SEG B C).length
-instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd₁).2.2.symm⟩
-instance D_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.D e.B := ⟨(ne_of_not_collinear e.hnd₂).2.1.symm⟩
-instance A_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.C := ⟨(ne_of_not_collinear e.hnd₁).1⟩
+instance B_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.B e.C := ⟨(ne_of_not_collinear e.hnd₁).2.2.symm⟩
+instance D_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.D e.B := ⟨(ne_of_not_collinear e.hnd₂).2.1.symm⟩
+instance A_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : PtNe e.A e.C := ⟨(ne_of_not_collinear e.hnd₁).1⟩
 
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+structure Setting2 (Plane : Type*) [EuclideanPlane Plane] extends Setting1 Plane where
   --$BD \para CA$
   BD_para_CA : (SEG_nd B D) ∥ (SEG_nd C A)
   --$A,D$ are on the opposite side of line $BC$
@@ -36,12 +36,12 @@ structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plan
   E : Plane
   E_int : E LiesInt (SEG_nd B C)
   E_position : (SEG B E).length = (SEG A C).length
-lemma hnd₃ {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane}: ¬ Collinear e.B e.E e.D := by sorry
-instance E_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.E e.D := ⟨(ne_of_not_collinear hnd₃).1.symm⟩
-instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd₁).2.1.symm⟩
-instance B_ne_E {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.B e.E := ⟨(ne_of_not_collinear hnd₃).2.2.symm⟩
+lemma hnd₃ {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane}: ¬ Collinear e.B e.E e.D := by sorry
+instance E_ne_D {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.E e.D := ⟨(ne_of_not_collinear hnd₃).1.symm⟩
+instance A_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.A e.B := ⟨(ne_of_not_collinear e.hnd₁).2.1.symm⟩
+instance B_ne_E {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : PtNe e.B e.E := ⟨(ne_of_not_collinear hnd₃).2.2.symm⟩
 --Prove that $\angle B D E = -\angle C B A $.
-theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : ∠ e.B e.D e.E = -∠ e.C e.B e.A := by
+theorem Result {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : ∠ e.B e.D e.E = -∠ e.C e.B e.A := by
   /-
   Because $BD \parallel CA$,($A,D$ are on the opposite side of line $BC$),
   $\angle D B E $ and $\angle A C B$ are Alternate Interior Angle, thus equal.

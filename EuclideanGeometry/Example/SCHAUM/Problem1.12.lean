@@ -4,7 +4,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {Plane : Type _} [EuclideanPlane Plane]
+variable {Plane : Type*} [EuclideanPlane Plane]
 
 namespace SCHAUM_Problem_1_12
 /-
@@ -15,7 +15,7 @@ Prove that $ABCD$ is a parallelogram.
 -/
 
 
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
   -- Let $ABCD$ be a convex quadrilateral.
   A : Plane
   B : Plane
@@ -33,7 +33,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   BC_eq_DA : (SEG B C).length = (SEG D A).length
 
 -- Prove that $ABCD$ is a parallelogram.
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (QDR e.A e.B e.C e.D) IsPRG_nd := by
+theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : (QDR e.A e.B e.C e.D) IsPRG_nd := by
   sorry
 
 

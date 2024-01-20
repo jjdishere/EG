@@ -6,7 +6,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace AOPS_Problem_3_21
 /- Let $\triangle ABC$ be a regular triangle, and let $P$, $Q$, $R$ be three points in the interior of $\triangle ABC$ such that

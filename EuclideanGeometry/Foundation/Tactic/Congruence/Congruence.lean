@@ -113,7 +113,7 @@ end acongr
 
 section examples
 
-variable {P : Type _} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : TriangleND P}
+variable {P : Type*} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : TriangleND P}
 
 example (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length)
   (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsCongr tr_nd₂ := by

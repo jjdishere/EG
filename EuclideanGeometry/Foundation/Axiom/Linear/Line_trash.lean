@@ -3,7 +3,7 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 theorem pt_flip_collinear {A B O : P} (h : B = pt_flip A O) : Collinear A O B := by
   apply Collinear.perm₁₃₂

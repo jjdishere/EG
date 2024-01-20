@@ -4,7 +4,7 @@ noncomputable section
 namespace EuclidGeom
 
 @[ext]
-class Line (P : Type _) [EuclideanPlane P] where
+class Line (P : Type*) [EuclideanPlane P] where
   carrier : Set P
   linear : ∀ (A B C : P), (A ∈ carrier) → (B ∈ carrier) → (C ∈ carrier) → Collinear A B C
   maximal : ∀ (A B : P), (A ∈ carrier) → (B ∈ carrier) → (B ≠ A) → (∀ (C : P), Collinear A B C → (C ∈ carrier))
@@ -12,7 +12,7 @@ class Line (P : Type _) [EuclideanPlane P] where
 
 namespace Line
 
-variable  {P : Type _} [EuclideanPlane P]
+variable  {P : Type*} [EuclideanPlane P]
 
 -- define a line from two points
 
@@ -71,7 +71,7 @@ scoped notation "LIN" => Line.mk_pt_pt
 
 namespace Line
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 /- Def of point lies on a line, LiesInt is not defined -/
 protected def IsOn (a : P) (l : Line P) : Prop :=
@@ -83,7 +83,7 @@ instance : Carrier P (Line P) where
 end Line
 
 -- Now we introduce useful theorems to avoid using more unfolds in further proofs.
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 section Compaitiblity_of_coercions_of_mk_pt_pt
 

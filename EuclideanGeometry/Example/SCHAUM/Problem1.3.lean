@@ -30,7 +30,7 @@ lemma b_ne_c : B ≠ C := (ne_of_not_collinear hnd).1.symm
 lemma c_ne_b : C ≠ B := (ne_of_not_collinear hnd).1
 --Prove that $∠ D A B = ∠ C A E$.
 -/
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
   --Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
   A : Plane
   B : Plane
@@ -53,13 +53,13 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   C_ne_B : C ≠ B := (ne_of_not_collinear not_collinear_ABC).1
 --Points not equal for angles ∠ A B D and ∠ A C E
 namespace Setting
-lemma D_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : e.D ≠ e.A := sorry
-lemma E_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : e.E ≠ e.A := sorry
-lemma D_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : e.D ≠ e.B := e.D_Int_BC.2.1
-lemma E_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : e.E ≠ e.C := e.E_Int_BC.2.2
+lemma D_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting Plane} : e.D ≠ e.A := sorry
+lemma E_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting Plane} : e.E ≠ e.A := sorry
+lemma D_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting Plane} : e.D ≠ e.B := e.D_Int_BC.2.1
+lemma E_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting Plane} : e.E ≠ e.C := e.E_Int_BC.2.2
 end Setting
 --Prove that $∠ D A B = ∠ C A E$.
-theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠ e.D e.A e.B (e.D_ne_A) (e.B_ne_A)= ∠ e.C e.A e.E (e.C_ne_A) (e.E_ne_A) := by
+theorem Result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : ∠ e.D e.A e.B (e.D_ne_A) (e.B_ne_A)= ∠ e.C e.A e.E (e.C_ne_A) (e.E_ne_A) := by
   /-In the isoceles triangle $ABC$ we have $AB = AC$.
     Beacause $BD = CE$ we have $DB = EC$.
     In the isoceles triangle $A B C$, we have $\angle A B C = -\angle A C B$.
