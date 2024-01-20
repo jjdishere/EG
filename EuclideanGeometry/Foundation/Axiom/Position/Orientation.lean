@@ -44,7 +44,7 @@ theorem collinear_iff_wedge_eq_zero (A B C : P) : (Collinear A B C) ↔ (wedge A
   dsimp only [wedge]
   by_cases h : PtNe B A
   · have vecabnd : VEC A B ≠ 0 := by
-      exact (ne_iff_vec_ne_zero A B).mp h.out
+      exact ne_iff_vec_ne_zero.mp h.out
     rw [← Vec.det_skew, neg_eq_zero, Vec.det_eq_zero_iff_eq_smul_right]
     simp only [vecabnd, false_or]
     constructor
