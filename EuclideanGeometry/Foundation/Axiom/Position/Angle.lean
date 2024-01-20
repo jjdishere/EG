@@ -540,12 +540,12 @@ section cancel
 
 variable {ang ang₁ ang₂ : Angle P}
 
-theorem dir₂_eq_of_value_eq_of_dir₁_eq (hr : ang₁.dir₁ = ang₂.dir₁) (hv : ang₁.value = ang₂.value) : ang₁.dir₂ = ang₂.dir₂ := by
-  rw [value, hr] at hv
-  exact vsub_left_cancel hv
+theorem dir_eq_iff_of_value_eq (h : ang₁.value = ang₂.value) : ang₁.dir₁ = ang₂.dir₁ ↔ ang₁.dir₂ = ang₂.dir₂ := by
+  apply (vadd_left_cancel_iff ang₁.value).symm.trans
+  nth_rw 1 [value, vsub_vadd, h, value, vsub_vadd]
 
 theorem eq_of_value_eq_of_dir₁_eq_of_source_eq (hs : ang₁.source = ang₂.source) (hr : ang₁.dir₁ = ang₂.dir₁) (hv : ang₁.value = ang₂.value) : ang₁ = ang₂ :=
-  Angle.ext ang₁ ang₂ hs hr (dir₂_eq_of_value_eq_of_dir₁_eq hr hv)
+  Angle.ext ang₁ ang₂ hs hr ((dir_eq_iff_of_value_eq hv).mp hr)
 
 theorem eq_of_value_eq_of_start_ray_eq {ang₁ ang₂ : Angle P} (h : ang₁.start_ray = ang₂.start_ray) (hv : ang₁.value = ang₂.value) : ang₁ = ang₂ :=
   eq_of_value_eq_of_dir₁_eq_of_source_eq (congrArg Ray.source h) (congrArg Ray.toDir h) hv
@@ -553,12 +553,8 @@ theorem eq_of_value_eq_of_start_ray_eq {ang₁ ang₂ : Angle P} (h : ang₁.sta
 theorem end_ray_eq_of_value_eq_of_start_ray_eq (h : ang₁.start_ray = ang₂.start_ray) (hv : ang₁.value = ang₂.value) : ang₁.end_ray = ang₂.end_ray :=
   congrArg end_ray (eq_of_value_eq_of_start_ray_eq h hv)
 
-theorem dir₁_eq_of_value_eq_of_dir₂_eq (hr : ang₁.dir₂ = ang₂.dir₂) (hv : ang₁.value = ang₂.value) : ang₁.dir₁ = ang₂.dir₁ := by
-  rw [value, hr] at hv
-  exact vsub_right_cancel hv
-
 theorem eq_of_value_eq_of_dir₂_eq_of_source_eq (hs : ang₁.source = ang₂.source) (hr : ang₁.dir₂ = ang₂.dir₂) (hv : ang₁.value = ang₂.value) : ang₁ = ang₂ :=
-  Angle.ext ang₁ ang₂ hs (dir₁_eq_of_value_eq_of_dir₂_eq hr hv) hr
+  Angle.ext ang₁ ang₂ hs ((dir_eq_iff_of_value_eq hv).mpr hr) hr
 
 theorem eq_of_value_eq_of_end_ray_eq {ang₁ ang₂ : Angle P} (h : ang₁.end_ray = ang₂.end_ray) (hv : ang₁.value = ang₂.value) : ang₁ = ang₂ :=
   eq_of_value_eq_of_dir₂_eq_of_source_eq (congrArg Ray.source h) (congrArg Ray.toDir h) hv
@@ -645,16 +641,6 @@ theorem dir_perp_iff_dvalue_eq_pi_div_two : ang.dir₁ ⟂ ang.dir₂ ↔ ang.dv
 
 theorem line_pt_pt_perp_iff_dvalue_eq_pi_div_two : LIN O A ⟂ LIN O B ↔ (ANG A O B).dvalue = ∡[π / 2] :=
   (ANG A O B).dir_perp_iff_dvalue_eq_pi_div_two
-
-theorem dvalue_eq_pi_div_two_at_perp_foot {A B C : P} [_h : PtNe B C] (l : Line P) (hb : B LiesOn l) (ha : ¬ A LiesOn l) (hc : C = perp_foot A l) : haveI : PtNe A C := ⟨((pt_ne_iff_not_lies_on_of_eq_perp_foot hc).mpr ha).symm⟩; (ANG A C B).dvalue = ∡[π / 2] := by
-  haveI : PtNe A C := ⟨((pt_ne_iff_not_lies_on_of_eq_perp_foot hc).mpr ha).symm⟩
-  haveI : PtNe B (perp_foot A l) := by
-    rw [← hc]
-    exact _h
-  apply line_pt_pt_perp_iff_dvalue_eq_pi_div_two.mp
-  rw [Line.line_of_pt_pt_eq_rev]
-  simp only [hc, Line.eq_line_of_pt_pt_of_ne (perp_foot_lies_on_line A l) hb]
-  exact line_of_self_perp_foot_perp_line_of_not_lies_on ha
 
 theorem dir_perp_iff_isRight : ang.dir₁ ⟂ ang.dir₂ ↔ ang.IsRight :=
   dir_perp_iff_dvalue_eq_pi_div_two.trans isRight_iff_coe.symm

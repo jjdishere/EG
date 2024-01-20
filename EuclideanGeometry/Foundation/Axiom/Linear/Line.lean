@@ -1287,6 +1287,12 @@ theorem ddist_add_ddist_comm {l: DirLine P} {A B C D : P} (ha : A LiesOn l) (hb 
   rw [add_comm, ← neg_ddist_eq_ddist_rev hd ha]
   rfl
 
+theorem pt_eq_ddist_smul_toDir_unitVec_vadd {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : B = ddist ha hb • l.toDir.unitVec +ᵥ A :=
+  Subtype.val_inj.mpr ((eq_vadd_iff_vsub_eq _ (ddist ha hb) _).mpr rfl)
+
+theorem vec_eq_ddist_smul_toDir_unitVec {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : VEC A B = ddist ha hb • l.toDir.unitVec :=
+  (eq_vadd_iff_vsub_eq B _ A).mp (pt_eq_ddist_smul_toDir_unitVec_vadd ha hb)
+
 end ddist
 
 section order

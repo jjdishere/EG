@@ -132,9 +132,9 @@ theorem perm_congr (h : tr₁.IsCongr tr₂) : (perm_vertices tr₁).IsCongr (pe
 theorem congr_iff_perm_congr (tr₁ tr₂ : Triangle P) : tr₁.IsCongr tr₂ ↔ (perm_vertices tr₁).IsCongr (perm_vertices tr₂) :=
   ⟨fun h ↦ h.perm_congr, fun h ↦ h.perm_congr.perm_congr⟩
 
--- The proof of this theorem will need to wait until the definition of area is completed.
-theorem area (h : tr₁.IsCongr tr₂) : tr₁.area = tr₂.area := sorry
+theorem oarea (h : tr₁.IsCongr tr₂) : tr₁.oarea = tr₂.oarea := sorry
 
+theorem area (h : tr₁.IsCongr tr₂) : tr₁.area = tr₂.area := sorry
 
 end IsCongr
 
@@ -228,6 +228,10 @@ theorem perm_acongr (h : tr₁.IsACongr tr₂) : (perm_vertices tr₁).IsACongr 
 
 theorem acongr_iff_perm_acongr (tr₁ tr₂ : Triangle P) : tr₁.IsACongr tr₂ ↔ (perm_vertices tr₁).IsACongr (perm_vertices tr₂) :=
   ⟨fun h ↦ h.perm_acongr, fun h ↦ h.perm_acongr.perm_acongr⟩
+
+theorem oarea (h : tr₁.IsACongr tr₂) : tr₁.oarea = - tr₂.oarea := sorry
+
+theorem area (h : tr₁.IsACongr tr₂) : tr₁.area = tr₂.area := sorry
 
 end IsACongr
 
@@ -356,6 +360,8 @@ theorem is_cclock_of_cclock (h : tr_nd₁.IsCongr tr_nd₂) (cc : tr_nd₁.is_cc
   apply (angle₁_pos_iff_cclock tr_nd₁).mp
   exact cc
 
+theorem oarea (h : tr_nd₁.IsCongr tr_nd₂) : tr_nd₁.oarea = tr_nd₂.oarea := sorry
+
 theorem area (h : tr_nd₁.IsCongr tr_nd₂) : tr_nd₁.area = tr_nd₂.area := sorry
 
 theorem perm_congr (h : tr_nd₁.IsCongr tr_nd₂) : (perm_vertices tr_nd₁).IsCongr (perm_vertices tr_nd₂) where
@@ -452,6 +458,10 @@ theorem perm_acongr {tr_nd₁ tr_nd₂ : TriangleND P} (h : tr_nd₁.IsACongr tr
 
 theorem acongr_iff_perm_acongr (tr_nd₁ tr_nd₂ : TriangleND P) : tr_nd₁.IsACongr tr_nd₂ ↔ (perm_vertices tr_nd₁).IsACongr (perm_vertices tr_nd₂) :=
   ⟨fun h ↦ h.perm_acongr, fun h ↦ h.perm_acongr.perm_acongr⟩
+
+theorem oarea (h : tr_nd₁.IsACongr tr_nd₂) : tr_nd₁.oarea = - tr_nd₂.oarea := sorry
+
+theorem area (h : tr_nd₁.IsACongr tr_nd₂) : tr_nd₁.area = tr_nd₂.area := sorry
 
 end IsACongr
 
