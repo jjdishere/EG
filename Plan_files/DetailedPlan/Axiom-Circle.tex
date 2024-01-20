@@ -1,44 +1,355 @@
-\documentclass[12pt,a4paper]{article}
-\usepackage{graphicx} % Required for inserting images
+\documentclass[12pt]{amsart}
+\usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{verbatim}
+\usepackage{fullpage}
+\usepackage{color}
 
-\title{LEAN Project Circle}
-\author{}
-\date{}
+\newcommand{\toadd}{{\color{red}To Add: }}
+\newcommand{\changename}{{\color{red}To Change Name: }}
+\title{Document file for content in subfolder: Axiom--Circle}
 
 \begin{document}
 
 \maketitle
 
-\section{Content in file CCPosition.lean}
-In this file, we define the relative positions between circles.
-  Definitions:
-    (defn) separated_of_circle_circle : Prop -- Given two circles (\omega_1 \omega_2 : Circle P), return a proposition  that the distance between two circle centers is larger than the sum of two radii, i.e., |O_1O_2|>r_1+r_2.
-    (defn) intersected_of_circle_circle : Prop -- Given two circles (\omega_1 \omega_2 : Circle P), return a proposition  that the distance between two circle centers is less than the sum of two radii and more than the difference of their radii, i.e., |r_1-r_2|<|O_1O_2|<r_1+r_2.
-    (defn) circumscribed_of_circl_circle : Prop -- Given two circles (\omega_1 \omega_2 : Circle P), return a proposition  that the distance between two circle centers is equal to the sum of two radii, i.e., |O_1O_2|=r_1+r_2.
-    (defn) included_of_circle_circle : Prop -- Given two circles (\omega_1 \omega_2 : Circle P), return a proposition  that the distance between two circle centers is less than the first radius minus the second radius, i.e., |O_1O_2|<r_1-r_2.
-    (defn) inscribed_of_circle_circle : Prop -- Given two circles (\omega_1 \omega_2 : Circle P), return a proposition  that the distance between two circle centers is equal to the first radius minus the second radius , i.e., |O_1O_2|=r_1-r_2.
-  
-  Theorems :
-    separated_circles_zero_intersection -- Given two circles (\omega_1 \omega_2 : Circle P), if they are separated, then they have no intersection.
-    intersected_circles_two_intersection -- Given two circles (\omega_1 \omega_2 : Circle P), if they intersect each other, then they have exactly two common points.
-    circumscribed_circles_one_intersection -- Given two circles (\omega_1 \omega_2 : Circle P), if they are circumscribed, then they have exactly one common point.
-    included_circles_no_intersection -- Given two circles (\omega_1 \omega_2 : Circle P), if \omega_2 is included in \omega_1, then they have no intersections.
-    inscibed_circles_one_intersection --  Given two circles (\omega_1 \omega_2 : Circle P), if \omega_1 is inscribed with \omega_2, then they have exactly one common point.
+\section{Content in file Basic.lean}
+In this file, we define the class of circles, and state some basic properties. A more precise plan is the following:
+\begin{enumerate}
+    \item We define the class of circles.
+    \item We give different ways to make a circle.
+    \item We discuss the position between a point and a circle.
+    \item We discuss the position between different points on the same circle.
+    \item We define the concepts of antipodes, arc and chord in a circle.
+\end{enumerate}
+
+\subsection{Definitions}
+\begin{itemize}
+    \item Structure \verb|Circle|: A \emph{Circle} consists of a center $O$ and a radius $r$ which is positive, i.e. $r > 0$; it is the circle whose center and radius are given.
+\end{itemize}
+
+\subsection{Make of concepts}
+\begin{itemize}
+    \item Definition \verb|Circle.mk_pt_pt|: Given two distinct points $O$ and $A$, this function returns a circle whose center is $O$ and radius is $\|OA\|$.
+    \item Definition \verb|Circle.mk_pt_pt_pt|: Given three points $A,B,C$ that are not collinear, this function returns a circle which is the circumcircle of triangle $ABC$. {\color{red} This \verb|def| will be moved into the construction of circumcenter.}
+    \item Definition \verb|CIR| as \verb|Circle.mk_pt_pt|: This is to abbreviate the function \verb|Circle.mk_pt_pt| into \verb|CIR|.
+    \item Definition $\odot$ as \verb|Circle.mk_pt_pt|: This is to abbreviate the function \verb|Circle.mk_pt_pt| into $\odot$.
+    \item Definition \verb|Circle.mk_pt_radius|: Given a point $O$ and a positive real number $r$, this function returns a circle whose center is $O$ and radius is $r$.
+    \item Definition \verb|Circle.mk_pt_pt_diam|: Given two distinct points $A$ and $B$, this function returns a circle with $AB$ as its diameter, i.e. the circle's center is the midpoint of $AB$, and its radius is $\frac{1}{2}\|AB\|$.
+\end{itemize}
+
+\subsection{Position between a point and a circle}
+\begin{itemize}
+    \item Definition \verb|Circle.IsInside|: Given a point $A$ and a circle $\omega$, this function returns whether $A$ lies inside $\omega$; here saying that $A$ lies inside $\omega$ means that the distance between $A$ and the center of $\omega$ is not greater than the radius of $\omega$.
+    \item Definition \verb|Circle.IsOn|: Given a point $A$ and a circle $\omega$, this function returns whether $A$ lies on $\omega$; here saying that $A$ lies on $\omega$ means that the distance between $A$ and the center of $\omega$ is equal to the radius of $\omega$.
+    \item Definition \verb|Circle.IsInt|: Given a point $A$ and a circle $\omega$, this function returns whether $A$ lies in the interior of $\omega$; here saying that $A$ lies in the interior of $\omega$ means that the distance between $A$ and the center of $\omega$ is smaller than the radius of $\omega$.
+    \item Definition \verb|Circle.IsOutside|: Given a point $A$ and a circle $\omega$, this function returns whether $A$ lies outside $\omega$; here saying that $A$ lies outside $\omega$ means that the distance between $A$ and the center of $\omega$ is greater than the radius of $\omega$.
+    \item Definition \verb|Circle.carrier|: Given a circle, its underlying set is the set of points that lie on this circle.
+    \item Definition \verb|Circle.interior|: Given a circle, its interior is the set of points that lie in the interior of this circle.
+    \item Definition \verb|LiesIn| as \verb|Circle.IsInside|: This is to abbreviate the function \verb|Circle.IsInside| into \verb|LiesIn|.
+    \item Definition \verb|LiesOut| as \verb|Circle.IsOutside|: This is to abbreviate the function \verb|Circle.IsOutside| into \verb|LiesOut|.
+    \item Instance \verb|Circle.pt_liesout_ne_center|: Given a circle $\omega$ and a point $A$ that lies outside $\omega$, then $A$ is distinct to the center of $\omega$.
+    \item Instance \verb|Circle.pt_lieson_ne_center|: Given a circle $\omega$ and a point $A$ that lies on $\omega$, then $A$ is distinct to the center of $\omega$.
+    \item Instance \verb|Circle.pt_liesout_ne_pt_lieson|: Given a circle $\omega$, a point $A$ that lies outside $\omega$ and a point $B$ that lies on $\omega$, then $A$ and $B$ are distinct, i.e. $A \ne B$.
+    \item Instance \verb|Circle.pt_liesint_ne_pt_lieson|: Given a circle $\omega$, a point $A$ that lies in the interior of $\omega$ and a point $B$ that lies on $\omega$, then $A$ and $B$ are distinct, i.e. $A \ne B$.
+    \item Instance \verb|Circle.pt_liesout_ne_pt_liesint|: Given a circle $\omega$, a point $A$ that lies outside $\omega$ and a point $B$ that lies in the interior of $\omega$, then $A$ and $B$ are distinct, i.e. $A \ne B$.
+    \item Theorem \verb|Circle.liesint_iff_liesin_and_not_lieson|: Given a circle $\omega$ and a point $A$, then $A$ lies in the interior of $\omega$ if and only if $A$ lies inside $\omega$ and $A$ doesn't lie on $\omega$.
+    \item Theorem \verb|Circle.liesin_iff_liesint_or_lieson|: Given a circle $\omega$ and a point $A$, then $A$ lies inside $\omega$ if and only if $A$ lies in the interior of $\omega$ or $A$ lies on $\omega$.
+    \item Theorem \verb|Circle.mk_pt_pt_lieson|: Given two distinct points $O$ and $A$, then $A$ lies on \verb|CIR O A|, i.e. the center of the circle is $O$ and the radius is $\|OA\|$.
+    \item Theorem \verb|Circle.mk_pt_pt_diam_fst_lieson|: Given two distinct points $A$ and $B$, then the first point $A$ lies on the circle with $AB$ as its diameter.
+    \item Theorem \verb|Circle.mk_pt_pt_diam_snd_lieson|: Given two distinct points $A$ and $B$, then the second point $B$ lies on the circle with $AB$ as its diameter.
+    \item Definition \verb|Circle.seg_lies_inside_circle|: Given a segment $l$ and a circle $\omega$, this function returns whether $l$ lies inside $\omega$; here saying that $l$ lies inside $\omega$ means that the two endpoints of $l$ both lie inside $\omega$.
+    \item Definition \verb|SegInCir| as \verb|Circle.seg_lies_inside_circle|: This is to abbreviate the function \verb|Circle.seg_lies_inside_circle| into \verb|SegInCir|.
+    \item Theorem \verb|Circle.pt_lies_inside_circle_of_seg_inside_circle|: Given a circle $\omega$, a segment $l$ that lies in the interior of $\omega$ and a point $A$ that lies in the interior of $l$, then $A$ lies in the interior of $\omega$. {\color{red} still \verb|sorry|, need a lemma of \emph{Seg}}
+\end{itemize}
+
+\subsection{Position between different points}
+\begin{itemize}
+    \item Lemma \verb|Circle.pts_lieson_circle_vec_eq|: Given a circle $\omega$ and two distinct points $A,B$ that both lie on $\omega$, if we denote the perpendicular foot of the center of $\omega$ to the line $AB$ as $P$, then $\overrightarrow{AP} = \overrightarrow{PB}$.
+    \item Theorem \verb|Circle.pts_lieson_circle_perpfoot_eq_midpoint|: Given a circle $\omega$ and two distinct points $A,B$ that both lie on $\omega$, then the perpendicular foot of the center of $\omega$ to the line $AB$ is equal to the midpoint of $AB$.
+    \item Theorem \verb|Circle.three_pts_lieson_circle_not_collinear|: Given a circle $\omega$ and three points $A,B,C$ that is distinct to each other, and they all lie on $\omega$, then $A,B,C$ are not collinear.
+\end{itemize}
+
+\subsection{Antipode}
+\begin{itemize}
+    \item Definition \verb|Circle.IsAntipode|: Given a circle $\omega$ and two points $A,B$ that both lie on $\omega$, this function returns whether $B$ is $A$'s antipode; here saying that $B$ is $A$'s antipode means that $B$ is the point reflection of $A$ respect to the center of $\omega$.
+    \item Theorem \verb|Circle.antipode_symm|: Given a circle $\omega$ and two points $A,B$ that both lie on $\omega$, if $B$ is $A$'s antipode, then $A$ is $B$'s antipode.
+    \item Theorem \verb|Circle.antipode_center_is_midpoint|: Given a circle $\omega$ and two points $A,B$ that both lie on $\omega$, if $B$ is $A$'s antipode, then the center of $\omega$ is the midpoint of segment $AB$.
+    \item Theorem \verb|Circle.antipode_iff_collinear|: Given a circle $\omega$ and two distinct points $A,B$ that both lie on $\omega$, then $B$ is $A$'s antipode if and only if $A,O,B$ are collinear, where $O$ is the center of $\omega$.
+    \item Theorem \verb|Circle.mk_pt_pt_diam_is_antipode|: Given two distinct points $A,B$, then $B$ is $A$'s antipode respect to the circle with segment $AB$ as its diameter.
+\end{itemize}
+
+\subsection{Arc}
+\begin{itemize}
+    \item Structure \verb|Arc|: Given a circle $\omega$, an \emph{Arc} consists of two points named \verb|source| and \verb|target|, and properties that these two points both lies on the circle and they are distinct; it is an arc from \verb|source| to \verb|target| respect to $\omega$.
+    \item Definition \verb|Arc.mk_pt_pt_circle|: Given a circle $\omega$ and two distinct points $A,B$ that lie on $\omega$, this function returns the arc from $A$ to $B$ respect to $\omega$.
+    \item Definition \verb|ARC| as \verb|Arc.mk_pt_pt_circle|: This is to abbreviate the function \verb|Arc.mk_pt_pt_circle| into \verb|ARC|.
+    \item Definition \verb|Arc.IsOn|: Given a circle $\omega$, a point $A$ and an arc $\beta$ on $\omega$, this function returns whether $A$ lies on $\beta$; here saying that $A$ lies on $\beta$ means that $A$ lies on $\omega$ and $A$ doesn't lie on the left side of the directed line from $\beta$'s source to target.
+    \item Definition \verb|Arc.ne_endpts|: Given a circle $\omega$, a point $A$ and an arc $\beta$ on $\omega$, this function returns whether $A$ is not equal to $\beta$'s endpoints; here saying that $A$ is not equal to $\beta$'s endpoints means that $A$ is not equal to $\beta$'s source or target.
+    \item Instance \verb|Arc.pt_ne_source|: Given a circle $\omega$, an arc $\beta$ on $\omega$ and a point $A$ that is not equal to $\beta$'s endpoints, then $A$ is not equal to $\beta$'s source.
+    \item Instance \verb|Arc.pt_ne_target|: Given a circle $\omega$, an arc $\beta$ on $\omega$ and a point $A$ that is not equal to $\beta$'s endpoints, then $A$ is not equal to $\beta$'s target.
+    \item Definition \verb|Arc.IsInt|: Given a circle $\omega$, a point $A$ and an arc $\beta$ on $\omega$, this function returns whether $A$ lies in the interior of $\beta$; here saying that $A$ lies in the interior of $\beta$ means that $A$ lies on $\beta$ and $A$ is not $\beta$'s endpoints.
+    \item Definition \verb|Arc.carrier|: Given an arc, its underlying set is the set of points that lie on this arc.
+    \item Definition \verb|Arc.interior|: Given an arc, its interior is the set of points that lie in the interior of this arc.
+    \item Theorem \verb|Arc.center_ne_endpts|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, then $\omega$'s center is not equal to $\beta$'s endpoints.
+    \item Instance \verb|Arc.source_ne_center|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, then $\beta$'s source is not equal to $\omega$'s center.
+    \item Instance \verb|Arc.target_ne_center|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, then $\beta$'s target is not equal to $\omega$'s center.
+    \item Definition \verb|Arc.complement|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, this function returns the complement of $\beta$; here saying that the complement of $\beta$ starts from $\beta$'s target and ends at $\beta$'s source.
+    \item Lemma \verb|Arc.pt_liesint_not_lieson_dlin|: Given a circle $\omega$, an arc $\beta$ on $\omega$ and a point $A$ that lies in the interior of $\beta$, then $A$ doesn't lie on the directed line from $\beta$'s source to target.
+    \item Theorem \verb|Arc.pt_liesint_liesonright_dlin|: Given a circle $\omega$, an arc $\beta$ on $\omega$ and a point $A$ that lies in the interior of $\beta$, then $A$ lies on the right side of the directed line from $\beta$'s source to target.
+    \item Theorem \verb|Arc.pt_liesint_complementary_liesonleft_dlin|: Given a circle $\omega$, an arc $\beta$ on $\omega$ and a point $A$ that lies in the interior of $\beta$'s complement, then $A$ lies on the left side of the directed line from $\beta$'s source to target.
+    {\color{red} \item Is it necessary to define the sum of arcs which are connected?}
+\end{itemize}
+
+\subsection{Chord}
+\begin{itemize}
+    \item Structure \verb|Chord|: Given a circle $\omega$, a Chord consists of a non-degenerate segment $AB$ and condition that both $A$ and $B$ lie on $\omega$.
+    \item Instance \verb|Chord.IsND|: Given a circle $\omega$ and a chord $s$ in $\omega$, then the source and target of $s$ are distinct.
+    \item Definition \verb|Chord.mk_pt_pt_circle|: Given a circle $\omega$ and two distinct points $A,B$ that both lie on $\omega$, this function returns the chord $AB$ in $\omega$.
+    \item Definition \verb|Chord.IsOn|: Given a circle $\omega$, a point $A$ and a chord $s$ in $\omega$, this function returns whether $A$ lies on $s$; here saying that $A$ lies on $s$ means that $A$ lies on the non-degenerate segment respect to $s$.
+    \item Definition \verb|Chord.IsInt|: Given a circle $\omega$, a point $A$ and a chord $s$ in $\omega$, this function returns whether $A$ lies in the interior of $s$; here saying that $A$ lies in the interior of $s$ means that $A$ lies in the interior of the non-degenerate segment respect to $s$.
+    \item Definition \verb|Chord.carrier|: Given a chord, its underlying set is the set of points that lie on this chord.
+    \item Definition \verb|Chord.interior|: Given a chord, its interior is the set of points that lie in the interior of this chord.
+    \item Definition \verb|Chord.ne_endpts|: Given a circle $\omega$, a point $A$ and a chord $s$ in $\omega$, this function returns whether $A$ is not equal to the endpoints of $s$; here saying that $A$ is not equal to $s$'s endpoints means that $A$ is not equal to the source or target of $s$.
+    \item Theorem \verb|Chord.center_ne_endpts|: Given a circle $\omega$ and a chord $s$ in $\omega$, then $\omega$'s center is not equal to the endpoints of $s$.
+    \item Instance \verb|Chord.source_ne_center|: Given a circle $\omega$ and a chord $s$ in $\omega$, then the source of $s$ is not equal to $\omega$'s center.
+    \item Instance \verb|Chord.target_ne_center|: Given a circle $\omega$ and a chord $s$ in $\omega$, then the target of $s$ is not equal to $\omega$'s center.
+    \item Definition \verb|Chord.reverse|: Given a circle $\omega$ and a chord $s$ in $\omega$, then this function returns the reverse chord of $s$, which starts from the target of $s$ and ends at the source of $s$.
+    \item Theorem \verb|Chord.pt_liesint_liesint_circle|: Given a circle $\omega$, a chord $s$ in $\omega$ and a point A that lies in the interior of $s$, then A lies in the interior of $\omega$.
+    \item Definition \verb|Arc.toChord|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, this function returns the chord respect to $\beta$.
+    \item Definition \verb|Chord.toArc|: Given a circle $\omega$ and a chord $s$ in $\omega$, this function returns the arc respect to $s$.
+    \item Theorem \verb|Circle.complementary_arc_toChord_eq_reverse|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, then the chord respect to the complement of $\beta$ is equal to the reverse chord respect to $\beta$.
+    \item Theorem \verb|Circle.reverse_chord_toArc_eq_complement|: Given a circle $\omega$ and a chord $s$ in $\omega$, then the arc respect to the reverse chord of $s$ is equal to the complement arc respect to $s$.
+    \item Definition \verb|Chord.length|: Given a circle $\omega$ and a chord $s$ in $\omega$, this function returns the length of $s$.
+    \item Definition \verb|Chord.IsDiameter|: Given a circle $\omega$ and a chord $s$ in $\omega$, this function returns whether $s$ is a diameter; here saying that $s$ is a diameter means that the center of $\omega$ lies on $s$.
+    \item Theorem \verb|Chord.diameter_iff_antipide|: Given a circle $\omega$ and a chord $s$ in $\omega$, then $s$ is a diameter if and only if the source and target of $s$ are antipodes.
+    \item Theorem \verb|Chord.diameter_length_eq_twice_radius|: Given a circle $\omega$ and a chord $s$ in $\omega$, if $s$ is a diameter, then the length of $s$ is twice as large as $\omega$'s radius, i.e. $|s|=2r$.
+\end{itemize}
 
 
 \section{Content in file LCPosition.lean}
-In this file, we define the relative position between lines and circles and rays and circles. What's more, when discuss position bewteen rays and circles, we want give a criterion whether the underlying lines have common points with the circles and give constructions to the TWO intersections (may be the same point).
-  \subsection{position of lines and circles}
-    Definitions : 
-     (defn) line_tangent_to_circle : Prop -- Given a line and a circle, return a proposition that the line has exactly one common point with the circle, i.e., there exist a common point A and any common point must be A.
-     (defn) line_secant_to_circle : Prop -- Given a line and a circle, return a proposition that they have exactly two common points.
-     (defn) line_disjoint_from_circle : Prop -- Given a line and a circle, returen a proposition that they have no common points.
-     (defn) line_intersect_circle : Prop -- Given a line and a circle, returen a proposition that the line has at least a common point with the circle.
-    Theorems : 
-      line_tangent_to_circle_iff_one_intersection -- Given a line and a circle, the line is tangent to the circle iff the distance from the center to the line is equal to radius of the circle. 
-      line_secant_to_circle_iff_two_intersection -- Given a line and a circle, the line is secant to the circle iff the distance from the center to the line is less than the radius of the circle.
-      line_disjoint_from_circle_iff_two_intersection -- Given a line and a circle, the line is disjoint from the circle iff the distance from the center to the line is more than the radius of the circle.
-      
+In this file, we define the position between a line and a circle, and there intersected points if intersected.
+
+\subsection{Position between a directed line and a circle}
+\begin{itemize}
+    \item Definition \verb|Circle.DirLine.IsDisjoint|: Given a directed line $l$ and a circle $\omega$, this function returns whether $l$ is disjoint to $\omega$; here saying that $l$ is disjoint to $\omega$ means that the distance from the circle of $\omega$ to $l$ is greater than the radius of $\omega$.
+    \item Definition \verb|Circle.DirLine.IsTangent|: Given a directed line $l$ and a circle $\omega$, this function returns whether $l$ is tangent to $\omega$; here saying that $l$ is tangent to $\omega$ means that the distance from the circle of $\omega$ to $l$ is equal to the radius of $\omega$.
+    \item Definition \verb|Circle.DirLine.IsSecant|: Given a directed line $l$ and a circle $\omega$, this function returns whether $l$ is secant to $\omega$; here saying that $l$ is secant to $\omega$ means that the distance from the circle of $\omega$ to $l$ is smaller than the radius of $\omega$.
+    \item Definition \verb|Circle.DirLine.IsIntersected|: Given a directed line $l$ and a circle $\omega$, this function returns whether $l$ is intersected with $\omega$; here saying that $l$ is intersected with $\omega$ means that the distance from the circle of $\omega$ to $l$ is not greater than the radius of $\omega$.
+    \item Definition \verb|Secant| as \verb|Circle.DirLine.IsSecant|: This is to abbreviate the function \verb|Circle.DirLine.IsSecant| into \verb|Secant|.
+    \item Definition \verb|Tangent| as \verb|Circle.DirLine.IsTangent|: This is to abbreviate the function \verb|Circle.DirLine.IsTangent| into \verb|Tangent|.
+    \item Definition \verb|Disjoint| as \verb|Circle.DirLine.IsDisjoint|: This is to abbreviate the function \verb|Circle.DirLine.IsDisjoint| into \verb|Disjoint|.
+    \item Theorem \verb|DirLC.disjoint_pt_liesout_circle|: Given a circle $\omega$, a directed line $l$ which is disjoint to $\omega$, and a point $A$ that lies on $l$, then $A$ lies outside $\omega$.
+    \item Theorem \verb|DirLC.intersect_iff_tangent_or_secant|: Given a directed line $l$ and a circle $\omega$, then $l$ is intersected with $\omega$ if and only if $l$ is tangent to $\omega$ or $l$ is secant to $\omega$.
+    \item Theorem \verb|DirLC.pt_liesint_secant|: Given a circle $\omega$, a point $A$ in the interior of $\omega$ and a directed line $l$ such that $A$ lies on $l$, then $l$ is secant to $\omega$.
+    \item Theorem \verb|DirLC.pt_liesint_intersect|: Given a circle $\omega$, a point $A$ in the interior of $\omega$ and a directed line $l$ such that $A$ lies on $l$, then $l$ is intersected with $\omega$.
+\end{itemize}
+
+\subsection{Definition of intersected points}
+\begin{itemize}
+    \item Structure \verb|DirLCInxpts|: A \emph{DirLCInxpts} consists of two points named \verb|front| and \verb|back|; they are the intersected points of a directed line and a circle, distinguished by the direction of the directed line.
+    \item Lemma \verb|DirLC.dist_pt_line_ineq|: Given a circle $\omega$ and a directed line $l$ that is intersected with $\omega$, then we have an inequality $r^2-d^2\ge0$, where $r$ is the radius of $\omega$ and $d$ is the distance from the center of $\omega$ to $l$. {\color{blue} This lemma makes sure that the definition of intersected points is well defined.}
+    \item Definition \verb|DirLC.Inxpts|: Given a circle $\omega$ and a directed line $l$ that is intersected with $\omega$, this function returns the intersected points of $l$ and $\omega$.
+\end{itemize}
+
+\subsection{Basic properties of intersected points}
+\begin{itemize}
+    \item Lemma \verb|DirLC.inx_pts_lieson_dlin|: Given a circle $\omega$ and a directed line $l$ that is intersected with $\omega$, then both of the intersected points of $l$ and $\omega$ lie on $l$.
+    \item Theorem \verb|DirLC.inx_pts_lieson_circle|: Given a circle $\omega$ and a directed line $l$ that is intersected with $\omega$, then both of the intersected points of $l$ and $\omega$ lie on $\omega$.
+    \item Theorem \verb|DirLC.inx_pts_same_iff_tangent|: Given a circle $\omega$ and a directed line $l$ that is intersected with $\omega$, then two intersected points of $l$ and $\omega$ coincide if and only if $l$ is tangent to $\omega$.
+    \item Lemma \verb|DirLC.inx_pts_ne_center|: Given a circle $\omega$ and a directed line $l$ that is intersected with $\omega$, then both of the intersected points of $l$ and $\omega$ are distinct with the center of $\omega$.
+    \item Theorem \verb|DirLC.inx_pts_antipode_iff_center_lieson|: Given a circle $\omega$ and a directed line $l$ that is intersected with $\omega$, then one of the intersected points of $l$ and $\omega$ is the antipode of another if and only if the center of $\omega$ lies on $l$. {\color{red} still \verb|sorry|}
+    \item Theorem \verb|DirLC.inxwith_iff_intersect|: Given a circle $\omega$ and a directed line $l$, then the images of $l$ and $\omega$ have intersection if and only if $l$ is intersected with $\omega$.
+    \item Theorem \verb|DirLC.inxwith_iff_tangent_or_secant|: Given a circle $\omega$ and a directed line $l$, then the images of $l$ and $\omega$ have intersection if and only if $l$ is tangent to $\omega$ or $l$ is secant to $\omega$.
+    {\color{red} Do we need to change the statement of \verb|IsIntersected| to \verb|InxWith| in the above theorems?}
+\end{itemize}
+
+\subsection{Tangent point}
+\begin{itemize}
+    \item Definition \verb|DirLC.Tangentpt|: Given a circle $\omega$ and a directed line $l$ that is tangent to $\omega$, this function returns the tangent point of $l$ and $\omega$.
+    \item Lemma \verb|DirLC.tangent_pt_ne_center|: Given a circle $\omega$ and a directed line $l$ that is tangent to $\omega$, then the tangent point of $l$ and $\omega$ is distinct with the center of $\omega$.
+    \item Theorem \verb|DirLC.tangent_pt_center_perp_line|: Given a circle $\omega$ and a directed line $l$ that is tangent to $\omega$, then the line between the center of $\omega$ and the tangent point is perpendicular to $l$.
+    \item Theorem \verb|DirLC.tangent_pt_eq_perp_foot|: Given a circle $\omega$ and a directed line $l$ that is tangent to $\omega$, then the tangent point is the perpendicular foot from the center of $\omega$ to $l$.
+\end{itemize}
+
+\subsection{The uniqueness of intersected points}
+\begin{itemize}
+    \item Theorem \verb|Circle.DirLC_intersection_eq_inxpts|: Given a circle $\omega$, a directed line $l$ that is intersected with $\omega$ and a point $A$ that both lie on $l$ and $\omega$, then $A$ is equal to one of the intersected points of $l$ and $\omega$.
+    \item Theorem \verb|Circle.pt_pt_tangent_eq_tangent_pt|: Given a circle $\omega$ and two points $A,B$ that $A$ lies outside $\omega$ and $B$ lies on $\omega$, if directed line $AB$ is tangent to $\omega$, then $B$ is the tangent point.
+    \item Theorem \verb|Circle.chord_toDirLine_intersected|: Given a circle $\omega$ and a chord $s$ in $\omega$, then the directed line respect to $s$, which starts from the source of $s$ and ends at the target of $s$, is intersected with $\omega$.
+    \item Theorem \verb|Circle.chord_toDirLine_inx_front_pt_eq_target|: Given a circle $\omega$ and a chord $s$ in $\omega$, then the front intersected point of the directed line respect to $s$ and $\omega$ is equal to the target of $s$. {\color{red} still \verb|sorry|}
+    \item Theorem \verb|Circle.chord_toDirLine_inx_back_pt_eq_source|: Given a circle $\omega$ and a chord $s$ in $\omega$, then the back intersected point of the directed line respect to $s$ and $\omega$ is equal to the source of $s$. {\color{red} still \verb|sorry|}
+\end{itemize}
+
+\subsection{Equivalent condition for tangency}
+\begin{itemize}
+    \item Theorem \verb|Circle.pt_pt_tangent_perp|: Given a circle $\omega$ and two points $A,B$ that $A$ lies outside $\omega$ and $B$ lies on $\omega$, if directed line $AB$ is tangent to $\omega$, then the directed line from the center of $\omega$ to $B$ is perpendicular to directed line $AB$.
+    \item Theorem \verb|Circle.pt_pt_perp_tangent|: Given a circle $\omega$ and two points $A,B$ that $A$ lies outside $\omega$ and $B$ lies on $\omega$, if directed line $AB$ is perpendicular to the directed line from the center of $\omega$ to $B$, then directed line $AB$ is tangent to $\omega$.
+    \item Theorem \verb|Circle.pt_pt_perp_eq_tangent_pt|: Given a circle $\omega$ and two points $A,B$ that $A$ lies outside $\omega$ and $B$ lies on $\omega$, if directed line $AB$ is perpendicular to the directed line from the center of $\omega$ to $B$, then $B$ is the tangent point of directed line $AB$ and $\omega$.
+\end{itemize}
+
+\subsection{Position between a line and a circle}
+\begin{itemize}
+    \item Definition \verb|Circle.Line.IsDisjoint|: Given a line $l$ and a circle $\omega$, this function returns whether $l$ is disjoint to $\omega$; here saying that $l$ is disjoint to $\omega$ means that the distance from the circle of $\omega$ to $l$ is greater than the radius of $\omega$.
+    \item Definition \verb|Circle.Line.IsTangent|: Given a line $l$ and a circle $\omega$, this function returns whether $l$ is tangent to $\omega$; here saying that $l$ is tangent to $\omega$ means that the distance from the circle of $\omega$ to $l$ is equal to the radius of $\omega$.
+    \item Definition \verb|Circle.Line.IsSecant|: Given a line $l$ and a circle $\omega$, this function returns whether $l$ is secant to $\omega$; here saying that $l$ is secant to $\omega$ means that the distance from the circle of $\omega$ to $l$ is smaller than the radius of $\omega$.
+    \item Definition \verb|Circle.Line.IsIntersected|: Given a line $l$ and a circle $\omega$, this function returns whether $l$ is intersected with $\omega$; here saying that $l$ is intersected with $\omega$ means that the distance from the circle of $\omega$ to $l$ is not greater than the radius of $\omega$.
+\end{itemize}
+
+
+\section{Content in file CCPosition.lean}
+In this file, we define the position between two circles, and there intersected points if intersected.
+
+\subsection{Position between two circles}
+\begin{itemize}
+    \item Definition \verb|Circle.CC.IsSeparated|: Given two circles $\omega_1,\omega_2$, this function returns whether $\omega_1$ is separated from $\omega_2$; here saying that $\omega_1$ is separated from $\omega_2$ means that the distance between their centers is greater than the sum of their radius, i.e. $d > r_1 + r_2$.
+    \item Definition \verb|Circle.CC.IsIntersected|: Given two circles $\omega_1,\omega_2$, this function returns whether $\omega_1$ is intersected with $\omega_2$; here saying that $\omega_1$ is intersected with $\omega_2$ means that the distance between their centers is smaller than the sum of their radius and greater than the absolute value of the difference between their radius, i.e, $|r_1-r_2|<d<r_1+r_2$.
+    \item Definition \verb|Circle.CC.IsExtangent|: Given two circles $\omega_1,\omega_2$, this function returns whether $\omega_1$ is external tangent to $\omega_2$; here saying that $\omega_1$ is external tangent to $\omega_2$ means that the distance between their centers is equal to the sum of their radius, i.e. $d = r_1 + r_2$.
+    \item Definition \verb|Circle.CC.IsIntangent|: Given two circles $\omega_1,\omega_2$, this function returns whether $\omega_1$ is internal tangent to $\omega_2$; here saying that $\omega_1$ is internal tangent to $\omega_2$ means that the distance between their centers is equal to $\omega_2$'s radius minus $\omega_1$'s radius, i.e. $d = r_2 - r_1$, and their centers are distinct. {\color{blue} Here we put the smaller circle in the first position.}
+    \item Definition \verb|Circle.CC.IsIncluded|: Given two circles $\omega_1,\omega_2$, this function returns whether $\omega_1$ is included in $\omega_2$; here saying that $\omega_1$ is included in $\omega_2$ means that the distance between their centers is smaller than $\omega_2$'s radius minus $\omega_1$'s radius, i.e. $d < r_2 - r_1$. {\color{blue} Here we put the smaller circle in the first position.}
+    \item Definition \verb|Separate| as \verb|Circle.CC.IsSeparated|: This is to abbreviate the function \verb|Circle.CC.IsSeparated| into \verb|Separate|.
+    \item Definition \verb|Intersect| as \verb|Circle.CC.IsIntersected|: This is to abbreviate the function \verb|Circle.CC.IsIntersected| into \verb|Intersect|.
+    \item Definition \verb|Extangent| as \verb|Circle.CC.IsExtangent|: This is to abbreviate the function \verb|Circle.CC.IsExtangent| into \verb|Extangent|.
+    \item Definition \verb|Intangent| as \verb|Circle.CC.IsIntangent|: This is to abbreviate the function \verb|Circle.CC.IsIntangent| into \verb|Intangent|.
+    \item Definition \verb|IncludeIn| as \verb|Circle.CC.IsIncluded|: This is to abbreviate the function \verb|Circle.CC.IsIncluded| into \verb|IncludeIn|.
+\end{itemize}
+
+\subsection{Properties of separated}
+\begin{itemize}
+    \item Theorem \verb|CC.separate_symm|: Given two circles $\omega_1,\omega_2$, then $\omega_1$ is separated from $\omega_2$ if and only if $\omega_2$ is separated from $\omega_1$.
+    \item Theorem \verb|CC.separated_pt_liesout_second_circle|: Given two circles $\omega_1, \omega_2$ that are separated, and a point $A$ lies on $\omega_1$, then $A$ lies outside $\omega_2$.
+    \item Theorem \verb|CC.separated_pt_liesout_first_circle|: Given two circles $\omega_1, \omega_2$ that are separated, and a point $A$ lies on $\omega_2$, then $A$ lies outside $\omega_1$.
+\end{itemize}
+
+\subsection{Properties of external tangent}
+\begin{itemize}
+    \item Theorem \verb|CC.extangent_symm|: Given two circles $\omega_1,\omega_2$, then $\omega_1$ is external tangent to $\omega_2$ if and only if $\omega_2$ is external tangent to $\omega_1$.
+    \item Lemma \verb|CC.extangent_centers_distinct|: Given two circles $\omega_1,\omega_2$ that are external tangent, then their centers are distinct.
+    \item Definition \verb|CC.Extangentpt|: Given two circles $\omega_1,\omega_2$ that are external tangent, this function returns the external tangent point of $\omega_1$ and $\omega_2$. {\color{red} Is it necessary to state the coercion when the external tangent condition is flipped?}
+    \item Theorem \verb|CC.extangent_pt_lieson_circles|: Given two circles $\omega_1,\omega_2$ that are external tangent, then their external tangent point lies on both $\omega_1$ and $\omega_2$.
+    \item Theorem \verb|CC.extangent_pt_centers_collinear|: Given two circles $\omega_1,\omega_2$ that are external tangent, then their centers and the external tangent point are collinear.
+\end{itemize}
+
+\subsection{Properties of internal tangent}
+\begin{itemize}
+    \item Theorem \verb|CC.intangency_pt_liesin_second_circle|: Given two circles $\omega_1,\omega_2$ that $\omega_1$ is inscribed in $\omega_2$, and a point $A$ that lies on $\omega_1$, then $A$ lies inside $\omega_2$.
+    \item Definition \verb|CC.Intangentpt|: Given two circles $\omega_1,\omega_2$ that $\omega_1$ is inscribed in $\omega_2$, this function returns the inscribed point of $\omega_1$ and $\omega_2$.
+    \item Theorem \verb|CC.intangent_pt_lieson_circles|: Given two circles $\omega_1,\omega_2$ that $\omega_1$ is inscribed in $\omega_2$, then their inscribed point lies on both $\omega_1$ and $\omega_2$.
+    \item Theorem \verb|CC.intangent_pt_centers_collinear|: Given two circles $\omega_1,\omega_2$ that $\omega_1$ is inscribed in $\omega_2$, then their centers and the inscribed point are collinear.
+\end{itemize}
+
+\subsection{Properties of included}
+\begin{itemize}
+    \item Theorem \verb|CC.included_pt_liesint_second_circle|: Given two circles $\omega_1,\omega_2$ that $\omega_1$ is included in $\omega_2$, and a point $A$ that lies on $\omega_1$, then $A$ lies in the interior of $\omega_2$.
+    \item Theorem \verb|CC.included_pt_liesout_first_circle|: Given two circles $\omega_1,\omega_2$ that $\omega_1$ is included in $\omega_2$, and a point $A$ that lies on $\omega_2$, then $A$ lies outside $\omega_1$.
+\end{itemize}
+
+\subsection{Properties of intersected}
+\begin{itemize}
+    \item Theorem \verb|CC.intersected_symm|: Given two circles $\omega_1,\omega_2$, then $\omega_1$ is intersected with $\omega_2$ if and only if $\omega_2$ is intersected with $\omega_1$.
+    \item Lemma \verb|CC.intersected_centers_distinct|: Given two circles $\omega_1,\omega_2$ that are intersected, then their centers are distinct.
+    \item Structure \verb|CCInxpts|: A \emph{CCInxpts} consists of two points named \verb|left| and \verb|right|; they are the intersected points of two circles, distinguished by their position to the directed line between two circles' center.
+    \item Definition \verb|Circle.radical_axis_dist_to_the_first|: Given two circles $\omega_1,\omega_2$, denoting their centers as $O_1,O_2$, this function returns the directed distance from $O_1$ to their radical axis respect to the direction $\overrightarrow{O_1O_2}$; here saying that this distance is equal to $\frac{r_1^2+d^2-r_2^2}{2d}$.
+    \item Lemma \verb|Circle.radical_axis_dist_lt_radius|: Given two circles $\omega_1,\omega_2$ that are intersected, then the absolute value of the directed distance from the center of $\omega_1$ to their radical axis is smaller than the radius of $\omega_1$.
+    \item Definition \verb|CC.Inxpts|: Given two circles $\omega_1,\omega_2$ that are intersected, this function returns the two intersected points of $\omega_1$ and $\omega_2$. {\color{red} Is it necessary to state the coercion when the external tangent condition is flipped?}
+    \item Theorem \verb|CC.inx_pts_distinct|: Given two circles $\omega_1,\omega_2$ that are intersected, then they have two different intersected points.
+    \item Theorem \verb|CC.inx_pts_lieson_circles|: Given two circles $\omega_1,\omega_2$ that are intersected, then both of their intersected points lies on both $\omega_1$ and $\omega_2$.
+    \item Lemma \verb|CC.inx_pts_centers_not_collinear|: Given two circles $\omega_1,\omega_2$ that are intersected, then both of their intersected points is not collinear with their centers.
+    \item Theorem \verb|CC.inx_pts_tri_acongr|: Given two circles $\omega_1,\omega_2$ that are intersected, then ... {\color{red} How to translate \verb|acongr|?}
+    \item Theorem \verb|CC.inx_pts_line_perp_center_line|: Given two circles $\omega_1,\omega_2$ that are intersected, then the line between their intersected points is perpendicular to the line between their centers. {\color{red} still \verb|sorry|}
+    \item Theorem \verb|CC.inx_pts_uniqueness|: Given two circles $\omega_1,\omega_2$ that are intersected, and a point $A$ that lies on both $\omega_1$ and $\omega_2$, then $A$ is equal to one of the intersected points of $\omega_1$ and $\omega_2$.
+\end{itemize}
+
+
+\section{Content in file InscribedAngle.lean}
+In this file, we define concept of central angle and inscribed angle, also state some properties.
+
+\subsection{Central angle}
+\begin{itemize}
+    \item Definition \verb|Arc.cangle|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, this function returns the central angle of $\beta$, which is $\angle A O B$, where $A$ is the source of $\beta$ and $B$ is the target of $\beta$.
+    \item Definition \verb|Arc.IsMajor|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, this function returns whether $\beta$ is a major arc; here saying that $\beta$ is a major arc means that the value of the central angle of $\beta$ is negative.
+    \item Definition \verb|Arc.IsMinor|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, this function returns whether $\beta$ is a minor arc; here saying that $\beta$ is a minor arc means that the value of the central angle of $\beta$ is positive.
+    \item Definition \verb|Chord.cangle|: Given a circle $\omega$ and a chord $s$ in $\omega$, this function returns the central angle of $s$, which is $\angle A O B$, where $A$ is the source of $s$ and $B$ is the target of $s$.
+    \item Theorem \verb|Circle.cangle_of_arc_eq_cangle_of_toChord|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, then the central angle of $\beta$ is equal to the central angle of the chord respect to $\beta$.
+    \item Theorem \verb|Circle.cangle_of_chord_eq_cangle_of_toArc|: Given a circle $\omega$ and a chord $s$ in $\omega$, then the central angle of $s$ is equal to the central angle of the arc respect to $s$.
+    \item Theorem \verb|Chord.cangle_eq_pi_iff_is_diameter|: Given a circle $\omega$ and a chord $s$ in $\omega$, then the value of the central angle of $s$ is equal to $\pi$ if and only if $s$ is a diameter.
+    \item Theorem \verb|Arc.complement_cangle_reverse|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, then the central angle of the complement of $\beta$ is equal to the reverse of the central angle of $\beta$.
+    \item Theorem \verb|Chord.reverse_cangle_reverse|: Given a circle $\omega$ and a chord $s$ in $\omega$, then the central angle of the reverse of $s$ is equal to the reverse of the central angle of $s$.
+    \item Theorem \verb|Circle.cangle_of_complementary_arc_eq_neg|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, then the value of the central angle of $\beta$'s complement is equal to negative value of the central angle of $\beta$.
+    \item Theorem \verb|Circle.cangle_of_reverse_chord_eq_neg|: Given a circle $\omega$ and a chord $s$ in $\omega$, then the value of the central angle of the reverse of $s$ is equal to negative value of the central angle of $s$.
+    \item Theorem \verb|Chord.cangle_eq_iff_length_eq|: Given a circle $\omega$ and two chords $s_1,s_2$ both in $\omega$, then the value of the central angle of $s_1$ is equal to the value of the central angle of $s_2$ if and only if the length of $s_1$ is equal to the length of $s_2$. {\color{red} still \verb|sorry|}
+\end{itemize}
+
+\subsection{Inscribed angle}
+\begin{itemize}
+    \item Definition \verb|Arc.IsIangle|: Given a circle $\omega$, an arc $\beta$ on $\omega$ and an angle $ang$, this function returns whether $ang$ is an inscribed angle of $\beta$; here saying that $ang$ is an inscribed angle of $\beta$ means that the source of $ang$ lies on $\omega$ and is distinct with the endpoints of $\beta$, and the source of $\beta$ lies on the start ray of $ang$ and the target of $\beta$ lies on the end ray of $ang$.
+    \item Definition \verb|Chord.IsIangle|: Given a circle $\omega$, a chord $s$ in $\omega$ and an angle $ang$, this function returns whether $ang$ is an inscribed angle of $s$; here saying that $ang$ is an inscribed angle of $s$ means that the source of $ang$ lies on $\omega$ and is distinct with the endpoints of $s$, and the source of $s$ lies on the start ray of $ang$ and the target of $s$ lies on the end ray of $ang$.
+    \item Theorem \verb|Arc.iangle_eq|: Given a circle $\omega$, an arc $\beta$ on $\omega$ and an angle $ang$ that is an inscribed angle of $\beta$, then $\angle ASB$ is equal to $ang$ where $A$ is the source of $\beta$, $B$ is the target of $\beta$ and $S$ is the source of $ang$.
+    \item Theorem \verb|Chord.iangle_eq|: Given a circle $\omega$, a chord $s$ in $\omega$ and an angle $ang$ that is an inscribed angle of $s$, then $\angle ASB$ is equal to $ang$ where $A$ is the source of $s$, $B$ is the target of $s$ and $S$ is the source of $ang$.
+    \item Theorem \verb|Arc.angle_mk_pt_is_iangle|: Given a circle $\omega$, an arc $\beta$ on $\omega$ and a point $C$ that lies on $\omega$ and is distinct with the endpoints of $\beta$, then $\angle ACB$ is an inscribed angle of $\beta$ where $A$ is the source of $\beta$ and $B$ is the target of $\beta$.
+    \item Theorem \verb|Chord.angle_mk_pt_is_iangle|: Given a circle $\omega$, a chord $s$ in $\omega$ and a point $C$ that lies on $\omega$ and is distinct with the endpoints of $s$, then $\angle ACB$ is an inscribed angle of $s$ where $A$ is the source of $s$ and $B$ is the target of $s$.
+    \item Theorem \verb|Circle.iangle_of_arc_is_iangle_of_toChord|: Given a circle $\omega$, an arc $\beta$ on $\omega$ and an angle $ang$ that is an inscribed angle of $\beta$, then $ang$ is an inscribed angle of the chord respect to $\beta$.
+    \item Theorem \verb|Circle.iangle_of_chord_is_iangle_of_toArc|: Given a circle $\omega$, a chord $s$ in $\omega$ and an angle $ang$ that is an inscribed angle of $s$, then $ang$ is an inscribed angle of the arc respect to $s$.
+    \item Theorem \verb|Arc.cangle_eq_two_times_inscribed_angle|: Given a circle $\omega$, an arc $\beta$ on $\omega$ and an angle $ang$ that is an inscribed angle of $\beta$, then the value of the central angle of $\beta$ is twice as large as the value of $ang$.
+    \item Theorem \verb|Chord.cangle_eq_two_times_inscribed_angle|: Given a circle $\omega$, a chord $s$ in $\omega$ and an angle $ang$ that is an inscribed angle of $s$, then the value of the central angle of $s$ is twice as large as the value of $ang$.
+    \item Theorem \verb|Circle.iangle_of_diameter_eq_mod_pi|: Given a circle $\omega$, a chord $s$ in $\omega$ and an angle $ang$ that is an inscribed angle of $s$, if $s$ is a diameter, then the value of $ang$ is equal to $\frac{\pi}{2}$ in the sense of mod $\pi$.
+    \item Theorem \verb|Arc.iangle_invariant_mod_pi|: Given a circle $\omega$, an arc $\beta$ on $\omega$ and two angles $ang_1, ang_2$ that both are inscribed angles of $\beta$, then the value of $ang_1$ is equal to the value of $ang_2$ in the sense of mod $\pi$.
+    \item Theorem \verb|Chord.iangle_invariant_mod_pi|: Given a circle $\omega$, a chord $s$ in $\omega$ and two angles $ang_1, ang_2$ that both are inscribed angles of $s$, then the value of $ang_1$ is equal to the value of $ang_2$ in the sense of mod $\pi$.
+\end{itemize}
+
+\subsection{The value of inscribed angle in the sense of mod $\pi$}
+\begin{itemize}
+    \item Definition \verb|Arc.iangdv|: Given a circle $\omega$ and an arc $\beta$ on $\omega$, this function returns the value of any inscribed angle of $\beta$ in the sense of mod $\pi$.
+    \item Definition \verb|Chord.iangdv|: Given a circle $\omega$ and a chord $s$ in $\omega$, this function returns the value of any inscribed angle of $s$ in the sense of mod $\pi$.
+    \item Theorem \verb|Arc.iangle_dvalue_eq|: Given a circle $\omega$, an arc $\beta$ on $\omega$ and an angle $ang$ that is an inscribed angle of $\beta$, then
+    \item Theorem \verb|Chord.iangle_dvalue_eq|: Given a circle $\omega$, a chord $s$ in $\omega$ and an angle $ang$ that is an inscribed angle of $s$, then
+    \item Theorem \verb|Circle.same_chord_same_iangle_dvalue|: Given a circle $\omega$, two chords $s_1,s_2$ both in $\omega$ and two angles $ang_1, ang_2$ that $ang_1$ is an inscribed angle of $s_1$ and $ang_2$ is an inscribed angle of $s_2$, then the value of $ang_1$ is equal to the value of $ang_2$ in the sense of mod $\pi$.
+\end{itemize}
+
+
+\section{Content in file CirclePower.lean}
+In this file, we define the power of a point respect to a circle, and state the circle power theorem.
+
+\subsection{Definition and basic properties of power}
+\begin{itemize}
+    \item Definition \verb|Circle.power|: Given a circle $\omega$ and a point $A$, this function returns the power of $A$ respect to $\omega$; here saying that the power of $A$ respect to $\omega$ is equal to $|OA|^2-r^2$, where $O$ is $\omega$'s center and $r$ is $\omega$'s radius.
+    \item Theorem \verb|Circle.pt_liesin_circle_iff_power_npos|: Given a circle $\omega$ and a point $A$, then $A$ lies inside $\omega$ if and only if the power of $A$ respect to $\omega$ is not positive.
+    \item Theorem \verb|Circle.pt_liesint_circle_iff_power_neg|: Given a circle $\omega$ and a point $A$, then $A$ lies in the interior of $\omega$ if and only if the power of $A$ respect to $\omega$ is negative.
+    \item Theorem \verb|Circle.pt_lieson_circle_iff_power_zero|: Given a circle $\omega$ and a point $A$, then $A$ lies on $\omega$ if and only if the power of $A$ respect to $\omega$ is equal to $0$.
+    \item Theorem \verb|Circle.pt_liesout_circle_iff_power_pos|: Given a circle $\omega$ and a point $A$, then $A$ lies outside $\omega$ if and only if the power of $A$ respect to $\omega$ is positive.
+\end{itemize}
+
+\subsection{Tangent lines from a point outside circle}
+\begin{itemize}
+    \item Structure \verb|Tangents|: A \emph{Tangents} consists of two points named \verb|left| and \verb|right|, which stores the two tangent points from a point outside a circle.
+    \item Lemma \verb|Circle.tangent_circle_intersected|: Given a circle $\omega$ and a point $A$ that lies outside $\omega$, then the circle whose diameter is $AO$, where $O$ is the center of $\omega$, is tangent with $\omega$.
+    \item Definition \verb|Circle.pt_outside_tangent_pts|: Given a circle $\omega$ and a point $A$ outside $\omega$, this function returns the structure \emph{Tangents} that represents the two tangent points of the tangent lines from $A$ to $\omega$, distinguished by the direction $\overrightarrow{AO}$, where $O$ is the center of $\omega$; here we define these two tangent points by the intersected points of circle whose diameter is $AO$ and $\omega$.
+    \item Theorem \verb|Circle.tangents_lieson_circle|: Given a circle $\omega$ and a point $A$ outside $\omega$, then the two tangent points respect to $A$ both lie on $\omega$.
+    \item Lemma \verb|Circle.tangents_ne_pt|: Given a circle $\omega$ and a point $A$ outside $\omega$, then the two tangent points respect to $A$ are distinct with $A$.
+    \item Lemma \verb|Circle.tangents_ne_center|: Given a circle $\omega$ and a point $A$ outside $\omega$, then the two tangent points respect to $A$ are distinct with the center of $\omega$.
+    \item Lemma \verb|Circle.tangents_perp1|: Given a circle $\omega$ and a point $A$ outside $\omega$, then directed line $AM$ is perpendicular to directed line $OM$, where $M$ is the \verb|left| tangent point respect to $A$ and $O$ is the center of $\omega$.
+    \item Lemma \verb|Circle.tangents_perp2|: Given a circle $\omega$ and a point $A$ outside $\omega$, then directed line $AN$ is perpendicular to directed line $ON$, where $N$ is the \verb|right| tangent point respect to $A$ and $O$ is the center of $\omega$.
+    \item Theorem \verb|Circle.line_tangent_circle|: Given a circle $\omega$ and a point $A$ outside $\omega$, then the directed line from $A$ to the tangent point respect to $A$ that we construct before is tangent to $\omega$.
+    \item Theorem \verb|Circle.tangent_pts_eq_tangents|: Given a circle $\omega$ and a point $A$ outside $\omega$, then the tangent points respect to $A$ are the tangent point of the tangent lines from $A$ to $\omega$.
+    \item Lemma \verb|Circle.tangent_length_sq_eq_power|: Given a circle $\omega$, a directed line $l$ that is tangent to $\omega$ and a point $A$ that lies on $l$, then the square of distance between $A$ and the tangent point of $l$ and $\omega$ is equal to the power of $A$ respect to $\omega$.
+    \item Lemma \verb|Circle.tangent_length_sq_eq_power'|: Given a circle $\omega$ and two points $A,B$ that $A$ lies outside $\omega$ and $B$ lies on $\omega$, if directed line $AB$ is tangent to $\omega$, then the square of distance between $A$ and $B$ is equal to the power of $A$ respect to $\omega$.
+    \item Theorem \verb|Circle.length_of_tangent_eq|: Given a circle $\omega$ and a point $A$ outside $\omega$, then the length of two tangent lines from $A$ to $\omega$ are equal, i.e. $|AM|=|AN|$, where $M$ and $N$ are the tangent points respect to $A$.
+    \item Theorem \verb|Circle.length_of_tangent_eq'|: Given a circle $\omega$ and three points $A,B,C$ that $A$ lies outside $\omega$ and $B,C$ both lie on $\omega$, if both directed lines $AB$ and $AC$ are tangent to $\omega$, then the distance between $A$ and $B$ is equal to the distance between $A$ and $C$ ,i.e. $|AB|=|AC|$.
+\end{itemize}
+
+\subsection{Circle Power Theorem}
+\begin{itemize}
+    \item Lemma \verb|Circle.pt_liesout_ne_inxpts|: Given a circle $\omega$, a directed line $l$ that is intersected with $\omega$ and a point $A$ outside $\omega$ that also lies on $l$, then $A$ is distinct with the two intersected points of $l$ and $\omega$.
+    \item Lemma \verb|Circle.pt_liesint_ne_inxpts|: Given a circle $\omega$, a directed line $l$ that is intersected with $\omega$ and a point $A$ in the interior of $\omega$ that also lies on $l$, then $A$ is distinct with the two intersected points of $l$ and $\omega$.
+    \item Theorem \verb|Circle.pt_liesout_back_lieson_ray_pt_front|: Given a circle $\omega$, a directed line $l$ that is intersected with $\omega$ and a point $A$ outside $\omega$ that also lies on $l$, then $N$ lies on ray $AM$, where $M,N$ are respectively the front and back intersected point of $l$ and $\omega$.
+    \item Theorem \verb|Circle.pt_liesint_back_lieson_ray_pt_front_reverse|: Given a circle $\omega$, a directed line $l$ that is intersected with $\omega$ and a point $A$ in the interior of $\omega$ that also lies on $l$, then $N$ lies on the reverse ray of ray $AM$, where $M,N$ are respectively the front and back intersected point of $l$ and $\omega$.
+    \item Theorem \verb|Circle.power_thm|: Given a circle $\omega$, a directed line $l$ that is intersected with $\omega$ and a point $A$ that lies on $l$, then the inner product of vector $\overrightarrow{AM}$ and $\overrightarrow{AN}$ is equal to the power of $A$ respect to $\omega$.
+    \item Theorem \verb|Circle.chord_power_thm|: Given a circle $\omega$, a directed line $l$ that is intersected with $\omega$ and a point $A$ in the interior of $\omega$ that also lies on $l$, then the product of distance $|AM|$ and $|AN|$ is equal to negative power of $A$ respect to $\omega$, where $M,N$ are respectively the front and back intersected point of $l$ and $\omega$.
+    \item Theorem \verb|Circle.secant_power_thm|: Given a circle $\omega$, a directed line $l$ that is intersected with $\omega$ and a point $A$ outside $\omega$ that also lies on $l$, then the product of distance $|AM|$ and $|AN|$ is equal to the power of $A$ respect to $\omega$, where $M,N$ are respectively the front and back intersected point of $l$ and $\omega$.
+    \item Theorem \verb|Circle.intersecting_chords_thm|: Given a circle $\omega$, a point $S$ in the interior of $\omega$ and two chords $s_1,s_2$ in $\omega$ such that $S$ lies on both $s_1$ and $s_2$, then we have $|SA|\cdot|SB|=|SC|\cdot|SD|$, where $A,B$ are respectively the source and target of $s_1$ and $C,D$ are respectively the source and target of $s_2$. {\color{red} still \verb|sorry|}
+    \item Theorem \verb|Circle.intersecting_secants_thm|:Given a circle $\omega$, a point $S$ outside $\omega$ and two directed line $l_1,l_2$ intersected with $\omega$ such that $S$ lies on both $l_1$ and $l_2$, then we have $|SA|\cdot|SB|=|SC|\cdot|SD|$, where $A,B$ are respectively the front and back intersected point of $l_1$ and $\omega$, and $C,D$ are respectively the front and back intersected point of $l_2$ and $\omega$.
+\end{itemize}
+
+
 \end{document}

@@ -662,19 +662,19 @@ theorem dir_perp_iff_isRight : ang.dir₁ ⟂ ang.dir₂ ↔ ang.IsRight :=
 theorem value_eq_pi_of_lies_int_seg_nd {A B C : P} [PtNe C A] (h : B LiesInt (SEG_nd A C)) : ∠ A B C h.2.symm h.3.symm = π :=
   value_eq_pi_of_eq_neg_dir ((SEG_nd A C).toDir_eq_neg_toDir_of_lies_int h)
 
-theorem collinear_iff_dvalue_eq_zero : collinear O A B ↔ (ANG A O B).dvalue = 0 :=
+theorem collinear_iff_dvalue_eq_zero : Collinear O A B ↔ (ANG A O B).dvalue = 0 :=
   collinear_iff_toProj_eq_of_ptNe.trans (eq_comm.trans vsub_eq_zero_iff_eq.symm)
 
-theorem collinear_iff_not_isND : collinear O A B ↔ ¬ (ANG A O B).IsND :=
+theorem collinear_iff_not_isND : Collinear O A B ↔ ¬ (ANG A O B).IsND :=
   collinear_iff_dvalue_eq_zero.trans not_isND_iff_coe.symm
 
-theorem not_collinear_iff_isND : ¬ collinear O A B ↔ (ANG A O B).IsND :=
+theorem not_collinear_iff_isND : ¬ Collinear O A B ↔ (ANG A O B).IsND :=
   collinear_iff_not_isND.not.trans not_not
 
-theorem collinear_of_angle_eq_zero (h : ∠ A O B = 0) : collinear O A B :=
+theorem collinear_of_angle_eq_zero (h : ∠ A O B = 0) : Collinear O A B :=
   collinear_iff_not_isND.mpr (not_isND_of_eq_zero h)
 
-theorem collinear_of_angle_eq_pi (h : ∠ A O B = π ) : collinear O A B :=
+theorem collinear_of_angle_eq_pi (h : ∠ A O B = π ) : Collinear O A B :=
   collinear_iff_not_isND.mpr (not_isND_of_eq_pi h)
 
 end angle_value

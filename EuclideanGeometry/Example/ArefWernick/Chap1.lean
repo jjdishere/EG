@@ -14,7 +14,7 @@ In other words, let $\triangle A_1B_1C_1$ and $\triangle A_2B_2C_2$ be two trian
 Prove that $\triangle A_1B_1C_1$ is congruent to $\triangle A_2B_2C_2$. -/
 
 -- We have two triangles $\triangle A_1B_1C_1,A_2B_2C_2$ .
-variable {A₁ B₁ C₁ A₂ B₂ C₂ : P} {hnd₁ : ¬ collinear A₁ B₁ C₁} {hnd₂ : ¬ collinear A₂ B₂ C₂}
+variable {A₁ B₁ C₁ A₂ B₂ C₂ : P} {hnd₁ : ¬ Collinear A₁ B₁ C₁} {hnd₂ : ¬ Collinear A₂ B₂ C₂}
 -- $M_1,M_2$ are midpoints of $B_1C_1,B_2,C_2$
 variable {M₁ M₂ : P} {hm₁ : M₁ = (SEG B₁ C₁).midpoint} {hm₂ : M₂ = (SEG B₂ C₂).midpoint}
 -- We have $A_1B_1 = A_2B_2$, $A_1C_1 = A_2C_2$, and $A_1M_1 = A_2M_2$.
@@ -32,7 +32,7 @@ namespace Aref_Wernick_Exercise_1_2
 Prove that $\angle BFD = \pi / 2 - \angle CAB$. -/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $B \ne A$ and $C \ne A$ and $B \ne C$.
 --This is because vertices of nondegenerate triangles are distinct.
 lemma B_ne_a : B ≠ A := (ne_of_not_collinear hnd).2.2
@@ -60,8 +60,8 @@ lemma B_ne_f : B ≠ F := by
     have inxb : is_inx B (LIN B C (ne_of_not_collinear hnd).1) (LIN A B (ne_of_not_collinear hnd).2.2) := by
       exact ⟨(SegND B C (ne_of_not_collinear hnd).1).source_lies_on_toLine , (SegND A B (ne_of_not_collinear hnd).2.2).target_lies_on_toLine ⟩
     exact d_ne_b (unique_of_inx_of_line_of_not_para line_neq inxb.symm inxd.symm)
-  have bcd_notcoli : ¬ collinear B C D := (Line.lies_on_line_of_pt_pt_iff_collinear (b_ne_c (hnd := hnd)).symm D).mpr.mt d_not_lies_on_bc
-  have b_not_lies_on_cd : ¬ B LiesOn (LIN C D d_ne_c) := (Line.lies_on_line_of_pt_pt_iff_collinear d_ne_c B).mp.mt (flip_collinear_snd_trd.mt (flip_collinear_fst_snd.mt bcd_notcoli))
+  have bcd_notcoli : ¬ Collinear B C D := (Line.lies_on_line_of_pt_pt_iff_collinear (b_ne_c (hnd := hnd)).symm D).mpr.mt d_not_lies_on_bc
+  have b_not_lies_on_cd : ¬ B LiesOn (LIN C D d_ne_c) := (Line.lies_on_line_of_pt_pt_iff_collinear d_ne_c B).mp.mt (Collinear.perm₁₃₂.mt (Collinear.perm₂₁₃.mt bcd_notcoli))
   have f_lies_on_seg_cd : F LiesOn (SegND C D d_ne_c).1 := hf.2
   exact (ne_of_lieson_and_not_lieson (SegND.lies_on_toLine_of_lie_on f_lies_on_seg_cd) b_not_lies_on_cd).symm
 lemma d_ne_f : D ≠ F := sorry

@@ -16,7 +16,7 @@ Prove that $\angle AY_1Z_2 + \angle BZ_1X_2 + \angle CX_1Y_2 + \angle Y_1Z_2A + 
 -/
 
 -- Let $\triangle ABC$ be a nondegenerate triangle.
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 
 lemma c_ne_B : C ≠ B := sorry
 lemma B_ne_a : B ≠ A := sorry

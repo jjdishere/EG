@@ -12,7 +12,7 @@ the perpendicular line passing through $D$ of the bisector of $\angle BAC$ inter
 Prove that $BE=CF=\frac{1}{2}|AB-AC|$.  -/
 
 -- We have triagngle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -34,7 +34,7 @@ namespace Shan_Problem_2_18
 Prove that $E$ liesInt $DF$ -/
 
 -- We have triagngle $\triangle ABC$ such that $AC < BC$
-variable {A B C : P} {hnd : ¬ collinear A B C} {hedge : (SEG A C).length < (SEG B C).length}
+variable {A B C : P} {hnd : ¬ Collinear A B C} {hedge : (SEG A C).length < (SEG B C).length}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -56,7 +56,7 @@ namespace Shan_Problem_2_18'
 If $\angle ACB = 90^{circ}$, prove that $CE$ is the bisector of $\angle FCD$.  -/
 
 -- We have triagngle $\triangle ABC$ such that $AC < BC$
-variable {A B C : P} {hnd : ¬ collinear A B C} {hedge : (SEG A C).length < (SEG B C).length}
+variable {A B C : P} {hnd : ¬ Collinear A B C} {hedge : (SEG A C).length < (SEG B C).length}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry

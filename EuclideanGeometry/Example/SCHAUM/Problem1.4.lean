@@ -21,12 +21,12 @@ variable {D : Plane} {D_on_seg: D LiesInt (SEG A F)}
 -- $AD = BF$.
 variable {seg_eq : (SEG A D).length = (SEG B F).length}
 --Let $C$ be a point.
-variable {C : Plane} {C_off_lin: ¬ collinear A F C} --Implied by opposite side.
+variable {C : Plane} {C_off_lin: ¬ Collinear A F C} --Implied by opposite side.
 --Let $E$ be a point on the opposite side of $AF$ to $C$, such that EF ∥ AC and ED ∥ BC.
-variable {E : Plane} {E_off_lin: ¬ collinear A F E} --Implied by opposite side.
+variable {E : Plane} {E_off_lin: ¬ Collinear A F E} --Implied by opposite side.
 -- Claim:$C \ne A$ , $C \ne B$, $C, A, B$ is not collinear, $E, F, D$ is not collinear.
-lemma cabnd : ¬ collinear C A B := by sorry
-lemma efdnd : ¬ collinear E F D := by sorry
+lemma cabnd : ¬ Collinear C A B := by sorry
+lemma efdnd : ¬ Collinear E F D := by sorry
 lemma c_ne_a : C ≠ A := (ne_of_not_collinear C_off_lin).2.1.symm
 lemma c_ne_B : C ≠ B :=by
   by_contra h

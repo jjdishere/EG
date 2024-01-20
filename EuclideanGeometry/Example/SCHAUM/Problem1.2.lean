@@ -15,7 +15,7 @@ Prove that $DP = EQ$.
 -/
 
 --Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : Plane} {not_collinear_ABC: ¬ collinear A B C} {isoceles_ABC: (▵ A B C).IsIsoceles}
+variable {A B C : Plane} {not_collinear_ABC: ¬ Collinear A B C} {isoceles_ABC: (▵ A B C).IsIsoceles}
 --Let $D$ be a point on $AB$.
 variable {D : Plane} {D_int_AB: D LiesInt (SEG A B)}
 --Let $E$ be a point on $AC$
@@ -96,7 +96,7 @@ theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
   -- We have $C \ne B$.
   have c_ne_b : C ≠ B := (ne_of_not_collinear not_collinear_ABC).1
   -- We have $\triangle PBD$ is nondegenerate
-  have not_collinear_ABC1 : ¬ collinear P B D := by sorry
+  have not_collinear_ABC1 : ¬ Collinear P B D := by sorry
   -- We have $B \ne D$.
   have b_ne_d : B ≠ D := (ne_of_not_collinear not_collinear_ABC1).1.symm
   -- We have $P \ne D$.
@@ -104,7 +104,7 @@ theorem Problem1_2_ : (SEG D P).length = (SEG E Q).length := by
   -- We have $P \ne B$.
   have p_ne_b : P ≠ B := (ne_of_not_collinear not_collinear_ABC1).2.2.symm
   -- We have $\triangle QCE$ is nondegenerate
-  have not_collinear_ABC2 : ¬ collinear Q C E := by sorry
+  have not_collinear_ABC2 : ¬ Collinear Q C E := by sorry
   -- We have $C \ne E$.
   have c_ne_e : C ≠ E := (ne_of_not_collinear not_collinear_ABC2).1.symm
   -- We have $Q \ne E$.

@@ -90,7 +90,7 @@ theorem let_test_prop (α : Prop) (a : α) (p : α → Prop) : (let x := a; p x)
     intro x
     exact x _
 
-def main_theorem (A B C : P) (h : ¬ collinear A B C) : Prop := by
+def main_theorem (A B C : P) (h : ¬ Collinear A B C) : Prop := by
   let hAB : B≠A := by exact (ne_of_not_collinear h).2.2
   let hCB : C ≠ B := by exact (ne_of_not_collinear h).1
   let l₁ := LIN A B hAB
@@ -99,7 +99,7 @@ def main_theorem (A B C : P) (h : ¬ collinear A B C) : Prop := by
   let E := Line.inx l₁ l₂ h'
   exact (E = B)
 
-example (A B C : P) (h : ¬ collinear A B C) : main_theorem A B C h := by
+example (A B C : P) (h : ¬ Collinear A B C) : main_theorem A B C h := by
   unfold main_theorem
   -- rw [let_test (α := B≠A) (a := (ne_of_not_collinear h).2.2) (p := fun x => let hCB := (_ : C ≠ B);
 -- let l₁ := LIN A B x;

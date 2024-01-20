@@ -14,7 +14,7 @@ namespace Shan_Problem_1_5
 Prove that $AF = EF$. -/
 
   -- Let $\triangle ABC$ be an triangle.
-  variable {A B C : P} {hnd : ¬ collinear A B C}
+  variable {A B C : P} {hnd : ¬ Collinear A B C}
   lemma B_ne_C : B ≠ C := (ne_of_not_collinear hnd).1.symm
   variable {D : P} {median_D_position : D = (SEG B C).midpoint}
   variable {median : SegND P} {defmedian: median = (SEG A D)}
@@ -30,7 +30,7 @@ namespace Shan_Problem_1_6
 
 Prove that For any point $D$ on the base $BC$, the sum of the the distance of $D$ to $AB$ and to $AC$ is independent of $D$. -/
   -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-  variable {A B C : P} {hnd : ¬ collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
+  variable {A B C : P} {hnd : ¬ Collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
   -- Claim: $A \ne B$ and $A \neq C$. This is because vertices of nondegenerate triangles are distinct.
   lemma B_ne_a : B ≠ A := (ne_of_not_collinear hnd).2.2
   lemma c_ne_a : C ≠ A := (ne_of_not_collinear hnd).2.1.symm

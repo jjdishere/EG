@@ -13,7 +13,7 @@ namespace Shan_Problem_1_3
 
 Prove that $CD = 2 \cdot CE$. -/
   -- Define an isosceles triangle ABC
-  variable {A B C : P} {hnd : ¬ collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
+  variable {A B C : P} {hnd : ¬ Collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
   -- A ≠ B
   lemma A_ne_B : A ≠ B := (ne_of_not_collinear hnd).2.2.symm
   -- Since D is on line AB and AB = BD, it is trivial that D is on ray AB. Position can be determined here.
@@ -23,8 +23,8 @@ Prove that $CD = 2 \cdot CE$. -/
   variable {E : P} {E_midpoint : E = (SEG A B).midpoint}
   -- State the main goal
   theorem Shan_Problem_1_3 : (SEG C D).length = 2 * (SEG C E).length := by
-    have h_AEC_nd : ¬ collinear A E C := by sorry
-    have h_ACD_nd : ¬ collinear A C D := by sorry
+    have h_AEC_nd : ¬ Collinear A E C := by sorry
+    have h_ACD_nd : ¬ Collinear A C D := by sorry
     have h_AC_over_AE : (SEG A C).length / (SEG A E).length = 2 := by sorry
     have h_AD_over_AC : (SEG A D).length / (SEG A C).length = 2 := by sorry
     have h_sim: (TRI_nd A E C h_AEC_nd) ∼ₐ (TRI_nd A C D h_ACD_nd) := sorry
@@ -39,7 +39,7 @@ namespace Shan_Problem_1_4
 Prove that $BD = AC + CD$.-/
 
   -- Define a triangle ABC
-  variable {A B C : P} {hnd : ¬ collinear A B C}
+  variable {A B C : P} {hnd : ¬ Collinear A B C}
   -- Possibly needed non-linear conditions
   lemma A_ne_B : A ≠ B := (ne_of_not_collinear hnd).2.2.symm
   lemma A_ne_C : A ≠ C := (ne_of_not_collinear hnd).2.1

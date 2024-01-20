@@ -492,9 +492,9 @@ theorem cosine_eq_of_SSS (e₁ : tr_nd₁.1.edge₁.length = tr_nd₂.1.edge₁.
   rw [e₁,e₂,e₃,←cos₂] at cos₁
   field_simp at cos₁
   have u₁ : 0 < tr_nd₂.1.edge₃.length := by
-    exact length_pos_iff_nd.mpr tr_nd₂.edge_nd₃.2
+    exact length_pos_iff_nd.mpr tr_nd₂.edgeND₃.2
   have u₂ : 0 < tr_nd₂.1.edge₂.length := by
-    exact length_pos_iff_nd.mpr tr_nd₂.edge_nd₂.2
+    exact length_pos_iff_nd.mpr tr_nd₂.edgeND₂.2
   have h0 : (tr_nd₂.1.edge₃.length * tr_nd₂.1.edge₂.length) > 0 := by
     field_simp [u₁,u₂]
   rcases cos₁ with x | y

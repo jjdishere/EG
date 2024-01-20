@@ -14,7 +14,7 @@ namespace Shan_Problem_1_3
 Prove that $CD = 2 \cdot CE$. -/
 
 -- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
-variable {A B C : P} {hnd : ¬ collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
+variable {A B C : P} {hnd : ¬ Collinear A B C} {isoceles_ABC : (▵ A B C).IsIsoceles}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -47,7 +47,7 @@ namespace Shan_Problem_1_4
 Prove that $BD = AC + CD$.-/
 
 -- We have triangle $\triangle ABC$
-variable {A B C : P} {hnd : ¬ collinear A B C}
+variable {A B C : P} {hnd : ¬ Collinear A B C}
 -- Claim: $A \ne B$ and $B \ne C$ and $C \ne A$.
 lemma A_ne_B : A ≠ B := sorry
 lemma B_ne_C : B ≠ C := sorry
@@ -66,7 +66,7 @@ theorem Shan_Problem_1_4 : (SEG B D).length = (SEG A C).length + (SEG C D).lengt
   -- $DE = AC + CD$
   have de_eq_ac_plus_cd : (SEG D E).length = (SEG A C).length + (SEG C D).length := sorry
   -- $C A E$ is not collinear
-  have cae_not_collinear : ¬ collinear C A E := sorry
+  have cae_not_collinear : ¬ Collinear C A E := sorry
   -- $\triangle CAE$ is isoceles
   have isoceles₁ : (TRI_nd C A E cae_not_collinear).1.IsIsoceles := by
     rw[← Seg.length_of_rev_eq_length (seg := (SEG C E))] at ce_eq_ca
@@ -83,7 +83,7 @@ theorem Shan_Problem_1_4 : (SEG B D).length = (SEG A C).length + (SEG C D).lengt
   -- $\angle EBA = \angle AEB$
   have ang₃ : ∠ E B A e_ne_b A_ne_B = ∠ A E B e_ne_a.symm e_ne_b.symm := sorry
   -- $ABE$ is not collinear
-  have abe_not_collinear : ¬ collinear A B E := sorry
+  have abe_not_collinear : ¬ Collinear A B E := sorry
   -- $\triangle ABE$ is isoceles
   have isoceles₂ : (TRI_nd A B E abe_not_collinear).1.IsIsoceles := by
     apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mpr

@@ -13,11 +13,11 @@ In $▵ ABC$, $D, E$ are two different points on side $BC$, $AD = AE$, $∠ BAD 
 Prove that $AB = AC$.
 -/
 -- Define $▵ ABC$.
-variable {A B C : P} {hnd1 : ¬ collinear A B C}
+variable {A B C : P} {hnd1 : ¬ Collinear A B C}
 -- $D, E$ are two different points on side $BC$.
 variable {D E : P} {hd : D LiesInt SEG B C} {he : E LiesInt SEG B C}
 -- nondegenerate
-lemma hnd2 : ¬ collinear A D E := by sorry
+lemma hnd2 : ¬ Collinear A D E := by sorry
 lemma a_ne_b : A ≠ B := by sorry
 lemma a_ne_d : A ≠ D := by sorry
 lemma a_ne_c : A ≠ C := by sorry
@@ -29,8 +29,8 @@ variable {hang : ∠ B A D a_ne_b a_ne_d = -∠ C A E a_ne_c a_ne_e}
 -- State the main goal.
 theorem Wuwowuji_Problem_1_6 : (SEG A B).length = (SEG A C).length := by
   -- nondegenerate
-  have hnd3 : ¬ collinear B D A := by sorry
-  have hnd4 : ¬ collinear C E A := by sorry
+  have hnd3 : ¬ Collinear B D A := by sorry
+  have hnd4 : ¬ Collinear C E A := by sorry
   -- Use ASA to prove $▵ BDA ≅ₐ ▵ CEA$.
   have h : (TRI_nd B D A hnd3) ≅ₐ (TRI_nd C E A hnd4) := by
     apply TriangleND.acongr_of_ASA
