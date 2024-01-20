@@ -205,7 +205,7 @@ theorem pts_lieson_circle_perpfoot_eq_midpoint {A B : P} {ω : Circle P} [hne : 
       _ = (1 / 2 : ℝ) • ((2 : ℝ) • VEC A (perp_foot ω.center (LIN A B))) := by rw [← (pts_lieson_circle_vec_eq hl₁ hl₂), two_smul]
       _ = VEC A (perp_foot ω.center (LIN A B)) := by simp
   have eq₂ : VEC A (SEG A B).midpoint = (1 / 2 : ℝ) • (VEC A B) := Seg.vec_source_midpt
-  apply (eq_iff_vec_eq_zero _ _).mpr
+  apply eq_iff_vec_eq_zero.mpr
   calc
     _ = VEC A (perp_foot ω.center (LIN A B)) - VEC A (SEG A B).midpoint := by rw [vec_sub_vec]
     _ = 0 := by rw [eq₁, eq₂]; simp
@@ -222,7 +222,7 @@ theorem three_pts_lieson_circle_not_collinear {A B C : P} {ω : Circle P} [hne�
     calc
       _ = VEC (perp_foot ω.center (LIN A B)) C - VEC (perp_foot ω.center (LIN A B)) B := by rw [vec_sub_vec]
       _ = 0 := by rw [← eq₁, ← eq₂, sub_self]
-  have : VEC B C ≠ 0 := (ne_iff_vec_ne_zero _ _).mp hne₂.out
+  have : VEC B C ≠ 0 := ne_iff_vec_ne_zero.mp hne₂.out
   tauto
 
 end Circle

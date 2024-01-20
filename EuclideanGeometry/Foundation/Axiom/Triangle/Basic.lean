@@ -311,11 +311,11 @@ theorem trivial_of_edge_sum_eq_edge : tr.edge₁.length + tr.edge₂.length = tr
   unfold IsND
   rw [not_not]
   by_cases h₁ : VEC B C = 0
-  · simp only [(eq_iff_vec_eq_zero B C).2 h₁]
+  · simp only [eq_iff_vec_eq_zero.2 h₁]
     apply Collinear.perm₃₂₁
     exact triv_collinear₁₂ _ _
   · by_cases h₂ : VEC C A = 0
-    · simp only [(eq_iff_vec_eq_zero C A).2 h₂]
+    · simp only [eq_iff_vec_eq_zero.2 h₂]
       apply Collinear.perm₁₃₂
       exact triv_collinear₁₂ _ _
     · have g : SameRay ℝ (VEC B C) (VEC C A)

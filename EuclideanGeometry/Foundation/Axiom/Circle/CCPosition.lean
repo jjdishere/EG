@@ -300,7 +300,7 @@ def Inxpts {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : C
   right := (- Real.sqrt (ω₁.radius ^ 2 - (radical_axis_dist_to_the_first ω₁ ω₂) ^ 2) * Complex.I + (radical_axis_dist_to_the_first ω₁ ω₂)) • (VEC_nd ω₁.center ω₂.center (intersected_centers_distinct h).symm).toDir.unitVec +ᵥ ω₁.center
 
 theorem inx_pts_distinct {ω₁ : Circle P} {ω₂ : Circle P} (h : ω₁ Intersect ω₂) : (Inxpts h).left ≠ (Inxpts h).right := by
-  apply (ne_iff_vec_ne_zero _ _).mpr
+  apply ne_iff_vec_ne_zero.mpr
   unfold Vec.mkPtPt Inxpts
   simp only [neg_mul, vadd_vsub_vadd_cancel_right, ne_eq, ← sub_smul]
   simp only [add_sub_add_right_eq_sub, sub_neg_eq_add, smul_eq_zero, add_self_eq_zero, mul_eq_zero,
@@ -515,7 +515,7 @@ theorem inx_pts_line_perp_center_line {ω₁ : Circle P} {ω₂ : Circle P} (h :
         rw [← hn]
         show ‖VEC (Inxpts h).left (Inxpts h).right‖ ≠ 0
         apply norm_ne_zero_iff.mpr
-        apply (ne_iff_vec_ne_zero _ _).mp (inx_pts_distinct h).symm
+        apply ne_iff_vec_ne_zero.mp (inx_pts_distinct h).symm
   have hdir: (VEC_nd (Inxpts h).left (Inxpts h).right (inx_pts_distinct h).symm).toDir = - (Dir.I * (VEC_nd ω₁.center ω₂.center (intersected_centers_distinct h).symm).toDir) := by
     ext; rw [this]; rw [this]
   calc

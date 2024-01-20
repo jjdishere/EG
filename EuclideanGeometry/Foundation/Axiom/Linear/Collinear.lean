@@ -96,7 +96,7 @@ theorem Collinear.perm₁₃₂ {A B C : P} (c : Collinear A B C) : Collinear A 
     have ht : t ≠ 0 := by
       by_contra ht'
       rw [ht', zero_smul] at e
-      have _ : C = A := ((eq_iff_vec_eq_zero A C).2 e)
+      have _ : C = A := (eq_iff_vec_eq_zero.2 e)
       tauto
     exact collinear_of_vec_eq_smul_vec (Eq.symm ((inv_smul_eq_iff₀ ht).2 e))
   · rw [← iff_true (Collinear _ _ _), ← eq_iff_iff]
@@ -137,7 +137,7 @@ theorem collinear_of_collinear_collinear_ne {A B C D: P} (h₁ : Collinear A B C
   rcases ad with ⟨s,eq'⟩
   by_cases nd : r = 0
   . simp only [nd, zero_smul] at eq
-    have : C = A := (eq_iff_vec_eq_zero A C).mpr eq
+    have : C = A := eq_iff_vec_eq_zero.mpr eq
     rw [this] ; apply triv_collinear₁₂
   apply collinear_of_vec_eq_smul_vec'
   rw [eq,eq']
@@ -181,7 +181,7 @@ theorem Ray.collinear_of_lies_on {A B C : P} {ray : Ray P} (hA : A LiesOn ray) (
       apply add_right_cancel_iff.mp nd
     rw [this] at ab
     rw [sub_self, zero_smul] at ab
-    have : B = A := by apply (eq_iff_vec_eq_zero A B).mpr ab
+    have : B = A := by apply eq_iff_vec_eq_zero.mpr ab
     rw [this] ; apply triv_collinear₁₂
   apply collinear_of_vec_eq_smul_vec'
   use (c - a)/(b - a)
@@ -192,10 +192,10 @@ theorem Seg.collinear_of_lies_on {A B C : P} {seg : Seg P} (hA : A LiesOn seg) (
   by_cases nd : seg.source =seg.target
   . rcases hA with ⟨_,_,_,a⟩
     simp only [nd, vec_same_eq_zero, smul_zero] at a
-    have a_d : A = seg.target := by apply (eq_iff_vec_eq_zero seg.target A).mpr a
+    have a_d : A = seg.target := by apply eq_iff_vec_eq_zero.mpr a
     rcases hB with ⟨_,_,_,b⟩
     simp only [nd, vec_same_eq_zero, smul_zero] at b
-    have b_d : B = seg.target := by apply (eq_iff_vec_eq_zero seg.target B).mpr b
+    have b_d : B = seg.target := by apply eq_iff_vec_eq_zero.mpr b
     rw [a_d,b_d] ; apply triv_collinear₁₂
   rw [<-ne_eq] at nd
   let seg_nd := SegND.mk seg.source seg.target nd.symm

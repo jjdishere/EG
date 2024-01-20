@@ -192,7 +192,7 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type*) [EuclideanPlane P] (qdr
      unfold Quadrilateral.IsParallelogram at para
      have k₂₃: qdr_nd.point₁=qdr_nd.point₂ :=by
        rw [k₂₂] at para
-       simp only [para, (eq_iff_vec_eq_zero qdr_nd.point₁ qdr_nd.point₂).mpr, vec_same_eq_zero]
+       simp only [para, eq_iff_vec_eq_zero.mpr, vec_same_eq_zero]
      simp only [k₂₃.symm, ne_eq, not_true_eq_false] at hba
    have t : ¬ Collinear qdr_nd.point₂ qdr_nd.point₁ qdr_nd.point₃ := by
      by_contra k
@@ -202,29 +202,29 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type*) [EuclideanPlane P] (qdr
      simp only [hca, hbc, hba.symm, or_self, dite_false] at t
      simp only [t, not_false_eq_true]
    have l₁ : qdr_nd.edgeND₁₂.toProj=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₂, _⟩ := by rfl
-   have l₁' : qdr_nd.edgeND₁₂.toProj=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp hba.symm⟩ := by
-     have y₁:VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp hba.symm⟩=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hba⟩ := by
+   have l₁' : qdr_nd.edgeND₁₂.toProj=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₁, ne_iff_vec_ne_zero.mp hba.symm⟩ := by
+     have y₁:VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₁, ne_iff_vec_ne_zero.mp hba.symm⟩=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₂, ne_iff_vec_ne_zero.mp hba⟩ := by
        have z₁: VEC qdr_nd.point₂ qdr_nd.point₁ =- VEC qdr_nd.point₁ qdr_nd.point₂ := by
          simp only [neg_vec]
        simp only [ne_eq, z₁, VecND.mk_neg', VecND.neg_toProj]
      simp only [l₁, ne_eq, y₁]
    have l₂ : qdr_nd.edgeND₂₃.toProj=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₃, _⟩ := by rfl
-   have l₂' : qdr_nd.edgeND₂₃.toProj=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hbc⟩ := by
-     have y₂:VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hbc⟩=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hbc.symm⟩ := by
+   have l₂' : qdr_nd.edgeND₂₃.toProj=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₂, ne_iff_vec_ne_zero.mp hbc⟩ := by
+     have y₂:VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₂, ne_iff_vec_ne_zero.mp hbc⟩=VecND.toProj ⟨VEC qdr_nd.point₂ qdr_nd.point₃, ne_iff_vec_ne_zero.mp hbc.symm⟩ := by
        have z₂: VEC qdr_nd.point₃ qdr_nd.point₂ =- VEC qdr_nd.point₂ qdr_nd.point₃ := by
          simp only[neg_vec]
        simp only [ne_eq, z₂, VecND.mk_neg', VecND.neg_toProj]
      simp only [l₂, ne_eq, y₂]
    have l₃ : qdr_nd.edgeND₃₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₄, _⟩ := by rfl
-   have l₃' : qdr_nd.edgeND₃₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hcd⟩ := by
-     have y₃:VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hcd⟩=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₄, (ne_iff_vec_ne_zero _ _).mp hcd.symm⟩ := by
+   have l₃' : qdr_nd.edgeND₃₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, ne_iff_vec_ne_zero.mp hcd⟩ := by
+     have y₃:VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, ne_iff_vec_ne_zero.mp hcd⟩=VecND.toProj ⟨VEC qdr_nd.point₃ qdr_nd.point₄, ne_iff_vec_ne_zero.mp hcd.symm⟩ := by
        have z₃: VEC qdr_nd.point₄ qdr_nd.point₃ =- VEC qdr_nd.point₃ qdr_nd.point₄ := by
          simp only [neg_vec]
        simp only [ne_eq, z₃, VecND.mk_neg', VecND.neg_toProj]
      simp only [l₃, ne_eq, y₃]
    have l₄ : qdr_nd.edgeND₁₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₄, _⟩ := by rfl
-   have l₄' : qdr_nd.edgeND₁₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp had⟩ := by
-     have y₄:VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₁, (ne_iff_vec_ne_zero _ _).mp had⟩=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₄, (ne_iff_vec_ne_zero _ _).mp had.symm⟩ := by
+   have l₄' : qdr_nd.edgeND₁₄.toProj=VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₁, ne_iff_vec_ne_zero.mp had⟩ := by
+     have y₄:VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₁, ne_iff_vec_ne_zero.mp had⟩=VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₄, ne_iff_vec_ne_zero.mp had.symm⟩ := by
        have z₄: VEC qdr_nd.point₄ qdr_nd.point₁ =- VEC qdr_nd.point₁ qdr_nd.point₄ := by
          simp [neg_vec]
        simp only [ne_eq, z₄, VecND.mk_neg', VecND.neg_toProj]
@@ -235,7 +235,7 @@ theorem Parallelogram_not_collinear₁₂₃ (P : Type*) [EuclideanPlane P] (qdr
      exact x
    have v₁ : qdr_nd.edgeND₁₂.toProj = qdr_nd.edgeND₃₄.toProj := by
      unfold Quadrilateral.IsParallelogram at para
-     have v₁₁₁:VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₂, (ne_iff_vec_ne_zero _ _).mp hba⟩ = VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, (ne_iff_vec_ne_zero _ _).mp hcd⟩ := by
+     have v₁₁₁:VecND.toProj ⟨VEC qdr_nd.point₁ qdr_nd.point₂, ne_iff_vec_ne_zero.mp hba⟩ = VecND.toProj ⟨VEC qdr_nd.point₄ qdr_nd.point₃, ne_iff_vec_ne_zero.mp hcd⟩ := by
        simp only [ne_eq, para]
      simp only [l₁, ne_eq, v₁₁₁, l₃']
    have v₁₁ : toProj qdr_nd.edgeND₁₂ = toProj qdr_nd.edgeND₃₄ := by exact v₁
@@ -471,7 +471,7 @@ theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (h₁ : qdr_nd.edge
       by_contra is_zero
       rw [is_zero] at l₁
       have not_nd₁₂ : qdr_nd.point₂ = qdr_nd.point₁ := by
-        apply (eq_iff_vec_eq_zero qdr_nd.point₁ qdr_nd.point₂).mpr
+        apply eq_iff_vec_eq_zero.mpr
         rw [l₁]
         exact zero_smul ℝ (VEC qdr_nd.point₂ qdr_nd.point₃)
       exact qdr_nd.nd₁₂.out not_nd₁₂
@@ -513,7 +513,7 @@ theorem qdr_nd_is_prg_nd_of_para_para_not_collinear₁₂₃ (h₁ : qdr_nd.edge
     by_contra is_zero
     rw [is_zero] at l₁
     have not_nd₂₃ : qdr_nd.point₂ = qdr_nd.point₃ := by
-      apply (eq_iff_vec_eq_zero qdr_nd.point₃ qdr_nd.point₂).mpr
+      apply eq_iff_vec_eq_zero.mpr
       rw [l₁]
       exact zero_smul ℝ (VEC qdr_nd.point₁ qdr_nd.point₂)
     exact qdr_nd.nd₂₃.out not_nd₂₃.symm
