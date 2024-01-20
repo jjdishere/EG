@@ -370,7 +370,7 @@ protected theorem trans {α β γ : Type*} (A : α) (B : β) (C : γ) [HasProj �
 
 end Parallel
 
-def Perpendicular {α β : Type _} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := sorry
+def Perpendicular {α β : Type*} (A : α) (B : β) [HasProj α] [HasProj β] : Prop := sorry
 
 scoped notation A "IsPerpendicularTo" B => Perpendicular A B
 scoped notation A "⟂" B => Perpendicular A B

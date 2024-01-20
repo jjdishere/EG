@@ -3,7 +3,7 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Plane
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 /- point reflection -/
 def pt_flip (A O : P) : P := (VEC A O) +ᵥ O

@@ -5,7 +5,7 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.IsocelesTriangle_trash
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 open AngValue Angle
 

@@ -1,8 +1,6 @@
 import EuclideanGeometry.Foundation.Axiom.Position.Orientation
 import EuclideanGeometry.Foundation.Axiom.Linear.Collinear
 
-universe u
-
 noncomputable section
 namespace EuclidGeom
 
@@ -11,14 +9,14 @@ open AngValue
 
 /- Class of generalized triangles -/
 @[ext]
-structure Triangle (P : Type u) [EuclideanPlane P] where
+structure Triangle (P : Type*) [EuclideanPlane P] where
   point₁ : P
   point₂ : P
   point₃ : P
 
 namespace Triangle
 
-variable {P : Type u} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 --implies  1 left of 23, 2 left of 31
 
 -- not is_cclock implies 1 right of 23, ..., ...
@@ -42,11 +40,11 @@ def IsND (tr : Triangle P) : Prop := ¬ Collinear tr.1 tr.2 tr.3
 
 end Triangle
 
-def TriangleND (P : Type u) [EuclideanPlane P] := { tr : Triangle P // tr.IsND }
+def TriangleND (P : Type*) [EuclideanPlane P] := { tr : Triangle P // tr.IsND }
 
 namespace TriangleND
 
-variable {P : Type u} [EuclideanPlane P] (tr_nd : TriangleND P)
+variable {P : Type*} [EuclideanPlane P] (tr_nd : TriangleND P)
 
 @[pp_dot]
 abbrev point₁ : P := tr_nd.1.1
@@ -102,7 +100,7 @@ def angle₃ : Angle P := ANG tr_nd.point₁ tr_nd.point₃ tr_nd.point₂
 
 end TriangleND
 
-variable {P : Type u} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Triangle
 

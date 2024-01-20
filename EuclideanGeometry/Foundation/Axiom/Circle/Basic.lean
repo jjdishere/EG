@@ -277,7 +277,7 @@ section arc
 variable (ω : Circle P)
 
 @[ext]
-structure Arc (P : Type _) [EuclideanPlane P] (ω : Circle P) where
+structure Arc (P : Type*) [EuclideanPlane P] (ω : Circle P) where
   source : P
   target : P
   ison : (source LiesOn ω) ∧ (target LiesOn ω)
@@ -375,7 +375,7 @@ end arc
 section chord
 
 @[ext]
-structure Chord (P : Type _) [EuclideanPlane P] (ω : Circle P) where
+structure Chord (P : Type*) [EuclideanPlane P] (ω : Circle P) where
   toSegND : SegND P
   ison : (toSegND.source LiesOn ω) ∧ (toSegND.target LiesOn ω)
 
