@@ -61,16 +61,9 @@ a ≤[l] b → ¬b ≤[l] a → a <[l] b :=
   @_root_.lt_of_le_not_le P (DirObj.instPreorder l) a b
 -/
 
--- # theorems to introduce
--- for arbitrary three pts, there's one LiesInt the SEG of the rest two.
--- Pos_to_Ord LiesOn Seg
--- Pos_to_Ord LiesInt ray
--- Pos_to_Ord LiesOn ray
--- Pos_to_Ord LiesInt seg.ext
--- Pos_to_Ord LiesOn seg.ext
-
 namespace DirLine
 section linear_order
+
 -- # preparatory theorems
 abbrev lelem (A : P) {l : DirLine P} (ha : A LiesOn l) : l.carrier.Elem := ⟨A, ha⟩
 -- Collinearity
@@ -695,9 +688,24 @@ theorem le_of_lies_on_ray_and_lt {Dl : DirLine P} {A B C : P} [hh : PtNe A C] (h
     exact le_of_lt ((lt_iff_lt_of_lies_int_ray ha hb hc this).mp h1)
 
 -- linear order and toDir
-theorem lt_of_eq_toDir {Dl : DirLine P} {A B : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : (RAY A B).toDir = Dl.toDir) : lelem A ha < lelem B hb := by sorry
+theorem lt_of_eq_toDir {Dl : DirLine P} {A B : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : (RAY A B).toDir = Dl.toDir) : lelem A ha < lelem B hb := by
+  rcases Ray.lies_int_iff.mp (Ray.snd_pt_lies_int_mk_pt_pt A B) with ⟨x1, ⟨x1pos, hx1⟩⟩
+  simp only [h] at hx1
+  apply lt_of_exist_pos_smul; use x1;
+  constructor
+  · exact x1pos
+  · show VEC (RAY A B).source B = x1 • Dl.toDir.unitVec
+    exact hx1
 
-theorem gt_of_neg_toDir {Dl : DirLine P} {A B : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : (RAY A B).toDir = - Dl.toDir) : lelem A ha > lelem B hb := by sorry
+theorem gt_of_neg_toDir {Dl : DirLine P} {A B : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : (RAY A B).toDir = - Dl.toDir) : lelem A ha > lelem B hb := by
+  have : (RAY B A).toDir = Dl.toDir := by
+    calc
+    _= (SEG_nd B A).toDir := by rfl
+    _= - (SEG_nd A B).toDir := by apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd A B))
+    _= - (RAY A B).toDir := by congr 1;
+    _= - - Dl.toDir := by simp only [h]
+    _= _ := by simp only [neg_neg]
+  exact lt_of_eq_toDir hb ha this
 
 -- linear order and LiesInt SegND.extension
 /-
@@ -788,23 +796,110 @@ theorem lies_int_or_lies_int_or_lies_int_of_collinear {A B C : P} [hh1 : PtNe A 
   · right; left; refine' ⟨h2, hh1.out.symm, hh3.out⟩
   · right; right; refine' ⟨h3, hh2.out.symm, hh3.out.symm⟩
 
-theorem lies_int_iff_not_lies_int_and_not_lies_int_of_lies_on_DirLine₁ {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesInt (SEG B C)) ↔ ((¬ B LiesInt (SEG A C)) ∧ (¬ C LiesInt (SEG A B))) := by sorry
+theorem not_lies_int_and_lies_int₁ (A B C : P) : ¬ (B LiesInt (SEG A C) ∧ C LiesInt (SEG A B)) := by
+  by_contra h
+  rcases Seg.lies_int_iff.mp h.1 with ⟨h1, ⟨x1, ⟨x1pos, ⟨x1lt1, hx1⟩⟩⟩⟩
+  rcases Seg.lies_int_iff.mp h.2 with ⟨_, ⟨x2, ⟨_, ⟨x2lt1, hx2⟩⟩⟩⟩
+  haveI : PtNe C A := ⟨h1⟩
+  have : (VEC A C) = (x2 * x1) • (VEC A C) := by
+    calc
+    _= x2 • (VEC A B) := by
+      show VEC (SEG A B).source C = x2 • (SEG A B).toVec
+      exact hx2
+    _= x2 • x1 • (VEC A C) := by congr 1;
+    _= (x2 * x1) • (VEC A C) := by symm; apply mul_smul
+  have : (x2 * x1 - 1) • (VEC A C) = 0 := by
+    calc
+    _= (x2 * x1) • (VEC A C) - (1 : ℝ) • (VEC A C) := by apply sub_smul
+    _= (VEC A C) - (VEC A C) := by simp only [this.symm, one_smul]
+    _= 0 := by simp only [sub_self]
+  simp at this
+  have h2 : x2 * x1 < (1 : ℝ) := by
+    calc
+    _< (1 : ℝ) * 1 := by
+      apply mul_lt_mul x2lt1 (le_of_lt x1lt1) x1pos _
+      norm_num
+    _= (1 : ℝ) := by norm_num
+  have h2 : x2 * x1 - 1 ≠ 0 := by linarith
+  simp only [h2, false_or] at this
+  have : C = A := (eq_iff_vec_eq_zero A C).mpr this
+  absurd h1; exact this
 
-theorem lies_int_iff_not_lies_int_and_not_lies_int_of_lies_on_DirLine₂ {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (B LiesInt (SEG A C)) ↔ ((¬ A LiesInt (SEG B C)) ∧ (¬ C LiesInt (SEG A B))) := by sorry
+theorem not_lies_int_and_lies_int₂ (A B C : P) : ¬ (A LiesInt (SEG B C) ∧ C LiesInt (SEG A B)) := by
+  by_contra h
+  have : ¬ (A LiesInt (SEG B C) ∧ C LiesInt (SEG B A)) := not_lies_int_and_lies_int₁ B A C
+  absurd this
+  exact ⟨h.1, Seg.lies_int_rev_iff_lies_int.mpr h.2⟩
 
-theorem lies_int_iff_not_lies_int_and_not_lies_int_of_lies_on_DirLine₃ {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (C LiesInt (SEG A B)) ↔ ((¬ A LiesInt (SEG B C)) ∧ (¬ B LiesInt (SEG A C))) := by sorry
+theorem not_lies_int_and_lies_int₃ (A B C : P) : ¬ (A LiesInt (SEG B C) ∧ B LiesInt (SEG A C)) := by
+  by_contra h
+  have : _ := not_lies_int_and_lies_int₁ C A B
+  absurd this
+  exact ⟨Seg.lies_int_rev_iff_lies_int.mpr h.1, Seg.lies_int_rev_iff_lies_int.mpr h.2⟩
 
-theorem lies_int_iff_not_lies_int_and_not_lies_int_of_lies_on_Line₁ {l : Line P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (A LiesInt (SEG B C)) ↔ ((¬ B LiesInt (SEG A C)) ∧ (¬ C LiesInt (SEG A B))) := by sorry
+theorem lies_int_iff_not_lies_int_and_not_lies_int_of_lies_on_DirLine₁ {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesInt (SEG B C)) ↔ ((¬ B LiesInt (SEG A C)) ∧ (¬ C LiesInt (SEG A B))) := by
+  have hh0 : _ := lies_int_or_lies_int_or_lies_int_of_lies_on_DirLine ha hb hc
+  have hh1 : _ := not_lies_int_and_lies_int₁ A B C
+  have hh2 : _ := not_lies_int_and_lies_int₂ A B C
+  have hh3 : _ := not_lies_int_and_lies_int₃ A B C
+  tauto
 
-theorem lies_int_iff_not_lies_int_and_not_lies_int_of_lies_on_Line₂ {l : Line P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (B LiesInt (SEG A C)) ↔ ((¬ A LiesInt (SEG B C)) ∧ (¬ C LiesInt (SEG A B))) := by sorry
+theorem lies_int_iff_not_lies_int_and_not_lies_int_of_lies_on_DirLine₂ {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (B LiesInt (SEG A C)) ↔ ((¬ A LiesInt (SEG B C)) ∧ (¬ C LiesInt (SEG A B))) := by
+  have hh0 : _ := lies_int_or_lies_int_or_lies_int_of_lies_on_DirLine ha hb hc
+  have hh1 : _ := not_lies_int_and_lies_int₁ A B C
+  have hh2 : _ := not_lies_int_and_lies_int₂ A B C
+  have hh3 : _ := not_lies_int_and_lies_int₃ A B C
+  tauto
 
-theorem lies_int_iff_not_lies_int_and_not_lies_int_of_lies_on_Line₃ {l : Line P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (C LiesInt (SEG A B)) ↔ ((¬ A LiesInt (SEG B C)) ∧ (¬ B LiesInt (SEG A C))) := by sorry
+theorem lies_int_iff_not_lies_int_and_not_lies_int_of_lies_on_DirLine₃ {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (C LiesInt (SEG A B)) ↔ ((¬ A LiesInt (SEG B C)) ∧ (¬ B LiesInt (SEG A C))) := by
+  have hh0 : _ := lies_int_or_lies_int_or_lies_int_of_lies_on_DirLine ha hb hc
+  have hh1 : _ := not_lies_int_and_lies_int₁ A B C
+  have hh2 : _ := not_lies_int_and_lies_int₂ A B C
+  have hh3 : _ := not_lies_int_and_lies_int₃ A B C
+  tauto
 
-theorem lies_int_iff_not_lies_int_and_not_lies_int_of_collinear₁ {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (h : Collinear A B C) : (A LiesInt (SEG B C)) ↔ ((¬ B LiesInt (SEG A C)) ∧ (¬ C LiesInt (SEG A B))) := by sorry
+theorem lies_int_iff_not_lies_int_and_not_lies_int_of_lies_on_Line₁ {l : Line P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (A LiesInt (SEG B C)) ↔ ((¬ B LiesInt (SEG A C)) ∧ (¬ C LiesInt (SEG A B))) := by
+  have hh0 : _ := lies_int_or_lies_int_or_lies_int_of_lies_on_Line ha hb hc
+  have hh1 : _ := not_lies_int_and_lies_int₁ A B C
+  have hh2 : _ := not_lies_int_and_lies_int₂ A B C
+  have hh3 : _ := not_lies_int_and_lies_int₃ A B C
+  tauto
 
-theorem lies_int_iff_not_lies_int_and_not_lies_int_of_collinear₂ {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (h : Collinear A B C) : (B LiesInt (SEG A C)) ↔ ((¬ A LiesInt (SEG B C)) ∧ (¬ C LiesInt (SEG A B))) := by sorry
+theorem lies_int_iff_not_lies_int_and_not_lies_int_of_lies_on_Line₂ {l : Line P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (B LiesInt (SEG A C)) ↔ ((¬ A LiesInt (SEG B C)) ∧ (¬ C LiesInt (SEG A B))) := by
+  have hh0 : _ := lies_int_or_lies_int_or_lies_int_of_lies_on_Line ha hb hc
+  have hh1 : _ := not_lies_int_and_lies_int₁ A B C
+  have hh2 : _ := not_lies_int_and_lies_int₂ A B C
+  have hh3 : _ := not_lies_int_and_lies_int₃ A B C
+  tauto
 
-theorem lies_int_iff_not_lies_int_and_not_lies_int_of_collinear₃ {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (h : Collinear A B C) : (C LiesInt (SEG A B)) ↔ ((¬ A LiesInt (SEG B C)) ∧ (¬ B LiesInt (SEG A C))) := by sorry
+theorem lies_int_iff_not_lies_int_and_not_lies_int_of_lies_on_Line₃ {l : Line P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (C LiesInt (SEG A B)) ↔ ((¬ A LiesInt (SEG B C)) ∧ (¬ B LiesInt (SEG A C))) := by
+  have hh0 : _ := lies_int_or_lies_int_or_lies_int_of_lies_on_Line ha hb hc
+  have hh1 : _ := not_lies_int_and_lies_int₁ A B C
+  have hh2 : _ := not_lies_int_and_lies_int₂ A B C
+  have hh3 : _ := not_lies_int_and_lies_int₃ A B C
+  tauto
+
+theorem lies_int_iff_not_lies_int_and_not_lies_int_of_collinear₁ {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (h : Collinear A B C) : (A LiesInt (SEG B C)) ↔ ((¬ B LiesInt (SEG A C)) ∧ (¬ C LiesInt (SEG A B))) := by
+  have hh0 : _ := lies_int_or_lies_int_or_lies_int_of_collinear h
+  have hh1 : _ := not_lies_int_and_lies_int₁ A B C
+  have hh2 : _ := not_lies_int_and_lies_int₂ A B C
+  have hh3 : _ := not_lies_int_and_lies_int₃ A B C
+  tauto
+
+theorem lies_int_iff_not_lies_int_and_not_lies_int_of_collinear₂ {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (h : Collinear A B C) : (B LiesInt (SEG A C)) ↔ ((¬ A LiesInt (SEG B C)) ∧ (¬ C LiesInt (SEG A B))) := by
+  have hh0 : _ := lies_int_or_lies_int_or_lies_int_of_collinear h
+  have hh1 : _ := not_lies_int_and_lies_int₁ A B C
+  have hh2 : _ := not_lies_int_and_lies_int₂ A B C
+  have hh3 : _ := not_lies_int_and_lies_int₃ A B C
+  tauto
+
+theorem lies_int_iff_not_lies_int_and_not_lies_int_of_collinear₃ {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (h : Collinear A B C) : (C LiesInt (SEG A B)) ↔ ((¬ A LiesInt (SEG B C)) ∧ (¬ B LiesInt (SEG A C))) := by
+  have hh0 : _ := lies_int_or_lies_int_or_lies_int_of_collinear h
+  have hh1 : _ := not_lies_int_and_lies_int₁ A B C
+  have hh2 : _ := not_lies_int_and_lies_int₂ A B C
+  have hh3 : _ := not_lies_int_and_lies_int₃ A B C
+  tauto
+
 end linear_order
 end DirLine
 
