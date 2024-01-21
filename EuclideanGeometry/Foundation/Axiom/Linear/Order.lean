@@ -6,6 +6,7 @@ noncomputable section
 namespace EuclidGeom
 
 variable {P : Type _} [EuclideanPlane P]
+-- `unused section`
 /-
 -- Definition
 def DirObj.le {α : Type*} [DirObj α] (l : α) (A B : P)  : Prop := (0 : ℝ) ≤ inner (VEC A B) (toDir l).unitVecND
@@ -218,6 +219,12 @@ theorem le_of_exist_nonneg_smul {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (h
     simp only [this, h, neg_zero]
   simp only [this, le_refl]
 
+-- LiesInt SegND.extension and LiesOn Seg
+theorem lies_int_seg_nd_ext_iff_lies_int (A B C : P) [a_ne_c : PtNe A C] : B LiesInt (SEG_nd A C).extension ↔ C LiesInt (SEG A B) := by sorry
+
+-- LiesOn SegND.extension and LiesInt Seg
+theorem lies_on_seg_nd_ext_iff_lies_on (A B C : P) [a_ne_c : PtNe A C] : B LiesOn (SEG_nd A C).extension ↔ C LiesOn (SEG A B) := by sorry
+
 -- # Order Relations to Position Relations
 -- linear order and LiesInt Seg
 theorem lies_int_seg_of_lt_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_lt_b : lelem A ha < lelem B hb) (b_lt_c : lelem B hb < lelem C hc) : B LiesInt (SEG A C) := by
@@ -355,8 +362,8 @@ theorem lies_on_ray_of_ge_and_gt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl)
     show (VEC A B) = - (x1 • Dl.toDir.unitVec)
     simp only [this, hx1]
 
--- linear order and LiesInt Seg.extension
-theorem lies_int_seg_ext_of_lt_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_lt_c : lelem A ha < lelem C hc) (c_lt_b : lelem C hc < lelem B hb) : B LiesInt (SEG_nd A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm).extension := by
+-- linear order and LiesInt SegND.extension
+theorem lies_int_seg_nd_ext_of_lt_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_lt_c : lelem A ha < lelem C hc) (c_lt_b : lelem C hc < lelem B hb) : B LiesInt (SEG_nd A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm).extension := by
   haveI C_ne_A : PtNe C A := ⟨((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm⟩
   rcases exist_pos_smul_of_lt hc hb c_lt_b with ⟨x2, ⟨x2pos, hx2⟩⟩
   apply Ray.lies_int_iff.mpr
@@ -371,7 +378,7 @@ theorem lies_int_seg_ext_of_lt_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesO
     simp only [this]
     exact hx2
 
-theorem lies_int_seg_ext_of_gt_and_gt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_gt_c : lelem A ha > lelem C hc) (c_gt_b : lelem C hc > lelem B hb) : B LiesInt (SEG_nd A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm).extension := by
+theorem lies_int_seg_nd_ext_of_gt_and_gt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_gt_c : lelem A ha > lelem C hc) (c_gt_b : lelem C hc > lelem B hb) : B LiesInt (SEG_nd A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm).extension := by
   haveI C_ne_A : PtNe C A := ⟨((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm⟩
   rcases exist_pos_smul_of_lt hb hc c_gt_b with ⟨x2, ⟨x2pos, hx2⟩⟩
   apply Ray.lies_int_iff.mpr
@@ -388,8 +395,8 @@ theorem lies_int_seg_ext_of_gt_and_gt {Dl : DirLine P} {A B C : P} (ha : A LiesO
     have : (VEC C B) = - (VEC B C) := by simp only [neg_vec]
     simp only [this, neg_inj, hx2]
 
--- linear order and LiesOn Seg.extension
-theorem lies_on_seg_ext_of_lt_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_lt_c : lelem A ha < lelem C hc) (c_le_b : lelem C hc ≤ lelem B hb) : B LiesOn (SEG_nd A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm).extension := by
+-- linear order and LiesOn SegND.extension
+theorem lies_on_seg_nd_ext_of_lt_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_lt_c : lelem A ha < lelem C hc) (c_le_b : lelem C hc ≤ lelem B hb) : B LiesOn (SEG_nd A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm).extension := by
   haveI C_ne_A : PtNe C A := ⟨((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm⟩
   rcases exist_nonneg_smul_of_le hc hb c_le_b with ⟨x2, ⟨x2nneg, hx2⟩⟩
   apply Ray.lies_on_iff.mpr
@@ -404,7 +411,7 @@ theorem lies_on_seg_ext_of_lt_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn
     simp only [this]
     exact hx2
 
-theorem lies_on_seg_ext_of_gt_and_ge {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_gt_c : lelem A ha > lelem C hc) (c_ge_b : lelem C hc ≥ lelem B hb) : B LiesOn (SEG_nd A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm).extension := by
+theorem lies_on_seg_nd_ext_of_gt_and_ge {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_gt_c : lelem A ha > lelem C hc) (c_ge_b : lelem C hc ≥ lelem B hb) : B LiesOn (SEG_nd A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm).extension := by
   haveI C_ne_A : PtNe C A := ⟨((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm⟩
   rcases exist_nonneg_smul_of_le hb hc c_ge_b with ⟨x2, ⟨x2nneg, hx2⟩⟩
   apply Ray.lies_on_iff.mpr
@@ -553,7 +560,7 @@ theorem le_of_lies_on_seg_and_le₃₂ {Dl : DirLine P} {A B C : P} (ha : A Lies
   · exact hl.2
   · exact le_trans hr.1 h2
 
--- linear order and lies int ray
+-- linear order and LiesInt ray
 theorem lt_iff_lt_of_lies_int_ray {Dl : DirLine P} {A B C : P} [hh : PtNe A C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesInt (RAY A C)) : lelem A ha < lelem C hc ↔ lelem A ha < lelem B hb := by
   rcases Ray.lies_int_iff.mp h with ⟨x2, ⟨x2pos, hx2⟩⟩
   rcases Ray.lies_int_iff.mp (Ray.snd_pt_lies_int_mk_pt_pt A C) with ⟨x1, ⟨x1pos, hx1⟩⟩
@@ -593,7 +600,7 @@ theorem lt_iff_lt_of_lies_int_ray {Dl : DirLine P} {A B C : P} [hh : PtNe A C] (
       _= (x1 / x2) • (VEC A B) := by simp only [hx3]
       _= _ := by symm; exact h1
 
--- linear order and lies on ray
+-- linear order and LiesOn ray
 theorem lt_of_lies_on_ray_and_lt {Dl : DirLine P} {A B C : P} [hh : PtNe A C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (RAY A C)) (h1 : lelem A ha < lelem B hb) : lelem A ha < lelem C hc := by
   have : lelem A ha ≠ lelem B hb := ne_of_lt h1
   have : B ≠ A := by symm; exact (ne_iff_ne_as_line_elem ha hb).mpr this
@@ -606,11 +613,43 @@ theorem le_of_lies_on_ray_and_lt {Dl : DirLine P} {A B C : P} [hh : PtNe A C] (h
   · have : B LiesInt (RAY A C) := by refine' ⟨h, hne.symm⟩
     exact le_of_lt ((lt_iff_lt_of_lies_int_ray ha hb hc this).mp h1)
 
--- linear order and LiesInt Seg.ext
+-- linear order and toDir
+theorem lt_of_eq_toDir {Dl : DirLine P} {A B : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : (RAY A B).toDir = Dl.toDir) : lelem A ha < lelem B hb := by sorry
 
--- linear order and LiesOn Seg.ext
+theorem gt_of_neg_toDir {Dl : DirLine P} {A B : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : (RAY A B).toDir = - Dl.toDir) : lelem A ha > lelem B hb := by sorry
+
+-- linear order and LiesInt SegND.extension
+/-
+-- `to be used for tactic testing`
+theorem ord_of_lies_int_seg_nd_ext {Dl : DirLine P} {A B C : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : C LiesInt (SEG_nd A B).extension) : ((lelem A ha < lelem B hb) ∧ (lelem B hb < lelem C hc)) ∨ ((lelem A ha > lelem B hb) ∧ (lelem B hb > lelem C hc)) := by sorry
+
+theorem lt_iff_lt_of_lies_int_seg_ne_ext₁₂ {Dl : DirLine P} {A B C : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : C LiesInt (SEG_nd A B).extension) : lelem A ha < lelem B hb ↔ lelem A ha < lelem C hc := by sorry
+
+theorem lt_iff_lt_of_lies_int_seg_ne_ext₁₃ {Dl : DirLine P} {A B C : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : C LiesInt (SEG_nd A B).extension) : lelem A ha < lelem B hb ↔ lelem B hb < lelem C hc := by sorry
+
+theorem lt_iff_lt_of_lies_int_seg_ne_ext₂₃ {Dl : DirLine P} {A B C : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : C LiesInt (SEG_nd A B).extension) : lelem A ha < lelem C hc ↔ lelem B hb < lelem C hc := by sorry
+-/
+
+-- linear order and LiesOn SegND.extension
+/-
+-- `to be used for tactic testing`
+theorem ord_of_lies_on_seg_nd_ext {Dl : DirLine P} {A B C : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : C LiesOn (SEG_nd A B).extension) : ((lelem A ha < lelem B hb) ∧ (lelem B hb ≤ lelem C hc)) ∨ ((lelem A ha > lelem B hb) ∧ (lelem B hb ≥ lelem C hc)) := by sorry
+
+theorem le_of_lies_on_seg_nd_ext_and_le₃₁ {Dl : DirLine P} {A B C : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : C LiesOn (SEG_nd A B).extension) (h1 : lelem A ha ≤ lelem B hb) : lelem B hb ≤ lelem C hc := by sorry
+
+theorem lt_of_lies_on_seg_nd_ext_and_le₂₁ {Dl : DirLine P} {A B C : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : C LiesOn (SEG_nd A B).extension) (h1 : lelem A ha ≤ lelem B hb) : lelem A ha < lelem C hc := by sorry
+
+theorem le_of_lies_on_seg_nd_ext_and_le₃₂ {Dl : DirLine P} {A B C : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : C LiesOn (SEG_nd A B).extension) (h2 : lelem A ha ≤ lelem C hc) : lelem B hb ≤ lelem C hc := by sorry
+
+theorem lt_of_lies_on_seg_nd_ext_and_le₁₂ {Dl : DirLine P} {A B C : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : C LiesOn (SEG_nd A B).extension) (h2 : lelem A ha ≤ lelem C hc) : lelem A ha < lelem B hb := by sorry
+
+theorem lt_of_lies_on_seg_nd_ext_and_lt₁₃ {Dl : DirLine P} {A B C : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : C LiesOn (SEG_nd A B).extension) (h3 : lelem B hb < lelem C hc) : lelem A ha < lelem B hb := by sorry
+
+theorem lt_of_lies_on_seg_nd_ext_and_lt₂₃ {Dl : DirLine P} {A B C : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : C LiesOn (SEG_nd A B).extension) (h3 : lelem B hb < lelem C hc) : lelem A ha < lelem C hc := by sorry
+-/
 
 -- # Corollary
+-- `Hilbert Axioms II.3`
 theorem lies_on_or_lies_on_or_lies_on_of_lies_on_DirLine {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by
   rcases le_total (lelem A ha) (lelem B hb) with (a_le_b | b_le_a)
   · rcases le_total (lelem B hb) (lelem C hc) with (b_le_c | c_le_b)
