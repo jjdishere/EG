@@ -8,7 +8,7 @@ open Classical
 
 section Ceva's_converse_theorem
 
-structure Setting (P : Type _) [EuclideanPlane P] where
+structure Setting (P : Type*) [EuclideanPlane P] where
   -- Let $\triangle ABC$ be a nondegenerate triangle.
   A : P
   B : P
@@ -32,7 +32,7 @@ structure Setting (P : Type _) [EuclideanPlane P] where
   -- $\frac{EB}{EC} \cdot \frac{FC}{FA} \cdot \frac{GA}{GB} = -1$.
   ratio_mul_eq_minus_one : (divratio E B C) * (divratio F C A) * (divratio G A B) = -1
 
-theorem Ceva_converse_theorem {P : Type _} [EuclideanPlane P] (e : Setting P) : ∃ (X : P), (X LiesOn (LIN e.A e.E e.E_ne_A)) ∧ (X LiesOn (LIN e.B e.F e.F_ne_B)) ∧ (X LiesOn (LIN e.C e.G e.G_ne_C)) := by
+theorem Ceva_converse_theorem {P : Type*} [EuclideanPlane P] (e : Setting P) : ∃ (X : P), (X LiesOn (LIN e.A e.E e.E_ne_A)) ∧ (X LiesOn (LIN e.B e.F e.F_ne_B)) ∧ (X LiesOn (LIN e.C e.G e.G_ne_C)) := by
   let D := Line.inx (LIN e.A e.E (TriangleND.points_ne_of_collinear_of_not_collinear1 e.not_collinear_ABC e.collinear_EBC)) (LIN e.B e.F (TriangleND.points_ne_of_collinear_of_not_collinear2 e.not_collinear_ABC e.collinear_FCA)) (TriangleND.not_parallel_of_not_collinear_of_collinear_collinear e.not_collinear_ABC e.collinear_EBC e.collinear_FCA)
   have ratiomul : (divratio e.E e.B e.C) * (divratio e.F e.C e.A) * (divratio e.G e.A e.B) = -1 := e.ratio_mul_eq_minus_one
   have E_ne_C : e.E ≠ e.C := by

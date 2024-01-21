@@ -4,7 +4,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {Plane : Type _} [EuclideanPlane Plane]
+variable {Plane : Type*} [EuclideanPlane Plane]
 
 namespace SCHAUM_Problem_1_13
 /-

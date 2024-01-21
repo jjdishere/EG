@@ -4,7 +4,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Schaum
 
@@ -26,7 +26,7 @@ variable {E_ray_position : (SEG A E).length = (SEG A D).length}
 --Let $M$ be the midpoint of $BC$.
 variable {M : P} {median_M_position : M = (SEG B C).midpoint}
 -/
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
   --Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$.
   A : Plane
   B : Plane
@@ -46,7 +46,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   midpoint_M : M = (SEG B C).midpoint
 
 --Prove that $DM = EM$.
-theorem Result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.D e.M).length = (SEG e.E e.M).length := by
+theorem Result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : (SEG e.D e.M).length = (SEG e.E e.M).length := by
   /-In the isoceles triangle $ABC$, we have $AB = AC$.
     Meanwhile $AE = AD$
     We have $BD = AB - AD = AC - AE = CE$.

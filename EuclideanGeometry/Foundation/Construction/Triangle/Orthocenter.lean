@@ -6,7 +6,7 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 def TriangleND.Height1 (tr_nd : TriangleND P) : SegND P := sorry
 

@@ -6,7 +6,7 @@ noncomputable section
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 namespace Shan_Problem_1_3
 /- Let $\triangle ABC$ be an isosceles triangle in which $AB = AC$. Let $D$ be a point in the extension of $AB$ such that $BD = AB$. Let $E$ be the midpoint of $AB$.

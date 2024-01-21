@@ -4,6 +4,6 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Ray
 
 namespace EuclidGeom
 
-variable {P: Type _} [EuclideanPlane P] (o : P)
+variable {P: Type*} [EuclideanPlane P] (o : P)
 
 end EuclidGeom

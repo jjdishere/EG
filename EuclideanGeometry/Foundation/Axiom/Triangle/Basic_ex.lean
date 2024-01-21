@@ -3,7 +3,7 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P] (tr : Triangle P) (tr_nd : TriangleND P)
+variable {P : Type*} [EuclideanPlane P] (tr : Triangle P) (tr_nd : TriangleND P)
 --perm and flip is moved to the main file
 
 

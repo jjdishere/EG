@@ -6,6 +6,6 @@ namespace EuclidGeom
 
 open Line
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 end EuclidGeom

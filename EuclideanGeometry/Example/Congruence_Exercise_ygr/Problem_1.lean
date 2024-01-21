@@ -12,7 +12,7 @@ $C, D$ lies in segment $BF$, $AB \parallel DE$, $AB = DF$, $BC = DE$.
 
 Prove that $∠ BAC = ∠ EFD$.
 -/
-structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1  (Plane : Type*) [EuclideanPlane Plane] where
   -- $C, D$ lies in segment $BF$, they lies on the same line $l$.
   B : Plane
   C : Plane
@@ -34,26 +34,26 @@ structure Setting1  (Plane : Type _) [EuclideanPlane Plane] where
   -- $BC = DE$
   h₂ : (SEG B C).length = (SEG D E).length
 attribute [instance] Setting1.B_ne_F
-lemma hnd₁ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ Collinear e.B e.A e.C := by
+lemma hnd₁ {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ Collinear e.B e.A e.C := by
   apply Collinear.perm₂₁₃.mt
   exact e.ABC_nd
-lemma hnd₂ {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ Collinear e.D e.F e.E := by
+lemma hnd₂ {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane}: ¬ Collinear e.D e.F e.E := by
   apply Collinear.perm₃₁₂.mt
   exact e.EDF_nd
-instance A_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.A e.B := ⟨(ne_of_not_collinear hnd₁).2.2⟩
-instance D_ne_E {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.E := ⟨(ne_of_not_collinear hnd₂).2.1⟩
-instance A_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.A e.C := ⟨(ne_of_not_collinear hnd₁).1.symm⟩
-instance E_ne_F {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.E e.F := ⟨(ne_of_not_collinear hnd₂).1⟩
-instance D_ne_F {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.F := ⟨(ne_of_not_collinear hnd₂).2.2.symm⟩
-instance B_ne_C {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.B e.C := ⟨(ne_of_not_collinear hnd₁).2.1⟩
-instance D_ne_B {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.B := ⟨(ne_vertex_of_lies_int_seg_nd e.D_int).1⟩
+instance A_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.A e.B := ⟨(ne_of_not_collinear hnd₁).2.2⟩
+instance D_ne_E {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.E := ⟨(ne_of_not_collinear hnd₂).2.1⟩
+instance A_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.A e.C := ⟨(ne_of_not_collinear hnd₁).1.symm⟩
+instance E_ne_F {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.E e.F := ⟨(ne_of_not_collinear hnd₂).1⟩
+instance D_ne_F {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.F := ⟨(ne_of_not_collinear hnd₂).2.2.symm⟩
+instance B_ne_C {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.B e.C := ⟨(ne_of_not_collinear hnd₁).2.1⟩
+instance D_ne_B {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane}: PtNe e.D e.B := ⟨(ne_vertex_of_lies_int_seg_nd e.D_int).1⟩
 
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+structure Setting2 (Plane : Type*) [EuclideanPlane Plane] extends Setting1 Plane where
   -- $AB ∥ DE$
   hpr : (SEG_nd B A) ∥ (SEG_nd D E)
 
 -- Prove that $∠ BAC = ∠ EFD$.
-theorem Result {Plane : Type _} [EuclideanPlane Plane] {e : Setting2 Plane} : ∠ e.B e.A e.C = ∠ e.E e.F e.D := by
+theorem Result {Plane : Type*} [EuclideanPlane Plane] {e : Setting2 Plane} : ∠ e.B e.A e.C = ∠ e.E e.F e.D := by
   /-
   $\angle ABC$ and $\angle EDF$ are corresponding angles,thus equal.
   In $\triangle BAC \congr_a \triangle DFE$.

@@ -17,7 +17,7 @@ Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$. Let $E$ be a poi
 Prove that $\angle EAX = \angle XAC$.
 -/
 
-structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting1 (Plane : Type*) [EuclideanPlane Plane] where
 -- Let $\triangle ABC$ be an isoceles triangle in which $AB = AC$.
   A : Plane
   B : Plane
@@ -52,7 +52,7 @@ structure Setting1 (Plane : Type _) [EuclideanPlane Plane] where
   X : Plane
   X_int_la : X LiesInt l_a
 -- Claim $E \ne A$
-lemma E_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : e.E ≠ e.A := by
+lemma E_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : e.E ≠ e.A := by
   -- This is because $E$ lies on the extension of $BA$ and $A$ is the source of that ray.
   -- We have $E$ is not equal to the source of the extension of $BA$, since $E$ lies on the extension of $BA$.
   have h1 : e.E ≠ e.BA_ext.source := e.E_int_ext.2
@@ -60,19 +60,19 @@ lemma E_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : e.E 
   have h2 : e.A = e.BA_ext.source := by simp only [e.hlba]; rfl
   simp only [h2]; exact h1
 -- Claim : $X \ne A$
-lemma X_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting1 Plane} : e.X ≠ e.A := by
+lemma X_ne_A {Plane : Type*} [EuclideanPlane Plane] {e : Setting1 Plane} : e.X ≠ e.A := by
   -- This is because $X$ lies on $l_a$ and $A$ is the source of that ray.
   -- We have $X$ is not equal to the source $l_a$, since $X$ lies on the extension of $BA$.
   have h1 : e.X ≠ e.l_a.source := e.X_int_la.2
   -- We have $A$ is the source of $l_a$ by definition.
   have h2 : e.A = e.l_a.source := by simp only [e.hla]
   simp only [h2]; exact h1
-structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting1 Plane where
+structure Setting2 (Plane : Type*) [EuclideanPlane Plane] extends Setting1 Plane where
   E_ne_A : E ≠ A := E_ne_A
   X_ne_A : X ≠ A := X_ne_A
 
 -- Prove that $\angle EAX = \angle XAC$
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : ∠ e.E e.A e.X e.E_ne_A e.X_ne_A = ∠ e.X e.A e.C e.X_ne_A e.C_ne_A := by
+theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting2 Plane) : ∠ e.E e.A e.X e.E_ne_A e.X_ne_A = ∠ e.X e.A e.C e.X_ne_A e.C_ne_A := by
 /-
 As $AX$ has the same direction as $BC$ and that $E$ is on the extension of $BA$, we know that $\angle EAX = \angle ABC$.
 In isoceles triangle $ABC$, $\angle ABC = - \angle ACB$.

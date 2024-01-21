@@ -10,7 +10,7 @@ namespace Shan_Problem_2_13
 the perpendicular line passing through $D$ of the bisector of $\angle BAC$ intersects $AB,AC$ at $E,F$ respectively.
 Prove that $BE=CF=\frac{1}{2}|AB-AC|$.  -/
 
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
   -- Let $\triangle ABC$ be a nontrivial triangle
   A : Plane
   B : Plane
@@ -43,7 +43,7 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
 
 
 -- Theorem : $BE=CF=\frac{1}{2}|AB-AC|$
-theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) :(SEG e.B e.E).length=|((SEG e.A e.B).length-(SEG e.A e.C).length)|/2 ∧ (SEG e.C e.F).length = |((SEG e.A e.B).length-(SEG e.A e.C).length)|/2 := sorry
+theorem result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) :(SEG e.B e.E).length=|((SEG e.A e.B).length-(SEG e.A e.C).length)|/2 ∧ (SEG e.C e.F).length = |((SEG e.A e.B).length-(SEG e.A e.C).length)|/2 := sorry
 
 end Shan_Problem_2_13
 
@@ -52,7 +52,7 @@ namespace Shan_Problem_2_18
  $CE$ be the bisector of $\angle ACB$ and $CF$ be the median.
 Prove that $E$ liesInt $DF$ -/
 
-structure Setting (Plane : Type _) [EuclideanPlane Plane] where
+structure Setting (Plane : Type*) [EuclideanPlane Plane] where
   -- Let $\triangle ABC$ be a nontrivial triangle
   A : Plane
   B : Plane
@@ -87,11 +87,11 @@ structure Setting (Plane : Type _) [EuclideanPlane Plane] where
   --Claim : $F\ne C$
   F_ne_C : F ≠ C := sorry
 
-theorem result1 {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : e.E LiesInt (SEG e.D e.F) := sorry
+theorem result1 {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : e.E LiesInt (SEG e.D e.F) := sorry
 
 
 -- Theorem : $CE$ is the bisector of $\angle FCD$
-theorem result2 {Plane : Type _} [EuclideanPlane Plane] (e : Setting Plane) : ∠ e.F e.C e.E e.F_ne_C e.E_ne_C = ∠ e.E e.C e.D e.E_ne_C e.D_ne_C := sorry
+theorem result2 {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : ∠ e.F e.C e.E e.F_ne_C e.E_ne_C = ∠ e.E e.C e.D e.E_ne_C e.D_ne_C := sorry
 
 
 end Shan_Problem_2_18

@@ -8,7 +8,7 @@ import EuclideanGeometry.Foundation.Axiom.Circle.Basic
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 structure IsPerpBis (seg_nd : SegND P) (line : Line P) : Prop where
 

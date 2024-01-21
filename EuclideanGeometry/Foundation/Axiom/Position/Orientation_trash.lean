@@ -2,7 +2,7 @@ import EuclideanGeometry.Foundation.Axiom.Position.Orientation
 
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 theorem liesonleft_iff_liesonright_reverse {A : P} {l : DirLine P} : A LiesOnLeft l ↔ A LiesOnRight l.reverse := by
   have : odist A l.reverse = -odist A l := by

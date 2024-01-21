@@ -5,7 +5,7 @@ namespace EuclidGeom
 
 open Line
 
-variable {P : Type _} [EuclideanPlane P] {α β γ : Type*} [ProjObj α] [ProjObj β] [ProjObj γ]
+variable {P : Type*} [EuclideanPlane P] {α β γ : Type*} [ProjObj α] [ProjObj β] [ProjObj γ]
   {l₁ : α} {l₂ : β} {l₃ : γ}
 
 /-- This defines two projective objects to be perpendicular, i.e. their associated projective directions are perpendicular. -/

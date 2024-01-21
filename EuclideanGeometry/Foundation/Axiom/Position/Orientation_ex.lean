@@ -5,7 +5,7 @@ import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 theorem pts_are_distinct_of_two_rays_of_angle (ang : Angle P) (nontriv : ang.IsND) (A B : P) (ha : A LiesInt ang.start_ray) (hb : B LiesInt ang.end_ray) : A ≠ B := by sorry
 

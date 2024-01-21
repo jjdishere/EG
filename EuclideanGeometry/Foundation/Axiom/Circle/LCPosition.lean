@@ -1,10 +1,9 @@
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic
-import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular_trash
 
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P]
 
 section DirLC
 
@@ -53,10 +52,21 @@ theorem intersect_iff_tangent_or_secant {l : DirLine P} {ω : Circle P} : (DirLi
   have : dist_pt_line ω.center l.toLine < ω.radius := h
   linarith
 
+theorem pt_liesint_secant {l : DirLine P} {ω : Circle P} {A : P} (h₁ : A LiesInt ω) (h₂ : A LiesOn l) : l Secant ω := by
+  have : dist ω.center A < ω.radius := h₁
+  have : dist_pt_line ω.center l ≤ dist ω.center A := dist_pt_line_shortest ω.center A h₂
+  show dist_pt_line ω.center l < ω.radius
+  linarith
+
+theorem pt_liesint_intersect {l : DirLine P} {ω : Circle P} {A : P} (h₁ : A LiesInt ω) (h₂ : A LiesOn l) : DirLine.IsIntersected l ω := by
+  apply intersect_iff_tangent_or_secant.mpr
+  right
+  apply pt_liesint_secant h₁ h₂
+
 end DirLC
 
 @[ext]
-structure DirLCInxpts (P : Type _) [EuclideanPlane P] where
+structure DirLCInxpts (P : Type*) [EuclideanPlane P] where
   front : P
   back : P
 
@@ -181,6 +191,8 @@ lemma inx_pts_ne_center {l : DirLine P} {ω : Circle P} (h : DirLine.IsIntersect
   · apply (pt_lieson_ne_center (inx_pts_lieson_circle h).1).out
   apply (pt_lieson_ne_center (inx_pts_lieson_circle h).2).out
 
+theorem inx_pts_antipode_iff_center_lieson {l : DirLine P} {ω : Circle P} (h : DirLine.IsIntersected l ω) : IsAntipode ω (inx_pts_lieson_circle h).1 (inx_pts_lieson_circle h).2 ↔ ω.center LiesOn l := sorry
+
 theorem inxwith_iff_intersect {l : DirLine P} {ω : Circle P} : l InxWith ω ↔ DirLine.IsIntersected l ω := by
   unfold intersect
   constructor
@@ -287,6 +299,14 @@ theorem pt_pt_tangent_eq_tangent_pt {A B : P} {ω : Circle P} (h₁ : A LiesOut 
   rw [(inx_pts_same_iff_tangent _).mpr ht] at heq
   exact heq
 
+theorem chord_toDirLine_intersected {ω : Circle P} (s : Chord P ω) : DirLine.IsIntersected s.1.toDirLine ω := by
+  show dist_pt_line ω.center s.1.toDirLine ≤ ω.radius
+  rw [← s.2.1]
+  apply dist_pt_line_shortest ω.center s.1.source DirLine.fst_pt_lies_on_mk_pt_pt
+
+theorem chord_toDirLine_inx_front_pt_eq_target {ω : Circle P} (s : Chord P ω) : (Inxpts (chord_toDirLine_intersected s)).front = s.1.target := sorry
+
+theorem chord_toDirLine_inx_back_pt_eq_source {ω : Circle P} (s : Chord P ω) : (Inxpts (chord_toDirLine_intersected s)).back = s.1.source := sorry
 
 /- Equivalent condition for tangency -/
 theorem pt_pt_tangent_perp {A B : P} {ω : Circle P} (h₁ : A LiesOut ω) (h₂ : B LiesOn ω) (ht : (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) Tangent ω) : (DLIN ω.center B (pt_lieson_ne_center h₂).out) ⟂ (DLIN A B (pt_liesout_ne_pt_lieson h₁ h₂).out.symm) := by

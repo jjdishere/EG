@@ -4,7 +4,7 @@ import EuclideanGeometry.Foundation.Axiom.Basic.Angle
 noncomputable section
 namespace EuclidGeom
 
-variable {P : Type _} [EuclideanPlane P] {tr₁ tr₂ tr₃ : TriangleND P}
+variable {P : Type*} [EuclideanPlane P] {tr₁ tr₂ tr₃ : TriangleND P}
 
 open TriangleND AngValue
 

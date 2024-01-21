@@ -7,6 +7,6 @@ noncomputable section
 namespace EuclidGeom
 
 @[ext]
-structure Rectangle (P : Type _) [EuclideanPlane P] extends Parallelogram P where
+structure Rectangle (P : Type*) [EuclideanPlane P] extends Parallelogram P where
 
 end EuclidGeom
