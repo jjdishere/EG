@@ -73,7 +73,7 @@ section linear_order
 -- # preparatory theorems
 abbrev lelem (A : P) {l : DirLine P} (ha : A LiesOn l) : l.carrier.Elem := ⟨A, ha⟩
 -- Collinearity
-lemma snd_pt_lies_on_mk_pt_proj (A B : P) [hh : PtNe A B] : B LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
+lemma snd_pt_lies_on_mk_pt_proj_of_vec (A B : P) [hh : PtNe A B] : B LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
   have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)) = (SEG_nd A B).toLine := by
     have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)).toProj = (SEG_nd A B).toLine.toProj := by
       calc
@@ -92,32 +92,32 @@ theorem exist_line_of_collinear {A B C : P} (h : Collinear A B C) : ∃ (l : Lin
     rcases eq_or_ne B A with (b_eq_a | b_ne_a)
     · simp only [b_eq_a, and_self]; apply Line.exist_line_pt_lies_on
     · haveI : PtNe B A := ⟨b_ne_a⟩
-      refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj), snd_pt_lies_on_mk_pt_proj A B⟩
+      refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj), snd_pt_lies_on_mk_pt_proj_of_vec A B⟩
   · rcases eq_or_ne A C with (a_eq_c | a_ne_c)
     · simp only [a_eq_c.symm]
       rcases eq_or_ne B A with (b_eq_a | b_ne_a)
       · simp only [b_eq_a, and_self]; apply Line.exist_line_pt_lies_on
       · haveI : PtNe B A := ⟨b_ne_a⟩
-        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj), snd_pt_lies_on_mk_pt_proj A B, Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj)⟩
+        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj), snd_pt_lies_on_mk_pt_proj_of_vec A B, Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj)⟩
     · rcases eq_or_ne B A with (b_eq_a | b_ne_a)
       · simp only [b_eq_a, and_self_left]
         haveI : PtNe A C := ⟨a_ne_c⟩
-        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A C).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A C).toProj), snd_pt_lies_on_mk_pt_proj A C⟩
+        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A C).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A C).toProj), snd_pt_lies_on_mk_pt_proj_of_vec A C⟩
       · simp only [c_ne_b, a_ne_c, b_ne_a, or_self, dite_false] at h
         unfold collinear_of_nd at h
         haveI : PtNe B A := ⟨b_ne_a⟩
         haveI : PtNe A C := ⟨a_ne_c⟩
         haveI : PtNe C B := ⟨c_ne_b⟩
         have h3 : C LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
-          simp only [h]; exact snd_pt_lies_on_mk_pt_proj A C
-        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), (Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj)), snd_pt_lies_on_mk_pt_proj A B, h3⟩
+          simp only [h]; exact snd_pt_lies_on_mk_pt_proj_of_vec A C
+        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), (Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj)), snd_pt_lies_on_mk_pt_proj_of_vec A B, h3⟩
 
 -- linear order and ne
 theorem ne_iff_ne_as_line_elem {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) : (A ≠ B) ↔ (lelem A ha ≠ lelem B hb) := by
   simp only [ne_eq, Subtype.mk.injEq]
 
 -- linear order and vector
-theorem HAHAHA_of_lt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl)(a_lt_b : (lelem A ha) < (lelem B hb)) : (∃ t : ℝ, 0 < t ∧ (VEC A B) = t • (Dl.toDir).unitVec) := by
+theorem exist_pos_smul_of_lt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl)(a_lt_b : (lelem A ha) < (lelem B hb)) : (∃ t : ℝ, 0 < t ∧ (VEC A B) = t • (Dl.toDir).unitVec) := by
   have h1 : (0 : ℝ) < ddist ha hb := (DirLine.lt_iff_zero_lt_ddist ha hb).mp a_lt_b
   have h3 : ∃ t : ℝ, VEC A B = t • (Dl.toDir).unitVec := by
     apply Line.exist_real_vec_eq_smul_of_lies_on
@@ -142,7 +142,7 @@ theorem HAHAHA_of_lt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesO
     _= x1 := by simp only [Dir.inner_unitVec, vsub_self, AngValue.cos_zero, mul_one]
   use x1
 
-theorem HAHAHA_of_le {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl)(a_le_b : (lelem A ha) ≤ (lelem B hb)) : (∃ t : ℝ, 0 ≤ t ∧ (VEC A B) = t • (Dl.toDir).unitVec) := by
+theorem exist_nonneg_smul_of_le {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl)(a_le_b : (lelem A ha) ≤ (lelem B hb)) : (∃ t : ℝ, 0 ≤ t ∧ (VEC A B) = t • (Dl.toDir).unitVec) := by
   have h1 : (0 : ℝ) ≤ ddist ha hb := (DirLine.le_iff_zero_le_ddist ha hb).mp a_le_b
   have h3 : ∃ t : ℝ, VEC A B = t • (Dl.toDir).unitVec := by
     apply Line.exist_real_vec_eq_smul_of_lies_on
@@ -167,7 +167,7 @@ theorem HAHAHA_of_le {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesO
     _= x1 := by simp only [Dir.inner_unitVec, vsub_self, AngValue.cos_zero, mul_one]
   use x1
 
-theorem lt_of_HAHAHA {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : ∃ (x : ℝ), ((0 : ℝ) < x) ∧ (VEC A B) = x • (Dl.toDir).unitVec): lelem A ha < lelem B hb := by
+theorem lt_of_exist_pos_smul {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : ∃ (x : ℝ), ((0 : ℝ) < x) ∧ (VEC A B) = x • (Dl.toDir).unitVec): lelem A ha < lelem B hb := by
   rcases h with ⟨x, ⟨xpos, h⟩⟩
   by_contra h1
   have : ¬ 0 < ddist ha hb := by
@@ -180,7 +180,7 @@ theorem lt_of_HAHAHA {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesO
     _≤ - ddist ha hb := by linarith
     _= ddist hb ha := by
       unfold ddist; simp only [neg_vsub_eq_vsub_rev]
-  rcases HAHAHA_of_le hb ha this with ⟨t, ⟨tnneg, ht⟩⟩
+  rcases exist_nonneg_smul_of_le hb ha this with ⟨t, ⟨tnneg, ht⟩⟩
   have : (VEC A B) = - (VEC B A) := by simp only [neg_vec]
   simp only [this, ht] at h
   have : -(t • Dl.toDir.unitVec) = (-t) • Dl.toDir.unitVec := by simp only [neg_smul]
@@ -205,11 +205,11 @@ theorem lt_of_HAHAHA {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesO
     _= (0 : Vec) := by simp only [smul_zero]
   linarith
 
-theorem le_of_HAHAHA {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : ∃ (x : ℝ), ((0 : ℝ) ≤ x) ∧ (VEC A B) = x • (Dl.toDir).unitVec): lelem A ha ≤ lelem B hb := by
+theorem le_of_exist_nonneg_smul {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (h : ∃ (x : ℝ), ((0 : ℝ) ≤ x) ∧ (VEC A B) = x • (Dl.toDir).unitVec): lelem A ha ≤ lelem B hb := by
   rcases h with ⟨x, ⟨xnneg, h⟩⟩
   rcases lt_or_eq_of_le xnneg with (xpos | h0)
   apply le_of_lt
-  apply lt_of_HAHAHA ha hb
+  apply lt_of_exist_pos_smul ha hb
   use x
   simp only [h0.symm, zero_smul] at h
   have : A = B := by
@@ -221,8 +221,8 @@ theorem le_of_HAHAHA {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesO
 -- # Order Relations to Position Relations
 -- linear order and LiesInt Seg
 theorem lies_int_seg_of_lt_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_lt_b : lelem A ha < lelem B hb) (b_lt_c : lelem B hb < lelem C hc) : B LiesInt (SEG A C) := by
-  rcases HAHAHA_of_lt ha hb a_lt_b with ⟨x1, ⟨x1pos, hx1⟩⟩
-  rcases HAHAHA_of_lt hb hc b_lt_c with ⟨x2, ⟨x2pos, hx2⟩⟩
+  rcases exist_pos_smul_of_lt ha hb a_lt_b with ⟨x1, ⟨x1pos, hx1⟩⟩
+  rcases exist_pos_smul_of_lt hb hc b_lt_c with ⟨x2, ⟨x2pos, hx2⟩⟩
   apply Seg.lies_int_iff.mpr
   constructor
   · have : lelem A ha ≠ lelem C hc := by
@@ -278,7 +278,7 @@ theorem lies_on_seg_of_ge_and_ge {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl)
 -- linear order and toDir
 theorem eq_toDir_of_lt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (a_lt_b : lelem A ha < lelem B hb) : (RAY A B ((ne_iff_ne_as_line_elem ha hb).mpr (ne_of_lt a_lt_b)).symm).toDir = Dl.toDir := by
   haveI B_ne_A : PtNe B A := ⟨((ne_iff_ne_as_line_elem ha hb).mpr (ne_of_lt a_lt_b)).symm⟩
-  rcases HAHAHA_of_lt ha hb a_lt_b with ⟨x1, ⟨x1pos, hx1⟩⟩
+  rcases exist_pos_smul_of_lt ha hb a_lt_b with ⟨x1, ⟨x1pos, hx1⟩⟩
   calc
   _= (VEC_nd A B).toDir := by rfl
   _= (Dl.toDir.unitVecND).toDir := by
@@ -289,7 +289,7 @@ theorem eq_toDir_of_lt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B Lie
 
 theorem neg_toDir_of_gt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (a_gt_b : lelem A ha > lelem B hb) : (RAY A B ((ne_iff_ne_as_line_elem ha hb).mpr (ne_of_gt a_gt_b)).symm).toDir = - Dl.toDir := by
   haveI B_ne_A : PtNe B A := ⟨((ne_iff_ne_as_line_elem ha hb).mpr (ne_of_gt a_gt_b)).symm⟩
-  rcases HAHAHA_of_lt hb ha a_gt_b with ⟨x1, ⟨x1pos, hx1⟩⟩
+  rcases exist_pos_smul_of_lt hb ha a_gt_b with ⟨x1, ⟨x1pos, hx1⟩⟩
   calc
   _= (VEC_nd A B).toDir := by rfl
   _= - (VEC_nd B A).toDir := by
@@ -306,7 +306,7 @@ theorem neg_toDir_of_gt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B Li
 -- linear order and LiesInt ray
 theorem lies_int_ray_of_lt_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_lt_b : lelem A ha < lelem B hb) (a_lt_c : lelem A ha < lelem C hc) : B LiesInt (RAY A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm):= by
   haveI : PtNe C A := ⟨((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm⟩
-  rcases HAHAHA_of_lt ha hb a_lt_b with ⟨x1, ⟨x1pos, hx1⟩⟩
+  rcases exist_pos_smul_of_lt ha hb a_lt_b with ⟨x1, ⟨x1pos, hx1⟩⟩
   apply Ray.lies_int_iff.mpr
   use x1
   constructor
@@ -317,7 +317,7 @@ theorem lies_int_ray_of_lt_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl
 
 theorem lies_int_ray_of_gt_and_gt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_gt_b : lelem A ha > lelem B hb) (a_gt_c : lelem A ha > lelem C hc) : B LiesInt (RAY A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm):= by
   haveI : PtNe C A := ⟨((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm⟩
-  rcases HAHAHA_of_lt hb ha a_gt_b with ⟨x1, ⟨x1pos, hx1⟩⟩
+  rcases exist_pos_smul_of_lt hb ha a_gt_b with ⟨x1, ⟨x1pos, hx1⟩⟩
   apply Ray.lies_int_iff.mpr
   use x1
   constructor
@@ -332,7 +332,7 @@ theorem lies_int_ray_of_gt_and_gt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl
 -- linear order and LiesOn ray
 theorem lies_on_ray_of_le_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_le_b : lelem A ha ≤ lelem B hb) (a_lt_c : lelem A ha < lelem C hc) : B LiesOn (RAY A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm):= by
   haveI : PtNe C A := ⟨((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm⟩
-  rcases HAHAHA_of_le ha hb a_le_b with ⟨x1, ⟨x1nneg, hx1⟩⟩
+  rcases exist_nonneg_smul_of_le ha hb a_le_b with ⟨x1, ⟨x1nneg, hx1⟩⟩
   apply Ray.lies_on_iff.mpr
   use x1
   constructor
@@ -343,7 +343,7 @@ theorem lies_on_ray_of_le_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl)
 
 theorem lies_on_ray_of_ge_and_gt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_ge_b : lelem A ha ≥ lelem B hb) (a_gt_c : lelem A ha > lelem C hc) : B LiesOn (RAY A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm):= by
   haveI : PtNe C A := ⟨((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm⟩
-  rcases HAHAHA_of_le hb ha a_ge_b with ⟨x1, ⟨x1nneg, hx1⟩⟩
+  rcases exist_nonneg_smul_of_le hb ha a_ge_b with ⟨x1, ⟨x1nneg, hx1⟩⟩
   apply Ray.lies_on_iff.mpr
   use x1
   constructor
@@ -358,7 +358,7 @@ theorem lies_on_ray_of_ge_and_gt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl)
 -- linear order and LiesInt Seg.extension
 theorem lies_int_seg_ext_of_lt_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_lt_c : lelem A ha < lelem C hc) (c_lt_b : lelem C hc < lelem B hb) : B LiesInt (SEG_nd A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm).extension := by
   haveI C_ne_A : PtNe C A := ⟨((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm⟩
-  rcases HAHAHA_of_lt hc hb c_lt_b with ⟨x2, ⟨x2pos, hx2⟩⟩
+  rcases exist_pos_smul_of_lt hc hb c_lt_b with ⟨x2, ⟨x2pos, hx2⟩⟩
   apply Ray.lies_int_iff.mpr
   use x2
   constructor
@@ -373,7 +373,7 @@ theorem lies_int_seg_ext_of_lt_and_lt {Dl : DirLine P} {A B C : P} (ha : A LiesO
 
 theorem lies_int_seg_ext_of_gt_and_gt {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_gt_c : lelem A ha > lelem C hc) (c_gt_b : lelem C hc > lelem B hb) : B LiesInt (SEG_nd A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm).extension := by
   haveI C_ne_A : PtNe C A := ⟨((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm⟩
-  rcases HAHAHA_of_lt hb hc c_gt_b with ⟨x2, ⟨x2pos, hx2⟩⟩
+  rcases exist_pos_smul_of_lt hb hc c_gt_b with ⟨x2, ⟨x2pos, hx2⟩⟩
   apply Ray.lies_int_iff.mpr
   use x2
   constructor
@@ -391,7 +391,7 @@ theorem lies_int_seg_ext_of_gt_and_gt {Dl : DirLine P} {A B C : P} (ha : A LiesO
 -- linear order and LiesOn Seg.extension
 theorem lies_on_seg_ext_of_lt_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_lt_c : lelem A ha < lelem C hc) (c_le_b : lelem C hc ≤ lelem B hb) : B LiesOn (SEG_nd A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm).extension := by
   haveI C_ne_A : PtNe C A := ⟨((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_lt a_lt_c)).symm⟩
-  rcases HAHAHA_of_le hc hb c_le_b with ⟨x2, ⟨x2nneg, hx2⟩⟩
+  rcases exist_nonneg_smul_of_le hc hb c_le_b with ⟨x2, ⟨x2nneg, hx2⟩⟩
   apply Ray.lies_on_iff.mpr
   use x2
   constructor
@@ -406,7 +406,7 @@ theorem lies_on_seg_ext_of_lt_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn
 
 theorem lies_on_seg_ext_of_gt_and_ge {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (a_gt_c : lelem A ha > lelem C hc) (c_ge_b : lelem C hc ≥ lelem B hb) : B LiesOn (SEG_nd A C ((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm).extension := by
   haveI C_ne_A : PtNe C A := ⟨((ne_iff_ne_as_line_elem ha hc).mpr (ne_of_gt a_gt_c)).symm⟩
-  rcases HAHAHA_of_le hb hc c_ge_b with ⟨x2, ⟨x2nneg, hx2⟩⟩
+  rcases exist_nonneg_smul_of_le hb hc c_ge_b with ⟨x2, ⟨x2nneg, hx2⟩⟩
   apply Ray.lies_on_iff.mpr
   use x2
   constructor
@@ -423,7 +423,7 @@ theorem lies_on_seg_ext_of_gt_and_ge {Dl : DirLine P} {A B C : P} (ha : A LiesOn
 
 -- # Position Relations to Order Relations
 -- linear order and LiesInt Seg
-theorem HOHOHO_of_lies_int_seg_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) (a_le_c : lelem A ha ≤ lelem C hc) : ((lelem A ha) < (lelem B hb)) ∧ ((lelem B hb) < (lelem C hc)) := by
+theorem lt_and_lt_of_lies_int_seg_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesInt (SEG A C)) (a_le_c : lelem A ha ≤ lelem C hc) : ((lelem A ha) < (lelem B hb)) ∧ ((lelem B hb) < (lelem C hc)) := by
   have a_ne_c : A ≠ C := by
     by_contra h'
     simp only [h'] at hac
@@ -433,18 +433,18 @@ theorem HOHOHO_of_lies_int_seg_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesO
     simp only [ne_eq, Subtype.mk.injEq, a_ne_c, not_false_eq_true]
   have : lelem A ha < lelem C hc := by
     apply lt_of_le_of_ne a_le_c this
-  rcases (HAHAHA_of_lt ha hc this) with ⟨x1, ⟨x1pos, hx1⟩⟩
+  rcases (exist_pos_smul_of_lt ha hc this) with ⟨x1, ⟨x1pos, hx1⟩⟩
   rcases (Seg.lies_int_iff.mp hac) with ⟨_, ⟨x2, ⟨x2pos, ⟨x2lt1, hx2⟩⟩⟩⟩
   have : (SEG A C).toVec = (VEC A C) := by simp only [seg_toVec_eq_vec]
   simp only [this] at hx2
   constructor
-  · apply lt_of_HAHAHA ha hb
+  · apply lt_of_exist_pos_smul ha hb
     use x2 * x1
     constructor
     · positivity
     · simp only [mul_smul, hx1.symm]
       exact hx2
-  · apply lt_of_HAHAHA hb hc
+  · apply lt_of_exist_pos_smul hb hc
     use (1 - x2) * x1
     constructor
     · simp only [gt_iff_lt, x1pos, mul_pos_iff_of_pos_right, sub_pos, x2lt1]
@@ -467,10 +467,10 @@ theorem ord_of_lies_int_seg {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb 
   have : (lelem A ha ≤ lelem C hc) ∨ (lelem C hc ≤ lelem A ha) := le_total (lelem A ha) (lelem C hc)
   rcases this with (a_le_c | c_le_a)
   · left
-    apply HOHOHO_of_lies_int_seg_and_le ha hb hc hac a_le_c
+    apply lt_and_lt_of_lies_int_seg_and_le ha hb hc hac a_le_c
   · right
     have : lelem C hc < lelem B hb ∧ lelem B hb < lelem A ha := by
-      apply HOHOHO_of_lies_int_seg_and_le hc hb ha _ c_le_a
+      apply lt_and_lt_of_lies_int_seg_and_le hc hb ha _ c_le_a
       exact Seg.lies_int_rev_iff_lies_int.mp hac
     simp only [gt_iff_lt, this, and_self]
 
@@ -505,23 +505,23 @@ theorem lt_iff_lt_of_lies_int_seg₂₃ {Dl : DirLine P} {A B C : P} (ha : A Lie
     (lt_iff_lt_of_lies_int_seg₁₃ ha hb hc hac)]
 
 -- linear order and LiesOn seg
-theorem HOHOHO_of_lies_on_seg_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesOn (SEG A C)) (a_le_c : lelem A ha ≤ lelem C hc) : ((lelem A ha) ≤ (lelem B hb)) ∧ ((lelem B hb) ≤ (lelem C hc)) := by
+theorem le_and_le_of_lies_on_seg_and_le {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (hac : B LiesOn (SEG A C)) (a_le_c : lelem A ha ≤ lelem C hc) : ((lelem A ha) ≤ (lelem B hb)) ∧ ((lelem B hb) ≤ (lelem C hc)) := by
   rcases eq_or_ne B A with (heq | h1)
   simp only [heq, le_refl, a_le_c, and_self]
   rcases eq_or_ne B C with (heq | h2)
   simp only [heq, a_le_c, le_refl, and_self]
   have : B LiesInt (SEG A C) := by
     refine' ⟨hac, h1, h2⟩
-  exact ⟨le_of_lt (HOHOHO_of_lies_int_seg_and_le ha hb hc this a_le_c).1, le_of_lt (HOHOHO_of_lies_int_seg_and_le ha hb hc this a_le_c).2⟩
+  exact ⟨le_of_lt (lt_and_lt_of_lies_int_seg_and_le ha hb hc this a_le_c).1, le_of_lt (lt_and_lt_of_lies_int_seg_and_le ha hb hc this a_le_c).2⟩
 
 theorem ord_of_lies_on_seg {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : B LiesOn (SEG A C)) : (lelem A ha ≤ lelem B hb ∧ lelem B hb ≤ lelem C hc) ∨ (lelem A ha ≥ lelem B hb ∧ lelem B hb ≥ lelem C hc) := by
   have : (lelem A ha ≤ lelem C hc) ∨ (lelem C hc ≤ lelem A ha) := le_total (lelem A ha) (lelem C hc)
   rcases this with (a_le_c | c_le_a)
   · left
-    exact HOHOHO_of_lies_on_seg_and_le ha hb hc h a_le_c
+    exact le_and_le_of_lies_on_seg_and_le ha hb hc h a_le_c
   · right
     have : lelem C hc ≤ lelem B hb ∧ lelem B hb ≤ lelem A ha := by
-      apply HOHOHO_of_lies_on_seg_and_le hc hb ha _ c_le_a
+      apply le_and_le_of_lies_on_seg_and_le hc hb ha _ c_le_a
       exact Seg.lies_on_rev_iff_lies_on.mp h
     simp only [ge_iff_le, this, and_self]
 
@@ -574,8 +574,8 @@ theorem lt_iff_lt_of_lies_int_ray {Dl : DirLine P} {A B C : P} [hh : PtNe A C] (
     _= (x2 / x1) • (x1 • (RAY A C).toDir.unitVec) := by apply mul_smul
     _= _ := by congr 1; symm; exact hx1
   constructor
-  · rintro h1; rcases HAHAHA_of_lt ha hc h1 with ⟨x3, ⟨x3pos, hx3⟩⟩
-    apply lt_of_HAHAHA; use (x2 / x1) * x3
+  · rintro h1; rcases exist_pos_smul_of_lt ha hc h1 with ⟨x3, ⟨x3pos, hx3⟩⟩
+    apply lt_of_exist_pos_smul; use (x2 / x1) * x3
     constructor
     · positivity
     · symm;
@@ -583,8 +583,8 @@ theorem lt_iff_lt_of_lies_int_ray {Dl : DirLine P} {A B C : P} [hh : PtNe A C] (
       _= (x2 / x1) • (x3 • Dl.toDir.unitVec) := by apply mul_smul
       _= (x2 / x1) • (VEC A C) := by simp only [hx3]
       _= _ := by symm; exact h2
-  · rintro h2; rcases HAHAHA_of_lt ha hb h2 with ⟨x3, ⟨x3pos, hx3⟩⟩
-    apply lt_of_HAHAHA; use (x1 / x2) * x3
+  · rintro h2; rcases exist_pos_smul_of_lt ha hb h2 with ⟨x3, ⟨x3pos, hx3⟩⟩
+    apply lt_of_exist_pos_smul; use (x1 / x2) * x3
     constructor
     · positivity
     · symm;
@@ -611,7 +611,7 @@ theorem le_of_lies_on_ray_and_lt {Dl : DirLine P} {A B C : P} [hh : PtNe A C] (h
 -- linear order and LiesOn Seg.ext
 
 -- # Corollary
-theorem OVO {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by
+theorem lies_on_or_lies_on_or_lies_on_of_lies_on_DirLine {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by
   rcases le_total (lelem A ha) (lelem B hb) with (a_le_b | b_le_a)
   · rcases le_total (lelem B hb) (lelem C hc) with (b_le_c | c_le_b)
     · right; left; exact lies_on_seg_of_le_and_le ha hb hc a_le_b b_le_c
@@ -624,7 +624,7 @@ theorem OVO {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (
       · right; right; exact lies_on_seg_of_ge_and_ge ha hc hb c_le_a b_le_c
     · right; left; exact lies_on_seg_of_ge_and_ge ha hb hc b_le_a c_le_b
 
-theorem OVO_1 {l : Line P} {A B C : P} (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by
+theorem lies_on_or_lies_on_or_lies_on_of_lies_on_Line {l : Line P} {A B C : P} (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by
   rcases eq_or_ne A B with (a_eq_b | a_ne_b)
   · left; simp only [a_eq_b]; apply Seg.source_lies_on
   · haveI : PtNe A B := ⟨a_ne_b⟩
@@ -644,26 +644,26 @@ theorem OVO_1 {l : Line P} {A B C : P} (ha : A LiesOn l) (hb : B LiesOn l) (hc :
     have h3 : C LiesOn (RAY A B).toDirLine := by
       apply DirLine.lies_on_iff_lies_on_toLine.mp
       simp only [this]; exact hc
-    exact OVO h1 h2 h3
+    exact lies_on_or_lies_on_or_lies_on_of_lies_on_DirLine h1 h2 h3
 
-theorem OVO_2 {A B C : P} (h : Collinear A B C) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by
+theorem lies_on_or_lies_on_or_lies_on_of_collinear {A B C : P} (h : Collinear A B C) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by
   rcases exist_line_of_collinear h with ⟨l, ⟨ha, ⟨hb, hc⟩⟩⟩
-  exact OVO_1 ha hb hc
+  exact lies_on_or_lies_on_or_lies_on_of_lies_on_Line ha hb hc
 
-theorem QWQ {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by
-  rcases OVO ha hb hc with (h1 | (h2 | h3))
+theorem lies_int_or_lies_int_or_lies_int_of_lies_on_DirLine {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by
+  rcases lies_on_or_lies_on_or_lies_on_of_lies_on_DirLine ha hb hc with (h1 | (h2 | h3))
   · left; refine' ⟨h1, hh1.out, hh2.out⟩
   · right; left; refine' ⟨h2, hh1.out.symm, hh3.out⟩
   · right; right; refine' ⟨h3, hh2.out.symm, hh3.out.symm⟩
 
-theorem QWQ_1 {l : Line P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by
-  rcases OVO_1 ha hb hc with (h1 | (h2 | h3))
+theorem lies_int_or_lies_int_or_lies_int_of_lies_on_Line {l : Line P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by
+  rcases lies_on_or_lies_on_or_lies_on_of_lies_on_Line ha hb hc with (h1 | (h2 | h3))
   · left; refine' ⟨h1, hh1.out, hh2.out⟩
   · right; left; refine' ⟨h2, hh1.out.symm, hh3.out⟩
   · right; right; refine' ⟨h3, hh2.out.symm, hh3.out.symm⟩
 
-theorem QWQ_2 {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (h : Collinear A B C) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by
-  rcases OVO_2 h with (h1 | (h2 | h3))
+theorem lies_int_or_lies_int_or_lies_int_of_collinear {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (h : Collinear A B C) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by
+  rcases lies_on_or_lies_on_or_lies_on_of_collinear h with (h1 | (h2 | h3))
   · left; refine' ⟨h1, hh1.out, hh2.out⟩
   · right; left; refine' ⟨h2, hh1.out.symm, hh3.out⟩
   · right; right; refine' ⟨h3, hh2.out.symm, hh3.out.symm⟩
