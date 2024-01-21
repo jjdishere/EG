@@ -73,6 +73,18 @@ section linear_order
 -- # preparatory theorems
 abbrev lelem (A : P) {l : DirLine P} (ha : A LiesOn l) : l.carrier.Elem := ⟨A, ha⟩
 -- Collinearity
+lemma snd_pt_lies_on_mk_pt_proj (A B : P) [hh : PtNe A B] : B LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
+  have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)) = (SEG_nd A B).toLine := by
+    have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)).toProj = (SEG_nd A B).toLine.toProj := by
+      calc
+      _= ((VEC_nd A B).toProj) := by apply Line.proj_eq_of_mk_pt_proj
+      _= _ := by rfl
+    apply Line.eq_of_same_toProj_and_pt_lies_on (A := A) _ _ this
+    apply Line.pt_lies_on_of_mk_pt_proj
+    apply SegND.source_lies_on_toLine
+  simp only [this]
+  apply SegND.target_lies_on_toLine
+
 theorem exist_line_of_collinear {A B C : P} (h : Collinear A B C) : ∃ (l : Line P), A LiesOn l ∧ B LiesOn l ∧ C LiesOn l := by
   unfold Collinear at h
   rcases eq_or_ne C B with (c_eq_b | c_ne_b)
@@ -80,56 +92,25 @@ theorem exist_line_of_collinear {A B C : P} (h : Collinear A B C) : ∃ (l : Lin
     rcases eq_or_ne B A with (b_eq_a | b_ne_a)
     · simp only [b_eq_a, and_self]; apply Line.exist_line_pt_lies_on
     · haveI : PtNe B A := ⟨b_ne_a⟩
-      have h1 : A LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
-        apply Line.pt_lies_on_of_mk_pt_proj
-      have h2 : B LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
-        have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)) = (SEG_nd A B).toLine := by
-          have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)).toProj = (SEG_nd A B).toLine.toProj := by
-            calc
-            _= ((VEC_nd A B).toProj) := by apply Line.proj_eq_of_mk_pt_proj
-            _= _ := by rfl
-          apply Line.eq_of_same_toProj_and_pt_lies_on (A := A) _ _ this
-          apply Line.pt_lies_on_of_mk_pt_proj
-          apply SegND.source_lies_on_toLine
-        simp only [this]
-        apply SegND.target_lies_on_toLine
-      refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), h1, h2⟩
+      refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj), snd_pt_lies_on_mk_pt_proj A B⟩
   · rcases eq_or_ne A C with (a_eq_c | a_ne_c)
-    · simp only [a_eq_c]
-      sorry
+    · simp only [a_eq_c.symm]
+      rcases eq_or_ne B A with (b_eq_a | b_ne_a)
+      · simp only [b_eq_a, and_self]; apply Line.exist_line_pt_lies_on
+      · haveI : PtNe B A := ⟨b_ne_a⟩
+        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj), snd_pt_lies_on_mk_pt_proj A B, Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj)⟩
     · rcases eq_or_ne B A with (b_eq_a | b_ne_a)
-      · sorry
+      · simp only [b_eq_a, and_self_left]
+        haveI : PtNe A C := ⟨a_ne_c⟩
+        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A C).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A C).toProj), snd_pt_lies_on_mk_pt_proj A C⟩
       · simp only [c_ne_b, a_ne_c, b_ne_a, or_self, dite_false] at h
         unfold collinear_of_nd at h
         haveI : PtNe B A := ⟨b_ne_a⟩
         haveI : PtNe A C := ⟨a_ne_c⟩
         haveI : PtNe C B := ⟨c_ne_b⟩
-        have h1 : A LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
-          apply Line.pt_lies_on_of_mk_pt_proj
-        have h2 : B LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
-          have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)) = (SEG_nd A B).toLine := by
-            have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)).toProj = (SEG_nd A B).toLine.toProj := by
-              calc
-              _= ((VEC_nd A B).toProj) := by apply Line.proj_eq_of_mk_pt_proj
-              _= _ := by rfl
-            apply Line.eq_of_same_toProj_and_pt_lies_on (A := A) _ _ this
-            apply Line.pt_lies_on_of_mk_pt_proj
-            apply SegND.source_lies_on_toLine
-          simp only [this]
-          apply SegND.target_lies_on_toLine
         have h3 : C LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
-          simp only [h];
-          have : (Line.mk_pt_proj A ((VEC_nd A C).toProj)) = (SEG_nd A C).toLine := by
-            have : (Line.mk_pt_proj A ((VEC_nd A C).toProj)).toProj = (SEG_nd A C).toLine.toProj := by
-              calc
-              _= ((VEC_nd A C).toProj) := by apply Line.proj_eq_of_mk_pt_proj
-              _= _ := by rfl
-            apply Line.eq_of_same_toProj_and_pt_lies_on (A := A) _ _ this
-            apply Line.pt_lies_on_of_mk_pt_proj
-            apply SegND.source_lies_on_toLine
-          simp only [this]
-          apply SegND.target_lies_on_toLine
-        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), h1, h2, h3⟩
+          simp only [h]; exact snd_pt_lies_on_mk_pt_proj A C
+        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), (Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj)), snd_pt_lies_on_mk_pt_proj A B, h3⟩
 
 -- linear order and ne
 theorem ne_iff_ne_as_line_elem {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) : (A ≠ B) ↔ (lelem A ha ≠ lelem B hb) := by
@@ -675,9 +656,17 @@ theorem QWQ {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 
   · right; left; refine' ⟨h2, hh1.out.symm, hh3.out⟩
   · right; right; refine' ⟨h3, hh2.out.symm, hh3.out.symm⟩
 
-theorem QWQ_1 {l : Line P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by sorry
+theorem QWQ_1 {l : Line P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn l) (hb : B LiesOn l) (hc : C LiesOn l) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by
+  rcases OVO_1 ha hb hc with (h1 | (h2 | h3))
+  · left; refine' ⟨h1, hh1.out, hh2.out⟩
+  · right; left; refine' ⟨h2, hh1.out.symm, hh3.out⟩
+  · right; right; refine' ⟨h3, hh2.out.symm, hh3.out.symm⟩
 
-theorem QWQ_2 {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (h : Collinear A B C) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by sorry
+theorem QWQ_2 {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (h : Collinear A B C) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by
+  rcases OVO_2 h with (h1 | (h2 | h3))
+  · left; refine' ⟨h1, hh1.out, hh2.out⟩
+  · right; left; refine' ⟨h2, hh1.out.symm, hh3.out⟩
+  · right; right; refine' ⟨h3, hh2.out.symm, hh3.out.symm⟩
 
 end linear_order
 end DirLine
