@@ -220,7 +220,45 @@ theorem le_of_exist_nonneg_smul {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (h
   simp only [this, le_refl]
 
 -- LiesInt SegND.extension and LiesOn Seg
-theorem lies_int_seg_nd_ext_iff_lies_int (A B C : P) [a_ne_c : PtNe A C] : B LiesInt (SEG_nd A C).extension ↔ C LiesInt (SEG A B) := by sorry
+theorem lies_int_seg_nd_ext_iff_lies_int (A B C : P) [a_ne_c : PtNe A C] : B LiesInt (SEG_nd A C).extension ↔ C LiesInt (SEG A B) := by
+  constructor
+  · rintro h1
+    rcases Ray.lies_int_iff.mp h1 with ⟨x1, ⟨x1pos, hx1⟩⟩
+    rcases Ray.lies_int_iff.mp (Ray.snd_pt_lies_int_mk_pt_pt A C) with ⟨x2, ⟨x2pos, hx2⟩⟩
+    apply Seg.lies_int_iff.mpr
+    constructor
+    · show B ≠ A
+      by_contra h3; simp only [h3] at h1; absurd h1;
+      apply SegND.not_lies_int_extn_of_lies_on
+      show A LiesOn (SEG A C)
+      apply Seg.source_lies_on
+    · use x2 / (x1 + x2)
+      · constructor
+        · positivity
+        · constructor
+          · have : 0 < 1 - (x2 / (x1 + x2)) := by
+              calc
+              _< x1 / (x1 + x2) := by positivity
+              _= 1 - (x2 / (x1 + x2)) := by field_simp
+            linarith
+          · symm;
+            calc
+            _= (x2 / (x1 + x2)) • (VEC A B) := by rfl
+            _= (x2 / (x1 + x2)) • (VEC A C + VEC C B) := by congr 1; simp only [vec_add_vec]
+            _= (x2 / (x1 + x2)) • (VEC A C) + (x2 / (x1 + x2)) • (VEC C B) := by apply smul_add
+            _= (x2 / (x1 + x2)) • (VEC A C) + (x2 / (x1 + x2)) • x1 • (SegND.extension (SEG_nd A C)).toDir.unitVec := by congr 2;
+            _= (x2 / (x1 + x2)) • (VEC A C) + (x2 / (x1 + x2)) • x1 • (RAY A C).toDir.unitVec := by rfl
+            _= (x2 / (x1 + x2)) • (VEC A C) + ((x2 / (x1 + x2)) * x1) • (RAY A C).toDir.unitVec := by congr 1; symm; apply mul_smul
+            _= (x2 / (x1 + x2)) • (VEC A C) + ((x1 / (x1 + x2)) * x2) • (RAY A C).toDir.unitVec := by congr 2; field_simp; ring
+            _= (x2 / (x1 + x2)) • (VEC A C) + (x1 / (x1 + x2)) • x2 • (RAY A C).toDir.unitVec := by congr 1; apply mul_smul
+            _= (x2 / (x1 + x2)) • (VEC A C) + (x1 / (x1 + x2)) • (VEC A C) := by
+              congr 2; symm;
+              show VEC (RAY A C).source C = x2 • (RAY A C).toDir.unitVec
+              exact hx2
+            _= (x2 / (x1 + x2) + x1 / (x1 + x2)) • (VEC A C) := by symm; apply add_smul
+            _= (1 : ℝ) • (VEC A C) := by congr 1; field_simp; ring;
+            _= _ := by simp only [one_smul]
+  sorry
 
 -- LiesOn SegND.extension and LiesInt Seg
 theorem lies_on_seg_nd_ext_iff_lies_on (A B C : P) [a_ne_c : PtNe A C] : B LiesOn (SEG_nd A C).extension ↔ C LiesOn (SEG A B) := by sorry
