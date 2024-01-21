@@ -258,10 +258,53 @@ theorem lies_int_seg_nd_ext_iff_lies_int (A B C : P) [a_ne_c : PtNe A C] : B Lie
             _= (x2 / (x1 + x2) + x1 / (x1 + x2)) • (VEC A C) := by symm; apply add_smul
             _= (1 : ℝ) • (VEC A C) := by congr 1; field_simp; ring;
             _= _ := by simp only [one_smul]
-  sorry
+  · rintro h1
+    rcases Seg.lies_int_iff.mp h1 with ⟨_, ⟨x1, ⟨x1pos, ⟨x1lt1, hx1⟩⟩⟩⟩
+    rcases Ray.lies_int_iff.mp (Ray.snd_pt_lies_int_mk_pt_pt A C) with ⟨x2, ⟨x2pos, hx2⟩⟩
+    apply Ray.lies_int_iff.mpr
+    have : 0 < 1 - x1 := by simp only [sub_pos, x1lt1]
+    use ((1 - x1) / x1) * x2
+    constructor
+    · positivity
+    · show (VEC C B) = (((1 - x1) / x1) * x2) • (RAY A C).toDir.unitVec
+      symm;
+      calc
+      _= ((1 - x1) / x1) • x2 • (RAY A C).toDir.unitVec := by apply mul_smul
+      _= ((1 - x1) / x1) • (VEC A C) := by simp only [hx2.symm]; congr 1;
+      _= ((1 - x1) / x1) • x1 • (VEC A B) := by congr 1;
+      _= (((1 - x1) / x1) * x1) • (VEC A B) := by symm; apply mul_smul
+      _= (1 - x1) • (VEC A B) := by congr 1; field_simp
+      _= (1 + (-x1)) • (VEC A B) := by congr 1;
+      _= (1 : ℝ) • (VEC A B) + (-x1) • (VEC A B) := by apply add_smul
+      _= (VEC A B) + (- x1 • VEC A B) := by congr 1; apply one_smul;
+      _= (VEC A B) + (- (x1 • (VEC A B))) := by
+        congr 1; apply neg_smul
+      _= (VEC A B) - (x1 • (VEC A B)) := by symm; apply sub_eq_add_neg
+      _= (VEC A B) - (VEC A C) := by
+        congr 1; symm;
+        show VEC (SEG A B).source C = x1 • (SEG A B).toVec
+        exact hx1
+      _= (VEC C B) := by simp only [vec_sub_vec]
 
 -- LiesOn SegND.extension and LiesInt Seg
-theorem lies_on_seg_nd_ext_iff_lies_on (A B C : P) [a_ne_c : PtNe A C] : B LiesOn (SEG_nd A C).extension ↔ C LiesOn (SEG A B) := by sorry
+theorem lies_on_seg_nd_ext_iff_lies_on (A B C : P) [a_ne_c : PtNe A C] : B LiesOn (SEG_nd A C).extension ↔ C LiesOn (SEG A B) := by
+  rcases eq_or_ne B C with (b_eq_c | b_ne_c)
+  · simp only [b_eq_c]
+    have h : C LiesOn (SEG_nd A C) ∧ C LiesOn SegND.extension (SEG_nd A C) := by
+      apply (SegND.eq_target_iff_lies_on_lies_on_extn (A := C) (seg_nd := (SEG_nd A C))).mpr
+      rfl
+    simp only [h, true_iff]
+    show C LiesOn (SEG_nd A C)
+    exact h.1
+  · constructor
+    · rintro h1
+      have : B LiesInt SegND.extension (SEG_nd A C) := by refine' ⟨h1, b_ne_c⟩
+      apply Seg.lies_on_of_lies_int
+      exact (lies_int_seg_nd_ext_iff_lies_int A B C).mp this
+    · rintro h1
+      have : C LiesInt (SEG A B) := by refine' ⟨h1, a_ne_c.out.symm, b_ne_c.symm⟩
+      apply Ray.lies_on_of_lies_int
+      exact (lies_int_seg_nd_ext_iff_lies_int A B C).mpr this
 
 -- # Order Relations to Position Relations
 -- linear order and LiesInt Seg
