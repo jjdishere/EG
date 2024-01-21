@@ -72,6 +72,65 @@ namespace DirLine
 section linear_order
 -- # preparatory theorems
 abbrev lelem (A : P) {l : DirLine P} (ha : A LiesOn l) : l.carrier.Elem := ⟨A, ha⟩
+-- Collinearity
+theorem exist_line_of_collinear {A B C : P} (h : Collinear A B C) : ∃ (l : Line P), A LiesOn l ∧ B LiesOn l ∧ C LiesOn l := by
+  unfold Collinear at h
+  rcases eq_or_ne C B with (c_eq_b | c_ne_b)
+  · simp only [c_eq_b]; simp only [and_self]
+    rcases eq_or_ne B A with (b_eq_a | b_ne_a)
+    · simp only [b_eq_a, and_self]; apply Line.exist_line_pt_lies_on
+    · haveI : PtNe B A := ⟨b_ne_a⟩
+      have h1 : A LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
+        apply Line.pt_lies_on_of_mk_pt_proj
+      have h2 : B LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
+        have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)) = (SEG_nd A B).toLine := by
+          have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)).toProj = (SEG_nd A B).toLine.toProj := by
+            calc
+            _= ((VEC_nd A B).toProj) := by apply Line.proj_eq_of_mk_pt_proj
+            _= _ := by rfl
+          apply Line.eq_of_same_toProj_and_pt_lies_on (A := A) _ _ this
+          apply Line.pt_lies_on_of_mk_pt_proj
+          apply SegND.source_lies_on_toLine
+        simp only [this]
+        apply SegND.target_lies_on_toLine
+      refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), h1, h2⟩
+  · rcases eq_or_ne A C with (a_eq_c | a_ne_c)
+    · simp only [a_eq_c]
+      sorry
+    · rcases eq_or_ne B A with (b_eq_a | b_ne_a)
+      · sorry
+      · simp only [c_ne_b, a_ne_c, b_ne_a, or_self, dite_false] at h
+        unfold collinear_of_nd at h
+        haveI : PtNe B A := ⟨b_ne_a⟩
+        haveI : PtNe A C := ⟨a_ne_c⟩
+        haveI : PtNe C B := ⟨c_ne_b⟩
+        have h1 : A LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
+          apply Line.pt_lies_on_of_mk_pt_proj
+        have h2 : B LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
+          have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)) = (SEG_nd A B).toLine := by
+            have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)).toProj = (SEG_nd A B).toLine.toProj := by
+              calc
+              _= ((VEC_nd A B).toProj) := by apply Line.proj_eq_of_mk_pt_proj
+              _= _ := by rfl
+            apply Line.eq_of_same_toProj_and_pt_lies_on (A := A) _ _ this
+            apply Line.pt_lies_on_of_mk_pt_proj
+            apply SegND.source_lies_on_toLine
+          simp only [this]
+          apply SegND.target_lies_on_toLine
+        have h3 : C LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
+          simp only [h];
+          have : (Line.mk_pt_proj A ((VEC_nd A C).toProj)) = (SEG_nd A C).toLine := by
+            have : (Line.mk_pt_proj A ((VEC_nd A C).toProj)).toProj = (SEG_nd A C).toLine.toProj := by
+              calc
+              _= ((VEC_nd A C).toProj) := by apply Line.proj_eq_of_mk_pt_proj
+              _= _ := by rfl
+            apply Line.eq_of_same_toProj_and_pt_lies_on (A := A) _ _ this
+            apply Line.pt_lies_on_of_mk_pt_proj
+            apply SegND.source_lies_on_toLine
+          simp only [this]
+          apply SegND.target_lies_on_toLine
+        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), h1, h2, h3⟩
+
 -- linear order and ne
 theorem ne_iff_ne_as_line_elem {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) : (A ≠ B) ↔ (lelem A ha ≠ lelem B hb) := by
   simp only [ne_eq, Subtype.mk.injEq]
@@ -588,12 +647,27 @@ theorem OVO_1 {l : Line P} {A B C : P} (ha : A LiesOn l) (hb : B LiesOn l) (hc :
   rcases eq_or_ne A B with (a_eq_b | a_ne_b)
   · left; simp only [a_eq_b]; apply Seg.source_lies_on
   · haveI : PtNe A B := ⟨a_ne_b⟩
-    have h1 : A LiesOn (RAY A B).toDirLine := by sorry
-    have h2 : B LiesOn (RAY A B).toDirLine := by sorry
-    have h3 : C LiesOn (RAY A B).toDirLine := by sorry
+    have : (RAY A B).toDirLine.toLine = l := by
+      calc
+      _= (LIN A B) := by rfl
+      _= _ := by
+        apply Line.eq_of_pt_pt_lies_on_of_ne _ _ ha hb
+        apply Line.fst_pt_lies_on_mk_pt_pt
+        apply Line.snd_pt_lies_on_mk_pt_pt
+    have h1 : A LiesOn (RAY A B).toDirLine := by
+      apply DirLine.lies_on_iff_lies_on_toLine.mp
+      simp only [this]; exact ha
+    have h2 : B LiesOn (RAY A B).toDirLine := by
+      apply DirLine.lies_on_iff_lies_on_toLine.mp
+      simp only [this]; exact hb
+    have h3 : C LiesOn (RAY A B).toDirLine := by
+      apply DirLine.lies_on_iff_lies_on_toLine.mp
+      simp only [this]; exact hc
     exact OVO h1 h2 h3
 
-theorem OVO_2 {A B C : P} (h : Collinear A B C) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by sorry
+theorem OVO_2 {A B C : P} (h : Collinear A B C) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by
+  rcases exist_line_of_collinear h with ⟨l, ⟨ha, ⟨hb, hc⟩⟩⟩
+  exact OVO_1 ha hb hc
 
 theorem QWQ {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by
   rcases OVO ha hb hc with (h1 | (h2 | h3))
