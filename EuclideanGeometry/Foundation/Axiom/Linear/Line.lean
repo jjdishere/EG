@@ -1311,4 +1311,46 @@ end DirLine
 
 end addtorsor
 
+section Collinear
+
+lemma snd_pt_lies_on_mk_pt_proj_of_vec (A B : P) [hh : PtNe A B] : B LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
+  have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)) = (SEG_nd A B).toLine := by
+    have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)).toProj = (SEG_nd A B).toLine.toProj := by
+      calc
+      _= ((VEC_nd A B).toProj) := by apply Line.proj_eq_of_mk_pt_proj
+      _= _ := by rfl
+    apply Line.eq_of_same_toProj_and_pt_lies_on (A := A) _ _ this
+    apply Line.pt_lies_on_of_mk_pt_proj
+    apply SegND.source_lies_on_toLine
+  simp only [this]
+  apply SegND.target_lies_on_toLine
+
+theorem exist_line_of_collinear {A B C : P} (h : Collinear A B C) : ∃ (l : Line P), A LiesOn l ∧ B LiesOn l ∧ C LiesOn l := by
+  unfold Collinear at h
+  rcases eq_or_ne C B with (c_eq_b | c_ne_b)
+  · simp only [c_eq_b]; simp only [and_self]
+    rcases eq_or_ne B A with (b_eq_a | b_ne_a)
+    · simp only [b_eq_a, and_self]; apply Line.exist_line_pt_lies_on
+    · haveI : PtNe B A := ⟨b_ne_a⟩
+      refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj), snd_pt_lies_on_mk_pt_proj_of_vec A B⟩
+  · rcases eq_or_ne A C with (a_eq_c | a_ne_c)
+    · simp only [a_eq_c.symm]
+      rcases eq_or_ne B A with (b_eq_a | b_ne_a)
+      · simp only [b_eq_a, and_self]; apply Line.exist_line_pt_lies_on
+      · haveI : PtNe B A := ⟨b_ne_a⟩
+        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj), snd_pt_lies_on_mk_pt_proj_of_vec A B, Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj)⟩
+    · rcases eq_or_ne B A with (b_eq_a | b_ne_a)
+      · simp only [b_eq_a, and_self_left]
+        haveI : PtNe A C := ⟨a_ne_c⟩
+        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A C).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A C).toProj), snd_pt_lies_on_mk_pt_proj_of_vec A C⟩
+      · simp only [c_ne_b, a_ne_c, b_ne_a, or_self, dite_false] at h
+        unfold collinear_of_nd at h
+        haveI : PtNe B A := ⟨b_ne_a⟩
+        haveI : PtNe A C := ⟨a_ne_c⟩
+        haveI : PtNe C B := ⟨c_ne_b⟩
+        have h3 : C LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
+          simp only [h]; exact snd_pt_lies_on_mk_pt_proj_of_vec A C
+        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), (Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj)), snd_pt_lies_on_mk_pt_proj_of_vec A B, h3⟩
+
+end Collinear
 end EuclidGeom

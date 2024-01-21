@@ -4,6 +4,7 @@ import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Line_trash
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex_trash
+import EuclideanGeometry.Foundation.Axiom.Triangle.IsocelesTriangle_trash
 
 noncomputable section
 
