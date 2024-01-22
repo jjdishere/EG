@@ -60,9 +60,9 @@ theorem neg_vec_norm_eq (A B : P) : ‖- VEC A B‖ = ‖VEC A B‖ := by
 theorem vec_norm_eq_rev (A B : P) : ‖VEC A B‖ = ‖VEC B A‖ := by
   rw [← neg_vec, neg_vec_norm_eq]
 
-theorem eq_iff_vec_eq_zero (A B : P) : B = A ↔ VEC A B = 0 := vsub_eq_zero_iff_eq.symm
+theorem eq_iff_vec_eq_zero {A B : P} : B = A ↔ VEC A B = 0 := vsub_eq_zero_iff_eq.symm
 
-theorem ne_iff_vec_ne_zero (A B : P) : B ≠ A ↔ VEC A B ≠ 0 := (eq_iff_vec_eq_zero A B).not
+theorem ne_iff_vec_ne_zero {A B : P} : B ≠ A ↔ VEC A B ≠ 0 := eq_iff_vec_eq_zero.not
 
 @[simp]
 theorem vec_add_vec (A B C : P) : VEC A B + VEC B C = VEC A C := by
@@ -88,10 +88,10 @@ theorem vec_sub_vec' (O A B: P) : VEC A O - VEC B O = VEC A B := by
 theorem pt_eq_pt_of_eq_smul_smul {O A B : P} {v : Vec} {tA tB : ℝ} (h : tA = tB) (ha : VEC O A = tA • v) (hb : VEC O B = tB • v) : A = B := by
   have hc : VEC A B = VEC O B - VEC O A := (vec_sub_vec O A B).symm
   rw [ha, hb, ← sub_smul, Iff.mpr sub_eq_zero h.symm, zero_smul] at hc
-  exact ((eq_iff_vec_eq_zero A B).2 hc).symm
+  exact (eq_iff_vec_eq_zero.2 hc).symm
 
 
-def VecND.mkPtPt (A B : P) (h : B ≠ A) : VecND := ⟨Vec.mkPtPt A B, (ne_iff_vec_ne_zero A B).mp h⟩
+def VecND.mkPtPt (A B : P) (h : B ≠ A) : VecND := ⟨Vec.mkPtPt A B, ne_iff_vec_ne_zero.mp h⟩
 
 @[inherit_doc VecND.mkPtPt]
 scoped syntax "VEC_nd" ws term:max ws term:max (ws term:max)? : term
