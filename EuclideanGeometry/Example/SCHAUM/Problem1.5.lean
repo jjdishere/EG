@@ -63,25 +63,25 @@ As a consequence, we know that $PQRS$ is a parallelogram.
 -/
 
   -- We have $P \ne A$.
-  have P_ne_A : e.P ≠ e.A := by sorry
+  haveI P_ne_A : PtNe e.P e.A := by sorry
   -- We have $R \ne C$.
-  have R_ne_C : e.R ≠ e.C := by sorry
+  haveI R_ne_C : PtNe e.R e.C := by sorry
   -- We have $S \ne A$.
-  have S_ne_A : e.S ≠ e.A := by sorry
+  haveI S_ne_A : PtNe e.S e.A := by sorry
   -- We have $Q \ne C$.
-  have Q_ne_C : e.Q ≠ e.C := by sorry
+  haveI Q_ne_C : PtNe e.Q e.C := by sorry
   -- We have $B \ne A$.
-  have B_ne_A : e.B ≠ e.A := by sorry
+  haveI B_ne_A : PtNe e.B e.A := by sorry
   -- We have $C \ne D$.
-  have C_ne_D : e.C ≠ e.D := by sorry
+  haveI C_ne_D : PtNe e.C e.D := by sorry
   -- We have $D \ne A$.
-  have D_ne_A : e.D ≠ e.A := by sorry
+  haveI D_ne_A : PtNe e.D e.A := by sorry
   -- We have $C \ne B$.
-  have C_ne_B : e.C ≠ e.B := by sorry
-  -- We have that $A, P, C$ is not collinear.
-  have not_collinear_APC : ¬ Collinear e.A e.P e.C := by sorry
-  -- We have that $A, S, C$ is not collinear.
-  have not_collinear_ASC : ¬ Collinear e.A e.S e.C := by sorry
+  haveI C_ne_B : PtNe e.C e.B := by sorry
+  -- We have that $A, P, C$ is not colinear.
+  have not_colinear_APC : ¬ colinear e.A e.P e.C := by sorry
+  -- We have that $A, S, C$ is not colinear.
+  have not_colinear_ASC : ¬ colinear e.A e.S e.C := by sorry
   -- We have that $S$ lies on $AD$ by applying symmetry to the fact that $S$ lies on $DA$.
   have S_int_AD : e.S LiesInt (SEG e.A e.D) := Seg.lies_int_rev_iff_lies_int.mp e.S_int_DA
   -- We have that $Q$ lies on $CB$ by applying symmetry to the fact that $Q$ lies on $BC$.
@@ -89,21 +89,21 @@ As a consequence, we know that $PQRS$ is a parallelogram.
   -- We have that $APCR$ is a parallelogram.
   have isprgnd_APCR : (QDR e.A e.P e.C e.R).IsParallelogram_nd := by
     -- We have that $AP, RC$ are of the same direction.
-    have dir_ap_eq_dir_rc_rev : (SEG_nd e.A e.P P_ne_A).toDir = (SEG_nd e.R e.C R_ne_C.symm).toDir := by
+    have dir_ap_eq_dir_rc_rev : (SEG_nd e.A e.P).toDir = (SEG_nd e.R e.C ).toDir := by
       calc
-      (SEG_nd e.A e.P P_ne_A).toDir
+      (SEG_nd e.A e.P).toDir
       -- Since $P$ lies on $AB$, we have $AP, AB$ are of the same direction,
-      _= (SEG_nd e.A e.B B_ne_A).toDir := by
+      _= (SEG_nd e.A e.B).toDir := by
         symm;
-        exact SegND.source_pt_toDir_eq_toDir_of_lies_int e.A e.B e.P B_ne_A e.P_int_AB
+        exact eq_todir_of_lies_int_seg_nd e.A e.B e.P e.P_int_AB
       -- in parallelogram $ABCD$, we have $AB, DC$ are of the same direction,
-      _= (SEG_nd e.D e.C C_ne_D).toDir := todir_eq_of_is_prg_nd e.A e.B e.C e.D e.hprgnd B_ne_A C_ne_D
+      _= (SEG_nd e.D e.C).toDir := todir_eq_of_is_prg_nd e.A e.B e.C e.D e.hprgnd
       -- $CD, DC$ are of the opposite direction because of symmetry,
-      _= - (SEG_nd e.C e.D C_ne_D.symm).toDir := by apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd e.C e.D C_ne_D.symm))
+      _= - (SEG_nd e.C e.D).toDir := by apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd e.C e.D))
       -- since $R$ lies on $CD$, we have $CR, CD$ are of the same direction,
-      _= - (SEG_nd e.C e.R R_ne_C).toDir := by simp only [SegND.source_pt_toDir_eq_toDir_of_lies_int e.C e.D e.R C_ne_D.symm e.R_int_CD]
+      _= - (SEG_nd e.C e.R).toDir := by simp only [eq_toDir_of_lies_int_seg_nd e.C e.D e.R e.R_int_CD]
       -- $CR, RC$ are of the opposite direction because of symmetry.
-      _= (SEG_nd e.R e.C R_ne_C.symm).toDir := by symm; apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd e.C e.R R_ne_C))
+      _= (SEG_nd e.R e.C).toDir := by symm; apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd e.C e.R))
     -- We have $AP = RC$.
     have AP_eq_RC : (SEG e.A e.P).length = (SEG e.R e.C).length := by
       calc
@@ -113,27 +113,27 @@ As a consequence, we know that $PQRS$ is a parallelogram.
       -- $CR = RC$ by symmetry.
       _= (SEG e.R e.C).length := by exact length_of_rev_eq_length' (A := e.R) (B := e.C)
     -- We have that $APCR$ is a parallelogram, because $AP, RC$ are of the same direction and $AP = RC$.
-    have isprg_APCR : (QDR e.A e.P e.C e.R).IsParallelogram := by exact vec_eq_of_eq_dir_and_eq_length P_ne_A R_ne_C.symm dir_ap_eq_dir_rc_rev AP_eq_RC
-    -- Since $A, P, C$ is not collinear, we know that the parallelogram $APCR$ is non-degenerate.
-    exact is_prg_nd_of_is_prg_not_collinear₁₂₃ (QDR e.A e.P e.C e.R) isprg_APCR not_collinear_APC
+    have isprg_APCR : (QDR e.A e.P e.C e.R).IsParallelogram := by exact vec_eq_of_eq_dir_and_eq_length dir_ap_eq_dir_rc_rev AP_eq_RC
+    -- Since $A, P, C$ is not colinear, we know that the parallelogram $APCR$ is non-degenerate.
+    exact is_prg_nd_of_is_prg_not_colinear₁₂₃ (QDR e.A e.P e.C e.R) isprg_APCR not_colinear_APC
   -- We have that $ASCQ$ is a parallelogram.
   have isprgnd_ASCQ : (QDR e.A e.S e.C e.Q) IsPRG_nd := by
     -- We have that $AS, QC$ are of the same direction.
-    have dir_as_eq_dir_qc_rev : (SEG_nd e.A e.S S_ne_A).toDir = (SEG_nd e.Q e.C Q_ne_C.symm).toDir := by
+    have dir_as_eq_dir_qc_rev : (SEG_nd e.A e.S).toDir = (SEG_nd e.Q e.C).toDir := by
       calc
-      (SEG_nd e.A e.S S_ne_A).toDir
+      (SEG_nd e.A e.S).toDir
       -- Since $S$ lies on $AD$, we have $AS, AD$ are of the same direction,
-      _= (SEG_nd e.A e.D D_ne_A).toDir := by
+      _= (SEG_nd e.A e.D).toDir := by
         symm;
-        exact SegND.source_pt_toDir_eq_toDir_of_lies_int e.A e.D e.S D_ne_A S_int_AD
+        exact eq_todir_of_lies_int_seg_nd e.A e.D e.S S_int_AD
       -- in parallelogram $ABCD$, we have $AD, BC$ are of the same direction,
-      _= (SEG_nd e.B e.C C_ne_B).toDir := todir_eq_of_is_prg_nd_variant e.A e.B e.C e.D e.hprgnd D_ne_A C_ne_B
+      _= (SEG_nd e.B e.C).toDir := todir_eq_of_is_prg_nd_variant e.A e.B e.C e.D e.hprgnd
       -- $BC, CB$ are of the opposite direction because of symmetry,
-      _= - (SEG_nd e.C e.B C_ne_B.symm).toDir := by apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd e.C e.B C_ne_B.symm))
+      _= - (SEG_nd e.C e.B).toDir := by apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd e.C e.B))
       -- since $Q$ lies on $CB$, we have $CQ, CB$ are of the same direction,
-      _= - (SEG_nd e.C e.Q Q_ne_C).toDir := by simp only [SegND.source_pt_toDir_eq_toDir_of_lies_int e.C e.B e.Q C_ne_B.symm Q_int_CB]
+      _= - (SEG_nd e.C e.Q).toDir := by simp only [eq_todir_of_lies_int_seg_nd e.C e.B e.Q Q_int_CB]
       -- $CQ, QC$ are of the opposite direction because of symmetry.
-      _= (SEG_nd e.Q e.C Q_ne_C.symm).toDir := by symm; apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd e.C e.Q Q_ne_C))
+      _= (SEG_nd e.Q e.C).toDir := by symm; apply SegND.toDir_of_rev_eq_neg_toDir (seg_nd := (SEG_nd e.C e.Q))
     -- We have $AS = QC$.
     have AS_eq_QC : (SEG e.A e.S).length = (SEG e.Q e.C).length := by
       calc

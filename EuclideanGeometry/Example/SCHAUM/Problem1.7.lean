@@ -4,6 +4,7 @@ import EuclideanGeometry.Foundation.Axiom.Position.Angle_trash
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Line_trash
 import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex_trash
+import EuclideanGeometry.Foundation.Axiom.Triangle.IsocelesTriangle_trash
 
 noncomputable section
 
@@ -60,7 +61,7 @@ Since $DX$ is perpendicular to $AB$ at $X$, we have $\angle BXD = \pi/2 (\mod \p
 Since $EY$ is perpendicular to $AC$ at $Y$, we have $\angle CYE = \pi/2 (\mod \pi)$.
 Thus, $\angle BXD = \angle CYE (\mod \pi)$.
 In $\triangle XBD$ and $\triangle YCE$,
-$\cdot $\angle BXD = \angle CYE (\mod \pi)$
+$\cdot \angle BXD = \angle CYE (\mod \pi)$
 $\cdot \angle DBX = - \angle ECY$
 $\cdot BD = CE$
 Thus, $\triangle XBD \cong_a \triangle YEC$ (by AAS)

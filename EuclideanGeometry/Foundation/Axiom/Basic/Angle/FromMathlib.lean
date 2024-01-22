@@ -1,6 +1,5 @@
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Data.Int.Parity
-
 /-!
 # APIs about Angle from Mathlib
 
@@ -11,10 +10,10 @@ noncomputable section
 
 attribute [ext] Complex.ext
 
+
 open Real
 
 section Mathlib.Analysis.SpecialFunctions.Trigonometric.Angle
-
 namespace EuclidGeom
 
 def AngValue : Type := Angle
