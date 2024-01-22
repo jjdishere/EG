@@ -939,7 +939,7 @@ theorem SegND.line_midpt_target_eq_toLine {s : SegND P} : LIN s.midpoint s.targe
 theorem eq_or_vec_eq_of_dist_eq_of_lies_on_line_pt_pt {A B C : P} [hne : PtNe B A] (h : C LiesOn (LIN A B)) (heq : dist A C = dist A B) : (C = B) ∨ (VEC A C = VEC B A) := by
   rcases Ray.lies_on_toLine_iff_lies_on_or_lies_on_rev.mp h with h | h
   · left
-    apply (eq_iff_vec_eq_zero _ _).mpr
+    apply eq_iff_vec_eq_zero.mpr
     have : VEC A C = (dist A C) • (RAY A B).2.unitVec := Ray.vec_eq_dist_smul_toDir_of_lies_on h
     calc
       _ = VEC A C - VEC A B := by rw [vec_sub_vec]
@@ -982,7 +982,7 @@ theorem SegND.dist_midpt_eq_iff_eq_source_or_eq_target_of_lies_on_toLine {A : P}
     rcases eq_or_vec_eq_of_dist_eq_of_lies_on_line_pt_pt this hh with h₁ | h₂
     · exact .inl h₁
     right
-    apply (eq_iff_vec_eq_zero _ _).mpr
+    apply eq_iff_vec_eq_zero.mpr
     calc
       _ = VEC s.midpoint A - VEC s.midpoint s.target := by rw [vec_sub_vec]
       _ = VEC s.source s.midpoint - VEC s.midpoint s.target := by rw [h₂]
