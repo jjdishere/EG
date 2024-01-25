@@ -169,7 +169,7 @@ theorem le_of_exist_nonneg_smul {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (h
   use x
   simp only [h0.symm, zero_smul] at h
   have : A = B := by
-    apply (eq_iff_vec_eq_zero B A).mpr
+    apply eq_iff_vec_eq_zero.mpr
     have : (VEC B A) = - (VEC A B) := by simp only [neg_vec]
     simp only [this, h, neg_zero]
   simp only [this, le_refl]
@@ -699,6 +699,7 @@ theorem lt_of_lies_on_seg_nd_ext_and_lt₁₃ {Dl : DirLine P} {A B C : P} [a_ne
 theorem lt_of_lies_on_seg_nd_ext_and_lt₂₃ {Dl : DirLine P} {A B C : P} [a_ne_b : PtNe A B] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) (h : C LiesOn (SEG_nd A B).extension) (h3 : lelem B hb < lelem C hc) : lelem A ha < lelem C hc := by sorry
 -/
 
+section Corollary
 -- # Corollary
 -- `Hilbert Axioms II.3`
 theorem lies_on_or_lies_on_or_lies_on_of_lies_on_DirLine {Dl : DirLine P} {A B C : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by
@@ -784,7 +785,7 @@ theorem not_lies_int_and_lies_int₁ (A B C : P) : ¬ (B LiesInt (SEG A C) ∧ C
     _= (1 : ℝ) := by norm_num
   have h2 : x2 * x1 - 1 ≠ 0 := by linarith
   simp only [h2, false_or] at this
-  have : C = A := (eq_iff_vec_eq_zero A C).mpr this
+  have : C = A := eq_iff_vec_eq_zero.mpr this
   absurd h1; exact this
 
 theorem not_lies_int_and_lies_int₂ (A B C : P) : ¬ (A LiesInt (SEG B C) ∧ C LiesInt (SEG A B)) := by
@@ -861,6 +862,8 @@ theorem lies_int_iff_not_lies_int_and_not_lies_int_of_collinear₃ {A B C : P} [
   have hh2 : _ := not_lies_int_and_lies_int₂ A B C
   have hh3 : _ := not_lies_int_and_lies_int₃ A B C
   tauto
+
+end Corollary
 
 end linear_order
 end DirLine
