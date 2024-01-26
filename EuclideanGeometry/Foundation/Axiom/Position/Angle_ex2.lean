@@ -1,4 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Position.Angle
+import EuclideanGeometry.Foundation.Axiom.Position.Angle_ex
 
 noncomputable section
 
@@ -23,10 +23,76 @@ def sum_adj {ang₁ ang₂: Angle P} (h : ang₁.end_ray = ang₂.start_ray) : A
   Angle.mk_two_ray_of_eq_source ang₁.start_ray ang₂.end_ray (source_eq_source_of_adj h)
 
 theorem ang_eq_ang_add_ang_mod_pi_of_adj_ang (ang₁ ang₂ : Angle P) (h: ang₁.end_ray = ang₂.start_ray) : (sum_adj h).value = ang₁.value + ang₂.value := sorry
+/-
+@[pp_dot]
+protected def add (ang₁ ang₂ : Angle P) (hs : ang₁.source = ang₂.source) (hd : ang₁.dir₂ = ang₂.dir₁) : Angle P where
+  source := ang₁.source
+  dir₁ := ang₁.dir₁
+  dir₂ := ang₂.dir₂
+ -/
+
+instance instAddSemigroup : AddSemigroup (Angle P) where
+  add ang₁ ang₂ := {
+    source := ang₁.source
+    dir₁ := ang₁.dir₁
+    dir₂ := ang₂.dir₂
+  }
+  add_assoc _ _ _ := rfl
+
+variable {ang₁ ang₂ : Angle P}
+
+theorem add_value_eq_value_add_of_dir_eq (h : ang₁.dir₂ = ang₂.dir₁) : (ang₁ + ang₂).value = ang₁.value + ang₂.value := by
+  show ang₂.dir₂ -ᵥ ang₁.dir₁ = ang₁.dir₂ -ᵥ ang₁.dir₁ + (ang₂.dir₂ -ᵥ ang₂.dir₁)
+  rw [h, add_comm]
+  exact (vsub_add_vsub_cancel ang₂.dir₂ ang₂.dir₁ ang₁.dir₁).symm
+
+theorem add_dvalue_eq_dvalue_add_of_proj_eq (h : ang₁.proj₂ = ang₂.proj₁) : (ang₁ + ang₂).dvalue = ang₁.dvalue + ang₂.dvalue := by
+  show ang₂.proj₂ -ᵥ ang₁.proj₁ = ang₁.proj₂ -ᵥ ang₁.proj₁ + (ang₂.proj₂ -ᵥ ang₂.proj₁)
+  rw [h, add_comm]
+  exact (vsub_add_vsub_cancel ang₂.proj₂ ang₂.proj₁ ang₁.proj₁).symm
+
+theorem add_value_eq_value_add (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∠ A O B = ∠ A O C + ∠ C O B :=
+  @add_value_eq_value_add_of_dir_eq P _ (ANG A O C) (ANG C O B) rfl
+
+theorem add_dvalue_eq_dvalue_add (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∡ A O B = ∡ A O C + ∡ C O B :=
+  @add_dvalue_eq_dvalue_add_of_proj_eq P _ (ANG A O C) (ANG C O B) rfl
+
+theorem sub_value_eq_value_sub_right (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∠ A O B = ∠ A O C - ∠ B O C :=
+  eq_sub_of_add_eq (add_value_eq_value_add O A C B).symm
+
+theorem sub_dvalue_eq_dvalue_sub_right (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∡ A O B = ∡ A O C - ∡ B O C :=
+  eq_sub_of_add_eq (add_dvalue_eq_dvalue_add O A C B).symm
+
+theorem sub_value_eq_value_sub_left (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∠ A O B = ∠ C O B - ∠ C O A :=
+  eq_sub_of_add_eq' (add_value_eq_value_add O C B A).symm
+
+theorem sub_dvalue_eq_dvalue_sub_left (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∡ A O B = ∡ C O B - ∡ C O A :=
+  eq_sub_of_add_eq' (add_dvalue_eq_dvalue_add O C B A).symm
 
 end angle_sum
 
 section angle_sub
+
+instance instSub : Sub (Angle P) where
+  sub ang₁ ang₂ := {
+    source := ang₁.source
+    dir₁ := ang₁.dir₁
+    dir₂ := ang₂.dir₁
+  }
+
+theorem sub_eq_add_rev (ang₁ ang₂ : Angle P) : ang₁ - ang₂ = ang₁ + ang₂.reverse := rfl
+
+variable {ang₁ ang₂ : Angle P}
+
+theorem sub_value_eq_value_sub_of_dir_eq (h : ang₁.dir₂ = ang₂.dir₂) : (ang₁ - ang₂).value = ang₁.value - ang₂.value := by
+  show ang₂.dir₁ -ᵥ ang₁.dir₁ = ang₁.dir₂ -ᵥ ang₁.dir₁ - (ang₂.dir₂ -ᵥ ang₂.dir₁)
+  rw [h]
+  exact (vsub_sub_vsub_cancel_left ang₂.dir₁ ang₁.dir₁ ang₂.dir₂).symm
+
+theorem sub_dvalue_eq_dvalue_sub_of_proj_eq (h : ang₁.proj₂ = ang₂.proj₂) : (ang₁ - ang₂).dvalue = ang₁.dvalue - ang₂.dvalue := by
+  show ang₂.proj₁ -ᵥ ang₁.proj₁ = ang₁.proj₂ -ᵥ ang₁.proj₁ - (ang₂.proj₂ -ᵥ ang₂.proj₁)
+  rw [h]
+  exact (vsub_sub_vsub_cancel_left ang₂.proj₁ ang₁.proj₁ ang₂.proj₂).symm
 
 end angle_sub
 

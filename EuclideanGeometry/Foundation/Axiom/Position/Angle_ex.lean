@@ -196,6 +196,10 @@ def reverse (ang : Angle P) : Angle P where
   dir₁ := ang.dir₂
   dir₂ := ang.dir₁
 
+instance instInvolutiveNeg : InvolutiveNeg (Angle P) where
+  neg := reverse
+  neg_neg _ := rfl
+
 variable {ang ang₁ ang₂ : Angle P}
 
 @[simp]
@@ -237,16 +241,16 @@ theorem rev_isObt_iff_isObt : ang.reverse.IsObt ↔ ang.IsObt := sorry
 @[simp]
 theorem rev_isRight_iff_isRight : ang.reverse.IsRight ↔ ang.IsRight := sorry
 
-theorem rev_start_ray : ang.reverse.start_ray = ang.start_ray.reverse := sorry
+theorem rev_start_ray : ang.reverse.start_ray = ang.end_ray := rfl
 
-theorem rev_end_ray : ang.reverse.end_ray = ang.end_ray.reverse := sorry
+theorem rev_end_ray : ang.reverse.end_ray = ang.start_ray := rfl
 
-theorem rev_start_dirLine : ang.reverse.start_dirLine = ang.start_dirLine.reverse := sorry
+theorem rev_start_dirLine : ang.reverse.start_dirLine = ang.end_dirLine := rfl
 
-theorem rev_end_dirLine : ang.reverse.end_dirLine = ang.end_dirLine.reverse := sorry
+theorem rev_end_dirLine : ang.reverse.end_dirLine = ang.start_dirLine := rfl
 
 @[simp]
-theorem rev_rev_eq_self : ang.reverse.reverse = ang := sorry
+theorem rev_rev_eq_self : ang.reverse.reverse = ang := rfl
 
 theorem rev_suppl_oppo_eq_suppl_rev : ang.reverse.suppl.oppo = ang.suppl.reverse :=
   Angle.ext ang.reverse.suppl.oppo ang.suppl.reverse rfl rfl (neg_neg ang.dir₂)

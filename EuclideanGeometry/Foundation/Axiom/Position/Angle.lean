@@ -108,13 +108,17 @@ $\verb|Angle.value_of_angle_of_three_point_nd|$. -/
 abbrev value_of_angle_of_three_point_nd (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O) : AngValue :=
   (Angle.mk_pt_pt_pt A O B h₁ h₂).value
 
-abbrev value_of_angle_of_two_ray_of_eq_source (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : AngValue := (Angle.mk_two_ray_of_eq_source start_ray end_ray h).value
+abbrev value_of_angle_of_two_ray_of_eq_source (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : AngValue :=
+  (Angle.mk_two_ray_of_eq_source start_ray end_ray h).value
 
-theorem value_of_angle_of_two_ray_of_eq_source_eq_angDiff (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : value_of_angle_of_two_ray_of_eq_source start_ray end_ray h = DirObj.AngDiff start_ray end_ray := rfl
+theorem value_of_angle_of_two_ray_of_eq_source_eq_angDiff (start_ray end_ray : Ray P) (h : start_ray.source = end_ray.source) : value_of_angle_of_two_ray_of_eq_source start_ray end_ray h = DirObj.AngDiff start_ray end_ray :=
+  rfl
 
-abbrev value_of_angle_of_pt_dir_dir (O : P) (r r' : Dir) : AngValue := (Angle.mk O r r').value
+abbrev value_of_angle_of_pt_dir_dir (O : P) (r r' : Dir) : AngValue :=
+  (Angle.mk O r r').value
 
-theorem value_of_angle_of_pt_dir_dir_eq_angDiff (O : P) (r r' : Dir) : value_of_angle_of_pt_dir_dir O r r' = DirObj.AngDiff r r' := rfl
+theorem value_of_angle_of_pt_dir_dir_eq_angDiff (O : P) (r r' : Dir) : value_of_angle_of_pt_dir_dir O r r' = DirObj.AngDiff r r' :=
+  rfl
 
 @[inherit_doc Angle.mk_pt_pt_pt]
 scoped syntax "ANG" ws term:max ws term:max ws term:max (ws term:max ws term:max)? : term
@@ -165,6 +169,36 @@ def delabValueOfAngleOfThreePointND : Delab := do
     `(∠ $A $B $C)
   else
     `(∠ $A $B $C $h₁ $h₂)
+
+/-- The dvalue of $\verb|Angle.mk_pt_pt_pt| A O B$. We use `∡` to abbreviate
+$\verb|Angle.dvalue_of_angle_of_three_point_nd|$. -/
+abbrev dvalue_of_angle_of_three_point_nd (A O B : P) (h₁ : A ≠ O) (h₂ : B ≠ O) : AngDValue :=
+  (Angle.mk_pt_pt_pt A O B h₁ h₂).dvalue
+
+@[inherit_doc dvalue_of_angle_of_three_point_nd]
+scoped syntax "∡" ws term:max ws term:max ws term:max (ws term:max ws term:max)? : term
+
+macro_rules
+  | `(∡ $A $B $C) => `(dvalue_of_angle_of_three_point_nd $A $B $C (@Fact.out _ inferInstance) (@Fact.out _ inferInstance))
+  | `(∡ $A $B $C $h₁ $h₂) => `(dvalue_of_angle_of_three_point_nd $A $B $C $h₁ $h₂)
+
+open Lean PrettyPrinter.Delaborator SubExpr in
+/-- Delaborator for `value_of_angle_of_three_point_nd` -/
+@[delab app.EuclidGeom.dvalue_of_angle_of_three_point_nd]
+def delabDValueOfAngleOfThreePointND : Delab := do
+  let e ← getExpr
+  guard $ e.isAppOfArity' ``dvalue_of_angle_of_three_point_nd 7
+  let A ← withNaryArg 2 delab
+  let B ← withNaryArg 3 delab
+  let C ← withNaryArg 4 delab
+  let ⟨b₁, h₁⟩ ← withNaryArg 5 do
+    return ((← getExpr).isAppOfArity' ``Fact.out 2, ← delab)
+  let ⟨b₂, h₂⟩ ← withNaryArg 6 do
+    return ((← getExpr).isAppOfArity' ``Fact.out 2, ← delab)
+  if b₁ && b₂ then
+    `(∡ $A $B $C)
+  else
+    `(∡ $A $B $C $h₁ $h₂)
 
 namespace Angle
 
@@ -385,7 +419,7 @@ theorem mk_pt_pt_pt_end_ray : (ANG A O B ha hb).end_ray = RAY O B hb := rfl
 theorem neg_value_eq_rev_ang : - ∠ A O B ha hb = ∠ B O A hb ha :=
   neg_vsub_eq_vsub_rev (VEC_nd O B hb).toDir (VEC_nd O A ha).toDir
 
-theorem neg_value_of_rev_ang {A B O : P} [h₁ : PtNe A O] [h₂ : PtNe B O] : ∠ A O B = -∠ B O A :=
+theorem neg_value_of_rev_ang {A O B : P} [h₁ : PtNe A O] [h₂ : PtNe B O] : ∠ A O B = -∠ B O A :=
   (neg_value_eq_rev_ang h₂.1 h₁.1).symm
 
 theorem pt_pt_pt_value_eq_zero_of_same_pt (A O : P) [PtNe A O] : ∠ A O A = 0 :=
@@ -605,10 +639,10 @@ theorem dvalue_eq_dAngDiff : ang.dvalue = DAngDiff ang.proj₁ ang.proj₂ := rf
 theorem dvalue_eq_vsub : ang.dvalue = ang.proj₂ -ᵥ ang.proj₁ := rfl
 
 theorem dvalue_eq_zero_of_same_dir (h : ang.dir₁ = ang.dir₂) : ang.dvalue = 0 := by
-  simp only [dvalue_eq_vsub, congrArg Dir.toProj h, vsub_self]
+  simp only [dvalue_eq_vsub, toProj_eq_of_eq h, vsub_self]
 
 theorem dvalue_eq_pi_of_eq_neg_dir (h : ang.dir₁ = - ang.dir₂) : ang.dvalue = 0 := by
-  simp only [dvalue_eq_vsub, toProj_eq_toProj_iff.mpr (.inr h), vsub_self]
+  simp only [dvalue_eq_vsub, toProj_eq_of_eq_neg h, vsub_self]
 
 theorem dAngDiff_eq_zero_of_same_proj {proj₁ proj₂ : Proj} (h : proj₁ = proj₂) : DAngDiff proj₁ proj₂ = 0 :=
   vsub_eq_zero_iff_eq.mpr h.symm
@@ -620,16 +654,16 @@ theorem same_proj_iff_isND : ang.proj₁ = ang.proj₂ ↔ ¬ ang.IsND :=
   same_proj_iff_dvalue_eq_zero.trans not_isND_iff_coe.symm
 
 theorem dvalue_eq_of_dir_eq (h₁ : ang₁.dir₁ = ang₂.dir₁) (h₂ : ang₁.dir₂ = ang₂.dir₂) : ang₁.dvalue = ang₂.dvalue := by
-  simp only [dvalue_eq_vsub, congrArg Dir.toProj h₁, congrArg Dir.toProj h₂]
+  simp only [dvalue_eq_vsub, toProj_eq_of_eq h₁, toProj_eq_of_eq h₂]
 
 theorem dvalue_eq_of_dir_eq_neg_dir (h₁ : ang₁.dir₁ = - ang₂.dir₁) (h₂ : ang₁.dir₂ = - ang₂.dir₂) : ang₁.dvalue = ang₂.dvalue := by
-  simp only [dvalue_eq_vsub, toProj_eq_toProj_iff.mpr (.inr h₁), toProj_eq_toProj_iff.mpr (.inr h₂)]
+  simp only [dvalue_eq_vsub, toProj_eq_of_eq_neg h₁, toProj_eq_of_eq_neg h₂]
 
 theorem dvalue_eq_dvalue_of_dir_eq_neg_dir_of_dir_eq (h₁ : ang₁.dir₁ = ang₂.dir₁) (h₂ : ang₁.dir₂ = - ang₂.dir₂) : ang₁.dvalue = ang₂.dvalue := by
-  simp only [dvalue_eq_vsub, congrArg Dir.toProj h₁, toProj_eq_toProj_iff.mpr (.inr h₂)]
+  simp only [dvalue_eq_vsub, toProj_eq_of_eq h₁, toProj_eq_of_eq_neg h₂]
 
 theorem dvalue_eq_dvalue_of_dir_eq_of_dir_eq_neg_dir (h₁ : ang₁.dir₁ = - ang₂.dir₁) (h₂ : ang₁.dir₂ = ang₂.dir₂) : ang₁.dvalue = ang₂.dvalue := by
-  simp only [dvalue_eq_vsub, congrArg Dir.toProj h₂, toProj_eq_toProj_iff.mpr (.inr h₁)]
+  simp only [dvalue_eq_vsub, toProj_eq_of_eq h₂, toProj_eq_of_eq_neg h₁]
 
 theorem dvalue_eq_dvalue_of_proj_eq_proj (h₁ : ang₁.proj₁ = ang₂.proj₁) (h₂ : ang₁.proj₂ = ang₂.proj₂) : ang₁.dvalue = ang₂.dvalue := by
   rw [dvalue_eq_dAngDiff, dvalue_eq_dAngDiff, h₁, h₂]
@@ -644,6 +678,9 @@ theorem line_pt_pt_perp_iff_dvalue_eq_pi_div_two : LIN O A ⟂ LIN O B ↔ (ANG 
 
 theorem dir_perp_iff_isRight : ang.dir₁ ⟂ ang.dir₂ ↔ ang.IsRight :=
   dir_perp_iff_dvalue_eq_pi_div_two.trans isRight_iff_coe.symm
+
+theorem line_pt_pt_perp_iff_isRight : LIN O A ⟂ LIN O B ↔ (ANG A O B).IsRight :=
+  (ANG A O B).dir_perp_iff_isRight
 
 theorem value_eq_pi_of_lies_int_seg_nd {A B C : P} [PtNe C A] (h : B LiesInt (SEG_nd A C)) : ∠ A B C h.2.symm h.3.symm = π :=
   value_eq_pi_of_eq_neg_dir ((SEG_nd A C).toDir_eq_neg_toDir_of_lies_int h)
@@ -696,6 +733,33 @@ theorem cos_eq_zero_iff_isRight : cos ang.value = 0 ↔ ang.IsRight :=
   isRight_iff_cos_eq_zero.symm
 
 end sin_cos
+
+section inner
+
+open AngValue
+
+variable (A O B : P) [PtNe A O] [PtNe B O]
+
+theorem inner_eq_dist_mul_cos : inner (VEC O A) (VEC O B) = dist O A * dist O B * cos (∠ A O B) := by
+  rw [dist_comm, NormedAddTorsor.dist_eq_norm', dist_comm, NormedAddTorsor.dist_eq_norm']
+  exact ((VEC_nd O A).norm_mul_cos (VEC_nd O B)).symm
+
+theorem zero_lt_inner_iff_isAcu : 0 < @inner ℝ _ _ (VEC O A) (VEC O B) ↔ (∠ A O B).IsAcu := by
+  rw [inner_eq_dist_mul_cos A O B]
+  exact (mul_pos_iff_of_pos_left (Real.mul_pos (SEG_nd O A).length_pos (SEG_nd O B).length_pos)).trans
+    ((∠ A O B).isAcu_iff_zero_lt_cos).symm
+
+theorem inner_eq_zero_iff_isRight : @inner ℝ _ _ (VEC O A) (VEC O B) = 0 ↔ (∠ A O B).IsRight := by
+  rw [inner_eq_dist_mul_cos A O B]
+  refine' Iff.trans _ ((∠ A O B).isRight_iff_cos_eq_zero).symm
+  exact smul_eq_zero_iff_right (ne_of_gt (Real.mul_pos (SEG_nd O A).length_pos (SEG_nd O B).length_pos))
+
+theorem inner_lt_zero_iff_isObt : @inner ℝ _ _ (VEC O A) (VEC O B) < 0 ↔ (∠ A O B).IsObt :=by
+  rw [inner_eq_dist_mul_cos A O B]
+  exact (smul_neg_iff_of_pos_left (Real.mul_pos (SEG_nd O A).length_pos (SEG_nd O B).length_pos)).trans
+    ((∠ A O B).isObt_iff_cos_lt_zero).symm
+
+end inner
 
 end Angle
 

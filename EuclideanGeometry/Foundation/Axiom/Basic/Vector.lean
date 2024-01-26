@@ -1452,6 +1452,12 @@ theorem Dir.toProj_eq_toProj_iff {d₁ d₂ : Dir} :
     · exact ⟨x, h⟩
     · exact ⟨-x, by simpa using h⟩
 
+theorem Dir.toProj_eq_of_eq {d₁ d₂ : Dir} (h : d₁ = d₂) : d₁.toProj = d₂.toProj :=
+  congrArg Dir.toProj h
+
+theorem Dir.toProj_eq_of_eq_neg {d₁ d₂ : Dir} (h : d₁ = - d₂) : d₁.toProj = d₂.toProj :=
+  toProj_eq_toProj_iff.mpr (.inr h)
+
 theorem Dir.toProj_eq_toProj_iff_unitVec₀ {d₁ d₂ : Dir} :
     d₁.toProj = d₂.toProj ↔ ∃ a : ℝˣ, d₁.unitVec = a • d₂.unitVec := by
   conv_lhs => rw [← d₁.unitVecND_toDir, ← d₂.unitVecND_toDir]
