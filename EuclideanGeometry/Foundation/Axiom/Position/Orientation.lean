@@ -527,7 +527,7 @@ theorem LiesOnLeft_of_ang_pos (A : P) (ray : Ray P) [ne : PtNe A ray.source] (h 
     congr
   simp only [this]
   have sin : sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value) > 0 := by
-    apply AngValue.isPos_iff_zero_lt_sin.mp
+    apply AngValue.isPos_iff_sin_pos.mp
     exact h
   have len : (SEG ray.source A).length > 0 := by
     show (SEG_nd ray.source A).length > 0
@@ -548,7 +548,7 @@ theorem LiesOnRight_of_ang_neg (A : P) (ray : Ray P) [ne : PtNe A ray.source] (h
     congr
   simp only [this]
   have sin : (sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value)) < 0 := by
-    apply sin_lt_zero_of_isNeg
+    apply sin_neg_of_isNeg
     exact h
   --have -sin : -(sin ((Angle.mk ray.source  ray.toDir (RAY ray.source A).toDir).value)) > 0 := by
     --linarith
@@ -1595,7 +1595,7 @@ theorem exist_inx_DirLine_Ray_of_source_LiesOnLeft_and_included_ang_neg (ray : R
       apply AngValue.neg_isPos_iff_isNeg.mpr
       exact h
     have : 0 < sin (-(ray.toDir -ᵥ r.toDir)) := by
-      apply AngValue.isPos_iff_zero_lt_sin.mp
+      apply AngValue.isPos_iff_sin_pos.mp
       exact coer
     calc
       _= -sin (-(ray.toDir -ᵥ r.toDir)) := by
@@ -1661,7 +1661,7 @@ theorem exist_inx_DirLine_Ray_of_source_LiesOnRight_and_included_ang_pos (ray : 
   simp only [←s] at h
   have neg : Vec.det r.toDir.unitVec ray.toDir.unitVec > 0 := by
     simp only [Dir.det_unitVec]
-    apply AngValue.isPos_iff_zero_lt_sin.mp
+    apply AngValue.isPos_iff_sin_pos.mp
     exact h
   have ne0 : Vec.det r.toDir.unitVec ray.toDir.unitVec ≠ 0 := by
     linarith

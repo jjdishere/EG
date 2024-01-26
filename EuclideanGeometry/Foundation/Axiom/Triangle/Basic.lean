@@ -384,7 +384,7 @@ theorem angle₁_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsPos
       positivity
   simp only [pos]
   simp only [eq_iff_iff]
-  exact isPos_iff_zero_lt_sin.symm
+  exact isPos_iff_sin_pos.symm
 
 theorem angle₂_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₂.value.IsPos := by
   have eqcc : tr_nd.is_cclock = tr_nd.perm_vertices.is_cclock := by

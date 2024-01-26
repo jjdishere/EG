@@ -709,10 +709,10 @@ open AngValue
 variable {ang : Angle P}
 
 theorem sin_pos_iff_isPos : 0 < sin ang.value ↔ ang.IsPos :=
-  isPos_iff_zero_lt_sin.symm
+  isPos_iff_sin_pos.symm
 
 theorem sin_neg_iff_isNeg : sin ang.value < 0 ↔ ang.IsNeg :=
-  isNeg_iff_sin_lt_zero.symm
+  isNeg_iff_sin_neg.symm
 
 theorem sin_ne_zero_iff_isND : sin ang.value ≠ 0 ↔ ang.IsND :=
   isND_iff_sin_ne_zero.symm
@@ -721,10 +721,10 @@ theorem sin_eq_zero_iff_not_isND : sin ang.value = 0 ↔ ¬ ang.IsND :=
   not_isND_iff_sin_eq_zero.symm
 
 theorem cos_pos_iff_isAcu : 0 < cos ang.value ↔ ang.IsAcu :=
-  isAcu_iff_zero_lt_cos.symm
+  isAcu_iff_cos_pos.symm
 
 theorem cos_neg_iff_isObt : cos ang.value < 0 ↔ ang.IsObt :=
-  isObt_iff_cos_lt_zero.symm
+  isObt_iff_cos_neg.symm
 
 theorem cos_ne_zero_iff_not_isRight : cos ang.value ≠ 0 ↔ ¬ ang.IsRight :=
   not_isRight_iff_cos_ne_zero.symm
@@ -744,20 +744,20 @@ theorem inner_eq_dist_mul_cos : inner (VEC O A) (VEC O B) = dist O A * dist O B 
   rw [dist_comm, NormedAddTorsor.dist_eq_norm', dist_comm, NormedAddTorsor.dist_eq_norm']
   exact ((VEC_nd O A).norm_mul_cos (VEC_nd O B)).symm
 
-theorem zero_lt_inner_iff_isAcu : 0 < @inner ℝ _ _ (VEC O A) (VEC O B) ↔ (∠ A O B).IsAcu := by
+theorem inner_pos_iff_isAcu : 0 < @inner ℝ _ _ (VEC O A) (VEC O B) ↔ (∠ A O B).IsAcu := by
   rw [inner_eq_dist_mul_cos A O B]
   exact (mul_pos_iff_of_pos_left (Real.mul_pos (SEG_nd O A).length_pos (SEG_nd O B).length_pos)).trans
-    ((∠ A O B).isAcu_iff_zero_lt_cos).symm
+    ((∠ A O B).isAcu_iff_cos_pos).symm
 
 theorem inner_eq_zero_iff_isRight : @inner ℝ _ _ (VEC O A) (VEC O B) = 0 ↔ (∠ A O B).IsRight := by
   rw [inner_eq_dist_mul_cos A O B]
   refine' Iff.trans _ ((∠ A O B).isRight_iff_cos_eq_zero).symm
   exact smul_eq_zero_iff_right (ne_of_gt (Real.mul_pos (SEG_nd O A).length_pos (SEG_nd O B).length_pos))
 
-theorem inner_lt_zero_iff_isObt : @inner ℝ _ _ (VEC O A) (VEC O B) < 0 ↔ (∠ A O B).IsObt :=by
+theorem inner_neg_iff_isObt : @inner ℝ _ _ (VEC O A) (VEC O B) < 0 ↔ (∠ A O B).IsObt :=by
   rw [inner_eq_dist_mul_cos A O B]
   exact (smul_neg_iff_of_pos_left (Real.mul_pos (SEG_nd O A).length_pos (SEG_nd O B).length_pos)).trans
-    ((∠ A O B).isObt_iff_cos_lt_zero).symm
+    ((∠ A O B).isObt_iff_cos_neg).symm
 
 end inner
 

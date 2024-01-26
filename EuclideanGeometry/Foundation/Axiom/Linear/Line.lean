@@ -1301,12 +1301,12 @@ instance instLinearOrderedAddTorsor (l : DirLine P) : LinearOrderedAddTorsor ℝ
   AddTorsor.LinearOrderedAddTorsor_of_LinearOrderedAddCommGroup ℝ l.carrier.Elem
 
 /-- The theorem states that for two points $A$ and $B$ on a directed line $l$, we write $A \leq B$ if the distance from $A$ to $B$ is nonnegative. -/
-theorem le_iff_zero_le_ddist {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : (⟨A, ha⟩ : l.carrier.Elem) ≤ ⟨B, hb⟩ ↔ 0 ≤ ddist ha hb :=
-  vsub_le_zero_iff_zero_le_vsub_rev (⟨A, ha⟩ : l.carrier.Elem) ⟨B, hb⟩
+theorem le_iff_ddist_nonneg {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : (⟨A, ha⟩ : l.carrier.Elem) ≤ ⟨B, hb⟩ ↔ 0 ≤ ddist ha hb :=
+  vsub_nonpos_iff_vsub_rev_nonneg (⟨A, ha⟩ : l.carrier.Elem) ⟨B, hb⟩
 
 /-- For two points $A$ and $B$ on a directed line $l$, $A$ is less than $B$ if and only if the distance from $A$ to $B$ is positive. -/
-theorem lt_iff_zero_lt_ddist {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : (⟨A, ha⟩ : l.carrier.Elem) < ⟨B, hb⟩ ↔ 0 < ddist ha hb :=
-  vsub_lt_zero_iff_zero_lt_vsub_rev (⟨A, ha⟩ : l.carrier.Elem) ⟨B, hb⟩
+theorem lt_iff_ddist_pos {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : (⟨A, ha⟩ : l.carrier.Elem) < ⟨B, hb⟩ ↔ 0 < ddist ha hb :=
+  vsub_neg_iff_vsub_rev_pos (⟨A, ha⟩ : l.carrier.Elem) ⟨B, hb⟩
 
 end order
 
