@@ -16,13 +16,6 @@ end AngleValue
 
 section angle_sum
 
--- Can use congrArg @Ray.source P _) h to turn h into the sources of two terms being equal.
-theorem source_eq_source_of_adj {ang₁ ang₂: Angle P} (h : ang₁.end_ray = ang₂.start_ray) : ang₁.start_ray.source = ang₂.end_ray.source := sorry
-
-def sum_adj {ang₁ ang₂: Angle P} (h : ang₁.end_ray = ang₂.start_ray) : Angle P :=
-  Angle.mk_two_ray_of_eq_source ang₁.start_ray ang₂.end_ray (source_eq_source_of_adj h)
-
-theorem ang_eq_ang_add_ang_mod_pi_of_adj_ang (ang₁ ang₂ : Angle P) (h: ang₁.end_ray = ang₂.start_ray) : (sum_adj h).value = ang₁.value + ang₂.value := sorry
 /-
 @[pp_dot]
 protected def add (ang₁ ang₂ : Angle P) (hs : ang₁.source = ang₂.source) (hd : ang₁.dir₂ = ang₂.dir₁) : Angle P where
@@ -41,6 +34,34 @@ instance instAddSemigroup : AddSemigroup (Angle P) where
 
 variable {ang₁ ang₂ : Angle P}
 
+theorem add_source_eq_source_left : (ang₁ + ang₂).source = ang₁.source := rfl
+
+theorem add_source_eq_source_right (h : ang₁.source = ang₂.source) : (ang₁ + ang₂).source = ang₂.source := h
+
+@[simp]
+theorem add_dir₁ : (ang₁ + ang₂).dir₁ = ang₁.dir₁ := rfl
+
+@[simp]
+theorem add_dir₂ : (ang₁ + ang₂).dir₂ = ang₂.dir₂ := rfl
+
+@[simp]
+theorem add_proj₁ : (ang₁ + ang₂).proj₁ = ang₁.proj₁ := rfl
+
+@[simp]
+theorem add_proj₂ : (ang₁ + ang₂).proj₂ = ang₂.proj₂ := rfl
+
+@[simp]
+theorem add_start_ray : (ang₁ + ang₂).start_ray = ang₁.start_ray := rfl
+
+theorem add_end_ray (h : ang₁.source = ang₂.source) : (ang₁ + ang₂).end_ray = ang₂.end_ray :=
+  (ang₁ + ang₂).end_ray.ext ang₂.end_ray h rfl
+
+@[simp]
+theorem add_start_dirLine : (ang₁ + ang₂).start_dirLine = ang₁.start_dirLine := rfl
+
+theorem add_end_dirLine (h : ang₁.source = ang₂.source) : (ang₁ + ang₂).end_dirLine = ang₂.end_dirLine :=
+  congrArg Ray.toDirLine (add_end_ray h)
+
 theorem add_value_eq_value_add_of_dir_eq (h : ang₁.dir₂ = ang₂.dir₁) : (ang₁ + ang₂).value = ang₁.value + ang₂.value := by
   show ang₂.dir₂ -ᵥ ang₁.dir₁ = ang₁.dir₂ -ᵥ ang₁.dir₁ + (ang₂.dir₂ -ᵥ ang₂.dir₁)
   rw [h, add_comm]
@@ -51,23 +72,23 @@ theorem add_dvalue_eq_dvalue_add_of_proj_eq (h : ang₁.proj₂ = ang₂.proj₁
   rw [h, add_comm]
   exact (vsub_add_vsub_cancel ang₂.proj₂ ang₂.proj₁ ang₁.proj₁).symm
 
-theorem add_value_eq_value_add (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∠ A O B = ∠ A O C + ∠ C O B :=
-  @add_value_eq_value_add_of_dir_eq P _ (ANG A O C) (ANG C O B) rfl
+theorem value_add_eq_add_value (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∠ A O C + ∠ C O B = ∠ A O B :=
+  (@add_value_eq_value_add_of_dir_eq P _ (ANG A O C) (ANG C O B) rfl).symm
 
-theorem add_dvalue_eq_dvalue_add (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∡ A O B = ∡ A O C + ∡ C O B :=
-  @add_dvalue_eq_dvalue_add_of_proj_eq P _ (ANG A O C) (ANG C O B) rfl
+theorem dvalue_add_eq_add_dvalue (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∡ A O C + ∡ C O B = ∡ A O B :=
+  (@add_dvalue_eq_dvalue_add_of_proj_eq P _ (ANG A O C) (ANG C O B) rfl).symm
 
-theorem sub_value_eq_value_sub_right (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∠ A O B = ∠ A O C - ∠ B O C :=
-  eq_sub_of_add_eq (add_value_eq_value_add O A C B).symm
+theorem value_sub_right_eq_sub_value (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∠ A O C - ∠ B O C = ∠ A O B :=
+  sub_eq_of_eq_add (value_add_eq_add_value O A C B).symm
 
-theorem sub_dvalue_eq_dvalue_sub_right (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∡ A O B = ∡ A O C - ∡ B O C :=
-  eq_sub_of_add_eq (add_dvalue_eq_dvalue_add O A C B).symm
+theorem dvalue_sub_right_eq_sub_dvalue (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∡ A O C - ∡ B O C = ∡ A O B :=
+  sub_eq_of_eq_add (dvalue_add_eq_add_dvalue O A C B).symm
 
-theorem sub_value_eq_value_sub_left (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∠ A O B = ∠ C O B - ∠ C O A :=
-  eq_sub_of_add_eq' (add_value_eq_value_add O C B A).symm
+theorem value_sub_left_eq_sub_value (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∠ C O B - ∠ C O A = ∠ A O B :=
+  (eq_sub_of_add_eq' (value_add_eq_add_value O C B A)).symm
 
-theorem sub_dvalue_eq_dvalue_sub_left (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∡ A O B = ∡ C O B - ∡ C O A :=
-  eq_sub_of_add_eq' (add_dvalue_eq_dvalue_add O C B A).symm
+theorem dvalue_sub_left_eq_sub_dvalue (O A B C : P) [PtNe A O] [PtNe B O] [PtNe C O] : ∡ C O B - ∡ C O A = ∡ A O B :=
+  (eq_sub_of_add_eq' (dvalue_add_eq_add_dvalue O C B A)).symm
 
 end angle_sum
 
@@ -83,6 +104,34 @@ instance instSub : Sub (Angle P) where
 theorem sub_eq_add_rev (ang₁ ang₂ : Angle P) : ang₁ - ang₂ = ang₁ + ang₂.reverse := rfl
 
 variable {ang₁ ang₂ : Angle P}
+
+theorem sub_source_eq_source_left : (ang₁ - ang₂).source = ang₁.source := rfl
+
+theorem sub_source_eq_source_right (h : ang₁.source = ang₂.source) : (ang₁ - ang₂).source = ang₂.source := h
+
+@[simp]
+theorem sub_dir₁ : (ang₁ - ang₂).dir₁ = ang₁.dir₁ := rfl
+
+@[simp]
+theorem sub_dir₂ : (ang₁ - ang₂).dir₂ = ang₂.dir₁ := rfl
+
+@[simp]
+theorem sub_proj₁ : (ang₁ - ang₂).proj₁ = ang₁.proj₁ := rfl
+
+@[simp]
+theorem sub_proj₂ : (ang₁ - ang₂).proj₂ = ang₂.proj₁ := rfl
+
+@[simp]
+theorem sub_start_ray : (ang₁ - ang₂).start_ray = ang₁.start_ray := rfl
+
+theorem sub_end_ray (h : ang₁.source = ang₂.source) : (ang₁ - ang₂).end_ray = ang₂.start_ray :=
+  (ang₁ - ang₂).end_ray.ext ang₂.start_ray h rfl
+
+@[simp]
+theorem sub_start_dirLine : (ang₁ - ang₂).start_dirLine = ang₁.start_dirLine := rfl
+
+theorem sub_end_dirLine (h : ang₁.source = ang₂.source) : (ang₁ - ang₂).end_dirLine = ang₂.start_dirLine :=
+  congrArg Ray.toDirLine (sub_end_ray h)
 
 theorem sub_value_eq_value_sub_of_dir_eq (h : ang₁.dir₂ = ang₂.dir₂) : (ang₁ - ang₂).value = ang₁.value - ang₂.value := by
   show ang₂.dir₁ -ᵥ ang₁.dir₁ = ang₁.dir₂ -ᵥ ang₁.dir₁ - (ang₂.dir₂ -ᵥ ang₂.dir₁)
@@ -116,7 +165,7 @@ theorem perp_foot_lies_int_start_ray_iff_isAcu_of_lies_int_end_ray {A : P} (ha :
 
 theorem perp_foot_eq_source_iff_isRight {A O B : P} [PtNe A O] [PtNe B O] : (perp_foot B (LIN O A)) = O ↔ (ANG A O B).IsRight := sorry
 
-theorem perp_foot_eq_source__iff_isRight_of_lies_int_end_ray {A : P} (ha : A LiesInt ang.end_ray) : perp_foot A ang.start_ray = ang.source ↔ ang.IsRight := sorry
+theorem perp_foot_eq_source_iff_isRight_of_lies_int_end_ray {A : P} (ha : A LiesInt ang.end_ray) : perp_foot A ang.start_ray = ang.source ↔ ang.IsRight := sorry
 
 theorem perp_foot_lies_int_start_ray_reverse_iff_isObt {A O B : P} [PtNe A O] [PtNe B O] : (perp_foot B (LIN O A)) LiesInt (RAY O A).reverse ↔ (ANG A O B).IsObt := sorry
 

@@ -424,9 +424,11 @@ theorem two_nsmul_ne_zero_iff_isND : 2 • θ ≠ 0 ↔ θ.IsND :=
 theorem two_nsmul_eq_zero_iff_not_isND : 2 • θ = 0 ↔ ¬ θ.IsND :=
   (θ.two_nsmul_eq_zero_iff).trans (θ.not_isND_iff).symm
 
-theorem ne_neg_self_iff_isND : θ ≠ - θ ↔ θ.IsND := sorry
+theorem ne_neg_self_iff_isND : θ ≠ - θ ↔ θ.IsND :=
+  (θ.ne_neg_self_iff).trans (θ.isND_iff).symm
 
-theorem eq_neg_self_iff_not_isND : θ = - θ ↔ ¬ θ.IsND := sorry
+theorem eq_neg_self_iff_not_isND : θ = - θ ↔ ¬ θ.IsND :=
+  (θ.eq_neg_self_iff).trans (θ.not_isND_iff).symm
 
 theorem not_isND_iff_coe : ¬ θ.IsND ↔ θ = (0 : AngDValue) :=
   not_isND_iff.trans (θ.coe_eq_zero_iff).symm
