@@ -401,7 +401,7 @@ theorem unique_of_eq_eq (h : tr_nd₁.IsCongr tr_nd₂) (p₁ : tr_nd₁.point�
     have l₆ : tr_nd₁.point₂ LiesOn tr_nd₁.angle₁.end_ray.toLine := by
       rw [eq_of_parallel_and_pt_lies_on l₁ l₂ pl]
       exact .inl Ray.source_lies_on
-    exact tr_nd₁.2 <| (Line.collinear_iff_exist_line_lies_on tr_nd₁.point₁ tr_nd₁.point₂ tr_nd₁.point₃).mpr
+    exact tr_nd₁.2 <| (collinear_iff_exist_line_lies_on tr_nd₁.point₁ tr_nd₁.point₂ tr_nd₁.point₃).mpr
       ⟨tr_nd₁.angle₁.end_ray.toLine, l₅, l₆ ,l₁⟩
   have np₂ : ¬ tr_nd₂.angle₁.end_ray.toLine ∥ tr_nd₂.angle₂.start_ray.toLine := by
     by_contra pl
@@ -409,7 +409,7 @@ theorem unique_of_eq_eq (h : tr_nd₁.IsCongr tr_nd₂) (p₁ : tr_nd₁.point�
     have l₆ : tr_nd₂.point₂ LiesOn tr_nd₂.angle₁.end_ray.toLine := by
       rw [eq_of_parallel_and_pt_lies_on l₃ l₄ pl]
       exact .inl Ray.source_lies_on
-    exact tr_nd₂.2 <| (Line.collinear_iff_exist_line_lies_on tr_nd₂.point₁ tr_nd₂.point₂ tr_nd₂.point₃).mpr
+    exact tr_nd₂.2 <| (collinear_iff_exist_line_lies_on tr_nd₂.point₁ tr_nd₂.point₂ tr_nd₂.point₃).mpr
       ⟨tr_nd₂.angle₁.end_ray.toLine, l₅, l₆ ,l₃⟩
   simp only [inx_of_line_eq_inx np₁ ⟨l₁, l₂⟩, inx_of_line_eq_inx np₂ ⟨l₃, l₄⟩, ray_eq₁, ray_eq₂]
 
