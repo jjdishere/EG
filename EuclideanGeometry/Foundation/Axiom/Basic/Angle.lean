@@ -709,6 +709,18 @@ theorem pi_sub_isNeg_iff_isNeg : (π - θ).IsNeg ↔ θ.IsNeg := by
 theorem pi_sub_isND_iff_isND : (π - θ).IsND ↔ θ.IsND := by
   simp only [isND_iff_sin_ne_zero, sin_pi_sub]
 
+theorem isPos_iff_isPos_of_add_eq_pi (h : θ + ψ = π) : θ.IsPos ↔ ψ.IsPos := by
+  rw [eq_sub_of_add_eq h]
+  exact ψ.pi_sub_isPos_iff_isPos
+
+theorem isNeg_iff_isNeg_of_add_eq_pi (h : θ + ψ = π) : θ.IsNeg ↔ ψ.IsNeg := by
+  rw [eq_sub_of_add_eq h]
+  exact ψ.pi_sub_isNeg_iff_isNeg
+
+theorem isND_iff_isND_of_add_eq_pi (h : θ + ψ = π) : θ.IsND ↔ ψ.IsND := by
+  rw [eq_sub_of_add_eq h]
+  exact ψ.pi_sub_isND_iff_isND
+
 end pi_sub
 
 -- Do we need to realize `IsPos` as a `SignType`?
@@ -993,6 +1005,18 @@ theorem add_ne_pi_of_isAcu (hs : θ.IsAcu) (hp : ψ.IsAcu) : θ + ψ ≠ π :=
 
 theorem add_ne_pi_of_isObt (hs : θ.IsObt) (hp : ψ.IsObt) : θ + ψ ≠ π :=
   fun h ↦ not_isAcu_of_isObt hp (pi_sub_isObt_iff_isAcu.mp (cast (congrArg IsObt (eq_sub_of_add_eq h)) hs))
+
+theorem isAcu_iff_isObt_of_add_eq_pi (h : θ + ψ = π) : θ.IsAcu ↔ ψ.IsObt := by
+  rw [eq_sub_of_add_eq h]
+  exact ψ.pi_sub_isAcu_iff_isObt
+
+theorem isObt_iff_isAcu_of_add_eq_pi (h : θ + ψ = π) : θ.IsObt ↔ ψ.IsAcu := by
+  rw [eq_sub_of_add_eq h]
+  exact ψ.pi_sub_isObt_iff_isAcu
+
+theorem isRight_iff_isRight_of_add_eq_pi (h : θ + ψ = π) : θ.IsRight ↔ ψ.IsRight := by
+  rw [eq_sub_of_add_eq h]
+  exact ψ.pi_sub_isRight_iff_isRight
 
 end pi_sub
 

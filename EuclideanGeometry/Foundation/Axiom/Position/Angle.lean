@@ -625,6 +625,9 @@ theorem value_eq_value_add_pi_of_dir_eq_neg_dir_of_dir_eq (h₁ : ang₁.dir₁ 
 theorem value_eq_value_add_pi_of_dir_eq_of_dir_eq_neg_dir (h₁ : ang₁.dir₁ = - ang₂.dir₁) (h₂ : ang₁.dir₂ = ang₂.dir₂) : ang₁.value = ang₂.value + π := by
   rw [value, value, h₁, h₂, neg_vsub_right]
 
+theorem value_add_value_eq_pi_of_isSuppl' (h₁ : ang₁.dir₁ = ang₂.dir₂) (h₂ : ang₁.dir₂ = - ang₂.dir₁) : ang₁.value + ang₂.value = π := by
+  rw [value, value, h₂, h₁, neg_vsub_left, add_comm, ← add_assoc, vsub_add_vsub_cancel, vsub_self, zero_add]
+
 theorem value_toReal_le_pi : ang.value.toReal ≤ π :=
   ang.value.toReal_le_pi
 
@@ -667,6 +670,14 @@ theorem dvalue_eq_dvalue_of_dir_eq_of_dir_eq_neg_dir (h₁ : ang₁.dir₁ = - a
 
 theorem dvalue_eq_dvalue_of_proj_eq_proj (h₁ : ang₁.proj₁ = ang₂.proj₁) (h₂ : ang₁.proj₂ = ang₂.proj₂) : ang₁.dvalue = ang₂.dvalue := by
   rw [dvalue_eq_dAngDiff, dvalue_eq_dAngDiff, h₁, h₂]
+
+theorem dvalue_eq_neg_dvalue_of_isReverse' (h₁ : ang₁.proj₁ = ang₂.proj₂) (h₂ : ang₁.proj₂ = ang₂.proj₁) : ang₁.dvalue = - ang₂.dvalue := by
+  apply (neg_vsub_eq_vsub_rev ang₁.proj₁ ang₁.proj₂).symm.trans
+  rw [h₁, h₂]
+  rfl
+
+theorem dvalue_eq_neg_dvalue_of_isSuppl' (h₁ : ang₁.dir₁ = ang₂.dir₂) (h₂ : ang₁.dir₂ = - ang₂.dir₁) : ang₁.dvalue = - ang₂.dvalue :=
+  dvalue_eq_neg_dvalue_of_isReverse' (Dir.toProj_eq_of_eq h₁) (Dir.toProj_eq_of_eq_neg h₂)
 
 theorem dir_perp_iff_dvalue_eq_pi_div_two : ang.dir₁ ⟂ ang.dir₂ ↔ ang.dvalue = ∡[π / 2] := by
   apply (eq_vadd_iff_vsub_eq ang.proj₁ ∡[Real.pi / 2] ang.proj₂).trans

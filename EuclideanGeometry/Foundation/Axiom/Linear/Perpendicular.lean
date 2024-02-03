@@ -66,6 +66,8 @@ theorem not_parallel_of_perp (h : l₁ ⟂ l₂) : ¬ l₁ ∥ l₂ := toProj_ne
 
 end Perpendicular_and_parallel
 
+-- Add a section like the section `section parallel_iff_coercion_parallel` in parallel.lean
+
 section Perpendicular_constructions
 
 /-- Given a point $A$ and a line $l$, this function returns the line through $A$ perpendicular to $l$. -/
