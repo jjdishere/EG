@@ -172,7 +172,7 @@ end Perpendicular_inner_product
 
 section vec
 
-variable {A B : P} {l : DirLine P}
+variable (A B : P) {l : DirLine P}
 -- Feel free to change the order of the following theorems for ease of proof.
 
 lemma inner_vec_pt_pt_vec_pt_perp_foot_eq_inner_vec_pt_perp_foot (ha : A LiesOn l) : @inner ℝ _ _ (VEC A B) (VEC A (perp_foot B l)) = inner (VEC A (perp_foot B l)) (VEC A (perp_foot B l)) := sorry
@@ -180,14 +180,14 @@ lemma inner_vec_pt_pt_vec_pt_perp_foot_eq_inner_vec_pt_perp_foot (ha : A LiesOn 
 lemma inner_vec_pt_pt_dirLine_toDir_unitVec_eq_inner_vec_pt_perp_foot (ha : A LiesOn l) : @inner ℝ _ _ (VEC A B) l.toDir.unitVec = inner (VEC A (perp_foot B l)) l.toDir.unitVec := sorry
 
 theorem inner_eq_ddist_pt_perp_foot (ha : A LiesOn l) : inner (VEC A B) l.toDir.unitVec = l.ddist ha (perp_foot_lies_on_line B l) :=
-  inner_vec_pt_pt_dirLine_toDir_unitVec_eq_inner_vec_pt_perp_foot ha
+  inner_vec_pt_pt_dirLine_toDir_unitVec_eq_inner_vec_pt_perp_foot A B ha
 
 theorem perp_foot_eq_inner_smul_toDir_unitVec_vadd (ha : A LiesOn l) : perp_foot B l = (@inner ℝ _ _ (VEC A B) l.toDir.unitVec) • l.toDir.unitVec +ᵥ A := by
-  rw [inner_eq_ddist_pt_perp_foot ha]
+  rw [inner_eq_ddist_pt_perp_foot A B ha]
   exact l.pt_eq_ddist_smul_toDir_unitVec_vadd ha (perp_foot_lies_on_line B l)
 
-theorem vec_eq_ddist_smul_toDir_unitVec (ha : A LiesOn l) : VEC A (perp_foot B l) = (@inner ℝ _ _ (VEC A B) l.toDir.unitVec) • l.toDir.unitVec := by
-  rw [inner_eq_ddist_pt_perp_foot ha]
+theorem vec_pt_perp_foot_eq_ddist_smul_toDir_unitVec (ha : A LiesOn l) : VEC A (perp_foot B l) = (@inner ℝ _ _ (VEC A B) l.toDir.unitVec) • l.toDir.unitVec := by
+  rw [inner_eq_ddist_pt_perp_foot A B ha]
   exact l.vec_eq_ddist_smul_toDir_unitVec ha (perp_foot_lies_on_line B l)
 
 theorem inner_vec_pt_pt_vec_pt_perp_foot_eq_dist_sq (ha : A LiesOn l) : inner (VEC A B) (VEC A (perp_foot B l)) = dist A (perp_foot B l) ^ 2 := sorry
@@ -197,7 +197,15 @@ lemma inner_vec_pt_pt_vec_perp_foot_perp_foot_eq_inner_vec_perp_foot_perp_foot :
 lemma inner_vec_pt_pt_dirLine_toDir_unitVec_eq_inner_vec_perp_foot_perp_foot : @inner ℝ _ _ (VEC A B) l.toDir.unitVec = inner (VEC (perp_foot A l) (perp_foot B l)) l.toDir.unitVec := sorry
 
 theorem inner_eq_ddist_perp_foot_perp_foot : inner (VEC A B) l.toDir.unitVec = l.ddist (perp_foot_lies_on_line A l) (perp_foot_lies_on_line B l) :=
-  inner_vec_pt_pt_dirLine_toDir_unitVec_eq_inner_vec_perp_foot_perp_foot
+  inner_vec_pt_pt_dirLine_toDir_unitVec_eq_inner_vec_perp_foot_perp_foot A B
+
+theorem perp_foot_eq_inner_smul_toDir_unitVec_vadd_perp_foot : perp_foot B l = (@inner ℝ _ _ (VEC A B) l.toDir.unitVec) • l.toDir.unitVec +ᵥ perp_foot A l := by
+  rw [inner_eq_ddist_perp_foot_perp_foot]
+  exact l.pt_eq_ddist_smul_toDir_unitVec_vadd (perp_foot_lies_on_line A l) (perp_foot_lies_on_line B l)
+
+theorem vec_perp_foot_perp_foot_eq_ddist_smul_toDir_unitVec : VEC (perp_foot A l) (perp_foot B l) = (@inner ℝ _ _ (VEC A B) l.toDir.unitVec) • l.toDir.unitVec := by
+  rw [inner_eq_ddist_perp_foot_perp_foot]
+  exact l.vec_eq_ddist_smul_toDir_unitVec (perp_foot_lies_on_line A l) (perp_foot_lies_on_line B l)
 
 theorem inner_vec_pt_pt_vec_perp_foot_perp_foot_eq_dist_sq : inner (VEC A B) (VEC (perp_foot A l) (perp_foot B l)) = dist (perp_foot A l) (perp_foot B l) ^ 2 := sorry
 

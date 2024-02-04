@@ -162,13 +162,16 @@ theorem suppl_isND_iff_isND : ang.suppl.IsND ↔ ang.IsND :=
   isND_iff_isND_of_add_eq_pi ang.suppl_value_add_value_eq_pi
 
 @[simp]
-theorem suppl_isAcu_iff_isObt : ang.suppl.IsAcu ↔ ang.IsObt := sorry
+theorem suppl_isAcu_iff_isObt : ang.suppl.IsAcu ↔ ang.IsObt :=
+  isAcu_iff_isObt_of_add_eq_pi ang.suppl_value_add_value_eq_pi
 
 @[simp]
-theorem suppl_isObt_iff_isAcu : ang.suppl.IsObt ↔ ang.IsAcu := sorry
+theorem suppl_isObt_iff_isAcu : ang.suppl.IsObt ↔ ang.IsAcu :=
+  isObt_iff_isAcu_of_add_eq_pi ang.suppl_value_add_value_eq_pi
 
 @[simp]
-theorem suppl_isRight_iff_isRight : ang.suppl.IsRight ↔ ang.IsRight := sorry
+theorem suppl_isRight_iff_isRight : ang.suppl.IsRight ↔ ang.IsRight :=
+  isRight_iff_isRight_of_add_eq_pi ang.suppl_value_add_value_eq_pi
 
 theorem suppl_start_ray : ang.suppl.start_ray = ang.end_ray := rfl
 
@@ -361,20 +364,23 @@ theorem IsAlternateIntAng.symm {ang₁ ang₂ : Angle P} (h : IsAlternateIntAng 
     rw [h.2]
     exact (ang₂.end_dirLine.rev_rev_eq_self).symm⟩
 
-theorem value_eq_of_isCorrespondingAng {ang₁ ang₂ : Angle P} (h : IsCorrespondingAng ang₁ ang₂) : ang₁.value = ang₂.value := by
-  apply value_eq_of_dir_eq
-  exact h.1
-  sorry
+theorem value_eq_of_isCorrespondingAng {ang₁ ang₂ : Angle P} (h : IsCorrespondingAng ang₁ ang₂) : ang₁.value = ang₂.value :=
+  value_eq_of_dir_eq h.1 (congrArg DirLine.toDir h.2)
 
-theorem dvalue_eq_of_isCorrespondingAng {ang₁ ang₂ : Angle P} (h : IsCorrespondingAng ang₁ ang₂) : ang₁.dvalue = ang₂.dvalue := sorry
+theorem dvalue_eq_of_isCorrespondingAng {ang₁ ang₂ : Angle P} (h : IsCorrespondingAng ang₁ ang₂) : ang₁.dvalue = ang₂.dvalue :=
+  dvalue_eq_of_dir_eq h.1 (congrArg DirLine.toDir h.2)
 
-theorem value_eq_value_add_pi_of_isConsecutiveIntAng {ang₁ ang₂ : Angle P} (h : IsConsecutiveIntAng ang₁ ang₂) : ang₁.value = ang₂.value + π := sorry --`first mod 2π, then discuss +-? `
+theorem value_eq_value_add_pi_of_isConsecutiveIntAng {ang₁ ang₂ : Angle P} (h : IsConsecutiveIntAng ang₁ ang₂) : ang₁.value = ang₂.value + π :=
+  value_eq_value_add_pi_of_dir_eq_neg_dir_of_dir_eq h.1 (congrArg DirLine.toDir h.2)
 
-theorem dvalue_eq_of_isConsecutiveIntAng {ang₁ ang₂ : Angle P} (h : IsConsecutiveIntAng ang₁ ang₂) : ang₁.dvalue = ang₂.dvalue := sorry --`first mod 2π, then discuss +-? `
+theorem dvalue_eq_of_isConsecutiveIntAng {ang₁ ang₂ : Angle P} (h : IsConsecutiveIntAng ang₁ ang₂) : ang₁.dvalue = ang₂.dvalue :=
+  dvalue_eq_dvalue_of_dir_eq_neg_dir_of_dir_eq h.1 (congrArg DirLine.toDir h.2)
 
-theorem value_eq_of_isAlternateIntAng {ang₁ ang₂ : Angle P} (h : IsAlternateIntAng ang₁ ang₂) : ang₁.value = ang₂.value := sorry
+theorem value_eq_of_isAlternateIntAng {ang₁ ang₂ : Angle P} (h : IsAlternateIntAng ang₁ ang₂) : ang₁.value = ang₂.value :=
+  value_eq_of_dir_eq_neg_dir h.1 (congrArg DirLine.toDir h.2)
 
-theorem dvalue_eq_of_isAlternateIntAng {ang₁ ang₂ : Angle P} (h : IsAlternateIntAng ang₁ ang₂) : ang₁.dvalue = ang₂.dvalue := sorry
+theorem dvalue_eq_of_isAlternateIntAng {ang₁ ang₂ : Angle P} (h : IsAlternateIntAng ang₁ ang₂) : ang₁.dvalue = ang₂.dvalue :=
+  dvalue_eq_of_dir_eq_neg_dir h.1 (congrArg DirLine.toDir h.2)
 
 /-
 -- equivlently, this will be much more lengthy

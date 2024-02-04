@@ -16,8 +16,6 @@ In this file, we define suitable coversion function between `ℝ⧸2π`,`ℝ⧸�
 
 noncomputable section
 
-attribute [ext] Complex.ext
-
 namespace EuclidGeom
 
 open AngValue Classical Real
@@ -1205,24 +1203,6 @@ end group_hom
 end double
 
 end AngDValue
-
-
-
-lemma _root_.Real.div_nat_le_self_of_nonnneg {a : ℝ} (n : ℕ) (h : 0 ≤ a) : a / n ≤ a := by
-  show a * (↑n)⁻¹ ≤ a
-  refine' mul_le_of_le_one_right h _
-  by_cases h : n = 0
-  · simp only [h, CharP.cast_eq_zero, inv_zero, zero_le_one]
-  exact inv_le_one (Nat.one_le_cast.mpr (Nat.one_le_iff_ne_zero.mpr h))
-
-lemma _root_.Real.div_nat_le_self_of_pos {a : ℝ} (n : ℕ) (h : 0 < a) : a / n ≤ a :=
-  a.div_nat_le_self_of_nonnneg n (le_of_lt h)
-
-lemma _root_.Real.div_nat_lt_self_of_pos_of_two_le {a : ℝ} {n : ℕ} (h : 0 < a) (hn : 2 ≤ n) : a / n < a :=
-  mul_lt_of_lt_one_right h (inv_lt_one (Nat.one_lt_cast.mpr hn))
-
-lemma _root_.Real.pi_div_nat_nonneg (n : ℕ) : 0 ≤ π / n :=
-  div_nonneg (le_of_lt pi_pos) (Nat.cast_nonneg n)
 
 
 
