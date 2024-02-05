@@ -737,7 +737,7 @@ def IsObt (θ : AngValue) : Prop := sbtw ∠[π / 2] θ ∠[- π / 2]
 
 /-- An angle is right if it is `- π / 2` or `π / 2`. -/
 @[pp_dot]
-def IsRight (θ : AngValue) : Prop := θ = ∠[- π / 2] ∨ θ = ∠[π / 2]
+def IsRt (θ : AngValue) : Prop := θ = ∠[- π / 2] ∨ θ = ∠[π / 2]
 
 section special_value
 -- Special values for π / 2 and - π / 2.
@@ -752,9 +752,9 @@ theorem pi_div_two_not_isObt : ¬ ∠[π / 2].IsObt := sbtw_irrefl_left
 theorem not_isObt_of_eq_pi_div_two (h : θ = ∠[π / 2]) : ¬ θ.IsObt :=
   (congrArg IsObt h).mpr_not pi_div_two_not_isObt
 
-theorem pi_div_two_isRight : ∠[π / 2].IsRight := .inr rfl
+theorem pi_div_two_isRt : ∠[π / 2].IsRt := .inr rfl
 
-theorem isRight_of_eq_pi_div_two (h : θ = ∠[π / 2]) : θ.IsRight := .inr h
+theorem isRt_of_eq_pi_div_two (h : θ = ∠[π / 2]) : θ.IsRt := .inr h
 
 theorem neg_pi_div_two_not_isAcu : ¬ ∠[- π / 2].IsAcu := sbtw_irrefl_left
 
@@ -766,16 +766,16 @@ theorem neg_pi_div_two_not_isObt : ¬ ∠[- π / 2].IsObt := sbtw_irrefl_right
 theorem not_isObt_of_eq_neg_pi_div_two (h : θ = ∠[- π / 2]) : ¬ θ.IsObt :=
   (congrArg IsObt h).mpr_not neg_pi_div_two_not_isObt
 
-theorem neg_pi_div_two_isRight : ∠[- π / 2].IsRight := .inl rfl
+theorem neg_pi_div_two_isRt : ∠[- π / 2].IsRt := .inl rfl
 
-theorem isRight_of_eq_neg_pi_div_two (h : θ = ∠[- π / 2]) : θ.IsRight := .inl h
+theorem isRt_of_eq_neg_pi_div_two (h : θ = ∠[- π / 2]) : θ.IsRt := .inl h
 
-theorem isRight_iff : θ.IsRight ↔ θ = ∠[π / 2] ∨ θ = ∠[- π / 2] := or_comm
+theorem isRt_iff : θ.IsRt ↔ θ = ∠[π / 2] ∨ θ = ∠[- π / 2] := or_comm
 
-theorem not_isRight_iff : ¬ θ.IsRight ↔ θ ≠ ∠[- π / 2] ∧ θ ≠ ∠[π / 2] := not_or
+theorem not_isRt_iff : ¬ θ.IsRt ↔ θ ≠ ∠[- π / 2] ∧ θ ≠ ∠[π / 2] := not_or
 
-theorem isRight_iff_coe : θ.IsRight ↔ (θ : AngDValue) = ∡[π / 2] :=
-  isRight_iff.trans (θ.coe_eq_pi_div_two_iff).symm
+theorem isRt_iff_coe : θ.IsRt ↔ (θ : AngDValue) = ∡[π / 2] :=
+  isRt_iff.trans (θ.coe_eq_pi_div_two_iff).symm
 
 end special_value
 
@@ -785,34 +785,34 @@ theorem not_isObt_of_isAcu (h : θ.IsAcu) : ¬ θ.IsObt := sbtw_asymm h
 
 theorem not_isAcu_of_isObt (h : θ.IsObt) : ¬ θ.IsAcu := sbtw_asymm h
 
-theorem not_isAcu_of_not_isRight (h : θ.IsRight) : ¬ θ.IsAcu :=
+theorem not_isAcu_of_not_isRt (h : θ.IsRt) : ¬ θ.IsAcu :=
   Or.casesOn h (fun h ↦ not_isAcu_of_eq_neg_pi_div_two h) (fun h ↦ not_isAcu_of_eq_pi_div_two h)
 
-theorem not_isObt_of_not_isRight (h : θ.IsRight) : ¬ θ.IsObt :=
+theorem not_isObt_of_not_isRt (h : θ.IsRt) : ¬ θ.IsObt :=
   Or.casesOn h (fun h ↦ not_isObt_of_eq_neg_pi_div_two h) (fun h ↦ not_isObt_of_eq_pi_div_two h)
 
-theorem not_isRight_of_isAcu (h : θ.IsAcu) : ¬ θ.IsRight :=
-  fun hr ↦ (not_isAcu_of_not_isRight hr) h
+theorem not_isRt_of_isAcu (h : θ.IsAcu) : ¬ θ.IsRt :=
+  fun hr ↦ (not_isAcu_of_not_isRt hr) h
 
-theorem not_isRight_of_isObt (h : θ.IsObt) : ¬ θ.IsRight :=
-  fun hr ↦ (not_isObt_of_not_isRight hr) h
+theorem not_isRt_of_isObt (h : θ.IsObt) : ¬ θ.IsRt :=
+  fun hr ↦ (not_isObt_of_not_isRt hr) h
 
-theorem isAcu_or_isNeg_of_isRight (h : ¬ θ.IsRight) : θ.IsAcu ∨ θ.IsObt := by
+theorem isAcu_or_isNeg_of_isRt (h : ¬ θ.IsRt) : θ.IsAcu ∨ θ.IsObt := by
   contrapose! h
   have h := (and_congr btw_iff_not_sbtw btw_iff_not_sbtw).mpr h.symm
   rcases btw_antisymm (btw_cyclic_right h.1) (btw_cyclic_left h.2) with h | h
   · exact (pi_div_two_ne_neg_pi_div_two h).elim
   · exact (or_congr_left eq_comm).mp h
 
-theorem not_isRight_or_isAcu_or_isNeg : θ.IsRight ∨ θ.IsAcu ∨ θ.IsObt :=
-  if h : θ.IsRight then .inl h else .inr (isAcu_or_isNeg_of_isRight h)
+theorem not_isRt_or_isAcu_or_isNeg : θ.IsRt ∨ θ.IsAcu ∨ θ.IsObt :=
+  if h : θ.IsRt then .inl h else .inr (isAcu_or_isNeg_of_isRt h)
 
-theorem isRight_or_isObt_of_not_isAcu (h : ¬ θ.IsAcu) : θ.IsRight ∨ θ.IsObt :=
-  Or.casesOn not_isRight_or_isAcu_or_isNeg (fun h ↦ .inl h) fun hn ↦
+theorem isRt_or_isObt_of_not_isAcu (h : ¬ θ.IsAcu) : θ.IsRt ∨ θ.IsObt :=
+  Or.casesOn not_isRt_or_isAcu_or_isNeg (fun h ↦ .inl h) fun hn ↦
     Or.casesOn hn (fun hp ↦ (h hp).elim) (fun h ↦ .inr h)
 
-theorem isRight_or_isAcu_of_not_isObt (h : ¬ θ.IsObt) : θ.IsRight ∨ θ.IsAcu :=
-  Or.casesOn not_isRight_or_isAcu_or_isNeg (fun h ↦ .inl h) fun hn ↦
+theorem isRt_or_isAcu_of_not_isObt (h : ¬ θ.IsObt) : θ.IsRt ∨ θ.IsAcu :=
+  Or.casesOn not_isRt_or_isAcu_or_isNeg (fun h ↦ .inl h) fun hn ↦
     Or.casesOn hn (fun h ↦ .inr h) (fun hp ↦ (h hp).elim)
 
 end trichotomy
@@ -846,11 +846,11 @@ theorem isObt_of_toReal_lt_neg_pi_div_two (h : θ.toReal < - π / 2) : θ.IsObt 
 
 theorem isObt_of_pi_div_two_lt_toReal (h : π / 2 < θ.toReal) : θ.IsObt := (θ.isObt_iff).mpr (.inr h)
 
-theorem isRight_iff' : θ.IsRight ↔ θ.toReal = - π / 2 ∨ θ.toReal = π / 2 :=
+theorem isRt_iff' : θ.IsRt ↔ θ.toReal = - π / 2 ∨ θ.toReal = π / 2 :=
   or_congr (θ.toReal_eq_neg_pi_div_two_iff).symm (θ.toReal_eq_pi_div_two_iff).symm
 
-theorem not_isRight_iff' : ¬ θ.IsRight ↔ θ.toReal ≠ - π / 2 ∧ θ.toReal ≠ π / 2 :=
-  (θ.isRight_iff').not.trans (not_or.trans Iff.rfl)
+theorem not_isRt_iff' : ¬ θ.IsRt ↔ θ.toReal ≠ - π / 2 ∧ θ.toReal ≠ π / 2 :=
+  (θ.isRt_iff').not.trans (not_or.trans Iff.rfl)
 
 theorem neg_pi_div_two_le_toReal_of_isAcu (h : θ.IsAcu) : - π / 2 ≤ θ.toReal :=
   (neg_pi_div_two_le_toReal_le_pi_div_two_iff_btw.mpr (btw_of_sbtw h)).1
@@ -868,8 +868,8 @@ theorem toReal_lt_pi_div_two_of_isAcu (h : θ.IsAcu) : θ.toReal < π / 2 :=
 
 theorem isAcu_iff : θ.IsAcu ↔ - π / 2 < θ.toReal ∧ θ.toReal < π / 2 := ⟨
   fun h ↦ ⟨neg_pi_div_two_lt_toReal_of_isAcu h, toReal_lt_pi_div_two_of_isAcu h⟩,
-  fun ⟨hn, hp⟩ ↦ (isRight_or_isAcu_of_not_isObt (not_isObt_iff.mpr ⟨le_of_lt hn, le_of_lt hp⟩)).casesOn
-    (fun h ↦ (not_isRight_iff'.mpr ⟨ne_of_gt hn, LT.lt.ne hp⟩ h).elim) id⟩
+  fun ⟨hn, hp⟩ ↦ (isRt_or_isAcu_of_not_isObt (not_isObt_iff.mpr ⟨le_of_lt hn, le_of_lt hp⟩)).casesOn
+    (fun h ↦ (not_isRt_iff'.mpr ⟨ne_of_gt hn, LT.lt.ne hp⟩ h).elim) id⟩
 
 theorem not_isAcu_iff : ¬ θ.IsAcu ↔ θ.toReal ≤ - π / 2 ∨ π / 2 ≤ θ.toReal :=
   (θ.isAcu_iff).not.trans (not_and_or.trans (or_congr not_lt not_lt))
@@ -884,11 +884,11 @@ theorem isAcu_iff_cos_pos : θ.IsAcu ↔ 0 < cos θ :=
 theorem isObt_iff_cos_neg : θ.IsObt ↔ cos θ < 0 :=
   (θ.isObt_iff).trans (θ.cos_neg_iff).symm
 
-theorem isRight_iff_cos_eq_zero : θ.IsRight ↔ cos θ = 0 :=
-  (θ.isRight_iff).trans (θ.cos_eq_zero_iff).symm
+theorem isRt_iff_cos_eq_zero : θ.IsRt ↔ cos θ = 0 :=
+  (θ.isRt_iff).trans (θ.cos_eq_zero_iff).symm
 
-theorem not_isRight_iff_cos_ne_zero : ¬ θ.IsRight ↔ cos θ ≠ 0 :=
-  (θ.isRight_iff_cos_eq_zero).not
+theorem not_isRt_iff_cos_ne_zero : ¬ θ.IsRt ↔ cos θ ≠ 0 :=
+  (θ.isRt_iff_cos_eq_zero).not
 
 end cos
 
@@ -899,7 +899,7 @@ theorem zero_isAcu : (0 : AngValue).IsAcu := by
 
 theorem zero_not_isObt : ¬ (0 : AngValue).IsObt := not_isObt_of_isAcu zero_isAcu
 
-theorem zero_not_isRight : ¬ (0 : AngValue).IsRight := not_isRight_of_isAcu zero_isAcu
+theorem zero_not_isRt : ¬ (0 : AngValue).IsRt := not_isRt_of_isAcu zero_isAcu
 
 theorem isAcu_of_eq_zero (h : θ = 0) : θ.IsAcu := by
   rw [h]
@@ -909,16 +909,16 @@ theorem not_isObt_of_eq_zero (h : θ = 0) : ¬ θ.IsObt := by
   rw [h]
   exact zero_not_isObt
 
-theorem not_isRight_of_eq_zero (h : θ = 0) : ¬ θ.IsRight := by
+theorem not_isRt_of_eq_zero (h : θ = 0) : ¬ θ.IsRt := by
   rw [h]
-  exact zero_not_isRight
+  exact zero_not_isRt
 
 theorem pi_isObt : ∠[π].IsObt := by
   simp only [isObt_iff_cos_neg, cos_coe, cos_pi, Left.neg_neg_iff, zero_lt_one]
 
 theorem pi_not_isAcu : ¬ ∠[π].IsAcu := not_isAcu_of_isObt pi_isObt
 
-theorem pi_not_isRight : ¬ ∠[π].IsRight := not_isRight_of_isObt pi_isObt
+theorem pi_not_isRt : ¬ ∠[π].IsRt := not_isRt_of_isObt pi_isObt
 
 theorem isAcu_of_eq_pi (h : θ = π) : θ.IsObt := by
   rw [h]
@@ -928,9 +928,9 @@ theorem not_isAcu_of_eq_pi (h : θ = π) : ¬ θ.IsAcu := by
   rw [h]
   exact pi_not_isAcu
 
-theorem not_isRight_of_eq_pi (h : θ = π) : ¬ θ.IsRight := by
+theorem not_isRt_of_eq_pi (h : θ = π) : ¬ θ.IsRt := by
   rw [h]
-  exact pi_not_isRight
+  exact pi_not_isRt
 
 end zero_pi
 
@@ -945,8 +945,8 @@ theorem neg_isObt_iff_isObt : (- θ).IsObt ↔ θ.IsObt := by
   simp only [isObt_iff_cos_neg, cos_neg]
 
 @[simp]
-theorem neg_isRight_iff_isRight : (- θ).IsRight ↔ θ.IsRight := by
-  simp only [isRight_iff_cos_eq_zero, cos_neg]
+theorem neg_isRt_iff_isRt : (- θ).IsRt ↔ θ.IsRt := by
+  simp only [isRt_iff_cos_eq_zero, cos_neg]
 
 end neg
 
@@ -961,8 +961,8 @@ theorem add_pi_isObt_iff_isAcu : (θ + π).IsObt ↔ θ.IsAcu := by
   rw [isAcu_iff_cos_pos, isObt_iff_cos_neg, cos_add_pi, Left.neg_neg_iff]
 
 @[simp]
-theorem add_pi_isRight_iff_isRight : (θ + π).IsRight ↔ θ.IsRight := by
-  simp only [isRight_iff_cos_eq_zero, cos_add_pi, neg_eq_zero]
+theorem add_pi_isRt_iff_isRt : (θ + π).IsRt ↔ θ.IsRt := by
+  simp only [isRt_iff_cos_eq_zero, cos_add_pi, neg_eq_zero]
 
 theorem ne_add_pi_of_isAcu (hs : θ.IsAcu) (hp : ψ.IsAcu) : θ ≠ ψ + π :=
   fun h ↦ not_isObt_of_isAcu hp (add_pi_isAcu_iff_isObt.mp (cast (congrArg IsAcu h) hs))
@@ -995,8 +995,8 @@ theorem pi_sub_isObt_iff_isAcu : (π - θ).IsObt ↔ θ.IsAcu := by
   rw [isAcu_iff_cos_pos, isObt_iff_cos_neg, cos_pi_sub, Left.neg_neg_iff]
 
 @[simp]
-theorem pi_sub_isRight_iff_isRight : (π - θ).IsRight ↔ θ.IsRight := by
-  rw [isRight_iff_cos_eq_zero, isRight_iff_cos_eq_zero, cos_pi_sub, neg_eq_zero]
+theorem pi_sub_isRt_iff_isRt : (π - θ).IsRt ↔ θ.IsRt := by
+  rw [isRt_iff_cos_eq_zero, isRt_iff_cos_eq_zero, cos_pi_sub, neg_eq_zero]
 
 theorem add_ne_pi_of_isAcu (hs : θ.IsAcu) (hp : ψ.IsAcu) : θ + ψ ≠ π :=
   fun h ↦ not_isObt_of_isAcu hp (pi_sub_isAcu_iff_isObt.mp (cast (congrArg IsAcu (eq_sub_of_add_eq h)) hs))
@@ -1012,9 +1012,9 @@ theorem isObt_iff_isAcu_of_add_eq_pi (h : θ + ψ = π) : θ.IsObt ↔ ψ.IsAcu 
   rw [eq_sub_of_add_eq h]
   exact ψ.pi_sub_isObt_iff_isAcu
 
-theorem isRight_iff_isRight_of_add_eq_pi (h : θ + ψ = π) : θ.IsRight ↔ ψ.IsRight := by
+theorem isRt_iff_isRt_of_add_eq_pi (h : θ + ψ = π) : θ.IsRt ↔ ψ.IsRt := by
   rw [eq_sub_of_add_eq h]
-  exact ψ.pi_sub_isRight_iff_isRight
+  exact ψ.pi_sub_isRt_iff_isRt
 
 end pi_sub
 
@@ -1026,11 +1026,11 @@ theorem add_pi_div_two_isPos_iff_isAcu : (θ + ∠[π / 2]).IsPos ↔ θ.IsAcu :
 theorem add_pi_div_two_isNeg_iff_isObt : (θ + ∠[π / 2]).IsNeg ↔ θ.IsObt := by
   rw [isNeg_iff_sin_neg, isObt_iff_cos_neg, sin_add_pi_div_two]
 
-theorem add_pi_div_two_not_isND_iff_isRight : ¬ (θ + ∠[π / 2]).IsND ↔ θ.IsRight := by
-  rw [not_isND_iff_sin_eq_zero, isRight_iff_cos_eq_zero, sin_add_pi_div_two]
+theorem add_pi_div_two_not_isND_iff_isRt : ¬ (θ + ∠[π / 2]).IsND ↔ θ.IsRt := by
+  rw [not_isND_iff_sin_eq_zero, isRt_iff_cos_eq_zero, sin_add_pi_div_two]
 
-theorem add_pi_div_two_isND_iff_not_isRight : (θ + ∠[π / 2]).IsND ↔ ¬ θ.IsRight := by
-  rw [isND_iff_sin_ne_zero, isRight_iff_cos_eq_zero, sin_add_pi_div_two]
+theorem add_pi_div_two_isND_iff_not_isRt : (θ + ∠[π / 2]).IsND ↔ ¬ θ.IsRt := by
+  rw [isND_iff_sin_ne_zero, isRt_iff_cos_eq_zero, sin_add_pi_div_two]
 
 theorem add_pi_div_two_isAcu_iff_isNeg : (θ + ∠[π / 2]).IsAcu ↔ θ.IsNeg := by
   rw [isNeg_iff_sin_neg, isAcu_iff_cos_pos, cos_add_pi_div_two, Left.neg_pos_iff]
@@ -1038,11 +1038,11 @@ theorem add_pi_div_two_isAcu_iff_isNeg : (θ + ∠[π / 2]).IsAcu ↔ θ.IsNeg :
 theorem add_pi_div_two_isObt_iff_isPos : (θ + ∠[π / 2]).IsObt ↔ θ.IsPos := by
   rw [isPos_iff_sin_pos, isObt_iff_cos_neg, cos_add_pi_div_two, Left.neg_neg_iff]
 
-theorem add_pi_div_two_isRight_iff_not_isND : (θ + ∠[π / 2]).IsRight ↔ ¬ θ.IsND := by
-  rw [not_isND_iff_sin_eq_zero, isRight_iff_cos_eq_zero, cos_add_pi_div_two, neg_eq_zero]
+theorem add_pi_div_two_isRt_iff_not_isND : (θ + ∠[π / 2]).IsRt ↔ ¬ θ.IsND := by
+  rw [not_isND_iff_sin_eq_zero, isRt_iff_cos_eq_zero, cos_add_pi_div_two, neg_eq_zero]
 
-theorem add_pi_div_two_not_isRight_iff_isND : ¬ (θ + ∠[π / 2]).IsRight ↔ θ.IsND := by
-  rw [isND_iff_sin_ne_zero, isRight_iff_cos_eq_zero, cos_add_pi_div_two, neg_eq_zero]
+theorem add_pi_div_two_not_isRt_iff_isND : ¬ (θ + ∠[π / 2]).IsRt ↔ θ.IsND := by
+  rw [isND_iff_sin_ne_zero, isRt_iff_cos_eq_zero, cos_add_pi_div_two, neg_eq_zero]
 
 theorem sub_pi_div_two_isPos_iff_isObt : (θ - ∠[π / 2]).IsPos ↔ θ.IsObt := by
   rw [isPos_iff_sin_pos, isObt_iff_cos_neg, sin_sub_pi_div_two, Left.neg_pos_iff]
@@ -1050,11 +1050,11 @@ theorem sub_pi_div_two_isPos_iff_isObt : (θ - ∠[π / 2]).IsPos ↔ θ.IsObt :
 theorem sub_pi_div_two_isNeg_iff_isAcu : (θ - ∠[π / 2]).IsNeg ↔ θ.IsAcu := by
   rw [isNeg_iff_sin_neg, isAcu_iff_cos_pos, sin_sub_pi_div_two, Left.neg_neg_iff]
 
-theorem sub_pi_div_two_not_isND_iff_isRight : ¬ (θ - ∠[π / 2]).IsND ↔ θ.IsRight := by
-  rw [not_isND_iff_sin_eq_zero, isRight_iff_cos_eq_zero, sin_sub_pi_div_two, neg_eq_zero]
+theorem sub_pi_div_two_not_isND_iff_isRt : ¬ (θ - ∠[π / 2]).IsND ↔ θ.IsRt := by
+  rw [not_isND_iff_sin_eq_zero, isRt_iff_cos_eq_zero, sin_sub_pi_div_two, neg_eq_zero]
 
-theorem sub_pi_div_two_isND_iff_not_isRight : (θ - ∠[π / 2]).IsND ↔ ¬ θ.IsRight := by
-  rw [isND_iff_sin_ne_zero, not_isRight_iff_cos_ne_zero, sin_sub_pi_div_two, ne_eq, neg_eq_zero]
+theorem sub_pi_div_two_isND_iff_not_isRt : (θ - ∠[π / 2]).IsND ↔ ¬ θ.IsRt := by
+  rw [isND_iff_sin_ne_zero, not_isRt_iff_cos_ne_zero, sin_sub_pi_div_two, ne_eq, neg_eq_zero]
 
 theorem sub_pi_div_two_isAcu_iff_isPos : (θ - ∠[π / 2]).IsAcu ↔ θ.IsPos := by
   rw [isPos_iff_sin_pos, isAcu_iff_cos_pos, cos_sub_pi_div_two]
@@ -1062,11 +1062,11 @@ theorem sub_pi_div_two_isAcu_iff_isPos : (θ - ∠[π / 2]).IsAcu ↔ θ.IsPos :
 theorem sub_pi_div_two_isObt_iff_isNeg : (θ - ∠[π / 2]).IsObt ↔ θ.IsNeg := by
   rw [isNeg_iff_sin_neg, isObt_iff_cos_neg, cos_sub_pi_div_two]
 
-theorem sub_pi_div_two_isRight_iff_not_isND : (θ - ∠[π / 2]).IsRight ↔ ¬ θ.IsND := by
-  rw [not_isND_iff_sin_eq_zero, isRight_iff_cos_eq_zero, cos_sub_pi_div_two]
+theorem sub_pi_div_two_isRt_iff_not_isND : (θ - ∠[π / 2]).IsRt ↔ ¬ θ.IsND := by
+  rw [not_isND_iff_sin_eq_zero, isRt_iff_cos_eq_zero, cos_sub_pi_div_two]
 
-theorem sub_pi_div_two_not_isRight_iff_isND : ¬ (θ - ∠[π / 2]).IsRight ↔ θ.IsND := by
-  rw [isND_iff_sin_ne_zero, isRight_iff_cos_eq_zero, cos_sub_pi_div_two]
+theorem sub_pi_div_two_not_isRt_iff_isND : ¬ (θ - ∠[π / 2]).IsRt ↔ θ.IsND := by
+  rw [isND_iff_sin_ne_zero, isRt_iff_cos_eq_zero, cos_sub_pi_div_two]
 
 theorem pi_div_two_sub_isPos_iff_isAcu : (∠[π / 2] - θ).IsPos ↔ θ.IsAcu := by
   rw [isPos_iff_sin_pos, isAcu_iff_cos_pos, sin_pi_div_two_sub]
@@ -1074,11 +1074,11 @@ theorem pi_div_two_sub_isPos_iff_isAcu : (∠[π / 2] - θ).IsPos ↔ θ.IsAcu :
 theorem pi_div_two_sub_isNeg_iff_isAcu : (∠[π / 2] - θ).IsNeg ↔ θ.IsObt := by
   rw [isNeg_iff_sin_neg, isObt_iff_cos_neg, sin_pi_div_two_sub]
 
-theorem pi_div_two_sub_not_isND_iff_isRight : ¬ (∠[π / 2] - θ).IsND ↔ θ.IsRight := by
-  rw [not_isND_iff_sin_eq_zero, isRight_iff_cos_eq_zero, sin_pi_div_two_sub]
+theorem pi_div_two_sub_not_isND_iff_isRt : ¬ (∠[π / 2] - θ).IsND ↔ θ.IsRt := by
+  rw [not_isND_iff_sin_eq_zero, isRt_iff_cos_eq_zero, sin_pi_div_two_sub]
 
-theorem pi_div_two_sub_isND_iff_not_isRight : (∠[π / 2] - θ).IsND ↔ ¬ θ.IsRight := by
-  rw [isND_iff_sin_ne_zero, isRight_iff_cos_eq_zero, sin_pi_div_two_sub]
+theorem pi_div_two_sub_isND_iff_not_isRt : (∠[π / 2] - θ).IsND ↔ ¬ θ.IsRt := by
+  rw [isND_iff_sin_ne_zero, isRt_iff_cos_eq_zero, sin_pi_div_two_sub]
 
 theorem pi_div_two_sub_isAcu_iff_isPos : (∠[π / 2] - θ).IsAcu ↔ θ.IsPos := by
   rw [isPos_iff_sin_pos, isAcu_iff_cos_pos, cos_pi_div_two_sub]
@@ -1086,16 +1086,16 @@ theorem pi_div_two_sub_isAcu_iff_isPos : (∠[π / 2] - θ).IsAcu ↔ θ.IsPos :
 theorem pi_div_two_sub_isObt_iff_isNeg : (∠[π / 2] - θ).IsObt ↔ θ.IsNeg := by
   rw [isNeg_iff_sin_neg, isObt_iff_cos_neg, cos_pi_div_two_sub]
 
-theorem pi_div_two_sub_isRight_iff_not_isND : (∠[π / 2] - θ).IsRight ↔ ¬ θ.IsND := by
-  rw [not_isND_iff_sin_eq_zero, isRight_iff_cos_eq_zero, cos_pi_div_two_sub]
+theorem pi_div_two_sub_isRt_iff_not_isND : (∠[π / 2] - θ).IsRt ↔ ¬ θ.IsND := by
+  rw [not_isND_iff_sin_eq_zero, isRt_iff_cos_eq_zero, cos_pi_div_two_sub]
 
-theorem pi_div_two_sub_not_isRight_iff_isND : ¬ (∠[π / 2] - θ).IsRight ↔ θ.IsND := by
-  rw [isND_iff_sin_ne_zero, isRight_iff_cos_eq_zero, cos_pi_div_two_sub]
+theorem pi_div_two_sub_not_isRt_iff_isND : ¬ (∠[π / 2] - θ).IsRt ↔ θ.IsND := by
+  rw [isND_iff_sin_ne_zero, isRt_iff_cos_eq_zero, cos_pi_div_two_sub]
 
-theorem eq_pi_div_two_of_isRight_of_isPos (hr : θ.IsRight) (h : ¬ θ.IsNeg) : θ = ∠[π / 2] :=
+theorem eq_pi_div_two_of_isRt_of_isPos (hr : θ.IsRt) (h : ¬ θ.IsNeg) : θ = ∠[π / 2] :=
   hr.casesOn (fun hr ↦ (h (isNeg_of_eq_neg_pi_div_two hr)).elim) id
 
-theorem eq_neg_pi_div_two_of_isRight_of_isNeg (hr : θ.IsRight) (h : ¬ θ.IsPos) : θ = ∠[- π / 2] :=
+theorem eq_neg_pi_div_two_of_isRt_of_isNeg (hr : θ.IsRt) (h : ¬ θ.IsPos) : θ = ∠[- π / 2] :=
   hr.casesOn id (fun hr ↦ (h (isPos_of_eq_pi_div_two hr)).elim)
 
 theorem eq_zero_of_not_isND_of_isAcu (hr : ¬ θ.IsND) (h : θ.IsAcu) : θ = 0 :=
@@ -1394,17 +1394,17 @@ theorem coe_abs_isObt_iff_isObt : ∠[θ.abs].IsObt ↔ θ.IsObt := by
   rw [h]
   exact neg_isObt_iff_isObt
 
-theorem coe_abs_isRight_iff_isRight : ∠[θ.abs].IsRight ↔ θ.IsRight :=  by
-  refine' Or.casesOn coe_abs_eq_self_or_neg (fun h ↦ iff_of_eq (congrArg IsRight h)) fun h ↦ _
+theorem coe_abs_isRt_iff_isRt : ∠[θ.abs].IsRt ↔ θ.IsRt :=  by
+  refine' Or.casesOn coe_abs_eq_self_or_neg (fun h ↦ iff_of_eq (congrArg IsRt h)) fun h ↦ _
   rw [h]
-  exact neg_isRight_iff_isRight
+  exact neg_isRt_iff_isRt
 
-theorem isRight_iff_abs_eq_pi_div_two : θ.IsRight ↔ θ.abs = π / 2 := by
+theorem isRt_iff_abs_eq_pi_div_two : θ.IsRt ↔ θ.abs = π / 2 := by
   refine' ⟨fun h ↦ h.casesOn (fun h ↦ abs_eq_pi_div_two_of_eq_neg_pi_div_two h)
     (fun h ↦ abs_eq_pi_div_two_of_eq_pi_div_two h),
-    fun h ↦ (eq_coe_or_neg_coe_of_abs_eq h).casesOn (fun h ↦ isRight_of_eq_pi_div_two h) fun h ↦ _⟩
+    fun h ↦ (eq_coe_or_neg_coe_of_abs_eq h).casesOn (fun h ↦ isRt_of_eq_pi_div_two h) fun h ↦ _⟩
   rw [neg_coe_pi_div_two] at h
-  exact isRight_of_eq_neg_pi_div_two h
+  exact isRt_of_eq_neg_pi_div_two h
 
 theorem isAcu_iff_abs_lt_pi_div_two : θ.IsAcu ↔ θ.abs < π / 2 := by
   refine' (θ.isAcu_iff).trans _
@@ -1431,6 +1431,12 @@ theorem abs_lt_of_isAcu_of_isObt (hs : θ.IsAcu) (hp : ψ.IsObt) : θ.abs < ψ.a
 
 theorem abs_le_of_not_isObt_of_not_isAcu (hs : ¬ θ.IsObt) (hp : ¬ ψ.IsAcu) : θ.abs ≤ ψ.abs :=
   (not_isObt_iff_abs_le_pi_div_two.mp hs).trans (not_isAcu_iff_pi_div_two_le_abs.mp hp)
+
+theorem abs_eq_of_isRt (hs : θ.IsRt) (hp : ψ.IsRt) : θ.abs = ψ.abs :=
+  ((θ.isRt_iff_abs_eq_pi_div_two).mp hs).trans ((ψ.isRt_iff_abs_eq_pi_div_two).mp hp).symm
+
+theorem eq_or_eq_neg_of_isRt (hs : θ.IsRt) (hp : ψ.IsRt) : θ = ψ ∨ θ = - ψ :=
+  abs_eq_iff.mp (abs_eq_of_isRt hs hp)
 
 end acute_obtuse
 

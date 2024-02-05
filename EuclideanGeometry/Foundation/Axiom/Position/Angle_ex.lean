@@ -73,8 +73,8 @@ theorem oppo_isObt_iff_isObt : ang.oppo.IsObt ↔ ang.IsObt :=
   iff_of_eq (congrArg AngValue.IsObt ang.oppo_value_eq_value)
 
 @[simp]
-theorem oppo_isRight_iff_isRight : ang.oppo.IsRight ↔ ang.IsRight :=
-  iff_of_eq (congrArg AngValue.IsRight ang.oppo_value_eq_value)
+theorem oppo_isRt_iff_isRt : ang.oppo.IsRt ↔ ang.IsRt :=
+  iff_of_eq (congrArg AngValue.IsRt ang.oppo_value_eq_value)
 
 theorem oppo_start_ray : ang.oppo.start_ray = ang.start_ray.reverse := rfl
 
@@ -170,8 +170,8 @@ theorem suppl_isObt_iff_isAcu : ang.suppl.IsObt ↔ ang.IsAcu :=
   isObt_iff_isAcu_of_add_eq_pi ang.suppl_value_add_value_eq_pi
 
 @[simp]
-theorem suppl_isRight_iff_isRight : ang.suppl.IsRight ↔ ang.IsRight :=
-  isRight_iff_isRight_of_add_eq_pi ang.suppl_value_add_value_eq_pi
+theorem suppl_isRt_iff_isRt : ang.suppl.IsRt ↔ ang.IsRt :=
+  isRt_iff_isRt_of_add_eq_pi ang.suppl_value_add_value_eq_pi
 
 theorem suppl_start_ray : ang.suppl.start_ray = ang.end_ray := rfl
 
@@ -276,10 +276,10 @@ theorem rev_isObt_iff_isObt : ang.reverse.IsObt ↔ ang.IsObt := by
   exact neg_isObt_iff_isObt
 
 @[simp]
-theorem rev_isRight_iff_isRight : ang.reverse.IsRight ↔ ang.IsRight := by
-  unfold IsRight
+theorem rev_isRt_iff_isRt : ang.reverse.IsRt ↔ ang.IsRt := by
+  unfold IsRt
   rw [rev_value_eq_neg_value]
-  exact neg_isRight_iff_isRight
+  exact neg_isRt_iff_isRt
 
 theorem rev_start_ray : ang.reverse.start_ray = ang.end_ray := rfl
 

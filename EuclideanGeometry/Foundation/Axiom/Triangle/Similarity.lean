@@ -143,6 +143,9 @@ theorem perm_asim (h : IsASim tr₁ tr₂) : IsASim (perm_vertices tr₁) (perm_
   angle₂ := h.3
   angle₃ := h.1
 
+theorem asim_iff_perm_asim : IsASim tr₁ tr₂ ↔ IsASim (perm_vertices tr₁) (perm_vertices tr₂) :=
+  ⟨fun h ↦ h.perm_asim, fun h ↦ h.perm_asim.perm_asim⟩
+
 theorem ratio₁ : h.ratio = tr₁.edge₁.length / tr₂.edge₁.length := rfl
 
 theorem ratio₂ : h.ratio = tr₁.edge₂.length / tr₂.edge₂.length := by

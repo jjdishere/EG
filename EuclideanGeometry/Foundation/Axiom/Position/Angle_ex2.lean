@@ -167,10 +167,10 @@ theorem perp_foot_lies_int_start_ray_iff_isAcu {A O B : P} [PtNe A O] [PtNe B O]
   rw [real_inner_smul_right, real_inner_comm]
   exact mul_pos_iff_of_pos_left (inv_pos.mpr (VEC_nd O A).norm_pos)
 
-theorem perp_foot_eq_source_iff_isRight {A O B : P} [PtNe A O] [PtNe B O] : (perp_foot B (LIN O A)) = O ↔ (ANG A O B).IsRight := by
+theorem perp_foot_eq_source_iff_isRt {A O B : P} [PtNe A O] [PtNe B O] : (perp_foot B (LIN O A)) = O ↔ (ANG A O B).IsRt := by
   refine' ((RAY O A).eq_source_iff_eq_zero_of_vec_eq_smul_toDir
     (vec_pt_perp_foot_eq_ddist_smul_toDir_unitVec O B (@DirLine.fst_pt_lies_on_mk_pt_pt P _ O A _))).trans
-      (Iff.trans _ (inner_eq_zero_iff_isRight A O B))
+      (Iff.trans _ (inner_eq_zero_iff_isRt A O B))
   show inner (VEC O B) (‖VEC O A‖⁻¹ • (VEC O A)) = 0 ↔ inner (VEC O A) (VEC O B) = 0
   rw [real_inner_smul_right, real_inner_comm]
   exact smul_eq_zero_iff_right (ne_of_gt (inv_pos.mpr (VEC_nd O A).norm_pos))

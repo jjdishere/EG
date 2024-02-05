@@ -99,7 +99,7 @@ abbrev IsAcu : Prop := ang.value.IsAcu
 abbrev IsObt : Prop := ang.value.IsObt
 
 @[pp_dot]
-abbrev IsRight : Prop := ang.value.IsRight
+abbrev IsRt : Prop := ang.value.IsRt
 
 end Angle
 
@@ -687,11 +687,11 @@ theorem dir_perp_iff_dvalue_eq_pi_div_two : ang.dir₁ ⟂ ang.dir₂ ↔ ang.dv
 theorem line_pt_pt_perp_iff_dvalue_eq_pi_div_two : LIN O A ⟂ LIN O B ↔ (ANG A O B).dvalue = ∡[π / 2] :=
   (ANG A O B).dir_perp_iff_dvalue_eq_pi_div_two
 
-theorem dir_perp_iff_isRight : ang.dir₁ ⟂ ang.dir₂ ↔ ang.IsRight :=
-  dir_perp_iff_dvalue_eq_pi_div_two.trans isRight_iff_coe.symm
+theorem dir_perp_iff_isRt : ang.dir₁ ⟂ ang.dir₂ ↔ ang.IsRt :=
+  dir_perp_iff_dvalue_eq_pi_div_two.trans isRt_iff_coe.symm
 
-theorem line_pt_pt_perp_iff_isRight : LIN O A ⟂ LIN O B ↔ (ANG A O B).IsRight :=
-  (ANG A O B).dir_perp_iff_isRight
+theorem line_pt_pt_perp_iff_isRt : LIN O A ⟂ LIN O B ↔ (ANG A O B).IsRt :=
+  (ANG A O B).dir_perp_iff_isRt
 
 theorem value_eq_pi_of_lies_int_seg_nd {A B C : P} [PtNe C A] (h : B LiesInt (SEG_nd A C)) : ∠ A B C h.2.symm h.3.symm = π :=
   value_eq_pi_of_eq_neg_dir ((SEG_nd A C).toDir_eq_neg_toDir_of_lies_int h)
@@ -737,11 +737,11 @@ theorem cos_pos_iff_isAcu : 0 < cos ang.value ↔ ang.IsAcu :=
 theorem cos_neg_iff_isObt : cos ang.value < 0 ↔ ang.IsObt :=
   isObt_iff_cos_neg.symm
 
-theorem cos_ne_zero_iff_not_isRight : cos ang.value ≠ 0 ↔ ¬ ang.IsRight :=
-  not_isRight_iff_cos_ne_zero.symm
+theorem cos_ne_zero_iff_not_isRt : cos ang.value ≠ 0 ↔ ¬ ang.IsRt :=
+  not_isRt_iff_cos_ne_zero.symm
 
-theorem cos_eq_zero_iff_isRight : cos ang.value = 0 ↔ ang.IsRight :=
-  isRight_iff_cos_eq_zero.symm
+theorem cos_eq_zero_iff_isRt : cos ang.value = 0 ↔ ang.IsRt :=
+  isRt_iff_cos_eq_zero.symm
 
 end sin_cos
 
@@ -760,9 +760,9 @@ theorem inner_pos_iff_isAcu : 0 < @inner ℝ _ _ (VEC O A) (VEC O B) ↔ (∠ A 
   exact (mul_pos_iff_of_pos_left (Real.mul_pos (SEG_nd O A).length_pos (SEG_nd O B).length_pos)).trans
     ((∠ A O B).isAcu_iff_cos_pos).symm
 
-theorem inner_eq_zero_iff_isRight : @inner ℝ _ _ (VEC O A) (VEC O B) = 0 ↔ (∠ A O B).IsRight := by
+theorem inner_eq_zero_iff_isRt : @inner ℝ _ _ (VEC O A) (VEC O B) = 0 ↔ (∠ A O B).IsRt := by
   rw [inner_eq_dist_mul_cos A O B]
-  refine' Iff.trans _ ((∠ A O B).isRight_iff_cos_eq_zero).symm
+  refine' Iff.trans _ ((∠ A O B).isRt_iff_cos_eq_zero).symm
   exact smul_eq_zero_iff_right (ne_of_gt (Real.mul_pos (SEG_nd O A).length_pos (SEG_nd O B).length_pos))
 
 theorem inner_neg_iff_isObt : @inner ℝ _ _ (VEC O A) (VEC O B) < 0 ↔ (∠ A O B).IsObt :=by
