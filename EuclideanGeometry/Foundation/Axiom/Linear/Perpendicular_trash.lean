@@ -8,4 +8,6 @@ open Line
 
 variable {P : Type*} [EuclideanPlane P]
 
+theorem perp_foot_unique' {A B : P} {l : Line P} (h : B LiesOn l) [_hne : PtNe A B] (hp : LIN A B ⟂ l) : perp_foot A l = B := sorry
+
 end EuclidGeom
