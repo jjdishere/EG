@@ -182,4 +182,14 @@ theorem Orthocenter_on_all_height (tr : TriangleND P) :
         unfold Height_Line₃
         apply lies_on_perp tr.1.3 (Orthocenter tr) (LIN tr.1.1 tr.1.2) (Ne.symm eq) this
 
+-- then we prove certain properties orthocenter has.
+
+-- orthocenter remains still under permutation
+theorem perm_orthocenter {tr : TriangleND P} :
+    Orthocenter tr.perm_vertices = Orthocenter tr := sorry
+
+-- the uniqueness of orthocenter
+theorem Orthocenter_iff_Is_Orthocenter (tr : TriangleND P) (H : P) :
+  Is_Orthocenter tr H ↔ H = Orthocenter tr := sorry
+
 end EuclidGeom
