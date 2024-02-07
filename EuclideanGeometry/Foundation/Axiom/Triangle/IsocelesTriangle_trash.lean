@@ -21,7 +21,9 @@ theorem perp_foot_eq_midpt_of_is_isoceles {A B C : P} (not_collinear_ABC : ¬ Co
   haveI h2: PtNe C B := ⟨(ne_of_not_collinear not_collinear_ABC).1⟩
   have D_int_BC : D LiesInt (SEG B C) := by sorry
   have D_on_line_BC : D LiesOn (LIN B C) := by sorry
+  have DB_eq_DC : (SEG D B).length = (SEG D C).length := by sorry
   apply perp_foot_unique'
   exact D_on_line_BC
+  show LIN A D ⟂ LIN B C
   sorry
 end EuclidGeom
