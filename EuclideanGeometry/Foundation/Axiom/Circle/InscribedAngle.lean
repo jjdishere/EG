@@ -145,7 +145,7 @@ theorem Circle.iangle_of_diameter_eq_mod_pi {ω : Circle P} {s : Chord P ω} {an
   · rw [← h]
   unfold dvalue
   rw [h, neg_div]
-  simp
+  simp only [coe_neg, AngDValue.coe_neg, AngDValue.neg_coe_pi_div_two]
 
 theorem Arc.iangle_invariant_mod_pi {ω : Circle P} {β : Arc P ω} {ang₁ ang₂ : Angle P} (h₁ : β.IsIangle ang₁) (h₂ : β.IsIangle ang₂) : ang₁.dvalue = ang₂.dvalue := by
   have : 2 • ang₁.value = 2 • ang₂.value := by
@@ -156,6 +156,18 @@ theorem Chord.iangle_invariant_mod_pi {ω : Circle P} {s : Chord P ω} {ang₁ a
   have : 2 • ang₁.value = 2 • ang₂.value := by
     rw [← cangle_eq_two_times_inscribed_angle h₁, ← cangle_eq_two_times_inscribed_angle h₂]
   apply coe_eq_coe_iff_two_nsmul_eq.mpr this
+
+theorem Circle.dvalue_eq_of_lies_on {ω : Circle P} {A B C D : P} [_hca : PtNe C A] [_hda : PtNe D A] [_hcb : PtNe C B] [_hdb : PtNe D B] (ha : A LiesOn ω) (hb : B LiesOn ω) (hc : C LiesOn ω) (hd : D LiesOn ω) : ∡ A C B = ∡ A D B := by
+  by_cases h : B = A
+  · simp only [h, pt_pt_pt_dvalue_eq_zero_of_same_pt]
+  · haveI : PtNe B A := ⟨h⟩
+    haveI : PtNe (ARC ha hb).source (ANG A C B).source := _hca.symm
+    haveI : PtNe (ARC ha hb).target (ANG A C B).source := _hcb.symm
+    haveI : PtNe (ARC ha hb).source (ANG A D B).source := _hda.symm
+    haveI : PtNe (ARC ha hb).target (ANG A D B).source := _hdb.symm
+    apply (ARC ha hb).iangle_invariant_mod_pi
+    · exact ⟨hc, ⟨_hca.1, _hcb.1⟩, Ray.snd_pt_lies_on_mk_pt_pt, Ray.snd_pt_lies_on_mk_pt_pt⟩
+    · exact ⟨hd, ⟨_hda.1, _hdb.1⟩, Ray.snd_pt_lies_on_mk_pt_pt, Ray.snd_pt_lies_on_mk_pt_pt⟩
 
 end iangle
 

@@ -726,11 +726,11 @@ theorem ray_subset_line {r : Ray P} {l : Line P} (h : r.toLine = l) : r.carrier 
   exact r.subset_toLine
 
 /-- Given a point $A$ lying on a nondegenerate segment $s$, the point $A$ also lies on the line associated to $s$. -/
-theorem seg_lies_on_line {s : SegND P} {A : P} (h : A LiesOn s) : A LiesOn s.toLine :=
+theorem SegND.lies_on_toLine {s : SegND P} {A : P} (h : A LiesOn s) : A LiesOn s.toLine :=
   Set.mem_of_subset_of_mem (ray_subset_line rfl) (SegND.lies_on_toRay_of_lies_on h)
 
 /-- The underlying set of a nondegenerate segment $s$ is a subset of the underlying set of the line associated to $s$. -/
-theorem SegND.subset_toLine {s : SegND P} : s.carrier ⊆ s.toLine.carrier := fun _ ↦ seg_lies_on_line
+theorem SegND.subset_toLine {s : SegND P} : s.carrier ⊆ s.toLine.carrier := fun _ ↦ SegND.lies_on_toLine
 
 /-- The underlying set of a nondegenerate segment is a subset of the underlying set of the line associated to the segment. -/
 theorem seg_subset_line {s : SegND P} {l : Line P} (h : s.toLine = l) : s.carrier ⊆ l.carrier := by
@@ -854,7 +854,7 @@ theorem ray_subset_dirline {r : Ray P} {l : DirLine P} (h : r.toDirLine = l) : r
 
 /-- A point $A$ lying on a nondegenerate segment $s$ also lies on the directed line associated to $s$. -/
 theorem seg_lies_on_dirline {s : SegND P} {A : P} (h : A LiesOn s.1) : A LiesOn s.toDirLine :=
-  seg_lies_on_line h
+  SegND.lies_on_toLine h
 
 /-- The underlying set of a nondegenerate segment $s$ is a subset of the underlying set of the line associated to $s$. -/
 theorem SegND.subset_toDirLine {s : SegND P} : s.carrier ⊆ s.toDirLine.carrier := s.subset_toLine
@@ -1075,6 +1075,11 @@ theorem lies_on_line_of_pt_pt_iff_collinear {A B : P} [_h : PtNe B A] (X : P) : 
 /-- This theorem states that if $A$ and $B$ are two distinct points on a line $l$, then a point $C$ lies on $l$ if and only if $A$, $B$, and $C$ are collinear. -/
 theorem lies_on_iff_collinear_of_ne_lies_on_lies_on {A B : P} {l : Line P} [_h : PtNe B A] (ha : A LiesOn l) (hb : B LiesOn l) (C : P) : (C LiesOn l) ↔ Collinear A B C :=
   ⟨fun hc ↦ l.linear ha hb hc, fun c ↦ l.maximal ha hb c⟩
+
+theorem ne_pt_pt_of_not_collinear_of_lies_on {A B C : P} [_h : PtNe B A] {l : Line P} (hc : C LiesOn l) (h : ¬ Collinear A B C) : l ≠ LIN A B := by
+  contrapose! h
+  rw [h] at hc
+  exact (lies_on_line_of_pt_pt_iff_collinear C).mp hc
 
 end Line
 

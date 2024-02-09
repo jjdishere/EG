@@ -1447,6 +1447,8 @@ seg_nd.1.length + (SEG seg_nd.target A).length := by
     exact Seg.lies_on_of_lies_int h2
   rw [length_eq_length_add_length H1]
 
+theorem Seg.dist_lt_length_of_lies_int {s : Seg P} {A : P} (h : A LiesInt s) : dist s.source A < s.length := sorry
+
 end length
 
 section midpoint

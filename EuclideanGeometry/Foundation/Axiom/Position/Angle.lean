@@ -422,9 +422,6 @@ theorem neg_value_eq_rev_ang : - ∠ A O B ha hb = ∠ B O A hb ha :=
 theorem neg_value_of_rev_ang {A O B : P} [h₁ : PtNe A O] [h₂ : PtNe B O] : ∠ A O B = -∠ B O A :=
   (neg_value_eq_rev_ang h₂.1 h₁.1).symm
 
-theorem pt_pt_pt_value_eq_zero_of_same_pt (A O : P) [PtNe A O] : ∠ A O A = 0 :=
-  vsub_self (VEC_nd O A).toDir
-
 end pt_pt_pt
 
 section mk_ray_pt
@@ -610,6 +607,10 @@ theorem angDiff_eq_zero_of_same_dir {dir₁ dir₂ : Dir} (h : dir₁ = dir₂) 
 theorem same_dir_iff_value_eq_zero : ang.dir₁ = ang.dir₂ ↔ ang.value = 0 :=
   ⟨angDiff_eq_zero_of_same_dir, fun h ↦ (eq_of_vsub_eq_zero h).symm⟩
 
+@[simp]
+theorem pt_pt_pt_value_eq_zero_of_same_pt (A O : P) [PtNe A O] : ∠ A O A = 0 :=
+  vsub_self (VEC_nd O A).toDir
+
 theorem value_eq_pi_of_eq_neg_dir (h : ang.dir₁ = - ang.dir₂) : ang.value = π :=
   (eq_neg_of_vsub_eq_pi ang.dir₂ ang.dir₁).mp (by rw [h, neg_neg])
 
@@ -655,6 +656,10 @@ theorem same_proj_iff_dvalue_eq_zero : ang.proj₁ = ang.proj₂ ↔ ang.dvalue 
 
 theorem same_proj_iff_isND : ang.proj₁ = ang.proj₂ ↔ ¬ ang.IsND :=
   same_proj_iff_dvalue_eq_zero.trans not_isND_iff_coe.symm
+
+@[simp]
+theorem pt_pt_pt_dvalue_eq_zero_of_same_pt (A O : P) [PtNe A O] : ∡ A O A = 0 :=
+  vsub_self (VEC_nd O A).toProj
 
 theorem dvalue_eq_of_dir_eq (h₁ : ang₁.dir₁ = ang₂.dir₁) (h₂ : ang₁.dir₂ = ang₂.dir₂) : ang₁.dvalue = ang₂.dvalue := by
   simp only [dvalue_eq_vsub, toProj_eq_of_eq h₁, toProj_eq_of_eq h₂]
