@@ -35,4 +35,6 @@ theorem perp_foot_eq_midpt_of_is_isoceles {A B C : P} (not_collinear_ABC : ¬ Co
   exact D_on_line_BC
   show LIN A D ⟂ LIN B C
   sorry
+  sorry
+
 end EuclidGeom
