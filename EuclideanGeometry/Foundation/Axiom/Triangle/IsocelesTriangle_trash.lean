@@ -13,4 +13,6 @@ theorem ang_acute_of_is_isoceles {A B C : P} (h : ¬ Collinear A B C) (isoceles_
 
 theorem ang_acute_of_is_isoceles_variant {A B C : P} (h : ¬ Collinear A B C) (isoceles_ABC : (▵ A B C).IsIsoceles) : Angle.IsAcu (ANG A C B (ne_of_not_collinear h).2.1 (ne_of_not_collinear h).1.symm) := by sorry
 
+theorem midpt_eq_perp_foot_of_isIsoceles {A B C : P} [PtNe B C] (h : (▵ A B C).IsIsoceles) : (SEG B C).midpoint = perp_foot A (LIN B C) := sorry
+
 end EuclidGeom

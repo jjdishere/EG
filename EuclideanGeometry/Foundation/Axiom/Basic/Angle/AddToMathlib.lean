@@ -8,6 +8,7 @@ Maybe we can create some PRs to mathlib in the future.
 -/
 
 open Real Classical
+
 attribute [ext] Complex.ext
 
 /-!
@@ -979,6 +980,13 @@ theorem Real.div_nat_le_self_of_pos {a : ℝ} (n : ℕ) (h : 0 < a) : a / n ≤ 
 
 theorem Real.div_nat_lt_self_of_pos_of_two_le {a : ℝ} {n : ℕ} (h : 0 < a) (hn : 2 ≤ n) : a / n < a :=
   mul_lt_of_lt_one_right h (inv_lt_one (Nat.one_lt_cast.mpr hn))
+
+theorem Real.div_eq_div_of_div_eq_div {a b c d : ℝ} (hc : c ≠ 0) (hd : d ≠ 0) (h : a / b = c / d) : a / c = b / d := by
+  have hb : b ≠ 0 := by
+    intro hb
+    rw [hb, div_zero] at h
+    exact div_ne_zero hc hd h.symm
+  exact (div_eq_div_iff hc hd).mpr (((div_eq_div_iff hb hd).mp h).trans (mul_comm c b))
 
 theorem pi_div_nat_nonneg (n : ℕ) : 0 ≤ π / n :=
   div_nonneg (le_of_lt pi_pos) (Nat.cast_nonneg n)

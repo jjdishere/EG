@@ -565,6 +565,17 @@ theorem mk_start_dirLine_end_dirLine_eq_self_of_isND (h : ang.IsND): mk_dirline_
     (Eq.symm <| inx_of_line_eq_inx (start_dirLine_not_para_end_dirLine_of_value_ne_zero h)
       ⟨ang.source_lies_on_start_dirLine, ang.source_lies_on_end_dirLine⟩) rfl rfl
 
+theorem dvalue_eq_of_lies_on_line {A B : P} [PtNe A ang.source] [PtNe B ang.source] (ha : A LiesOn ang.start_ray.toLine) (hb : B LiesOn ang.end_ray.toLine) : ∡ A ang.source B = ang.dvalue := by
+  show (SEG_nd ang.1 B).toProj -ᵥ (SEG_nd ang.1 A).toProj = ang.dvalue
+  rw [ang.start_ray.toLine.toProj_eq_seg_nd_toProj_of_lies_on source_lies_on_start_dirLine ha]
+  rw [ang.end_ray.toLine.toProj_eq_seg_nd_toProj_of_lies_on source_lies_on_end_dirLine hb]
+  rfl
+
+theorem dvalue_eq_of_lies_on_line_pt_pt {A B C D O : P} [_ha : PtNe A O] [_hb : PtNe B O] [_hc : PtNe C O] [_hd : PtNe D O] (hc : C LiesOn (LIN O A)) (hd : D LiesOn (LIN O B)) : ∡ C O D = ∡ A O B :=
+  haveI : PtNe C (ANG A O B).source := _hc
+  haveI : PtNe D (ANG A O B).source := _hd
+  (ANG A O B).dvalue_eq_of_lies_on_line hc hd
+
 end mk_compatibility
 
 section cancel
@@ -689,7 +700,7 @@ theorem dir_perp_iff_dvalue_eq_pi_div_two : ang.dir₁ ⟂ ang.dir₂ ↔ ang.dv
   nth_rw 1 [← AngDValue.neg_coe_pi_div_two, ← neg_vsub_eq_vsub_rev]
   exact neg_inj
 
-theorem line_pt_pt_perp_iff_dvalue_eq_pi_div_two : LIN O A ⟂ LIN O B ↔ (ANG A O B).dvalue = ∡[π / 2] :=
+theorem line_pt_pt_perp_iff_dvalue_eq_pi_div_two : LIN O A ⟂ LIN O B ↔ ∡ A O B = ∡[π / 2] :=
   (ANG A O B).dir_perp_iff_dvalue_eq_pi_div_two
 
 theorem dir_perp_iff_isRt : ang.dir₁ ⟂ ang.dir₂ ↔ ang.IsRt :=
@@ -701,7 +712,7 @@ theorem line_pt_pt_perp_iff_isRt : LIN O A ⟂ LIN O B ↔ (ANG A O B).IsRt :=
 theorem value_eq_pi_of_lies_int_seg_nd {A B C : P} [PtNe C A] (h : B LiesInt (SEG_nd A C)) : ∠ A B C h.2.symm h.3.symm = π :=
   value_eq_pi_of_eq_neg_dir ((SEG_nd A C).toDir_eq_neg_toDir_of_lies_int h)
 
-theorem collinear_iff_dvalue_eq_zero : Collinear O A B ↔ (ANG A O B).dvalue = 0 :=
+theorem collinear_iff_dvalue_eq_zero : Collinear O A B ↔ ∡ A O B = 0 :=
   collinear_iff_toProj_eq_of_ptNe.trans (eq_comm.trans vsub_eq_zero_iff_eq.symm)
 
 theorem collinear_iff_not_isND : Collinear O A B ↔ ¬ (ANG A O B).IsND :=

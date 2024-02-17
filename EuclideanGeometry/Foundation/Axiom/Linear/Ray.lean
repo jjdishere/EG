@@ -1567,6 +1567,10 @@ theorem Seg.dist_target_eq_dist_source_of_midpt {seg : Seg P} : (SEG seg.source 
   exact congrArg norm seg.vec_midpt_eq
 
 /-- The midpoint of a segment has same distance to the source and to the target of the segment. -/
+theorem Seg.dist_target_eq_dist_source_of_midpt' {seg : Seg P} : (SEG seg.midpoint seg.source).length = (SEG seg.midpoint seg.target).length :=
+  ((SEG seg.source seg.midpoint).length_of_rev_eq_length).trans seg.dist_target_eq_dist_source_of_midpt
+
+/-- The midpoint of a segment has same distance to the source and to the target of the segment. -/
 theorem Seg.dist_target_eq_dist_source_of_eq_midpt {X : P} {seg : Seg P} (h : X = seg.midpoint) : (SEG seg.1 X).length = (SEG X seg.2).length := by
   rw [h]
   exact dist_target_eq_dist_source_of_midpt

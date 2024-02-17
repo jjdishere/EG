@@ -8,6 +8,8 @@ import EuclideanGeometry.Foundation.Axiom.Linear.Ray
 import EuclideanGeometry.Foundation.Axiom.Linear.Ray_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Collinear
 import EuclideanGeometry.Foundation.Axiom.Linear.Line
+import EuclideanGeometry.Foundation.Axiom.Linear.Ratio
+import EuclideanGeometry.Foundation.Axiom.Linear.Ratio_trash
 import EuclideanGeometry.Foundation.Axiom.Linear.Class
 import EuclideanGeometry.Foundation.Axiom.Linear.Order
 import EuclideanGeometry.Foundation.Axiom.Linear.Parallel
@@ -28,6 +30,7 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence -- `to avoid ambig
 import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
 import EuclideanGeometry.Foundation.Axiom.Triangle.Similarity
+import EuclideanGeometry.Foundation.Axiom.Triangle.Similarity_trash
 import EuclideanGeometry.Foundation.Axiom.Triangle.IsocelesTriangle
 /- Axiom.Circle -/
 import EuclideanGeometry.Foundation.Axiom.Circle.Basic

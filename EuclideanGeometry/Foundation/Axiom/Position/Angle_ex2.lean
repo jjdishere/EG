@@ -149,15 +149,18 @@ section perp_foot
 
 variable {ang : Angle P}
 
-theorem dvalue_eq_pi_div_two_at_perp_foot {A B C : P} [_h : PtNe B C] (l : Line P) (hb : B LiesOn l) (ha : ¬ A LiesOn l) (hc : C = perp_foot A l) : haveI : PtNe A C := ⟨((pt_ne_iff_not_lies_on_of_eq_perp_foot hc).mpr ha).symm⟩; (ANG A C B).dvalue = ∡[π / 2] := by
-  haveI : PtNe A C := ⟨((pt_ne_iff_not_lies_on_of_eq_perp_foot hc).mpr ha).symm⟩
-  haveI : PtNe B (perp_foot A l) := by
-    rw [← hc]
+theorem dvalue_eq_pi_div_two_at_perp_foot {A O B : P} [_h : PtNe A O] {l : Line P} (ha : A LiesOn l) (ho : O = perp_foot B l) (hb : ¬ B LiesOn l) : haveI : PtNe B O := ⟨((pt_ne_iff_not_lies_on_of_eq_perp_foot ho).mpr hb).symm⟩; ∡ A O B = ∡[π / 2] := by
+  haveI _hbo : PtNe B O := ⟨((pt_ne_iff_not_lies_on_of_eq_perp_foot ho).mpr hb).symm⟩
+  haveI : PtNe A (perp_foot B l) := by
+    rw [← ho]
     exact _h
   apply line_pt_pt_perp_iff_dvalue_eq_pi_div_two.mp
-  rw [Line.line_of_pt_pt_eq_rev]
-  simp only [hc, Line.eq_line_of_pt_pt_of_ne (perp_foot_lies_on_line A l) hb]
-  exact line_of_self_perp_foot_perp_line_of_not_lies_on ha
+  rw [Line.line_of_pt_pt_eq_rev (_h := _hbo)]
+  simp only [ho, Line.eq_line_of_pt_pt_of_ne (perp_foot_lies_on_line B l) ha]
+  exact (line_of_self_perp_foot_perp_line_of_not_lies_on hb).symm
+
+theorem isRt_at_perp_foot {A O B : P} [_h : PtNe A O] {l : Line P} (ha : A LiesOn l) (ho : O = perp_foot B l) (hb : ¬ B LiesOn l) : haveI : PtNe B O := ⟨((pt_ne_iff_not_lies_on_of_eq_perp_foot ho).mpr hb).symm⟩; (ANG A O B).IsRt :=
+  AngValue.isRt_iff_coe.mpr (dvalue_eq_pi_div_two_at_perp_foot ha ho hb)
 
 theorem perp_foot_lies_int_start_ray_iff_isAcu {A O B : P} [PtNe A O] [PtNe B O] : (perp_foot B (LIN O A)) LiesInt (RAY O A) ↔ (ANG A O B).IsAcu := by
   refine' ((RAY O A).lies_int_iff_pos_of_vec_eq_smul_toDir
