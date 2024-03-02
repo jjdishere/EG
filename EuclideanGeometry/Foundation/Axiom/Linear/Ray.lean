@@ -1151,7 +1151,7 @@ theorem ray_toProj_eq_mk_pt_pt_toProj {A B : P} {ray : Ray P} [h : PtNe B A] (ha
   simp only [← (inv_smul_eq_iff₀ h0).mpr heq, Ray.mkPtPt_toDir, mul_smul,
     VecND.norm_smul_toDir_unitVec, ne_eq, VecND.coe_mkPtPt]
 
-/--Given a nondegenerate segment $Segnd$ and a point $A$ lies in the interior of it. Then the direction of the nondegenerate segment from $A$ to the target of $Segnd$ equals the direction of $Segnd$.  -/
+/-- Given a nondegenerate segment $Segnd$ and a point $A$ lies in the interior of it. Then the direction of the nondegenerate segment from $A$ to the target of $Segnd$ equals the direction of $Segnd$.  -/
 theorem SegND.pt_target_toDir_eq_toDir_of_lies_int {seg_nd : SegND P} {A : P} (h : A LiesInt seg_nd) : (SEG_nd A seg_nd.target h.ne_target.symm).toDir = seg_nd.toDir := by
   show (VEC_nd A seg_nd.target h.ne_target.symm).toDir = (VEC_nd seg_nd.source seg_nd.target seg_nd.2).toDir
   haveI : PtNe A seg_nd.target := ⟨h.3⟩
@@ -1169,12 +1169,20 @@ theorem SegND.pt_target_toDir_eq_toDir_of_lies_int {seg_nd : SegND P} {A : P} (h
   congr
   simp only [toVecND_of_rev_eq_neg_toVecND, neg_neg]
   rfl
-/--Given a nondegenerate segment $Segnd$ and a point $A$ lies in the interior of it. Then the direction of the nondegenerate vector from $A$ to the source of $Segnd$ equals the opposite direction of the nondegenerate vector from $A$ to the target of $Segnd$.  -/
+
+/-- Given a nondegenerate segment $Segnd$ and a point $A$ lies in the interior of it. Then the direction of the nondegenerate vector from $A$ to the source of $Segnd$ equals the opposite direction of the nondegenerate vector from $A$ to the target of $Segnd$. -/
 theorem SegND.toDir_eq_neg_toDir_of_lies_int {A : P} {seg_nd : SegND P} (h : A LiesInt seg_nd) : (VEC_nd A seg_nd.source h.2.symm).toDir = - (VEC_nd A seg_nd.target h.3.symm).toDir := by
   haveI : PtNe A seg_nd.source := ⟨h.2⟩
   rw [← VecND.neg_vecND, VecND.neg_toDir]
   exact neg_inj.mpr <|
     (source_pt_toDir_eq_toDir_of_lies_int h).trans (pt_target_toDir_eq_toDir_of_lies_int h).symm
+
+/-- Given a nondegenerate segment $Segnd$ and a point $A$ lies in the interior of it. Then the direction of the nondegenerate vector from the source of $Segnd$ to $A$ equals the opposite direction of the nondegenerate vector from the target of $Segnd$ to $A$. -/
+theorem SegND.toDir_eq_neg_toDir_of_lies_int' {A : P} {seg_nd : SegND P} (h : A LiesInt seg_nd) : (VEC_nd seg_nd.source A h.2).toDir = - (VEC_nd seg_nd.target A h.3).toDir := by
+  haveI : PtNe A seg_nd.source := ⟨h.2⟩
+  haveI : PtNe A seg_nd.target := ⟨h.3⟩
+  rw [← VecND.neg_vecND A seg_nd.target, VecND.neg_toDir, ← VecND.neg_vecND]
+  exact neg_inj.mpr (toDir_eq_neg_toDir_of_lies_int h)
 
 theorem Ray.lies_int_rev_iff_neg_of_vec_eq_smul_toDir {ray : Ray P} {A : P} {t : ℝ} (h : VEC ray.source A = t • ray.toDir.unitVec) : A LiesInt ray.reverse ↔ t < 0 := sorry
 
@@ -1569,6 +1577,10 @@ theorem Seg.dist_target_eq_dist_source_of_midpt {seg : Seg P} : (SEG seg.source 
 /-- The midpoint of a segment has same distance to the source and to the target of the segment. -/
 theorem Seg.dist_target_eq_dist_source_of_midpt' {seg : Seg P} : (SEG seg.midpoint seg.source).length = (SEG seg.midpoint seg.target).length :=
   ((SEG seg.source seg.midpoint).length_of_rev_eq_length).trans seg.dist_target_eq_dist_source_of_midpt
+
+theorem Seg.two_nsmul_dist_midpt_source_eq_length {seg : Seg P} : 2 • (dist seg.midpoint seg.source)= seg.length := sorry
+
+theorem Seg.two_nsmul_dist_midpt_target_eq_length {seg : Seg P} : 2 • (dist seg.midpoint seg.target) = seg.length := sorry
 
 /-- The midpoint of a segment has same distance to the source and to the target of the segment. -/
 theorem Seg.dist_target_eq_dist_source_of_eq_midpt {X : P} {seg : Seg P} (h : X = seg.midpoint) : (SEG seg.1 X).length = (SEG X seg.2).length := by

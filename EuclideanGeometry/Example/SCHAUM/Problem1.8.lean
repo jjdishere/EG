@@ -94,7 +94,7 @@ Therefore, $BD = CE$.
       · exact Ray.snd_pt_lies_int_mk_pt_pt e.B e.A e.A_ne_B
     -- In regular triangle $ABC$, $\angle CBA = \angle ACB$.
     _= ∠ e.A e.C e.B A_ne_C e.B_ne_C := by
-      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.B e.C e.not_collinear_ABC))).mp
+      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (TRI_nd e.A e.B e.C e.not_collinear_ABC)).mp
       exact Triangle.isoceles_of_regular (▵ e.A e.B e.C) e.regular_ABC
     -- Since $E$ lies on the extension of $CA$, we know that $\angle BCA$ is the same as $\angle ECB$.
     _= ∠ e.E e.C e.B E_ne_C e.B_ne_C := by

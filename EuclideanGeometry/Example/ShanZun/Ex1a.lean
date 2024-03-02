@@ -75,7 +75,7 @@ theorem Shan_Problem_1_4 : (SEG B D).length = (SEG A C).length + (SEG C D).lengt
   have e_ne_a : E ≠ A := sorry
   have c_ne_e : C ≠ E := sorry
   -- $\angle EAC = \angle CEA$
-  have ang₁ : ∠ E A C e_ne_a c_ne_a = ∠ C E A c_ne_a e_ne_a.symm := (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := TRI_nd C A E cae_not_collinear)).mp isoceles₁
+  have ang₁ : ∠ E A C e_ne_a c_ne_a = ∠ C E A c_ne_a e_ne_a.symm := (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (TRI_nd C A E cae_not_collinear)).mp isoceles₁
   -- $\angle ACB = 2 \angle CEA$
   have ang₂ : ∠ A C E c_ne_a.symm c_ne_e.symm = 2 • ∠ C E A c_ne_e e_ne_a.symm := sorry
   -- Claim: $E \ne B$
@@ -85,9 +85,8 @@ theorem Shan_Problem_1_4 : (SEG B D).length = (SEG A C).length + (SEG C D).lengt
   -- $ABE$ is not collinear
   have abe_not_collinear : ¬ Collinear A B E := sorry
   -- $\triangle ABE$ is isoceles
-  have isoceles₂ : (TRI_nd A B E abe_not_collinear).1.IsIsoceles := by
-    apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mpr
-    exact ang₃
+  have isoceles₂ : (TRI_nd A B E abe_not_collinear).1.IsIsoceles :=
+    (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (TRI_nd A B E abe_not_collinear)).mpr ang₃
   -- $BD = DE$
   have bd_eq_de : (SEG B D).length = (SEG D E).length := sorry
   -- 此处需要等腰三角形三线合一的定理

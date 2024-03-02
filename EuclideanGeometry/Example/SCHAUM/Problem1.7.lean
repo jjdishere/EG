@@ -152,7 +152,7 @@ Therefore, $DX = EY$.
     calc
     ∠ e.C e.B e.A C_ne_B A_ne_B
     -- $\angle CBA = \angle ACB$ because triangle $ABC$ is an isoceles triangle.
-    _= ∠ e.A e.C e.B A_ne_C C_ne_B.symm := is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.B e.C e.not_collinear_ABC)).mp e.isoceles_ABC
+    _= ∠ e.A e.C e.B A_ne_C C_ne_B.symm := (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (TRI_nd e.A e.B e.C e.not_collinear_ABC)).mp e.isoceles_ABC
     -- $\angle ACB = - \angle BCA$ by symmetry.
     _= - ∠ e.B e.C e.A C_ne_B.symm A_ne_C := (ANG e.B e.C e.A C_ne_B.symm A_ne_C).rev_value_eq_neg_value
   -- We have that $\angle BXD = \angle CYE (\mod \pi)$.

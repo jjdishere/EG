@@ -54,6 +54,7 @@ import EuclideanGeometry.Foundation.Construction.ComputationTool.Ceva
 import EuclideanGeometry.Foundation.Construction.ComputationTool.Parallel
 /- Construction.Triangle -/
 import EuclideanGeometry.Foundation.Construction.Triangle.AngleBisector
+import EuclideanGeometry.Foundation.Construction.Triangle.AngleBisector_trash
 import EuclideanGeometry.Foundation.Construction.Triangle.PerpendicularBisector
 import EuclideanGeometry.Foundation.Construction.Triangle.Orthocenter
 import EuclideanGeometry.Foundation.Construction.Triangle.Centroid

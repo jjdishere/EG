@@ -85,7 +85,7 @@ variable (hang : ∠ E B C e_ne_B B_ne_C.symm =  ∠ B C D B_ne_C d_ne_c)
 -- Theorem : $\angle CDA = \angle BEA$
 theorem Shan_Problem_1_2 : ∠ C D A (d_ne_c (hnd := hnd) (hd := hd)).symm (d_ne_a (hnd := hnd) (hd := hd)).symm = ∠ B E A (e_ne_B (hnd := hnd) (he := he)).symm (e_ne_a (hnd := hnd) (he := he)).symm := by
   -- $\angle CBA = \angle ACB$
-  have ang₁ : ∠ C B A (B_ne_C (hnd := hnd)).symm (B_ne_a (hnd := hnd)).symm = ∠ A C B (c_ne_a (hnd := hnd)).symm (B_ne_C (hnd := hnd)) := (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := TRI_nd A B C hnd) ).mp isoceles_ABC
+  have ang₁ : ∠ C B A (B_ne_C (hnd := hnd)).symm (B_ne_a (hnd := hnd)).symm = ∠ A C B (c_ne_a (hnd := hnd)).symm (B_ne_C (hnd := hnd)) := (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (TRI_nd A B C hnd)).mp isoceles_ABC
   -- $\angle CBD = \angle ECB$
   have ang₂ : ∠ C B D (B_ne_C (hnd := hnd)).symm d_ne_B = ∠ E C B e_ne_C (B_ne_C (hnd := hnd)) := sorry
   -- $C,B,D$ are not collinear
