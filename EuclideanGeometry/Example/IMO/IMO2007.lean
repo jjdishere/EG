@@ -39,11 +39,11 @@ structure Setting (P : Type*) [EuclideanPlane P] where
   -- $l$ is a line passing through $A$.
   l : Line P
   ha : A LiesOn l
-  -- $l$ intersects segment $DC$ at point $F$.
+  -- $l$ intersects segment $DC$ at the point $F$.
   F : P
   hf : F LiesOn l
   hfdc : F LiesInt (SEG D C)
-  -- $l$ intersects line $BC$ at points $G$.
+  -- $l$ intersects line $BC$ at the point $G$.
   G : P
   hg : G LiesOn l
   hglbc : G LiesOn (LIN B C (Quadrilateral.isND_of_is_convex hp.1).2)
@@ -70,9 +70,6 @@ instance B_ne_A : PtNe e.B e.A := ⟨(Quadrilateral.isND_of_is_convex e.hp.1).1�
 
 /-- $F$ ≠ $C$ since $F$ lies in the interior the segment $DC$. -/
 instance F_ne_C : PtNe e.F e.C := ⟨e.hfdc.3⟩
-
-/- -- $F$ ≠ $D$.
-instance F_ne_D : PtNe e.F e.D := ⟨e.hfdc.2⟩ -/
 
 /-- Rename line $BC$ as `lbc`. -/
 @[pp_dot]
@@ -180,16 +177,6 @@ instance G_ne_F : PtNe e.G e.F where
     apply ne_pt_pt_of_not_collinear_of_lies_on e.hdldc e.hbcd
     -- line $DC$ and line $BC$ are identical since they have two distinct intersection points $C$ and $F$.
     exact eq_of_pt_pt_lies_on_of_ne snd_pt_lies_on_mk_pt_pt e.hfldc snd_pt_lies_on_mk_pt_pt hfbc
-
-/-- $G$ does not lie on line $DC$. -/
-@[pp_dot]
-lemma hgcd : ¬ e.G LiesOn e.ldc := by
-  -- To the contrary, assuming that $G$ lies on line $DC$.
-  intro h
-  -- Only need to show that $l$ and line $CD$ are identical, since it contradicts the non-collinearity of $C$, $D$, and $A$.
-  apply ne_pt_pt_of_not_collinear_of_lies_on e.ha e.hcda
-  -- $l$ and line $CD$ are identical since they have two distinct intersection points $F$ and $G$.
-  exact (e.l.eq_of_pt_pt_lies_on_of_ne e.hf e.hg e.hfldc h).trans (@line_of_pt_pt_eq_rev P _ e.D e.C _)
 
 /-- $G$ ≠ $B$. -/
 instance G_ne_B : PtNe e.G e.B where
@@ -470,20 +457,6 @@ theorem Result : IsAngBisLine (ANG e.D e.A e.B) e.l := by
       congr 1
       -- $\overrightarrow{DC} = \overrightarrow{AB}$ since $ABCD$ is a nondegenerate parallelogram.
       exact VecND.ext e.hp.2.symm
-
-
-
-/-
-lemma haf : IsOnSameSide e.A e.F (LIN e.B e.C) := sorry
-
-lemma hfbc : e.F LiesOn (SEG e.A e.G) := sorry
-
-lemma hag : IsOnOppositeSide e.A e.G (LIN e.C e.D) := sorry
-
-lemma hbg : IsOnOppositeSide e.B e.G (LIN e.C e.D) := sorry
-
-      have eq : LIN e.C e.G = e.lbc := e.lbc.eq_line_of_pt_pt_of_ne snd_pt_lies_on_mk_pt_pt e.hglbc
- -/
 
 /- In fact, it is only necessary reqiure $F$ lying on line $DC$, $F$ ≠ $C$, $E$ ≠ $B$ and $E$ ≠ $D$,
 not necessarily reqiure $F$ lying in the interior the segment $DC$. -/
