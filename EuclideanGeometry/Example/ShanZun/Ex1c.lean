@@ -20,7 +20,7 @@ lemma B_ne_a : B ≠ A := (ne_of_not_collinear hnd).2.2
 lemma c_ne_a : C ≠ A := (ne_of_not_collinear hnd).2.1.symm
 lemma B_ne_C : B ≠ C := (ne_of_not_collinear hnd).1.symm
 --∠ A C B = π/2
-variable {hrt : (ANG A C B c_ne_a.symm B_ne_C).IsRightAngle}
+variable {hrt : (ANG A C B c_ne_a.symm B_ne_C).IsRtAngle}
 -- D is the midpoint of segment AB
 variable {D : P} {hd : D = (SEG A B).midpoint}
 lemma d_ne_a: D ≠ A := by

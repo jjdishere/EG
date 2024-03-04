@@ -31,7 +31,7 @@ structure Setting (Plane : Type*) [EuclideanPlane Plane] where
     -- This is because vertices $B, C$ of a nondegenerate triangle are distinct.
     (ne_of_not_collinear not_collinear_ABC).2.2
   --Let $D$ be the midpoint of $AB$
-  hrt: (ANG A C B C_ne_A.symm B_ne_C).IsRightAngle
+  hrt: (ANG A C B C_ne_A.symm B_ne_C).IsRtAngle
   D : Plane
   hD : D = (SEG A B).midpoint
 

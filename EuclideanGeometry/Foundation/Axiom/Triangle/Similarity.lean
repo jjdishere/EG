@@ -22,7 +22,7 @@ structure IsASim (tr₁ tr₂ : TriangleND P) : Prop where intro ::
 
 namespace IsSim
 
-protected theorem refl (tr : TriangleND P): IsSim tr tr where
+protected theorem refl (tr : TriangleND P) : IsSim tr tr where
   angle₁ := rfl
   angle₂ := rfl
   angle₃ := rfl
@@ -142,6 +142,9 @@ theorem perm_asim (h : IsASim tr₁ tr₂) : IsASim (perm_vertices tr₁) (perm_
   angle₁ := h.2
   angle₂ := h.3
   angle₃ := h.1
+
+theorem asim_iff_perm_asim : IsASim tr₁ tr₂ ↔ IsASim (perm_vertices tr₁) (perm_vertices tr₂) :=
+  ⟨fun h ↦ h.perm_asim, fun h ↦ h.perm_asim.perm_asim⟩
 
 theorem ratio₁ : h.ratio = tr₁.edge₁.length / tr₂.edge₁.length := rfl
 
@@ -282,7 +285,7 @@ theorem asim_of_AA (tr₁ tr₂ : TriangleND P) (h₂ : tr₁.angle₂.value = -
   exact h₃
 
 /- SAS -/
-theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr₂.edge₂.length = tr₁.edge₃.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = tr₂.angle₁.value): tr₁ ∼ tr₂ := by
+theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr₂.edge₂.length = tr₁.edge₃.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = tr₂.angle₁.value) : tr₁ ∼ tr₂ := by
   have eq : tr₁.edge₂.length * tr₂.edge₃.length = tr₁.edge₃.length * tr₂.edge₂.length := by
     exact (div_eq_div_iff (Seg.length_ne_zero_iff_nd.mpr tr₂.edgeND₂.2).symm (Seg.length_ne_zero_iff_nd.mpr tr₂.edgeND₃.2).symm).mp e
   rw [mul_comm tr₁.edge₃.length  tr₂.edge₂.length] at eq
@@ -411,7 +414,7 @@ theorem sim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr�
   apply (angle₁_neg_iff_not_cclock tr₂).mp
   exact cc
 
-theorem asim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr₂.edge₂.length = tr₁.edge₃.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = - tr₂.angle₁.value): tr₁ ∼ₐ tr₂ := by
+theorem asim_of_SAS (tr₁ tr₂ : TriangleND P) (e : tr₁.edge₂.length / tr₂.edge₂.length = tr₁.edge₃.length / tr₂.edge₃.length) (a : tr₁.angle₁.value = - tr₂.angle₁.value) : tr₁ ∼ₐ tr₂ := by
   have eq : tr₁.edge₂.length * tr₂.edge₃.length = tr₁.edge₃.length * tr₂.edge₂.length := by
     exact (div_eq_div_iff (Seg.length_ne_zero_iff_nd.mpr tr₂.edgeND₂.2).symm (Seg.length_ne_zero_iff_nd.mpr tr₂.edgeND₃.2).symm).mp e
   rw [mul_comm tr₁.edge₃.length  tr₂.edge₂.length] at eq

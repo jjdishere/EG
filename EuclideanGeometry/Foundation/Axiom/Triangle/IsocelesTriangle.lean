@@ -1,9 +1,4 @@
-import EuclideanGeometry.Foundation.Axiom.Triangle.Basic
-import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
-import EuclideanGeometry.Foundation.Axiom.Triangle.Trigonometric
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
-import Mathlib.Data.Real.Basic
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
 
 noncomputable section
@@ -19,7 +14,7 @@ open Triangle
 
 def Triangle.IsIsoceles (tri : Triangle P) : Prop := tri.edge₂.length = tri.edge₃.length
 
-theorem is_isoceles_tri_iff_ang_eq_ang_of_nd_tri {tri_nd : TriangleND P} : tri_nd.1.IsIsoceles ↔ (tri_nd.angle₂.value=  tri_nd.angle₃.value) := by
+theorem is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd : TriangleND P) : tri_nd.1.IsIsoceles ↔ (tri_nd.angle₂.value=  tri_nd.angle₃.value) := by
 -- To show angle equal => sides equal, use anti-congruent of the triangle with itself. SAS
 rcases TriangleND.edge_eq_edge_of_flip_vertices tri_nd with ⟨a, b, c⟩
 rcases TriangleND.angle_eq_neg_angle_of_flip_vertices tri_nd with ⟨x, y, z⟩
@@ -46,7 +41,7 @@ exact k2
 namespace Triangle
 
 -- Changing the order of vertices 2 and 3 in an isoceles triangle does not change the property of being an isoceles triangle.
-theorem is_isoceles_of_flip_vert_isoceles (tri : Triangle P) (h : tri.IsIsoceles) : tri.flip_vertices.IsIsoceles := by
+theorem is_isoceles_of_flip_vert_isoceles {tri : Triangle P} (h : tri.IsIsoceles) : tri.flip_vertices.IsIsoceles := by
 have h₂ : tri.flip_vertices.edge₂.length = tri.flip_vertices.edge₃.length := by
   rcases Triangle.edge_eq_edge_of_flip_vertices tri with ⟨_, b, c⟩
   rw [← b, ← c, h]
@@ -100,16 +95,16 @@ have perm_isisocele₁ : tri_nd.1.perm_vertices.IsIsoceles := by
   exact h
 constructor
 rw [a1, a2]
-rw [is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp]
+rw [(is_isoceles_tri_iff_ang_eq_ang_of_nd_tri _).mp]
 exact perm_isisocele₁
-rw [← is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp,a1, a2, is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mp]
+rw [← (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri _).mp,a1, a2, (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri _).mp]
 exact perm_isisocele₁
 apply Triangle.isoceles_of_regular
 exact h
 intro k0
 rcases k0 with ⟨k1, k2⟩
 have perm_isisocele₂ : tri_nd.perm_vertices.1.IsIsoceles := by
-  apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mpr
+  apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri _).mpr
   rw [a1, a2] at k1
   exact k1
 have k3 : tri_nd.edge₁.length = tri_nd.edge₂.length := by

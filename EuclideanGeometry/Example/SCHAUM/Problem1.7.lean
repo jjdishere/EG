@@ -10,6 +10,8 @@ noncomputable section
 
 namespace EuclidGeom
 
+open Angle
+
 namespace Schaum
 
 namespace Problem1_7
@@ -102,7 +104,7 @@ Therefore, $DX = EY$.
       simp only [angle_ACE_is_angle_ACB]
       exact ang_acute_of_is_isoceles_variant e.not_collinear_ABC e.isoceles_ABC
     -- The perpendicular foot from a point on one ray of an acute angle to the other ray always falls on the interior of the other ray, so we know that $Y$, which is the perpendicular foot of $E$ to line $AC$, falls on the interior of ray $CA$.
-    exact perp_foot_lies_int_ray_of_acute_ang (A := e.C) (B := e.A) (C := e.E) A_ne_C E_ne_C angle_ACE_acute
+    exact perp_foot_lies_int_start_ray_iff_isAcu.mpr angle_ACE_acute
   -- We have $Y \ne C$ as Y is on the interior of ray $CA$ and therefore different to the source $C$.
   have Y_ne_C : e.Y ≠ e.C := Y_int_ray_CA.2
   -- We have $Y, C, E$ are not collinear because $E$ doesn't lies on line $AC$ and $C$ doesn't coincide with $Y$.
@@ -129,10 +131,10 @@ Therefore, $DX = EY$.
         · exact D_int_ray_BC
       simp only [angle_ABD_is_angle_ABC]
       -- and $\angle ABC$ is acute because it's a base angle of the isoceles triangle $ABC$.
-      apply is_acute_of_is_acute_rev C_ne_B A_ne_B
+      apply rev_isAcu_iff_isAcu.mp
       exact ang_acute_of_is_isoceles e.not_collinear_ABC e.isoceles_ABC
     -- The perpendicular foot from a point on one ray of an acute angle to the other ray always falls on the interior of the other ray, so we know that $X$, which is the perpendicular foot of $D$ to line $AB$, falls on the interior of ray $BA$.
-    exact perp_foot_lies_int_ray_of_acute_ang A_ne_B D_ne_B angle_ABD_acute
+    exact perp_foot_lies_int_start_ray_iff_isAcu.mpr angle_ABD_acute
   -- We have $X \ne B$ as X is on the interior of ray $BA$ and therefore different to the source $B$.
   have X_ne_B : e.X ≠ e.B := X_int_ray_BA.2
   -- We have $X, B, D$ are not collinear because $D$ doesn't lies on line $AB$ and $B$ doesn't coincide with $X$.
@@ -150,7 +152,7 @@ Therefore, $DX = EY$.
     calc
     ∠ e.C e.B e.A C_ne_B A_ne_B
     -- $\angle CBA = \angle ACB$ because triangle $ABC$ is an isoceles triangle.
-    _= ∠ e.A e.C e.B A_ne_C C_ne_B.symm := is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.B e.C e.not_collinear_ABC)).mp e.isoceles_ABC
+    _= ∠ e.A e.C e.B A_ne_C C_ne_B.symm := (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (TRI_nd e.A e.B e.C e.not_collinear_ABC)).mp e.isoceles_ABC
     -- $\angle ACB = - \angle BCA$ by symmetry.
     _= - ∠ e.B e.C e.A C_ne_B.symm A_ne_C := (ANG e.B e.C e.A C_ne_B.symm A_ne_C).rev_value_eq_neg_value
   -- We have that $\angle BXD = \angle CYE (\mod \pi)$.

@@ -102,28 +102,24 @@ theorem Arc.cangle_eq_two_times_inscribed_angle {ω : Circle P} {β : Arc P ω} 
   haveI : PtNe p β.target := ⟨h.2.1.2⟩
   haveI : PtNe p ω.center := Circle.pt_lieson_ne_center h.1
   have hit₁ : (▵ ω.center β.target p).IsIsoceles := by
-    unfold Triangle.IsIsoceles
     show (SEG p ω.center).length = (SEG ω.center β.target).length
     rw [Seg.length_eq_dist, Seg.length_eq_dist, dist_comm, h.1, β.ison.2]
   have hit₂ : (▵ ω.center p β.source).IsIsoceles := by
-    unfold Triangle.IsIsoceles
     show (SEG β.source ω.center).length = (SEG ω.center p).length
     rw [Seg.length_eq_dist, Seg.length_eq_dist, dist_comm, h.1, β.ison.1]
-  have eq₁ : ∠ p β.target ω.center = ∠ ω.center p β.target := by apply is_isoceles_tri_ang_eq_ang_of_tri hit₁
-  have eq₂ : ∠ β.source p ω.center = ∠ ω.center β.source p := by apply is_isoceles_tri_ang_eq_ang_of_tri hit₂
-  have π₁ : ∠ β.target ω.center p + ∠ p β.target ω.center + ∠ ω.center p β.target = π := by apply angle_sum_eq_pi_of_tri (▵ ω.center β.target p)
-  have π₂ : ∠ p ω.center β.source + ∠ β.source p ω.center + ∠ ω.center β.source p = π := by apply angle_sum_eq_pi_of_tri (▵ ω.center p β.source)
-  have hsum₁ : ∠ β.target ω.center p + ∠ p ω.center β.source = ∠ β.target ω.center β.source := by
-    have : (ANG β.target ω.center p).end_ray = (ANG p ω.center β.source).start_ray := rfl
-    have hhs : (sum_adj this).value = ∠ β.target ω.center β.source := rfl
-    rw [← hhs, ang_eq_ang_add_ang_mod_pi_of_adj_ang]
-  have hsum₂ : ∠ β.source p ω.center + ∠ ω.center p β.target = ∠ β.source p β.target := by
-    have : (ANG β.source p ω.center).end_ray = (ANG ω.center p β.target).start_ray := rfl
-    have hhs : (sum_adj this).value = ∠ β.source p β.target := rfl
-    rw [← hhs, ang_eq_ang_add_ang_mod_pi_of_adj_ang]
+  have eq₁ : ∠ p β.target ω.center = ∠ ω.center p β.target :=
+    is_isoceles_tri_ang_eq_ang_of_tri hit₁ _
+  have eq₂ : ∠ β.source p ω.center = ∠ ω.center β.source p :=
+    is_isoceles_tri_ang_eq_ang_of_tri hit₂ _
+  have π₁ : ∠ β.target ω.center p + ∠ p β.target ω.center + ∠ ω.center p β.target = π :=
+    angle_sum_eq_pi_of_tri (▵ ω.center β.target p) _ _ _
+  have π₂ : ∠ p ω.center β.source + ∠ β.source p ω.center + ∠ ω.center β.source p = π :=
+    angle_sum_eq_pi_of_tri (▵ ω.center p β.source) _ _ _
   have eq₃ : ∠ β.target ω.center β.source + 2 • (∠ β.source p β.target) = 0 := by
     calc
-      _ = ∠ β.target ω.center p + ∠ p ω.center β.source + 2 • (∠ β.source p ω.center + ∠ ω.center p β.target) := by rw [hsum₁, hsum₂]
+      _ = ∠ β.target ω.center p + ∠ p ω.center β.source + 2 • (∠ β.source p ω.center + ∠ ω.center p β.target) := by
+        rw [value_add_eq_add_value ω.center β.target β.source p]
+        rw [value_add_eq_add_value p β.source β.target ω.center]
       _ = ∠ β.target ω.center p + ∠ p ω.center β.source + (∠ p β.target ω.center + ∠ ω.center p β.target) + (∠ β.source p ω.center + ∠ ω.center β.source p) := by
         rw [← eq₂, eq₁, two_smul]
         abel
@@ -131,8 +127,7 @@ theorem Arc.cangle_eq_two_times_inscribed_angle {ω : Circle P} {β : Arc P ω} 
         rw [add_assoc, add_add_add_comm]
         abel
       _ = 0 := by
-        rw [π₁, π₂, ← coe_two_pi, two_mul]
-        simp
+        rw [π₁, π₂, ← coe_two_pi, two_mul, coe_pi_add_coe_pi, coe_add, coe_pi_add_coe_pi]
   calc
     _ = - ∠ β.target ω.center β.source := by rw [← neg_value_of_rev_ang]; rfl
     _ = 2 • (∠ β.source p β.target) := by rw [← zero_sub, ← eq₃, add_sub_cancel']
@@ -150,7 +145,7 @@ theorem Circle.iangle_of_diameter_eq_mod_pi {ω : Circle P} {s : Chord P ω} {an
   · rw [← h]
   unfold dvalue
   rw [h, neg_div]
-  simp
+  simp only [coe_neg, AngDValue.coe_neg, AngDValue.neg_coe_pi_div_two]
 
 theorem Arc.iangle_invariant_mod_pi {ω : Circle P} {β : Arc P ω} {ang₁ ang₂ : Angle P} (h₁ : β.IsIangle ang₁) (h₂ : β.IsIangle ang₂) : ang₁.dvalue = ang₂.dvalue := by
   have : 2 • ang₁.value = 2 • ang₂.value := by
@@ -161,6 +156,18 @@ theorem Chord.iangle_invariant_mod_pi {ω : Circle P} {s : Chord P ω} {ang₁ a
   have : 2 • ang₁.value = 2 • ang₂.value := by
     rw [← cangle_eq_two_times_inscribed_angle h₁, ← cangle_eq_two_times_inscribed_angle h₂]
   apply coe_eq_coe_iff_two_nsmul_eq.mpr this
+
+theorem Circle.dvalue_eq_of_lies_on {ω : Circle P} {A B C D : P} [_hca : PtNe C A] [_hda : PtNe D A] [_hcb : PtNe C B] [_hdb : PtNe D B] (ha : A LiesOn ω) (hb : B LiesOn ω) (hc : C LiesOn ω) (hd : D LiesOn ω) : ∡ A C B = ∡ A D B := by
+  by_cases h : B = A
+  · simp only [h, pt_pt_pt_dvalue_eq_zero_of_same_pt]
+  · haveI : PtNe B A := ⟨h⟩
+    haveI : PtNe (ARC ha hb).source (ANG A C B).source := _hca.symm
+    haveI : PtNe (ARC ha hb).target (ANG A C B).source := _hcb.symm
+    haveI : PtNe (ARC ha hb).source (ANG A D B).source := _hda.symm
+    haveI : PtNe (ARC ha hb).target (ANG A D B).source := _hdb.symm
+    apply (ARC ha hb).iangle_invariant_mod_pi
+    · exact ⟨hc, ⟨_hca.1, _hcb.1⟩, Ray.snd_pt_lies_on_mk_pt_pt, Ray.snd_pt_lies_on_mk_pt_pt⟩
+    · exact ⟨hd, ⟨_hda.1, _hdb.1⟩, Ray.snd_pt_lies_on_mk_pt_pt, Ray.snd_pt_lies_on_mk_pt_pt⟩
 
 end iangle
 

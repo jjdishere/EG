@@ -187,7 +187,7 @@ theorem angbisline_of_angle₁_angle₂_not_parallel {tri_nd : TriangleND P} : �
     exact h₅.symm
   have g₁ : IsConsecutiveIntAng A₁ A₂ := ⟨sr, er⟩
   have g₂ : A₁.value - A₂.value = π := by
-    simp only [value_sub_eq_pi_of_isConsecutiveIntAng g₁, add_sub_cancel']
+    simp only [value_eq_value_add_pi_of_isConsecutiveIntAng g₁, add_sub_cancel']
   sorry
 
 

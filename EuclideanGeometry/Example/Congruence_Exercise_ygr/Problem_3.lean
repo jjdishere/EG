@@ -4,6 +4,8 @@ noncomputable section
 
 namespace EuclidGeom
 
+open Angle
+
 namespace Congruence_Exercise_ygr
 
 namespace Problem_3
@@ -67,21 +69,20 @@ theorem Result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : ∠ 
     have triv₂ : (RAY e.C e.B C_ne_B.symm) = (RAY e.C e.B C_ne_B.symm) := by rfl
     have h' : ∠ e.D e.B e.A (e.D_ne_B) (e.A_ne_B) = ∠ e.A e.C e.D (e.A_ne_C) (e.D_ne_C) := by
       calc
-        _=∠ e.D e.B e.C (e.D_ne_B) (C_ne_B) + ∠ e.C e.B e.A (C_ne_B) (e.A_ne_B)  := by
-          apply Angle.ang_eq_ang_add_ang_mod_pi_of_adj_ang (ANG  e.D e.B e.C (e.D_ne_B) (C_ne_B)) (ANG e.C e.B e.A (C_ne_B) (e.A_ne_B)) (triv₁)
-        _=-∠ e.C e.B e.D (C_ne_B) (e.D_ne_B) + ∠ e.A e.C e.B (e.A_ne_C) (C_ne_B.symm):= by
+        _= ∠ e.D e.B e.C (e.D_ne_B) (C_ne_B) + ∠ e.C e.B e.A (C_ne_B) (e.A_ne_B) := by
+          exact (value_add_eq_add_value e.B e.D e.A e.C).symm
+        _=  -∠ e.C e.B e.D (C_ne_B) (e.D_ne_B) + ∠ e.A e.C e.B (e.A_ne_C) (C_ne_B.symm) := by
           simp only [isoc_ABC_ang]
           simp only [neg_value_of_rev_ang (e.D_ne_B) (C_ne_B)]
-        _=-∠ e.D e.C e.B (e.D_ne_C) (C_ne_B.symm) + ∠ e.A e.C e.B (e.A_ne_C) (C_ne_B.symm):= by
+        _= - ∠ e.D e.C e.B (e.D_ne_C) (C_ne_B.symm) + ∠ e.A e.C e.B (e.A_ne_C) (C_ne_B.symm) := by
           simp only [isoc_DBC_ang]
-        _=∠ e.A e.C e.B (e.A_ne_C) (C_ne_B.symm) + ∠ e.B e.C e.D (C_ne_B.symm) (e.D_ne_C) := by
+        _= ∠ e.A e.C e.B (e.A_ne_C) (C_ne_B.symm) + ∠ e.B e.C e.D (C_ne_B.symm) (e.D_ne_C) := by
           simp only[neg_value_of_rev_ang (e.D_ne_C) (C_ne_B.symm)]
           abel
-        _=∠ e.A e.C e.D (e.A_ne_C) (e.D_ne_C) := by
-          symm
-          apply Angle.ang_eq_ang_add_ang_mod_pi_of_adj_ang (ANG  e.A e.C e.B (e.A_ne_C) (C_ne_B.symm)) (ANG e.B e.C e.D (C_ne_B.symm) (e.D_ne_C)) (triv₂)
+        _= ∠ e.A e.C e.D (e.A_ne_C) (e.D_ne_C) := by
+          exact value_add_eq_add_value e.C e.A e.D e.B
     simp only [← h']
-    simp only[neg_value_of_rev_ang (e.A_ne_B) (e.D_ne_B)]
+    simp only [neg_value_of_rev_ang (e.A_ne_B) (e.D_ne_B)]
   exact h
 end Problem_3
 end Congruence_Exercise_ygr

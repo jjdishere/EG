@@ -4,12 +4,43 @@ import EuclideanGeometry.Foundation.Axiom.Triangle.Basic_ex
 namespace EuclidGeom
 open AngValue
 
-variable {P : Type*} [EuclideanPlane P]
+variable {P : Type*} [EuclideanPlane P] {tr_nd : TriangleND P}
 
-structure TriangleND.IsAcute (tr_nd : TriangleND P) : Prop where
+namespace TriangleND
+
+theorem value_abs_add_value_abs_lt_pi : tr_nd.angle₁.value.abs + tr_nd.angle₂.value.abs < π := sorry
+
+@[pp_dot]
+structure IsAcu (tr_nd : TriangleND P) : Prop where
   angle₁ : tr_nd.angle₁.IsAcu
   angle₂ : tr_nd.angle₂.IsAcu
   angle₃ : tr_nd.angle₃.IsAcu
+
+theorem perm_isAcu_iff_isAcu : tr_nd.perm_vertices.IsAcu ↔ tr_nd.IsAcu := sorry
+
+theorem flip_isAcu_iff_isAcu : tr_nd.flip_vertices.IsAcu ↔ tr_nd.IsAcu := sorry
+
+@[pp_dot]
+def IsRt (tr_nd : TriangleND P) : Prop :=
+  tr_nd.angle₁.IsRt
+
+theorem flip_isRt_iff_isRt : tr_nd.flip_vertices.IsAcu ↔ tr_nd.IsAcu := sorry
+
+theorem angle₂_isAcu_of_isRt (h : tr_nd.IsRt) : tr_nd.angle₂.IsAcu := sorry
+
+theorem angle₃_isAcu_of_isRt (h : tr_nd.IsRt) : tr_nd.angle₃.IsAcu := sorry
+
+@[pp_dot]
+def IsObt (tr_nd : TriangleND P) : Prop :=
+  tr_nd.angle₁.IsObt
+
+theorem flip_isObt_iff_isObt : tr_nd.flip_vertices.IsAcu ↔ tr_nd.IsAcu := sorry
+
+theorem angle₂_isAcu_of_isObt (h : tr_nd.IsObt) : tr_nd.angle₂.IsAcu := sorry
+
+theorem angle₃_isAcu_of_isObt (h : tr_nd.IsObt) : tr_nd.angle₃.IsAcu := sorry
+
+end TriangleND
 
 variable {tr_nd₁ tr_nd₂ : TriangleND P}
 

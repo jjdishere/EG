@@ -120,10 +120,10 @@ Therefore, $\angle EAX = \angle ABC = - \angle ACB = \angle XAC$.
   _= - ∠ e.C e.B e.A e.C_ne_B e.B_ne_A.symm := by exact neg_value_of_rev_ang e.B_ne_A.symm e.C_ne_B
   -- $ - \angle CBA = - \angle ACB$ because $\angle CBA = \angle ACB$ in the isoceles triangle $ABC$,
   _= - ∠ e.A e.C e.B e.C_ne_A.symm e.C_ne_B.symm := by
-    simp only [neg_inj] ; exact is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.B e.C e.not_collinear_ABC)).mp e.isoceles_ABC
+    simp only [neg_inj] ; exact (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (TRI_nd e.A e.B e.C e.not_collinear_ABC)).mp e.isoceles_ABC
   -- as $AC$ has the opposite direction of $CA$ and $AX$ has the opposite direction of $CB$, we have $\angle ACB = - \angle XAC$,
   _= - ∠ e.C e.A e.X e.C_ne_A e.X_ne_A := by
-    simp only [neg_inj] ; exact ang_eq_ang_of_toDir_eq_neg_toDir dir_AC_eq_neg_dir_CA dir_CB_eq_neg_dir_AX
+    simp only [neg_inj] ; exact value_eq_of_dir_eq_neg_dir dir_AC_eq_neg_dir_CA dir_CB_eq_neg_dir_AX
   -- $ - \angle CAX = \angle XAC$ by symmetry.
   _= ∠ e.X e.A e.C e.X_ne_A e.C_ne_A := by symm; exact neg_value_of_rev_ang e.X_ne_A e.C_ne_A
 

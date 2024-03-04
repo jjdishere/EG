@@ -60,6 +60,9 @@ theorem neg_vec_norm_eq (A B : P) : ‖- VEC A B‖ = ‖VEC A B‖ := by
 theorem vec_norm_eq_rev (A B : P) : ‖VEC A B‖ = ‖VEC B A‖ := by
   rw [← neg_vec, neg_vec_norm_eq]
 
+theorem vec_norm_eq_dist (A B : P) : ‖VEC A B‖ = dist A B :=
+  (vec_norm_eq_rev A B).trans (NormedAddTorsor.dist_eq_norm' A B).symm
+
 theorem eq_iff_vec_eq_zero {A B : P} : B = A ↔ VEC A B = 0 := vsub_eq_zero_iff_eq.symm
 
 theorem ne_iff_vec_ne_zero {A B : P} : B ≠ A ↔ VEC A B ≠ 0 := eq_iff_vec_eq_zero.not
@@ -118,7 +121,7 @@ def delabVecNDMkPtPt : Delab := do
 lemma VecND.coe_mkPtPt (A B : P) [_h : Fact (B ≠ A)] : VEC_nd A B = VEC A B := rfl
 
 @[simp low]
-theorem VecND.neg_vecND (A B : P) [_h : Fact (B ≠ A)] : (- VEC_nd A B)= VEC_nd B A _h.1.symm := by
+theorem VecND.neg_vecND (A B : P) [_h : Fact (B ≠ A)] : - VEC_nd A B = VEC_nd B A _h.1.symm := by
   haveI : Fact (A ≠ B) := ⟨_h.1.symm⟩
   ext
   simp only [ne_eq, RayVector.coe_neg, coe_mkPtPt, neg_vec]

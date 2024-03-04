@@ -555,10 +555,6 @@ theorem mk_pt_proj_eq_of_eq_toProj {A : P} {l : Line P} (h : A LiesOn l) {x : Pr
 theorem eq_of_same_toProj_and_pt_lies_on {A : P} {l₁ l₂ : Line P} (h₁ : A LiesOn l₁) (h₂ : A LiesOn l₂) (h : l₁.toProj = l₂.toProj) : l₁ = l₂ := by
   rw [← mk_pt_proj_eq h₁, mk_pt_proj_eq_of_eq_toProj h₂ h]
 
-/-- Given a point $A$, there exists a line through $A$. -/
-theorem exist_line_pt_lies_on (A : P) : ∃ l : Line P, A LiesOn l :=
-  ⟨Line.mk_pt_vec_nd A (Classical.arbitrary _), pt_lies_on_of_mk_pt_vec_nd _ _⟩
-
 theorem exist_rep_ray_source_eq_pt {l : Line P} {A : P} (ha : A LiesOn l) : ∃ r : Ray P , r.source = A ∧ r.toLine = l := by
   rcases (Quotient.exists_rep l.toProj) with ⟨d , _⟩
   let r : Ray P := ⟨A, d⟩
@@ -571,6 +567,17 @@ theorem exist_rep_ray_source_eq_pt {l : Line P} {A : P} (ha : A LiesOn l) : ∃ 
 end pt_proj
 
 end Line
+
+/-- Given a point $A$, there exists a line through $A$. -/
+theorem exist_line_pt_lies_on (A : P) : ∃ l : Line P, A LiesOn l :=
+  ⟨Line.mk_pt_vec_nd A (Classical.arbitrary _), Line.pt_lies_on_of_mk_pt_vec_nd _ _⟩
+
+theorem exist_line_of_pt_pt (A B : P) : ∃ l : Line P, A LiesOn l ∧ B LiesOn l := by
+  by_cases h : B = A
+  · simp only [h, and_self]
+    exact exist_line_pt_lies_on A
+  · haveI : PtNe B A := ⟨h⟩
+    exact ⟨LIN A B, Line.fst_pt_lies_on_mk_pt_pt, Line.snd_pt_lies_on_mk_pt_pt⟩
 
 section pt_dir
 
@@ -639,12 +646,12 @@ theorem eq_dirline_or_rev_of_pt_pt_lies_on_of_ne {A B : P} [_h : PtNe B A] {l₁
 theorem toProj_eq_seg_nd_toProj_of_lies_on {A B : P} {l : DirLine P} (ha : A LiesOn l) (hb : B LiesOn l) [_h : PtNe B A] : (SEG_nd A B).toProj = l.toProj :=
   (Line.toProj_eq_seg_nd_toProj_of_lies_on ha hb).trans l.toLine_toProj_eq_toProj
 
+end DirLine
+
 /-- Given a point $A$, there exists a directed line $l$ such that $A$ lies on $l$. -/
 theorem exist_dirline_pt_lies_on (A : P) : ∃ l : DirLine P, A LiesOn l := by
-  rcases Line.exist_line_pt_lies_on A with ⟨⟨r⟩, h⟩
+  rcases exist_line_pt_lies_on A with ⟨⟨r⟩, h⟩
   exact ⟨r.toDirLine, h⟩
-
-end DirLine
 
 end pt_dir
 
@@ -653,7 +660,6 @@ end pt_dir
 open Line DirLine
 
 section coercion
-
 
 /-- The line associated with a ray is the same as the line associated with its reverse. -/
 theorem Ray.toLine_eq_rev_toLine {r : Ray P} : r.toLine = r.reverse.toLine :=
@@ -720,11 +726,11 @@ theorem ray_subset_line {r : Ray P} {l : Line P} (h : r.toLine = l) : r.carrier 
   exact r.subset_toLine
 
 /-- Given a point $A$ lying on a nondegenerate segment $s$, the point $A$ also lies on the line associated to $s$. -/
-theorem seg_lies_on_line {s : SegND P} {A : P} (h : A LiesOn s) : A LiesOn s.toLine :=
+theorem SegND.lies_on_toLine {s : SegND P} {A : P} (h : A LiesOn s) : A LiesOn s.toLine :=
   Set.mem_of_subset_of_mem (ray_subset_line rfl) (SegND.lies_on_toRay_of_lies_on h)
 
 /-- The underlying set of a nondegenerate segment $s$ is a subset of the underlying set of the line associated to $s$. -/
-theorem SegND.subset_toLine {s : SegND P} : s.carrier ⊆ s.toLine.carrier := fun _ ↦ seg_lies_on_line
+theorem SegND.subset_toLine {s : SegND P} : s.carrier ⊆ s.toLine.carrier := fun _ ↦ SegND.lies_on_toLine
 
 /-- The underlying set of a nondegenerate segment is a subset of the underlying set of the line associated to the segment. -/
 theorem seg_subset_line {s : SegND P} {l : Line P} (h : s.toLine = l) : s.carrier ⊆ l.carrier := by
@@ -848,7 +854,7 @@ theorem ray_subset_dirline {r : Ray P} {l : DirLine P} (h : r.toDirLine = l) : r
 
 /-- A point $A$ lying on a nondegenerate segment $s$ also lies on the directed line associated to $s$. -/
 theorem seg_lies_on_dirline {s : SegND P} {A : P} (h : A LiesOn s.1) : A LiesOn s.toDirLine :=
-  seg_lies_on_line h
+  SegND.lies_on_toLine h
 
 /-- The underlying set of a nondegenerate segment $s$ is a subset of the underlying set of the line associated to $s$. -/
 theorem SegND.subset_toDirLine {s : SegND P} : s.carrier ⊆ s.toDirLine.carrier := s.subset_toLine
@@ -1070,27 +1076,32 @@ theorem lies_on_line_of_pt_pt_iff_collinear {A B : P} [_h : PtNe B A] (X : P) : 
 theorem lies_on_iff_collinear_of_ne_lies_on_lies_on {A B : P} {l : Line P} [_h : PtNe B A] (ha : A LiesOn l) (hb : B LiesOn l) (C : P) : (C LiesOn l) ↔ Collinear A B C :=
   ⟨fun hc ↦ l.linear ha hb hc, fun c ↦ l.maximal ha hb c⟩
 
-/-- The given theorem is an equivalence statement between the collinearity of three points and the existence of a line on which all three points lie. -/
-theorem collinear_iff_exist_line_lies_on (A B C : P) : Collinear A B C ↔ ∃ l : Line P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) := by
-  constructor
-  · intro c
-    by_cases h : PtNe B A
-    · exact ⟨LIN A B, fst_pt_lies_on_mk_pt_pt, snd_pt_lies_on_mk_pt_pt,
-        (lies_on_line_of_pt_pt_iff_collinear C).mpr c⟩
-    rw [PtNe, fact_iff, ne_eq, not_not] at h
-    by_cases hh : PtNe C B
-    · use LIN B C hh.out
-      rw [← h, and_self_left]
-      exact ⟨fst_pt_lies_on_mk_pt_pt, snd_pt_lies_on_mk_pt_pt⟩
-    rw [PtNe, fact_iff, ne_eq, not_not] at hh
-    simp only [hh, h, and_self, exist_line_pt_lies_on A]
-  · intro ⟨l, ha, hb, hc⟩
-    if h : PtNe B A then exact (lies_on_iff_collinear_of_ne_lies_on_lies_on ha hb C).mp hc
-    else
-      simp [PtNe, fact_iff] at h
-      simp only [h, Collinear, or_true, dite_true]
+theorem ne_pt_pt_of_not_collinear_of_lies_on {A B C : P} [_h : PtNe B A] {l : Line P} (hc : C LiesOn l) (h : ¬ Collinear A B C) : l ≠ LIN A B := by
+  contrapose! h
+  rw [h] at hc
+  exact (lies_on_line_of_pt_pt_iff_collinear C).mp hc
 
 end Line
+
+theorem exist_line_lies_on_of_collinear {A B C : P} (h : Collinear A B C) : ∃ (l : Line P), A LiesOn l ∧ B LiesOn l ∧ C LiesOn l := by
+  by_cases hba : PtNe B A
+  · exact ⟨LIN A B, Line.fst_pt_lies_on_mk_pt_pt, Line.snd_pt_lies_on_mk_pt_pt,
+      (lies_on_line_of_pt_pt_iff_collinear C).mpr h⟩
+  rw [PtNe, fact_iff, ne_eq, not_not] at hba
+  by_cases hcb : PtNe C B
+  · use LIN B C hcb.out
+    rw [← hba, and_self_left]
+    exact ⟨Line.fst_pt_lies_on_mk_pt_pt, Line.snd_pt_lies_on_mk_pt_pt⟩
+  rw [PtNe, fact_iff, ne_eq, not_not] at hcb
+  simp only [hba, hcb, and_self, exist_line_pt_lies_on A]
+
+/-- The given theorem is an equivalence statement between the collinearity of three points and the existence of a line on which all three points lie. -/
+theorem collinear_iff_exist_line_lies_on (A B C : P) : Collinear A B C ↔ ∃ l : Line P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) := by
+  refine' ⟨fun h ↦ exist_line_lies_on_of_collinear h, fun ⟨l, ha, hb, hc⟩ ↦ _⟩
+  if h : PtNe B A then exact (lies_on_iff_collinear_of_ne_lies_on_lies_on ha hb C).mp hc
+  else
+    simp only [fact_iff, ne_eq, not_not] at h
+    simp only [h, Collinear, or_true, dite_true]
 
 namespace DirLine
 
@@ -1114,11 +1125,14 @@ theorem lies_on_dirline_of_pt_pt_iff_collinear {A B : P} [_h : PtNe B A] (X : P)
 theorem lies_on_iff_collinear_of_ne_lies_on_lies_on {A B : P} {l : DirLine P} [_h : PtNe B A] (ha : A LiesOn l) (hb : B LiesOn l) (C : P) : (C LiesOn l) ↔ Collinear A B C :=
   Line.lies_on_iff_collinear_of_ne_lies_on_lies_on ha hb C
 
-/-- The theorem states that three points $A$, $B$, and $C$ are collinear if and only if there exists a line $l$ such that $A$, $B$, and $C$ all lie on $l$. -/
-theorem collinear_iff_exist_line_lies_on (A B C : P) : Collinear A B C ↔ ∃ l : Line P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) :=
-  Line.collinear_iff_exist_line_lies_on A B C
-
 end DirLine
+
+/-- The theorem states that three points $A$, $B$, and $C$ are collinear if and only if there exists a directed line $l$ such that $A$, $B$, and $C$ all lie on $l$. -/
+theorem collinear_iff_exist_dirLine_lies_on (A B C : P) : Collinear A B C ↔ ∃ l : DirLine P, (A LiesOn l) ∧ (B LiesOn l) ∧ (C LiesOn l) := by
+  refine' ⟨fun h ↦ _, fun ⟨l, h⟩ ↦ (collinear_iff_exist_line_lies_on A B C).mpr ⟨l.toLine, h⟩⟩
+  rcases (collinear_iff_exist_line_lies_on A B C).mp h with ⟨l, h⟩
+  induction' l using Line.ind with r
+  exact ⟨r.toDirLine, h⟩
 
 end Collinear
 
@@ -1185,6 +1199,8 @@ section addtorsor
 
 namespace DirLine
 
+abbrev lelem (A : P) {l : DirLine P} (ha : A LiesOn l) : l.carrier.Elem := ⟨A, ha⟩
+
 /-- A directed line can be viewed as a torsor over the addition group structure of $\mathbb{R}$, that is, points on a directed line can be translated by real multiples of the unit direction vector. -/
 instance instRealNormedAddTorsor (l : DirLine P) : NormedAddTorsor ℝ l.carrier.Elem where
   vadd :=
@@ -1229,7 +1245,7 @@ section ddist
 
 /-- Given two points $A$ and $B$ on a directed line $l$, this function returns the distance from $A$ to $B$ on the directed line $l$, as a real number; or in short $\dist(A, B)$. -/
 def ddist {l : DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : ℝ :=
-  (⟨B, hb⟩ : l.carrier.Elem) -ᵥ ⟨A, ha⟩
+  (lelem B hb) -ᵥ (lelem A ha)
 
 /-- For a point $A$ on a directed line $l$, the distance from $A$ to itself is $0$, i.e. $\dist(A, A) = 0$. -/
 @[simp]
@@ -1287,6 +1303,12 @@ theorem ddist_add_ddist_comm {l: DirLine P} {A B C D : P} (ha : A LiesOn l) (hb 
   rw [add_comm, ← neg_ddist_eq_ddist_rev hd ha]
   rfl
 
+theorem pt_eq_ddist_smul_toDir_unitVec_vadd {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : B = ddist ha hb • l.toDir.unitVec +ᵥ A :=
+  Subtype.val_inj.mpr ((eq_vadd_iff_vsub_eq _ (ddist ha hb) _).mpr rfl)
+
+theorem vec_eq_ddist_smul_toDir_unitVec {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : VEC A B = ddist ha hb • l.toDir.unitVec :=
+  (eq_vadd_iff_vsub_eq B _ A).mp (pt_eq_ddist_smul_toDir_unitVec_vadd ha hb)
+
 end ddist
 
 section order
@@ -1295,12 +1317,12 @@ instance instLinearOrderedAddTorsor (l : DirLine P) : LinearOrderedAddTorsor ℝ
   AddTorsor.LinearOrderedAddTorsor_of_LinearOrderedAddCommGroup ℝ l.carrier.Elem
 
 /-- The theorem states that for two points $A$ and $B$ on a directed line $l$, we write $A \leq B$ if the distance from $A$ to $B$ is nonnegative. -/
-theorem le_iff_zero_le_ddist {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : (⟨A, ha⟩ : l.carrier.Elem) ≤ ⟨B, hb⟩ ↔ 0 ≤ ddist ha hb :=
-  vsub_le_zero_iff_zero_le_vsub_rev (⟨A, ha⟩ : l.carrier.Elem) ⟨B, hb⟩
+theorem le_iff_ddist_nonneg {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : (lelem A ha) ≤ (lelem B hb) ↔ 0 ≤ ddist ha hb :=
+  vsub_nonpos_iff_vsub_rev_nonneg (lelem A ha) (lelem B hb)
 
 /-- For two points $A$ and $B$ on a directed line $l$, $A$ is less than $B$ if and only if the distance from $A$ to $B$ is positive. -/
-theorem lt_iff_zero_lt_ddist {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : (⟨A, ha⟩ : l.carrier.Elem) < ⟨B, hb⟩ ↔ 0 < ddist ha hb :=
-  vsub_lt_zero_iff_zero_lt_vsub_rev (⟨A, ha⟩ : l.carrier.Elem) ⟨B, hb⟩
+theorem lt_iff_ddist_pos {l: DirLine P} {A B : P} (ha : A LiesOn l) (hb : B LiesOn l) : (lelem A ha) < (lelem B hb) ↔ 0 < ddist ha hb :=
+  vsub_neg_iff_vsub_rev_pos (lelem A ha) (lelem B hb)
 
 end order
 
@@ -1308,46 +1330,4 @@ end DirLine
 
 end addtorsor
 
-section Collinear
-
-lemma snd_pt_lies_on_mk_pt_proj_of_vec (A B : P) [hh : PtNe A B] : B LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
-  have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)) = (SEG_nd A B).toLine := by
-    have : (Line.mk_pt_proj A ((VEC_nd A B).toProj)).toProj = (SEG_nd A B).toLine.toProj := by
-      calc
-      _= ((VEC_nd A B).toProj) := by apply Line.proj_eq_of_mk_pt_proj
-      _= _ := by rfl
-    apply Line.eq_of_same_toProj_and_pt_lies_on (A := A) _ _ this
-    apply Line.pt_lies_on_of_mk_pt_proj
-    apply SegND.source_lies_on_toLine
-  simp only [this]
-  apply SegND.target_lies_on_toLine
-
-theorem exist_line_of_collinear {A B C : P} (h : Collinear A B C) : ∃ (l : Line P), A LiesOn l ∧ B LiesOn l ∧ C LiesOn l := by
-  unfold Collinear at h
-  rcases eq_or_ne C B with (c_eq_b | c_ne_b)
-  · simp only [c_eq_b]; simp only [and_self]
-    rcases eq_or_ne B A with (b_eq_a | b_ne_a)
-    · simp only [b_eq_a, and_self]; apply Line.exist_line_pt_lies_on
-    · haveI : PtNe B A := ⟨b_ne_a⟩
-      refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj), snd_pt_lies_on_mk_pt_proj_of_vec A B⟩
-  · rcases eq_or_ne A C with (a_eq_c | a_ne_c)
-    · simp only [a_eq_c.symm]
-      rcases eq_or_ne B A with (b_eq_a | b_ne_a)
-      · simp only [b_eq_a, and_self]; apply Line.exist_line_pt_lies_on
-      · haveI : PtNe B A := ⟨b_ne_a⟩
-        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj), snd_pt_lies_on_mk_pt_proj_of_vec A B, Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj)⟩
-    · rcases eq_or_ne B A with (b_eq_a | b_ne_a)
-      · simp only [b_eq_a, and_self_left]
-        haveI : PtNe A C := ⟨a_ne_c⟩
-        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A C).toProj)), Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A C).toProj), snd_pt_lies_on_mk_pt_proj_of_vec A C⟩
-      · simp only [c_ne_b, a_ne_c, b_ne_a, or_self, dite_false] at h
-        unfold collinear_of_nd at h
-        haveI : PtNe B A := ⟨b_ne_a⟩
-        haveI : PtNe A C := ⟨a_ne_c⟩
-        haveI : PtNe C B := ⟨c_ne_b⟩
-        have h3 : C LiesOn (Line.mk_pt_proj A ((VEC_nd A B).toProj)) := by
-          simp only [h]; exact snd_pt_lies_on_mk_pt_proj_of_vec A C
-        refine' ⟨(Line.mk_pt_proj A ((VEC_nd A B).toProj)), (Line.pt_lies_on_of_mk_pt_proj A ((VEC_nd A B).toProj)), snd_pt_lies_on_mk_pt_proj_of_vec A B, h3⟩
-
-end Collinear
 end EuclidGeom
