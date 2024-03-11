@@ -158,6 +158,7 @@ variable {P : Type*} [EuclideanPlane P] (tr : Triangle P) (tr_nd : TriangleND P)
 
 namespace Triangle
 
+@[pp_dot]
 def perm_vertices : (Triangle P) where
   point₁ := tr.point₂
   point₂ := tr.point₃
@@ -169,7 +170,7 @@ def perm_vertices : (Triangle P) where
 theorem eq_self_of_perm_vertices_three_times : tr.perm_vertices.perm_vertices.perm_vertices = tr := rfl
 
 -- flip vertices for triangles means to flip the second and the third vertices.
-
+@[pp_dot]
 def flip_vertices : (Triangle P) where
   point₁ := tr.point₁
   point₂ := tr.point₃
@@ -384,7 +385,7 @@ theorem angle₁_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₁.value.IsPos
       positivity
   simp only [pos]
   simp only [eq_iff_iff]
-  exact isPos_iff_zero_lt_sin.symm
+  exact isPos_iff_sin_pos.symm
 
 theorem angle₂_pos_iff_cclock : tr_nd.is_cclock ↔ tr_nd.angle₂.value.IsPos := by
   have eqcc : tr_nd.is_cclock = tr_nd.perm_vertices.is_cclock := by

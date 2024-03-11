@@ -244,7 +244,7 @@ theorem tangent_pt_eq_perp_foot {l : DirLine P} {ω : Circle P} (h : l Tangent �
       _ = l.toLine.toProj.perp := tangent_pt_center_perp_line h
       _ = l.toProj.perp := by rw [DirLine.toLine_toProj_eq_toProj]
   symm
-  exact perp_foot_unique (inx_pts_lieson_dlin _).1 hp
+  exact perp_foot_unique' (inx_pts_lieson_dlin _).1 hp
 
 end DirLC
 
@@ -275,7 +275,7 @@ theorem DirLC_intersection_eq_inxpts {l : DirLine P} {ω : Circle P} {A : P} (h 
     show A = Tangentpt h'
     calc
       _ = perp_foot ω.center l := by
-        apply eq_dist_eq_perp_foot h₁
+        apply (eq_dist_pt_line_iff_eq_perp_foot h₁).mp
         rw [h₂, h']
       _ = Tangentpt h' := by rw [tangent_pt_eq_perp_foot _]
   contrapose! h₂

@@ -51,9 +51,8 @@ theorem Shan_Problem_1_9 : (SEG A B).length = 2 * (SEG D E).length := by
   -- $D F E$ is not collinear
   have dfe_not_collinear : ¬ Collinear D F E := sorry
   -- $ED = DF$ because $\triangle DFE$ is isoceles
-  have dfe_isoceles : (TRI_nd D F E dfe_not_collinear).1.IsIsoceles := by
-    apply is_isoceles_tri_iff_ang_eq_ang_of_nd_tri.mpr
-    exact ang₄
+  have dfe_isoceles : (TRI_nd D F E dfe_not_collinear).1.IsIsoceles :=
+    (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (TRI_nd D F E dfe_not_collinear)).mpr ang₄
   have ed_eq_df : (SEG E D).length = (SEG D F).length := by
     exact dfe_isoceles
   -- $ED = DF = \frac{1}{2} AB$

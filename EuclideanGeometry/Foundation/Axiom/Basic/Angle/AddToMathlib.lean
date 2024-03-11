@@ -8,6 +8,7 @@ Maybe we can create some PRs to mathlib in the future.
 -/
 
 open Real Classical
+
 attribute [ext] Complex.ext
 
 /-!
@@ -343,51 +344,51 @@ theorem cos_pi_sub : cos (π - θ) = - cos θ := by
   rw [← θ.coe_toReal]
   exact (θ.toReal).cos_pi_sub
 
-theorem zero_lt_sin_of_zero_lt_toReal_lt_pi (h : 0 < θ.toReal) (hp : θ.toReal < π) : 0 < sin θ :=
+theorem sin_pos_of_zero_lt_toReal_lt_pi (h : 0 < θ.toReal) (hp : θ.toReal < π) : 0 < sin θ :=
   θ.sin_toReal.trans_gt (sin_pos_of_pos_of_lt_pi h hp)
 
-theorem zero_le_zero_of_zero_le_toReal (h : 0 ≤ θ.toReal) : 0 ≤ sin θ :=
+theorem sin_nonneg_of_toReal_nonneg (h : 0 ≤ θ.toReal) : 0 ≤ sin θ :=
   θ.sin_toReal.trans_ge (sin_nonneg_of_nonneg_of_le_pi h θ.toReal_le_pi)
 
-theorem sin_lt_zero_of_toReal_lt_zero (h : θ.toReal < 0) : sin θ < 0 :=
+theorem sin_neg_of_toReal_neg (h : θ.toReal < 0) : sin θ < 0 :=
   θ.sin_toReal.symm.trans_lt (sin_neg_of_neg_of_neg_pi_lt h θ.neg_pi_lt_toReal)
 
-theorem sin_le_zero_of_toReal_le_zero (h : θ.toReal ≤ 0) : sin θ ≤ 0 :=
+theorem sin_nonpos_of_toReal_nonpos (h : θ.toReal ≤ 0) : sin θ ≤ 0 :=
   θ.sin_toReal.symm.trans_le (sin_nonpos_of_nonnpos_of_neg_pi_le h (le_of_lt θ.neg_pi_lt_toReal))
 
-theorem zero_lt_cos_of_neg_pi_div_two_lt_of_lt_pi_div_two (hn : - π / 2 < θ.toReal) (h : θ.toReal < π / 2) : 0 < cos θ :=
+theorem cos_pos_of_neg_pi_div_two_lt_of_lt_pi_div_two (hn : - π / 2 < θ.toReal) (h : θ.toReal < π / 2) : 0 < cos θ :=
   θ.cos_toReal.trans_gt (cos_pos_of_mem_Ioo ⟨(neg_div' 2 π).trans_lt hn, h⟩)
 
-theorem zero_le_cos_of_neg_pi_div_two_le_of_le_pi_div_two (hn : - π / 2 ≤ θ.toReal) (h : θ.toReal ≤ π / 2) : 0 ≤ cos θ :=
+theorem cos_nonneg_of_neg_pi_div_two_le_of_le_pi_div_two (hn : - π / 2 ≤ θ.toReal) (h : θ.toReal ≤ π / 2) : 0 ≤ cos θ :=
   θ.cos_toReal.trans_ge (cos_nonneg_of_neg_pi_div_two_le_of_le ((neg_div' 2 π).trans_le hn) h)
 
-theorem cos_lt_zero_of_pi_div_two_lt_toReal (h :  π / 2 < θ.toReal) : cos θ < 0 :=
+theorem cos_neg_of_pi_div_two_lt_toReal (h :  π / 2 < θ.toReal) : cos θ < 0 :=
   θ.cos_toReal.symm.trans_lt (cos_neg_of_pi_div_two_lt_of_lt h (by linarith [θ.toReal_le_pi]))
 
-theorem cos_lt_zero_of_toReal_lt_neg_pi_div_two (h : θ.toReal < - π / 2) : cos θ < 0 :=
+theorem cos_neg_of_toReal_lt_neg_pi_div_two (h : θ.toReal < - π / 2) : cos θ < 0 :=
   θ.cos_toReal.symm.trans_lt <| θ.toReal.cos_add_two_pi.symm.trans_lt <|
     cos_neg_of_pi_div_two_lt_of_lt (by linarith [θ.neg_pi_lt_toReal]) (by linarith)
 
-theorem cos_le_zero_of_pi_div_two_le_toReal (h :  π / 2 ≤ θ.toReal) : cos θ ≤ 0 :=
+theorem cos_nonpos_of_pi_div_two_le_toReal (h :  π / 2 ≤ θ.toReal) : cos θ ≤ 0 :=
   θ.cos_toReal.symm.trans_le (cos_nonpos_of_pi_div_two_le_of_le h (by linarith [θ.toReal_le_pi]))
 
-theorem cos_le_zero_of_toReal_le_neg_pi_div_two (h : θ.toReal ≤ - π / 2) : cos θ ≤ 0 :=
+theorem cos_nonpos_of_toReal_le_neg_pi_div_two (h : θ.toReal ≤ - π / 2) : cos θ ≤ 0 :=
   θ.cos_toReal.symm.trans_le <| θ.toReal.cos_add_two_pi.symm.trans_le <|
     cos_nonpos_of_pi_div_two_le_of_le (by linarith [θ.neg_pi_lt_toReal]) (by linarith)
 
-theorem zero_lt_cos_iff : 0 < cos θ ↔ - π / 2 < θ.toReal ∧ θ.toReal < π / 2 := by
-  refine' ⟨fun h ↦ _, fun h ↦ zero_lt_cos_of_neg_pi_div_two_lt_of_lt_pi_div_two h.1 h.2⟩
+theorem cos_pos_iff : 0 < cos θ ↔ - π / 2 < θ.toReal ∧ θ.toReal < π / 2 := by
+  refine' ⟨fun h ↦ _, fun h ↦ cos_pos_of_neg_pi_div_two_lt_of_lt_pi_div_two h.1 h.2⟩
   by_contra hr
   rw [not_and_or, not_lt, not_lt] at hr
-  exact Or.casesOn hr (fun hr ↦ not_le.mpr h (cos_le_zero_of_toReal_le_neg_pi_div_two hr))
-    fun hr ↦ not_le.mpr h (cos_le_zero_of_pi_div_two_le_toReal hr)
+  exact Or.casesOn hr (fun hr ↦ not_le.mpr h (cos_nonpos_of_toReal_le_neg_pi_div_two hr))
+    fun hr ↦ not_le.mpr h (cos_nonpos_of_pi_div_two_le_toReal hr)
 
-theorem cos_lt_zero_iff : cos θ < 0 ↔ θ.toReal < - π / 2 ∨  π / 2 < θ.toReal := by
-  refine' ⟨fun h ↦ _, fun h ↦ Or.casesOn h (fun h ↦ cos_lt_zero_of_toReal_lt_neg_pi_div_two h)
-    fun h ↦ cos_lt_zero_of_pi_div_two_lt_toReal h⟩
+theorem cos_neg_iff : cos θ < 0 ↔ θ.toReal < - π / 2 ∨  π / 2 < θ.toReal := by
+  refine' ⟨fun h ↦ _, fun h ↦ Or.casesOn h (fun h ↦ cos_neg_of_toReal_lt_neg_pi_div_two h)
+    fun h ↦ cos_neg_of_pi_div_two_lt_toReal h⟩
   by_contra hr
   rw [not_or, not_lt, not_lt] at hr
-  exact not_le.mpr h (zero_le_cos_of_neg_pi_div_two_le_of_le_pi_div_two hr.1 hr.2)
+  exact not_le.mpr h (cos_nonneg_of_neg_pi_div_two_le_of_le_pi_div_two hr.1 hr.2)
 
 end Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 
@@ -855,10 +856,10 @@ section symmetry
 
 variable {G : outParam Type*} {P : Type*}
 
-lemma vsub_le_zero_iff_zero_le_vsub_rev [outParam (OrderedAddCommGroup G)] [AddTorsor G P] (a b : P) : a -ᵥ b ≤ 0 ↔ 0 ≤ b -ᵥ a :=
+lemma vsub_nonpos_iff_vsub_rev_nonneg [outParam (OrderedAddCommGroup G)] [AddTorsor G P] (a b : P) : a -ᵥ b ≤ 0 ↔ 0 ≤ b -ᵥ a :=
   (add_le_add_iff_right (b -ᵥ a)).symm.trans (by rw [vsub_add_vsub_cancel, vsub_self, zero_add])
 
-lemma vsub_lt_zero_iff_zero_lt_vsub_rev [outParam (OrderedAddCommGroup G)] [AddTorsor G P] (a b : P) : a -ᵥ b < 0 ↔ 0 < b -ᵥ a :=
+lemma vsub_neg_iff_vsub_rev_pos [outParam (OrderedAddCommGroup G)] [AddTorsor G P] (a b : P) : a -ᵥ b < 0 ↔ 0 < b -ᵥ a :=
   (add_lt_add_iff_right (b -ᵥ a)).symm.trans (by rw [vsub_add_vsub_cancel, vsub_self, zero_add])
 
 variable [outParam (CircularOrderedAddCommGroup G)] [AddTorsor G P] (a b c : P)
@@ -902,10 +903,10 @@ local instance OrderedAddTorsor_of_OrderedAddCommGroup [outParam (OrderedAddComm
   le_trans a b c hab hbc := (vsub_add_vsub_cancel a b c).symm.trans_le (add_nonpos hab hbc)
   lt_iff_le_not_le a b :=
     have h : a -ᵥ b < 0 ↔ a -ᵥ b ≤ 0 ∧ ¬ 0 ≤ a -ᵥ b := Preorder.lt_iff_le_not_le (a -ᵥ b) 0
-    ⟨fun hab ↦ ⟨(h.1 hab).1, (vsub_le_zero_iff_zero_le_vsub_rev b a).not.mpr (h.1 hab).2⟩,
-      fun ⟨hab, hba⟩ ↦ h.2 ⟨hab, (vsub_le_zero_iff_zero_le_vsub_rev b a).not.mp hba⟩⟩
+    ⟨fun hab ↦ ⟨(h.1 hab).1, (vsub_nonpos_iff_vsub_rev_nonneg b a).not.mpr (h.1 hab).2⟩,
+      fun ⟨hab, hba⟩ ↦ h.2 ⟨hab, (vsub_nonpos_iff_vsub_rev_nonneg b a).not.mp hba⟩⟩
   le_antisymm a b hab hba := eq_of_vsub_eq_zero <|
-    PartialOrder.le_antisymm (a -ᵥ b) 0 hab ((vsub_le_zero_iff_zero_le_vsub_rev b a).mp hba)
+    PartialOrder.le_antisymm (a -ᵥ b) 0 hab ((vsub_nonpos_iff_vsub_rev_nonneg b a).mp hba)
   vadd_left_le h _ := by simpa only [vadd_vsub_vadd_cancel_left] using h
   vadd_right_le h _ := by
     simpa only [vadd_vsub_vadd_cancel_right, tsub_le_iff_right, zero_add] using h
@@ -916,7 +917,7 @@ induced by the linearly ordered group. This is not an instance, since we do not 
 conflict with other linearly order structures that may exist on the `AddTorsor`. -/
 noncomputable local instance LinearOrderedAddTorsor_of_LinearOrderedAddCommGroup [outParam (LinearOrderedAddCommGroup G)] [AddTorsor G P] : LinearOrderedAddTorsor G P where
   le_total := fun a b ↦
-    (or_congr_right (vsub_le_zero_iff_zero_le_vsub_rev b a)).mpr (LinearOrder.le_total (a -ᵥ b) 0)
+    (or_congr_right (vsub_nonpos_iff_vsub_rev_nonneg b a)).mpr (LinearOrder.le_total (a -ᵥ b) 0)
   decidableLE := decRel fun _ ↦ _
   vsub_vadd' := vsub_vadd'
   vadd_vsub' := vadd_vsub'
@@ -958,3 +959,36 @@ end contruction
 end AddTorsor
 
 end Mathlib.Algebra.AddTorsor
+
+
+
+/-!
+### More theorems about real numbers divided by nature numbers
+-/
+
+section Mathlib.Data.Real.Basic
+
+theorem Real.div_nat_le_self_of_nonnneg {a : ℝ} (n : ℕ) (h : 0 ≤ a) : a / n ≤ a := by
+  show a * (↑n)⁻¹ ≤ a
+  refine' mul_le_of_le_one_right h _
+  by_cases h : n = 0
+  · simp only [h, CharP.cast_eq_zero, inv_zero, zero_le_one]
+  · exact inv_le_one (Nat.one_le_cast.mpr (Nat.one_le_iff_ne_zero.mpr h))
+
+theorem Real.div_nat_le_self_of_pos {a : ℝ} (n : ℕ) (h : 0 < a) : a / n ≤ a :=
+  a.div_nat_le_self_of_nonnneg n (le_of_lt h)
+
+theorem Real.div_nat_lt_self_of_pos_of_two_le {a : ℝ} {n : ℕ} (h : 0 < a) (hn : 2 ≤ n) : a / n < a :=
+  mul_lt_of_lt_one_right h (inv_lt_one (Nat.one_lt_cast.mpr hn))
+
+theorem Real.div_eq_div_of_div_eq_div {a b c d : ℝ} (hc : c ≠ 0) (hd : d ≠ 0) (h : a / b = c / d) : a / c = b / d := by
+  have hb : b ≠ 0 := by
+    intro hb
+    rw [hb, div_zero] at h
+    exact div_ne_zero hc hd h.symm
+  exact (div_eq_div_iff hc hd).mpr (((div_eq_div_iff hb hd).mp h).trans (mul_comm c b))
+
+theorem pi_div_nat_nonneg (n : ℕ) : 0 ≤ π / n :=
+  div_nonneg (le_of_lt pi_pos) (Nat.cast_nonneg n)
+
+end Mathlib.Data.Real.Basic

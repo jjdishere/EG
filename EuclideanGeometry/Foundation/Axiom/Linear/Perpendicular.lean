@@ -50,19 +50,23 @@ theorem parallel_of_perp_perp (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ⟂ l₃) : l�
   simp only [Perpendicular, h₂, Proj.perp_perp] at h₁
   exact h₁
 
-theorem perp_of_parallel_perp (h₁ : l₁ ∥ l₂) (h₂ : l₂ ⟂ l₃) : l₁ ⟂ l₃ := Eq.trans h₁ h₂
+theorem perp_of_parallel_perp (h₁ : l₁ ∥ l₂) (h₂ : l₂ ⟂ l₃) : l₁ ⟂ l₃ :=
+  Eq.trans h₁ h₂
 
 alias Parallel.trans_perp := perp_of_parallel_perp
 
-theorem perp_of_perp_parallel (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ∥ l₃) : l₁ ⟂ l₃ := h₁.trans (congrArg Proj.perp h₂)
+theorem perp_of_perp_parallel (h₁ : l₁ ⟂ l₂) (h₂ : l₂ ∥ l₃) : l₁ ⟂ l₃ :=
+  h₁.trans (congrArg Proj.perp h₂)
 
 /-- If $l_1$ is perpendicular to $l_2$, then they have different projective direction. -/
-theorem toProj_ne_toProj_of_perp (h : l₁ ⟂ l₂) : ProjObj.toProj l₁ ≠ ProjObj.toProj l₂ :=
+theorem toProj_ne_toProj_of_perp (h : l₁ ⟂ l₂) : toProj l₁ ≠ toProj l₂ :=
   sorry
 
 theorem not_parallel_of_perp (h : l₁ ⟂ l₂) : ¬ l₁ ∥ l₂ := toProj_ne_toProj_of_perp h
 
 end Perpendicular_and_parallel
+
+-- Add a section like the section `section parallel_iff_coercion_parallel` in parallel.lean
 
 section Perpendicular_constructions
 
@@ -111,13 +115,15 @@ def dist_pt_line (A : P) (l : Line P) := Seg.length (SEG A (perp_foot A l))
 theorem dist_eq_zero_iff_lies_on (A : P) (l : Line P) : dist_pt_line A l = 0 ↔ A LiesOn l :=
   Seg.length_eq_zero_iff_deg.trans (perp_foot_eq_self_iff_lies_on A l)
 
-theorem perp_foot_unique {A B : P} {l : DirLine P} (h : B LiesOn l) [_hne : PtNe A B] (hp : LIN A B ⟂ l) : perp_foot A l = B := sorry
+theorem perp_foot_unique {A B : P} {l : Line P} (h : B LiesOn l) [_hne : PtNe A B] (hp : LIN A B ⟂ l) : perp_foot A l = B := sorry
+
+theorem perp_foot_unique' {A B : P} {l : DirLine P} (h : B LiesOn l) [_hne : PtNe A B] (hp : DLIN A B ⟂ l) : perp_foot A l = B := sorry
 
 -- Maybe the proof of this theorem should require the Pythagorean Theorem.
 /-- Let $B$ be a point on a line $l$, then the distance from a point $A$ to $B$ is greater or equal to the distance from $A$ to $l$. -/
 theorem dist_pt_line_shortest (A B : P) {l : Line P} (h : B LiesOn l) : dist A B ≥ dist_pt_line A l := sorry
 
-theorem eq_dist_eq_perp_foot {A B : P} {l : DirLine P} (h : A LiesOn l) (heq : dist B A = dist_pt_line B l) : A = perp_foot B l := sorry
+theorem eq_dist_pt_line_iff_eq_perp_foot {A B : P} {l : Line P} (h : B LiesOn l) : dist A B = dist_pt_line A l ↔ B = perp_foot A l := sorry
 
 end Perpendicular_constructions
 
@@ -159,7 +165,50 @@ theorem inner_product_eq_zero_of_perp (v w : VecND) (h : v ⟂ w) : inner v.1 w.
   rw [h₁, h₂]
   linarith
 
+theorem perp_iff_inner_eq_zero {v w : VecND} : v ⟂ w ↔ inner v.1 w.1 = (0 : ℝ) :=
+  ⟨inner_product_eq_zero_of_perp v w, perp_of_inner_product_eq_zero v w⟩
 
 end Perpendicular_inner_product
+
+section vec
+
+variable (A B : P) {l : DirLine P}
+-- Feel free to change the order of the following theorems for ease of proof.
+
+lemma inner_vec_pt_pt_vec_pt_perp_foot_eq_inner_vec_pt_perp_foot (ha : A LiesOn l) : @inner ℝ _ _ (VEC A B) (VEC A (perp_foot B l)) = inner (VEC A (perp_foot B l)) (VEC A (perp_foot B l)) := sorry
+
+lemma inner_vec_pt_pt_dirLine_toDir_unitVec_eq_inner_vec_pt_perp_foot (ha : A LiesOn l) : @inner ℝ _ _ (VEC A B) l.toDir.unitVec = inner (VEC A (perp_foot B l)) l.toDir.unitVec := sorry
+
+theorem inner_eq_ddist_pt_perp_foot (ha : A LiesOn l) : inner (VEC A B) l.toDir.unitVec = l.ddist ha (perp_foot_lies_on_line B l) :=
+  inner_vec_pt_pt_dirLine_toDir_unitVec_eq_inner_vec_pt_perp_foot A B ha
+
+theorem perp_foot_eq_inner_smul_toDir_unitVec_vadd (ha : A LiesOn l) : perp_foot B l = (@inner ℝ _ _ (VEC A B) l.toDir.unitVec) • l.toDir.unitVec +ᵥ A := by
+  rw [inner_eq_ddist_pt_perp_foot A B ha]
+  exact l.pt_eq_ddist_smul_toDir_unitVec_vadd ha (perp_foot_lies_on_line B l)
+
+theorem vec_pt_perp_foot_eq_ddist_smul_toDir_unitVec (ha : A LiesOn l) : VEC A (perp_foot B l) = (@inner ℝ _ _ (VEC A B) l.toDir.unitVec) • l.toDir.unitVec := by
+  rw [inner_eq_ddist_pt_perp_foot A B ha]
+  exact l.vec_eq_ddist_smul_toDir_unitVec ha (perp_foot_lies_on_line B l)
+
+theorem inner_vec_pt_pt_vec_pt_perp_foot_eq_dist_sq (ha : A LiesOn l) : inner (VEC A B) (VEC A (perp_foot B l)) = dist A (perp_foot B l) ^ 2 := sorry
+
+lemma inner_vec_pt_pt_vec_perp_foot_perp_foot_eq_inner_vec_perp_foot_perp_foot : @inner ℝ _ _ (VEC A B) (VEC (perp_foot A l) (perp_foot B l)) = inner (VEC (perp_foot A l) (perp_foot B l)) (VEC (perp_foot A l) (perp_foot B l)) := sorry
+
+lemma inner_vec_pt_pt_dirLine_toDir_unitVec_eq_inner_vec_perp_foot_perp_foot : @inner ℝ _ _ (VEC A B) l.toDir.unitVec = inner (VEC (perp_foot A l) (perp_foot B l)) l.toDir.unitVec := sorry
+
+theorem inner_eq_ddist_perp_foot_perp_foot : inner (VEC A B) l.toDir.unitVec = l.ddist (perp_foot_lies_on_line A l) (perp_foot_lies_on_line B l) :=
+  inner_vec_pt_pt_dirLine_toDir_unitVec_eq_inner_vec_perp_foot_perp_foot A B
+
+theorem perp_foot_eq_inner_smul_toDir_unitVec_vadd_perp_foot : perp_foot B l = (@inner ℝ _ _ (VEC A B) l.toDir.unitVec) • l.toDir.unitVec +ᵥ perp_foot A l := by
+  rw [inner_eq_ddist_perp_foot_perp_foot]
+  exact l.pt_eq_ddist_smul_toDir_unitVec_vadd (perp_foot_lies_on_line A l) (perp_foot_lies_on_line B l)
+
+theorem vec_perp_foot_perp_foot_eq_ddist_smul_toDir_unitVec : VEC (perp_foot A l) (perp_foot B l) = (@inner ℝ _ _ (VEC A B) l.toDir.unitVec) • l.toDir.unitVec := by
+  rw [inner_eq_ddist_perp_foot_perp_foot]
+  exact l.vec_eq_ddist_smul_toDir_unitVec (perp_foot_lies_on_line A l) (perp_foot_lies_on_line B l)
+
+theorem inner_vec_pt_pt_vec_perp_foot_perp_foot_eq_dist_sq : inner (VEC A B) (VEC (perp_foot A l) (perp_foot B l)) = dist (perp_foot A l) (perp_foot B l) ^ 2 := sorry
+
+end vec
 
 end EuclidGeom

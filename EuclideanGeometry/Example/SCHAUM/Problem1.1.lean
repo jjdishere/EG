@@ -103,7 +103,7 @@ theorem Result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : (SEG
     exact dist_target_eq_dist_source_of_midpt (seg := SEG e.B e.C)
   --Because $\angle A B C = -\angle A C B$ we have $\angle D B M = -\angle E C M$
   have h₅₀ : ∠ e.C e.B e.A  = ∠ e.A e.C e.B := by
-      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ e.A e.B e.C, e.not_collinear_ABC⟩)).mp
+      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri ⟨▵ e.A e.B e.C, e.not_collinear_ABC⟩).mp
       exact e.isoc_ABC
   have M_int_BC : e.M LiesInt (SEG_nd e.B e.C) := by
     sorry

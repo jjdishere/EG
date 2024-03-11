@@ -65,8 +65,6 @@ namespace DirLine
 section linear_order
 
 -- # preparatory theorems
-abbrev lelem (A : P) {l : DirLine P} (ha : A LiesOn l) : l.carrier.Elem := ⟨A, ha⟩
--- Collinearity -- `moved to Linear.Line`
 
 -- linear order and ne
 theorem ne_iff_ne_as_line_elem {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl) : (A ≠ B) ↔ (lelem A ha ≠ lelem B hb) := by
@@ -74,18 +72,18 @@ theorem ne_iff_ne_as_line_elem {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb
 
 -- linear order and vector
 theorem exist_pos_smul_of_lt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl)(a_lt_b : (lelem A ha) < (lelem B hb)) : (∃ t : ℝ, 0 < t ∧ (VEC A B) = t • (Dl.toDir).unitVec) := by
-  have h1 : (0 : ℝ) < ddist ha hb := (DirLine.lt_iff_zero_lt_ddist ha hb).mp a_lt_b
+  have h1 : (0 : ℝ) < ddist ha hb := (lt_iff_ddist_pos ha hb).mp a_lt_b
   have h3 : ∃ t : ℝ, VEC A B = t • (Dl.toDir).unitVec := by
     apply Line.exist_real_vec_eq_smul_of_lies_on
     have : Line.mk_pt_dir A Dl.toDir = Dl.toLine := by
       calc
-      _= (DirLine.mk_pt_dir A Dl.toDir).toLine := by rfl
+      _= (mk_pt_dir A Dl.toDir).toLine := by rfl
       _=_ := by
         congr 1
-        apply DirLine.mk_pt_dir_eq_of_eq_toDir
+        apply mk_pt_dir_eq_of_eq_toDir
         exact ha; rfl
     simp only [this]
-    apply DirLine.lies_on_iff_lies_on_toLine.mpr
+    apply lies_on_iff_lies_on_toLine.mpr
     exact hb
   rcases h3 with ⟨x1, hx1⟩
   have h1 : (0 : ℝ) < inner (VEC A B) (Dl.toDir).unitVec := by exact h1
@@ -99,18 +97,18 @@ theorem exist_pos_smul_of_lt {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb :
   use x1
 
 theorem exist_nonneg_smul_of_le {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb : B LiesOn Dl)(a_le_b : (lelem A ha) ≤ (lelem B hb)) : (∃ t : ℝ, 0 ≤ t ∧ (VEC A B) = t • (Dl.toDir).unitVec) := by
-  have h1 : (0 : ℝ) ≤ ddist ha hb := (DirLine.le_iff_zero_le_ddist ha hb).mp a_le_b
+  have h1 : (0 : ℝ) ≤ ddist ha hb := (le_iff_ddist_nonneg ha hb).mp a_le_b
   have h3 : ∃ t : ℝ, VEC A B = t • (Dl.toDir).unitVec := by
     apply Line.exist_real_vec_eq_smul_of_lies_on
     have : Line.mk_pt_dir A Dl.toDir = Dl.toLine := by
       calc
-      _= (DirLine.mk_pt_dir A Dl.toDir).toLine := by rfl
+      _= (mk_pt_dir A Dl.toDir).toLine := by rfl
       _=_ := by
         congr 1
-        apply DirLine.mk_pt_dir_eq_of_eq_toDir
+        apply mk_pt_dir_eq_of_eq_toDir
         exact ha; rfl
     simp only [this]
-    apply DirLine.lies_on_iff_lies_on_toLine.mpr
+    apply lies_on_iff_lies_on_toLine.mpr
     exact hb
   rcases h3 with ⟨x1, hx1⟩
   have h1 : (0 : ℝ) ≤ inner (VEC A B) (Dl.toDir).unitVec := by exact h1
@@ -128,10 +126,10 @@ theorem lt_of_exist_pos_smul {Dl : DirLine P} {A B : P} (ha : A LiesOn Dl) (hb :
   by_contra h1
   have : ¬ 0 < ddist ha hb := by
     by_contra h3; absurd h1
-    apply (DirLine.lt_iff_zero_lt_ddist ha hb).mpr h3
+    apply (lt_iff_ddist_pos ha hb).mpr h3
   simp only [not_lt] at this
   have : lelem B hb ≤ lelem A ha := by
-    apply (DirLine.le_iff_zero_le_ddist hb ha).mpr
+    apply (le_iff_ddist_nonneg hb ha).mpr
     calc
     _≤ - ddist ha hb := by linarith
     _= ddist hb ha := by
@@ -727,18 +725,18 @@ theorem lies_on_or_lies_on_or_lies_on_of_lies_on_Line {l : Line P} {A B C : P} (
         apply Line.fst_pt_lies_on_mk_pt_pt
         apply Line.snd_pt_lies_on_mk_pt_pt
     have h1 : A LiesOn (RAY A B).toDirLine := by
-      apply DirLine.lies_on_iff_lies_on_toLine.mp
+      apply lies_on_iff_lies_on_toLine.mp
       simp only [this]; exact ha
     have h2 : B LiesOn (RAY A B).toDirLine := by
-      apply DirLine.lies_on_iff_lies_on_toLine.mp
+      apply lies_on_iff_lies_on_toLine.mp
       simp only [this]; exact hb
     have h3 : C LiesOn (RAY A B).toDirLine := by
-      apply DirLine.lies_on_iff_lies_on_toLine.mp
+      apply lies_on_iff_lies_on_toLine.mp
       simp only [this]; exact hc
     exact lies_on_or_lies_on_or_lies_on_of_lies_on_DirLine h1 h2 h3
 
 theorem lies_on_or_lies_on_or_lies_on_of_collinear {A B C : P} (h : Collinear A B C) : (A LiesOn (SEG B C)) ∨ (B LiesOn (SEG A C)) ∨ (C LiesOn (SEG A B)) := by
-  rcases exist_line_of_collinear h with ⟨l, ⟨ha, ⟨hb, hc⟩⟩⟩
+  rcases exist_line_lies_on_of_collinear h with ⟨l, ⟨ha, ⟨hb, hc⟩⟩⟩
   exact lies_on_or_lies_on_or_lies_on_of_lies_on_Line ha hb hc
 
 theorem lies_int_or_lies_int_or_lies_int_of_lies_on_DirLine {Dl : DirLine P} {A B C : P} [hh1 : PtNe A B] [hh2 : PtNe A C] [hh3 : PtNe B C] (ha : A LiesOn Dl) (hb : B LiesOn Dl) (hc : C LiesOn Dl) : (A LiesInt (SEG B C)) ∨ (B LiesInt (SEG A C)) ∨ (C LiesInt (SEG A B)) := by

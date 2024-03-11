@@ -89,7 +89,7 @@ theorem Result {Plane : Type*} [EuclideanPlane Plane] (e : Setting Plane) : ∠ 
       _= (SEG e.E e.C).length := length_of_rev_eq_length' --$CE = EC$ by symmetry
   --In the isoceles triangle $A B C$, we have $\angle A B C = -\angle A C B$.
   have h₂₀ : ∠ e.C e.B e.A (e.C_ne_B) (e.A_ne_B) = ∠ e.A e.C e.B (e.A_ne_C) (e.B_ne_C) := by
-      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := ⟨▵ e.A e.B e.C, e.not_collinear_ABC⟩)).mp
+      apply (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri ⟨▵ e.A e.B e.C, e.not_collinear_ABC⟩).mp
       exact e.isoc_ABC
   --Because $\angle A B C = -\angle A C B$ we have $\angle A B D = -\angle A C E$
   have A_int_ray_BA : e.A LiesInt (RAY e.B e.A e.A_ne_B) := by

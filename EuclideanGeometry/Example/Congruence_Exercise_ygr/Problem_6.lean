@@ -100,7 +100,7 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (S
       apply Angle.neg_value_of_rev_ang
     _= ↑ (π) + (∠ e.A e.E e.D) := by
       congr 1;
-      exact is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (tri_nd := (TRI_nd e.A e.D e.E not_collinear_ADE)).mp isoceles_ADE
+      exact (is_isoceles_tri_iff_ang_eq_ang_of_nd_tri (TRI_nd e.A e.D e.E not_colinear_ADE)).mp isoceles_ADE
     _= (∠ e.D e.E e.C) + (∠ e.A e.E e.D) := by
       congr 1; symm; exact Angle.value_eq_pi_of_lies_int_seg_nd e.E_int_DC
     _= (∠ e.A e.E e.D) + (∠ e.D e.E e.C) := by abel

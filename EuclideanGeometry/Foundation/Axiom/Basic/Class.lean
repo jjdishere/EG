@@ -126,9 +126,9 @@ instance (α : Type*) [HasCongr α] : IsEquiv α HasCongr.congr where
   trans _ _ _ := HasCongr.trans
   symm _ _ := HasCongr.symm
 
-scoped infix : 50 " ≅ " => HasCongr.congr
-
 scoped infix : 50 " IsCongrTo " => HasCongr.congr
+
+scoped infix : 50 " ≅ " => HasCongr.congr
 
 class HasACongr (α : Type*) where
   acongr : α → α → Prop
@@ -137,9 +137,9 @@ class HasACongr (α : Type*) where
 instance (α : Type*) [HasACongr α] : IsSymm α HasACongr.acongr where
   symm _ _ := HasACongr.symm
 
-scoped infix : 50 " ≅ₐ " => HasACongr.acongr
-
 scoped infix : 50 " IsACongrTo " => HasACongr.acongr
+
+scoped infix : 50 " ≅ₐ " => HasACongr.acongr
 
 class HasSim (α : Type*) where
   sim : α → α → Prop
@@ -152,11 +152,11 @@ instance (α : Type*) [HasSim α] : IsEquiv α HasSim.sim where
   trans _ _ _ := HasSim.trans
   symm _ _ := HasSim.symm
 
-/-- The similarity relation is denoted by infix $\sim$.-/
-scoped infix : 50 " ∼ " => HasSim.sim
-
 /-- The similarity relation is denoted by infix "IsSimTo".-/
 scoped infix : 50 " IsSimTo " => HasSim.sim
+
+/-- The similarity relation is denoted by infix $\sim$.-/
+scoped infix : 50 " ∼ " => HasSim.sim
 
 class HasASim (α : Type*) where
   asim : α → α → Prop
@@ -165,10 +165,10 @@ class HasASim (α : Type*) where
 instance (α : Type*) [HasACongr α] : IsSymm α HasACongr.acongr where
   symm _ _ := HasACongr.symm
 
-/-- The anti-similarity relation is denoted by infix $\sim_a$.-/
-scoped infix : 50 " ∼ₐ " => HasASim.asim
-
 /-- The anti-similarity relation is denoted by infix "IsASimTo".-/
 scoped infix : 50 " IsASimTo " => HasASim.asim
+
+/-- The anti-similarity relation is denoted by infix $\sim_a$.-/
+scoped infix : 50 " ∼ₐ " => HasASim.asim
 
 end EuclidGeom

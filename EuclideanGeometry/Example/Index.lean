@@ -19,6 +19,8 @@ import EuclideanGeometry.Example.ExerciseXT8
 /- SCHAUM -/
 -- import EuclideanGeometry.Example.SCHAUM.Problem1.1
 
+/- IMO -/
+import EuclideanGeometry.Example.IMO.IMO2007
 
 /-!
 # Index of Examples
