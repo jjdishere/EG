@@ -17,26 +17,6 @@ theorem ang_acute_of_is_isoceles_variant {A B C : P} (h : ¬ Collinear A B C) (i
 theorem midpt_eq_perp_foot_of_isIsoceles {A B C : P} [PtNe B C] (h : (▵ A B C).IsIsoceles) : (SEG B C).midpoint = perp_foot A (LIN B C) := sorry
 
 theorem perp_foot_eq_midpt_of_is_isoceles {A B C : P} (not_collinear_ABC : ¬ Collinear A B C) (isoceles_ABC : (▵ A B C).IsIsoceles) : perp_foot A (LIN B C (ne_of_not_collinear not_collinear_ABC).1) = (SEG B C).midpoint := by
-  let D := (SEG B C).midpoint
-  haveI C_ne_B: PtNe C B := ⟨(ne_of_not_collinear not_collinear_ABC).1⟩
-  have D_int_BC : D LiesInt (SEG B C) := by
-    apply SegND.midpt_lies_int (seg_nd := (SEG_nd B C))
-  have D_on_line_BC : D LiesOn (LIN B C) := by
-    apply SegND.lies_on_toLine_of_lie_on (s := SEG_nd B C)
-    show D LiesOn (SEG B C); exact D_int_BC.1
-  have : D ≠ A := by
-    by_contra h; absurd not_collinear_ABC
-    simp only [h.symm]; apply Seg.collinear_of_lies_on D_int_BC.1
-    apply Seg.source_lies_on; apply Seg.target_lies_on
-  haveI D_ne_A: PtNe D A := ⟨this⟩
-  have DB_eq_DC : (SEG D B).length = (SEG D C).length := by
-    calc
-    _= (SEG B D).length := by apply length_of_rev_eq_length'
-    _= _ := by apply Seg.dist_target_eq_dist_source_of_midpt (seg := (SEG B C))
-  apply perp_foot_unique'
-  exact D_on_line_BC
-  show LIN A D ⟂ LIN B C
-  sorry
   sorry
 
 end EuclidGeom
