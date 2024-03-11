@@ -221,17 +221,6 @@ section specific_examples
 
 variable {P : Type*} [EuclideanPlane P] {A B C D E F : P} (not_collinear_ABC : ¬ Collinear A B C) (not_collinear_DEF : ¬ Collinear D E F)
 
-/-
-instance A_ne_B : PtNe A B := ⟨(ne_of_not_collinear not_collinear_ABC).2.2.symm⟩
-instance A_ne_C : PtNe A C := ⟨(ne_of_not_collinear not_collinear_ABC).2.1⟩
-instance C_ne_B : PtNe C B := ⟨(ne_of_not_collinear not_collinear_ABC).1⟩
-
-instance D_ne_E : PtNe D E := ⟨(ne_of_not_collinear not_collinear_DEF).2.2.symm⟩
-instance D_ne_F : PtNe D F := ⟨(ne_of_not_collinear not_collinear_DEF).2.1⟩
-instance F_ne_E : PtNe F E := ⟨(ne_of_not_collinear not_collinear_DEF).1⟩
--- Why the instance failed?
--/
-
 example (a₁ : ∠ B A C (ne_of_not_collinear not_collinear_ABC).2.2 (ne_of_not_collinear not_collinear_ABC).2.1.symm = ∠ E D F (ne_of_not_collinear not_collinear_DEF).2.2 (ne_of_not_collinear not_collinear_DEF).2.1.symm) (e₂ : dist C A = dist F D) (e₃ : (SEG A B).length = (SEG D E).length) : (TRI_nd A B C not_collinear_ABC).IsCongr (TRI_nd D E F not_collinear_DEF) := by
   CONGR_SA
 
