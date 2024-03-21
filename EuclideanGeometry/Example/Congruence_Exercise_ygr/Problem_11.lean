@@ -54,16 +54,16 @@ lemma E_ne_F' {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : e.E 
   _< ⟨e.C, e.C_on_l⟩ := e.E_lt_C_on_l
   _< ⟨e.F, e.F_on_l⟩ := e.C_lt_F_on_l
 instance E_ne_F {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : PtNe e.E e.F := ⟨E_ne_F'⟩
-lemma not_colinear_ACB {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : ¬ colinear e.A e.C e.B := by sorry
-lemma not_colinear_DEF {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : ¬ colinear e.D e.E e.F := by sorry
-instance B_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : PtNe e.B e.A := ⟨(ne_of_not_colinear not_colinear_ACB).2.1.symm⟩
-instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : PtNe e.C e.A := ⟨(ne_of_not_colinear not_colinear_ACB).2.2⟩
-instance F_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : PtNe e.F e.D := ⟨(ne_of_not_colinear not_colinear_DEF).2.1.symm⟩
-instance E_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : PtNe e.E e.D := ⟨(ne_of_not_colinear not_colinear_DEF).2.2⟩
+lemma not_collinear_ACB {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : ¬ Collinear e.A e.C e.B := by sorry
+lemma not_collinear_DEF {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : ¬ Collinear e.D e.E e.F := by sorry
+instance B_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : PtNe e.B e.A := ⟨(ne_of_not_collinear not_collinear_ACB).2.1.symm⟩
+instance C_ne_A {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : PtNe e.C e.A := ⟨(ne_of_not_collinear not_collinear_ACB).2.2⟩
+instance F_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : PtNe e.F e.D := ⟨(ne_of_not_collinear not_collinear_DEF).2.1.symm⟩
+instance E_ne_D {Plane : Type _} [EuclideanPlane Plane] {e : Setting Plane} : PtNe e.E e.D := ⟨(ne_of_not_collinear not_collinear_DEF).2.2⟩
 
 structure Setting2 (Plane : Type _) [EuclideanPlane Plane] extends Setting Plane where
-  not_colinear_ACB : ¬ Collinear A C B := not_colinear_ACB
-  not_colinear_DEF : ¬ Collinear D E F := not_colinear_DEF
+  not_colinear_ACB : ¬ Collinear A C B := not_collinear_ACB
+  not_colinear_DEF : ¬ Collinear D E F := not_collinear_DEF
 
 -- Prove that $\angle BAC = - \angle FDE$.
 theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (∠ e.B e.A e.C) = - (∠ e.F e.D e.E) := by
@@ -98,6 +98,7 @@ theorem result {Plane : Type _} [EuclideanPlane Plane] (e : Setting2 Plane) : (�
     · exact BA_eq_FD
     · exact e.AC_eq_DE
     · exact clockwise_ACB_eq_neg_clockwise_DEF
+
 end Problem_11
 
 end EuclidGeom

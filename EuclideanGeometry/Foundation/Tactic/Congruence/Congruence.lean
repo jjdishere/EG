@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence
+import EuclideanGeometry.Foundation.Axiom.Triangle.Congruence_trash
 
 namespace EuclidGeom
 
@@ -62,6 +63,47 @@ def evalCongrSa : Tactic := fun stx =>
       logInfo "`congr_sa` doesn't close any goals"
   | _ => throwUnsupportedSyntax
 
+syntax (name := CONGR_SA) "CONGR_SA" : tactic
+
+@[tactic CONGR_SA]
+def evalCONGRSA : Tactic := fun stx =>
+  match stx with
+  | `(tactic| CONGR_SA) => withTheReader Term.Context ({ · with errToSorry := false }) do
+      for lemmaName in congrSaLemmas do
+        let lemmaName := mkIdent lemmaName
+        try
+          let t <- `(tactic| apply $lemmaName)
+          evalTactic t
+          let goals ← Lean.Elab.Tactic.getGoals
+          for _ in goals do
+            let t1 <- `(tactic| assumption)
+            evalTactic t1
+          return
+        catch
+          _ => pure ()
+        try
+          let t <- `(tactic| apply congr_of_perm_congr; apply $lemmaName)
+          evalTactic t
+          let goals ← Lean.Elab.Tactic.getGoals
+          for _ in goals do
+            let t1 <- `(tactic| assumption)
+            evalTactic t1
+          return
+        catch
+          _ => pure ()
+        try
+          let t <- `(tactic| apply congr_of_perm_congr; apply congr_of_perm_congr; apply $lemmaName)
+          evalTactic t
+          let goals ← Lean.Elab.Tactic.getGoals
+          for _ in goals do
+            let t1 <- `(tactic| assumption)
+            evalTactic t1
+          return
+        catch
+          _ => pure ()
+      logInfo "`CONGR_SA` doesn't close any goals"
+  | _ => throwUnsupportedSyntax
+
 end congr
 
 section acongr
@@ -109,6 +151,47 @@ def evalACongrSa : Tactic := fun stx =>
       logInfo "`acongr_sa` doesn't close any goals"
   | _ => throwUnsupportedSyntax
 
+syntax (name := ACONGR_SA) "ACONGR_SA" : tactic
+
+@[tactic ACONGR_SA]
+def evalACONGRSA : Tactic := fun stx =>
+  match stx with
+  | `(tactic| ACONGR_SA) => withTheReader Term.Context ({ · with errToSorry := false }) do
+      for lemmaName in acongrSaLemmas do
+        let lemmaName := mkIdent lemmaName
+        try
+          let t <- `(tactic| apply $lemmaName)
+          evalTactic t
+          let goals ← Lean.Elab.Tactic.getGoals
+          for _ in goals do
+            let t1 <- `(tactic| assumption)
+            evalTactic t1
+          return
+        catch
+          _ => pure ()
+        try
+          let t <- `(tactic| apply acongr_of_perm_acongr; apply $lemmaName)
+          evalTactic t
+          let goals ← Lean.Elab.Tactic.getGoals
+          for _ in goals do
+            let t1 <- `(tactic| assumption)
+            evalTactic t1
+          return
+        catch
+          _ => pure ()
+        try
+          let t <- `(tactic| apply acongr_of_perm_acongr; apply acongr_of_perm_acongr; apply $lemmaName)
+          evalTactic t
+          let goals ← Lean.Elab.Tactic.getGoals
+          for _ in goals do
+            let t1 <- `(tactic| assumption)
+            evalTactic t1
+          return
+        catch
+          _ => pure ()
+      logInfo "`ACONGR_SA` doesn't close any goals"
+  | _ => throwUnsupportedSyntax
+
 end acongr
 
 section examples
@@ -118,11 +201,11 @@ variable {P : Type*} [EuclideanPlane P] {tr_nd₁ tr_nd₂ : TriangleND P}
 example (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length)
   (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsCongr tr_nd₂ := by
     congr_sa
-/-
+
 -- `This tactic fails now, fix it!!!`
 example (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) (a₂ : tr_nd₁.angle₂.value = tr_nd₂.angle₂.value)
   (a₁ : tr_nd₁.angle₁.value = tr_nd₂.angle₁.value) : tr_nd₁.IsCongr tr_nd₂ := by
-    congr_sa
+    CONGR_SA
 
 example (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (e₂ : tr_nd₁.edge₂.length = tr_nd₂.edge₂.length)
   (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) : tr_nd₁.IsACongr tr_nd₂ := by
@@ -130,9 +213,17 @@ example (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value) (e₂ : tr_
 
 example (e₃ : tr_nd₁.edge₃.length = tr_nd₂.edge₃.length) (a₁ : tr_nd₁.angle₁.value = - tr_nd₂.angle₁.value)
   (a₂ : tr_nd₁.angle₂.value = - tr_nd₂.angle₂.value) : tr_nd₁.IsACongr tr_nd₂ := by
-    acongr_sa
+    ACONGR_SA
 
 end examples
 
+section specific_examples
+
+variable {P : Type*} [EuclideanPlane P] {A B C D E F : P} (not_collinear_ABC : ¬ Collinear A B C) (not_collinear_DEF : ¬ Collinear D E F)
+
+example (a₁ : ∠ B A C (ne_of_not_collinear not_collinear_ABC).2.2 (ne_of_not_collinear not_collinear_ABC).2.1.symm = ∠ E D F (ne_of_not_collinear not_collinear_DEF).2.2 (ne_of_not_collinear not_collinear_DEF).2.1.symm) (e₂ : dist C A = dist F D) (e₃ : (SEG A B).length = (SEG D E).length) : (TRI_nd A B C not_collinear_ABC).IsCongr (TRI_nd D E F not_collinear_DEF) := by
+  CONGR_SA
+
+end specific_examples
+
 end EuclidGeom
--/

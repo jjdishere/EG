@@ -15,4 +15,9 @@ theorem pt_flip_collinear {A B O : P} (h : B = pt_flip A O) : Collinear A O B :=
   apply Line.pt_pt_linear
   sorry
 
+theorem exist_dirline_of_line (l : Line P) : ∃ (Dl : DirLine P), Dl.toLine = l := by
+  rcases l with ⟨r⟩
+  use r.toDirLine
+  rfl
+
 end EuclidGeom

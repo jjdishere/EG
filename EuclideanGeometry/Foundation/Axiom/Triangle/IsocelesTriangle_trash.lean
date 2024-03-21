@@ -1,4 +1,5 @@
 import EuclideanGeometry.Foundation.Axiom.Triangle.IsocelesTriangle
+import EuclideanGeometry.Foundation.Axiom.Linear.Perpendicular_trash
 
 noncomputable section
 namespace EuclidGeom
@@ -14,5 +15,8 @@ theorem ang_acute_of_is_isoceles {A B C : P} (h : ¬ Collinear A B C) (isoceles_
 theorem ang_acute_of_is_isoceles_variant {A B C : P} (h : ¬ Collinear A B C) (isoceles_ABC : (▵ A B C).IsIsoceles) : Angle.IsAcu (ANG A C B (ne_of_not_collinear h).2.1 (ne_of_not_collinear h).1.symm) := by sorry
 
 theorem midpt_eq_perp_foot_of_isIsoceles {A B C : P} [PtNe B C] (h : (▵ A B C).IsIsoceles) : (SEG B C).midpoint = perp_foot A (LIN B C) := sorry
+
+theorem perp_foot_eq_midpt_of_is_isoceles {A B C : P} (not_collinear_ABC : ¬ Collinear A B C) (isoceles_ABC : (▵ A B C).IsIsoceles) : perp_foot A (LIN B C (ne_of_not_collinear not_collinear_ABC).1) = (SEG B C).midpoint := by
+  sorry
 
 end EuclidGeom
